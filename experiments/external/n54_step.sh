@@ -4,7 +4,7 @@
 # with a background poller; never a foreground sleep. Steps, in order:
 #   tests                       the relabeller's and the builder's unit tests (synthetic arrays only): every test file
 #                               that imports build_test, feng_dirs, feng_relabel or the harness's late proxy, with
-#                               test_core, test_s2_rules and experiments/external/test_filters.py
+#                               test_core, test_s2_rules, test_git_helpers and experiments/external/test_filters.py
 #   identity                    option off: T1_s1 and T1_s2 as the reference list has them, and main's none file
 #   n55 RULING                  the dry run on the released E9.5 (before the freeze), its rule applied by code (exit 3:
 #                               it stopped, outcome stopped; any other non-zero exit after it started: --record-kill)
@@ -48,7 +48,8 @@ case "$STEP" in
       tests/test_t1_gmom_ctl_read.py tests/test_t1_hygiene.py tests/test_t1_part_depth_read.py \
       tests/test_t1_part_range_read.py tests/test_t1_reach_read.py tests/test_t1_scope.py tests/test_t1_share_read.py \
       tests/test_t1_split_read.py tests/test_t1_state_transport.py tests/test_t1_strong_null.py \
-      tests/test_t1_zone_read.py tests/test_t2_latent.py experiments/external/test_filters.py
+      tests/test_t1_zone_read.py tests/test_t2_latent.py tests/test_h26_heart_scope_forms.py tests/test_t1_bets.py \
+      tests/test_git_helpers.py experiments/external/test_filters.py
     finish $? ;;
   identity)
     threads16

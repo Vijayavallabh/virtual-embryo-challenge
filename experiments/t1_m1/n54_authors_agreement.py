@@ -8,8 +8,9 @@ its output (tests/test_feng_relabel.py checks the labeller, feng_dirs, the build
 
 It runs once, only after the captain's ruling on T1's last upload (recomputed file or none file) is committed, so it
 cannot inform that ruling (the final review of the port, lesser point 1): it refuses unless --upload-ruling names a
-docs/PLAN.md decision-log entry naming N54 that is not the relabelling's own ruling, is dated on or after the
-listing's commit and was not yet in docs/PLAN.md at that commit (feng_relabel.later_ruling); the listing's n54.json
+docs/PLAN.md decision-log entry naming N54 and containing the fixed phrase "rules on T1's last upload"
+(feng_relabel.UPLOAD_RULING_PHRASE) that is not the relabelling's own ruling, is dated on or after the listing's
+commit and was not yet in docs/PLAN.md at that commit, read there (feng_relabel.later_ruling); the listing's n54.json
 exists, records the same recomputed sha256 as --frozen-sha256 and is committed at HEAD as written; the file and its
 manifest carry that sha256; the tree is clean; and its own output does not exist.
 It writes aggregates only, per stage and group: the cells under each labelling, those in both, the share of the
@@ -77,8 +78,8 @@ def main(argv=None) -> None:
     ap.add_argument("--method-report", action="store_true", required=True,
                     help="acknowledges that this output is for the method report only and decides nothing")
     ap.add_argument("--upload-ruling", required=True,
-                    help="the captain's docs/PLAN.md decision-log entry (naming N54) on T1's last upload, made after "
-                         "the listing's commit")
+                    help="the captain's docs/PLAN.md decision-log entry on T1's last upload (naming N54 and "
+                         "containing \"rules on T1's last upload\"), made after the listing's commit")
     a = ap.parse_args(argv)
     if (OUT / "agreement.json").exists():
         sys.exit("the agreement has been computed once already; it is not recomputed")
@@ -90,7 +91,8 @@ def main(argv=None) -> None:
         sys.exit("N54's listing is not committed at HEAD as written: the agreement comes after the listing's commit")
     raw = feng_relabel.committed_at_head(feng_relabel.RECORD)
     run_ruling = ((json.loads(raw).get("gate") or {}).get("ruling")) if raw is not None else None
-    why = feng_relabel.later_ruling(a.upload_ruling, LISTING, feng_relabel.ROW, excluded=[run_ruling])
+    why = feng_relabel.later_ruling(a.upload_ruling, LISTING, feng_relabel.ROW, excluded=[run_ruling],
+                                    phrase=feng_relabel.UPLOAD_RULING_PHRASE)
     if why is not None:
         sys.exit(f"the agreement comes only after the captain's ruling on T1's last upload: {why}")
     listed = json.loads(LISTING.read_text())["inputs"]["recomputed"]["sha256"]

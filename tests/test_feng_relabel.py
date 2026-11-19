@@ -35,7 +35,7 @@ from test_hidden_counts import UNION, _reference_file, t1_env  # noqa: E402, F40
 from vec import harness  # noqa: E402
 
 COMMITTED = fr.load_config()
-N55_ = {"outcome": "kept", "setting": {"min_score": 0.5, "min_margin": 0.25}, "commit": "n55c"}
+N55_ = {"outcome": "kept", "setting": {"min_score": 0.5, "min_margin": 0.25}, "commit": "n55c", "ruling": None}
 # what feng_relabel.preflight returns on a clean, committed, ruled tree (synthetic: the gate is never run here on data)
 GATE_ = {"row": "N54", "ruling": "2026-11-20 (a)", "commit": "abc", "clean": True, "config_at_head": True,
          "n55": N55_}
@@ -1025,7 +1025,8 @@ def _output(env, folder: str) -> None:
     ("dirty", "not clean"), ("git_unknown", "not clean"), ("record_in_tree", "already recorded"),
     ("record_at_head", "already recorded"), ("dst_exists", "already recorded"), ("started", "already recorded"),
     ("no_n55", "N55's dry run is not committed"), ("n55_other_value", "more than its status"),
-    ("n55_yaml_missing", "cannot be found"), ("n55_yaml_other_sha", "cannot be found")])
+    ("n55_yaml_missing", "cannot be found"), ("n55_yaml_other_sha", "cannot be found"),
+    ("n55s_own_entry", "the entry that ordered row N55")])
 def test_the_gate_refuses_before_anything_is_read(gate_env, tmp_path, case, msg):
     env, ruling, path = gate_env, "2026-11-20 (a)", gate_env.path
     if case == "other_config":
@@ -1070,6 +1071,9 @@ def test_the_gate_refuses_before_anything_is_read(gate_env, tmp_path, case, msg)
         env.at_commit.clear()
     elif case == "n55_yaml_other_sha":
         env.at_commit["n55c"] = b"other: yaml\n"
+    elif case == "n55s_own_entry":  # the final check of the fix round, item D: N55's entry names N54 too
+        env.n55["ruling"] = ruling
+        env.head[env.n55_out.resolve()] = json.dumps(env.n55).encode()
     with pytest.raises(fr.Refused, match=msg):
         fr.preflight(path, ruling, env.dst)
 
@@ -1291,7 +1295,8 @@ def _none_env(bt, t1_env, monkeypatch, record, where):  # noqa: F811
         rec_path.write_text(json.dumps(record))
     plan = Path(where) / "PLAN.md"
     plan.write_text("- 2026-11-20 (a), the captain's ruling for the run; row N54.\n"
-                    "- 2026-11-22 (a), the captain sets the relabelling's route aside for T1; row N54.\n")
+                    "- 2026-11-22 (a), the captain sets the N54 route aside for T1.\n"
+                    "- 2026-11-22 (b), the listing of row N54 is recorded.\n")
     monkeypatch.setattr(fr, "PLAN", plan)
     # the record was committed on 2026-11-21, when docs/PLAN.md held the run's ruling only
     monkeypatch.setattr(fr, "last_commit", lambda path: ("rc1", "2026-11-21"))
@@ -1330,9 +1335,11 @@ def test_none_after_a_relabelling_that_routes_to_recomputed_needs_the_captains_r
     fr.RECORD.parent.mkdir(parents=True, exist_ok=True)
     fr.RECORD.write_text(json.dumps({"route": "recomputed"}))  # a relabelling now exists and routes to recomputed
     out = tmp_path / "T1_none.h5ad"
-    for extra in ([], ["--feng-none-ruling", "2026-11-23 (a)"]):
+    for extra in ([], ["--feng-none-ruling", "2026-11-23 (a)"], ["--feng-none-ruling", "2026-11-22 (b)"]):
         with pytest.raises(SystemExit, match="routes T1's file to recomputed"):
             bt.main(["t1", *TARGET, "--feng-groups", "none", *extra, "--out", str(out)])
+    with pytest.raises(SystemExit, match="does not contain the fixed phrase 'sets the N54 route aside'"):
+        bt.main(["t1", *TARGET, "--feng-groups", "none", "--feng-none-ruling", "2026-11-22 (b)", "--out", str(out)])
     assert not out.exists()
     bt.main(["t1", *TARGET, "--feng-groups", "none", "--feng-none-ruling", "2026-11-22 (a)", "--out", str(out)])
     rec = json.loads(out.with_suffix(".build.json").read_text())
@@ -1730,12 +1737,49 @@ def test_later_ruling_needs_an_entry_after_the_commit_other_than_the_runs(tmp_pa
     assert "is not committed" in fr.later_ruling("2026-11-22 (a)", after)
 
 
+def test_later_ruling_refuses_when_the_plan_cannot_be_read_at_the_commit(tmp_path, monkeypatch):
+    """The final check of the fix round, item E: a docs/PLAN.md that cannot be read at the commit of `after` (a
+    shallow or foreign checkout) shows no ruling to be later, so the check refuses rather than passes."""
+    plan = tmp_path / "PLAN.md"
+    plan.write_text("- 2026-11-22 (a), the captain sets the N54 route aside.\n")
+    monkeypatch.setattr(fr, "PLAN", plan)
+    monkeypatch.setattr(fr, "last_commit", lambda path: ("c1", "2026-11-21"))
+    monkeypatch.setattr(fr, "plan_at_commit", lambda c: None)
+    assert "cannot be read at the commit" in fr.later_ruling("2026-11-22 (a)", fr.RECORD)
+    monkeypatch.setattr(fr, "plan_at_commit", lambda c: "")
+    assert fr.later_ruling("2026-11-22 (a)", fr.RECORD) is None
+
+
+def test_later_ruling_needs_the_fixed_phrase_when_one_is_given(tmp_path, monkeypatch):
+    """The final check of the fix round, item F: an entry that merely names N54 (here one that records the listing)
+    does not pass where a fixed phrase is asked; the phrase may run over a line break and use a typographic
+    apostrophe."""
+    plan = tmp_path / "PLAN.md"
+    plan.write_text("- 2026-11-22 (a), the listing of row N54 is recorded.\n"
+                    "- 2026-11-22 (b), the captain sets the N54\n  route aside for T1.\n"
+                    "- 2026-11-22 (c), the captain rules on T1\u2019s last upload: the none file; N54.\n"
+                    "- 2026-11-22 (d), the captain sets the route of N54 aside.\n")
+    monkeypatch.setattr(fr, "PLAN", plan)
+    monkeypatch.setattr(fr, "last_commit", lambda path: ("c1", "2026-11-21"))
+    monkeypatch.setattr(fr, "plan_at_commit", lambda c: "")
+    none_, upload = fr.NONE_RULING_PHRASE, fr.UPLOAD_RULING_PHRASE
+    assert (none_, upload) == ("sets the N54 route aside", "rules on T1's last upload")
+    assert fr.later_ruling("2026-11-22 (a)", fr.RECORD) is None  # no phrase asked: as before
+    for ruling, phrase in (("2026-11-22 (a)", none_), ("2026-11-22 (a)", upload), ("2026-11-22 (d)", none_),
+                           ("2026-11-22 (b)", upload), ("2026-11-22 (c)", none_)):
+        assert "does not contain the fixed phrase" in fr.later_ruling(ruling, fr.RECORD, phrase=phrase)
+    assert fr.later_ruling("2026-11-22 (b)", fr.RECORD, phrase=none_) is None
+    assert fr.later_ruling("2026-11-22 (c)", fr.RECORD, phrase=upload) is None
+
+
 def test_last_commit_and_plan_at_commit_read_a_real_history(tmp_path, monkeypatch):
     import subprocess
 
-    def g(*args):
-        subprocess.run(["git", "-c", "user.name=t", "-c", "user.email=t@t", *args], cwd=tmp_path, check=True,
-                       capture_output=True)
+    from conftest import git_env
+
+    def g(*args):  # conftest's environment: never GIT_DIR or its kin (docs/PLAN.md decision log 2026-11-19 (t))
+        subprocess.run(["git", "-C", str(tmp_path), "-c", "user.name=t", "-c", "user.email=t@example.org", "-c",
+                        "commit.gpgsign=false", *args], cwd=tmp_path, check=True, capture_output=True, env=git_env())
 
     g("init", "-q")
     (tmp_path / "docs").mkdir()
@@ -1781,7 +1825,8 @@ def test_the_agreement_waits_for_the_captains_ruling_on_the_upload(tmp_path, mon
     monkeypatch.setattr(fr, "committed_at_head", lambda p: listing.read_bytes() if Path(p) == listing else record)
     plan = tmp_path / "PLAN.md"
     plan.write_text("- 2026-11-20 (a), the run's ruling; N54.\n- 2026-11-21 (a), the listing noted; N54.\n"
-                    "- 2026-11-23 (a), the captain rules on T1's last upload; N54.\n")
+                    "- 2026-11-23 (a), the captain rules on T1's last upload; N54.\n"
+                    "- 2026-11-23 (b), the listing's numbers are noted for N54.\n")
     monkeypatch.setattr(fr, "PLAN", plan)
     monkeypatch.setattr(fr, "last_commit", lambda path: ("lc1", "2026-11-21"))
     monkeypatch.setattr(fr, "plan_at_commit", lambda c: "- 2026-11-20 (a), the run's ruling; N54.\n"
@@ -1792,7 +1837,7 @@ def test_the_agreement_waits_for_the_captains_ruling_on_the_upload(tmp_path, mon
 
     monkeypatch.setattr(feng_dirs, "load_relabel_config", reached)
     for ruling, msg in (("2026-11-20 (a)", "authorised the run"), ("2026-11-21 (a)", "already in docs/PLAN.md"),
-                        ("2026-11-24 (a)", "no decision-log entry")):
+                        ("2026-11-24 (a)", "no decision-log entry"), ("2026-11-23 (b)", "fixed phrase")):
         with pytest.raises(SystemExit, match=msg):
             ag.main(["--frozen-sha256", "x", "--method-report", "--upload-ruling", ruling])
     with pytest.raises(RuntimeError, match="reached the reads"):
@@ -1833,7 +1878,9 @@ def test_the_step_script_runs_every_builder_test_and_two_separate_check_builds()
     pat = re.compile(r"build_test|feng_dirs|feng_relabel|late_proxy|LP_STATS")
     want = {f"tests/{p.name}" for p in (ROOT / "tests").glob("test_*.py") if pat.search(p.read_text())}
     listed = set(re.findall(r"tests/test_[a-z0-9_]+\.py", sh.split("  tests)")[1].split(";;")[0]))
-    assert want <= listed and {"tests/test_core.py", "tests/test_s2_rules.py"} <= listed
+    assert want <= listed and {"tests/test_core.py", "tests/test_s2_rules.py", "tests/test_git_helpers.py"} <= listed
+    assert {"tests/test_h26_heart_scope_forms.py", "tests/test_t1_bets.py"} <= want  # main's builder tests since T61
+    assert all((ROOT / f).exists() for f in listed)  # no listed file is missing
     assert "experiments/external/test_filters.py" in sh
     assert "T1_s2rc_b.h5ad" in sh and "build2.sha" in sh and sh.count("--record-kill") >= 2
     assert '--upload-ruling "${2:?' in sh

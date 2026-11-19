@@ -44,7 +44,12 @@ def own_repo(tmp_path_factory, monkeypatch):
     from vec import provenance
 
     repo = tmp_path_factory.mktemp("repo")
-    env = {**os.environ, "GIT_CONFIG_GLOBAL": os.devnull, "GIT_CONFIG_NOSYSTEM": "1"}
+    # without the variables that point git at another repository: with GIT_DIR set to the real checkout these
+    # commits landed on its main (docs/PLAN.md decision log 2026-11-19 (t))
+    env = {k: v for k, v in os.environ.items()
+           if k not in ("GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE", "GIT_OBJECT_DIRECTORY", "GIT_COMMON_DIR",
+                        "GIT_NAMESPACE", "GIT_ALTERNATE_OBJECT_DIRECTORIES", "GIT_CEILING_DIRECTORIES")}
+    env = {**env, "GIT_CONFIG_GLOBAL": os.devnull, "GIT_CONFIG_NOSYSTEM": "1"}
     for args in (["init", "-q"], ["commit", "-q", "--allow-empty", "-m", "init"]):
         subprocess.run(["git", "-C", str(repo), "-c", "user.name=t", "-c", "user.email=t@example.org",
                         "-c", "commit.gpgsign=false", *args], check=True, capture_output=True, env=env)

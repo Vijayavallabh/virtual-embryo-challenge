@@ -22,15 +22,15 @@ unassigned shares, the cap's verdict, the groups' cells at each end, the fallbac
 and their controls).
 
 It runs once, and only in order (`preflight`, all checked before any Feng file is read): the committed
-experiments/external/feng_relabel.yaml and no other config; its status "frozen"; no gene UNSOURCED and no choice
-PENDING in it; the yaml as committed at HEAD; row N55's dry run committed at HEAD, with the yaml's min_score and
-min_margin the ones N55's pre-stated rule gave and every other value as N55 read it (`check_n55`); a clean tree; ledger
-row N54 in experiments/harness/TRIES.md; the captain's ruling, a docs/PLAN.md decision-log entry named by --ruling,
-naming N54; and no relabelling recorded or started before (neither its folder under data/ nor the committed copy of
-its manifest, RECORD, at HEAD or in the tree). The manifest records that gate, and every reader of the file refuses one
-written without it (feng_dirs.check_recomputed). After the run it writes a copy of the manifest to RECORD, which the
-main session commits at once: N54's listing and the builder refuse until the copy is committed and equal to the
-manifest, so a second run cannot go unseen.
+experiments/external/feng_relabel.yaml and no other config; its status "frozen"; no gene UNSOURCED and no choice PENDING
+in it; the yaml as committed at HEAD; row N55's dry run committed at HEAD, with the yaml's min_score and min_margin the
+ones N55's pre-stated rule gave and every other value as N55 read it (`check_n55`); a clean tree; ledger row N54 in
+experiments/harness/TRIES.md; the captain's ruling, a docs/PLAN.md decision-log entry named by --ruling, naming N54, and
+not the entry that ordered row N55 (n55.json's ruling); and no relabelling recorded or started before (neither its
+folder under data/ nor the committed copy of its manifest, RECORD, at HEAD or in the tree). The manifest records that
+gate, and every reader of the file refuses one written without it (feng_dirs.check_recomputed). After the run it writes
+a copy of the manifest to RECORD, which the main session commits at once: N54's listing and the builder refuse until the
+copy is committed and equal to the manifest, so a second run cannot go unseen.
 
 A run that stops after preflight has passed (a set short of score.min_genes_found in Feng's unique symbols, a set that
 draws no control gene, a cell with no counts, a strain or shape mismatch, any other error, an interrupt) takes the
@@ -381,14 +381,21 @@ def row_in_tries(row: str, path: Path | None = None) -> bool:
 
 
 RULING_ID = re.compile(r"\d{4}-\d{2}-\d{2} \([a-z]+\)")  # a decision-log entry's id, e.g. '2026-11-20 (a)'
+# The fixed phrases a later ruling's entry must contain (the final check of the fix round, item F; as T61's
+# build_test._captain_ruling_names asks for "rules `<arm>` in"): an entry that merely names N54, for example one that
+# records the listing, does not pass. Matched in the entry's text with its line breaks and runs of spaces read as one
+# space and typographic apostrophes read as "'".
+NONE_RULING_PHRASE = "sets the N54 route aside"  # --feng-none-ruling (build_test.py t1 --feng-groups none)
+UPLOAD_RULING_PHRASE = "rules on T1's last upload"  # --upload-ruling (experiments/t1_m1/n54_authors_agreement.py)
 
 
-def ruling_logged(ruling: str | None, row: str = ROW, plan: Path | None = None, text: str | None = None) -> bool:
-    """The docs/PLAN.md decision-log entry `ruling` (e.g. '2026-11-20 (a)') exists and names `row` anywhere in it: the
-    entry runs from its '- <ruling>' line (at the margin) to the next entry or heading. `text`: the plan's text as
-    given (e.g. as committed at an earlier commit) in place of the file."""
+def entry_text(ruling: str | None, plan: Path | None = None, text: str | None = None) -> str | None:
+    """The docs/PLAN.md decision-log entry `ruling` (e.g. '2026-11-20 (a)'), from its '- <ruling>' line (at the margin)
+    to the next entry or heading, as one line (line breaks and runs of spaces as one space, typographic apostrophes as
+    "'"); None if there is no such entry. `text`: the plan's text as given (e.g. as committed at an earlier commit) in
+    place of the file."""
     if ruling is None or not RULING_ID.fullmatch(ruling):
-        return False
+        return None
     block: list[str] | None = None
     lines = (Path(plan or PLAN).read_text(encoding="utf-8") if text is None else text).splitlines()
     for line in lines:
@@ -398,7 +405,17 @@ def ruling_logged(ruling: str | None, row: str = ROW, plan: Path | None = None, 
             block.append(line)
         elif line.startswith(f"- {ruling}"):
             block = [line]
-    return block is not None and any(re.search(rf"\b{re.escape(row)}\b", ln) for ln in block)
+    if block is None:
+        return None
+    return " ".join(" ".join(block).replace("\u2019", "'").split())
+
+
+def ruling_logged(ruling: str | None, row: str = ROW, plan: Path | None = None, text: str | None = None) -> bool:
+    """The docs/PLAN.md decision-log entry `ruling` (e.g. '2026-11-20 (a)') exists and names `row` anywhere in it: the
+    entry runs from its '- <ruling>' line (at the margin) to the next entry or heading. `text`: the plan's text as
+    given (e.g. as committed at an earlier commit) in place of the file."""
+    entry = entry_text(ruling, plan, text)
+    return entry is not None and re.search(rf"\b{re.escape(row)}\b", entry) is not None
 
 
 def last_commit(path: Path) -> tuple[str, str] | None:
@@ -417,12 +434,14 @@ def plan_at_commit(commit: str) -> str | None:
     return r.stdout.decode("utf-8") if r.returncode == 0 else None
 
 
-def later_ruling(ruling: str | None, after: Path, row: str = ROW, excluded: Iterable[str] = ()) -> str | None:
+def later_ruling(ruling: str | None, after: Path, row: str = ROW, excluded: Iterable[str] = (),
+                 phrase: str | None = None) -> str | None:
     """Why `ruling` is not a ruling made after the committed file `after`, or None when it is: the docs/PLAN.md entry
     exists now and names `row`; it is none of `excluded` (e.g. the ruling that authorised the run); `after` is
-    committed; the entry's date is on or after that commit's date; and the entry was not yet in docs/PLAN.md at that
-    commit. Used by the builder's --feng-none-ruling (after the RECORD) and by the agreement table (after the
-    listing): the final review of the port, lesser points 1 and 2."""
+    committed; the entry's date is on or after that commit's date; docs/PLAN.md can be read at that commit; the entry
+    was not yet in it there; and it contains `phrase` when one is given (NONE_RULING_PHRASE, UPLOAD_RULING_PHRASE). Used
+    by the builder's --feng-none-ruling (after the RECORD) and by the agreement table (after the listing): the final
+    review of the port, lesser points 1 and 2, and the final check of the fix round, items E and F."""
     if not ruling_logged(ruling, row):
         return f"docs/PLAN.md has no decision-log entry {ruling!r} naming {row}"
     if ruling in set(excluded):
@@ -434,8 +453,12 @@ def later_ruling(ruling: str | None, after: Path, row: str = ROW, excluded: Iter
     if str(ruling)[:10] < day:
         return f"the entry {ruling!r} is dated before the commit of {_rel(after)} ({day})"
     earlier = plan_at_commit(commit)
-    if earlier is not None and ruling_logged(ruling, row, text=earlier):
+    if earlier is None:
+        return f"docs/PLAN.md cannot be read at the commit of {_rel(after)}: no ruling can be shown to be later"
+    if ruling_logged(ruling, row, text=earlier):
         return f"the entry {ruling!r} was already in docs/PLAN.md at the commit of {_rel(after)}: it is not later"
+    if phrase is not None and phrase not in (entry_text(ruling) or ""):
+        return f"the entry {ruling!r} does not contain the fixed phrase {phrase!r}"
     return None
 
 
@@ -495,7 +518,7 @@ def check_n55(cfg: Mapping) -> dict:
         raise Refused(f"the yaml's thresholds {have} are not the setting row N55's rule gave ({want}, {outcome})")
     if _without(yaml.safe_load(read), N55_MOVABLE) != _without(cfg, N55_MOVABLE):
         raise Refused("the yaml differs from the one row N55 read in more than its status, min_score and min_margin")
-    out = {"outcome": outcome, "setting": want, "commit": rep["stamp"]["commit"]}
+    out = {"outcome": outcome, "setting": want, "commit": rep["stamp"]["commit"], "ruling": rep.get("ruling")}
     if outcome == "stopped":  # (iv): J7 was not met; N54's first line says so, with the reason
         out["reason"] = rep.get("reason")
     return out
@@ -535,6 +558,8 @@ def preflight(cfg_path: Path, ruling: str | None, dst: Path) -> dict:
         raise Refused(f"{ROW} has no row in experiments/harness/TRIES.md: a row is committed before its run")
     if not ruling_logged(ruling):
         raise Refused(f"docs/PLAN.md has no decision-log entry {ruling!r} naming {ROW}: the run follows the ruling")
+    if ruling == n55.get("ruling"):  # the final check of the fix round, item D
+        raise Refused(f"{ruling!r} is the entry that ordered row N55, not the captain's ruling naming {ROW}")
     if committed_at_head(CONFIG) != raw:
         raise Refused("the yaml differs from its committed version at HEAD")
     commit, unclean = provenance.git_state(fio.REPO)

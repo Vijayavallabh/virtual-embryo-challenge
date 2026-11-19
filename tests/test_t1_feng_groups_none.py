@@ -35,10 +35,19 @@ ALLOWED = re.escape("--feng-groups none builds one file: the first upload's comm
 
 
 @pytest.fixture
-def bt():
+def bt(monkeypatch):
+    """The builder, with no permitted-only relabelling recorded: these tests pin main's none path before any
+    relabelling, so a relabelling record committed later (experiments/external/results/feng_relabel/MANIFEST.json)
+    does not change them (the final check of the fix round, item C). tests/test_feng_relabel.py covers the record, and
+    test_none_is_refused_once_a_record_routing_to_recomputed_is_present below keeps its refusal pinned here."""
     import build_test
 
+    REAL_RELABEL_RECORD.setdefault("f", build_test._relabel_record)  # taken before any fixture replaces it
+    monkeypatch.setattr(build_test, "_relabel_record", lambda: None)  # main's none path before any relabelling
     return build_test
+
+
+REAL_RELABEL_RECORD: dict = {}  # build_test._relabel_record as written, for the one test that reads a record
 
 
 def _sha(path) -> str:
@@ -441,3 +450,31 @@ def test_none_is_refused_with_the_options_that_act_on_fengs_direction(bt, monkey
             bt.build_t1(ap.parse_args(["t1", *TARGET, flag, "--feng-groups", "none", "--out", out]))
         with pytest.raises(SystemExit, match=f"--feng-groups none is {msg}"):
             bt.main(["t1", *TARGET, flag, "--feng-groups", "none", "--out", out])
+
+
+def test_none_is_refused_once_a_record_routing_to_recomputed_is_present(  # noqa: F811
+        bt, t1_env, monkeypatch, tmp_path):  # noqa: F811
+    """The behaviour the bt fixture's isolation hides: once a relabelling record routing to recomputed is present
+    (here in the tree; at HEAD it reads the same), none is refused before any T1 file is read, without
+    --feng-none-ruling and with --released-bet alike; with no record it builds."""
+    import feng_relabel as fr
+
+    monkeypatch.setattr(bt, "_relabel_record", REAL_RELABEL_RECORD["f"])  # the builder as written reads the record
+    _target_env(bt, t1_env, monkeypatch)
+    record = tmp_path / "relabel" / "MANIFEST.json"
+    monkeypatch.setattr(fr, "RECORD", record)
+    monkeypatch.setattr(fr, "committed_at_head", lambda p: None)
+    plain = tmp_path / "T1_none_plain.h5ad"
+    bt.main(["t1", *TARGET, "--feng-groups", "none", "--out", str(plain)])  # no record: main's none file
+    assert plain.exists()
+    record.parent.mkdir(parents=True)
+    record.write_text(json.dumps({"route": "recomputed", "gate": {"ruling": "2026-11-20 (a)"}}))
+    loads = list(t1_env.loads)
+    out = tmp_path / "T1_none.h5ad"
+    with pytest.raises(SystemExit, match="routes T1's file to recomputed .*no --feng-none-ruling"):
+        bt.main(["t1", *TARGET, "--feng-groups", "none", "--out", str(out)])
+    monkeypatch.setattr(bt, "_captain_ruling_names", lambda row, arm, path=None: True)  # T61's guard passed
+    with pytest.raises(SystemExit, match="routes T1's file to recomputed"):
+        bt.main(["t1", *TARGET, "--feng-groups", "none", "--released-bet", "share_trend", "--bet-strength", "0.5",
+                 "--captain-ruling", "R99", "--out", str(out)])
+    assert not out.exists() and t1_env.loads == loads  # refused before any T1 file is read

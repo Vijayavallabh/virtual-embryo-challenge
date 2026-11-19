@@ -18,12 +18,12 @@
 #
 # NOT RUNNABLE AS COMMITTED (feng_relabel.preflight refuses, before any file is read): status is draft, and only the
 # main session freezes it, in the commit that carries ledger row N54, after the captain's sign-off; the run also needs
-# row N55's dry run committed with its rule applied, row N54 in TRIES.md, the ruling's PLAN entry naming N54, the yaml
-# committed and a clean tree. No choice is PENDING: the terminal route's base, g_mom and stop outcome were fixed on
-# 2026-11-19 by the main session under its delegation (decisions (1) to (3) of that day; `terminal`). No gene is
-# UNSOURCED: the genes the writer had marked so were sourced to published statements on adult mouse tissues (sources
-# lit_A, lit_B, lit_C, lit_D, lit_E, lit_G, lit_H and lit_J, register row X010 as proposed; there is no lit_F or lit_I)
-# or dropped (`dropped`).
+# row N55's dry run committed with its rule applied, row N54 in TRIES.md, the ruling's PLAN entry naming N54 (not the
+# entry that ordered N55, which n55.json records), the yaml committed and a clean tree. No choice is PENDING: the
+# terminal route's base, g_mom and stop outcome were fixed on 2026-11-19 by the main session under its delegation
+# (decisions (1) to (3) of that day; `terminal`). No gene is UNSOURCED: the genes the writer had marked so were sourced
+# to published statements on adult mouse tissues (sources lit_A, lit_B, lit_C, lit_D, lit_E, lit_G, lit_H and lit_J,
+# register row X010 as proposed; there is no lit_F or lit_I) or dropped (`dropped`).
 
 version: 1
 method: c                     # per-cell marker scores; no clustering, embedding, classifier or fitted transformation
@@ -531,9 +531,10 @@ unassigned_cap: 0.40
 # mid base is not one, and no route is chosen after the manifest or the listing is seen. The manifest records the
 # route. The builder refuses --feng-groups recomputed unless the committed record's route is recomputed, and refuses
 # --feng-groups none after a record whose route is recomputed unless --feng-none-ruling names a later decision-log
-# entry of the captain, other than the run's ruling, that names N54 and sets the route aside (dated on or after the
-# record's commit and not yet in docs/PLAN.md at that commit; a switch made after the listing would otherwise be a
-# choice by similarity to the authors' labels). A refusal by the builder under a record that routes to recomputed
+# entry of the captain, other than the run's ruling, that names N54 and contains the fixed phrase "sets the N54 route
+# aside" (feng_relabel.NONE_RULING_PHRASE; dated on or after the record's commit, and not yet in docs/PLAN.md at that
+# commit, which must be readable there; a switch made after the listing would otherwise be a choice by similarity to
+# the authors' labels). A refusal by the builder under a record that routes to recomputed
 # (feng_dirs.check_recomputed, or a route recomputed again from the file that differs) also leaves route none, built
 # with --feng-none-ruling naming the captain's later entry that records the refusal.
 # Whichever route the rule gives, which file is uploaded stays the captain's later ruling on a priced question.
@@ -600,8 +601,9 @@ authors_labels: >-
   that column. N54's listing compares the recomputed direction with the present one, which is formed on the authors'
   groups (cd1_stats.npz); that comparison and the agreement table decide nothing. The agreement table
   (experiments/t1_m1/n54_authors_agreement.py) runs once, for the method report only, and only after the captain's
-  ruling on T1's last upload is committed (a decision-log entry naming N54 that is not yet in docs/PLAN.md at the
-  listing's commit; the script refuses otherwise), so it cannot inform that ruling. No later relabelling or change of
+  ruling on T1's last upload is committed (a decision-log entry naming N54 and containing the fixed phrase "rules on
+  T1's last upload", not yet in docs/PLAN.md at the listing's commit; the script refuses otherwise), so it cannot
+  inform that ruling. No later relabelling or change of
   settings enters an
   upload because of its agreement with cell_type_spec or its similarity to the present direction: a new relabelling
   is a new row, and it enters an upload only through a terminal rule fixed before its own run.

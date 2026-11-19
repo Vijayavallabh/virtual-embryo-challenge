@@ -6210,3 +6210,328 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     captain: its rough range if the bets land is about 190 to 200, to be replaced by the analyst's table, and the
     leaders' 221 to 226 would need the bracket to work very well and Task 3 to jump as well, which it puts at a few
     per cent. Every change of an upload stays his ruling on a priced question.
+- 2026-11-19 (l), the captain stops the search for the score's row; what the approval of the atlases started (state at
+  13:09 UTC). Written by the AI assistant.
+  - **The captain, verbatim:** "don't search for the score right now. prune those agents". The screened read that
+    entry (k) announced (wf_4eb7f98c-f84) was stopped at 13:02 UTC before it handed anything back. The main session
+    read nothing of it and does not open its transcript. Where the uploads of 18 November are listed stays open and
+    is not pursued now, at his word. The AI assistant's advice on it (entry (g)) is unchanged and is raised again
+    only when an upload is next discussed.
+  - **The inventory.** The stopped workflow's second agent was not a score search: a target-free inventory of the two
+    outside atlases and the three released Task 1 stages on the DGX (counts, depths, gene overlap, a crude marker
+    gate for sizing; no author annotation value, no comparison with any target, nothing fitted). It was stopped with
+    the read and restarted alone (wf_31229ec2-5eb), reusing its partial outputs under `~/v/scratch/atlas_inventory/`.
+  - **The labeller, wanted again.** With the atlases approved as Task 1 inputs on the terms of entry (k), a file of
+    the first upload's design with X002's groups recomputed from permitted cells is a candidate for T1's last upload
+    again, by the captain's later ruling on a priced question. The parked labeller (entry (d)) is being ported onto
+    main and finished, with a review (wf_5a6524a5-2ff; branch `campaign/feng-relabel-main`; nothing is run on data).
+    Fixed for it now by the AI assistant under its delegation, each to stand in the yaml and in row N54 before any
+    run: (1) the terminal base is lib3, the first upload's design; the mid base and the 0.60 are in no later file;
+    (2) if the labeller's guards send the file to no direction, the file is main's built no-outside-data file;
+    (3) a run that stops after the first Feng file is opened takes that route too, recorded, with no rerun under the
+    same row; (4) the dry run on the released E9.5 (row N55) comes before the freeze, with its pre-stated rule for
+    which result changes which threshold; (5) the output goes to `data/derived/feng_relabel_c/`, a real folder in
+    every checkout, and the gate refuses a folder that resolves outside the checkout's own data directory (on the DGX
+    a campaign checkout's `data/external` is a link into the reference checkout, which stays untouched).
+  - **Checked, no change:** the embryo's last file keeps the first upload's size. `vec.t2_build.interpolate_clouds`
+    scales the cloud of exact E7.5 positions to the same pre-registered `target_rms` (`size_embryo_E7.75.json`) as
+    the first upload's, so the two files differ in the cloud's shape and in which cell sits where, not in its size.
+- 2026-11-19 (m), a forwarded side note on the heart's scope; the heart upload is held; the scope hedge the amendment of
+  18 November dropped, priced as the better of two (state at 13:24 UTC). Written by the AI assistant.
+  - **The note** (a side agent's, forwarded by the captain): the heart file waiting for upload keeps E10.5's full mix,
+    about three quarters of it not heart; the organisers say the E12.5 hearts were dissected out whole; a heart-only
+    file may be the largest gain left, is untested, touches a choice closed on 4 November and needs his ruling and a
+    note to the organisers; "Consider holding the heart upload until this is priced."
+  - **Held.** `runs/manual_upload/T2heart_s2iso_half.h5ad` is not to be uploaded until the captain has ruled on what
+    follows. (No upload is under way on any board.)
+  - **What is and is not new.** Target-free, on the released files through `vec.prep.load_stage`: the core
+    (cardiomyocytes and endocardium, `configs/lineage_map.yaml`) is 0.103, 0.167, 0.370 and 0.231 of the cells at
+    E8.5, E8.75, E9.5 and E10.5. The 23% is not new: the hedge study of 2026-11-01 opens with it
+    (`experiments/s2_hedge/README.md`, "T2 heart"), and the frozen rule made the heart's second upload a half trim of
+    the surrounding cells for that reason, before the exposure of 4 November (`docs/S2_RULES.md`, "T2 heart"). The
+    amendment of 18 November replaced that file with a full-scope copy at the predicted size and so dropped the
+    hedge, with the trend and the size mode it was built on. That is what the note has found.
+  - **The organisers' words do not settle it.** The protocol page describes the released E10.5 stack as hearts
+    dissected and sectioned whole (`docs/DATA_NOTES.md`, the read of 2026-10-31) and the E12.5 stack as "Hearts
+    dissected out of the embryo, and the entire heart sectioned" (the read of 2026-11-10); the E10.5 stack so
+    described is 77% outside the core. The page also says "The change in sampling falls exactly where the heart
+    extrapolation task asks you to go", which can be read either way, and does not say whether surrounding tissue
+    stayed attached at E12.5.
+  - **The price, from released data alone** (the committed per-seed files of the hedge study, commits 90b25d3 and
+    dcf1779, all before 4 November; recomputed by the AI assistant today, an independent recomputation is owed
+    before the question goes to the captain). Unit: heart points gained over the banked 46.4 as the better of two,
+    mean over 10 seeds; Overall moves by half. A = the ruled full-scope file, taken at 51.5 at the test (the AI
+    assistant's estimate: the floor's form plus the size term, not measured). B = A's form on the half trim, C = on
+    the full trim, each at A plus the study's paired difference from its full-scope row.
+
+    | Practice transition | Truth as released | Truth trimmed to 85% core | Truth trimmed to 100% core |
+    |---|---|---|---|
+    | E9.5 to E10.5 | A 5.1, B 0.0, C 0.0 | A 5.1, B 9.1, C 7.1 | A 5.1, B 10.9, C 15.9 |
+    | E8.25_late to E8.5 | A 5.1, B 6.9, C 2.8 | A 5.1, B 10.1, C 24.8 | A 5.1, B 9.1, C 15.6 |
+    | E8.75 and earlier to E10.5 | A 5.1, B 6.7, C 3.9 | A 5.1, B 15.2, C 16.0 | A 5.1, B 15.5, C 20.5 |
+
+    The two radial truths (surroundings near the heart kept; core 29% and 40% at E10.5, 20% and 50% at E8.5): B 0.1
+    and 5.4, C 0.0 and 0.5 on E9.5 to E10.5; B 14.9 and 10.4, C 20.2 and 19.8 on E8.25_late to E8.5; B 11.2 and 13.3,
+    C 9.0 and 12.6 on E8.75 to E10.5. Means over the fifteen cells: A 5.1, B 9.3, C 11.2; over the three truths as
+    released: A 5.1, B 4.5, C 2.2. The largest scored loss against A is 5.1 heart points for B and for C (E9.5 to
+    E10.5 with the truth as released or nearly so: the trimmed file falls under the banked score and adds nothing).
+    Limits: the study's rows carry B0's expression and an in-plane oracle size, not the copy and the even scaling, so
+    its scope differences are assumed to carry over; two of the three transitions share E10.5 as their truth; on E9.5
+    to E10.5 the later sample is the wider one (core 37% to 23%), and which way E12.5 goes is not known; the trimmed
+    truths are synthetic.
+  - **The advice, by the rule for a lever closed after an exposure** (`docs/DATA_POLICY.md` 2026-11-04; scope on
+    every board is in the block): the pre-set rule's outcome, which is the half trim. B restores the scope the frozen
+    rule gave the second upload before 4 November and keeps the two steps the captain removed on 18 November (the
+    trend, the stretch). C goes beyond that rule: the frozen text weighed the full trim and did not take it ("it
+    never beats s1 on a released target"), and the size file holds no scope hypothesis for it (H1, H0 and H2 only).
+    On C the AI assistant gives the table and no lean of its own. The captain decides from this released-data table
+    alone, or declines; the size of the hidden E12.5 file and the cell count he saw on 4 November, the limits in the
+    server's message of 18 November and the first scores are not to enter it. Whichever he rules, the method report
+    and the note that precedes the upload say so.
+  - **In hand:** the builder option for B is being written in the wave of entry (k) (`campaign/heart-iso-trim`); on
+    its return a review, an independent recomputation of the table above, check builds, and the question to the
+    captain with the amendment drafted.
+- 2026-11-19 (n), the two checks of entry (m): the table stands, the advice does not; the lean on the half trim is
+  withdrawn (state at 13:31 UTC). Written by the AI assistant.
+  - **The recomputation** (wf_e5a70ad9-350, an agent that computed its own table from the fifteen committed per-seed
+    files before opening entry (m)): no figure of entry (m) differs by more than 0.05. Its notes: the "85% core"
+    truth is 83.8% core on E8.25_late to E8.5; B on E9.5 to E10.5 with the truth as released is 0.016, not exactly
+    nothing (2 of 10 seeds land above the banked score); B beats A in 13 of the 15 cells, C beats A in 10, C beats B
+    in 7. With A at 50.0 the means over all cells are A 3.6, B 7.9, C 10.0, and over the three truths as released
+    A 3.6, B 3.5, C 1.3; with A at 53.0, A 6.6, B 10.7, C 12.5, and A 6.6, B 5.8, C 3.2.
+  - **The cold challenge** (same workflow; an agent given the advice and its pricing without how they were formed):
+    verdict "advice does not stand", its probability that the advice is a mistake 0.65. Its points, which the AI
+    assistant accepts:
+    (1) B is not a rule's outcome. The frozen rule of 2 November returned the half trim on B0's expression (the
+    trend since 13 November) at H2's size in the pre-registered z mode: the built `builds/T2heart_s2.h5ad`. The
+    amendment in force returns A. B takes the trim from the first and the copy, the even scaling and the halving from
+    the second; no rule returned that mix, and it was reached after the scores, on a note written after them. By the
+    rule for a closed lever the default is to decline, which keeps A; a lean on B and none on C is uneven, since
+    both reopen the same lever.
+    (2) The size term is not priced. Every row of the study was scaled to an oracle in-plane core size; at the test
+    A takes H1's forecast size and B would take H2's, and C has no scope hypothesis in the size file. The difference
+    in the scale term can be as large as the trim's own gain, in either direction. The trim also changes the cell
+    number before the halving.
+    (3) The table's framing favoured the trims. E9.5 to E10.5 is the transition nearest the test and the one where
+    the sampling changed to dissected hearts, and there the core share fell (37% to 23%): on it B is behind A in 10
+    of 10 seeds with the truth as released, and over its three radial truths B gains 1.8 and C 0.2 against A's 5.1.
+    Over the nine cells with the truth as released or radially trimmed: A 5.1, B 7.7, C 7.6; over the six thinned
+    cells: B 11.6, C 16.6. Whether E12.5 is narrower than E10.5 is the unknown, and the released E10.5 stack, itself
+    described as dissected hearts, is 23% core.
+    (4) The unit uses the first heart score as the level a second file must beat (a score choosing, which rule 9's J8
+    allows); entry (m)'s sentence that the first scores are not to enter the ruling is wrong as worded and is
+    replaced by: the first score enters only as that level.
+  - **What changes.** The lean on B, given to the captain in the message that followed entry (m) ("My advice will be the half
+    trim"), is
+    withdrawn and he is told so. A is the file in force and the default if he declines. B and C go to him side by
+    side with no lean, with the table per transition and per family, at three levels of A, and with what each
+    reopens (scope and the cell number; for C a size no rule fixed). In entry (m), "keeps the two steps the captain
+    removed on 18 November" means B stays without them, as A does.
+  - **A correction to the record of 18 November.** The amendment of that day (`docs/S2_RULES.md`) lists the half
+    trim among four departures, "each by the captain's answer above to a question that named it". Entry 2026-11-18
+    (k) records three priced questions on the heart (the size mode, the expression step, the cell number); the half
+    trim appears in that entry only in the plan table's column of what the new file touches, with no price of its
+    own. So the scope hedge was dropped inside the redesign and was not put to the captain as its own priced
+    question. The hash-pinned text is not edited here; the next amendment of that file carries this correction.
+  - **Owed before the question goes to him:** a practice read of the actual forms with its ledger row first (the
+    copy at the even size and the uniform half on the full pool, the half-trimmed pool and the core-trimmed pool, on
+    the released heart transitions against the truths of the hedge study, at the oracle size and at each scope
+    hypothesis's own size ratio), reviewed before it runs; the builder option from the wave of entry (k).
+  - **Tests.** The complete local run at 2dccfee, the embryo's ruling commit (entries (j) and (k) had it running):
+    2936 passed, 1 skipped, exit 0.
+- 2026-11-19 (o), the read owed by entry (n) is written and its design reviewed: the AI assistant's pick rule is
+  withdrawn before any run, and how the heart's scope can be reopened (state at 14:17 UTC). Written by the AI assistant.
+  - **What was prepared** (wf_b313b8f9-014; nothing run on data): `experiments/harness/h26_heart_scope_forms.py` with
+    its tests on `campaign/heart-scope-forms` (b3a11c7) and `-fix` (99c70eb). Arms: the ruled file's form on the whole
+    reference stage (A), on the half trim (B) and on the full trim (C), with the first upload's form as a stand-in,
+    on the hedge study's three transitions and five truths, 10 seeds, an oracle core size shared by the arms. The
+    AI assistant's brief had fixed a pick rule for the case that the captain left the direction to it: B if the
+    expected better of two (the stand-in and the arm) led A by 1.0 board point, averaged over the frozen section's
+    five priors, with the transitions weighted equally and with the two on E10.5 merged; otherwise A; C never.
+  - **The design review** (an agent asked to attack the brief's design) found two faults in that rule, and the fixer
+    confirmed both by simulation. The AI assistant accepts both.
+    (1) The better-of-two statistic credits a trimmed arm for being a different draw. A shares the stand-in's pool,
+    build seed and kept rows, so the larger of the stand-in and A is the larger of two near-copies, and the larger of
+    the stand-in and B is the larger of two different draws. With the two arms equal in distribution the rule's
+    statistic is +0.25 to +0.91 and B is picked in 0% to 37% of draws, depending on the spread and on the
+    stand-in's level; the first draft's "at most 4.15%" had drawn the stand-in independently and is withdrawn.
+    (2) The equal average over the five priors is a world weight (0.373 on the truth as released, 0.280 on the
+    radial trims, 0.347 on the thinned ones) that no committed, target-free measurement sets, which rule 9's J4
+    does not allow; under the least favourable committed prior, the truth as released, the study's own differences
+    give A on plain means (-0.85 and -0.20).
+  - **What the AI assistant decides** (under the delegation of 2026-11-02; no file, rule or build changes):
+    the pick rule is removed and the read decides nothing (second fix round, wf_7763454f-2bb). How E12.5's stack was
+    sampled is a test-stage premise no released task carries (rule 9, J1a), on a lever closed on 4 November. So:
+    the file in force, A, stays unless one of two things happens. (i) An organiser's statement, read through a
+    screen and audited, says the E12.5 heart stack was dissected with most or all tissue outside the heart removed,
+    or holds less surrounding tissue than the released E10.5 stack: the block's own route ("decided from released
+    data or a screened organiser answer"). For that case the row fixes, before the run, a conditional outcome on
+    plain means over the three truths with most or all surroundings removed (radial trim to scope none, thinned to
+    85% and to 100% core), the two E10.5 transitions merged: B only if ahead of A by 1.0 board point and ahead on
+    each fold; C in place of B only if ahead of B by the same, and then only with the captain's ruling on its size.
+    The captain signs that rule before it is used. (ii) The captain names an exception himself; the record would
+    then say that the scope of the last heart file was chosen after the exposure and the first scores by a person
+    who had seen the E12.5 heart file's size, and that it cannot be shown to be free of it
+    (`METHOD_SUMMARY.md`, "Exposure of hidden-target metadata").
+  - **What the released wording says today.** The team's screened notes give the released E10.5 stack as hearts
+    dissected and sectioned whole and the E12.5 stack as hearts dissected out of the embryo with the entire heart
+    sectioned; on that wording alone the like-for-like sample for E12.5 is E10.5 as released, which is A's scope.
+    Whether the page words the two rows differently is not in the notes. Asked of the captain with the question:
+    a screened re-read of those two rows, and a short procedural question to the organisers.
+  - **The labeller** (wf_5a6524a5-2ff): ported onto main on `campaign/feng-relabel-main` (5890abc); its review found
+    one blocker (a dry run that stops had no fixed outcome) and fourteen lesser points; a fix round closed them
+    in a worktree whose changes are not yet committed (its two targeted test runs were still going at hand-back).
+    Next: read those runs, commit, a last check, then the captain's sign-off of the settings.
+- 2026-11-19 (p), the wave of entry (k) is back; try H26 is registered and running; what the AI assistant takes from
+  each piece (state at 14:33 UTC). Written by the AI assistant.
+  - **Try H26** (row H26, committed at b2e84dd before its run; the code merged at cbc535a from
+    `campaign/heart-scope-forms-fix2`, 9edc0ee): the read of entry (o), with no pick rule. It runs on the DGX's
+    campaign checkout at the row's commit (clean tree; five processes a transition, 3 BLAS threads each), started at
+    14:31 UTC. Nine tries, counted when it is read.
+  - **The pricing table** (wf_cd5ffbb3-985, an analyst asked to price each board's last file by the expected better
+    of two and by its upper tail, from committed text alone; saved in the session's scratch folder as
+    `lift8/upside_wave.json`). It first says where that principle weakens: T1's banked score may be discounted (so
+    its downside is not free); the final ranking may score the uploads again; practice overstated the first T3 file
+    by about 18 points; test values may only be set beside practice figures for choosing, never joined into an
+    estimate (J8). Its readings, each its own judgement where it says so:
+    T1, the no-outside-data file, about 70 (69.9 to 70.9 over the two readings of the first upload); the only file
+    with real upside would be a composition bet by the legal route, which is not written and loses in expectation
+    if the first upload is discounted.
+    Heart, the ruled even-scaled copy, about 51.7 (50 to 53.5); a trimmed scope overtakes it only if E12.5 is much
+    more heart-focused than E10.5, at odds above about 0.45 by its arithmetic.
+    Embryo, the ruled file, about 69.2 (65 to 71); its twin with the series rendering is level on the expected
+    better of two (+0 to +0.6) and has the higher tail (about 74 to 75 if E7.75 was measured like E8.0).
+    T3, where it disagrees with the AI assistant: by the expected better of two the built barred file is level with
+    or ahead of the refused file (four-cell practice mean +2.4, a wider spread, its loss under the banked score) and
+    ahead on the tail (about 62 to 64); and if T3's practice levels are not trusted at all, the consistent file is a
+    plain wild-type draw (about 50), not the refused file.
+    Overall, every expected-better choice: about 186 (173 to 197); every tail choice coming off together: about 205
+    to 222, at a joint probability it puts near 1% or below. No reading reaches 226.
+  - **T3.** The refused file stays the last upload by the frozen rule and by try K18's fixed reading ("no
+    question"). The analyst's reading was formed after that result; before it reaches the captain as a priced
+    question it gets a cold challenge (wf_dc1bec61-a73). The variants read (row K19, `campaign/t3-variants`, e1d332d)
+    was reviewed not ready: its rule would have named exponent 1.0 on figures row K17 had already decided. The AI
+    assistant's decision: the three exponent arms K17 read are rerun as reported readings and can never be the
+    output; a matched control is added to the delay arms. Fix round and re-review in the same workflow.
+  - **T1's released-data bets** (row T61, `campaign/t1-released-bets`, 13779de): reviewed not ready on its count
+    and on four arms that undo ruling R1 without saying so. Decided: b0 counts on both cuts (fifty-eight tries);
+    the row, the read and the question name R1. Fix round and re-review in the same workflow. Every gain it can
+    show counts as zero at the centre (J6), and its two composition arms touch a closed lever by its legal route
+    (a rule in the row before the run); it runs as a counted diagnostic under the campaign's rule on cheap reads.
+  - **The heart's builder option** (`campaign/heart-iso-trim`, 2501138: the half trim with the copy, the even
+    scaling at the size file's raw-mode H2 size, the same halving; off by default, every existing output unchanged)
+    is written and its code reviewed sound. Its texts predate entries (m) to (o) and are not used. It is merged
+    only if a ruling needs the file.
+  - **The late bracket is stopped.** Its designer and its red team, working apart, both advise against the full
+    bracket (composition, new states or outside nuclei from X003: no released task can price them, and T1's last
+    file may stand alone). The designer's smaller piece, an X003 direction per group, is priced by its own author
+    at about +0.1 T1 points in expectation; the committed readout of 2026-10-28 had X003's within-type direction
+    behind X002's. The red team's one surviving idea is a filter on the relabelled X002 direction by X003's sign,
+    at about +0.03. The atlases enter T1 through the relabelled X002 direction (entry (l)); X003 stays a diagnostic
+    source unless that file is ruled in and time remains.
+- 2026-11-19 (q), try H26 is read: the study's scope differences carry over to the actual forms; nothing is decided
+  (state at 14:44 UTC). Written by the AI assistant.
+  - **The run:** on the DGX's campaign checkout at b2e84dd, the row's commit, clean, exit 0, fifteen parts, about
+    eleven minutes; the reading step at the same commit: valid, no void condition. Counted: heart 41 to 50.
+    `experiments/harness/results/h26_heart_scope_forms/`.
+  - **By the row's fixed statements** (plain means, the two E10.5 transitions merged into one fold; every figure at
+    an oracle core size shared by the arms, so differences between files and no file's level):
+    with the truth as released, A 52.40, B 51.40, C 48.55: B minus A -1.00 (0 of 10 seeds), C minus A -3.86 (0 of
+    10); per transition B minus A -7.93, +0.21 and +3.50 (E9.5 to E10.5; E8.25_late to E8.5; E8.75
+    and earlier to E10.5), C minus A -15.53, -0.97 and +2.05.
+    Over the three truths with most or all surroundings removed: A 50.40, B 56.18, C 62.19: B minus A +5.78 (10 of
+    10), C minus A +11.79 (10 of 10), C minus B +6.01 (10 of 10; +0.75 on the E10.5 fold, +11.27 on the E8.5 fold).
+    Carry-over: 15 of 15 cells for the half trim, 14 of 15 for the full trim.
+    The conditional outcome reads "C (needs a size ruling)". It applies only under an organiser statement that the
+    E12.5 stack holds less surrounding tissue than E10.5's, and only once the captain has signed the rule. No such
+    statement is on record. The file in force, A, stays.
+  - **The AI assistant's reading after the result, which changes nothing.** Entry (m)'s assumption holds: the trims
+    behave in the copy's form as they did in the study. The price of a trimmed file is then about 1 heart point (B)
+    or 4 (C) if E12.5 was sampled like E10.5, with the one-day transition alone at 8 and 16, against a gain of
+    about 6 (B) or 12 (C) if it was dissected clean; Overall moves by half of each. On the fold-merged figures a
+    trim pays above odds of about 0.15 (B) and 0.25 (C) that E12.5 is clean; on the one-day transition's loss,
+    capped by the banked score at about 5, above about 0.48 (B) and 0.31 (C). Which odds hold is the premise no
+    released task carries, and the team's notes give both stacks the same wording. This goes to the captain with
+    the three routes of entry (o); an independent recomputation of the table precedes any ruling request.
+- 2026-11-19 (r), the independent recomputation of try H26, and the odds entry (q) left out (state at 14:48 UTC).
+  Written by the AI assistant.
+  - **The recomputation** (wf_fd1ee9c1-1f8: an agent that wrote its own script on the fifteen committed parts before
+    opening the reading): all 540 figures it compared agree with `reading.json` within 0.01; the conditional outcome
+    follows from the row's rule on its numbers; every part names commit b2e84dd with a clean tree; the truths equal
+    the study's; on the two harness backtests with the truth as released A's three expression skills equal row
+    H25's `iso_half` exactly in every seed. The row's outcome cell and entry (q) agree with its tables on every
+    figure they quote.
+  - **What entry (q) left out**, by the recomputation's reading: (q) gave the odds at which a trim pays on the
+    fold-merged figures (0.15 for B, 0.25 for C) and with the loss of the one-day transition capped at 5.3 by the
+    banked score (0.48 and 0.31; the cap is the AI assistant's estimate of A's margin over the banked score).
+    Without the cap they are 0.58 (B) and 0.57 (C). With the gain as well as the loss taken from the one-day
+    transition alone (B +2.83 and C +2.52 over its three clean truths), 0.74 and 0.86, or 0.65 and 0.68 capped. And
+    C minus B on the E10.5 fold, +0.75, has one seed of ten behind (-0.03). So the odds a trim needs run from about
+    0.15 to about 0.86 according to which released transition is taken as the test's likeness. No transition has
+    a reference and a target of equal scope, which is the test's case if E12.5 was sampled like E10.5: E9.5 to
+    E10.5 has the target wider than its reference (core 0.37 to 0.23) and the two others have it narrower.
+- 2026-11-19 (s), T3 stays with the refused file after a cold challenge of the swap; row K19 is closed without a run;
+  try T61 is registered and running; the labeller's fix round is committed (state at 15:12 UTC). Written by the AI
+  assistant.
+  - **T3: the swap to the barred file does not stand** (wf_dc1bec61-a73; a cold challenger given the analyst's case of
+    entry (p) without how it was formed; its probability that the swap is a mistake, 0.55). It corrected the brief:
+    the barred file's factor is Mab21l2's E9.5 knockout cells over WT E8.75, the test's own reference, not over WT
+    E9.5 (`experiments/t3_decomp/t3_decompose.py`, `transfer_factors`). So that factor carries the whole step from
+    E8.75 to E9.5 along the wild-type trend, the Mab21l2 knockout's effect, that sample's own run, and WT E8.75's
+    own deviation, of which only the last is shared with the test and is what the refused file's factor estimates.
+    Its lead over the refused file on Gata4 sits on the first part: Gata4's knockout cells lean towards E9.5
+    against WT E8.75 (stage weights 0.22 and 0.32 in the swap review of 2026-11-05; stage mixing alone matched the
+    barred factor in-sample; without the stage axis the barred factor loses about 5.1). With that part priced for
+    the barred file alone, its four practice cells against the refused file go from +2.29, +6.90, -4.48 and +4.94
+    to about -2.8, +1.8, -9.6 and -0.2 (approximate: two scorers), and the swap is worth about -1 to +1 as the
+    expected better of two, against the analyst's +2.5 under an equal haircut. Its one clear edge is the tail
+    (about 62 to 64 against 57 to 59), which pays only if beta-catenin's embryos lean older than WT E8.75 as
+    Gata4's did; nothing released shows that. The analyst's fourth argument (readings of that kind came near the
+    first test score) weighs practice sources by a test score, which J8 does not allow, and is dropped.
+    **So:** the refused file stays, by the frozen rule, by try K18's fixed reading and now by this check. No
+    question goes to the captain; he is told the result and that a swap remains his to order.
+  - **Row K19 is closed without a run** (the AI assistant's decision under its delegation). Its fix round
+    (`campaign/t3-variants-fix`, babed5d) took the three exponent arms out of the output, and the re-review found
+    the same fault one step on: an arm that carries one of those exponents (the broader trend at 1.0, a cross with
+    an exponent parent) could still be named by a rule written after row K17's result. Closing that leaves four
+    arms that can be named: exponent 0.25, the broader trend at 0.5, and two delays. The challenge above undercuts
+    the delays' design: on the one practice knockout that shares the test's reference the knockout leans older,
+    not younger, so the read would set a delay against its own control on a sign that belongs to that knockout.
+    Two reviews not ready, a third round owed, and what is left to learn is small: no row is committed, nothing
+    ran, T3's count stays 51. The code stays on its branch, off by default.
+  - **Try T61** (row T61, committed at 48ce0d5 before its run; the code merged at f8b5f12 from
+    `campaign/t1-released-bets-fix`, 673a733; its re-review: ready): T1's last file's practice analogue beside ten
+    released-data variants on the two E10.5 cuts and row T60's three library tasks. Fifty-eight tries, counted when
+    read. Started on the DGX's campaign checkout at the row's commit at 15:11 UTC (the targeted tests first, then
+    five processes at 8 BLAS threads). Every gain it can show counts zero at the centre (J6); an output among its
+    four momentum arms would undo ruling R1 and needs the captain's ruling by name; its two composition arms touch
+    a closed lever by its legal route.
+  - **The labeller's fix round** is committed on `campaign/feng-relabel-main-fix` (9f1e047) by the main session,
+    since its agent had handed back with the changes uncommitted and its test runs unfinished: the complete suite on
+    that state, 3070 passed, 1 skipped. Settings file sha256 af3ac7224a65, status draft. A final check runs
+    (wf_235124c8-92a) before the merge and the captain's sign-off.
+- 2026-11-19 (t), 22 empty commits on main made by a test fixture; left in place; the helpers hardened; the
+  labeller's final check (state at 15:16 UTC). Written by the AI assistant.
+  - **What happened.** Main holds 22 commits named "init" by "t <t@example.org>", 0b44bf1 to 246096d, made between
+    14:54:44 and 14:54:55 UTC, between 3e5fefa and 4e5f70c. They change no file. They are what the fixture `own_repo`
+    of `experiments/t3_decomp/test_build_submission.py` commits in its throwaway repository (`git -C <tmp> commit
+    --allow-empty -m init`), once for each of its tests that ran: with `GIT_DIR` set in the shell that started the
+    tests, `-C` does not win and the commits land in the repository `GIT_DIR` names. An agent of the AI assistant ran
+    that file from an exported copy at that time; which one is not established, since the main session does not open
+    agents' transcripts. The labeller's final check found the commits and reported them. The main session had by
+    then pushed later commits on top, so they are on origin as well.
+  - **What is done.** They stay. Removing them means rewriting main and a force-push, and it would change the hash of
+    every later commit, among them 48ce0d5, the row commit that try T61's run records. No file, build, row or result
+    depends on them. `tests/conftest.py` (`git_env`) and the fixture now drop `GIT_DIR`, `GIT_WORK_TREE`,
+    `GIT_INDEX_FILE` and the other variables that point git elsewhere; `tests/test_git_helpers.py` pins it. From now
+    on every brief for an agent that runs tests says: never set those variables in a shell that runs the suite.
+  - **The labeller's final check** (wf_235124c8-92a): ready to merge, no blocker; the first review's blocker is
+    closed in code, settings, tests and row text. By hand before or at the merge, each with its text given: the
+    merge conflicts with try T61's builder option in three places (keep both sides); the step script's test list
+    gains the two new test files; two test files must not see a real relabelling record; the gate must refuse the
+    entry that ordered row N55 as the ruling for N54, and must refuse when the log cannot be read at a commit;
+    a fixed phrase is required in the two later rulings; the rows say how they count. An order hazard to respect:
+    once a record that routes to the recomputed groups is committed, the no-outside-data file can be rebuilt only
+    with the captain's later ruling, so its list and any rebuild come first. Three sentences of the sign-off
+    summary overstate what the code checks (it checks that a decision-log entry names N54, not whose entry it is)
+    and are corrected before the captain sees it.

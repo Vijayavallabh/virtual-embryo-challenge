@@ -2,6 +2,73 @@
 
 ## Current Objective
 
+- **State at 2026-11-19, 15:02 UTC (newest).** Decision log 2026-11-19 (o) to (r). **Waiting for the captain
+  (asked in plain text; no dialog is open):** the heart's route: (a) keep the ruled full-scope file, the default;
+  (b) keep it and try the clean route (a screened re-read of the protocol page's two heart rows, and the question
+  to the organisers drafted, unreviewed, in `docs/ORGANIZER_QUESTIONS.md`, "Data Protocol question on the E12.5
+  heart stack"; if he says yes: three-lens review, then his drafts; a reply is screened and audited, and row H26's
+  conditional outcome applies only once he has signed it); (c) his own named exception. The heart upload stays
+  held. **Try H26 is read and recomputed independently** (heart 41 to 50): the trims carry over to the copy's
+  form; with the truth as released B -1.0 and C -3.9 against A (fold-merged; -7.9 and -15.5 on the one-day
+  transition), over the clean truths B +5.8 and C +11.8; the odds a trim needs run from 0.15 to 0.86 by
+  transition; the read decides nothing. **Coming to the captain next:** (1) T3's last file, the refused file by the
+  rule against the built barred file by the analyst's expected-better-of-two reading, after the cold challenge in
+  wf_dc1bec61-a73; (2) the labeller's sign-off: `campaign/feng-relabel-main-fix` at 9f1e047 (the complete suite
+  passes: 3070, 1 skipped; settings file sha256 af3ac7224a65, status draft), final check running
+  (wf_235124c8-92a); on "ready": merge to main, give him the fifteen-sentence summary
+  (`lift8/labeller_port.json` in the session's scratch folder, key fix), then in order: his ruling entry, row N55
+  and its dry run on the released E9.5, the freeze with row N54, the relabelling run, the listing, a check build
+  of `t1 --g-mom --base lib3 --feng-groups recomputed`, and the priced question on T1's last upload (the built
+  no-outside-data file against the recomputed one). **Running:** wf_dc1bec61-a73 (fix rounds and re-reviews of
+  rows K19, `campaign/t3-variants-fix`, and T61, `campaign/t1-released-bets-fix`; the T3 challenge). On their
+  return: rows on main first, then the reads on idle DGX campaign checkouts (`~/v/vec-campaign` is at b2e84dd,
+  idle; `-d` is clean; `-h7` and `-c` hold leftovers). **Stopped:** the T1 late bracket (entry (p)). **Not
+  reopened:** the embryo's series twin (level on expectation; the captain may ask for it). The upside wave's
+  hand-back is `lift8/upside_wave.json`; the heart read's are `lift8/h26_prep.json`, `h26_fix2.json` and
+  `h26_recompute.json`.
+- **State at 2026-11-19, 13:31 UTC (newest).** Decision log 2026-11-19 (n). The heart upload stays held. The price
+  table of entry (m) was recomputed independently and stands; a cold challenge rejected the advice (the half trim in
+  today's form is a mix no rule returned): **the lean on the half trim is withdrawn**; A (the ruled full-scope file)
+  is the file in force and the default; B and C go to the captain side by side with no lean. Owed first: a practice
+  read of the actual forms, row first (see entry (n)), and the builder option from the wave. Both checks are saved
+  in the session's scratch folder as `lift8/heart_scope_check.json`. The next amendment of `docs/S2_RULES.md`
+  carries a correction: the half trim was dropped on 18 November without its own priced question.
+- **State at 2026-11-19, 13:24 UTC (newest).** Decision log 2026-11-19 (m). **The heart upload is held**: do not hand
+  over `runs/manual_upload/T2heart_s2iso_half.h5ad` as the last heart file until the captain has ruled on scope.
+  The amendment of 18 November dropped the frozen rule's half trim; entry (m) prices three files as the better of
+  two against the banked 46.4 from the committed hedge study (A the ruled full-scope file, B the same form on the
+  half trim, C on the full trim). Advice by the exposed-lever rule: B, the pre-set outcome; on C the table and no
+  lean; he decides from the released-data table alone or declines. Owed before the question: the builder option
+  (`campaign/heart-iso-trim`, from wf_cd5ffbb3-985), its review, an independent recomputation of the table, check
+  builds, the drafted `S2_RULES` amendment. The atlas inventory is back and saved in the session's scratch folder
+  (`lift8/atlas_inventory.json`).
+- **State at 2026-11-19, 13:09 UTC (newest).** Decision log 2026-11-19 (f) to (l). **Ruled today by the captain and
+  built:** T1's last upload is the first file's design with no outside data (`runs/manual_upload/T1_s2none.h5ad`,
+  55eaee547ff1; row R8; `experiments/builds/results/t1none_385ff58.txt`); the embryo's last upload is the first file
+  on E7.5's exact positions (`runs/manual_upload/T2embryo_s2x.h5ad`, a03611a343fa; row R9;
+  `experiments/builds/results/embryo2_2dccfee.txt`). Both pass the local format check; `docs/S2_RULES.md` carries
+  both amendments (sha256 ce5a4584c9b2). The heart's and T3's last files are as built on 18 November. **In his
+  Gmail drafts, not known sent:** the disclosure of the X002 labels and the amended sources note; the two short
+  notes that precede T1's and the embryo's second uploads are drafted in `docs/ORGANIZER_QUESTIONS.md` and go into
+  drafts at his word. **His standing instruction (19 November):** organisers are not expected to answer; assume the
+  rational reply, as odds with the loss if wrong, and change no file on an assumed reply. **Uploads:** the Rules page
+  and the server say two official uploads per board (not unlimited); the team key shows none used and lists no
+  upload, and the overall board has no row under the team's name; the row "Star" is not his; he said not to search
+  for the score now (entry (l)), so no screened read for it runs. The AI assistant's advice stands: no upload from
+  any login until it is known which account made the uploads of 18 November; raise it when an upload is next
+  discussed. **He approved the two outside atlases as T1 model inputs** ("utilize the atlases": permitted stages,
+  raw counts and stage labels, groups recomputed; register rows X002, X003). **Running:** wf_cd5ffbb3-985 (the
+  upside wave: T3 variants on `campaign/t3-variants`, T1 released-data bets on `campaign/t1-released-bets`, the
+  heart's scope hypothesis on `campaign/heart-iso-trim`, a T1 late-bracket design with a red team, a pricing table
+  of each board's last file by the expected better of two, reviewers); wf_5a6524a5-2ff (the labeller ported onto
+  main, `campaign/feng-relabel-main`, with a review); wf_31229ec2-5eb (inventory of the atlases on the DGX,
+  outputs under `~/v/scratch/atlas_inventory/`); the complete test run at 2dccfee in the worktree
+  `.claude/worktrees/t1-none` (log `t1none/full4.log` in the session's scratch folder). **On each return:** read the
+  hand-back (never a transcript); a fix round where a review says not ready; ledger rows on main BEFORE any run or
+  reading; practice reads on an idle DGX campaign checkout (`~/v/vec-campaign` is at 2dccfee, clean, idle; rsync,
+  then checkout); apply each row's pre-set statement; bring each candidate to the captain as a question priced both
+  ways. Every change of an upload is his ruling with an `S2_RULES` amendment first. The reference checkout is
+  untouched at dc7b6ae. Screened read approved for 23 November (every thread).
 - **State at 2026-11-19, 09:15 UTC (newest).** Decision log 2026-11-19 (b) to (e). The Feng authors' labels were made
   with every stage pooled, so both T1 files rest on labels the organisers ask teams to leave out. `builds/T1_s2.h5ad`
   is never uploaded, and no later T1 upload carries its 0.60 (it cannot be recomputed on permitted data). **Waiting
