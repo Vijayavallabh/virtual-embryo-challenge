@@ -27,6 +27,16 @@
 #   bash experiments/builds/build_all.sh embryo2 the embryo's last upload since the amendment of 2026-11-19
 #                                                (docs/S2_RULES.md, its section on the embryo; row R9 of TRIES.md): the
 #                                                first upload's cells and expression, each cell on a real E7.5 position
+#   bash experiments/builds/build_all.sh heart3 the heart's last upload since the amendment of 2026-11-19 for the
+#                                                heart (docs/S2_RULES.md, that section; the captain's own named
+#                                                exception): heart2's form on the full trim (E10.5 under
+#                                                radial_trim_mask at fraction 0), sized to the size file's raw-mode
+#                                                core forecast, then the same uniform random half; the half is uploaded
+#   bash experiments/builds/build_all.sh embryo3 the embryo's last upload since the later amendment of 2026-11-19
+#                                                for the embryo (docs/S2_RULES.md, that section): embryo2's positions
+#                                                with the series rendering (the harness's fgw_shape0x_series, try E47b)
+#   T3 has no new set: its last upload since the amendment of 2026-11-19 for T3 is the barred branch's s1, which the
+#   set t3alt builds.
 #
 # BUILD_OUT (default runs) and BUILD_THREADS (default 16) exist for the determinism check
 # (experiments/builds/determinism_check.sh): the same builds into another folder at another BLAS thread count. Every
@@ -36,7 +46,7 @@
 # The commands are the ones docs/P3_RUNBOOK.md and docs/S2_RULES.md give; this script only runs them in order and
 # stops at the first failure. Test-board cell counts are never printed (the builders and `vec check` hide them).
 set -euo pipefail
-set_name=${1:?usage: build_all.sh s1|s2|heart2|t3alt|t1none|embryo2}
+set_name=${1:?usage: build_all.sh s1|s2|heart2|t3alt|t1none|embryo2|heart3|embryo3}
 T=${BUILD_THREADS:-16}
 O=${BUILD_OUT:-runs}
 export OMP_NUM_THREADS=$T OPENBLAS_NUM_THREADS=$T MKL_NUM_THREADS=$T NUMPY_MADVISE_HUGEPAGE=0
@@ -96,6 +106,18 @@ case "$set_name" in
       --expression "$EMBRYO_EXPRESSION" --out $O/builds/T2embryo_s2x.h5ad
     files="$O/builds/T2embryo_s2x.h5ad:T2:embryo:test_interp"
     ;;
+  heart3)
+    sha256sum -c docs/S2_RULES.sha256
+    $U run python experiments/builds/build_test.py heart --entry core_trim --expression copy --z-mode raw --out $O/builds/T2heart_s2core.h5ad
+    $U run python experiments/builds/halve.py $O/builds/T2heart_s2core.h5ad $O/builds/T2heart_s2core_half.h5ad
+    files="$O/builds/T2heart_s2core.h5ad:T2:heart:test_extrap $O/builds/T2heart_s2core_half.h5ad:T2:heart:test_extrap"
+    ;;
+  embryo3)
+    sha256sum -c docs/S2_RULES.sha256
+    $U run python experiments/builds/build_test.py embryo --method fgw_shape0 --positions floor_exact \
+      --expression series --out $O/builds/T2embryo_s2xs.h5ad
+    files="$O/builds/T2embryo_s2xs.h5ad:T2:embryo:test_interp"
+    ;;
   t3alt)
     sha256sum -c docs/S2_RULES.sha256
     t3 barred s1 $O/t3_build/barred_s1.h5ad
@@ -103,7 +125,7 @@ case "$set_name" in
     files="$O/t3_build/barred_s1.h5ad:T3:bcatenin $O/t3_build/barred_s2.h5ad:T3:bcatenin"
     ;;
   *)
-    echo "unknown set $set_name (s1, s2, heart2, t3alt, t1none or embryo2)" >&2
+    echo "unknown set $set_name (s1, s2, heart2, t3alt, t1none, embryo2, heart3 or embryo3)" >&2
     exit 2
     ;;
 esac

@@ -231,4 +231,7 @@ def test_build_all_puts_trend_in_both_heart_lines():
     assert "build_test.py heart --entry s2_trim --trend --out $O/builds/T2heart_s2.h5ad" in text
     assert ("build_test.py heart --entry s1 --expression copy --z-mode raw --out $O/builds/T2heart_s2iso.h5ad"
             in text)
-    assert text.count("build_test.py heart ") == 3
+    # since the amendment of 2026-11-19 for the heart a fourth line, the set heart3: the full trim, no trend either
+    assert ("build_test.py heart --entry core_trim --expression copy --z-mode raw --out $O/builds/T2heart_s2core.h5ad"
+            in text)
+    assert text.count("build_test.py heart ") == 4
