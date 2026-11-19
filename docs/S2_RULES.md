@@ -883,8 +883,11 @@ uv run python experiments/builds/halve.py runs/builds/T2heart_s2core.h5ad runs/b
   2026-11-02 made the second upload a half trim and weighed the full trim without taking it ("it never beats s1 on a
   released target", section "T2 heart" above). The amendment of 2026-11-18 replaced the half trim with the whole
   stage. This file takes the full trim. No rule returned it; the captain named it.
-- **Cell number.** A closed quantity. The count rule now acts on the trimmed pool, so the cell number follows from the
-  scope; then comes the halving. The captain's option named the cell number.
+- **Cell number.** A closed quantity. The count rule is unchanged and does not read the pool, so the built file has
+  the ruled file's number of rows, and the halving is the same. What changes is the pool the rows are drawn from,
+  which follows from the scope: rows repeat only if the count exceeds the pool, and repeated rows are then moved apart
+  by the T2 head's jitter, as in any file (`vec.t2_build.sample_cells`). The captain's option named the cell number
+  with the scope and the size.
 - **Size.** A closed quantity. The pre-registered mode was xy_grow_z_hold (section "T2 heart" above). The amendment of
   2026-11-18 took the raw mode at H1's size. This file takes the raw mode's core forecast: the term that the size
   file's three scope hypotheses (H1, H0 and H2) multiply, and not one of them. No earlier rule fixed it. The captain's
@@ -928,6 +931,14 @@ full-scope file's, B the half trim's; heart points, plain means, the two E10.5 t
   core forecast and the replaced file H1's raw-mode size. That difference in the scale term is not priced; it can be
   as large as the trim's own gain, in either direction (decision log 2026-11-19 (n), point (2)).
 
+**Held until the size term is priced** (added by the AI assistant before this section was merged). The question put to
+the captain quoted row H26's figures without saying that they were measured with every arm at an oracle size; the last
+bullet above is what the question left out. A side note the captain forwarded on 2026-11-19 pointed this out. Analysts
+who have not seen the AI assistant's conversation are designing a practice read of the three forms at forecast sizes
+on released stages (row H27 of `experiments/harness/TRIES.md`, once registered), as decision log 2026-11-19 (bb)
+provides. The file of this section is built, and it is not handed over as the last heart file until that read's result
+is with the captain. His ruling stands unless he names another file; the AI assistant states no preference.
+
 **Nothing is computed from a test score.** The trim is `radial_trim_mask` at fraction 0, the hedge study's
 core_radial of 2026-11-01. The size is the size file's own raw-mode field, logged on 2026-10-28, before any score. The
 halving is the first upload's rule. The first heart score, 46.4, enters only as the level a last file must beat, as
@@ -936,10 +947,15 @@ the question said (decision log 2026-11-19 (n), point (4)). The scores chose amo
 
 **What the record must say** (the method report, its section on exposures in `METHOD_SUMMARY.md`, and the note that
 precedes the upload).
-- The scope, the cell number and the size of the heart's last file were chosen by the captain, after the exposure of
-  2026-11-04 and after the first scores. In the words of decision log 2026-11-19 (o), route (ii): chosen by a person
-  who had seen the E12.5 heart file's size, and the choice cannot be shown to be free of it.
-- The AI assistant stated no preference. It had recused itself after a lapse (decision log 2026-11-19 (bb)).
+- The scope and the size of the heart's last file, and with the scope the pool its rows are drawn from, were chosen by
+  the captain, after the exposure of 2026-11-04 and after the first scores (the count rule itself is unchanged). As
+  decision log 2026-11-19 (o), route (ii), puts it, the record says that the choice was made "after the exposure and
+  the first scores by a person who had seen the E12.5 heart file's size, and that it cannot be shown to be free of
+  it".
+- The AI assistant stated no preference and named no heart file. It had recused itself after a lapse (decision log
+  2026-11-19 (bb)). Before the dialog it had told the captain that a Top-3 aim weighs each board's last file by its
+  ceiling with the first score banked (entry (cc)), and the heart's options were put with their practice gains and
+  losses.
 - The size is the size file's own raw-mode core forecast of 2026-10-28, the term its three scope hypotheses multiply,
   and not one of those hypotheses.
 
@@ -982,7 +998,7 @@ aim)".**
 **Who decided what.** The captain chose the file. Before the dialog the AI assistant had marked the higher-ceiling file
 as the one that fits a Top-3 aim and given the expected values as about equal (decision log 2026-11-19 (cc)).
 
-**The embryo's last upload.** It replaces the file of the embryo's amendment of earlier today (`fgw_shape0x`,
+**The embryo's last upload.** It replaces the file of the embryo's earlier amendment of 2026-11-19 (`fgw_shape0x`,
 `runs/builds/T2embryo_s2x.h5ad`, set embryo2), which stays built and is not uploaded:
 
 ```bash
@@ -995,8 +1011,8 @@ uv run python experiments/builds/build_test.py embryo --method fgw_shape0 --posi
   to the pre-registered embryo size (the section above; row R9). That section's fallback holds as written. The
   expression is the series rendering of ruling R4: E7.5's cells rendered into E8.0's per-gene detection profile and
   depth (`vec.t2_build.series_rendered_expression`). Of the check builds at 9967cf1, decision log 2026-11-18 (u)
-  records that "the two series files hold the built second file's" rows, row names and expression matrix: the second
-  file of ruling R4.
+  records that "the two series files hold the built second file's" rows, row names and expression matrix (the AI
+  assistant reads "the built second file" as ruling R4's `T2embryo_s2.h5ad`).
 - **"As s1"** for the embryo now reads: s1's command with `--method fgw_shape0` in place of `--method fgw`,
   `--positions floor_exact` added, and `--expression series` in place of `--expression mixture`. The option was merged
   to main at 5e3eb9a with tries E47a and E47b, off by default.
@@ -1012,8 +1028,8 @@ uv run python experiments/builds/build_test.py embryo --method fgw_shape0 --posi
 - **Rule (ii) of row E47**, which the AI assistant fixed before its run: by it the series twin does not replace
   `fgw_shape0_series` (decision log 2026-11-18 (u)). The captain's answer overrides it, as it overrode the same rule
   for the replaced file.
-- **Closed levers.** None touched. The file keeps the pre-registered size and the count rule (decision log 2026-11-18
-  (v)): its cell number, size and scope are the first upload's.
+- **Closed levers.** None touched. The file keeps the pre-registered size and the count rule, and touches no closed
+  lever (decision log 2026-11-18 (v)).
 
 **Why.** The captain's aim, in his words (decision log 2026-11-19 (aa) and (bb)): "Proceed with whatever that gets us
 to Top 3 in the leaderboard. If other teams can do it, so can us" and "ultrathink just deeply internalize that it is
@@ -1099,10 +1115,11 @@ uv run python experiments/t3_decomp/build_submission.py build experiments/t3_dec
 
 - **The file.** `runs/t3_build/barred_s1.h5ad`, sha256
   3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2, built in set t3alt and on the reference list of
-  the third rehearsal (`experiments/builds/results/builds_dc7b6ae.SHA256SUMS`). The copy that is uploaded is the one
-  with that sha256 from the folder the freeze-morning command builds, or the checked local copy of the same bytes at
-  the captain's word, as `AGENTS.md` says ("Official submissions need the user's explicit go-ahead"); never the copy in
-  the DGX's `runs/t3_build`. No new build is needed.
+  the third rehearsal (`experiments/builds/results/builds_dc7b6ae.SHA256SUMS`). The copy handed to the captain is the
+  checked copy of the same bytes on the local machine (`runs/archive/builds_dc7b6ae/t3_build/barred_s1.h5ad`, sha256
+  checked against the reference list), from the folder the uploads of 2026-11-18 came from
+  (`results/manual_uploads.csv`): he uploads by hand through the site's form (the amendment of 2026-11-18, "Uploads,
+  dates and marks"). Never the copy in the DGX's `runs/t3_build`. No new build is needed.
 - **What it is.** Wild-type E8.75 cells with the central composition at the Mab21l2 magnitude, the refused s1's, each
   cell then moved by the Mab21l2 factor at exponent 1 (`transfer_mab21l2_all`; section "T3" above, "Branch names";
   row K18), with no depth, stage or coverage step. It takes no number derived from the Gata4 files. What its factor
@@ -1116,8 +1133,9 @@ uv run python experiments/t3_decomp/build_submission.py build experiments/t3_dec
 - **The factor.** The replaced file moved each cell by its lineage group's wild-type-only factor at exponent 0.5 (the
   amendment of 2026-11-13). This file moves each cell by the Mab21l2 factor at exponent 1.
 - **The composition.** No change: the central composition at the Mab21l2 magnitude in both.
-- **The frozen T3 rule.** It put the barred s1 last only under an organiser ruling that restricts or bars the Gata4
-  files or bars the validation answers ("Ruling switches" above). No such ruling is on record. This file goes last by
+- **The frozen T3 rule.** It put the barred s1 last only under an organiser ruling: one that restricts or bars the
+  Gata4 files or bars the validation answers ("Ruling switches" above), or an organiser's "zero" on a floored severity
+  (the ruling of 2026-11-06 (b); the amendments of 2026-11-13). No such ruling is on record. This file goes last by
   the captain's say-so, not by a switch.
 - **Try K18's fixed reading** ("no question"; decision log 2026-11-18 (u)) and the cold check of decision log
   2026-11-19 (s) both kept the refused file. The captain's answer overrides them. This file enters by ruling, not by

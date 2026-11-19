@@ -6857,3 +6857,35 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Also at this commit:** the labeller's step script lists the read's test file (its own test requires every
     test that touches the builder). The package for the three rulings of entry (cc) is still being written and
     reviewed (wf_1c3e47d4-cad); nothing is built yet.
+- 2026-11-19 (ee), the rules amendments for the three rulings are merged; a side note on the heart's size term;
+  the heart file is held until a read at forecast sizes (state at 20:02 UTC). Written by the AI assistant.
+  - **The package** (wf_1c3e47d4-cad; three writers and two reviewers, none of them the main session; both
+    reviews ready, no blocker). `docs/S2_RULES.md` gains three sections after the freeze, each with the question as
+    put and the captain's answer verbatim from entry (cc): the heart's last upload is the full trim (his own named
+    exception), the embryo's is the series twin on E7.5's exact positions, T3's is the barred branch's s1. New
+    sha256 9456a7737140fd2f5a2159b47fe8b6d706971cd90422ae4d5380e970966f0326 (`docs/S2_RULES.sha256`). No earlier
+    section lost a line. `experiments/builds/build_all.sh` gains the sets heart3 and embryo3; T3 needs no set (its
+    file is t3alt's, on the reference list of the third rehearsal). The heart section also carries the correction
+    owed since entry (n): the half trim was dropped on 2026-11-18 without a priced question of its own.
+  - **Wording corrected by the main session before the builds**, as the reviewers asked: the T3 file handed over is
+    the checked local copy the uploads of 2026-11-18 also came from; the frozen T3 rule's switches listed in full;
+    the embryo section's date and its "closed levers" sentence; a gloss marked as the AI assistant's; the heart
+    section quotes entry (o) exactly and says what the captain had been told before the dialog.
+  - **"Cell number" in the heart question was loose.** The question called the trim an exception "on scope, cell
+    number and size". The count rule does not read the pool: the built file has the ruled file's number of rows and
+    the same halving. What changes with the scope is the pool the rows are drawn from. The section says so.
+  - **A side note the captain forwarded**, in part: "The full trim's "+11.8 if clean" was measured with the heart's
+    true size supplied. The real file must use our October size forecast. [...] no practice run scored the trim at
+    a forecast size. [...] Consider asking for a fresh helper to score the trim with forecast sizes on released
+    stages before you upload." **It is right, and it names an omission of the AI assistant's:** the record had the
+    point (entry (n), point (2); row H26 scales every arm to one oracle size), and the question put to the captain
+    quoted the +11.8 without it.
+  - **What follows.** As entry (bb) provides, analysts who have not seen the main session's conversation design,
+    attack, settle, write and review a practice read of the three heart forms at forecast sizes on released stages
+    (row H27 when registered; wf_3bfbefee-14f). The main session fixed only the question, the limits and this:
+    nothing is built or changed by the read; its figures go to the captain in the read's pre-set words beside row
+    H26's; the file he named stands unless he names another; the AI assistant states no preference. The set heart3
+    is built now, and its file is not handed over as the last heart file until that read's result is with him.
+  - **Still to place** from the same package, reviewed ready with corrections: ledger rows R10 to R12, the method
+    summary's lines, a data-policy note and the three notes that precede the second uploads (drafts for the
+    captain; nothing is sent).
