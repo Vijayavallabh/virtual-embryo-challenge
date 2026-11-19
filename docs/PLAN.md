@@ -6535,3 +6535,50 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     with the captain's later ruling, so its list and any rebuild come first. Three sentences of the sign-off
     summary overstate what the code checks (it checks that a decision-log entry names N54, not whose entry it is)
     and are corrected before the captain sees it.
+- 2026-11-19 (u), the captain's three answers on the heart's route and on the labeller; the AI assistant's own choices
+  on the labeller's settings (state at 18:08 UTC). Written by the AI assistant. This entry is the captain's ruling
+  naming N54: by it the permitted-only relabelling of row N54 may run, after the dry run of row N55, which a
+  separate entry orders.
+  - **The three questions and his answers, verbatim** (a dialog; the questions as put):
+    (1) "Heart, last upload (currently held). The ruled file keeps all of E10.5's tissue, which is 77% non-heart. A
+    practice read priced trimmed files: about -1 to -4 heart points if E12.5 was sampled like E10.5 (up to -8 and
+    -16 on the nearest practice step), +6 to +12 if it was dissected clean. Released data cannot say which, and
+    scope is a choice closed after the 4 November exposure. Which route?" Options: "Ask organisers, keep file
+    (Recommended)"; "Keep the ruled file"; "Exception: half trim"; "Exception: full trim". His answer, typed:
+    "understand the fact that organizers won't reply".
+    (2) "Labeller inputs. Besides the atlas's raw counts and stage labels that you approved this morning, the
+    labeller needs two more outside inputs: (1) marker genes from eight published adult-mouse papers, used only to
+    keep non-heart cell types out; (2) the atlas's zone and strain columns, which are sample bookkeeping, not
+    cell-type labels (strain checks every cell is CD1; zone only splits statistics into halves). Approve them?"
+    His answer: "Approve both (Recommended)".
+    (3) "Labeller run. Sign its settings and let it run? Order: a dry run on the released E9.5 (a rule fixed
+    beforehand may move two thresholds and nothing else), then the settings are frozen, then the relabelling reads
+    the atlas's permitted cells once. If a guard fails or a run stops, Task 1 stays the built no-outside-data file
+    and nothing is rerun. No upload changes: afterwards you get one priced question on Task 1's last file." His
+    answer: "Sign and run (Recommended)".
+  - **How the AI assistant reads them** (its reading; the captain can correct it).
+    The heart: he chose none of the four options. He rejects the route the AI assistant recommended, in line with
+    his standing instruction of this morning (entry (g)): the organisers are not expected to answer. So no screened
+    re-read of the protocol page is made, the draft question in `docs/ORGANIZER_QUESTIONS.md` is not reviewed and
+    not sent, and row H26's conditional outcome, which needs an organiser's statement, has nothing to apply to. An
+    assumed reply changes no file (the same instruction as recorded: odds, the loss if wrong, no file change). He
+    has named no exception. The file in force stays the ruled full-scope file, and the upload stays held until he
+    says one of: keep it, his own exception (half trim or full trim), or that the direction is the AI assistant's.
+    That follow-up goes to him as one short question.
+    The labeller: yes to both outside inputs, and yes to the settings and to the two runs in the stated order.
+    His sign-off covers the settings file as merged (`experiments/external/feng_relabel.yaml`, sha256
+    67b1cfbec2f1 at 4c57dff, status draft until the freeze), the dry run's rule with its stop case, and rows N55
+    and N54 as drafted, with the main session filling commits and ids.
+  - **Chosen by the AI assistant under its delegation, not asked** (method choices inside the labeller; told to the
+    captain before the dialog, and his to overrule): the three blood genes Hba-a1, Hbb-bs and Alas2 keep the
+    reading of source lit_E's statement on marrow erythroid progenitors as naming an erythroid class; the direction
+    groups' genes come from the team's released marker table (`markers.csv`) and not from `docs/DATA_NOTES.md`; the
+    genes dropped from the marker sets (Phox2b, Fcer1g, Pdpn) stay out of the control pool as well; the fallback
+    route is the built no-outside-data file, not label transfer from the released E9.5; check builds of a recomputed
+    file run at 16 BLAS threads, as the reference builds do.
+  - **Tests.** The complete suite on main at 621434f: 3018 passed, 2 skipped. On the labeller merged with main
+    (`campaign/feng-relabel-main-merge`, 4c57dff: main's and the labeller's sides both kept in the builder's three
+    conflicts; the final check's fixes B to F), run by the main session: 3156 passed, 2 skipped. No stray commit
+    was made by either run.
+  - **Try T61's run** ended at 16:24 UTC: the targeted tests passed on the DGX (131), the five tasks exit 0 at the
+    row's commit, clean tree. Its files are copied back and read next.
