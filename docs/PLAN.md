@@ -6909,3 +6909,29 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Nothing is handed over yet.** The embryo's and T3's files wait for the notes that precede their uploads
     (drafts being placed; nothing is sent without the captain's word and a review) and for the question of which
     login made the uploads of 18 November; the heart's waits for row H27's read as well.
+- 2026-11-19 (gg), row T62 read and recomputed independently (state at 20:32 UTC). Written by the AI assistant.
+  - **The run.** On the DGX checkout `~/v/vec-campaign-d` at c40217c, the row's commit (clean tree; the targeted
+    tests first; the reliability step and the five tasks, exit 0). The seven files were committed unopened at
+    aec5616 and read there once. Ten tries: T1 358 to 368.
+  - **By the reading fixed in the row.** Reading S (the first upload stands): the recomputed step is AHEAD. Reading D
+    (it is discounted): AHEAD. The epicardium step, on library 3: PAYS. The advice fixed before the run: the
+    recomputed file; no third file is named. Recomputed analogue minus the no-outside-data analogue, paired over ten
+    seeds: chamber +1.97, whole +1.67, libraries +2.50, +1.23 and +2.51, each in 10 of 10 seeds. The epicardium
+    step alone: +0.27, +0.24, +0.69, +0.16 (9 of 10) and +0.68.
+  - **The reliability listing** (target-free; it decides nothing): the two halves of each recomputed group agree
+    with Spearman 0.745 for cardiomyocytes (351 and 349 early cells a half), 0.423 for endocardium (25 and 24),
+    0.436 for endothelium (31 and 28) and 0.350 for epicardium (6 and 5); in each group the highest-expression tenth
+    of the genes agrees best (0.98, 0.81, 0.79, 0.72), and the shrinkage step scales each tenth by that agreement.
+  - **Independent recomputation** (wf_9dfe8f60-ef3; one analyst, from the task files, without the read script):
+    every figure and statement matches; no void condition fires; `none_gmom` equals try T61's on every task and
+    seed (largest difference 0.0), so the two tries are on one draw.
+  - **A reading after the result, not a pre-set statement** (the same analyst's table; no conclusion is drawn in
+    it): the candidate against try T61's arms on the same draws. Against the momentum at damping 1 on every cell
+    (`mom_d1_gmom`, a released-data step that reverses ruling R1): +0.19 (chamber), +0.06 (whole), -3.39, -4.26
+    and -1.21 (libraries 1 to 3). Against the advance draw at strength 1: -2.71, -4.22, +0.71, -1.06, +2.81.
+    Against `b0_gmom`: +1.09, +0.91, -0.74, -2.03, +0.40. Against `gmom_s1`: ahead on four tasks and 7 of 10 on the
+    fifth.
+  - **Next.** A cold challenger attacks the pre-set advice from the record (wf_4f2be352-3db), given no account of
+    how it was formed. The captain then gets one question on T1's last upload: the recomputed file, the ruled
+    no-outside-data file, and whether the released-data bets are read on top before the file is fixed. Row N54's
+    listing stays unopened until he has ruled.
