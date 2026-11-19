@@ -33,7 +33,11 @@ machine, and an official upload needs the captain's go-ahead.
           (tested), and the hook's covered check is a self-check. Refused, before anything is read, without
           --g-mom and with --base pooled or mid, --cm-share, --blood-share, --lib3-pair, --herd,
           --no-hold-unbracketed, --feng-hygiene or --strong-null. The build record then carries a feng_groups field
-          saying the direction step was removed, and its fraction is null
+          saying the direction step was removed, and its fraction is null. --released-bet share_trend | advance with
+          --bet-strength (try T61 of experiments/harness/TRIES.md; off by default, --feng-groups none only): that file
+          with its cells drawn at the chamber mix moved along the E9.5 -> E10.5-portions trend, or drawn inside each
+          category towards the released momentum axis (vec.t1_bets). Both change composition, a lever the
+          post-exposure block closes: refused unless --captain-ruling names the captain's ruling row for the arm
   heart   B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
           procedure: --entry s1 = scope hypothesis H1; s2_trim = the s2 of docs/S2_RULES.md (H2 as a trim to half
           E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`). --trend
@@ -83,7 +87,7 @@ from pathlib import Path
 
 import numpy as np
 
-from vec import harness, provenance, t1_scope, t2_build
+from vec import harness, provenance, t1_bets, t1_scope, t2_build
 from vec.boards import REPO_ROOT, load_boards
 from vec.io import COORD_KEY, dense
 from vec.prep import load_stage
@@ -277,6 +281,66 @@ def _feng_none_refusals(a) -> None:
         sys.exit("--feng-groups none is refused with --strong-null: its prior acts on the cells Feng's direction moves")
 
 
+# --released-bet (try T61 of experiments/harness/TRIES.md; off by default): a variant of T1's last file (the command
+# FENG_NONE_COMMAND with --feng-groups none, row R8) that changes which cells are drawn. Both bets touch the
+# post-exposure block (docs/DATA_POLICY.md 2026-11-04 (d): T1's composition, except by its legal route): each is
+# refused unless --captain-ruling names a row of experiments/harness/TRIES.md that is the captain's ruling and names
+# the arm. Read like for like: the trend and the axes run from E9.5 (embryo portions) to E10.5's portion libraries
+# (every library but the dissected heart, T1_DISSECTED_LIBRARY), never to library 3, so no step is fitted on library
+# 3's cells alone (row R6).
+#   share_trend  library 3's own chamber mix x (E10.5 portions' share / E9.5's share) ** strength, renormalised
+#                (vec.t1_bets.trend_shares; strength in t1_bets.LAMBDAS)
+#   advance      library 3's cells drawn inside each category by quotas over five z-quantile bins, in proportion to
+#                each bin's sum of exp(strength z), z the cell's projection on its category's E9.5 -> E10.5-portions
+#                momentum axis (vec.t1_bets.advance_reweight; quotas, never importance weights: docs/DATA_POLICY.md
+#                2026-11-04 (f)(2); strength in t1_bets.TAUS)
+RELEASED_BETS = {"share_trend": ("l", t1_bets.LAMBDAS), "advance": ("t", t1_bets.TAUS)}
+TRIES_FILE = Path(__file__).resolve().parents[2] / "experiments" / "harness" / "TRIES.md"
+
+
+def _bet_arm(bet: str, strength: float) -> str:
+    """The arm's name in row T61 (e.g. share_trend_l0.5, advance_t1)."""
+    return f"{bet}_{RELEASED_BETS[bet][0]}{strength:g}"
+
+
+def _captain_ruling_names(row: str, arm: str, path: Path | None = None) -> bool:
+    """Whether experiments/harness/TRIES.md (TRIES_FILE) holds a ruling row `row` (its ID starts with R) whose first
+    cell holds "(the captain's ruling" and whose text puts the arm in with the dedicated phrase "rules `<arm>` in". A
+    row that merely mentions the arm, refuses it or awaits a ruling does not pass."""
+    if not row.startswith("R"):
+        return False
+    for ln in (path or TRIES_FILE).read_text(encoding="utf-8").splitlines():
+        if not ln.startswith(f"| {row} "):
+            continue
+        first = ln[2:].split("|", 1)[0]
+        if "(the captain's ruling" in first and f"rules `{arm}` in" in ln:
+            return True
+    return False
+
+
+def _bet_refusals(a) -> None:
+    """--released-bet's refusals, before anything is read: only with --feng-groups none (whose own refusals then hold
+    the rest of the command to the last file's); the strength must be one row T61 reads; and --captain-ruling must name
+    the captain's ruling row for that arm. --captain-ruling or --bet-strength without --released-bet is refused too."""
+    bet = getattr(a, "released_bet", None)
+    if bet is None:
+        if getattr(a, "captain_ruling", None) is not None or getattr(a, "bet_strength", None) is not None:
+            sys.exit("--captain-ruling and --bet-strength go with --released-bet only")
+        return
+    if getattr(a, "feng_groups", FENG_GROUPS_DEFAULT) != "none":
+        sys.exit("--released-bet is a variant of T1's last file: it needs --feng-groups none "
+                 f"({FENG_NONE_COMMAND} --feng-groups none)")
+    allowed = RELEASED_BETS[bet][1]
+    if a.bet_strength is None or a.bet_strength not in allowed:
+        sys.exit(f"--released-bet {bet} needs --bet-strength, one of {list(allowed)} (row T61's arms)")
+    arm = _bet_arm(bet, a.bet_strength)
+    if not a.captain_ruling or not _captain_ruling_names(a.captain_ruling, arm):
+        sys.exit(f"--released-bet {bet} is refused: it changes T1's composition, a lever closed by the post-exposure "
+                 "block, and only the captain's own ruling opens it; --captain-ruling must name a row R<n> of "
+                 "experiments/harness/TRIES.md whose first cell holds \"(the captain's ruling\" and whose text says "
+                 f"\"rules `{arm}` in\"")
+
+
 def _feng_group_names() -> list[str]:
     """The names of Feng's direction groups from Feng's statistics alone, before any T1 file is read. The groups
     feng_dirs.feng_directions returns do not depend on the gene list it is given, so it is called on one placeholder
@@ -434,8 +498,61 @@ def _t1_mid_rows(ref, in3: np.ndarray, seed: int) -> tuple[np.ndarray, dict]:
     return np.sort(np.concatenate(keep)), record
 
 
+def _t1_trend(ref, portions: np.ndarray, shares: dict, lam: float) -> tuple[dict, dict]:
+    """--released-bet share_trend: the pool's own chamber shares moved along the like-for-like trend from E9.5 to
+    E10.5's portion libraries (`portions`, a mask of the reference's rows), `t1_bets.trend_shares` at `lam`. E9.5 is
+    loaded here for its labels' counts. Returns the shares and a record (shares and ratios, no count)."""
+    start = load_stage(DATA / "T1/E9.5_RNA.h5ad", lineage=False)
+    later = t1_bets.chamber_counts(ref[np.flatnonzero(portions)], "E10.5_RNA")
+    new, rec = t1_bets.trend_shares(shares, later, t1_bets.chamber_counts(start, "E9.5_RNA"), lam)
+    return t1_scope.load_shares(new), {"rule": "library 3's own chamber mix x (E10.5 portion libraries' share / E9.5's "
+                                               "share) ** lam, renormalised; ratio 1 below the trend's min_cells",
+                                       **rec}
+
+
+def _t1_advance(ref, pool, portions: np.ndarray, shares: dict, n: int, seed: int, held: list[str], board, hook,
+                tau: float) -> tuple:
+    """--released-bet advance: the pool's cells drawn at `shares`, each category's quota split over z-quantile bins in
+    proportion to exp(tau z) (`t1_bets.advance_reweight`), z on each category's momentum axis from E9.5 to E10.5's
+    portion libraries (`portions`), the held genes at 0; then g_mom's hook and the board's genes
+    (`t1_bets.assemble`), as `t1_scope.build_submission` does on the no-shift path (at tau 0 the same file, tested).
+    Returns the submission, a report with the realised composition (stripped from the record on a test board), a
+    record and the drawn population (before the hook), for its median library size."""
+    if n < board.min_cells or (board.max_cells is not None and n > board.max_cells):
+        raise ValueError("n_cells is outside the board's limits")
+    spec = t1_scope.load_spec()
+    start = harness._shallow(load_stage(DATA / "T1/E9.5_RNA.h5ad", lineage=False))
+    later = ref[np.flatnonzero(portions)].copy()
+    t1_scope.classify(start, source="E9.5_RNA", spec=spec)
+    t1_scope.classify(later, source="E10.5_RNA", spec=spec)
+    t1_scope.classify(pool, source="E10.5_RNA", spec=spec)  # in place, as build_submission classifies its ref
+    axes, axes_rec = t1_bets.momentum_axes(start, later, [c for c, s in shares.items() if s > 0], held,
+                                           start_fallback=spec.fallbacks("E9.5_RNA"),
+                                           later_fallback=spec.fallbacks("E10.5_RNA"))
+    z = t1_bets.advance_scores(pool, axes)
+    pop, _ = t1_bets.advance_reweight(pool, shares, n, seed, z, tau, fallback=spec.fallbacks("E10.5_RNA"), spec=spec)
+    sub = t1_bets.assemble(pop, board, hook)
+    return sub, {"realised": t1_scope.composition(pop)}, {
+        "rule": "library 3's cells drawn inside each chamber category by quotas over five z-quantile bins in "
+                "proportion to each bin's sum of exp(tau z), z the cell's projection on its category's E9.5 -> "
+                "E10.5-portion-libraries momentum axis, standardised within the category; category quotas at library "
+                "3's own chamber mix; then g_mom", "tau": float(tau), "axes": axes_rec}, pop
+
+
+def _bet_median_library(pool, base_shares: dict, bet_pop, n: int, seed: int) -> dict:
+    """docs/DATA_POLICY.md 2026-11-04 (f)(3) for --released-bet: the bet's drawn cells' median library size over the
+    none file's draw at the same seed (`reweight` on the same pool at the pool's own chamber mix, as build_submission
+    draws it on that file's path). A ratio of two medians of released cells, no count."""
+    spec = t1_scope.load_spec()
+    t1_scope.classify(pool, source="E10.5_RNA", spec=spec)  # in place and idempotent, as build_submission does
+    base, _ = t1_scope.reweight(pool, base_shares, n, seed, fallback=spec.fallbacks("E10.5_RNA"), spec=spec)
+    return {"median_library_over_none_draw": t1_bets.median_library(bet_pop) / t1_bets.median_library(base),
+            "against": "the none file's draw at the same seed (library 3's cells at their own chamber mix)"}
+
+
 def build_t1(a) -> dict:
     feng_groups = getattr(a, "feng_groups", FENG_GROUPS_DEFAULT)
+    _bet_refusals(a)  # nothing at all unless --released-bet (or one of its two companions) is given
     if feng_groups == "none":
         _feng_none_refusals(a)
     if a.g_mom and a.strong_null:
@@ -501,9 +618,24 @@ def build_t1(a) -> dict:
         covered = _g_mom_covered(groups, directions, feng_groups)  # the build's Feng-covered labels (none: self-check)
         hook, g_mom_record = _t1_g_mom(ref, fit_categories, a.seed, covered, feng_direction=feng_groups != "none")
         within_type = {"post_cells": hook}
-    sub, rep = t1_scope.build_submission(pool, board, shares, n, a.seed, held_flat=held,
-                                         ref_source="E10.5_RNA", directions=directions, direction_fraction=fraction,
-                                         direction_groups=groups, herd=a.herd, **momentum, **extra, **within_type)
+    bet = getattr(a, "released_bet", None)
+    bet_record = bet_pop = None
+    own_shares = shares
+    if bet == "share_trend":  # refused above unless --feng-groups none, so the pool is library 3's (row R8's command)
+        shares, bet_record = _t1_trend(ref, library != T1_DISSECTED_LIBRARY, shares, a.bet_strength)
+    if bet == "advance":
+        sub, rep, bet_record, bet_pop = _t1_advance(ref, pool, library != T1_DISSECTED_LIBRARY, shares, n, a.seed,
+                                                    held, board, within_type["post_cells"], a.bet_strength)
+    else:
+        sub, rep = t1_scope.build_submission(pool, board, shares, n, a.seed, held_flat=held,
+                                             ref_source="E10.5_RNA", directions=directions,
+                                             direction_fraction=fraction, direction_groups=groups, herd=a.herd,
+                                             **momentum, **extra, **within_type)
+    if bet == "share_trend":  # the draw build_submission made at the trended shares (the same call), for (f)(3)
+        spec = t1_scope.load_spec()
+        bet_pop = t1_scope.reweight(pool, shares, n, a.seed, fallback=spec.fallbacks("E10.5_RNA"), spec=spec)[0]
+    if bet_record is not None:
+        bet_record = {**bet_record, **_bet_median_library(pool, own_shares, bet_pop, n, a.seed)}
     strong = None
     if prior is not None:  # T12's part (d): the file is written only if the target-free checks pass
         strong = {"selection": "the reference's level alone (vec.t1_scope.DownPriorTable.level_only), no table",
@@ -530,6 +662,9 @@ def build_t1(a) -> dict:
         rec["mid_base"] = {"stream": [int(a.seed), T1_MID_STREAM], "categories": mid_record}
     if a.g_mom:
         rec["g_mom"] = g_mom_record
+    if bet_record is not None:  # written only with --released-bet, so every other file's record is as before
+        rec["released_bet"] = {"arm": _bet_arm(bet, a.bet_strength), "captain_ruling": a.captain_ruling,
+                               **bet_record}
     return rec if strong is None else {**rec, "strong_null": strong}
 
 
@@ -734,6 +869,18 @@ def build_parser() -> argparse.ArgumentParser:
                                 "--lib3-pair, --herd, --no-hold-unbracketed, --feng-hygiene or --strong-null. The "
                                 "build record then says the direction step was removed. Only the captain's ruling "
                                 "puts it in an upload")
+            p.add_argument("--released-bet", choices=tuple(RELEASED_BETS), default=None,
+                           help="try T61 of experiments/harness/TRIES.md (off by default): a variant of T1's last file "
+                                "(--feng-groups none only) that changes which cells are drawn: share_trend (the "
+                                "chamber mix moved along the E9.5 -> E10.5-portions trend) or advance (cells drawn "
+                                "inside each category towards the released momentum axis). Composition, a lever "
+                                "closed by the post-exposure block: refused unless --captain-ruling names the "
+                                "captain's ruling row for the arm")
+            p.add_argument("--bet-strength", type=float, default=None,
+                           help="with --released-bet: lambda (share_trend) or tau (advance), one of row T61's values")
+            p.add_argument("--captain-ruling", default=None,
+                           help="with --released-bet: the ID of the row of experiments/harness/TRIES.md that is the "
+                                "captain's ruling for the arm")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "
