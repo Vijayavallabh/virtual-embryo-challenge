@@ -5946,3 +5946,50 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     file; the recomputed-labels file stays open until about 22 November); his word to put the two emails into his
     drafts once he has ruled; the embryo's last file (decision log 2026-11-18 (v)). The heart's and T3's second files
     are built and with him since 18 November.
+- 2026-11-19 (f), the captain's three answers, a second forwarded note, and what follows (state at 11:20 UTC). Written
+  by the AI assistant.
+  - **The questions and the captain's answers** (a three-question dialog put by the AI assistant; the answers were
+    read at 11:12 UTC; the questions in full, the options and the answers, verbatim):
+    1. "Task 1's last upload. The outside heart atlas's cell-type labels were made with in-window stages pooled in,
+       which the organisers ask teams to exclude; our first upload (70.9) used them. Which file should be our last
+       Task 1 upload?" Options: "No outside data (Recommended)" (the first file's design with the atlas step taken
+       out; if the organisers discount the first upload, about 0 to 3.5 points below 70.9 on in-sample practice
+       figures; if it stands, nothing changes) and "Atlas kept, labels recomputed" (no score figure on record; the
+       tool's final review not ready; about a day more work and his sign-offs). The captain's answer, typed in his
+       own words: "whatever it takes to win this challenge".
+    2. "Organiser emails. ... May I put both into your Gmail drafts, worded for your Task 1 choice? You send them
+       yourself." The captain's answer: "Yes, both into drafts (Recommended)".
+    3. "Embryo's last upload (open since 18 Nov). The first upload scored 64.6, with its two shape scores at 30.9 and
+       2.5 of 100. Which file should be the embryo's last upload?" Four options, as in entry 2026-11-18 (v). The
+       captain's answer: "Exact E7.5 positions (Recommended)", that is `fgw_shape0x`, which reverses ruling R4.
+  - **How the AI assistant reads the first answer** (its reading, which the captain can correct before any upload,
+    and every upload is his own act). He did not pick an option; he left the choice to the AI assistant with one
+    criterion. By the precedent of entry 2026-11-18 (k), a general answer to a priced question is read as the
+    recommendation named in that question and as nothing beyond it. So T1's last upload is the no-outside-data
+    file. The sentence lifts no rule: the organisers' data condition, the data rules, the post-exposure block and
+    the list of material never opened stand, and breaking the first of them is the surest way to lose the board.
+    Neither T1 option is expected to beat 70.9; the choice protects the board if the first upload is discounted.
+  - **A second forwarded note** (a side agent's, forwarded by the captain during the same turn): the AI assistant had
+    told him the no-outside-data file "cannot be discounted" for earlier decisions that used the authors' labels;
+    its own reviewers found that overstated (entry (e) corrects the record; the AI assistant has now said so to the
+    captain). The note asks for the price of a stricter file that also drops g_mom. **Priced:** g_mom's factors are
+    fitted on the released E9.5 and E10.5 alone; on practice they add +1.23 and +1.14 board points on the two E10.5
+    cuts, ahead in 10 of 10 seeds (row T26's recorded numbers; row T11's raw gains on b0 are the same to within 4
+    percent). They are fitted on a one-day step and applied over the test's two-day gap, so by rule 9's J6 that
+    gain counts as zero at the centre with a range up to its practice value. Dropping g_mom removes one of the two
+    traces; the other, the choice of cell base, cannot be removed without changing the design that scored 70.9.
+    **The AI assistant's choice under the captain's first answer:** g_mom stays, as in the first upload; the
+    stricter file is built instead if the captain says so.
+  - **One tightening, made after the note** (`campaign/t1-none-fix2`, 555daf4, on top of the lesser-points fix
+    157161b, whose second review says ready): under the option, g_mom's mask no longer reads the list of groups that
+    was fixed in N12 by counting atlas cells. It holds back the labels that the label map itself gives no group, which
+    on every label the committed map can place in cardiomyocytes or endocardium is the same single label as before
+    (checked from committed configs alone, and pinned by a test). So the file's content reads nothing that came from
+    the atlas; the traces that remain are in the evidence behind two choices, not in the file. Being checked: a
+    review of this change, the complete local test run, and on the DGX at 555daf4 the unit tests, both option-off
+    files and the no-direction file twice, whose hash must again be 55eaee547ff1.
+  - **What follows.** For T1: the ruling commit (the amendment of `docs/S2_RULES.md` with the captain's words and the
+    new hash, the build set, ruling row R8, the register and method-summary texts), the set built twice on a DGX
+    campaign checkout, the file copied here and checked, and the short note that precedes the upload. For the
+    embryo: the same steps for `fgw_shape0x`. Then the two emails into the captain's drafts. The heart's and T3's
+    second files are built and with him since 18 November.
