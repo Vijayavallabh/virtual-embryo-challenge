@@ -6382,3 +6382,50 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     one blocker (a dry run that stops had no fixed outcome) and fourteen lesser points; a fix round closed them
     in a worktree whose changes are not yet committed (its two targeted test runs were still going at hand-back).
     Next: read those runs, commit, a last check, then the captain's sign-off of the settings.
+- 2026-11-19 (p), the wave of entry (k) is back; try H26 is registered and running; what the AI assistant takes from
+  each piece (state at 14:33 UTC). Written by the AI assistant.
+  - **Try H26** (row H26, committed at b2e84dd before its run; the code merged at cbc535a from
+    `campaign/heart-scope-forms-fix2`, 9edc0ee): the read of entry (o), with no pick rule. It runs on the DGX's
+    campaign checkout at the row's commit (clean tree; five processes a transition, 3 BLAS threads each), started at
+    14:31 UTC. Nine tries, counted when it is read.
+  - **The pricing table** (wf_cd5ffbb3-985, an analyst asked to price each board's last file by the expected better
+    of two and by its upper tail, from committed text alone; saved in the session's scratch folder as
+    `lift8/upside_wave.json`). It first says where that principle weakens: T1's banked score may be discounted (so
+    its downside is not free); the final ranking may score the uploads again; practice overstated the first T3 file
+    by about 18 points; test values may only be set beside practice figures for choosing, never joined into an
+    estimate (J8). Its readings, each its own judgement where it says so:
+    T1, the no-outside-data file, about 70 (69.9 to 70.9 over the two readings of the first upload); the only file
+    with real upside would be a composition bet by the legal route, which is not written and loses in expectation
+    if the first upload is discounted.
+    Heart, the ruled even-scaled copy, about 51.7 (50 to 53.5); a trimmed scope overtakes it only if E12.5 is much
+    more heart-focused than E10.5, at odds above about 0.45 by its arithmetic.
+    Embryo, the ruled file, about 69.2 (65 to 71); its twin with the series rendering is level on the expected
+    better of two (+0 to +0.6) and has the higher tail (about 74 to 75 if E7.75 was measured like E8.0).
+    T3, where it disagrees with the AI assistant: by the expected better of two the built barred file is level with
+    or ahead of the refused file (four-cell practice mean +2.4, a wider spread, its loss under the banked score) and
+    ahead on the tail (about 62 to 64); and if T3's practice levels are not trusted at all, the consistent file is a
+    plain wild-type draw (about 50), not the refused file.
+    Overall, every expected-better choice: about 186 (173 to 197); every tail choice coming off together: about 205
+    to 222, at a joint probability it puts near 1% or below. No reading reaches 226.
+  - **T3.** The refused file stays the last upload by the frozen rule and by try K18's fixed reading ("no
+    question"). The analyst's reading was formed after that result; before it reaches the captain as a priced
+    question it gets a cold challenge (wf_dc1bec61-a73). The variants read (row K19, `campaign/t3-variants`, e1d332d)
+    was reviewed not ready: its rule would have named exponent 1.0 on figures row K17 had already decided. The AI
+    assistant's decision: the three exponent arms K17 read are rerun as reported readings and can never be the
+    output; a matched control is added to the delay arms. Fix round and re-review in the same workflow.
+  - **T1's released-data bets** (row T61, `campaign/t1-released-bets`, 13779de): reviewed not ready on its count
+    and on four arms that undo ruling R1 without saying so. Decided: b0 counts on both cuts (fifty-eight tries);
+    the row, the read and the question name R1. Fix round and re-review in the same workflow. Every gain it can
+    show counts as zero at the centre (J6), and its two composition arms touch a closed lever by its legal route
+    (a rule in the row before the run); it runs as a counted diagnostic under the campaign's rule on cheap reads.
+  - **The heart's builder option** (`campaign/heart-iso-trim`, 2501138: the half trim with the copy, the even
+    scaling at the size file's raw-mode H2 size, the same halving; off by default, every existing output unchanged)
+    is written and its code reviewed sound. Its texts predate entries (m) to (o) and are not used. It is merged
+    only if a ruling needs the file.
+  - **The late bracket is stopped.** Its designer and its red team, working apart, both advise against the full
+    bracket (composition, new states or outside nuclei from X003: no released task can price them, and T1's last
+    file may stand alone). The designer's smaller piece, an X003 direction per group, is priced by its own author
+    at about +0.1 T1 points in expectation; the committed readout of 2026-10-28 had X003's within-type direction
+    behind X002's. The red team's one surviving idea is a filter on the relabelled X002 direction by X003's sign,
+    at about +0.03. The atlases enter T1 through the relabelled X002 direction (entry (l)); X003 stays a diagnostic
+    source unless that file is ruled in and time remains.
