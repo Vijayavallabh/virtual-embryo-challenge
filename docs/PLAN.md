@@ -6726,3 +6726,26 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     at its drawn counts, so that the difference prices the epicardium step itself; on library 3's task that group
     has its test-like weight. If the step is noise or costs, a third file is put to the captain beside the two: the
     recomputed groups with epicardium held, which needs an off-by-default builder option and his ruling.
+- 2026-11-19 (aa), the captain's word after the open questions were listed to him; how the AI assistant reads it (state
+  at 19:05 UTC). Written by the AI assistant.
+  - **What he had before him.** The AI assistant's last messages listed as open with him: the heart's route ("keep
+    the ruled file, your own exception, or leave the direction to me"), with the confirmation of the side note that
+    leaving it to the AI assistant can give only no trim or the half trim and that the full trim needs his own
+    exception; and the advance draw of try T61 (advice: decline; declined if he says nothing).
+  - **His message, verbatim:** "Proceed with whatever that gets us to Top 3 in the leaderboard. If other teams can do
+    it, so can us".
+  - **The AI assistant's reading** (its own; he can correct it). He names no exception and picks no file. As on
+    2026-11-13 with T1's base ("do whatever it takes to top the leaderboard"; row R6), a general go-ahead given in
+    answer to a question on a lever closed after the exposure leaves the direction to the party that holds none of
+    the exposed figures. So the heart's scope is the AI assistant's to decide between the two files it said it could
+    choose from, the ruled full-scope file and the half trim in the form ruled on 18 November, from released data
+    and the organisers' collection text alone, with its reasons written before any build and after a second cold
+    check. The full trim stays his alone to name. Nothing else is lifted by the message: the data rules, the
+    post-exposure block, the ledger's rules, his own act for every upload and every final mark stand; a change of a
+    frozen rule still quotes his words to its own question, which for the heart are this message and "understand
+    the fact that organizers won't reply". The advance draw stays declined. The question on T1's last file goes to
+    him with try T62's figures when they exist.
+  - **Said to him again, plainly:** third place on the Human board stood at 220.88 this morning and the team's first
+    scores total 174.2; the analyst's table of entry (p) puts every expected-better choice at about 186 and every
+    tail bet landing together at about 205 to 222, near 1%. The AI assistant works to the best file on each board
+    and does not promise a rank.
