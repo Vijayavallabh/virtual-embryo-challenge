@@ -758,7 +758,7 @@ tasks used to value it. It was written, reviewed and fixed by agents and rerun b
 output ((t)).
 
 **10. The embryo's last file (the question as put to the captain on 2026-11-18; (v), state at 20:56).**
-- Procedure: the embryo's second upload is `fgw_aligned_series`, by the captain's ruling R4 of 2026-11-13
+- Procedure (until 2026-11-19): the embryo's second upload was `fgw_aligned_series`, by the captain's ruling R4 of 2026-11-13
   (`docs/S2_RULES.md`, "Amendments of 2026-11-13"). Row E47's rule (ii), fixed before its run, decided which arms
   enter the question; by its reading fgw_shape0 and `fgw_shape0_series` stay, and the two arms on the exact geometry
   do not replace them.
@@ -793,7 +793,7 @@ output ((t)).
 - Changed: `docs/S2_RULES.md` gained the section "Amendment of 2026-11-19: the embryo's last upload is the first upload
   on E7.5's exact positions (the captain's own say-so)". Its sha256 is now
   ce5a4584c9b20fb51e16443f40f9a69056f299d3892665daf2747b8a1917432f. The section comes with row R9 of
-  `experiments/harness/TRIES.md` and decision log 2026-11-19 (j), in commit [MAIN SESSION: the commit on main]. The
+  `experiments/harness/TRIES.md` and decision log 2026-11-19 (j), in commit 2dccfee. The
   file is `build_test.py embryo --method fgw_shape0 --positions floor_exact --expression mixture`, built by the set
   `embryo2` as `T2embryo_s2x.h5ad`. It holds the first upload's rows and expression, with each cell at the position of
   a real E7.5 cell, at the pre-registered size and by the count rule. It touches no quantity closed by the block of
@@ -806,11 +806,11 @@ output ((t)).
   option 2 shares, is the one that reading N53 finds in E7.5's form at the test pair; the cold attack's own check kept
   the mixture over the series rendering on it ((v)). The first scores chose among files built from released data.
   Nothing is solved from them, and nothing shows what the file will score on either shape metric.
-- Builds: [MAIN SESSION: the DGX checkout and commit; two builds at 16 BLAS threads; their exit codes; the sha256
-  (first 12 characters); the stamps' commit and clean fields; the match with the check build of 9967cf1;
-  `experiments/builds/results/embryo2_<commit>.txt`; the local copy and its format check]. Like the heart's second
-  file and T1's last, it is built in a DGX campaign checkout, not the reference checkout [MAIN SESSION: confirm].
-- Disclosure: [MAIN SESSION: whether, and when, the captain sent the note that names this board, file and sha256].
+- Builds: on the DGX campaign checkout at 2dccfee, twice at 16 BLAS threads, exit 0 both times; one sha256,
+  a03611a343fa, the same as the check build of 9967cf1; stamps 2dccfee and clean
+  (`experiments/builds/results/embryo2_2dccfee.txt`); the local copy's hash and format check pass. Like the heart's second
+  file and T1's last, it is built in a DGX campaign checkout, not the reference checkout.
+- Disclosure: [TO COMPLETE: whether, and when, the captain sent the note that names this board, file and sha256].
 
 **11. What the AI assistant recorded against itself in this period.**
 - (j): it read one heart value as probably mis-copied; entry (k) corrected this (the aggregate's gate explains the

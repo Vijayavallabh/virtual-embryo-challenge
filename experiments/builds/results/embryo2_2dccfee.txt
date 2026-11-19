@@ -1,0 +1,32 @@
+The embryo's last upload since the amendment of 2026-11-19 (docs/S2_RULES.md, "the embryo's last upload is the first
+upload on E7.5's exact positions"): the set embryo2
+=================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-19 in the campaign checkout ~/v/vec-campaign at commit 2dccfee (clean
+tree; docs/S2_RULES.sha256 checked by the script), twice, one after the other, by
+`bash experiments/builds/build_all.sh embryo2`, both at the script's default 16 BLAS threads:
+  a: BUILD_OUT=runs/embryo2_a   exit 0
+  b: BUILD_OUT=runs/embryo2_b   exit 0
+The targeted tests ran first there (tests/test_s2_rules.py, test_e47_floor_exact.py, test_heart_trend_build.py):
+exit 0, 31 passed.
+
+Command the set runs:
+  build_test.py embryo --method fgw_shape0 --positions floor_exact --expression mixture --out <O>/builds/T2embryo_s2x.h5ad
+then `vec check` on the file for board T2:embryo:test_interp (exit 0 in both builds).
+
+Both builds give the same bytes (cmp, and one sha256):
+  a03611a343faf1d37edf06ce0e2bccc86cce6f14d3580b823864e5faf3ba03f9  builds/T2embryo_s2x.h5ad
+The stamp says commit 2dccfee, clean True, in both builds.
+
+The same sha256 as the check build of 2026-11-18 at 9967cf1 (~/v/vec-campaign/runs/builds_check_emb/
+T2embryo_shape0x.h5ad, also at 16 threads; docs/PLAN.md decision log 2026-11-18 (u)). That entry's comparison with
+the first upload's file therefore holds for this file: the same rows, row names and expression; the coordinates
+differ.
+
+Kept: ~/v/vec-campaign/runs/archive/embryo2_2dccfee/ on the DGX and runs/archive/embryo2_2dccfee/ on the local
+machine (SHA256SUMS checked on both); the file for upload is copied to runs/manual_upload/T2embryo_s2x.h5ad here
+(sha256 checked). The local format check (`vec check runs/manual_upload/T2embryo_s2x.h5ad --board
+T2:embryo:test_interp`) passes.
+
+Built in a campaign checkout, not the reference checkout that docs/COMPUTE.md names as the source of uploads; the
+reference checkout stays untouched at dc7b6ae. Logs of the builds are kept on the DGX and were not read.

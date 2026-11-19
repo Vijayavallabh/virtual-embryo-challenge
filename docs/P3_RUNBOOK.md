@@ -406,7 +406,7 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
   that upload until the captain has the explanation. Deadline 2026-11-26 11:59 UTC, never in the last hours. Lines 4a
   and 4b are filled on the site's submission page itself.
   1. [ ] **The hash.** On the machine the file goes from: `sha256sum <file>`. All 64 characters equal the board's line
-     in the reference list: `experiments/builds/results/builds_dc7b6ae.SHA256SUMS` (T1, the embryo, T3; the list
+     in the reference list: `experiments/builds/results/builds_dc7b6ae.SHA256SUMS` (T1's and the embryo's first files, T3; the list
      `results/reference_list.json` points to), or for the heart's half
      `experiments/builds/results/heart2_307c9b2.SHA256SUMS` (`builds/T2heart_s2iso_half.h5ad`). That second list is
      outside the pointer and was built in a campaign checkout (decision log 2026-11-18 (n)): the heart's line is
@@ -415,9 +415,9 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
      `experiments/builds/results/t1none_385ff58.SHA256SUMS` (`builds/T1_s2none.h5ad`). That list is outside the pointer and is built in a campaign checkout: its line is ticked only
      once the captain has accepted that provenance or a rebuild in the reference checkout has matched it.
      For the embryo's last upload (row R9; `docs/S2_RULES.md`, the amendment of 2026-11-19 for the embryo; decision
-     log 2026-11-19 (j)): `experiments/builds/results/embryo2_[MAIN SESSION: commit].SHA256SUMS`
+     log 2026-11-19 (j)): `experiments/builds/results/embryo2_2dccfee.SHA256SUMS`
      (`builds/T2embryo_s2x.h5ad`). That list is outside the pointer and is built in a campaign checkout
-     ([MAIN SESSION: the entry that records the embryo2 builds]): its line is ticked only once the captain has
+     (decision log 2026-11-19 (k)): its line is ticked only once the captain has
      accepted that provenance or a rebuild in the reference checkout has matched it.
      A file in no committed list (a new embryo file, entry (s), item 1) needs its list committed, and the
      `docs/S2_RULES.md` amendment it requires, before this line can be ticked. By hand: `grep <the 64 characters>

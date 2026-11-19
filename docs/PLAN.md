@@ -6165,21 +6165,48 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Owed, not in this commit:** `tests/test_integrity.py` still pins fgw_shape0 as the embryo s2 (stale since R4);
     the `--positions` help text of `build_test.py` still says "No entry until the captain rules"; `progress.md`,
     `feature_list.json` and `session-handoff.md` (which still lists `builds/T2embryo_s2.h5ad` among files in hand);
-    whether a `headroom.py` rerun is owed for a ruling on a last upload [MAIN SESSION: check what the commits of R4
-    and of entry 2026-11-18 (m) did, and follow that].
+    whether a `headroom.py` rerun is owed for a ruling on a last upload (none is made: the headroom tables carry each
+    board's first entry on its counting backtests, and a ruling on a last upload changes none of their lines; rows R7
+    and R8 were entered the same way).
   - **Tests** on the writer's branch, before the commit: `tests/test_s2_rules.py` (7),
     `tests/test_e47_floor_exact.py`, `tests/test_heart_trend_build.py`, `tests/test_boards.py`,
     `tests/test_g_mom_verify.py` and every test that reads a changed file: 469 passed; `sha256sum -c
-    docs/S2_RULES.sha256` OK; `bash -n experiments/builds/build_all.sh` OK; ruff clean. [MAIN SESSION: the complete
-    local test run's last line on main, and the targeted tests on the DGX].
-  - **The builds:** [MAIN SESSION: the DGX campaign checkout and commit; two builds of the set embryo2 at 16 BLAS
-    threads; each exit code; one sha256 or two (first 12 characters here, all 64 in the list); the stamps' commit and
-    clean fields; the comparison with the check build of 9967cf1; the boolean comparison with the first upload's
-    file by the script of entry 2026-11-18 (u) (rows, row names, expression equal; coordinates differ);
-    `experiments/builds/results/embryo2_<commit>.txt` and `.SHA256SUMS`; the local copy
-    `runs/manual_upload/T2embryo_s2x.h5ad`, its hash and its local format check]. Or record these in the next entry,
-    as entry (i) did for T1.
+    docs/S2_RULES.sha256` OK; `bash -n experiments/builds/build_all.sh` OK; ruff clean. On the DGX at 2dccfee the targeted
+    tests passed (31). The complete local run at 385ff58: 2934 passed, 1 skipped; at 2dccfee it is running.
+  - **The builds:** recorded in entry (k).
   - **Next:** the note to the organisers that names this board, file and sha256 (drafted and reviewed), put into the
     captain's drafts at his word; the screened check on the upload day; and the hand-over entry with the warnings
     register of checklist line 6. Entry (i)'s advice stands: no upload from any login until the captain has said
     which login made the uploads of 18 November. The upload is the captain's own act.
+- 2026-11-19 (k), the embryo's last file is built; the captain on the row "Star" and on the outside atlases; his push for
+  the leaders' level and the wave it started (state at 13:01 UTC). Written by the AI assistant.
+  - **The embryo's build** (`experiments/builds/results/embryo2_2dccfee.txt` and `.SHA256SUMS`): the set embryo2 on the
+    DGX campaign checkout at 2dccfee, the ruling commit of entry (j), twice at 16 BLAS threads, exit 0 both times,
+    the targeted tests first (31 passed). One sha256, a03611a343fa, which is the check build's of 9967cf1 (entry
+    2026-11-18 (u)): so that entry's comparison holds for this file (the first upload's rows, row names and
+    expression; other coordinates). Stamps 2dccfee and clean. On this machine: `runs/archive/embryo2_2dccfee/` and the
+    upload copy `runs/manual_upload/T2embryo_s2x.h5ad`, hash checked, `vec check` for T2:embryo:test_interp passes.
+    The note that precedes its upload now carries the hash (`docs/ORGANIZER_QUESTIONS.md`). The complete local test
+    run at 385ff58: 2934 passed, 1 skipped.
+  - **Whose row is "Star".** A screened read of the overall board for the team's own row (wf_b3ac0dfc-3a7; totals
+    only; audited; 12:37 UTC) found no row for Mithril, the captain's name or IITM, and one row at the total the
+    first uploads give: display name "Star", Agent track, 174.35, rank 32 in that track. The captain, verbatim:
+    "\"Star\" (Agent track) not mine." So where the uploads of 18 November are listed is still not known, the team's key
+    still shows none of them (entry (g)), and he has not yet said which login he used. A further screened read looks
+    for the row whose four board scores are the team's own. The AI assistant still advises no upload from any login
+    until this is clear.
+  - **The outside atlases.** The AI assistant asked: "May I use the two outside atlases already on our machines as
+    Task 1 model inputs, permitted stages only, with cell types re-derived from released data?" The captain, verbatim:
+    "utilize the atlases". Read as yes to that question and nothing beyond it. Register rows X002 and X003 carry the
+    approval and its terms. No file uses them on these terms yet, and a file that does is his own ruling.
+  - **The captain's push** (verbatim): "If the score is achievable by other teams, you sure as hell can do it too".
+    What the AI assistant started on it (wf_cd5ffbb3-985; nothing run on data, nothing uploaded): an analyst prices
+    each board's last file by the expected better of two against the banked first score and by its upper tail;
+    writers prepare, as code and ledger rows for practice reads, Task 3 variants of the built file (strength, a
+    broader wild-type trend, a developmental delay) and Task 1 released-data bets (the team's own momentum, a
+    composition trend by the block's legal route, an advance draw); a writer prepares the heart's pre-registered
+    scope hypothesis with the two fixes of 18 November as a builder option, with its price; a designer and a red
+    team work on a Task 1 bracket with late outside data. Each piece has a reviewer. What the AI assistant told the
+    captain: its rough range if the bets land is about 190 to 200, to be replaced by the analyst's table, and the
+    leaders' 221 to 226 would need the bracket to work very well and Task 3 to jump as well, which it puts at a few
+    per cent. Every change of an upload stays his ruling on a priced question.

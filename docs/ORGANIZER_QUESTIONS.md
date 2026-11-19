@@ -1008,7 +1008,7 @@ Hello organisers,
 
 As our email on sources and file hashes for the uploads of 18 November promised, here are the hash and sources of our second embryo upload, before we make it. Please keep this private.
 
-T2:embryo:test_interp, second upload. File T2embryo_s2x.h5ad, SHA-256 [EMBRYO HASH]. It has the cells and expression of our first embryo upload, with each cell placed at a position measured at E7.5 in place of a moved position. Sources as for our first embryo upload (X001, X004 and X005), and the same official validation file (the embryo's E7.5 file).
+T2:embryo:test_interp, second upload. File T2embryo_s2x.h5ad, SHA-256 a03611a343faf1d37edf06ce0e2bccc86cce6f14d3580b823864e5faf3ba03f9. It has the cells and expression of our first embryo upload, with each cell placed at a position measured at E7.5 in place of a moved position. Sources as for our first embryo upload (X001, X004 and X005), and the same official validation file (the embryo's E7.5 file).
 
 This replaces the file we had fixed in advance. We built and chose it after our first scores, which the site returned to us as to every team; no number in the file was computed from a score. The method report will set out this change.
 
