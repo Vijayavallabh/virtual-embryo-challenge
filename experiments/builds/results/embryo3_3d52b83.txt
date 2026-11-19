@@ -1,0 +1,36 @@
+The embryo's last upload since the second embryo amendment of 2026-11-19 (docs/S2_RULES.md, "the embryo's last upload
+is the series twin on E7.5's exact positions"): the set embryo3
+=================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-19 in the campaign checkout ~/v/vec-campaign at commit 3d52b83 (clean
+tree; docs/S2_RULES.sha256 checked by the script and by the set), twice, one after the other, by
+`bash experiments/builds/build_all.sh embryo3`, both at the script's default 16 BLAS threads:
+  a: BUILD_OUT=runs/embryo3_a   exit 0
+  b: BUILD_OUT=runs/embryo3_b   exit 0
+The targeted tests ran first there (tests/test_s2_rules.py, test_build_heart_core_trim.py,
+test_build_heart_iso_trim.py, test_e47_floor_exact.py, test_halve.py, test_hidden_counts.py): exit 1, 110 passed and
+2 failed. Both failures are one test of test_build_heart_iso_trim.py on its two trend variants (s1_trend and
+s2_trim_trend): it pinned the text hash of a synthetic build's record, computed on the local machine. On the DGX the
+.h5ad hash matched in both; the record's text differed in the last bits of six float summaries of its trend block
+(relative 1e-16; compared field by field on the s1_trend record). No file of this set uses the trend step, and the
+builds did not wait on the tests. The test now allows that last-bit difference and keeps the file hash exact
+(ce589a6); rerun on the same checkout at ce589a6: exit 0, 112 passed.
+
+Command the set runs:
+  build_test.py embryo --method fgw_shape0 --positions floor_exact --expression series --out <O>/builds/T2embryo_s2xs.h5ad
+then `vec check` on the file for board T2:embryo:test_interp (exit 0 in both builds).
+
+Both builds give the same bytes (cmp, and one sha256):
+  bc50d012cd2c9481cd18c1f5bcf5b01093e22fd16ac65582a5c9f34321f13115  builds/T2embryo_s2xs.h5ad
+The stamp says commit 3d52b83, clean True, in both builds.
+
+Kept: ~/v/vec-campaign/runs/archive/embryo3_3d52b83/ on the DGX and runs/archive/embryo3_3d52b83/ on the local
+machine (SHA256SUMS checked on both); the file for upload is copied to runs/manual_upload/T2embryo_s2xs.h5ad here
+(sha256 checked). The local format check (`vec check runs/manual_upload/T2embryo_s2xs.h5ad --board
+T2:embryo:test_interp`) passes (exit 0; its output was not read).
+
+The file it replaces as the embryo's last upload, runs/manual_upload/T2embryo_s2x.h5ad (set embryo2, a03611a343fa),
+stays built and is not uploaded.
+
+Built in a campaign checkout, not the reference checkout that docs/COMPUTE.md names as the source of uploads; the
+reference checkout stays untouched at dc7b6ae. Logs of the builds are kept on the DGX and were not read.

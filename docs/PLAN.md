@@ -6889,3 +6889,23 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Still to place** from the same package, reviewed ready with corrections: ledger rows R10 to R12, the method
     summary's lines, a data-policy note and the three notes that precede the second uploads (drafts for the
     captain; nothing is sent).
+- 2026-11-19 (ff), the embryo's series twin and the heart's full trim are built; the complete suite (state at 20:10
+  UTC). Written by the AI assistant.
+  - **Builds** on the DGX campaign checkout at 3d52b83 (clean tree), each set twice at 16 BLAS threads, exit 0, the
+    same bytes both times, stamps commit 3d52b83 and clean True; archived on both machines and checked:
+    `experiments/builds/results/embryo3_3d52b83.txt` and `heart3_3d52b83.txt` with their lists. Embryo:
+    `runs/manual_upload/T2embryo_s2xs.h5ad`, sha256 bc50d012cd2c9481cd18c1f5bcf5b01093e22fd16ac65582a5c9f34321f13115.
+    Heart: `runs/manual_upload/T2heart_s2core_half.h5ad`, sha256
+    04cde6361c04840ee47fff32eb9a20f4781bd649387cc540ed9fdea71e65fa35, **built and held** (entry (ee)). T3's barred
+    s1 needs no build: the checked local copy `runs/archive/builds_dc7b6ae/t3_build/barred_s1.h5ad` matches the
+    reference list (3712c3f9988d...). All three pass the local format check (exit codes only).
+  - **Two unit tests failed on the DGX before the builds**, and the builds did not wait on them: one golden-record
+    test of the heart builder on its two trend variants. The file hashes matched; the synthetic record's text
+    differed in the last bits of six floats (relative 1e-16, machine to machine). No built file uses the trend
+    step. The test now keeps the file hash exact and allows that difference (ce589a6); rerun on the DGX: 112
+    passed. The lesson is an old one of the AI assistant's: a guard on exact float text fails on machine noise.
+  - **The complete suite** ran on main at 1750ade (before row T62's code and the rules amendments were merged): 3207
+    passed, 2 skipped. It is rerun once the tree settles.
+  - **Nothing is handed over yet.** The embryo's and T3's files wait for the notes that precede their uploads
+    (drafts being placed; nothing is sent without the captain's word and a review) and for the question of which
+    login made the uploads of 18 November; the heart's waits for row H27's read as well.
