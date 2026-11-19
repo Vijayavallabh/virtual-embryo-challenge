@@ -1,0 +1,2172 @@
+{
+ "label": "N55: feng_relabel.yaml's scorer and guards on the released T1 E9.5 (training stage; no Feng file; decides nothing by itself; optimistic, the markers were selected on this file)",
+ "ruling": "2026-11-19 (w)",
+ "by_released_label": {
+  "AVC-CM": {
+   "n": 326,
+   "shares": {
+    "r_cm": 0.9969325153374233,
+    "r_unassigned": 0.003067484662576687
+   }
+  },
+  "BEC": {
+   "n": 271,
+   "shares": {
+    "r_endocardial_ec": 0.03690036900369004,
+    "r_vascular_ec": 0.8819188191881919,
+    "r_ec_ambiguous": 0.04428044280442804,
+    "r_unassigned": 0.03690036900369004
+   }
+  },
+  "Blood": {
+   "n": 213,
+   "shares": {
+    "r_blood": 1.0
+   }
+  },
+  "Endocardium": {
+   "n": 1555,
+   "shares": {
+    "r_cm": 0.0006430868167202572,
+    "r_endocardial_ec": 0.6057877813504823,
+    "r_vascular_ec": 0.12861736334405144,
+    "r_ec_ambiguous": 0.10160771704180065,
+    "r_epicardial": 0.0012861736334405145,
+    "r_blood": 0.0006430868167202572,
+    "r_mesenchyme": 0.0006430868167202572,
+    "r_lymphatic": 0.0006430868167202572,
+    "r_unassigned": 0.16012861736334405
+   }
+  },
+  "Epithelium": {
+   "n": 233,
+   "shares": {
+    "r_cm": 0.008583690987124463,
+    "r_vascular_ec": 0.004291845493562232,
+    "r_blood": 0.008583690987124463,
+    "r_mesenchyme": 0.004291845493562232,
+    "r_epithelial": 0.6180257510729614,
+    "r_lymphatic": 0.004291845493562232,
+    "r_unassigned": 0.351931330472103
+   }
+  },
+  "Foregut": {
+   "n": 871,
+   "shares": {
+    "r_epicardial": 0.001148105625717566,
+    "r_blood": 0.0057405281285878304,
+    "r_hepatic": 0.09873708381171067,
+    "r_epithelial": 0.41676234213547647,
+    "r_lymphatic": 0.001148105625717566,
+    "r_unassigned": 0.4764638346727899
+   }
+  },
+  "Hepatocyte": {
+   "n": 1190,
+   "shares": {
+    "r_endocardial_ec": 0.0008403361344537816,
+    "r_blood": 0.0008403361344537816,
+    "r_hepatic": 0.934453781512605,
+    "r_lymphatic": 0.014285714285714285,
+    "r_unassigned": 0.04957983193277311
+   }
+  },
+  "IFT-CM": {
+   "n": 690,
+   "shares": {
+    "r_cm": 0.9942028985507246,
+    "r_unassigned": 0.005797101449275362
+   }
+  },
+  "NCC": {
+   "n": 47,
+   "shares": {
+    "r_cm": 0.02127659574468085,
+    "r_blood": 0.02127659574468085,
+    "r_neural_crest": 0.5319148936170213,
+    "r_unassigned": 0.425531914893617
+   }
+  },
+  "NCC-derived": {
+   "n": 621,
+   "shares": {
+    "r_cm": 0.00644122383252818,
+    "r_epicardial": 0.001610305958132045,
+    "r_blood": 0.02576489533011272,
+    "r_neural_crest": 0.01932367149758454,
+    "r_hepatic": 0.008051529790660225,
+    "r_mesenchyme": 0.03864734299516908,
+    "r_epithelial": 0.001610305958132045,
+    "r_mural": 0.011272141706924315,
+    "r_unassigned": 0.8872785829307569
+   }
+  },
+  "OFT/RV-CM": {
+   "n": 1830,
+   "shares": {
+    "r_cm": 0.8923497267759563,
+    "r_blood": 0.000546448087431694,
+    "r_mesenchyme": 0.000546448087431694,
+    "r_mural": 0.014207650273224045,
+    "r_lymphatic": 0.00273224043715847,
+    "r_unassigned": 0.08961748633879782
+   }
+  },
+  "Pericardium": {
+   "n": 897,
+   "shares": {
+    "r_epicardial": 0.10702341137123746,
+    "r_blood": 0.0033444816053511705,
+    "r_hepatic": 0.0011148272017837235,
+    "r_mesenchyme": 0.12486064659977704,
+    "r_epithelial": 0.0011148272017837235,
+    "r_mural": 0.0011148272017837235,
+    "r_lymphatic": 0.0011148272017837235,
+    "r_unassigned": 0.7603121516164995
+   }
+  },
+  "Proepicardium": {
+   "n": 883,
+   "shares": {
+    "r_cm": 0.0011325028312570782,
+    "r_endocardial_ec": 0.0011325028312570782,
+    "r_epicardial": 0.8097395243488109,
+    "r_blood": 0.0033975084937712344,
+    "r_hepatic": 0.0022650056625141564,
+    "r_mesenchyme": 0.011325028312570781,
+    "r_unassigned": 0.1710079275198188
+   }
+  },
+  "ST": {
+   "n": 879,
+   "shares": {
+    "r_cm": 0.0022753128555176336,
+    "r_vascular_ec": 0.0011376564277588168,
+    "r_epicardial": 0.004550625711035267,
+    "r_blood": 0.006825938566552901,
+    "r_hepatic": 0.0022753128555176336,
+    "r_mesenchyme": 0.5676905574516496,
+    "r_mural": 0.0011376564277588168,
+    "r_unassigned": 0.4141069397042093
+   }
+  },
+  "SV-CM": {
+   "n": 1273,
+   "shares": {
+    "r_cm": 0.3652788688138256,
+    "r_epicardial": 0.030636292223095052,
+    "r_blood": 0.0054988216810683424,
+    "r_hepatic": 0.002356637863315004,
+    "r_mesenchyme": 0.019638648860958365,
+    "r_lymphatic": 0.002356637863315004,
+    "r_unassigned": 0.5742340926944226
+   }
+  },
+  "Surface Ectoderm": {
+   "n": 554,
+   "shares": {
+    "r_cm": 0.0036101083032490976,
+    "r_endocardial_ec": 0.0018050541516245488,
+    "r_vascular_ec": 0.0018050541516245488,
+    "r_epicardial": 0.005415162454873646,
+    "r_blood": 0.009025270758122744,
+    "r_neural_crest": 0.0018050541516245488,
+    "r_hepatic": 0.007220216606498195,
+    "r_mesenchyme": 0.0036101083032490976,
+    "r_epithelial": 0.04332129963898917,
+    "r_mural": 0.0018050541516245488,
+    "r_lymphatic": 0.0018050541516245488,
+    "r_unassigned": 0.9187725631768953
+   }
+  },
+  "V-CM": {
+   "n": 1144,
+   "shares": {
+    "r_cm": 1.0
+   }
+  },
+  "aPHM": {
+   "n": 226,
+   "shares": {
+    "r_epicardial": 0.004424778761061947,
+    "r_blood": 0.022123893805309734,
+    "r_mesenchyme": 0.030973451327433628,
+    "r_lymphatic": 0.04424778761061947,
+    "r_unassigned": 0.8982300884955752
+   }
+  },
+  "aSHF": {
+   "n": 1050,
+   "shares": {
+    "r_cm": 0.006666666666666667,
+    "r_epicardial": 0.02761904761904762,
+    "r_blood": 0.011428571428571429,
+    "r_hepatic": 0.0019047619047619048,
+    "r_mesenchyme": 0.02,
+    "r_mural": 0.04666666666666667,
+    "r_lymphatic": 0.004761904761904762,
+    "r_unassigned": 0.8809523809523809
+   }
+  },
+  "pPHM": {
+   "n": 1194,
+   "shares": {
+    "r_cm": 0.0016750418760469012,
+    "r_epicardial": 0.08375209380234507,
+    "r_blood": 0.01256281407035176,
+    "r_hepatic": 0.0008375209380234506,
+    "r_mesenchyme": 0.10469011725293133,
+    "r_unassigned": 0.7964824120603015
+   }
+  },
+  "pSHF": {
+   "n": 1110,
+   "shares": {
+    "r_cm": 0.015315315315315315,
+    "r_endocardial_ec": 0.0009009009009009009,
+    "r_epicardial": 0.0009009009009009009,
+    "r_blood": 0.00990990990990991,
+    "r_hepatic": 0.002702702702702703,
+    "r_mesenchyme": 0.007207207207207207,
+    "r_epithelial": 0.0009009009009009009,
+    "r_lymphatic": 0.005405405405405406,
+    "r_unassigned": 0.9567567567567568
+   }
+  }
+ },
+ "unassigned_share": {
+  "E9.5": 0.41818608196048546
+ },
+ "unassigned_kinds": {
+  "E9.5": {
+   "no_class_reached_min_score": 6507,
+   "margin_failed": 626
+  }
+ },
+ "cap": {
+  "cap": 0.4,
+  "shares": {
+   "E9.5": 0.41818608196048546
+  },
+  "stages_over": [
+   "E9.5"
+  ],
+  "passed": false
+ },
+ "group_cells": {
+  "CM": {
+   "E9.5": 4292
+  },
+  "Endocardium": {
+   "E9.5": 956
+  },
+  "Endothelium": {
+   "E9.5": 1568
+  },
+  "Epicardium": {
+   "E9.5": 992
+  }
+ },
+ "under_min_cells": {
+  "CM": false,
+  "Endocardium": false,
+  "Endothelium": false,
+  "Epicardium": false
+ },
+ "sets": {
+  "cm": {
+   "found": [
+    "Myl7",
+    "Tnnt2",
+    "Actc1",
+    "Nppa",
+    "Myh6",
+    "Myl2",
+    "Myl4"
+   ],
+   "missing": [],
+   "controls": [
+    "Fn1",
+    "Prrc2b",
+    "Dnajc10",
+    "Rcn1",
+    "Atp5e",
+    "Hdgf",
+    "Ssr2",
+    "Selenof",
+    "Zranb2",
+    "Pnisr",
+    "Ube2r2",
+    "Srsf4",
+    "2700038G22Rik",
+    "Ywhah",
+    "N4bp2",
+    "Tpst2",
+    "Cox6a1",
+    "Cdk8",
+    "Ubn2",
+    "Gsdme",
+    "Magi1",
+    "Mkrn2",
+    "Ptms",
+    "Ube2m",
+    "Pvr",
+    "Pafah1b3",
+    "Serpinh1",
+    "Tmem9b",
+    "Sirt3",
+    "Elavl1",
+    "Sfrp1",
+    "Dlc1",
+    "Gatad2a",
+    "Large1",
+    "Taf1d",
+    "Prtg",
+    "Eef1a1",
+    "U2surp",
+    "Tmem108",
+    "Snx3",
+    "Rps27a",
+    "Gabarap",
+    "Med13",
+    "Msi2",
+    "Gjc1",
+    "Ddx42",
+    "P4hb",
+    "Ssr1",
+    "Dnajc9",
+    "Psmc6",
+    "Fndc3a",
+    "Zfpm2",
+    "Rad21",
+    "Asap1",
+    "Tmbim6",
+    "Tmem41a",
+    "Gm17106",
+    "Psmb1",
+    "Rps2",
+    "Gemin6",
+    "Epc1",
+    "Usp14",
+    "Ndufa2",
+    "Smad4",
+    "Sf3b2",
+    "Fau",
+    "Snhg1",
+    "Sfr1",
+    "Atrnl1",
+    "mt-Nd5"
+   ]
+  },
+  "ec": {
+   "found": [
+    "Cdh5",
+    "Pecam1",
+    "Kdr",
+    "Emcn",
+    "Tek",
+    "Sox18"
+   ],
+   "missing": [],
+   "controls": [
+    "Coa5",
+    "Tyw5",
+    "Atg9a",
+    "Glrx2",
+    "Stx6",
+    "Suv39h2",
+    "Olfm1",
+    "Prkra",
+    "Taf4",
+    "Rnf13",
+    "4921511C10Rik",
+    "Pi4kb",
+    "Lysmd1",
+    "Miga1",
+    "Cnr1",
+    "Pisd",
+    "Fgfrl1",
+    "Tbx3os1",
+    "Abhd11",
+    "Mtus2",
+    "Aup1",
+    "Akt2",
+    "Cep89",
+    "Vps35l",
+    "Prr14",
+    "Shcbp1",
+    "D130040H23Rik",
+    "Dpagt1",
+    "Commd4",
+    "Cyb5r4",
+    "Alas1",
+    "Xirp1",
+    "Wasf1",
+    "Pym1",
+    "Zmat5",
+    "Stk10",
+    "Abr",
+    "Gdpd1",
+    "Sec14l1",
+    "Cant1",
+    "Nrcam",
+    "Prps1l3",
+    "Carmil3",
+    "Tm9sf1",
+    "R3hcc1",
+    "Dzip1",
+    "Gm49267",
+    "Pycrl",
+    "Arhgap39",
+    "St6gal1",
+    "Gm19522",
+    "Abhd16a",
+    "Kdm4b",
+    "Mllt1",
+    "Ddx11",
+    "Gemin6",
+    "Pigf",
+    "Snx32",
+    "Spindoc",
+    "Psmd10"
+   ]
+  },
+  "epi": {
+   "found": [
+    "Wt1",
+    "Upk3b",
+    "Upk1b"
+   ],
+   "missing": [],
+   "controls": [
+    "Carf",
+    "Twist2",
+    "Tatdn3",
+    "Sertad4",
+    "Tmem141",
+    "Surf6",
+    "Snhg17",
+    "Rtel1",
+    "Mttp",
+    "Miga1",
+    "Wrap73",
+    "Gm10563",
+    "A430033K04Rik",
+    "Zdhhc4",
+    "Eif2ak1",
+    "Pon2",
+    "Txnrd3",
+    "Abhd13",
+    "Terf2",
+    "Aasdhppt",
+    "Oxsr1",
+    "Nt5dc1",
+    "Tvp23b",
+    "Coil",
+    "Plekhm1",
+    "Klf11",
+    "Phf7",
+    "B4galt4",
+    "Thoc6",
+    "Dlgap1"
+   ]
+  },
+  "endo_split": {
+   "found": [
+    "Npr3",
+    "Nfatc1",
+    "Cdh11"
+   ],
+   "missing": [],
+   "controls": [
+    "Rhbdd1",
+    "Ccnt2",
+    "Dars2",
+    "Galk2",
+    "Tuft1",
+    "Snrnp40",
+    "Wrap73",
+    "Dnajc2",
+    "Rell1",
+    "Git2",
+    "Pheta1",
+    "Denr",
+    "Zfp212",
+    "Psenen",
+    "Sept1",
+    "Terf2",
+    "Arhgef12",
+    "Pik3r4",
+    "Ctc1",
+    "Spag5",
+    "Fancc",
+    "Tent2",
+    "Dpysl2",
+    "Snhg18",
+    "Hsf1",
+    "Ndufa6",
+    "Fignl2",
+    "1600012H06Rik",
+    "Hmgxb3",
+    "Gm16286"
+   ]
+  },
+  "vasc_split": {
+   "found": [
+    "Cldn5",
+    "Sox17"
+   ],
+   "missing": [],
+   "controls": [
+    "Dusp10",
+    "Blvra",
+    "Napb",
+    "Zfp189",
+    "Ccdc163",
+    "Napepld",
+    "Retsat",
+    "Nek3",
+    "4933431K23Rik",
+    "Ddx25",
+    "Gm16124",
+    "Camta2",
+    "Mrm1",
+    "Pdk2",
+    "Apob",
+    "Cplx2",
+    "Oplah",
+    "Dact2",
+    "Arhgdig",
+    "Ppp1r3c"
+   ]
+  },
+  "blood": {
+   "found": [
+    "Hba-x",
+    "Hbb-y",
+    "Gata1",
+    "Hba-a1",
+    "Hbb-bs",
+    "Alas2"
+   ],
+   "missing": [],
+   "controls": [
+    "Gm28791",
+    "Teddm2",
+    "Gm20045",
+    "Flvcr1",
+    "Odf2",
+    "Grem1",
+    "Gfra4",
+    "Efna4",
+    "Ampd1",
+    "Tafa3",
+    "Amigo1",
+    "Ak5",
+    "Ufl1",
+    "Bach2os",
+    "Frem1",
+    "Spen",
+    "Gm15747",
+    "Glt1d1",
+    "Malsu1",
+    "Fkbp14",
+    "Shisa7",
+    "Zfp628",
+    "Gm3854",
+    "Zfp551",
+    "Six5",
+    "Ethe1",
+    "Polr2i",
+    "Siglecg",
+    "Ttll13",
+    "Aadat",
+    "Eps15l1",
+    "Mmp2",
+    "Afg3l1",
+    "Tmem136",
+    "5830454E08Rik",
+    "Abhd17a",
+    "Fstl4",
+    "Hist3h2ba",
+    "Arhgap44",
+    "Srr",
+    "Sarm1",
+    "Ddx52",
+    "Scpep1os",
+    "Fbxo47",
+    "Taco1",
+    "Slc38a10",
+    "Klf11",
+    "Cpsf2",
+    "S1pr3",
+    "Nfatc4",
+    "Skp2",
+    "Letmd1",
+    "Nme4",
+    "Cd320",
+    "Treml2",
+    "Myom1",
+    "Crem",
+    "Fen1",
+    "Morn4",
+    "Prps2"
+   ]
+  },
+  "neural_crest": {
+   "found": [
+    "Sox10",
+    "Foxd3",
+    "Tfap2a",
+    "Dlx2",
+    "Dlx5",
+    "Plp1"
+   ],
+   "missing": [],
+   "controls": [
+    "Cfc1",
+    "Aox4",
+    "Lrrn2",
+    "Gm36988",
+    "Lrp1b",
+    "Dlx1",
+    "Pde1a",
+    "Pla2g4b",
+    "Ada",
+    "Gm14410",
+    "Gm14403",
+    "1700064H15Rik",
+    "Gm43466",
+    "Gm42939",
+    "Gm43260",
+    "Amy1",
+    "Gm11915",
+    "Gm12860",
+    "Gjb3",
+    "Tmem54",
+    "Gm16023",
+    "Gm16008",
+    "4921504A21Rik",
+    "Cxcl13",
+    "Rnft2",
+    "Rasal1",
+    "Svopl",
+    "Add2",
+    "Tgfa",
+    "Clec9a",
+    "Arhgap33",
+    "Tdrd12",
+    "Ntf5",
+    "Ccdc114",
+    "2500002B13Rik",
+    "Gm39185",
+    "Mast3",
+    "Il20rb",
+    "Ky",
+    "Gm867",
+    "Kif5a",
+    "B9d1os",
+    "Tnfsf12",
+    "C030037D09Rik",
+    "Ttc25",
+    "2010001K21Rik",
+    "Gm32834",
+    "Dydc2",
+    "Gm5089",
+    "Gm5468",
+    "Gpt",
+    "Irak4",
+    "P2rx6",
+    "Gm19522",
+    "Tmem45a",
+    "1110020A21Rik",
+    "Tctn3",
+    "Nxf3",
+    "A730046J19Rik",
+    "Map3k15"
+   ]
+  },
+  "hepatic": {
+   "found": [
+    "Afp",
+    "Ttr",
+    "Alb"
+   ],
+   "missing": [],
+   "controls": [
+    "Dgkd",
+    "Pfkfb2",
+    "Gtf3c4",
+    "Vps16",
+    "Npepl1",
+    "Exosc9",
+    "Phtf1",
+    "Gm17494",
+    "Ror1",
+    "Ttc4",
+    "Stx18",
+    "Vopp1",
+    "Elmod3",
+    "Itpkc",
+    "Naf1",
+    "Myo9b",
+    "Coro2b",
+    "Cacna2d2",
+    "Ust",
+    "Wnk4",
+    "Iah1",
+    "Fgfr4",
+    "Gm49179",
+    "Plec",
+    "Pdxp",
+    "Slc51a",
+    "Smoc2",
+    "Mta2",
+    "Cyb561a3",
+    "Nrk"
+   ]
+  },
+  "mesenchyme": {
+   "found": [
+    "Tbx1",
+    "Fgf10",
+    "Postn",
+    "Col1a1",
+    "Col1a2",
+    "Col3a1",
+    "Dcn"
+   ],
+   "missing": [],
+   "controls": [
+    "Nemp2",
+    "Agfg1",
+    "Agap1",
+    "Insig2",
+    "Scyl3",
+    "Nsl1",
+    "Taf3",
+    "Arhgap1",
+    "2900097C17Rik",
+    "Zranb2",
+    "Plppr1",
+    "8030451A03Rik",
+    "Snapc3",
+    "Acot7",
+    "Sdf4",
+    "Krit1",
+    "Zkscan5",
+    "Ccdc61",
+    "Psmd8",
+    "Parva",
+    "Far1os",
+    "Ubfd1",
+    "Slc25a22",
+    "Mcoln1",
+    "Fbxo25",
+    "Angpt2",
+    "Ciapin1",
+    "D230025D16Rik",
+    "Zfp612",
+    "Snhg5",
+    "Mrpl3",
+    "Dusp7",
+    "Amt",
+    "Cenpw",
+    "Fig4",
+    "Fbxo7",
+    "Rel",
+    "Erlec1",
+    "Mnt",
+    "Mrps7",
+    "Efr3b",
+    "Cox16",
+    "Btbd7",
+    "Adarb2",
+    "Larp4b",
+    "Snx18",
+    "Nr1d2",
+    "Zswim8",
+    "Ndst2",
+    "Rhobtb2",
+    "Myo10",
+    "Rida",
+    "Slc25a1",
+    "Acap2",
+    "Dzip3",
+    "Ndufb10",
+    "Gm50013",
+    "H2-D1",
+    "Vars2",
+    "Prr3",
+    "Washc1",
+    "Msh6",
+    "Reep5",
+    "Gnpda1",
+    "Ppp2r2b",
+    "Fads2",
+    "Ftsj1",
+    "Renbp",
+    "Gla",
+    "Siah1b"
+   ]
+  },
+  "epithelial": {
+   "found": [
+    "Nkx2-1",
+    "Shh",
+    "Cdh1"
+   ],
+   "missing": [],
+   "controls": [
+    "Gm29170",
+    "Inafm2",
+    "Gm14164",
+    "Lekr1",
+    "Pink1",
+    "Megf6",
+    "Hdhd5",
+    "Zfp524",
+    "Trim3",
+    "Gprc5b",
+    "Armc5",
+    "Armc6",
+    "Def8",
+    "Mras",
+    "Wnk4",
+    "A930037H05Rik",
+    "Hmga1b",
+    "Atl1",
+    "Btbd6",
+    "Id4",
+    "Adgrv1",
+    "C1qtnf6",
+    "Slc48a1",
+    "Gramd1c",
+    "Rab26os",
+    "Cchcr1",
+    "4933424G05Rik",
+    "Prrg3",
+    "Gm14798",
+    "Gpr173"
+   ]
+  },
+  "mural": {
+   "found": [
+    "Myh11",
+    "Pdgfrb",
+    "Rgs5",
+    "Kcnj8",
+    "Cspg4"
+   ],
+   "missing": [],
+   "controls": [
+    "Cnppd1",
+    "Atg4b",
+    "Disp1",
+    "Mrps2",
+    "Crls1",
+    "Trib3",
+    "Mybl2",
+    "Pcif1",
+    "A730090N16Rik",
+    "Gm43256",
+    "Gm7534",
+    "Cnga1",
+    "1700016H13Rik",
+    "Zfp157",
+    "Rnf6",
+    "Gm44265",
+    "Gm44877",
+    "Dact3",
+    "Arhgef1",
+    "Gm15567",
+    "Gm44832",
+    "Uevld",
+    "Swap70",
+    "Vps35l",
+    "Zfp668",
+    "Atg4d",
+    "Glce",
+    "Cep70",
+    "Nedd1",
+    "Ddc",
+    "Pld6",
+    "Acadvl",
+    "Rapgefl1",
+    "Ptprn2",
+    "Zfp808",
+    "Platr25",
+    "A830082K12Rik",
+    "Synpr",
+    "Sept3",
+    "Abcc1",
+    "Hic2",
+    "Rtn4r",
+    "Cyp2ab1",
+    "Tsr3",
+    "4933433H22Rik",
+    "Slc27a6",
+    "Gstp2",
+    "Ccs",
+    "Ltbp3",
+    "Sufu"
+   ]
+  },
+  "immune": {
+   "found": [
+    "Ptprc",
+    "C1qb",
+    "Lyz2",
+    "Cd68"
+   ],
+   "missing": [],
+   "controls": [
+    "Slc16a14",
+    "Thsd7b",
+    "Gm14252",
+    "Platr30",
+    "Gm10636",
+    "Atp6v0d2",
+    "Ucn",
+    "Gm1043",
+    "Cds1",
+    "Gm2479",
+    "Plxna4os3",
+    "Atp6v0a4",
+    "Gm44199",
+    "Tmem72",
+    "Olr1",
+    "Gm50092",
+    "Fcgbp",
+    "Gm34664",
+    "Gm44737",
+    "Gm6980",
+    "Gm20139",
+    "Slc5a4a",
+    "Gm47708",
+    "Gm47956",
+    "F630206G17Rik",
+    "Map2k3os",
+    "Tmem132e",
+    "Hnf1b",
+    "Krt14",
+    "2900041M22Rik",
+    "Gm34250",
+    "Gm16677",
+    "Krt88",
+    "Gm15965",
+    "Kcnj6",
+    "Sox8",
+    "0610012D04Rik",
+    "Cybb",
+    "Dmrtc1a",
+    "Cysltr1"
+   ]
+  },
+  "lymphatic": {
+   "found": [
+    "Prox1",
+    "Flt4"
+   ],
+   "missing": [],
+   "controls": [
+    "Fastkd2",
+    "Rpe",
+    "Pacsin3",
+    "Adal",
+    "Gm43462",
+    "Gm12743",
+    "Ulk1",
+    "Ing3",
+    "Ccdc90b",
+    "Fbxl19",
+    "Naf1",
+    "Tnpo2",
+    "Agpat3",
+    "Cluh",
+    "Tnfrsf10b",
+    "Mpv17l",
+    "Fam43a",
+    "Tagln3",
+    "Tcf19",
+    "1500015A07Rik"
+   ]
+  }
+ },
+ "sensitivity": [
+  {
+   "setting": {
+    "min_score": 0.3,
+    "min_margin": 0.25
+   },
+   "group_cells": {
+    "CM": {
+     "E9.5": 4344
+    },
+    "Endocardium": {
+     "E9.5": 1006
+    },
+    "Endothelium": {
+     "E9.5": 1648
+    },
+    "Epicardium": {
+     "E9.5": 1118
+    }
+   },
+   "unassigned_share": {
+    "E9.5": 0.3597936331125051
+   },
+   "cap": {
+    "cap": 0.4,
+    "shares": {
+     "E9.5": 0.3597936331125051
+    },
+    "stages_over": [],
+    "passed": true
+   },
+   "by_released_label": {
+    "AVC-CM": {
+     "n": 326,
+     "shares": {
+      "r_cm": 0.9969325153374233,
+      "r_unassigned": 0.003067484662576687
+     }
+    },
+    "BEC": {
+     "n": 271,
+     "shares": {
+      "r_endocardial_ec": 0.03690036900369004,
+      "r_vascular_ec": 0.8819188191881919,
+      "r_ec_ambiguous": 0.04428044280442804,
+      "r_unassigned": 0.03690036900369004
+     }
+    },
+    "Blood": {
+     "n": 213,
+     "shares": {
+      "r_blood": 1.0
+     }
+    },
+    "Endocardium": {
+     "n": 1555,
+     "shares": {
+      "r_cm": 0.0006430868167202572,
+      "r_endocardial_ec": 0.6360128617363344,
+      "r_vascular_ec": 0.13890675241157557,
+      "r_ec_ambiguous": 0.11061093247588424,
+      "r_epicardial": 0.0012861736334405145,
+      "r_blood": 0.0006430868167202572,
+      "r_mesenchyme": 0.0012861736334405145,
+      "r_epithelial": 0.0006430868167202572,
+      "r_lymphatic": 0.0019292604501607716,
+      "r_unassigned": 0.10803858520900321
+     }
+    },
+    "Epithelium": {
+     "n": 233,
+     "shares": {
+      "r_cm": 0.008583690987124463,
+      "r_vascular_ec": 0.004291845493562232,
+      "r_blood": 0.008583690987124463,
+      "r_mesenchyme": 0.004291845493562232,
+      "r_epithelial": 0.6738197424892703,
+      "r_mural": 0.004291845493562232,
+      "r_lymphatic": 0.008583690987124463,
+      "r_unassigned": 0.2875536480686695
+     }
+    },
+    "Foregut": {
+     "n": 871,
+     "shares": {
+      "r_epicardial": 0.001148105625717566,
+      "r_blood": 0.009184845005740528,
+      "r_hepatic": 0.10907003444316878,
+      "r_epithelial": 0.49138920780711826,
+      "r_lymphatic": 0.004592422502870264,
+      "r_unassigned": 0.38461538461538464
+     }
+    },
+    "Hepatocyte": {
+     "n": 1190,
+     "shares": {
+      "r_endocardial_ec": 0.0008403361344537816,
+      "r_blood": 0.0008403361344537816,
+      "r_hepatic": 0.934453781512605,
+      "r_lymphatic": 0.014285714285714285,
+      "r_unassigned": 0.04957983193277311
+     }
+    },
+    "IFT-CM": {
+     "n": 690,
+     "shares": {
+      "r_cm": 0.9956521739130435,
+      "r_unassigned": 0.004347826086956522
+     }
+    },
+    "NCC": {
+     "n": 47,
+     "shares": {
+      "r_cm": 0.02127659574468085,
+      "r_blood": 0.02127659574468085,
+      "r_neural_crest": 0.7872340425531915,
+      "r_unassigned": 0.1702127659574468
+     }
+    },
+    "NCC-derived": {
+     "n": 621,
+     "shares": {
+      "r_cm": 0.00644122383252818,
+      "r_epicardial": 0.001610305958132045,
+      "r_blood": 0.033816425120772944,
+      "r_neural_crest": 0.07890499194847021,
+      "r_hepatic": 0.008051529790660225,
+      "r_mesenchyme": 0.0499194847020934,
+      "r_epithelial": 0.00322061191626409,
+      "r_mural": 0.01610305958132045,
+      "r_unassigned": 0.8019323671497585
+     }
+    },
+    "OFT/RV-CM": {
+     "n": 1830,
+     "shares": {
+      "r_cm": 0.8934426229508197,
+      "r_blood": 0.000546448087431694,
+      "r_mesenchyme": 0.000546448087431694,
+      "r_mural": 0.021311475409836064,
+      "r_lymphatic": 0.00273224043715847,
+      "r_unassigned": 0.0814207650273224
+     }
+    },
+    "Pericardium": {
+     "n": 897,
+     "shares": {
+      "r_epicardial": 0.12709030100334448,
+      "r_blood": 0.006688963210702341,
+      "r_hepatic": 0.0011148272017837235,
+      "r_mesenchyme": 0.2552954292084727,
+      "r_epithelial": 0.0011148272017837235,
+      "r_mural": 0.0011148272017837235,
+      "r_lymphatic": 0.0033444816053511705,
+      "r_unassigned": 0.6042363433667781
+     }
+    },
+    "Proepicardium": {
+     "n": 883,
+     "shares": {
+      "r_cm": 0.0011325028312570782,
+      "r_endocardial_ec": 0.0011325028312570782,
+      "r_epicardial": 0.8573046432616082,
+      "r_blood": 0.0033975084937712344,
+      "r_hepatic": 0.0022650056625141564,
+      "r_mesenchyme": 0.015855039637599093,
+      "r_unassigned": 0.11891279728199321
+     }
+    },
+    "ST": {
+     "n": 879,
+     "shares": {
+      "r_cm": 0.0022753128555176336,
+      "r_vascular_ec": 0.0011376564277588168,
+      "r_epicardial": 0.009101251422070534,
+      "r_blood": 0.007963594994311717,
+      "r_hepatic": 0.0022753128555176336,
+      "r_mesenchyme": 0.6359499431171786,
+      "r_mural": 0.0011376564277588168,
+      "r_lymphatic": 0.0022753128555176336,
+      "r_unassigned": 0.3378839590443686
+     }
+    },
+    "SV-CM": {
+     "n": 1273,
+     "shares": {
+      "r_cm": 0.3927729772191673,
+      "r_epicardial": 0.046347211311861744,
+      "r_blood": 0.01178318931657502,
+      "r_hepatic": 0.002356637863315004,
+      "r_mesenchyme": 0.04006284367635507,
+      "r_mural": 0.0007855459544383347,
+      "r_lymphatic": 0.009426551453260016,
+      "r_unassigned": 0.4964650432050275
+     }
+    },
+    "Surface Ectoderm": {
+     "n": 554,
+     "shares": {
+      "r_cm": 0.007220216606498195,
+      "r_endocardial_ec": 0.0018050541516245488,
+      "r_vascular_ec": 0.0018050541516245488,
+      "r_epicardial": 0.005415162454873646,
+      "r_blood": 0.02888086642599278,
+      "r_neural_crest": 0.005415162454873646,
+      "r_hepatic": 0.007220216606498195,
+      "r_mesenchyme": 0.005415162454873646,
+      "r_epithelial": 0.11010830324909747,
+      "r_mural": 0.0036101083032490976,
+      "r_lymphatic": 0.007220216606498195,
+      "r_unassigned": 0.8158844765342961
+     }
+    },
+    "V-CM": {
+     "n": 1144,
+     "shares": {
+      "r_cm": 1.0
+     }
+    },
+    "aPHM": {
+     "n": 226,
+     "shares": {
+      "r_cm": 0.004424778761061947,
+      "r_epicardial": 0.01327433628318584,
+      "r_blood": 0.02654867256637168,
+      "r_hepatic": 0.004424778761061947,
+      "r_mesenchyme": 0.061946902654867256,
+      "r_lymphatic": 0.10619469026548672,
+      "r_unassigned": 0.7831858407079646
+     }
+    },
+    "aSHF": {
+     "n": 1050,
+     "shares": {
+      "r_cm": 0.007619047619047619,
+      "r_epicardial": 0.0380952380952381,
+      "r_blood": 0.021904761904761906,
+      "r_hepatic": 0.0019047619047619048,
+      "r_mesenchyme": 0.04857142857142857,
+      "r_epithelial": 0.0009523809523809524,
+      "r_mural": 0.11142857142857143,
+      "r_lymphatic": 0.007619047619047619,
+      "r_unassigned": 0.7619047619047619
+     }
+    },
+    "pPHM": {
+     "n": 1194,
+     "shares": {
+      "r_cm": 0.002512562814070352,
+      "r_endocardial_ec": 0.0008375209380234506,
+      "r_epicardial": 0.10552763819095477,
+      "r_blood": 0.031825795644891124,
+      "r_hepatic": 0.0008375209380234506,
+      "r_mesenchyme": 0.1407035175879397,
+      "r_epithelial": 0.0008375209380234506,
+      "r_mural": 0.0033500837520938024,
+      "r_lymphatic": 0.0033500837520938024,
+      "r_unassigned": 0.7102177554438861
+     }
+    },
+    "pSHF": {
+     "n": 1110,
+     "shares": {
+      "r_cm": 0.023423423423423424,
+      "r_endocardial_ec": 0.002702702702702703,
+      "r_epicardial": 0.0036036036036036037,
+      "r_blood": 0.023423423423423424,
+      "r_hepatic": 0.0045045045045045045,
+      "r_mesenchyme": 0.02972972972972973,
+      "r_epithelial": 0.0018018018018018018,
+      "r_mural": 0.009009009009009009,
+      "r_lymphatic": 0.013513513513513514,
+      "r_unassigned": 0.8882882882882883
+     }
+    }
+   }
+  },
+  {
+   "setting": {
+    "min_score": 0.7,
+    "min_margin": 0.25
+   },
+   "group_cells": {
+    "CM": {
+     "E9.5": 4161
+    },
+    "Endocardium": {
+     "E9.5": 853
+    },
+    "Endothelium": {
+     "E9.5": 1407
+    },
+    "Epicardium": {
+     "E9.5": 794
+    }
+   },
+   "unassigned_share": {
+    "E9.5": 0.48543120126634226
+   },
+   "cap": {
+    "cap": 0.4,
+    "shares": {
+     "E9.5": 0.48543120126634226
+    },
+    "stages_over": [
+     "E9.5"
+    ],
+    "passed": false
+   },
+   "by_released_label": {
+    "AVC-CM": {
+     "n": 326,
+     "shares": {
+      "r_cm": 0.9969325153374233,
+      "r_unassigned": 0.003067484662576687
+     }
+    },
+    "BEC": {
+     "n": 271,
+     "shares": {
+      "r_endocardial_ec": 0.03690036900369004,
+      "r_vascular_ec": 0.8782287822878229,
+      "r_ec_ambiguous": 0.04428044280442804,
+      "r_unassigned": 0.04059040590405904
+     }
+    },
+    "Blood": {
+     "n": 213,
+     "shares": {
+      "r_blood": 1.0
+     }
+    },
+    "Endocardium": {
+     "n": 1555,
+     "shares": {
+      "r_cm": 0.0006430868167202572,
+      "r_endocardial_ec": 0.5421221864951768,
+      "r_vascular_ec": 0.1067524115755627,
+      "r_ec_ambiguous": 0.08681672025723473,
+      "r_epicardial": 0.0006430868167202572,
+      "r_blood": 0.0006430868167202572,
+      "r_mesenchyme": 0.0006430868167202572,
+      "r_lymphatic": 0.0006430868167202572,
+      "r_unassigned": 0.26109324758842445
+     }
+    },
+    "Epithelium": {
+     "n": 233,
+     "shares": {
+      "r_cm": 0.008583690987124463,
+      "r_vascular_ec": 0.004291845493562232,
+      "r_blood": 0.004291845493562232,
+      "r_epithelial": 0.4592274678111588,
+      "r_unassigned": 0.5236051502145923
+     }
+    },
+    "Foregut": {
+     "n": 871,
+     "shares": {
+      "r_blood": 0.002296211251435132,
+      "r_hepatic": 0.08036739380022963,
+      "r_epithelial": 0.3157290470723307,
+      "r_unassigned": 0.6016073478760046
+     }
+    },
+    "Hepatocyte": {
+     "n": 1190,
+     "shares": {
+      "r_blood": 0.0008403361344537816,
+      "r_hepatic": 0.9235294117647059,
+      "r_lymphatic": 0.010924369747899159,
+      "r_unassigned": 0.06470588235294118
+     }
+    },
+    "IFT-CM": {
+     "n": 690,
+     "shares": {
+      "r_cm": 0.9898550724637681,
+      "r_unassigned": 0.010144927536231883
+     }
+    },
+    "NCC": {
+     "n": 47,
+     "shares": {
+      "r_cm": 0.02127659574468085,
+      "r_blood": 0.02127659574468085,
+      "r_neural_crest": 0.1702127659574468,
+      "r_unassigned": 0.7872340425531915
+     }
+    },
+    "NCC-derived": {
+     "n": 621,
+     "shares": {
+      "r_cm": 0.00644122383252818,
+      "r_epicardial": 0.001610305958132045,
+      "r_blood": 0.01610305958132045,
+      "r_neural_crest": 0.001610305958132045,
+      "r_hepatic": 0.00644122383252818,
+      "r_mesenchyme": 0.01932367149758454,
+      "r_epithelial": 0.001610305958132045,
+      "r_mural": 0.004830917874396135,
+      "r_unassigned": 0.9420289855072463
+     }
+    },
+    "OFT/RV-CM": {
+     "n": 1830,
+     "shares": {
+      "r_cm": 0.8765027322404372,
+      "r_blood": 0.000546448087431694,
+      "r_mural": 0.00546448087431694,
+      "r_lymphatic": 0.000546448087431694,
+      "r_unassigned": 0.11693989071038251
+     }
+    },
+    "Pericardium": {
+     "n": 897,
+     "shares": {
+      "r_epicardial": 0.07357859531772576,
+      "r_blood": 0.0033444816053511705,
+      "r_hepatic": 0.0011148272017837235,
+      "r_mesenchyme": 0.03455964325529543,
+      "r_lymphatic": 0.0011148272017837235,
+      "r_unassigned": 0.8862876254180602
+     }
+    },
+    "Proepicardium": {
+     "n": 883,
+     "shares": {
+      "r_cm": 0.0011325028312570782,
+      "r_epicardial": 0.7134767836919592,
+      "r_blood": 0.0022650056625141564,
+      "r_hepatic": 0.0022650056625141564,
+      "r_mesenchyme": 0.0056625141562853904,
+      "r_unassigned": 0.27519818799546997
+     }
+    },
+    "ST": {
+     "n": 879,
+     "shares": {
+      "r_cm": 0.0011376564277588168,
+      "r_vascular_ec": 0.0011376564277588168,
+      "r_epicardial": 0.0022753128555176336,
+      "r_blood": 0.004550625711035267,
+      "r_hepatic": 0.0011376564277588168,
+      "r_mesenchyme": 0.4197952218430034,
+      "r_unassigned": 0.5699658703071673
+     }
+    },
+    "SV-CM": {
+     "n": 1273,
+     "shares": {
+      "r_cm": 0.30007855459544386,
+      "r_epicardial": 0.012568735271013355,
+      "r_blood": 0.002356637863315004,
+      "r_hepatic": 0.002356637863315004,
+      "r_mesenchyme": 0.002356637863315004,
+      "r_lymphatic": 0.0015710919088766694,
+      "r_unassigned": 0.6787117046347211
+     }
+    },
+    "Surface Ectoderm": {
+     "n": 554,
+     "shares": {
+      "r_cm": 0.0018050541516245488,
+      "r_vascular_ec": 0.0018050541516245488,
+      "r_epicardial": 0.0018050541516245488,
+      "r_blood": 0.005415162454873646,
+      "r_hepatic": 0.007220216606498195,
+      "r_mesenchyme": 0.0018050541516245488,
+      "r_epithelial": 0.009025270758122744,
+      "r_mural": 0.0018050541516245488,
+      "r_unassigned": 0.9693140794223827
+     }
+    },
+    "V-CM": {
+     "n": 1144,
+     "shares": {
+      "r_cm": 1.0
+     }
+    },
+    "aPHM": {
+     "n": 226,
+     "shares": {
+      "r_blood": 0.017699115044247787,
+      "r_mesenchyme": 0.008849557522123894,
+      "r_lymphatic": 0.004424778761061947,
+      "r_unassigned": 0.9690265486725663
+     }
+    },
+    "aSHF": {
+     "n": 1050,
+     "shares": {
+      "r_cm": 0.004761904761904762,
+      "r_epicardial": 0.014285714285714285,
+      "r_blood": 0.005714285714285714,
+      "r_hepatic": 0.0019047619047619048,
+      "r_mesenchyme": 0.005714285714285714,
+      "r_mural": 0.006666666666666667,
+      "r_unassigned": 0.960952380952381
+     }
+    },
+    "pPHM": {
+     "n": 1194,
+     "shares": {
+      "r_epicardial": 0.05108877721943048,
+      "r_blood": 0.0041876046901172526,
+      "r_hepatic": 0.0008375209380234506,
+      "r_mesenchyme": 0.076214405360134,
+      "r_unassigned": 0.8676716917922948
+     }
+    },
+    "pSHF": {
+     "n": 1110,
+     "shares": {
+      "r_cm": 0.006306306306306306,
+      "r_epicardial": 0.0009009009009009009,
+      "r_blood": 0.0045045045045045045,
+      "r_hepatic": 0.0018018018018018018,
+      "r_mesenchyme": 0.002702702702702703,
+      "r_unassigned": 0.9837837837837838
+     }
+    }
+   }
+  },
+  {
+   "setting": {
+    "min_score": 0.5,
+    "min_margin": 0.15
+   },
+   "group_cells": {
+    "CM": {
+     "E9.5": 4321
+    },
+    "Endocardium": {
+     "E9.5": 967
+    },
+    "Endothelium": {
+     "E9.5": 1589
+    },
+    "Epicardium": {
+     "E9.5": 1036
+    }
+   },
+   "unassigned_share": {
+    "E9.5": 0.40042211408805767
+   },
+   "cap": {
+    "cap": 0.4,
+    "shares": {
+     "E9.5": 0.40042211408805767
+    },
+    "stages_over": [
+     "E9.5"
+    ],
+    "passed": false
+   },
+   "by_released_label": {
+    "AVC-CM": {
+     "n": 326,
+     "shares": {
+      "r_cm": 0.9969325153374233,
+      "r_unassigned": 0.003067484662576687
+     }
+    },
+    "BEC": {
+     "n": 271,
+     "shares": {
+      "r_endocardial_ec": 0.03690036900369004,
+      "r_vascular_ec": 0.8892988929889298,
+      "r_ec_ambiguous": 0.04428044280442804,
+      "r_hepatic": 0.0036900369003690036,
+      "r_unassigned": 0.025830258302583026
+     }
+    },
+    "Blood": {
+     "n": 213,
+     "shares": {
+      "r_blood": 1.0
+     }
+    },
+    "Endocardium": {
+     "n": 1555,
+     "shares": {
+      "r_cm": 0.0006430868167202572,
+      "r_endocardial_ec": 0.6122186495176849,
+      "r_vascular_ec": 0.13183279742765272,
+      "r_ec_ambiguous": 0.10353697749196142,
+      "r_epicardial": 0.0012861736334405145,
+      "r_blood": 0.0006430868167202572,
+      "r_hepatic": 0.0006430868167202572,
+      "r_mesenchyme": 0.0019292604501607716,
+      "r_lymphatic": 0.0012861736334405145,
+      "r_unassigned": 0.1459807073954984
+     }
+    },
+    "Epithelium": {
+     "n": 233,
+     "shares": {
+      "r_cm": 0.012875536480686695,
+      "r_vascular_ec": 0.004291845493562232,
+      "r_blood": 0.008583690987124463,
+      "r_mesenchyme": 0.004291845493562232,
+      "r_epithelial": 0.648068669527897,
+      "r_lymphatic": 0.017167381974248927,
+      "r_unassigned": 0.30472103004291845
+     }
+    },
+    "Foregut": {
+     "n": 871,
+     "shares": {
+      "r_epicardial": 0.001148105625717566,
+      "r_blood": 0.008036739380022962,
+      "r_hepatic": 0.1182548794489093,
+      "r_epithelial": 0.4431687715269805,
+      "r_lymphatic": 0.001148105625717566,
+      "r_unassigned": 0.42824339839265213
+     }
+    },
+    "Hepatocyte": {
+     "n": 1190,
+     "shares": {
+      "r_endocardial_ec": 0.0008403361344537816,
+      "r_blood": 0.0016806722689075631,
+      "r_hepatic": 0.9453781512605042,
+      "r_lymphatic": 0.018487394957983194,
+      "r_unassigned": 0.03361344537815126
+     }
+    },
+    "IFT-CM": {
+     "n": 690,
+     "shares": {
+      "r_cm": 0.9942028985507246,
+      "r_unassigned": 0.005797101449275362
+     }
+    },
+    "NCC": {
+     "n": 47,
+     "shares": {
+      "r_cm": 0.02127659574468085,
+      "r_blood": 0.02127659574468085,
+      "r_neural_crest": 0.5531914893617021,
+      "r_unassigned": 0.40425531914893614
+     }
+    },
+    "NCC-derived": {
+     "n": 621,
+     "shares": {
+      "r_cm": 0.00644122383252818,
+      "r_epicardial": 0.001610305958132045,
+      "r_blood": 0.033816425120772944,
+      "r_neural_crest": 0.01932367149758454,
+      "r_hepatic": 0.008051529790660225,
+      "r_mesenchyme": 0.05636070853462158,
+      "r_epithelial": 0.001610305958132045,
+      "r_mural": 0.01610305958132045,
+      "r_unassigned": 0.856682769726248
+     }
+    },
+    "OFT/RV-CM": {
+     "n": 1830,
+     "shares": {
+      "r_cm": 0.8994535519125683,
+      "r_blood": 0.001092896174863388,
+      "r_mesenchyme": 0.001639344262295082,
+      "r_mural": 0.021311475409836064,
+      "r_lymphatic": 0.003825136612021858,
+      "r_unassigned": 0.0726775956284153
+     }
+    },
+    "Pericardium": {
+     "n": 897,
+     "shares": {
+      "r_epicardial": 0.11594202898550725,
+      "r_blood": 0.0033444816053511705,
+      "r_hepatic": 0.0011148272017837235,
+      "r_mesenchyme": 0.13823857302118173,
+      "r_epithelial": 0.0011148272017837235,
+      "r_mural": 0.0011148272017837235,
+      "r_lymphatic": 0.0011148272017837235,
+      "r_unassigned": 0.738015607580825
+     }
+    },
+    "Proepicardium": {
+     "n": 883,
+     "shares": {
+      "r_cm": 0.0022650056625141564,
+      "r_endocardial_ec": 0.0011325028312570782,
+      "r_epicardial": 0.8267270668176671,
+      "r_blood": 0.0033975084937712344,
+      "r_hepatic": 0.0022650056625141564,
+      "r_mesenchyme": 0.014722536806342015,
+      "r_unassigned": 0.14949037372593432
+     }
+    },
+    "ST": {
+     "n": 879,
+     "shares": {
+      "r_cm": 0.0034129692832764505,
+      "r_vascular_ec": 0.0011376564277588168,
+      "r_epicardial": 0.006825938566552901,
+      "r_blood": 0.009101251422070534,
+      "r_hepatic": 0.0034129692832764505,
+      "r_mesenchyme": 0.5984072810011376,
+      "r_mural": 0.0011376564277588168,
+      "r_lymphatic": 0.0011376564277588168,
+      "r_unassigned": 0.37542662116040953
+     }
+    },
+    "SV-CM": {
+     "n": 1273,
+     "shares": {
+      "r_cm": 0.373134328358209,
+      "r_epicardial": 0.031421838177533384,
+      "r_blood": 0.007069913589945012,
+      "r_hepatic": 0.003142183817753339,
+      "r_mesenchyme": 0.02199528672427337,
+      "r_lymphatic": 0.003927729772191673,
+      "r_unassigned": 0.5593087195600943
+     }
+    },
+    "Surface Ectoderm": {
+     "n": 554,
+     "shares": {
+      "r_cm": 0.0036101083032490976,
+      "r_endocardial_ec": 0.0018050541516245488,
+      "r_vascular_ec": 0.0018050541516245488,
+      "r_epicardial": 0.005415162454873646,
+      "r_blood": 0.010830324909747292,
+      "r_neural_crest": 0.0018050541516245488,
+      "r_hepatic": 0.007220216606498195,
+      "r_mesenchyme": 0.0036101083032490976,
+      "r_epithelial": 0.04693140794223827,
+      "r_mural": 0.0018050541516245488,
+      "r_lymphatic": 0.0036101083032490976,
+      "r_unassigned": 0.9115523465703971
+     }
+    },
+    "V-CM": {
+     "n": 1144,
+     "shares": {
+      "r_cm": 1.0
+     }
+    },
+    "aPHM": {
+     "n": 226,
+     "shares": {
+      "r_cm": 0.004424778761061947,
+      "r_epicardial": 0.004424778761061947,
+      "r_blood": 0.022123893805309734,
+      "r_mesenchyme": 0.035398230088495575,
+      "r_lymphatic": 0.05752212389380531,
+      "r_unassigned": 0.8761061946902655
+     }
+    },
+    "aSHF": {
+     "n": 1050,
+     "shares": {
+      "r_cm": 0.006666666666666667,
+      "r_epicardial": 0.03428571428571429,
+      "r_blood": 0.012380952380952381,
+      "r_hepatic": 0.0019047619047619048,
+      "r_mesenchyme": 0.025714285714285714,
+      "r_mural": 0.05238095238095238,
+      "r_lymphatic": 0.007619047619047619,
+      "r_unassigned": 0.8590476190476191
+     }
+    },
+    "pPHM": {
+     "n": 1194,
+     "shares": {
+      "r_cm": 0.002512562814070352,
+      "r_endocardial_ec": 0.0008375209380234506,
+      "r_epicardial": 0.09296482412060302,
+      "r_blood": 0.01675041876046901,
+      "r_hepatic": 0.0016750418760469012,
+      "r_mesenchyme": 0.11139028475711893,
+      "r_lymphatic": 0.0008375209380234506,
+      "r_unassigned": 0.7730318257956449
+     }
+    },
+    "pSHF": {
+     "n": 1110,
+     "shares": {
+      "r_cm": 0.016216216216216217,
+      "r_endocardial_ec": 0.0009009009009009009,
+      "r_epicardial": 0.0009009009009009009,
+      "r_blood": 0.00990990990990991,
+      "r_hepatic": 0.002702702702702703,
+      "r_mesenchyme": 0.008108108108108109,
+      "r_epithelial": 0.0009009009009009009,
+      "r_lymphatic": 0.006306306306306306,
+      "r_unassigned": 0.9540540540540541
+     }
+    }
+   }
+  },
+  {
+   "setting": {
+    "min_score": 0.5,
+    "min_margin": 0.35
+   },
+   "group_cells": {
+    "CM": {
+     "E9.5": 4245
+    },
+    "Endocardium": {
+     "E9.5": 935
+    },
+    "Endothelium": {
+     "E9.5": 1529
+    },
+    "Epicardium": {
+     "E9.5": 928
+    }
+   },
+   "unassigned_share": {
+    "E9.5": 0.441460983760333
+   },
+   "cap": {
+    "cap": 0.4,
+    "shares": {
+     "E9.5": 0.441460983760333
+    },
+    "stages_over": [
+     "E9.5"
+    ],
+    "passed": false
+   },
+   "by_released_label": {
+    "AVC-CM": {
+     "n": 326,
+     "shares": {
+      "r_cm": 0.9969325153374233,
+      "r_unassigned": 0.003067484662576687
+     }
+    },
+    "BEC": {
+     "n": 271,
+     "shares": {
+      "r_endocardial_ec": 0.033210332103321034,
+      "r_vascular_ec": 0.8671586715867159,
+      "r_ec_ambiguous": 0.04428044280442804,
+      "r_unassigned": 0.055350553505535055
+     }
+    },
+    "Blood": {
+     "n": 213,
+     "shares": {
+      "r_blood": 1.0
+     }
+    },
+    "Endocardium": {
+     "n": 1555,
+     "shares": {
+      "r_cm": 0.0006430868167202572,
+      "r_endocardial_ec": 0.5929260450160772,
+      "r_vascular_ec": 0.12218649517684887,
+      "r_ec_ambiguous": 0.09967845659163987,
+      "r_blood": 0.0006430868167202572,
+      "r_mesenchyme": 0.0006430868167202572,
+      "r_lymphatic": 0.0006430868167202572,
+      "r_unassigned": 0.18263665594855305
+     }
+    },
+    "Epithelium": {
+     "n": 233,
+     "shares": {
+      "r_cm": 0.008583690987124463,
+      "r_epithelial": 0.5622317596566524,
+      "r_unassigned": 0.4291845493562232
+     }
+    },
+    "Foregut": {
+     "n": 871,
+     "shares": {
+      "r_epicardial": 0.001148105625717566,
+      "r_blood": 0.003444316877152698,
+      "r_hepatic": 0.08381171067738231,
+      "r_epithelial": 0.3857634902411022,
+      "r_lymphatic": 0.001148105625717566,
+      "r_unassigned": 0.5246842709529277
+     }
+    },
+    "Hepatocyte": {
+     "n": 1190,
+     "shares": {
+      "r_endocardial_ec": 0.0008403361344537816,
+      "r_blood": 0.0008403361344537816,
+      "r_hepatic": 0.9184873949579831,
+      "r_lymphatic": 0.009243697478991597,
+      "r_unassigned": 0.07058823529411765
+     }
+    },
+    "IFT-CM": {
+     "n": 690,
+     "shares": {
+      "r_cm": 0.9942028985507246,
+      "r_unassigned": 0.005797101449275362
+     }
+    },
+    "NCC": {
+     "n": 47,
+     "shares": {
+      "r_cm": 0.02127659574468085,
+      "r_blood": 0.02127659574468085,
+      "r_neural_crest": 0.5106382978723404,
+      "r_unassigned": 0.44680851063829785
+     }
+    },
+    "NCC-derived": {
+     "n": 621,
+     "shares": {
+      "r_cm": 0.004830917874396135,
+      "r_epicardial": 0.001610305958132045,
+      "r_blood": 0.024154589371980676,
+      "r_neural_crest": 0.014492753623188406,
+      "r_hepatic": 0.008051529790660225,
+      "r_mesenchyme": 0.024154589371980676,
+      "r_epithelial": 0.001610305958132045,
+      "r_mural": 0.00644122383252818,
+      "r_unassigned": 0.9146537842190016
+     }
+    },
+    "OFT/RV-CM": {
+     "n": 1830,
+     "shares": {
+      "r_cm": 0.8786885245901639,
+      "r_mural": 0.009289617486338797,
+      "r_lymphatic": 0.001639344262295082,
+      "r_unassigned": 0.11038251366120219
+     }
+    },
+    "Pericardium": {
+     "n": 897,
+     "shares": {
+      "r_epicardial": 0.09810479375696766,
+      "r_blood": 0.0033444816053511705,
+      "r_hepatic": 0.0011148272017837235,
+      "r_mesenchyme": 0.11036789297658862,
+      "r_lymphatic": 0.0011148272017837235,
+      "r_unassigned": 0.7859531772575251
+     }
+    },
+    "Proepicardium": {
+     "n": 883,
+     "shares": {
+      "r_cm": 0.0011325028312570782,
+      "r_endocardial_ec": 0.0011325028312570782,
+      "r_epicardial": 0.7904869762174406,
+      "r_blood": 0.0033975084937712344,
+      "r_hepatic": 0.0022650056625141564,
+      "r_mesenchyme": 0.009060022650056626,
+      "r_unassigned": 0.19252548131370328
+     }
+    },
+    "ST": {
+     "n": 879,
+     "shares": {
+      "r_cm": 0.0011376564277588168,
+      "r_vascular_ec": 0.0011376564277588168,
+      "r_epicardial": 0.0022753128555176336,
+      "r_blood": 0.004550625711035267,
+      "r_hepatic": 0.0011376564277588168,
+      "r_mesenchyme": 0.5142207053469852,
+      "r_mural": 0.0011376564277588168,
+      "r_unassigned": 0.47440273037542663
+     }
+    },
+    "SV-CM": {
+     "n": 1273,
+     "shares": {
+      "r_cm": 0.3519245875883739,
+      "r_epicardial": 0.02670856245090338,
+      "r_blood": 0.003927729772191673,
+      "r_hepatic": 0.0015710919088766694,
+      "r_mesenchyme": 0.012568735271013355,
+      "r_lymphatic": 0.0015710919088766694,
+      "r_unassigned": 0.6017282010997643
+     }
+    },
+    "Surface Ectoderm": {
+     "n": 554,
+     "shares": {
+      "r_cm": 0.0018050541516245488,
+      "r_endocardial_ec": 0.0018050541516245488,
+      "r_vascular_ec": 0.0018050541516245488,
+      "r_epicardial": 0.0018050541516245488,
+      "r_blood": 0.009025270758122744,
+      "r_neural_crest": 0.0018050541516245488,
+      "r_hepatic": 0.007220216606498195,
+      "r_mesenchyme": 0.0036101083032490976,
+      "r_epithelial": 0.039711191335740074,
+      "r_mural": 0.0018050541516245488,
+      "r_lymphatic": 0.0018050541516245488,
+      "r_unassigned": 0.927797833935018
+     }
+    },
+    "V-CM": {
+     "n": 1144,
+     "shares": {
+      "r_cm": 1.0
+     }
+    },
+    "aPHM": {
+     "n": 226,
+     "shares": {
+      "r_blood": 0.017699115044247787,
+      "r_mesenchyme": 0.02654867256637168,
+      "r_lymphatic": 0.035398230088495575,
+      "r_unassigned": 0.9203539823008849
+     }
+    },
+    "aSHF": {
+     "n": 1050,
+     "shares": {
+      "r_cm": 0.005714285714285714,
+      "r_epicardial": 0.01904761904761905,
+      "r_blood": 0.010476190476190476,
+      "r_hepatic": 0.0019047619047619048,
+      "r_mesenchyme": 0.011428571428571429,
+      "r_mural": 0.035238095238095235,
+      "r_lymphatic": 0.0038095238095238095,
+      "r_unassigned": 0.9123809523809524
+     }
+    },
+    "pPHM": {
+     "n": 1194,
+     "shares": {
+      "r_cm": 0.0016750418760469012,
+      "r_epicardial": 0.06867671691792294,
+      "r_blood": 0.011725293132328308,
+      "r_hepatic": 0.0008375209380234506,
+      "r_mesenchyme": 0.08626465661641541,
+      "r_unassigned": 0.830820770519263
+     }
+    },
+    "pSHF": {
+     "n": 1110,
+     "shares": {
+      "r_cm": 0.014414414414414415,
+      "r_endocardial_ec": 0.0009009009009009009,
+      "r_epicardial": 0.0009009009009009009,
+      "r_blood": 0.00990990990990991,
+      "r_hepatic": 0.002702702702702703,
+      "r_mesenchyme": 0.007207207207207207,
+      "r_epithelial": 0.0009009009009009009,
+      "r_lymphatic": 0.0045045045045045045,
+      "r_unassigned": 0.9585585585585585
+     }
+    }
+   }
+  }
+ ],
+ "rule": {
+  "settings": [
+   {
+    "setting": {
+     "min_score": 0.5,
+     "min_margin": 0.25
+    },
+    "unassigned_share": 0.41818608196048546,
+    "cap_passed": false,
+    "chambers": {
+     "CM": {
+      "n": 5263,
+      "own_share": 0.8080942428272848,
+      "largest_other": 0.17100513015390462,
+      "passed": true
+     },
+     "Endocardium": {
+      "n": 1555,
+      "own_share": 0.6057877813504823,
+      "largest_other": 0.16012861736334405,
+      "passed": true
+     },
+     "BEC": {
+      "n": 271,
+      "own_share": 0.9261992619926199,
+      "largest_other": 0.03690036900369004,
+      "passed": true
+     },
+     "Proepicardium": {
+      "n": 883,
+      "own_share": 0.8097395243488109,
+      "largest_other": 0.1710079275198188,
+      "passed": true
+     }
+    },
+    "passed": false
+   },
+   {
+    "setting": {
+     "min_score": 0.3,
+     "min_margin": 0.25
+    },
+    "unassigned_share": 0.3597936331125051,
+    "cap_passed": true,
+    "chambers": {
+     "CM": {
+      "n": 5263,
+      "own_share": 0.815314459433783,
+      "largest_other": 0.14915447463423903,
+      "passed": true
+     },
+     "Endocardium": {
+      "n": 1555,
+      "own_share": 0.6360128617363344,
+      "largest_other": 0.13890675241157557,
+      "passed": true
+     },
+     "BEC": {
+      "n": 271,
+      "own_share": 0.9261992619926199,
+      "largest_other": 0.03690036900369004,
+      "passed": true
+     },
+     "Proepicardium": {
+      "n": 883,
+      "own_share": 0.8573046432616082,
+      "largest_other": 0.11891279728199321,
+      "passed": true
+     }
+    },
+    "passed": true
+   },
+   {
+    "setting": {
+     "min_score": 0.5,
+     "min_margin": 0.15
+    },
+    "unassigned_share": 0.40042211408805767,
+    "cap_passed": false,
+    "chambers": {
+     "CM": {
+      "n": 5263,
+      "own_share": 0.812464373931218,
+      "largest_other": 0.16150484514535435,
+      "passed": true
+     },
+     "Endocardium": {
+      "n": 1555,
+      "own_share": 0.6122186495176849,
+      "largest_other": 0.1459807073954984,
+      "passed": true
+     },
+     "BEC": {
+      "n": 271,
+      "own_share": 0.933579335793358,
+      "largest_other": 0.03690036900369004,
+      "passed": true
+     },
+     "Proepicardium": {
+      "n": 883,
+      "own_share": 0.8267270668176671,
+      "largest_other": 0.14949037372593432,
+      "passed": true
+     }
+    },
+    "passed": false
+   }
+  ],
+  "outcome": "changed",
+  "setting": {
+   "min_score": 0.3,
+   "min_margin": 0.25
+  }
+ },
+ "inputs": {
+  "released": "data/raw/T1/E9.5_RNA.h5ad",
+  "sha256": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+  "config_sha256": "67b1cfbec2f188edc7a74a44fc1bc7cffd8d3e2da4f766d3ab7644f3440cd863"
+ },
+ "stamp": {
+  "commit": "cae44f793d1a134b219471df6f9bc941d913c82a",
+  "utc": "2026-11-19T18:37:50Z"
+ }
+}
