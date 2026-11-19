@@ -201,7 +201,7 @@ the captain's ruling of 2026-11-13, row H11), uploaded on 2026-11-18 as a unifor
 item 4). s2 was H2 as the half trim, with the trend from 2026-11-13; from 2026-11-18 a full-scope copy of E10.5 evenly
 scaled to the size file's raw-mode H1 size and halved (Departures, item 6; built, not uploaded). Since 2026-11-19 the
 last upload is the full trim, by the captain's own named exception on what his question called scope, cell number and
-size (row R10; Departures, item 14): E10.5's cells inside the core's in-plane spread, their expression unchanged,
+size; the AI assistant stated no preference (row R10; Departures, item 14): E10.5's cells inside the core's in-plane spread, their expression unchanged,
 scaled by one factor on all three axes to the size file's raw-mode core forecast of 2026-10-28, then halved by the
 same rule. The count rule is unchanged; with the scope, the pool the rows are drawn from changes. The file is held
 until a practice read at forecast sizes (row H27) is with the captain (Departures, item 14).
@@ -1259,8 +1259,8 @@ captain released the DGX's GPUs 2 to 7 to this work and lifted `docs/COMPUTE.md`
   ruling R4's file) outside it; the first upload's own geometry is not an arm of N53, and rows E11 and N51 had
   flagged it as flatter than either bracket, with mirrored partners. It enters by the captain's ruling, not by the
   adoption rule. The first scores chose it among files built from released data, and nothing was computed from them.
-- **Heart E12.5, the last upload since 2026-11-19: the full trim, by the captain's own named exception** (row R10;
-  Departures, item 14): E10.5's cells inside the core's in-plane spread, expression unchanged, scaled evenly to the
+- **Heart E12.5, the last upload since 2026-11-19: the full trim, by the captain's own named exception**; the AI
+  assistant stated no preference (row R10; Departures, item 14): E10.5's cells inside the core's in-plane spread, expression unchanged, scaled evenly to the
   size file's raw-mode core forecast of 2026-10-28, then halved. Held until row H27's read at forecast sizes is with
   the captain (decision log 2026-11-19 (ee)).
 - **Spatial hygiene:** random rows only, jitter of at most 0.25 nearest-neighbour distances to break duplicate
