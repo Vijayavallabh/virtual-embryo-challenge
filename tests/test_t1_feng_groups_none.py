@@ -337,9 +337,9 @@ def test_none_does_not_read_r1_feng_groups(bt, t1_env, monkeypatch, tmp_path):  
 
 
 def test_the_entry_still_uses_r1s_mask_and_its_record_has_no_mask_field(bt, t1_env, monkeypatch, tmp_path):  # noqa: F811
-    """With the option not given the hook asks R1's mask function, as before, and never the readout config's own rule; and
-    dropping Endocardium from R1_FENG_GROUPS changes the entry's bytes (the list binds there, which is why none does
-    not read it)."""
+    """With the option not given the hook asks R1's mask function, as before, and never the readout config's own
+    rule; and dropping Endocardium from R1_FENG_GROUPS changes the entry's bytes (the list binds there, which is why
+    none does not read it)."""
     _target_env(bt, t1_env, monkeypatch)
     calls = []
     real = ts.r1_unbracketed_labels
