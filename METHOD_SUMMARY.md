@@ -201,7 +201,7 @@ the captain's ruling of 2026-11-13, row H11), uploaded on 2026-11-18 as a unifor
 item 4). s2 was H2 as the half trim, with the trend from 2026-11-13; from 2026-11-18 a full-scope copy of E10.5 evenly
 scaled to the size file's raw-mode H1 size and halved (Departures, item 6; built, not uploaded). Since 2026-11-19 the
 last upload is the full trim, by the captain's own named exception on what his question called scope, cell number and
-size; the AI assistant stated no preference (row R10; Departures, item 14): E10.5's cells inside the core's in-plane spread, their expression unchanged,
+size; the AI assistant stated no preference and named no heart file, having told him before the dialog that a Top-3 aim weighs each board's last file by its ceiling with the first score banked (row R10; Departures, item 14): E10.5's cells inside the core's in-plane spread, their expression unchanged,
 scaled by one factor on all three axes to the size file's raw-mode core forecast of 2026-10-28, then halved by the
 same rule. The count rule is unchanged; with the scope, the pool the rows are drawn from changes. The file is held
 until a practice read at forecast sizes (row H27) is with the captain (Departures, item 14).
@@ -977,7 +977,7 @@ captain released the DGX's GPUs 2 to 7 to this work and lifted `docs/COMPUTE.md`
   oracle size; a side note he forwarded pointed this out.
 - What the record says: the scope of the last heart file was chosen after the exposure and the first scores by a
   person who had seen the E12.5 heart file's size, and it cannot be shown to be free of it.
-- Builds: set heart3. [MAIN SESSION: the build record].
+- Builds: set heart3, built twice on the DGX at 3d52b83 with the same bytes and clean stamps; the half's sha256 is 04cde6361c04840ee47fff32eb9a20f4781bd649387cc540ed9fdea71e65fa35 (`experiments/builds/results/heart3_3d52b83.txt`). Built and held: not handed over until row H27's read is with the captain (decision log 2026-11-19 (ee), (ff)).
 - Disclosure: [TO CONFIRM: whether, and when, the captain sent the note that names this board, file and sha256]. The
   drafted "Note before the heart's second upload" describes item 6's file. A note for this file is drafted in
   `docs/ORGANIZER_QUESTIONS.md`, "Notes before the second uploads of the heart, the embryo and Task 3", held with the file.
@@ -1007,7 +1007,7 @@ captain released the DGX's GPUs 2 to 7 to this work and lifted `docs/COMPUTE.md`
   deeper bracket's profile +2.72, on the others -2.27; level (-0.27 to +0.22) at the committed odds of 0.4 to 0.5.
   Against s1 as uploaded: merged -1.25, better of two +1.54 (row E47; decision log 2026-11-18 (v)). E7.75's profile
   is not inferred from the first upload's expression scores.
-- Builds: set embryo3. [MAIN SESSION: the build record].
+- Builds: set embryo3, built twice on the DGX at 3d52b83 with the same bytes and clean stamps; sha256 bc50d012cd2c9481cd18c1f5bcf5b01093e22fd16ac65582a5c9f34321f13115 (`experiments/builds/results/embryo3_3d52b83.txt`; decision log 2026-11-19 (ff)).
 - Disclosure: [TO CONFIRM: whether, and when, the captain sent the note that names this board, file and sha256]. The
   note drafted on 2026-11-19 for item 10's file names a file that is not uploaded. A note for this file is drafted in
   `docs/ORGANIZER_QUESTIONS.md`, "Notes before the second uploads of the heart, the embryo and Task 3".
@@ -1037,10 +1037,9 @@ captain released the DGX's GPUs 2 to 7 to this work and lifted `docs/COMPUTE.md`
   and +6.90 in the plain world, -4.48 and +4.94 at matched depth. With the factor's stage part priced for it alone:
   about -2.8, +1.8, -9.6 and -0.2 (decision log 2026-11-19 (s), approximate). It pays only if the beta-catenin embryos
   lean older than WT E8.75 as Gata4's did; nothing released shows that.
-- Builds: none new; the listed bytes. The copy handed over is the checked local copy,
+- Builds: none new; the listed bytes. The copy to hand over is the checked local copy,
   `runs/archive/builds_dc7b6ae/t3_build/barred_s1.h5ad` on the local machine, the folder the uploads of 2026-11-18
-  came from; never the DGX's `runs/t3_build` (decision log 2026-11-19 (ee)). [MAIN SESSION: its sha256 check against
-  the list's line before the upload].
+  came from; never the DGX's `runs/t3_build` (decision log 2026-11-19 (ee)). Checked on 2026-11-19: the local copy's sha256 equals the list's line and it passes the local format check (decision log 2026-11-19 (ff)); the check is repeated at the hand-over.
 - Disclosure: [TO CONFIRM: whether, and when, the captain sent the note that names this board, file and sha256]. The
   drafted "Note before Task 3's second upload" describes the refused s1. A note for this file is drafted in
   `docs/ORGANIZER_QUESTIONS.md`, "Notes before the second uploads of the heart, the embryo and Task 3".
@@ -1259,8 +1258,7 @@ captain released the DGX's GPUs 2 to 7 to this work and lifted `docs/COMPUTE.md`
   ruling R4's file) outside it; the first upload's own geometry is not an arm of N53, and rows E11 and N51 had
   flagged it as flatter than either bracket, with mirrored partners. It enters by the captain's ruling, not by the
   adoption rule. The first scores chose it among files built from released data, and nothing was computed from them.
-- **Heart E12.5, the last upload since 2026-11-19: the full trim, by the captain's own named exception**; the AI
-  assistant stated no preference (row R10; Departures, item 14): E10.5's cells inside the core's in-plane spread, expression unchanged, scaled evenly to the
+- **Heart E12.5, the last upload since 2026-11-19: the full trim, by the captain's own named exception**; the AI assistant stated no preference and named no heart file, having told him before the dialog that a Top-3 aim weighs each board's last file by its ceiling with the first score banked (row R10; Departures, item 14): E10.5's cells inside the core's in-plane spread, expression unchanged, scaled evenly to the
   size file's raw-mode core forecast of 2026-10-28, then halved. Held until row H27's read at forecast sizes is with
   the captain (decision log 2026-11-19 (ee)).
 - **Spatial hygiene:** random rows only, jitter of at most 0.25 nearest-neighbour distances to break duplicate

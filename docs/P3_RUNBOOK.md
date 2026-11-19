@@ -420,7 +420,7 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
      (decision log 2026-11-19 (k)): its line is ticked only once the captain has
      accepted that provenance or a rebuild in the reference checkout has matched it.
      For the heart's last upload (row R10; `docs/S2_RULES.md`, the amendment of 2026-11-19 for the heart; decision log
-     2026-11-19 (cc)): [MAIN SESSION: `experiments/builds/results/heart3_<commit>.SHA256SUMS`]
+     2026-11-19 (cc)): `experiments/builds/results/heart3_3d52b83.SHA256SUMS`
      (`builds/T2heart_s2core_half.h5ad`; the full file `builds/T2heart_s2core.h5ad` is listed and not uploaded). That
      list is outside the pointer and is built in a campaign checkout: its line is ticked only once the captain has
      accepted that provenance or a rebuild in the reference checkout has matched it. The file is held: this line is
@@ -428,14 +428,13 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
      (decision log 2026-11-19 (ee)). The heart2 list's `T2heart_s2iso_half.h5ad` is no longer the heart's last upload
      unless he names it again.
      For the embryo's last upload (row R11; `docs/S2_RULES.md`, the amendment of 2026-11-19 for the series twin;
-     decision log 2026-11-19 (cc)): [MAIN SESSION: `experiments/builds/results/embryo3_<commit>.SHA256SUMS`]
+     decision log 2026-11-19 (cc)): `experiments/builds/results/embryo3_3d52b83.SHA256SUMS`
      (`builds/T2embryo_s2xs.h5ad`). That list is outside the pointer and is built in a campaign checkout: its line is
      ticked only once the captain has accepted that provenance or a rebuild in the reference checkout has matched it.
      The embryo2 list's `T2embryo_s2x.h5ad` is no longer the embryo's last upload.
      For T3's last upload (row R12; `docs/S2_RULES.md`, the amendment of 2026-11-19 for T3; decision log 2026-11-19
      (cc)): the list the pointer names, `experiments/builds/results/builds_dc7b6ae.SHA256SUMS`, its line
-     `t3_build/barred_s1.h5ad` (3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2). The copy handed
-     over is the checked local copy the uploads of 2026-11-18 came from
+     `t3_build/barred_s1.h5ad` (3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2). The copy to hand over is the checked local copy the uploads of 2026-11-18 came from
      (`runs/archive/builds_dc7b6ae/t3_build/barred_s1.h5ad` on the local machine; that amendment and decision log
      2026-11-19 (ee)); the third rehearsal's
      archived set on the DGX reference checkout and the freeze-morning folder hold the same listed bytes. Never the
@@ -511,7 +510,7 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
      file. No organiser reply is pasted into the session.
      For T3 since row R12 the last upload is the barred s1 by the captain's ruling, so the switch of the amendment of
      2026-11-18 sends no other file; a ruling the check finds on the Gata4 files or the validation answers goes to
-     the captain before the upload [MAIN SESSION: whether such a ruling would touch the barred s1 itself]. For the
+     the captain before the upload (such a ruling does not touch the barred s1 itself: it is the branch the frozen rule kept for those rulings and takes no number from the Gata4 files, `docs/S2_RULES.md`, "Ruling switches"). For the
      heart, an organiser statement on how the E12.5 stack was dissected goes to the captain before the upload; it
      changes no file on its own.
   6. [ ] **The warnings register** for the file, in the decision-log entry that hands it over: every committed
