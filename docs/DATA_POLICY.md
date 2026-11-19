@@ -1408,3 +1408,52 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     whether it stands. [TO COMPLETE: the date the captain sends the disclosure email]
   - Still true: no in-window cell, count or expression value entered any model; the post-exposure block is unchanged;
     nothing was set from a test score.
+- 2026-11-19 (c), the captain's named exception for the heart's last file; a lapse of the AI assistant's and its
+  recusal; the embryo's and T3's last files. Written by the AI assistant.
+  - **The exception.** Between 19:25 and 19:31 UTC (`docs/PLAN.md` decision log 2026-11-19 (bb), (cc)) the captain
+    named the heart's last upload: the full trim (row R10 of `experiments/harness/TRIES.md`). The question ended: "A
+    trim is your own named exception on a choice closed after the 4 November exposure; the method report will say
+    so. Which file?" The description of the option he chose ended: "Your named exception on scope, cell number and
+    size." His answer: "Full trim".
+  - **What it reopens**, closed on 2026-11-04 ((b) to (d)): the scope (only E10.5's cells inside the core's in-plane
+    spread are kept); with it the pool the rows are drawn from, which the option called the cell number: the count
+    rule does not read the pool, so the built file has the ruled file's number of rows and the same uniform half, and
+    rows repeat only if the count exceeds the pool; and the size (the size file's raw-mode core forecast,
+    `z_modes.raw.pred_rms_core`, a field logged on 2026-10-28, before the exposure, and chosen after it).
+  - **Depth.** The block also keeps the heart's depth closed. Each kept cell keeps its released counts, but the trim
+    changes which cells are drawn, so the file's depth mix may differ from the full-scope file's. No committed record
+    prices it (the amendment of 2026-11-18 had the same gap).
+  - **Why this route.** The block allows a change on a closed quantity from released data or a screened organiser
+    answer, or else "declined", unless the captain names an exception. No organiser statement on how the E12.5 heart
+    stack was dissected is on record. The released data price both readings and do not choose (try H26).
+  - **What the record says of it** (decision log 2026-11-19 (o), route (ii)): the scope of the heart's last file was
+    chosen after the exposure and after the first scores by a person who had seen the E12.5 heart file's size, and it
+    cannot be shown to be free of it. The method report says so.
+  - **Held.** The file is built and is not handed over as the last heart file until a practice read of the three
+    heart forms at forecast sizes on released stages (row H27, designed by analysts other than the main session) is
+    with the captain. His ruling stands unless he names another file; the AI assistant states no preference (decision
+    log 2026-11-19 (ee)). The question put to him quoted row H26's figures without saying that they were measured at
+    an oracle size; a side note he forwarded pointed this out.
+  - **A lapse of the AI assistant's** (decision log 2026-11-19 (bb)). While weighing the heart in its own reasoning, it
+    began to solve for the hidden E12.5 heart stack's size from the first upload's scale score, the released E10.5
+    size and the team's own forecast. That is an inversion of the skill map, which "Scores" above and the Official
+    Rules (Section 10) forbid. It recognised this and stopped. Nothing of it was written to any file, prompt or
+    message. No value is recorded anywhere, and no file, estimate or advice uses it.
+  - **The recusal.** The AI assistant can no longer say that it holds no figure that bears on the heart's size. It
+    therefore recused itself from every choice and every lean on the heart's scope and size. It gave the captain try
+    H26's practice table (read and recomputed independently before the lapse) and the two cold checks, and stated no
+    preference. Before the dialog it had told the captain that a Top-3 aim weighs each board's last file by its
+    ceiling with the first score banked (entry (cc)), and the heart's options were put with their practice gains and
+    losses. It named no heart file. Any further heart analysis is done by an agent that has not seen that
+    conversation, from the committed record.
+  - **The embryo's last file** (row R11, the series twin) touches no lever of the block: its cell number, size and
+    scope are the first upload's. Its rendering (a released E8.0 sample's detection profile and depth) is the
+    embryo's depth line, which the ledger closed and reopened for tries; the block does not name it, and no embryo
+    file size was exposed. The series rendering was already in the embryo's second file ruled on 13 November, before
+    any score (row R4).
+  - **T3's last file** (row R12, the barred s1) touches none either. It has the refused s1's composition (row K18,
+    J1a), no depth step, and T3's count rule; it was built on 2026-11-13 and is on the reference list.
+  - **Still true:** nothing measured inside a held-out window beyond the unlocked validation files; no quarantined
+    material opened; nothing in any of the three files computed from a test score. The scores chose among built or
+    pre-defined predictions (Official Rules, Section 10, as decision log 2026-11-19 (g) quotes it); the first scores
+    enter only as the score each last file must beat.

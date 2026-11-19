@@ -1214,3 +1214,124 @@ the screen on 2026-11-19; quoted under "Screened reads of 2026-11-19" at the top
 > `wt_identity` gets, so these cases score at the floor (skill 0.5). Can you confirm the final evaluation will score
 > them the same way? A yes or no is plenty. An answer here before the final uploads keeps every team on the same rule.
 > Thanks!
+
+## Notes before the second uploads of the heart, the embryo and Task 3 (drafted 2026-11-19 after the captain's rulings of entry (cc); NOT reviewed by the three-lens review, not in the captain's drafts, nothing sent)
+
+Drafted by an agent of the AI assistant from the captain's rulings of `docs/PLAN.md` decision log 2026-11-19 (cc),
+checked by one reviewer whose corrections are applied here, and placed by a further agent (wf_1c3e47d4-cad and the
+placing run). They are written for the files now named: the heart's full trim (row R10), the embryo's series twin
+(row R11) and T3's barred s1 (row R12). The sections above (the heart and Task 3 notes drafted on 2026-11-18, the
+embryo note drafted on 2026-11-19 for `T2embryo_s2x.h5ad`) are left as drafted: they are the record of what was
+drafted then, and they name files that are no longer the last uploads. These three have not had the accuracy,
+strategy and tone review the earlier notes had. They go into the captain's drafts only at his word, after that review,
+and he sends them after the disclosure email. [TO CONFIRM: whether any earlier note or the disclosure email was sent;
+each note below carries a marker for it.] [HASH] is filled after the file's two builds agree and its list is
+committed. Answers: none can exist yet.
+
+### Note before the heart's second upload (the full trim)
+
+Held: not to be finalised or sent before row H27's read is with the captain and he has said which heart file goes (docs/PLAN.md decision log 2026-11-19 (ee)).
+
+**Subject:** Human Team (Mithril): second heart upload, file hash and sources
+
+To: virtual.embryo.moonshot@gmail.com
+
+Hello organisers,
+
+As our email on sources and file hashes for the uploads of 18 November said we would, here are the file hash and sources of our second heart upload, before we make it. As it describes our method, please keep it private.
+
+T2:heart:test_extrap, second upload. File T2heart_s2core_half.h5ad, SHA-256 [HASH]. It keeps only the heart core of the released E10.5 file: the cardiomyocytes and endocardium, and any other cells inside their in-plane spread. Every cell keeps its released expression and read counts. The cells are scaled evenly on all three axes to our forecast of the heart core's size. The uploaded file is a random half of the built file's cells, by the rule of our first heart upload (fixed seed 1000001, cell order kept). The external sources are the same as for our first heart upload (X001, X004 and X005 in that email), and so are the official validation files used (the heart's E10.5 and E8.5 files). [TO CONFIRM before sending: that this file uses the heart's E8.5 validation file, through the size forecast.]
+
+This is not the file we had fixed in advance for this upload. That file trimmed the tissue around the heart to half its in-plane extent, sized it for that scope and changed its expression. [TO CONFIRM: whether the earlier heart note was sent. If it was: "It also replaces the file our earlier note described (T2heart_s2iso_half.h5ad, SHA-256 dc436d9225bb28e7997d2ec51e95254cd125e569d44c059596298d0a7b6af5c2), which kept the full section." If it was not, drop this sentence.]
+
+Compared with the file fixed in advance, four things change. The scope is the core only, not half the section. The pool of cells the rows are drawn from is therefore smaller: the number of rows follows the same count rule as our earlier heart files, and the file is then halved by the rule of our first heart upload. The count rule does not depend on how many cells the trim keeps, so rows repeat only if the count exceeds the pool, each repeat with a small positional jitter. The size is an even scaling to the core forecast, where our procedure enlarged the two in-plane axes and held the third, at a figure for the half-trimmed scope. The expression step is dropped.
+
+Scope, cell number and size are the quantities that the metadata exposure we reported on 4 November bears on. Since then we had kept all three fixed unless I decided otherwise. I, as team captain, made this choice after our first scores, which the site returned to us as to every team, and after that exposure. I had seen the figures that page showed. The practice comparisons I had before me used released heart stages only. On them the trimmed file did worse than the file it replaces when the held-out heart is sampled like E10.5, and better when most of the surrounding tissue is removed. Those comparisons scaled every file to the practice heart's true size. No released stage shows how the held-out hearts were dissected.
+
+No number in the file was computed from a score. Every number in it comes from a rule or a figure we had before this choice. The trim is the operation our fixed procedure applied at half strength, here at full strength. Our procedure had priced this full trim on 1 November and not chosen it. The count rule and the halving are our first heart upload's. The size is the figure our method computed and recorded on 28 October. The choice among them is mine. It is not the outcome of a rule fixed beforehand.
+
+The method report will list each of these changes against the procedure we fixed in advance.
+
+Best regards,
+Vijayavallabh J
+Team captain, Mithril
+
+### Note before the embryo's second upload (the series twin)
+
+**Subject:** Human Team (Mithril): second embryo upload, file hash and sources
+
+To: virtual.embryo.moonshot@gmail.com
+
+Hello organisers,
+
+As our email on sources and file hashes for the uploads of 18 November promised, here are the hash and sources of our second embryo upload, before we make it. As it describes our method, please keep it private.
+
+T2:embryo:test_interp, second upload. File T2embryo_s2xs.h5ad, SHA-256 [HASH]. It has the cells of our first embryo upload, each placed at a position measured at E7.5. The expression of its E7.5 cells is re-rendered to the E8.0 file's per-gene detection and read depth; its E8.0 cells keep their expression as released. Its number of cells and its size are our first embryo upload's. Sources as for our first embryo upload (X001, X004 and X005), and the same official validation file (the embryo's E7.5 file).
+
+This replaces the file we had fixed in advance for this upload, built on 13 November before any score, which used the same rendering on different positions. [TO CONFIRM: whether the earlier embryo note was sent. If it was: "It also replaces the file our earlier note named (T2embryo_s2x.h5ad, SHA-256 a03611a343faf1d37edf06ce0e2bccc86cce6f14d3580b823864e5faf3ba03f9). It has the same cells and positions and differs only in this rendering." If it was not, drop this sentence.]
+
+I, as team captain, chose this file after our first scores, which the site returned to us as to every team. The practice comparisons behind the choice used released stages only. By a rule we had fixed before our practice comparison, and by a later check, the file it replaces would have stayed. The choice is mine. It is not the outcome of a rule fixed beforehand. No number in the file was computed from a score. The method report will set out this change.
+
+Best regards,
+Vijayavallabh J
+Team captain, Mithril
+
+### Note before Task 3's second upload (the barred s1)
+
+**Subject:** Human Team (Mithril): second Task 3 upload, file hash and sources
+
+To: virtual.embryo.moonshot@gmail.com
+
+Hello organisers,
+
+As our email on sources and file hashes for the uploads of 18 November said we would, here are the file hash and sources of our second Task 3 upload, before we make it. As it describes our method, please keep it private.
+
+T3:bcatenin, second upload. File barred_s1.h5ad, SHA-256 3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2. ("barred" in the file name is our internal label for the version our procedure kept ready in case the Gata4 knockout files could not be used at all. It takes no number from them. It is built from the decision file of our frozen rules' Gata4 run, whose rules fix this version as the Mab21l2 factor at full strength with no depth step. No ruling of yours has barred anything.) The external sources are the same as for our first Task 3 upload (X001, X004 and X005 in that email). [TO CONFIRM before sending: which official validation files, if any, this file reads.]
+
+It consists of the released wild-type E8.75 cells, with two changes. First, the cell-type proportions are changed by rules we fixed on 19 October. The cell states that change follow the broad phenotype background your answer of 15 October allows (cell states only, no genes). The size of the change is computed from the released Mab21l2 knockout against wild-type E9.5. Second, each cell's expression is moved by a per-gene factor computed from the released Mab21l2 knockout: its E9.5 knockout cells against the wild-type E8.75 cells. Its proportions are those of the file it replaces, and its number of cells follows the same rule as our first Task 3 upload. It reads no Gata4 knockout file.
+
+We built this file on 13 November, before any test score. It is on the list of file hashes we fixed that day for our uploads. Our procedure sent it to this slot only if, before this upload, a ruling of yours restricted or barred the Gata4 files, or barred our use of the validation answers, or you said that a floored severity scores zero; none of these happened. It replaces the file our procedure had for this upload (refused_s1.h5ad, SHA-256 0394575a11fcd4f915e0daf4972e5a783b6b89efa065ed4f85fe2445cbbb1545), which carried a wild-type-only correction in place of the Mab21l2 factor. [TO CONFIRM: whether the earlier Task 3 note, which named refused_s1.h5ad, was sent. If it was: "Our earlier note named that file; this one replaces it." If it was not, drop this sentence.]
+
+I, as team captain, chose this file after our first scores, which the site returned to us as to every team. The Gata4 replicates entered only as practice tasks, scored locally. On 18 November we compared the two files on them. By the reading we had fixed before that comparison, and by a later check, the other file stayed. The choice is mine. It is not the outcome of a rule fixed beforehand. No number in the file was computed from a score.
+
+The method report will list this change.
+
+Best regards,
+Vijayavallabh J
+Team captain, Mithril
+
+### Lines of the disclosure email draft that the rulings of 2026-11-19 make inaccurate
+
+[TO CONFIRM: whether the disclosure email was sent; if it was, these corrections go into the note that precedes each upload instead]
+
+The email is quoted as it stands in the section "Disclosure email for the uploads of 18 November" above (the text of
+18 November with changes (1) to (11) of 2026-11-19). That section is not edited.
+
+1. The paragraph of upload 4. Quote: "This is the one change to a cell number since our note of 4 November, and the
+   method report will list it with the other later decisions that bear on the quantities that note covers."
+   Why it now misleads: the heart's last file keeps the count rule and the halving, so the number of rows is not
+   changed again; but it changes the scope and the size, and with the scope the pool its cells are drawn from, and
+   the sentence reads as if nothing else that note covers had changed.
+   Replacement: "This is the one change to a cell number since our note of 4 November. Our second heart upload uses
+   the same count rule and halving, but changes its scope and size, and with the scope the pool its cells are drawn
+   from, as the short note before that upload sets out. The method report will list each of these with the other
+   later decisions that bear on the quantities that note covers."
+2. The correction paragraph. Quote: "One correction to our note of 4 November. That note said our cell counts and
+   sizes follow rules committed before the data release. For Task 3, the rule for the number of cells (use the
+   board's maximum) was fixed on 1 November 2026: after the release, though still before what we saw on 4 November.
+   The method report will say the same."
+   Why it now misleads: it is not false sentence by sentence, but read beside the heart's full trim it suggests that
+   T3's count rule is the only departure from the note of 4 November. The heart's last file has a scope and a size
+   chosen after the first scores and after the exposure.
+   Replacement: keep the paragraph and add, before "The method report will say the same.": "Our second heart upload
+   also departs from that note: its scope and size, and with the scope the pool its cells are drawn from, were chosen
+   by me after our first scores, as the short note before that upload sets out."
+3. No other sentence of the email is made inaccurate by these three rulings:
+   - "Before each of our second uploads we will send its board, file hash and sources in a short note." still holds.
+   - The validation paragraph ("please tell us before our second uploads.") still holds. The reason the record gave
+     for change (10), "every board's second upload uses an official validation file", may no longer hold for T3's
+     barred file (which validation files it reads is still to confirm; see the marker in the Task 3 note above), but
+     that reason is not in the email.
+   - The register sentence ("both Task 2 boards and Task 3 use X001, X004 and X005") holds for all three new files.
+   - "no gene-level knockout finding from outside the released data" holds: the barred file's factor comes from the
+     released Mab21l2 knockout.
