@@ -2,6 +2,30 @@
 
 ## Current Objective
 
+- **State at 2026-11-19, 15:02 UTC (newest).** Decision log 2026-11-19 (o) to (r). **Waiting for the captain
+  (asked in plain text; no dialog is open):** the heart's route: (a) keep the ruled full-scope file, the default;
+  (b) keep it and try the clean route (a screened re-read of the protocol page's two heart rows, and the question
+  to the organisers drafted, unreviewed, in `docs/ORGANIZER_QUESTIONS.md`, "Data Protocol question on the E12.5
+  heart stack"; if he says yes: three-lens review, then his drafts; a reply is screened and audited, and row H26's
+  conditional outcome applies only once he has signed it); (c) his own named exception. The heart upload stays
+  held. **Try H26 is read and recomputed independently** (heart 41 to 50): the trims carry over to the copy's
+  form; with the truth as released B -1.0 and C -3.9 against A (fold-merged; -7.9 and -15.5 on the one-day
+  transition), over the clean truths B +5.8 and C +11.8; the odds a trim needs run from 0.15 to 0.86 by
+  transition; the read decides nothing. **Coming to the captain next:** (1) T3's last file, the refused file by the
+  rule against the built barred file by the analyst's expected-better-of-two reading, after the cold challenge in
+  wf_dc1bec61-a73; (2) the labeller's sign-off: `campaign/feng-relabel-main-fix` at 9f1e047 (the complete suite
+  passes: 3070, 1 skipped; settings file sha256 af3ac7224a65, status draft), final check running
+  (wf_235124c8-92a); on "ready": merge to main, give him the fifteen-sentence summary
+  (`lift8/labeller_port.json` in the session's scratch folder, key fix), then in order: his ruling entry, row N55
+  and its dry run on the released E9.5, the freeze with row N54, the relabelling run, the listing, a check build
+  of `t1 --g-mom --base lib3 --feng-groups recomputed`, and the priced question on T1's last upload (the built
+  no-outside-data file against the recomputed one). **Running:** wf_dc1bec61-a73 (fix rounds and re-reviews of
+  rows K19, `campaign/t3-variants-fix`, and T61, `campaign/t1-released-bets-fix`; the T3 challenge). On their
+  return: rows on main first, then the reads on idle DGX campaign checkouts (`~/v/vec-campaign` is at b2e84dd,
+  idle; `-d` is clean; `-h7` and `-c` hold leftovers). **Stopped:** the T1 late bracket (entry (p)). **Not
+  reopened:** the embryo's series twin (level on expectation; the captain may ask for it). The upside wave's
+  hand-back is `lift8/upside_wave.json`; the heart read's are `lift8/h26_prep.json`, `h26_fix2.json` and
+  `h26_recompute.json`.
 - **State at 2026-11-19, 13:31 UTC (newest).** Decision log 2026-11-19 (n). The heart upload stays held. The price
   table of entry (m) was recomputed independently and stands; a cold challenge rejected the advice (the half trim in
   today's form is a mix no rule returned): **the lean on the half trim is withdrawn**; A (the ruled full-scope file)
