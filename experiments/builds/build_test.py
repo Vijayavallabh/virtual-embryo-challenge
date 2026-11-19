@@ -25,11 +25,11 @@ machine, and an official upload needs the captain's go-ahead.
           counts. --feng-groups none (default authors, every file as built; only the captain's ruling puts it in an
           upload) builds one file: the first upload's command (t1 --g-mom --base lib3) with Feng's direction taken
           out and nothing put in its place. Every cell keeps its E10.5 expression before g_mom's edit (R1 on every
-          label), and no Feng file, R2 list or other outside data is read. g_mom's mask is the entry's own
-          (vec.t1_state_transport.r1_unbracketed_labels): the factors edit the cm and endocardium cells except Early
-          VIC, as in the entry; on the cm and endocardium categories of the committed label map that mask holds back
-          one label, Early VIC, by the readout config's regexes, so which groups are in R1_FENG_GROUPS decides no
-          cell of this file, and the hook's covered check is a self-check. Refused, before anything is read, without
+          label), and no Feng file, R2 list or other outside data is read. g_mom's mask is the label map's own:
+          the factors edit the cm and endocardium cells whose label the readout config's regexes give a group, which
+          on the committed map is every such cell but Early VIC, the same cells as in the entry.
+          vec.t1_state_transport.R1_FENG_GROUPS, a list fixed in N12 by counting Feng cells, is not read under none
+          (tested), and the hook's covered check is a self-check. Refused, before anything is read, without
           --g-mom and with --base pooled or mid, --cm-share, --blood-share, --lib3-pair, --herd,
           --no-hold-unbracketed, --feng-hygiene or --strong-null. The build record then carries a feng_groups field
           saying the direction step was removed, and its fraction is null
@@ -109,9 +109,9 @@ EMBRYO_T_POS = {"fgw": None, "fgw_shape0": 0.0, "fgw_shape1": 1.0}
 G_MOM_EDIT_CATEGORIES = ("cm", "endocardium")
 # --feng-groups (off by default): the cell groups Feng's direction is formed on. "authors" is Feng's own labels, every
 # file as built. "none" is no Feng direction on any group: the entry with that one step taken out and nothing put in
-# its place, a file with no outside data in it (docs/PLAN.md decision log 2026-11-19 (a) to (d): the authors' labels
-# were made with every stage pooled, the in-window ones included, which an organiser's condition of 2026-11-16
-# excludes). Only the captain's ruling puts it in an upload.
+# its place: no Feng file is read, and neither is any list that was fixed by counting Feng's cells (docs/PLAN.md
+# decision log 2026-11-19 (a) to (e): the authors' labels were made with every stage pooled, the in-window ones
+# included, which an organiser's condition of 2026-11-16 excludes). Only the captain's ruling puts it in an upload.
 FENG_GROUPS = feng_dirs.FENG_GROUPS
 FENG_GROUPS_DEFAULT = FENG_GROUPS[0]
 # R6 of experiments/harness/TRIES.md (2026-11-13: the AI assistant's decision under the captain's delegation,
@@ -229,15 +229,25 @@ def _feng_directions(genes, feng_groups: str = FENG_GROUPS_DEFAULT):
 
 def _g_mom_covered(groups: dict, directions, feng_groups: str = FENG_GROUPS_DEFAULT) -> set[str]:
     """The labels g_mom's hook checks its edits against. Default: the labels the build moved along Feng's direction
-    (as before). Under --feng-groups none the check is a self-check: g_mom's mask is the entry's own
-    (vec.t1_state_transport.r1_unbracketed_labels). On the cm and endocardium categories of the committed label map,
-    that mask holds back one label, Early VIC, which the readout config's regexes map to no group at all. Which groups
-    are in R1_FENG_GROUPS (a list fixed by counting Feng cells) decides no cell of this file."""
+    (as before). Under --feng-groups none: the labels the readout config's regexes give a group (`_labels_without_group`
+    names the others), the same rule as the hook's own mask under none, so the check is a self-check there.
+    vec.t1_state_transport.R1_FENG_GROUPS, a list fixed in N12 by counting Feng cells, is not read."""
     if feng_groups == "none":
-        from vec import t1_state_transport as ts
-
-        return {lab for lab, group in groups.items() if group in ts.R1_FENG_GROUPS}
+        return {lab for lab, group in groups.items() if not group.startswith(NO_GROUP)}
     return {lab for lab, group in groups.items() if group in directions}
+
+
+NO_GROUP = "other:"  # what the readout config's harmonisation gives a label that none of its regexes matches
+
+
+def _labels_without_group(labels) -> set[str]:
+    """The labels the readout config's regexes map to no harmonised group (`feng_dirs.label_groups`: "other:..."). Under
+    --feng-groups none this is the set g_mom holds back inside the categories it edits: the label map's own rule, in
+    place of R1's mask (vec.t1_state_transport.r1_unbracketed_labels), which reads R1_FENG_GROUPS, a list fixed in N12
+    by counting Feng cells. On every label the committed map can place in cm or endocardium the two masks agree: both
+    hold back Early VIC and nothing else (tests/test_t1_feng_groups_none.py pins this on the committed configs)."""
+    groups = feng_dirs.label_groups(sorted({str(x) for x in labels}))
+    return {lab for lab, group in groups.items() if group.startswith(NO_GROUP)}
 
 
 FENG_NONE_COMMAND = "t1 --g-mom --base lib3"  # the first upload's command, the one design --feng-groups none builds
@@ -345,8 +355,9 @@ def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str], f
     lever stays closed; the cells, their number, shares and scope are untouched. The stream is [seed, 5], the
     candidate's. covered_labels: the labels the build moved along Feng's direction (`label_groups` mapped to a group
     with a direction); the hook checks that every label it edits is one of them, so R1's mask and the build's own mask
-    of Feng-covered labels cannot disagree silently. feng_direction False (--feng-groups none): the same fit, mask,
-    stream and edit; only the record's wording changes (applied last, with no Feng direction in the file), and
+    of Feng-covered labels cannot disagree silently. feng_direction False (--feng-groups none): the same fit, stream
+    and edit; the held labels are `_labels_without_group`'s, the label map's own rule, so R1_FENG_GROUPS is not read
+    (the same cells on the committed map); the record says so (applied last, with no Feng direction in the file), and
     covered_labels is `_g_mom_covered`'s, so the check is a self-check."""
     from vec import t1_state_transport as ts
 
@@ -369,12 +380,15 @@ def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str], f
         record["rule"] = record["rule"].replace("applied last (after Feng's direction)",
                                                 "applied last (no Feng direction in this file)")
         record["held_flat"] = "the candidate's pre-registered list"
+        record["mask"] = ("the cells of edit_categories whose label the readout config's regexes give a group (the "
+                          "label map's own rule; the list of groups with a Feng direction is not read)")
 
     def hook(pop):
         labels = pop.obs[t1_scope.LABEL_KEY].astype(str).to_numpy()
         cats = pop.obs[t1_scope.CATEGORY_KEY].astype(str).to_numpy()
-        no_edit = (np.isin(labels, sorted(ts.r1_unbracketed_labels(np.unique(labels))))
-                   | ~np.isin(cats, G_MOM_EDIT_CATEGORIES))
+        held_labels = (ts.r1_unbracketed_labels(np.unique(labels)) if feng_direction
+                       else _labels_without_group(np.unique(labels)))
+        no_edit = np.isin(labels, sorted(held_labels)) | ~np.isin(cats, G_MOM_EDIT_CATEGORIES)
         edited = set(labels[~no_edit & np.isin(cats, list(factors.categories))])
         if not edited <= set(covered_labels):
             extra = sorted(edited - set(covered_labels))
@@ -707,9 +721,9 @@ def build_parser() -> argparse.ArgumentParser:
                                 "default, every file as built); none = one file, the first upload's command "
                                 f"({FENG_NONE_COMMAND}) with Feng's direction taken out and nothing put in its place: "
                                 "every cell keeps its E10.5 expression before g_mom's edit and no Feng file, R2 list "
-                                "or other outside data is read; with --g-mom the factors edit the cm and "
-                                "endocardium cells except Early VIC, as in the entry (g_mom's mask is the entry's "
-                                "own; which groups are in R1_FENG_GROUPS decides no cell of this file). Refused "
+                                "or other outside data is read; g_mom's factors edit the cm and endocardium cells "
+                                "whose label the label map gives a group (all but Early VIC, as in the entry; the "
+                                "list of groups with a Feng direction is not read). Refused "
                                 "without --g-mom and with --base pooled or mid, --cm-share, --blood-share, "
                                 "--lib3-pair, --herd, --no-hold-unbracketed, --feng-hygiene or --strong-null. The "
                                 "build record then says the direction step was removed. Only the captain's ruling "

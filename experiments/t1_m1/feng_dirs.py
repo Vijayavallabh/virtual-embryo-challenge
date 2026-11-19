@@ -39,9 +39,9 @@ BRACKET_DAYS = (9.5, 14.5)
 REGISTER = REPO / "EXTERNAL_DATA.md"
 X002_AMENDMENT = "E14.5 -> E18"  # the key phrase of X002's late-proxy amendment (PLAN decision log 2026-11-10 (a))
 # The cell groups Feng's direction is formed on (build_test.py t1 --feng-groups; off by default). "authors": Feng's own
-# labels, every file as built. "none": no Feng direction on any group and no Feng file read, a file with no outside
-# data in it (docs/PLAN.md decision log 2026-11-19 (a) to (d): the authors' labels were made with every stage pooled,
-# the in-window ones included, and an organiser's condition of 2026-11-16 excludes such annotations).
+# labels, every file as built. "none": no Feng direction on any group and no Feng file read (docs/PLAN.md decision
+# log 2026-11-19 (a) to (e): the authors' labels were made with every stage pooled, the in-window ones included, and
+# an organiser's condition of 2026-11-16 excludes such annotations).
 FENG_GROUPS = ("authors", "none")
 
 

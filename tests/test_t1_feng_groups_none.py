@@ -292,7 +292,8 @@ def test_none_draws_the_entrys_cells_and_changes_only_the_cells_feng_moved(bt, t
     ge, gn = (json.loads(o.with_suffix(".build.json").read_text())["g_mom"] for o in (entry, none))
     wording = {"rule": ge["rule"].replace("(after Feng's direction)", "(no Feng direction in this file)"),
                "held_flat": "the candidate's pre-registered list"}
-    assert {**ge, **wording} == gn
+    assert "mask" not in ge and "is not read" in gn["mask"]
+    assert {**ge, **wording, "mask": gn["mask"]} == gn
 
 
 def test_none_with_g_mom_edits_the_entrys_labels(bt, t1_env, monkeypatch, tmp_path):  # noqa: F811
@@ -304,24 +305,73 @@ def test_none_with_g_mom_edits_the_entrys_labels(bt, t1_env, monkeypatch, tmp_pa
     assert "applied last (no Feng direction in this file)" in rec["g_mom"]["rule"]
     assert "Feng's direction)" not in rec["g_mom"]["rule"] and "R2" not in rec["g_mom"]["held_flat"]
     groups = {"V-CM": "CM", "Endocardium-1": "Endocardium", "BEC": "Endothelium", "Blood": "Blood",
-              "Epicardium": "Epicardium", "Macrophage": "Macrophage"}
-    assert bt._g_mom_covered(groups, {}, "none") == {"V-CM", "Endocardium-1", "BEC", "Epicardium"}
+              "Epicardium": "Epicardium", "Macrophage": "Macrophage", "Early VIC": "other:Early VIC"}
+    assert bt._g_mom_covered(groups, {}, "none") == set(groups) - {"Early VIC"}  # every label the map gives a group
     assert bt._g_mom_covered(groups, {"CM": 1}) == {"V-CM"}  # the default: the labels Feng's direction moves
     assert bt._g_mom_covered(groups, {"CM": 1}, "authors") == {"V-CM"}
 
 
-def test_r1_feng_groups_decides_no_cell_of_the_none_file(bt, t1_env, monkeypatch, tmp_path):  # noqa: F811
-    """Under none the covered check is a self-check: with R1_FENG_GROUPS replaced by every harmonised group of the
-    readout config, the target command writes the same bytes."""
+def test_none_does_not_read_r1_feng_groups(bt, t1_env, monkeypatch, tmp_path):  # noqa: F811
+    """Under none g_mom's mask is the label map's own rule. The target command writes the same bytes whether
+    R1_FENG_GROUPS (a list fixed by counting Feng cells) is as committed, empty, or every harmonised group of the
+    readout config, and R1's mask function is never called."""
     _target_env(bt, t1_env, monkeypatch)
-    out, wide = tmp_path / "T1_none.h5ad", tmp_path / "T1_none_wide.h5ad"
+    out = tmp_path / "T1_none.h5ad"
     bt.main(["t1", *TARGET, "--feng-groups", "none", "--out", str(out)])
     cfg = feng_dirs.load_config()
     every = tuple(sorted({g for g, _ in cfg["harmonise"]} | {"CM"}))
     assert set(ts.R1_FENG_GROUPS) < set(every)
-    monkeypatch.setattr(ts, "R1_FENG_GROUPS", every)
-    bt.main(["t1", *TARGET, "--feng-groups", "none", "--out", str(wide)])
-    assert _sha(out) == _sha(wide)
+    for name, groups in (("empty", ()), ("every", every), ("no_endocardium", ("CM", "Endothelium", "Epicardium"))):
+        monkeypatch.setattr(ts, "R1_FENG_GROUPS", groups)
+        other = tmp_path / f"T1_none_{name}.h5ad"
+        bt.main(["t1", *TARGET, "--feng-groups", "none", "--out", str(other)])
+        assert _sha(out) == _sha(other), name
+    monkeypatch.setattr(ts, "r1_unbracketed_labels", _fail("R1's mask is not asked for under --feng-groups none"))
+    again = tmp_path / "T1_none_again.h5ad"
+    bt.main(["t1", *TARGET, "--feng-groups", "none", "--out", str(again)])
+    assert _sha(out) == _sha(again)
+    rec = json.loads(out.with_suffix(".build.json").read_text())
+    assert "list of groups with a Feng direction is not read" in rec["g_mom"]["mask"]
+
+
+def test_the_entry_still_uses_r1s_mask_and_its_record_has_no_mask_field(bt, t1_env, monkeypatch, tmp_path):  # noqa: F811
+    """With the option not given the hook asks R1's mask function, as before, and never the label map's own rule; and
+    dropping Endocardium from R1_FENG_GROUPS changes the entry's bytes (the list binds there, which is why none does
+    not read it)."""
+    _target_env(bt, t1_env, monkeypatch)
+    calls = []
+    real = ts.r1_unbracketed_labels
+    monkeypatch.setattr(ts, "r1_unbracketed_labels", lambda labels, *a, **k: calls.append(1) or real(labels, *a, **k))
+    monkeypatch.setattr(bt, "_labels_without_group", _fail("the entry's mask is R1's"))
+    entry = tmp_path / "T1.h5ad"
+    bt.main(["t1", "--no-feng-hygiene", *TARGET, "--out", str(entry)])
+    assert calls and "mask" not in json.loads(entry.with_suffix(".build.json").read_text())["g_mom"]
+    monkeypatch.setattr(ts, "R1_FENG_GROUPS", ("CM", "Endothelium", "Epicardium"))
+    other = tmp_path / "T1_no_endocardium.h5ad"
+    bt.main(["t1", "--no-feng-hygiene", *TARGET, "--out", str(other)])
+    assert _sha(entry) != _sha(other)
+
+
+def test_the_two_masks_agree_on_every_label_the_committed_map_can_place_in_cm_or_endocardium(bt):
+    """Committed configs only, no data: on every label configs/t1_chamber_classes.yaml can place in a category g_mom
+    edits (its labels, per-file overrides and stand-ins), R1's mask and the label map's own rule hold back the same
+    labels, Early VIC alone; and every other such label maps to CM, Endocardium or Endothelium."""
+    import yaml
+
+    cfg = yaml.safe_load((ROOT / "configs" / "t1_chamber_classes.yaml").read_text())
+    edit = set(bt.G_MOM_EDIT_CATEGORIES)
+    labels = {str(lab) for lab, cat in cfg["labels"].items() if cat in edit}
+    for per_file in cfg["file_overrides"].values():
+        labels |= {str(lab) for lab, cat in per_file.items() if cat in edit}
+    for per_file in cfg["file_fallbacks"].values():
+        for cat, stand_ins in per_file.items():
+            if cat in edit:
+                labels |= set(map(str, stand_ins))
+    assert {"V-CM", "Endocardium", "Early VIC"} <= labels
+    groups = feng_dirs.label_groups(sorted(labels))
+    own_rule = bt._labels_without_group(labels)
+    assert own_rule == ts.r1_unbracketed_labels(labels) == {"Early VIC"}
+    assert {groups[lab] for lab in labels - own_rule} <= {"CM", "Endocardium", "Endothelium"}
 
 
 def test_none_with_g_mom_reads_no_r2_union_and_asks_for_no_feng_group_names(bt, t1_env, monkeypatch, tmp_path):  # noqa: F811
