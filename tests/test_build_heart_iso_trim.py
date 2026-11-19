@@ -51,6 +51,34 @@ BEFORE = {
     "s2_raw": ("cf887247be3d77a3fbbb6a99848a080137481f45a59bb97e4be3b3187e02e31e",
                "bc3ab44995e7a5b0091e56e07ca9b87a3439a3f23f70680107badc948b9a77a1"),
 }
+
+# The same records with every float rounded to 12 significant digits (`canon`). The trend block's summaries (cosine,
+# norm ratio, mean log factor) differ in their last bits between machines: relative 1e-16 between the local machine,
+# where BEFORE was computed, and the DGX on 2026-11-19, where the exact text hash of two trend records failed while
+# their .h5ad hashes matched. Computed from the records whose exact hashes are BEFORE's.
+BEFORE_CANON = {
+    "s1": "2b0674350ca8655ff0ab235b8a7c8284d5a42eccaae165db62461575c32e27ef",
+    "s2_trim": "40accedc96b1df4335b4d3fb1af8c9a12d8076df28d923ed27da57729a419728",
+    "s1_trend": "9b6d79152a5e3adec4c059ebd17f3b08947fb42bada7a1cf1a7c7e96b2779497",
+    "s2_trim_trend": "788ecb4d87720fb113b8bec85653a1489051500cb32e4643132a1621ad4361ec",
+    "s1_copy": "961e7625fc56c426b85f566b1114e3dad9997c61e1b3528bd18d8b082b1b20cd",
+    "s1_copy_raw": "b41e33a1b0a7491e79b0bd4d40ef6364509482b5c37cb242289a65f4a1da1ed8",
+    "s2_trim_raw": "64cbe46998344ecbccb1520abccff88ccd79324efb1c57a0c5e9f4e462c1cea9",
+    "s2_raw": "9129317d538bfa53d58401c54c563e80c21c80fcd3da7651edac2d529c8589fe",
+}
+
+
+def canon(text: str) -> str:
+    def rounded(o):
+        if isinstance(o, float):
+            return float(f"{o:.12g}")
+        if isinstance(o, dict):
+            return {k: rounded(v) for k, v in o.items()}
+        if isinstance(o, list):
+            return [rounded(v) for v in o]
+        return o
+
+    return hashlib.sha256(json.dumps(rounded(json.loads(text)), sort_keys=True).encode()).hexdigest()
 ARGV = {"s1": ["--entry", "s1"], "s2_trim": ["--entry", "s2_trim"],
         "s1_trend": ["--entry", "s1", "--trend"], "s2_trim_trend": ["--entry", "s2_trim", "--trend"],
         "s1_copy": ["--entry", "s1", "--expression", "copy"],
@@ -134,9 +162,11 @@ def test_the_option_is_off_by_default(bt):
 @pytest.mark.parametrize("name", sorted(BEFORE))
 def test_every_heart_output_before_the_option_keeps_its_bytes_and_record(bt, heart_env, tmp_path, name):
     """Each heart command that built before the option writes the same .h5ad and the same build record, byte for byte,
-    as main at a4d58a6 wrote them on the same synthetic stages."""
+    as main at a4d58a6 wrote them on the same synthetic stages; a record may differ from that text only in the last
+    bits of its floats (`canon`)."""
     out, _, text = _build(bt, tmp_path, name, *ARGV[name])
-    assert (sha(out), hashlib.sha256(text.encode()).hexdigest()) == BEFORE[name]
+    assert sha(out) == BEFORE[name][0]
+    assert hashlib.sha256(text.encode()).hexdigest() == BEFORE[name][1] or canon(text) == BEFORE_CANON[name]
 
 
 # ------------------------------------------------------------------------------------------------ the new file
