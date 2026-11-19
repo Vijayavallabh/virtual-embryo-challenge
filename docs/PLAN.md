@@ -5993,3 +5993,56 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     campaign checkout, the file copied here and checked, and the short note that precedes the upload. For the
     embryo: the same steps for `fgw_shape0x`. Then the two emails into the captain's drafts. The heart's and T3's
     second files are built and with him since 18 November.
+- 2026-11-19 (g), two instructions of the captain's, a claim that official submissions are unlimited, and what three
+  checks of it found (state at 11:58 UTC). Written by the AI assistant.
+  - **A standing instruction** (the captain, verbatim): "now onwards, assume rational reply from their side as they
+    don't look like to intend to reply to our mails due to the tight traffic at the end of thee competition". The AI
+    assistant's reading: from now to the deadline no step waits for an organiser reply; each open question is taken at
+    its rational reply, with odds and the loss if wrong, and no file changes on an assumed reply; disclosures still go
+    out; the screened checks of Slack threads still run. For the question in the labels email (does the first T1
+    upload stand), the reply the organisers' own condition leads to is "only a compliant upload should count" (the AI
+    assistant's odds: about 0.6): the last T1 file is then the one that counts, at 70.9 minus zero to 3.5; if the
+    assumption is wrong, nothing is lost. The recomputed-labels file stays parked: under the same assumption its
+    expected gain over the no-outside-data file is under +0.6 and turns negative at a 3 percent chance of rejection.
+  - **The claim** (the captain, verbatim): "I want more drastic improvements in our leaderboard score [also a new that it
+    is unlimited submissions]", and, after the first check below, "it is unlimited". He has not yet said where he saw
+    it or in what words.
+  - **Check 1, a screened read** (wf_bf35af85-188; a screening agent, then an auditor; about 11:43 to 11:47 UTC). The
+    Rules page as it reads now: "P3 · Final test phase. 2 official submissions per board, for the whole phase rather
+    than per day."; "Format checks are unlimited in every phase and spend nothing."; "the board ranks a team by its
+    best"; "Final rankings are determined by the hidden test sets, not by the development leaderboard."; final
+    submissions due "25 November 2026, 23:59 AoE". Section 10 on score use is unchanged where it can be compared,
+    with one sentence the record of 18 November had cut: using score returns "to solve for a property of a held-out
+    target, by inverting the published skill map, by differencing scores across submissions, or by any similar
+    construction ... is recovering held-out data by another route and is prohibited"; and "Attempting to recover
+    held-out labels, probe the evaluation infrastructure, or otherwise circumvent fair evaluation is prohibited and is
+    grounds for disqualification." Slack since 16 November, every thread: nothing on submission limits. The
+    organisers' two messages of 17 November, already on record: "two official submissions per board ... remain the
+    same" and "submission limits remain unchanged". No source supports unlimited scored submissions. Overall totals
+    (allowed class; one read at 11:43 UTC): 234 teams, 183 Human and 51 Agent; Human track's five highest 225.92,
+    223.54, 220.88, 217.68, 216.11; Agent track's 217.43, 215.47, 204.92, 204.57, 203.14; no row whose name contains
+    "mith" was found, so the team's own row could not be read.
+  - **Check 2, the server's own count** (the team's client, `vec submit status`: read-only GETs of the phase, the
+    quota and the team's submission list; nothing sent; 11:55 UTC). The phase accepts submissions. The quota says used
+    0 of limit 2 on each of the four test boards. The server's list of this key's submissions is empty: none of the
+    uploads of 18 November is on it. So the server does not say unlimited; it says this key's team has made no
+    official upload. Two explanations, neither of which makes uploads unlimited by rule: the captain's uploads of 18
+    November went in under another account than the one the team's key belongs to (which would also explain the
+    missing row above), or the count is not counting. The first would mean one team's scores sit under two
+    identities, which has to be put to the organisers before any further upload and decides which login uploads next.
+    Going past two per board on a count that does not count would be circumvention. The captain is asked which login
+    he used on 18 November and what exactly says unlimited.
+  - **Check 3, a design round on the premise that the claim holds** (wf_52cea509-c42: a compliance frame, a designer
+    per board, a red team, an editor; the agent on the upload client failed on a tool error). Even with unlimited
+    uploads the editor's range is about 178 to 192 Overall, centre about 184, because the knobs with large stakes
+    (sizes, cell numbers, scope, composition, depth) are the post-exposure block's quantities and are also properties
+    of the target, which Section 10 forbids solving for; the open knobs (T3's exponent and file choice, the heart's
+    trend strength, the embryo's geometry and rendering, g_mom) are worth a few points. The red team's verdict:
+    against the campaign as framed; verify first, upload the four prepared files first, and only then a few rounds
+    over open knobs with lists committed beforehand. Nothing on record reaches the leaders' totals.
+  - **What stands.** Nothing is uploaded. The next upload on each board is treated as the last: the T1 file with no
+    outside data, the embryo on E7.5's exact positions, the heart's even scaling and T3's refused file. The 0.60 is in
+    no file. On the DGX at 555daf4 the T1 option's checks passed again (unit tests 173; both option-off files at the
+    reference hashes; the no-direction file twice at 55eaee547ff1, the hash of all earlier builds, so the mask change
+    of entry (f) moved no byte). Being finished: the T1 ruling commit and the embryo's ruling texts, both written for
+    "the last upload", which is what the Rules page says they are.
