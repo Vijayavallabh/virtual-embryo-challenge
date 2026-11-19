@@ -5904,3 +5904,45 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     set, a draft amendment of `docs/S2_RULES.md`, a ruling row, the register and method-summary texts), and the
     organiser emails rewritten for this case with accuracy, strategy and tone reviews. None of it changes an upload:
     that is the captain's ruling.
+- 2026-11-19 (e), a correction to entry (d), the review of the no-direction option, its builds, and the drafts that
+  wait for the captain (state at 09:15 UTC). Written by the AI assistant. The captain has ruled on none of it.
+  - **A correction to entry (d).** It gave as a reason that the no-outside-data file is "the only T1 file whose data
+    and whose adoption evidence are both free of the authors' labels". The first half holds: the file reads no outside
+    file. The second half overstated it, as the reviewers of the drafts found against entry (c)'s audit: traces of
+    the labels remain in the evidence behind three things the file keeps. g_mom: its factors are fitted on released
+    stages, but the backtest that adopted it held back the labels outside the four groups, and its restriction to
+    cardiomyocytes and endocardium cites a read made on top of the atlas step. The library-3 base: one of its four
+    reasons was priced on scenarios that reuse the share grid. E10.5's own mix: an atlas share was one supporting
+    reason for keeping it. None of these is data in the file. The advice stands on its other reasons; the drafts say
+    "traces remain" and name them.
+  - **The review of the option** (wf_038f7126-b04; `campaign/t1-none`, ea95c02): ready, no blocker. It followed the
+    route into the builder: the same draw of cells; what drops out is the atlas step's own random stream and its edit
+    of the four groups; R2's lists cannot reach the bytes, because the builder uses its held list only where a
+    direction or a momentum is applied; g_mom's mask is the entry's own, and on cardiomyocytes and endocardium it
+    holds back one label by the label map's own rule, so the four-group list, which was fixed by counting atlas
+    cells, decides no cell of this file. Eight lesser points, being applied on `campaign/t1-none-fix` with a second
+    review (wf_79afa627-63b): the option is to build one file only, the first upload's command with the step taken
+    out; the build record is to say plainly that the step was removed; five tests are added.
+  - **The checks on the DGX campaign checkout at ea95c02** (16 threads; logs discarded; read by exit code, sha256 and
+    the stamps' commit and clean fields): the unit tests pass (153); with the option not given both T1 files have the
+    reference list's hashes; the no-direction file built twice has the same bytes both times, 55eaee547ff1, which is
+    also the hash of entry (d)'s two check builds at f211416; stamps ea95c02 and clean; the local format check
+    passes. The complete local test run at ea95c02: 2911 passed, 1 skipped. These are check builds and never upload
+    sources.
+  - **The ruling package, as drafts on a branch** (`campaign/t1-none-docs-fix`, 1921e9f; a writer, a reviewer with
+    four blockers, a fixer): a build set `t1none` that builds `T1_s2none.h5ad` by the one command and refuses while
+    the amendment is a draft; a draft amendment of `docs/S2_RULES.md`, headed "DRAFT, not in force", with the
+    captain's words left open; `tests/test_s2_rules.py` pinning the command word for word; and, as texts for the main
+    session, ruling row R8, the amendments of register rows X002 and X003, the method summary's filtering subsection
+    and its other lines, the runbook's lines on the submission page's fields, a change note for
+    `docs/DATA_POLICY.md`, and the ordered steps from the ruling to the hand-over. Nothing of it is on main, and the
+    frozen rules and their hash are unchanged there.
+  - **The organiser drafts** (the same workflow; `docs/ORGANIZER_QUESTIONS.md`): the labels email rewritten for this
+    case, with the two sentences that change if the captain keeps the atlas; the sources note of 18 November amended
+    in eight places so that it no longer announces `T1_s2.h5ad` or an embryo file; and an optional public Slack
+    question, which the AI assistant advises against posting. None is in the captain's drafts folder; the copy of
+    the sources note that is there is not to be sent as it stands.
+  - **What waits for the captain:** which file is T1's last upload (the AI assistant advises the no-outside-data
+    file; the recomputed-labels file stays open until about 22 November); his word to put the two emails into his
+    drafts once he has ruled; the embryo's last file (decision log 2026-11-18 (v)). The heart's and T3's second files
+    are built and with him since 18 November.

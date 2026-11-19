@@ -80,15 +80,17 @@ messages only. Recorded by the AI assistant.
   that check did not open; its "no answer found" on how a floored severity scores was therefore wrong on the day it
   was written. A screened Slack check reads every thread with replies from now on.
 
-## Disclosure of the X002 labels (drafted 2026-11-19; not sent; not yet in the captain's drafts; the captain decides and sends)
+## Disclosure of the X002 labels (drafted 2026-11-19, rewritten the same day; not sent; not yet in the captain's drafts; the captain decides and sends)
 
-Drafted by an agent of the AI assistant to its brief and reviewed by three agents (accuracy, strategy, tone:
-seventeen points, applied by a fourth; wf_63571f3d-9a2). Background: "Screened reads of 2026-11-19" above and
-`docs/PLAN.md` decision log 2026-11-19 (a) to (c). Send conditions, from the reviews: (1) it is held until the captain
-has ruled on what T1's remaining upload is (decision log 2026-11-19 (b)), because its sentence on that upload states
-a commitment, and the bracket is then resolved to match his ruling; (2) the disclosure email of 18 November (below),
-which the record shows as unsent, names `T1_s2.h5ad` and says its share lies in the label-derived range: it is
-amended or merged with this one before either goes. Answers: _none; not sent_.
+First drafted and reviewed in wf_63571f3d-9a2 (the text stood here until the rewrite; it promised recomputed groups
+and left a bracket on the 60% share). Rewritten in wf_038f7126-b04 for the case the AI assistant now advises, a
+last T1 upload with no outside data (`docs/PLAN.md` decision log 2026-11-19 (d) and (e)): a writer, three reviewers
+(accuracy, strategy, tone: eight points, applied by a fourth agent). The captain has ruled on none of it. Send
+conditions, unchanged: (1) it goes only after the captain has ruled which file is T1's remaining upload, with its
+paragraph on that upload matching his ruling; (2) the sources note of 18 November (below) goes in the same sitting
+in its amended form, and the copy in his drafts, which still lists `T1_s2.h5ad`, is replaced or deleted first. Order
+advised by the reviews: this email first, the sources note within minutes, both as new emails. 295 words from the
+greeting to the signature. Answers: _none; not sent_.
 
 **Subject:** Human Team (Mithril): disclosure on the cell-type labels in our Task 1 entry, and one question
 
@@ -96,25 +98,77 @@ To: virtual.embryo.moonshot@gmail.com
 
 Hello organisers,
 
-One disclosure about our Task 1 entry, and one question. As it describes our method, please keep it private.
+One disclosure about our Task 1 entry, and one question; please keep it private.
 
-Our Task 1 models use one external expression dataset: Feng et al., Nat Commun 13:7960 (2022), GEO GSE193346, raw counts of wild-type CD1 hearts at E9.5 and from E14.5 on. Cells of E10.5 to E13.5 were removed on the per-cell stage column before any model used the data. From the permitted cells we took each cell type's direction of expression change from E9.5 to E14.5.
+Our first Task 1 upload used one external expression dataset: Feng et al., Nat Commun 13:7960 (2022), GEO GSE193346,
+raw counts of wild-type CD1 hearts at E9.5 and from E14.5 on. Cells of E10.5 to E13.5 were removed on the per-cell
+stage column before any model used the data. One step of our method used the permitted cells: it took each cell type's
+direction of expression change from E9.5 to E14.5.
 
-Those cell types were the authors' labels. From the same labels we computed the E14.5 cardiomyocyte share in the authors' two strains, CD1 and C57BL/6; that range bounded where our second Task 1 file placed its share (60%).
+Those cell types were the authors' labels. After your public reply of 16 November, we checked the paper's Methods.
+They say the authors merged every sample of every stage into one object, batch-corrected and clustered it, so the
+labels were learned using protected cells.
 
-After your public reply of 16 November, we checked the paper's Methods. They say the authors merged every sample of every stage into one object, batch-corrected and clustered it, so the labels were learned using protected cells.
+Our first Task 1 upload used these labels: T1:test, 18 November 2026, 14:37 UTC, file T1_s1.h5ad, SHA-256
+a294062f5f7bbb2dae19ef695979cc21f03f38df40d22be9ccdd30af36e3bdef. Apart from these labels, no in-window cell, count or
+expression value entered any file.
 
-Our first Task 1 upload used them: T1:test, 18 November 2026, 14:37 UTC, file T1_s1.h5ad, SHA-256 a294062f5f7bbb2dae19ef695979cc21f03f38df40d22be9ccdd30af36e3bdef. Apart from these labels, no in-window cell, count or expression value entered any file.
+We also built a second Task 1 file. Its cardiomyocyte share was placed within a range read from the authors' labels.
+That file has not been uploaded.
 
-Our remaining Task 1 upload will use cell groups recomputed from the permitted cells' raw counts and stage labels only, by a procedure we fix and record before it runs. [It will not keep the 60% share. / Whether it keeps that share depends on your answer below.]
+Our remaining Task 1 upload uses no external dataset: it is our first file's method with that one step taken out. Two
+parts it keeps were made from released data only but chosen with evidence that used the authors' labels.
 
-Our question: does our first Task 1 upload stand as an eligible entry, or should only our remaining one count?
+Does our first Task 1 upload stand as an eligible entry, or should only our remaining one count?
 
-As your reply asks, our method report, in the submission page's fields and the attached report, will describe the filtering, this history, the recomputed groups' effect on the direction, and every other choice resting on the authors' processing.
+As your public reply asks, the P3 method report's Data used field will list this dataset, its accession, the stages
+used and the filtering, and the attached report will describe this history and every choice resting on the authors'
+processing.
 
 Best regards,
 Vijayavallabh J
 Team captain, Mithril
+
+**If the captain rules for the recomputed-labels file instead** (Feng's direction kept, groups recomputed from the
+permitted cells), two sentences change, by the same reviews:
+
+If the captain rules for the recomputed-labels file (Feng's direction kept, groups recomputed from the permitted
+cells), make two changes to email A. The email is then 298 words (counted by wc), so it is still under 300.
+
+1. Replace "Our remaining Task 1 upload uses no external dataset: it is our first file's method with that one step
+taken out." WITH: "Our remaining Task 1 upload keeps that step, with groups recomputed from the permitted cells' raw
+counts using markers from released data and published statements."
+
+2. Replace "Two parts it keeps were made from released data only but chosen with evidence that used the authors'
+labels." WITH: "Two other parts were made from released data only but chosen with evidence that used the authors'
+labels." (That file keeps g_mom and the cell base too.)
+
+Everything else stays, the share sentence included. The recomputed-labels file is the first file's design and carries
+no 0.60 (decision log 2026-11-19 (d), the cold challenge).
+
+The words "raw counts and stage labels only" are not used. The groups also rest on marker genes, from the released
+E9.5 stage and from published statements on adult mouse tissue in eight papers (decision log 2026-11-19 (d); proposed
+register row X010, corrections still owed). Those papers must be listed in the method report.
+
+Do not add "by a procedure fixed before it runs" today. The labeller's final review says not ready, with three
+blockers, and its settings are a draft (decision log 2026-11-19 (d)). Once the settings are signed off, the clause ",
+by a procedure we fixed and recorded before it ran" may be added. To make room, cut "batch-corrected and" and "only"
+from "released data only", or the email goes over 300 words. [TO COMPLETE AT THE RULING]
+
+**What the email leaves to the method report** (the reviewers' note): which candidates and priors the share range
+bounded; the authors' quality control and their zone labels, both made on the full dataset; the two kept parts by
+name (g_mom's adoption evidence, and more weakly the pricing behind the cell base).
+
+## Optional public Slack question on the first upload's eligibility (drafted 2026-11-19; not posted; the AI assistant advises against posting)
+
+From the same workflow, as an option the cold challenge of the T1 plan raised: the organisers answered two public
+Slack questions within three days in November, while the team's emails and notes have had one reply (17 November).
+The AI assistant advises against posting it: it would put a detail of the team's P3 method into a public channel,
+against the rule that P3 methods stay private until the announcement, which only the captain can set aside for one
+question, as he did on 2026-11-11 for a scorer question; and other teams could read from it that a team has this
+problem. If the captain wants it at all, it goes only after the email has had no answer for some days. Text:
+
+> Hi organisers, a question on your 16 November reply about external datasets that span a protected window. Suppose a team made an official upload with an external dataset's cell-type labels, and later learned that the authors had made those labels with protected-window cells included. If the team has disclosed this to you and its remaining upload does not use those labels, does the first upload stay eligible? A yes or no is plenty. Thanks!
 
 ## Screened check of 2026-11-18 (after the first uploads): no answer to any open question
 
@@ -731,7 +785,19 @@ independent agents, rewritten, verified by a fourth, and its later additions (th
 checked by a fifth. Put into the drafts of be23b041@smail.iitm.ac.in, to virtual.embryo.moonshot@gmail.com, at the
 captain's word of 2026-11-18 (decision log (k)). The runbook also has it copied by Slack DM to Weize Xu; that is the
 captain's to do. Whether and when it was sent, and any edit before sending, are recorded here when the captain says.
-Answers: none can exist yet. Text as drafted:
+Answers: none can exist yet.
+
+**Amended on 2026-11-19 (wf_038f7126-b04: a writer, three reviewers, a fixer; not yet in the captain's drafts, whose
+copy still has the text below and is not to be sent as it stands).** Eight changes and nothing else: (1) the subject
+ends at "our official uploads of 18 November"; (2) the opening sentence no longer says "and for the two second
+uploads that follow it"; (3) to (5) the paragraph "Second uploads that follow this note" and its items 5
+(`T1_s2.h5ad`) and 6 (`T2embryo_s2.h5ad`) are removed: the first is not uploaded, the second is not decided; (6) in
+the X002 paragraph, after "no absolute expression level.", one sentence is added: "Those cell types are the authors'
+labels; a separate note sent with this one is about them."; (7) the sentence on 19 October ends at "of its E14.5
+hearts.", without "the share in our second Task 1 upload lies within that range"; (8) "What comes next" begins
+"Before each of our second uploads we will send its board, file hash and sources in a short note." Left for the
+captain: the validation paragraph still says "before our heart and Task 3 second uploads"; the last T1 file also
+uses the released E10.5 file, so he may widen it to "before our second uploads". Text as drafted on 18 November:
 
 Subject: Human Team (Mithril): sources and file hashes for our official uploads of 18 November and two second
 uploads
