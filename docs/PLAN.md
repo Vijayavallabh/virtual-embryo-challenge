@@ -6470,3 +6470,43 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     0.15 to about 0.86 according to which released transition is taken as the test's likeness. No transition has
     a reference and a target of equal scope, which is the test's case if E12.5 was sampled like E10.5: E9.5 to
     E10.5 has the target wider than its reference (core 0.37 to 0.23) and the two others have it narrower.
+- 2026-11-19 (s), T3 stays with the refused file after a cold challenge of the swap; row K19 is closed without a run;
+  try T61 is registered and running; the labeller's fix round is committed (state at 15:12 UTC). Written by the AI
+  assistant.
+  - **T3: the swap to the barred file does not stand** (wf_dc1bec61-a73; a cold challenger given the analyst's case of
+    entry (p) without how it was formed; its probability that the swap is a mistake, 0.55). It corrected the brief:
+    the barred file's factor is Mab21l2's E9.5 knockout cells over WT E8.75, the test's own reference, not over WT
+    E9.5 (`experiments/t3_decomp/t3_decompose.py`, `transfer_factors`). So that factor carries the whole step from
+    E8.75 to E9.5 along the wild-type trend, the Mab21l2 knockout's effect, that sample's own run, and WT E8.75's
+    own deviation, of which only the last is shared with the test and is what the refused file's factor estimates.
+    Its lead over the refused file on Gata4 sits on the first part: Gata4's knockout cells lean towards E9.5
+    against WT E8.75 (stage weights 0.22 and 0.32 in the swap review of 2026-11-05; stage mixing alone matched the
+    barred factor in-sample; without the stage axis the barred factor loses about 5.1). With that part priced for
+    the barred file alone, its four practice cells against the refused file go from +2.29, +6.90, -4.48 and +4.94
+    to about -2.8, +1.8, -9.6 and -0.2 (approximate: two scorers), and the swap is worth about -1 to +1 as the
+    expected better of two, against the analyst's +2.5 under an equal haircut. Its one clear edge is the tail
+    (about 62 to 64 against 57 to 59), which pays only if beta-catenin's embryos lean older than WT E8.75 as
+    Gata4's did; nothing released shows that. The analyst's fourth argument (readings of that kind came near the
+    first test score) weighs practice sources by a test score, which J8 does not allow, and is dropped.
+    **So:** the refused file stays, by the frozen rule, by try K18's fixed reading and now by this check. No
+    question goes to the captain; he is told the result and that a swap remains his to order.
+  - **Row K19 is closed without a run** (the AI assistant's decision under its delegation). Its fix round
+    (`campaign/t3-variants-fix`, babed5d) took the three exponent arms out of the output, and the re-review found
+    the same fault one step on: an arm that carries one of those exponents (the broader trend at 1.0, a cross with
+    an exponent parent) could still be named by a rule written after row K17's result. Closing that leaves four
+    arms that can be named: exponent 0.25, the broader trend at 0.5, and two delays. The challenge above undercuts
+    the delays' design: on the one practice knockout that shares the test's reference the knockout leans older,
+    not younger, so the read would set a delay against its own control on a sign that belongs to that knockout.
+    Two reviews not ready, a third round owed, and what is left to learn is small: no row is committed, nothing
+    ran, T3's count stays 51. The code stays on its branch, off by default.
+  - **Try T61** (row T61, committed at 48ce0d5 before its run; the code merged at f8b5f12 from
+    `campaign/t1-released-bets-fix`, 673a733; its re-review: ready): T1's last file's practice analogue beside ten
+    released-data variants on the two E10.5 cuts and row T60's three library tasks. Fifty-eight tries, counted when
+    read. Started on the DGX's campaign checkout at the row's commit at 15:11 UTC (the targeted tests first, then
+    five processes at 8 BLAS threads). Every gain it can show counts zero at the centre (J6); an output among its
+    four momentum arms would undo ruling R1 and needs the captain's ruling by name; its two composition arms touch
+    a closed lever by its legal route.
+  - **The labeller's fix round** is committed on `campaign/feng-relabel-main-fix` (9f1e047) by the main session,
+    since its agent had handed back with the changes uncommitted and its test runs unfinished: the complete suite on
+    that state, 3070 passed, 1 skipped. Settings file sha256 af3ac7224a65, status draft. A final check runs
+    (wf_235124c8-92a) before the merge and the captain's sign-off.
