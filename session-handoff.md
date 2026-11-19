@@ -2,6 +2,29 @@
 
 ## Current Objective
 
+- **State at 2026-11-19, 19:02 UTC (newest).** Decision log 2026-11-19 (u) to (z). **The labeller ran** (the
+  captain's sign-off, entry (u), is the ruling naming N54): rows N55 and N54 are read; settings frozen (sha256
+  883e74c2c1ef, min_score 0.3 by N55's rule); route recomputed (unassigned 0.019 and 0.038; four groups with a
+  direction; epicardium on 11 early and 32 late cells, minimum 10); the candidate
+  `t1 --g-mom --base lib3 --feng-groups recomputed` check-builds twice to ad8f24c71c90 on `~/v/vec-campaign-d`
+  (8138fa2; the only checkout with `data/derived/feng_relabel_c/`). T1's last upload is still row R8's file
+  (55eaee547ff1) until the captain rules. **The listing of N54 is committed and must stay unopened** by the main
+  session until that ruling (it compares with the authors'-group direction). **Since a RECORD routing to recomputed
+  is at HEAD, `build_all.sh t1none` is refused** unless `--feng-none-ruling` names a later entry of the captain
+  containing "sets the N54 route aside"; the agreement table needs one containing "rules on T1's last upload".
+  **In hand:** row T62 (wf_bf253c90-a8c: `experiments/t1_m1/recomputed_read.py`, branch `campaign/t1-recomputed-read`):
+  the candidate's practice analogue beside T61's none_gmom on T61's five tasks; on its return a fix round adds the
+  two things of entry (z) (a split-half reliability listing per group; an arm with the epicardium group held), then
+  the row on main first, the run on `~/v/vec-campaign-d` (launch with `PATH=$HOME/.local/bin:$PATH`; plain ssh
+  shells lack `uv`), the read, and the priced question to the captain: the ruled file, the recomputed file, and, if
+  the epicardium step is noise, the recomputed file with epicardium held (a builder option and an amendment owed).
+  **Waiting for the captain (plain text, no dialog open):** the heart's route: keep the ruled full-scope file (in
+  force; the default), his own exception (half or full trim), or leave the direction to the AI assistant (then only
+  the ruled file or the half trim, after a second cold check); he said the organisers will not reply, so no
+  organiser route. The advance draw of try T61: advised to decline; declined if he says nothing. **Read today:**
+  T61 (T1 358), H26 (heart 50). **Closed without a run:** K19. **Stopped:** the late bracket. **Known and left:**
+  22 empty "init" commits on main (entry (t)). Agents cannot outlast a 35-minute suite: the main session runs the
+  complete suite itself (last: 3156 passed, 2 skipped at 4c57dff; targeted sets since).
 - **State at 2026-11-19, 15:02 UTC (newest).** Decision log 2026-11-19 (o) to (r). **Waiting for the captain
   (asked in plain text; no dialog is open):** the heart's route: (a) keep the ruled full-scope file, the default;
   (b) keep it and try the clean route (a screened re-read of the protocol page's two heart rows, and the question
