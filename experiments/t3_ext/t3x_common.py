@@ -97,7 +97,7 @@ HELD_EXTRA = frozenset({
     "GSE93524"
 })
 # sha256 of the committed datasets.yaml; the pin-and-commit step updates it in the same commit as the YAML.
-DATASETS_SHA256 = "bf4b4bdddbfbee8e6dac6e4f480b6d28a3331d5508ab8004e799aae0ec55e790"
+DATASETS_SHA256 = "d3615dae10d82bfa2c80761b1ebf56190d004c10914b246cfe565ba96de5a2c7"
 PIN_KEYS = ("accession", "arm", "gene", "stage", "files", "metadata_sha256")
 SERIES_PIN_KEYS = ("accession", "series_metadata_sha256")
 PIN_ARMS = ("ko", "control")

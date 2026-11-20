@@ -710,8 +710,13 @@ def test_the_committed_gse137337_declarations_offer_its_gene_archives_and_pin_no
     assert [f["name"] for f in ok] == names[:5]
     assert {o["name"] for o in other} == set(names[5:])
     # every other cleared dataset is as it was: no series files, no control series
+    # (the many-line bulk resource pins its one count matrix by its first line's hash since 2026-11-20, decision log
+    # 2026-11-20 (fff); it is a bulk dataset and goes through bulk.py, not through the archive route)
     for acc, d in cm.load_datasets().items():
-        if acc != "GSE137337":
+        if acc == "E-MTAB-7322":
+            assert not d.get("series_files") and not d.get("control_series")
+            assert [f["name"] for f in d["pinned_series_files"]] == ["E-MTAB-7322-raw-counts.tsv.undecorated"]
+        elif acc != "GSE137337":
             assert not d.get("series_files") and not d.get("control_series") and not d["pinned_series_files"]
 
 

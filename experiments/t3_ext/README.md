@@ -930,6 +930,9 @@ the dataset is pinned and the question goes to the main session.
 - **B6 Assay.** Bulk RNA-seq of a whole embryo, with yolk sac and placenta not included or stated. Not ribo-seq,
   bisulfite, ATAC, microarray, spatial, dissected tissue or ES/EB. The file must not be described as FPKM, TPM, RSEM
   or normalised. Values are checked by code, never by eye.
+  Where the text says whole embryo or whole organism and is silent on yolk sac and placenta, write it as a note: silence
+  is not a refusal (the main session's ruling of 2026-11-20 for E-MTAB-7322, docs/PLAN.md decision log 2026-11-20
+  (fff)); a text that names a dissected part, or different handling of the two arms, is.
 - **B7 Files and ties.** per_sample: the file is in the sample's own folder and is exactly one text table.
   series_table: the series file url is in the series' own folder; the header was screened; the printed tie table
   shows every non-gene header tied to exactly one sample by exact equality, with 0 problems; gene_columns are the right

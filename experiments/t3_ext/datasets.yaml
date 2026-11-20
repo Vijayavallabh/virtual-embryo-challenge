@@ -709,8 +709,7 @@ datasets:
 
   # E-MTAB-7322 (the Mouse Genetics Project's whole-embryo set) joined the list on 2026-11-20 for its metadata steps
   # (docs/PLAN.md decision log 2026-11-20 (vv), (yy), (aaa), (eee)). The 29 withheld lines are the two readers' result
-  # on the line names, read before any count: a line is used only if neither reader doubted it. Nothing is pinned
-  # until the plan, the header step, the second plan and both readers' reading of the views.
+  # on the line names, read before any count: a line is used only if neither reader doubted it.
   - accession: E-MTAB-7322
     status: cleared
     tier: unrelated
@@ -761,4 +760,1641 @@ datasets:
     why: "about 25 knockout lines of unrelated genes, each against its own line's wild-type embryos, two to nine single embryos an arm: the best-replicated estimate at hand of what a knockout embryo shares against its control"
     risks: "the description file states no littermate relation (d = 0.5); embryos are staged by day, so delayed mutants are part of the ratio; one programme, one protocol; with no chromosome column in the gene-id map a unit whose arms differ in sex mix is refused"
     verified: false
-    pinned: []
+    # Pinned 2026-11-20 by two readers (decision log 2026-11-20 (fff)): the main session, and an independent second reader
+    # agent who did not see the first reading. Each read the series block, the column and per-line views, the
+    # comparison counts, the final line set and all 217 records of the line set, and applied checks 1 to 6, 8, 9 and B1
+    # to B10; both recomputed nothing by eye that the code decides. The pins are the committed rule's whole line set
+    # after the header step (25 lines, 103 homozygous knockout and 114 wild-type embryos at E9.5, 417 runs), printed
+    # by the pipeline's own templates and pasted unchanged. The record is silent on yolk sac; the main session rules
+    # that this is a note and not a refusal (embryos were collected and staged before genotyping, one protocol for
+    # both arms).
+    pinned_series_files:
+# table-template E-MTAB-7322: E-MTAB-7322-raw-counts.tsv.undecorated of E-MTAB-7322, 3030 columns; READ the tie table the header step printed before pasting
+# Paste under the dataset's `pinned_series_files:` key.
+      - series: E-MTAB-7322
+        name: "E-MTAB-7322-raw-counts.tsv.undecorated"
+        header_sha256: "483aac11e60b62ca4b5c43e83405826457b0bbd3ccb16e138c1de347acc6628f"
+    pinned_series:
+# pin-template E-MTAB-7322 --series: the IDF, the SDRF header row and the methods text, as read
+      - accession: E-MTAB-7322
+        series_metadata_sha256: "633c97af7afec13e741cfe71f16717eb2a5bfa576c15340e23eabf70ffe4880f"
+    pinned:
+# pin-template E-MTAB-7322 (ArrayExpress): line Adamts3, arm ko; 2 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1020766
+        source_name: "M02236702_Adamts3_hom1"
+        arm: ko
+        gene: "Adamts3"
+        stage: E9.5
+        runs: [ERR1395988]
+        metadata_sha256: "9996eb3f53fab674baeff1a06ac779cfbfe26dfe1847260b00e81d9c41c9c138"
+      - accession: ERS1020767
+        source_name: "M02236705_Adamts3_hom2"
+        arm: ko
+        gene: "Adamts3"
+        stage: E9.5
+        runs: [ERR1395989]
+        metadata_sha256: "870dbce8827880757dfc06c6bd5e7c448c452b9c566eaef4e29f1947178d5c97"
+# pin-template E-MTAB-7322 (ArrayExpress): line Adamts3, arm control; 4 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1020768
+        source_name: "M02236706_Adamts3_wt1"
+        arm: control
+        gene: "Adamts3"
+        stage: E9.5
+        runs: [ERR1395990]
+        metadata_sha256: "ef20a688a290c0c7d1feea394dc3a252e5c5b8aaa783c4dd38149600c389a1c7"
+      - accession: ERS1020771
+        source_name: "M02239814_Adamts3_wt2"
+        arm: control
+        gene: "Adamts3"
+        stage: E9.5
+        runs: [ERR1395993]
+        metadata_sha256: "273739d33abc4ba30daeefdc450ebaedbdfe72b3357e31e7b0c9bdde76eb886f"
+      - accession: ERS1020775
+        source_name: "M02241848_Adamts3_wt3"
+        arm: control
+        gene: "Adamts3"
+        stage: E9.5
+        runs: [ERR1395997]
+        metadata_sha256: "ac5e93f2c4359aef9855a945bdd8bc9527861ae2549a7e92bdf16b283bee8682"
+      - accession: ERS1020776
+        source_name: "M02241850_Adamts3_wt4"
+        arm: control
+        gene: "Adamts3"
+        stage: E9.5
+        runs: [ERR1395998]
+        metadata_sha256: "509f9fec5ea466994ea4581cfaeccf780a6fe390e71f66f1be08eaa274d060b0"
+# pin-template E-MTAB-7322 (ArrayExpress): line Bap1, arm ko; 2 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS626541
+        source_name: "M01926123_Bap1_hom1"
+        arm: ko
+        gene: "Bap1"
+        stage: E9.5
+        runs: [ERR756244, ERR756264]
+        metadata_sha256: "99b745ea03719b0b38b3633a5269b2e436b27e4f31206fcb6d0c9adc2f3cdd34"
+      - accession: ERS626544
+        source_name: "M01950818_Bap1_hom2"
+        arm: ko
+        gene: "Bap1"
+        stage: E9.5
+        runs: [ERR756247, ERR756267]
+        metadata_sha256: "55978145fe6dbf634aa466ae8d925926ef0283b8acd40006cdc427e1abcafeb2"
+# pin-template E-MTAB-7322 (ArrayExpress): line Bap1, arm control; 3 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS626537
+        source_name: "M01902982_Bap1_wt1"
+        arm: control
+        gene: "Bap1"
+        stage: E9.5
+        runs: [ERR756240, ERR756260]
+        metadata_sha256: "7d44da125626be45240b3941db424bfeedf674a47a8c157938430759c6c25372"
+      - accession: ERS626539
+        source_name: "M01902984_Bap1_wt2"
+        arm: control
+        gene: "Bap1"
+        stage: E9.5
+        runs: [ERR756242, ERR756262]
+        metadata_sha256: "5a03dabd27c8ece2124b43e6557b437a0920275d59ad7257a161edda84e77ed0"
+      - accession: ERS626540
+        source_name: "M01926120_Bap1_wt3"
+        arm: control
+        gene: "Bap1"
+        stage: E9.5
+        runs: [ERR756243, ERR756263]
+        metadata_sha256: "275bffb1d3c4cc1ff2a664fc17adf855a5b6d7def64b9a3e2d838da099173a96"
+# pin-template E-MTAB-7322 (ArrayExpress): line Brd2, arm ko; 5 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1182275
+        source_name: "M02318296_Brd2_hom1"
+        arm: ko
+        gene: "Brd2"
+        stage: E9.5
+        runs: [ERR1702897]
+        metadata_sha256: "3bc6af9962129f5b5d0ec66f63e0d66191bce43012b438dbde3f9fe20b3b61c9"
+      - accession: ERS1182277
+        source_name: "M02318298_Brd2_hom2"
+        arm: ko
+        gene: "Brd2"
+        stage: E9.5
+        runs: [ERR1702899]
+        metadata_sha256: "a114a37f192e55ff92731e5d164bbb42aa9710aad238dea29b06f3f781d432b9"
+      - accession: ERS1182280
+        source_name: "M02323943_Brd2_hom3"
+        arm: ko
+        gene: "Brd2"
+        stage: E9.5
+        runs: [ERR1702902]
+        metadata_sha256: "3c4c0b54fe1c0b82a16c88b4f911c4e1e2ff34c241fc7e10302500763997cf13"
+      - accession: ERS1182281
+        source_name: "M02323945_Brd2_hom4"
+        arm: ko
+        gene: "Brd2"
+        stage: E9.5
+        runs: [ERR1702903]
+        metadata_sha256: "30fcf68860c226351d20c7a2858dc7ddc372c14b2c457796566f5a88066f1bf3"
+      - accession: ERS1182285
+        source_name: "M02323950_Brd2_hom5"
+        arm: ko
+        gene: "Brd2"
+        stage: E9.5
+        runs: [ERR1702907]
+        metadata_sha256: "e537c86cd82539d621b3bb9435ed48ffd083bb500a296b5777fe9b8426bc1618"
+# pin-template E-MTAB-7322 (ArrayExpress): line Brd2, arm control; 3 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1182276
+        source_name: "M02318297_Brd2_wt1"
+        arm: control
+        gene: "Brd2"
+        stage: E9.5
+        runs: [ERR1702898]
+        metadata_sha256: "45318997530425dfd6a113ee3b20b1ec6d1f63b162e565dffddcf720e10fa570"
+      - accession: ERS1182278
+        source_name: "M02318299_Brd2_wt2"
+        arm: control
+        gene: "Brd2"
+        stage: E9.5
+        runs: [ERR1702900]
+        metadata_sha256: "8e0104f871604e4bc9dd11ac883624904e12f51c90658f1be830e0c8b7aa6263"
+      - accession: ERS1182279
+        source_name: "M02323942_Brd2_wt3"
+        arm: control
+        gene: "Brd2"
+        stage: E9.5
+        runs: [ERR1702901]
+        metadata_sha256: "fa2a0363d53f929ed14df8192ece65a088bd371befb07ee133374a5f2d525539"
+# pin-template E-MTAB-7322 (ArrayExpress): line Camsap3, arm ko; 7 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1182227
+        source_name: "M02320035_Camsap3_hom1"
+        arm: ko
+        gene: "Camsap3"
+        stage: E9.5
+        runs: [ERR1692634]
+        metadata_sha256: "b35290c6bf3d80c789c844297ff8156c0bb05c0f2dbdba80f98e362de18f0daf"
+      - accession: ERS1182228
+        source_name: "M02320036_Camsap3_hom2"
+        arm: ko
+        gene: "Camsap3"
+        stage: E9.5
+        runs: [ERR1692635]
+        metadata_sha256: "b762b57b740317878efcd6519ae0901ff08992574a2db902ca0c1f15dc853ff4"
+      - accession: ERS1182233
+        source_name: "M02323711_Camsap3_hom3"
+        arm: ko
+        gene: "Camsap3"
+        stage: E9.5
+        runs: [ERR1692640]
+        metadata_sha256: "1282de0b16d38651a2231e0a337bd098c9e2ff4f8a0585354ba111f311f89e9c"
+      - accession: ERS1182234
+        source_name: "M02323712_Camsap3_hom4"
+        arm: ko
+        gene: "Camsap3"
+        stage: E9.5
+        runs: [ERR1692641]
+        metadata_sha256: "b3b41f33089607ca975aabaae202f65a115dcdab4a8ffc8939d40d86d6613cec"
+      - accession: ERS1182235
+        source_name: "M02323713_Camsap3_hom5"
+        arm: ko
+        gene: "Camsap3"
+        stage: E9.5
+        runs: [ERR1692642]
+        metadata_sha256: "1640cd05ac57d07aac9e73d5606880ea4279f27fac29b678fd8356b70dec3585"
+      - accession: ERS1182243
+        source_name: "M02323721_Camsap3_hom6"
+        arm: ko
+        gene: "Camsap3"
+        stage: E9.5
+        runs: [ERR1692650]
+        metadata_sha256: "af23fa511f3af8514ba612f2250e3390f86c5225d624cd4edbac77da772ac089"
+      - accession: ERS1182248
+        source_name: "M02323726_Camsap3_hom7"
+        arm: ko
+        gene: "Camsap3"
+        stage: E9.5
+        runs: [ERR1692655]
+        metadata_sha256: "667d04fa0de6191f4f169f79760d493a85ef718fb7d7710883ac66e6eeb72d96"
+# pin-template E-MTAB-7322 (ArrayExpress): line Camsap3, arm control; 7 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1182225
+        source_name: "M02320033_Camsap3_wt1"
+        arm: control
+        gene: "Camsap3"
+        stage: E9.5
+        runs: [ERR1692632]
+        metadata_sha256: "533fad099a15329488f11720ab02b61d6365c6560afef2705c06ae9db0a9caf6"
+      - accession: ERS1182229
+        source_name: "M02320037_Camsap3_wt2"
+        arm: control
+        gene: "Camsap3"
+        stage: E9.5
+        runs: [ERR1692636]
+        metadata_sha256: "73861b9ca1fd9a97dcd24caedda32430150d9c8ff041be02325c19cafcfb3f98"
+      - accession: ERS1182238
+        source_name: "M02323716_Camsap3_wt4"
+        arm: control
+        gene: "Camsap3"
+        stage: E9.5
+        runs: [ERR1692645]
+        metadata_sha256: "ba397b3824dcc8307456967db4adab561336ac7dabea3ecf566f32392a5882ae"
+      - accession: ERS1182239
+        source_name: "M02323717_Camsap3_wt5"
+        arm: control
+        gene: "Camsap3"
+        stage: E9.5
+        runs: [ERR1692646]
+        metadata_sha256: "77bfd7e383d40ee7c6f559f71169cfc643ad3e638911d7ca503f4cae593b51c7"
+      - accession: ERS1182242
+        source_name: "M02323720_Camsap3_wt6"
+        arm: control
+        gene: "Camsap3"
+        stage: E9.5
+        runs: [ERR1692649]
+        metadata_sha256: "cd5327beaea5f3363bec5c9e1078626bf106bb0124a5d419c6208481cd1b1359"
+      - accession: ERS1182244
+        source_name: "M02323722_Camsap3_wt7"
+        arm: control
+        gene: "Camsap3"
+        stage: E9.5
+        runs: [ERR1692651]
+        metadata_sha256: "aec6d70653703462120901f029f0113cbbc2aa44c210bf67305c4dc4119d261c"
+      - accession: ERS1182245
+        source_name: "M02323723_Camsap3_wt8"
+        arm: control
+        gene: "Camsap3"
+        stage: E9.5
+        runs: [ERR1692652]
+        metadata_sha256: "31e8393b7475f2e70e1ef8b6a29b89f2c6b1d680bcdd45452544159e205087ce"
+# pin-template E-MTAB-7322 (ArrayExpress): line Ccdc6, arm ko; 6 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1509297
+        source_name: "M02465637_Ccdc6_hom1"
+        arm: ko
+        gene: "Ccdc6"
+        stage: E9.5
+        runs: [ERR2632978, ERR2633071, ERR2633164, ERR2633257]
+        metadata_sha256: "f5c919eb6c4522f61ec20b2002182ccd24b34b26a870382f1fd3f6bf261f4d83"
+      - accession: ERS1509301
+        source_name: "M02465645_Ccdc6_hom2"
+        arm: ko
+        gene: "Ccdc6"
+        stage: E9.5
+        runs: [ERR2632982, ERR2633075, ERR2633168, ERR2633261]
+        metadata_sha256: "58ef27b174ba5228b9f7183700a875c1a29d634bbf790d83a8b242bff04a2c40"
+      - accession: ERS1509303
+        source_name: "M02501538_Ccdc6_hom3"
+        arm: ko
+        gene: "Ccdc6"
+        stage: E9.5
+        runs: [ERR2632984, ERR2633077, ERR2633170, ERR2633263]
+        metadata_sha256: "353fa3f6eaafa8d818de94bea302d4f751fa903900e32ea558e42b4b49220fa3"
+      - accession: ERS1509310
+        source_name: "M02524536_Ccdc6_hom4"
+        arm: ko
+        gene: "Ccdc6"
+        stage: E9.5
+        runs: [ERR2632991, ERR2633084, ERR2633177, ERR2633270]
+        metadata_sha256: "27fc4f21f39a5a9adba78c01f551249b5263a378a0aa4c90f47b1ab22bfad9da"
+      - accession: ERS1509313
+        source_name: "M02524542_Ccdc6_hom5"
+        arm: ko
+        gene: "Ccdc6"
+        stage: E9.5
+        runs: [ERR2632994, ERR2633087, ERR2633180, ERR2633273]
+        metadata_sha256: "4d1d6ff1263705a82461d2c103c08a7377e172fcd2f0ea73959d7294f2cbe004"
+      - accession: ERS1509314
+        source_name: "M02524543_Ccdc6_hom6"
+        arm: ko
+        gene: "Ccdc6"
+        stage: E9.5
+        runs: [ERR2632995, ERR2633088, ERR2633181, ERR2633274]
+        metadata_sha256: "403b7266d607ac3402914d1c3ac916edb5d6a54477aac6b975a533f938cadce1"
+# pin-template E-MTAB-7322 (ArrayExpress): line Ccdc6, arm control; 3 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1509302
+        source_name: "M02501536_Ccdc6_wt2"
+        arm: control
+        gene: "Ccdc6"
+        stage: E9.5
+        runs: [ERR2632983, ERR2633076, ERR2633169, ERR2633262]
+        metadata_sha256: "0be4e19f4b65a0bbccb2f62be30b594979ff1f6648445cf37e9d3d55c64b1fa8"
+      - accession: ERS1509305
+        source_name: "M02501543_Ccdc6_wt3"
+        arm: control
+        gene: "Ccdc6"
+        stage: E9.5
+        runs: [ERR2632986, ERR2633079, ERR2633172, ERR2633265]
+        metadata_sha256: "9e7f477e9da8cfceb94c1d2e96d83f23e9b7f7fc7da6ad06c0c2953ab79af324"
+      - accession: ERS1509312
+        source_name: "M02524541_Ccdc6_wt6"
+        arm: control
+        gene: "Ccdc6"
+        stage: E9.5
+        runs: [ERR2632993, ERR2633086, ERR2633179, ERR2633272]
+        metadata_sha256: "cb55cb5f97ce99cc7ed9e20e0fea78b9abc9269ae1b0d81dda51d8b860eb94ca"
+# pin-template E-MTAB-7322 (ArrayExpress): line Cnot4, arm ko; 3 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1180525
+        source_name: "M02191392_Cnot4_hom1"
+        arm: ko
+        gene: "Cnot4"
+        stage: E9.5
+        runs: [ERR1431966]
+        metadata_sha256: "addacec9e4a3103e5ef5c10902ce0731f00c28e7d4b56eb2e5f61d79a7488ee3"
+      - accession: ERS1180527
+        source_name: "M02214469_Cnot4_hom2"
+        arm: ko
+        gene: "Cnot4"
+        stage: E9.5
+        runs: [ERR1431968]
+        metadata_sha256: "23b42e4eebd32594e07cf41947fa2a562789e775db00328c7c1ebcee6d870ee4"
+      - accession: ERS1180530
+        source_name: "M02242258_Cnot4_hom3"
+        arm: ko
+        gene: "Cnot4"
+        stage: E9.5
+        runs: [ERR1431971]
+        metadata_sha256: "eac0b266ded507485513ea4378a509d79b8c06e2672ca9107a60793a46fe16e0"
+# pin-template E-MTAB-7322 (ArrayExpress): line Cnot4, arm control; 3 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1180528
+        source_name: "M02214471_Cnot4_wt1"
+        arm: control
+        gene: "Cnot4"
+        stage: E9.5
+        runs: [ERR1431969]
+        metadata_sha256: "c31ef2e01bf2e856905e2b25581784b20da710d870f033ac64fe8f705853996c"
+      - accession: ERS1180529
+        source_name: "M02214474_Cnot4_wt2"
+        arm: control
+        gene: "Cnot4"
+        stage: E9.5
+        runs: [ERR1431970]
+        metadata_sha256: "01e34f91496f7e50b98301d92177126f643cc241f8f4f25cd536ef45b5720115"
+      - accession: ERS1180532
+        source_name: "M02242261_Cnot4_wt3"
+        arm: control
+        gene: "Cnot4"
+        stage: E9.5
+        runs: [ERR1431972]
+        metadata_sha256: "e74cfefc7be89f39b2753e8611a084244e97cc62cfdc0daa7e829be12c6c8400"
+# pin-template E-MTAB-7322 (ArrayExpress): line Col4a3bp, arm ko; 3 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1059981
+        source_name: "M02320782_Col4a3bp_hom1"
+        arm: ko
+        gene: "Col4a3bp"
+        stage: E9.5
+        runs: [ERR1528018]
+        metadata_sha256: "00c2c2cb6c5771d95a58ef906997ef34018bc0fe1a09dcf1845df5311381d8ae"
+      - accession: ERS1059986
+        source_name: "M02320786_Col4a3bp_hom2"
+        arm: ko
+        gene: "Col4a3bp"
+        stage: E9.5
+        runs: [ERR1528022]
+        metadata_sha256: "fb998683b129cfb86d7a47f1ac9a0e95b6dcf7846e3afc7ec4267b412ba6c4c5"
+      - accession: ERS1059990
+        source_name: "M02321015_Col4a3bp_hom3"
+        arm: ko
+        gene: "Col4a3bp"
+        stage: E9.5
+        runs: [ERR1528026]
+        metadata_sha256: "f44506fa91613be2508249af3f17909c9453c5d7e57f06528c0d11e8736b74a5"
+# pin-template E-MTAB-7322 (ArrayExpress): line Col4a3bp, arm control; 3 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1059975
+        source_name: "M02318799_Col4a3bp_wt1"
+        arm: control
+        gene: "Col4a3bp"
+        stage: E9.5
+        runs: [ERR1528012]
+        metadata_sha256: "62480d773f8cbc1d90fa0e74a085b90252510bfe31ba17c1a4f0768c6f7d4346"
+      - accession: ERS1059979
+        source_name: "M02320780_Col4a3bp_wt2"
+        arm: control
+        gene: "Col4a3bp"
+        stage: E9.5
+        runs: [ERR1528016]
+        metadata_sha256: "b7818ceefe7462ed3010bec276a9f09a38452091190d02875c5fb6079b94cc8c"
+      - accession: ERS1059989
+        source_name: "M02321014_Col4a3bp_wt3"
+        arm: control
+        gene: "Col4a3bp"
+        stage: E9.5
+        runs: [ERR1528025]
+        metadata_sha256: "aa83449bef4a143e5c0a013daffa0ed3b0e031b3eef1123575e7c7e07c1226b8"
+# pin-template E-MTAB-7322 (ArrayExpress): line Cyp11a1, arm ko; 3 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1034029
+        source_name: "M02284010_Cyp11a1_hom2"
+        arm: ko
+        gene: "Cyp11a1"
+        stage: E9.5
+        runs: [ERR1475859]
+        metadata_sha256: "29a539b53134d72c17922a38d0ddd237404a87193e8ae67113705f5713e75bb7"
+      - accession: ERS1034032
+        source_name: "M02284001_Cyp11a1_hom3"
+        arm: ko
+        gene: "Cyp11a1"
+        stage: E9.5
+        runs: [ERR1475862]
+        metadata_sha256: "8d78659f1e5cf00ae6660f3265596dc1830242250f81ac884f5b05d306ed22fa"
+      - accession: ERS1034034
+        source_name: "M02284006_Cyp11a1_hom4"
+        arm: ko
+        gene: "Cyp11a1"
+        stage: E9.5
+        runs: [ERR1475864]
+        metadata_sha256: "905db22e6d9473bcfcc5d8dc4a183ed104c04241dbb73d689dce6be983cf4495"
+# pin-template E-MTAB-7322 (ArrayExpress): line Cyp11a1, arm control; 3 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1034024
+        source_name: "M02281141_Cyp11a1_wt1"
+        arm: control
+        gene: "Cyp11a1"
+        stage: E9.5
+        runs: [ERR1475854]
+        metadata_sha256: "b60ce28974b8890a91dc41b6c7838764cc476c237bef8bab2e27a9451264ceb5"
+      - accession: ERS1034027
+        source_name: "M02281145_Cyp11a1_wt2"
+        arm: control
+        gene: "Cyp11a1"
+        stage: E9.5
+        runs: [ERR1475857]
+        metadata_sha256: "029fac4e1014ccd201214a14d21eab5c4c0048ce80a498f9ae26467c449b9c2f"
+      - accession: ERS1034030
+        source_name: "M02284011_Cyp11a1_wt3"
+        arm: control
+        gene: "Cyp11a1"
+        stage: E9.5
+        runs: [ERR1475860]
+        metadata_sha256: "82d211dc2bbfbad1510a90893e8f7dcc6bc73497777449db1993911b729acb49"
+# pin-template E-MTAB-7322 (ArrayExpress): line Dennd4c, arm ko; 4 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS904196
+        source_name: "M02203339_Dennd4c_hom1"
+        arm: ko
+        gene: "Dennd4c"
+        stage: E9.5
+        runs: [ERR1296680]
+        metadata_sha256: "25ac6d28e3dd714d37c6cc6b0778bafe918dc5355cf0f2520f2bccb23d006243"
+      - accession: ERS904197
+        source_name: "M02203340_Dennd4c_hom2"
+        arm: ko
+        gene: "Dennd4c"
+        stage: E9.5
+        runs: [ERR1296681]
+        metadata_sha256: "5d42e5bc5912401a8130fa8e9854e42c1a645e07b5c522e260cdeb3ab408dc13"
+      - accession: ERS904199
+        source_name: "M02203342_Dennd4c_hom4"
+        arm: ko
+        gene: "Dennd4c"
+        stage: E9.5
+        runs: [ERR1296683]
+        metadata_sha256: "51080c0c237a11fc5479e889c7cd3f9f63ecf180df3b03cdafbbed369d8d8c4b"
+      - accession: ERS904200
+        source_name: "M02203343_Dennd4c_hom5"
+        arm: ko
+        gene: "Dennd4c"
+        stage: E9.5
+        runs: [ERR1296684]
+        metadata_sha256: "d443e09cec1c42153e23eb4f9183ff38ec5014211a2b6d94f4c066d217ee46e4"
+# pin-template E-MTAB-7322 (ArrayExpress): line Dennd4c, arm control; 8 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS904192
+        source_name: "M02190408_Dennd4c_wt1"
+        arm: control
+        gene: "Dennd4c"
+        stage: E9.5
+        runs: [ERR1296676]
+        metadata_sha256: "dc79d009958ec86052f2915fb935d1e4ce23b7f69d12c7f8026a31e1089317b6"
+      - accession: ERS904209
+        source_name: "M02219627_Dennd4c_wt10"
+        arm: control
+        gene: "Dennd4c"
+        stage: E9.5
+        runs: [ERR1296693]
+        metadata_sha256: "54c0b346bbb4facf21bc92ed83ed20d44c56485364f515cd214072722d281c4a"
+      - accession: ERS904193
+        source_name: "M02190409_Dennd4c_wt2"
+        arm: control
+        gene: "Dennd4c"
+        stage: E9.5
+        runs: [ERR1296677]
+        metadata_sha256: "8b7f76a342cef7e076ceb39d584a403bd94efc17748ca0a5292c780fde81c453"
+      - accession: ERS904195
+        source_name: "M02190411_Dennd4c_wt3"
+        arm: control
+        gene: "Dennd4c"
+        stage: E9.5
+        runs: [ERR1296679]
+        metadata_sha256: "a7aa29e59f45c3e03c624fdd519967e8bac4640fcf4375b709d0e0a62a567a31"
+      - accession: ERS904201
+        source_name: "M02203346_Dennd4c_wt4"
+        arm: control
+        gene: "Dennd4c"
+        stage: E9.5
+        runs: [ERR1296685]
+        metadata_sha256: "3f74c79ba2043fe26a8a8b8f5b2f59670c65c3155f35428e48ce94767925a0f8"
+      - accession: ERS904202
+        source_name: "M02203347_Dennd4c_wt5"
+        arm: control
+        gene: "Dennd4c"
+        stage: E9.5
+        runs: [ERR1296686]
+        metadata_sha256: "887f5860e81107734416cdb55b4bc268ae39e51271a426b7524741fef3cba037"
+      - accession: ERS904207
+        source_name: "M02219625_Dennd4c_wt6"
+        arm: control
+        gene: "Dennd4c"
+        stage: E9.5
+        runs: [ERR1296691]
+        metadata_sha256: "236d04060a2282be8714fb9aaf6daa9525bc7cbdd759886a199df263b103f201"
+      - accession: ERS904203
+        source_name: "M02219621_Dennd4c_wt8"
+        arm: control
+        gene: "Dennd4c"
+        stage: E9.5
+        runs: [ERR1296687]
+        metadata_sha256: "a40b321439db434c68eabb08a73a539558806b924f2401aa27586cbc65868e5a"
+# pin-template E-MTAB-7322 (ArrayExpress): line Edc4, arm ko; 3 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1558657
+        source_name: "M02544491_Edc4_hom1"
+        arm: ko
+        gene: "Edc4"
+        stage: E9.5
+        runs: [ERR2633276, ERR2633370, ERR2633464, ERR2633558]
+        metadata_sha256: "689ce5c68d93ad2fe6d59f2b997e820fb64273fe1ab403a253c13477c689f893"
+      - accession: ERS1558659
+        source_name: "M02544493_Edc4_hom2"
+        arm: ko
+        gene: "Edc4"
+        stage: E9.5
+        runs: [ERR2633278, ERR2633372, ERR2633466, ERR2633560]
+        metadata_sha256: "47ffe3351c74a59e2a3073405617e33c15c5e3ef32eb700cf7087952c5cb56f6"
+      - accession: ERS1558664
+        source_name: "M02567577_Edc4_hom3"
+        arm: ko
+        gene: "Edc4"
+        stage: E9.5
+        runs: [ERR2633283, ERR2633377, ERR2633471, ERR2633565]
+        metadata_sha256: "2aea4b608906575cc5b82a516c3500a7ed8b4dc98fa8a258890f0dfe9728065d"
+# pin-template E-MTAB-7322 (ArrayExpress): line Edc4, arm control; 2 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1558658
+        source_name: "M02544492_Edc4_wt1"
+        arm: control
+        gene: "Edc4"
+        stage: E9.5
+        runs: [ERR2633277, ERR2633371, ERR2633465, ERR2633559]
+        metadata_sha256: "cb1cc3e1ded21bae772b04239c528c876482d28b4c1764ec4dfd6dedc0765388"
+      - accession: ERS1558661
+        source_name: "M02567573_Edc4_wt2"
+        arm: control
+        gene: "Edc4"
+        stage: E9.5
+        runs: [ERR2633280, ERR2633374, ERR2633468, ERR2633562]
+        metadata_sha256: "100d2a5399fec0cc07ef1f43c56b3ca7ccd81dda649227a619f0caab84c18a33"
+# pin-template E-MTAB-7322 (ArrayExpress): line Ehmt1, arm ko; 2 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1558678
+        source_name: "M02488244_Ehmt1_hom1"
+        arm: ko
+        gene: "Ehmt1"
+        stage: E9.5
+        runs: [ERR2633297, ERR2633391, ERR2633485, ERR2633579]
+        metadata_sha256: "8d0964012902c9c7f8d01b34ab3b6abfe651a558d1b9ac6b14d3b82571b70d28"
+      - accession: ERS1558686
+        source_name: "M02525460_Ehmt1_hom2"
+        arm: ko
+        gene: "Ehmt1"
+        stage: E9.5
+        runs: [ERR2633305, ERR2633399, ERR2633493, ERR2633587]
+        metadata_sha256: "15c02166561152e51d2e55d94b82aa82d25367a2416aa782798818faafd8c909"
+# pin-template E-MTAB-7322 (ArrayExpress): line Ehmt1, arm control; 4 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1558681
+        source_name: "M02488249_Ehmt1_wt1"
+        arm: control
+        gene: "Ehmt1"
+        stage: E9.5
+        runs: [ERR2633300, ERR2633394, ERR2633488, ERR2633582]
+        metadata_sha256: "70832d144396bf9ce5655eaf653c9f27dd6ada6334d4da5d0355b6137f80901d"
+      - accession: ERS1558683
+        source_name: "M02525457_Ehmt1_wt2"
+        arm: control
+        gene: "Ehmt1"
+        stage: E9.5
+        runs: [ERR2633302, ERR2633396, ERR2633490, ERR2633584]
+        metadata_sha256: "8523966da827e1236d276680d2ee33264c314e20ad8b557e99d4a4cba0292f1a"
+      - accession: ERS1558684
+        source_name: "M02525458_Ehmt1_wt3"
+        arm: control
+        gene: "Ehmt1"
+        stage: E9.5
+        runs: [ERR2633303, ERR2633397, ERR2633491, ERR2633585]
+        metadata_sha256: "9b9f50f07b36f691539215bdd3d8a709450b21c00c1437763682a829fb7f7418"
+      - accession: ERS1558687
+        source_name: "M02525461_Ehmt1_wt4"
+        arm: control
+        gene: "Ehmt1"
+        stage: E9.5
+        runs: [ERR2633306, ERR2633400, ERR2633494, ERR2633588]
+        metadata_sha256: "8d98648c61467e3ca167d2d90372eccb37cd80ad515f4f48488ed68a2f1797da"
+# pin-template E-MTAB-7322 (ArrayExpress): line Fcho2, arm ko; 5 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1792817
+        source_name: "M02617537_Fcho2_hom1"
+        arm: ko
+        gene: "Fcho2"
+        stage: E9.5
+        runs: [ERR2634031, ERR2634126, ERR2634221, ERR2634316]
+        metadata_sha256: "5861638850db2e68b8ef41b1146a7f231d2eadfb7dc30a4148218d93b13a5e29"
+      - accession: ERS1792819
+        source_name: "M02617541_Fcho2_hom2"
+        arm: ko
+        gene: "Fcho2"
+        stage: E9.5
+        runs: [ERR2634033, ERR2634128, ERR2634223, ERR2634318]
+        metadata_sha256: "a9a87e480e524caa3a3ae8049382e552f7cb6bc5157a3f83a134d06d5455402f"
+      - accession: ERS1792823
+        source_name: "M02622619_Fcho2_hom3"
+        arm: ko
+        gene: "Fcho2"
+        stage: E9.5
+        runs: [ERR2634037, ERR2634132, ERR2634227, ERR2634322]
+        metadata_sha256: "3cd81a5393b2ce13cfcc8119096173daae240601bee90504ddc880372659c791"
+      - accession: ERS1792824
+        source_name: "M02622620_Fcho2_hom4"
+        arm: ko
+        gene: "Fcho2"
+        stage: E9.5
+        runs: [ERR2634038, ERR2634133, ERR2634228, ERR2634323]
+        metadata_sha256: "75fcfe30916049402d517cd22b33b231128e6b71bfb37868ac897e3cdc432a17"
+      - accession: ERS1792829
+        source_name: "M02642880_Fcho2_hom5"
+        arm: ko
+        gene: "Fcho2"
+        stage: E9.5
+        runs: [ERR2634043, ERR2634138, ERR2634233, ERR2634328]
+        metadata_sha256: "96352d9d1e072f007ebea97499d6140b9803a64a9f0d6a73b0ea348a79d877b6"
+# pin-template E-MTAB-7322 (ArrayExpress): line Fcho2, arm control; 4 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1792815
+        source_name: "M02617533_Fcho2_wt1"
+        arm: control
+        gene: "Fcho2"
+        stage: E9.5
+        runs: [ERR2634029, ERR2634124, ERR2634219, ERR2634314]
+        metadata_sha256: "80757f88cd8d49df38d951de74c1fa2c0ff8bae868ecc084132b61863f89e1c1"
+      - accession: ERS1792821
+        source_name: "M02622615_Fcho2_wt2"
+        arm: control
+        gene: "Fcho2"
+        stage: E9.5
+        runs: [ERR2634035, ERR2634130, ERR2634225, ERR2634320]
+        metadata_sha256: "a4523ca8cfce896d5a5fb7f30d8a578c404b344491cf499e5edcc2dbede289cb"
+      - accession: ERS1792826
+        source_name: "M02642873_Fcho2_wt4"
+        arm: control
+        gene: "Fcho2"
+        stage: E9.5
+        runs: [ERR2634040, ERR2634135, ERR2634230, ERR2634325]
+        metadata_sha256: "5e7eaf4157e785dcbff1414ddc0810be3f19203bcd8be8808bb7453b30d5711e"
+      - accession: ERS1792830
+        source_name: "M02642881_Fcho2_wt5"
+        arm: control
+        gene: "Fcho2"
+        stage: E9.5
+        runs: [ERR2634044, ERR2634139, ERR2634234, ERR2634329]
+        metadata_sha256: "0cd5e5e998fbe65b101399167fb43217cfc8473a6168f0aaf1d285982b1b0f9c"
+# pin-template E-MTAB-7322 (ArrayExpress): line Fryl, arm ko; 3 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS791858
+        source_name: "M02120647_Fryl_hom1"
+        arm: ko
+        gene: "Fryl"
+        stage: E9.5
+        runs: [ERR1144669]
+        metadata_sha256: "b21bda4cd84f2fb23d2feb21b6b4130524f390bb19ea3dd0431d5f46bc7efa21"
+      - accession: ERS791860
+        source_name: "M02120650_Fryl_hom2"
+        arm: ko
+        gene: "Fryl"
+        stage: E9.5
+        runs: [ERR1144671]
+        metadata_sha256: "35251189624659e1866ca292d39564adf615cd53dcba59a893a991f9145547bf"
+      - accession: ERS791864
+        source_name: "M02143701_Fryl_hom3"
+        arm: ko
+        gene: "Fryl"
+        stage: E9.5
+        runs: [ERR1144675]
+        metadata_sha256: "e0d50850c2f4dbf1aee2b8a9865b6f7af0f7f020dedc5b0daf7bc90b5aa415ad"
+# pin-template E-MTAB-7322 (ArrayExpress): line Fryl, arm control; 7 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS791852
+        source_name: "M02109806_Fryl_wt1"
+        arm: control
+        gene: "Fryl"
+        stage: E9.5
+        runs: [ERR1144663]
+        metadata_sha256: "4f8e78f6ae9fa50eed252bb604fc0b72eb0ca796f968a2cc9fed33945946a64b"
+      - accession: ERS791853
+        source_name: "M02109807_Fryl_wt2"
+        arm: control
+        gene: "Fryl"
+        stage: E9.5
+        runs: [ERR1144664]
+        metadata_sha256: "3e77b595bc332cc808731d97c1ecc1b3d56f5c164be080a056ff4f2215dd135b"
+      - accession: ERS791854
+        source_name: "M02109808_Fryl_wt3"
+        arm: control
+        gene: "Fryl"
+        stage: E9.5
+        runs: [ERR1144665]
+        metadata_sha256: "90fa23826c0404a74e6bd9ed424afbe4e18b7494ecd98cff0458f6f200173c9c"
+      - accession: ERS791855
+        source_name: "M02109810_Fryl_wt4"
+        arm: control
+        gene: "Fryl"
+        stage: E9.5
+        runs: [ERR1144666]
+        metadata_sha256: "53b54e58accd329592720985922b89dddf6a58fc45bc97e0171d76411a216fb1"
+      - accession: ERS791861
+        source_name: "M02137210_Fryl_wt5"
+        arm: control
+        gene: "Fryl"
+        stage: E9.5
+        runs: [ERR1144672]
+        metadata_sha256: "e111de409d77f292baafc6dda1f96bdd6faf0b5d617d2cb370585f97a46a3b83"
+      - accession: ERS791862
+        source_name: "M02143699_Fryl_wt6"
+        arm: control
+        gene: "Fryl"
+        stage: E9.5
+        runs: [ERR1144673]
+        metadata_sha256: "22053c7c1471834d7f285ac129ba6147449ef26d9315f01af00327a729bc3fdf"
+      - accession: ERS791863
+        source_name: "M02143700_Fryl_wt7"
+        arm: control
+        gene: "Fryl"
+        stage: E9.5
+        runs: [ERR1144674]
+        metadata_sha256: "3de6fd5fe3daf63c681282041f4b2ba3ba52c1748fde47300e391c5c8c13af01"
+# pin-template E-MTAB-7322 (ArrayExpress): line H13, arm ko; 5 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1201430
+        source_name: "M02368893_H13_hom1"
+        arm: ko
+        gene: "H13"
+        stage: E9.5
+        runs: [ERR1723800]
+        metadata_sha256: "2956205e5f7ef4d076eb12666b88324c4f9c8688a0dd4a062dbb113f5533b936"
+      - accession: ERS1201432
+        source_name: "M02368895_H13_hom2"
+        arm: ko
+        gene: "H13"
+        stage: E9.5
+        runs: [ERR1723802]
+        metadata_sha256: "b31891d10d1aa6f8df9e938d961a14abcba5344f497070d69e96b9c0b6d21d1c"
+      - accession: ERS1201440
+        source_name: "M02376150_H13_hom3"
+        arm: ko
+        gene: "H13"
+        stage: E9.5
+        runs: [ERR1723810]
+        metadata_sha256: "fc17fd8c93df3f21414d46a83ab15066fa4e6d52d06bfbddab602f181f547a77"
+      - accession: ERS1201443
+        source_name: "M02376153_H13_hom4"
+        arm: ko
+        gene: "H13"
+        stage: E9.5
+        runs: [ERR1723813]
+        metadata_sha256: "df30d3ea4b58bea321b524d319ed65301a464eab1b79dd05c6776c3d8066c66b"
+      - accession: ERS1201444
+        source_name: "M02376154_H13_hom5"
+        arm: ko
+        gene: "H13"
+        stage: E9.5
+        runs: [ERR1723814]
+        metadata_sha256: "fac2adb5c64aebc4b2f5b270a14abf366bf477ae66400b9716b0589af6e755b4"
+# pin-template E-MTAB-7322 (ArrayExpress): line H13, arm control; 3 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1201428
+        source_name: "M02352425_H13_wt1"
+        arm: control
+        gene: "H13"
+        stage: E9.5
+        runs: [ERR1723798]
+        metadata_sha256: "be172e761a1e20c6fe5b8479ee1b000558d9a576974f390db877e3e7b288382a"
+      - accession: ERS1201429
+        source_name: "M02352430_H13_wt2"
+        arm: control
+        gene: "H13"
+        stage: E9.5
+        runs: [ERR1723799]
+        metadata_sha256: "4e2c182025d3e8b04ac0e2150fa45b6a02cd43e00636b1806c0a4a90cc86def6"
+      - accession: ERS1201436
+        source_name: "M02368899_H13_wt3"
+        arm: control
+        gene: "H13"
+        stage: E9.5
+        runs: [ERR1723806]
+        metadata_sha256: "6d173acf812fe08ca441da003fcd0ed1c124caef096afeaacc03e59fe3a7bd06"
+# pin-template E-MTAB-7322 (ArrayExpress): line Mir96, arm ko; 3 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1059956
+        source_name: "M02295614_Mir96_hom1"
+        arm: ko
+        gene: "Mir96"
+        stage: E9.5
+        runs: [ERR1527993]
+        metadata_sha256: "76c057ac3702e92790d2408bb0178c71f076a80b6a5891a845ea75f060e6f047"
+      - accession: ERS1059957
+        source_name: "M02295616_Mir96_hom2"
+        arm: ko
+        gene: "Mir96"
+        stage: E9.5
+        runs: [ERR1527994]
+        metadata_sha256: "fe008b671b70d1159b6bee2978ea0f4654b9303223966a671938aaea1d0a890a"
+      - accession: ERS1059970
+        source_name: "M02320209_Mir96_hom4"
+        arm: ko
+        gene: "Mir96"
+        stage: E9.5
+        runs: [ERR1528007]
+        metadata_sha256: "ba355c4e4d4ec13b707a68c999c607258813ac5a505fcf82f3b46d4ed4da4f5f"
+# pin-template E-MTAB-7322 (ArrayExpress): line Mir96, arm control; 4 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1059955
+        source_name: "M02295612_Mir96_wt1"
+        arm: control
+        gene: "Mir96"
+        stage: E9.5
+        runs: [ERR1527992]
+        metadata_sha256: "dc1a28fbc1653ea7d56343b92a4034ff69f7826af2b144415ac997b10a87fb80"
+      - accession: ERS1059958
+        source_name: "M02295618_Mir96_wt2"
+        arm: control
+        gene: "Mir96"
+        stage: E9.5
+        runs: [ERR1527995]
+        metadata_sha256: "becc08e56e7d775302c3ec213e083b17abca577be770afc9f166c23abe15eb64"
+      - accession: ERS1059961
+        source_name: "M02296275_Mir96_wt3"
+        arm: control
+        gene: "Mir96"
+        stage: E9.5
+        runs: [ERR1527998]
+        metadata_sha256: "f5f0adef49244d6068bc1f549403fea2d7308fcf8733a34174475c9329ce7bf8"
+      - accession: ERS1059967
+        source_name: "M02320203_Mir96_wt4"
+        arm: control
+        gene: "Mir96"
+        stage: E9.5
+        runs: [ERR1528004]
+        metadata_sha256: "a9a0dc58a8fb7aaf07b34832c162966c4434b995f52ea30869da318e53b02857"
+# pin-template E-MTAB-7322 (ArrayExpress): line Morc2a, arm ko; 5 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1558723
+        source_name: "M02532266_Morc2a_hom2"
+        arm: ko
+        gene: "Morc2a"
+        stage: E9.5
+        runs: [ERR2633342, ERR2633436, ERR2633530, ERR2633624]
+        metadata_sha256: "2ab8e75099018e3dcec69657d4c7a3569ffae288e683e2c81661ee50fd0f0e8d"
+      - accession: ERS1558724
+        source_name: "M02532267_Morc2a_hom3"
+        arm: ko
+        gene: "Morc2a"
+        stage: E9.5
+        runs: [ERR2633343, ERR2633437, ERR2633531, ERR2633625]
+        metadata_sha256: "29e435715811bcaee9ee324bada4ebe51ec65bf8d17a95b2d2109b89f4398dee"
+      - accession: ERS1558725
+        source_name: "M02604566_Morc2a_hom4"
+        arm: ko
+        gene: "Morc2a"
+        stage: E9.5
+        runs: [ERR2633344, ERR2633438, ERR2633532, ERR2633626]
+        metadata_sha256: "4900ccd84e2cb1cb4ba17e3537c6ac00280a6c13af8215894be00bc0a5cdef1b"
+      - accession: ERS1558729
+        source_name: "M02604570_Morc2a_hom5"
+        arm: ko
+        gene: "Morc2a"
+        stage: E9.5
+        runs: [ERR2633348, ERR2633442, ERR2633536, ERR2633630]
+        metadata_sha256: "f3ea8e7b72713c89ee74b80d689a8479bfe18d3b0158d727aed187f454673348"
+      - accession: ERS1558730
+        source_name: "M02604571_Morc2a_hom6"
+        arm: ko
+        gene: "Morc2a"
+        stage: E9.5
+        runs: [ERR2633349, ERR2633443, ERR2633537, ERR2633631]
+        metadata_sha256: "ce2c0bd07fff11a8ff70c77af26c9f14b807460c9c6698c69dd5456c878fd017"
+# pin-template E-MTAB-7322 (ArrayExpress): line Morc2a, arm control; 6 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1558722
+        source_name: "M02532265_Morc2a_wt1"
+        arm: control
+        gene: "Morc2a"
+        stage: E9.5
+        runs: [ERR2633341, ERR2633435, ERR2633529, ERR2633623]
+        metadata_sha256: "11e666367fbf024bba8c727355ef067c15e75e57e5d235eb065787818043292d"
+      - accession: ERS1558726
+        source_name: "M02604567_Morc2a_wt2"
+        arm: control
+        gene: "Morc2a"
+        stage: E9.5
+        runs: [ERR2633345, ERR2633439, ERR2633533, ERR2633627]
+        metadata_sha256: "fcf45447e6d68d4c94da76cdd231f5ee397e99ab4d6bb06102fa9970b23ae5e7"
+      - accession: ERS1558728
+        source_name: "M02604569_Morc2a_wt3"
+        arm: control
+        gene: "Morc2a"
+        stage: E9.5
+        runs: [ERR2633347, ERR2633441, ERR2633535, ERR2633629]
+        metadata_sha256: "e696f97c294244860a97ca132dc938ce2d9b3313138f4ebcb746d850481406f4"
+      - accession: ERS1558734
+        source_name: "M02616741_Morc2a_wt4"
+        arm: control
+        gene: "Morc2a"
+        stage: E9.5
+        runs: [ERR2633353, ERR2633447, ERR2633541, ERR2633635]
+        metadata_sha256: "443bc09c173921f2e6b043ea86a21c6c3ea4f712baf96111add5aef6db894a31"
+      - accession: ERS1558735
+        source_name: "M02616742_Morc2a_wt5"
+        arm: control
+        gene: "Morc2a"
+        stage: E9.5
+        runs: [ERR2633354, ERR2633448, ERR2633542, ERR2633636]
+        metadata_sha256: "1039c2241f91a78604eb09199a716815b99292a100d485273d758eb462699a18"
+      - accession: ERS1558736
+        source_name: "M02616743_Morc2a_wt6"
+        arm: control
+        gene: "Morc2a"
+        stage: E9.5
+        runs: [ERR2633355, ERR2633449, ERR2633543, ERR2633637]
+        metadata_sha256: "0bf97362b03c15155edf9b2c2026c60fdd632b894ae099c48b0329f58cf4c382"
+# pin-template E-MTAB-7322 (ArrayExpress): line Nadk2, arm ko; 6 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1020742
+        source_name: "M02212886_Nadk2_hom1"
+        arm: ko
+        gene: "Nadk2"
+        stage: E9.5
+        runs: [ERR1395972]
+        metadata_sha256: "c097f379b5cf86f32c9cae08b9ae9077321289e40f3b7113be36c8933062edc3"
+      - accession: ERS1020748
+        source_name: "M02212927_Nadk2_hom2"
+        arm: ko
+        gene: "Nadk2"
+        stage: E9.5
+        runs: [ERR1395975]
+        metadata_sha256: "c3239b56bd012d3758014b594b987325305b4bee0954d59ea83847f28baab179"
+      - accession: ERS1020755
+        source_name: "M02213738_Nadk2_hom3"
+        arm: ko
+        gene: "Nadk2"
+        stage: E9.5
+        runs: [ERR1395979]
+        metadata_sha256: "648b5addf5645601502345fc08e82098399553f6c5cf1602a73633c53c33a9df"
+      - accession: ERS1020759
+        source_name: "M02213740_Nadk2_hom4"
+        arm: ko
+        gene: "Nadk2"
+        stage: E9.5
+        runs: [ERR1395981]
+        metadata_sha256: "2ad36de008995f7df198d9f439b050e409565d2da00900ad9c7779673919404b"
+      - accession: ERS1020761
+        source_name: "M02213742_Nadk2_hom5"
+        arm: ko
+        gene: "Nadk2"
+        stage: E9.5
+        runs: [ERR1395983]
+        metadata_sha256: "c14eb156f01ea3d14dd1109868807e72e2ff21107b7ee675ac680079e53ffa00"
+      - accession: ERS1020762
+        source_name: "M02213744_Nadk2_hom6"
+        arm: ko
+        gene: "Nadk2"
+        stage: E9.5
+        runs: [ERR1395984]
+        metadata_sha256: "0254b5b55ac6516aef777b1fbbde6060461fa28393f8c148b684b75bb6f66d97"
+# pin-template E-MTAB-7322 (ArrayExpress): line Nadk2, arm control; 5 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1020740
+        source_name: "M02212885_Nadk2_wt1"
+        arm: control
+        gene: "Nadk2"
+        stage: E9.5
+        runs: [ERR1395971]
+        metadata_sha256: "f7a455fea694a6a00e39e58831c34c11acf363d854af2639691fc6b8f83ccfe3"
+      - accession: ERS1020743
+        source_name: "M02212924_Nadk2_wt2"
+        arm: control
+        gene: "Nadk2"
+        stage: E9.5
+        runs: [ERR1395973]
+        metadata_sha256: "c69c7179fff5c803347f12d2f88b15f98913b991371ecd90164969dae3d3affd"
+      - accession: ERS1020751
+        source_name: "M02212929_Nadk2_wt4"
+        arm: control
+        gene: "Nadk2"
+        stage: E9.5
+        runs: [ERR1395977]
+        metadata_sha256: "d3c4a64b2281550da88859eab880c25b53e0682407ef0320f3c74994b56a9ff1"
+      - accession: ERS1020753
+        source_name: "M02212930_Nadk2_wt5"
+        arm: control
+        gene: "Nadk2"
+        stage: E9.5
+        runs: [ERR1395978]
+        metadata_sha256: "8cc4f8743a02dc45d4e91ceea01e77bd2e2c5e8c1ca8e0c36af58ab294e70d95"
+      - accession: ERS1020757
+        source_name: "M02213739_Nadk2_wt6"
+        arm: control
+        gene: "Nadk2"
+        stage: E9.5
+        runs: [ERR1395980]
+        metadata_sha256: "de46bf85ca0f9b4c9227494b438b0b69320b3582d57935f8aee30d5690e2361d"
+# pin-template E-MTAB-7322 (ArrayExpress): line Otud7b, arm ko; 4 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1180513
+        source_name: "M02230234_Otud7b_hom1"
+        arm: ko
+        gene: "Otud7b"
+        stage: E9.5
+        runs: [ERR1431954]
+        metadata_sha256: "7c7ad46883994c95281892f9f6f30ed6014fff7aba688247ae1e3d125665a8b3"
+      - accession: ERS1180519
+        source_name: "M02236010_Otud7b_hom2"
+        arm: ko
+        gene: "Otud7b"
+        stage: E9.5
+        runs: [ERR1431965]
+        metadata_sha256: "8791152ee8d0eeb496840d1e7bda488d3e392ba92f63e2e3c0d4da7efd159ca1"
+      - accession: ERS1180522
+        source_name: "M02236014_Otud7b_hom3"
+        arm: ko
+        gene: "Otud7b"
+        stage: E9.5
+        runs: [ERR1431962]
+        metadata_sha256: "f073f33605ac35df57a24a9ae2162d09929eba8dee5d57efb9dc43175053e8d3"
+      - accession: ERS1180523
+        source_name: "M02236015_Otud7b_hom4"
+        arm: ko
+        gene: "Otud7b"
+        stage: E9.5
+        runs: [ERR1431963]
+        metadata_sha256: "991dd21a3b375b1ea3b08aaf4e48812551455693fd87ee466ddb6566a66f79ad"
+# pin-template E-MTAB-7322 (ArrayExpress): line Otud7b, arm control; 4 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1180515
+        source_name: "M02230238_Otud7b_wt1"
+        arm: control
+        gene: "Otud7b"
+        stage: E9.5
+        runs: [ERR1431956]
+        metadata_sha256: "6d1bcf2e1d69b98336895ec3a349e374cdc79b7d298214ad17fab8a3dbe1ba58"
+      - accession: ERS1180516
+        source_name: "M02230239_Otud7b_wt2"
+        arm: control
+        gene: "Otud7b"
+        stage: E9.5
+        runs: [ERR1431957]
+        metadata_sha256: "e8f039a48bfead77c2253722ac38b5e92e2145fb60bf1a56a4531dacbf3fd434"
+      - accession: ERS1180520
+        source_name: "M02236011_Otud7b_wt3"
+        arm: control
+        gene: "Otud7b"
+        stage: E9.5
+        runs: [ERR1431960]
+        metadata_sha256: "4a7b7c9e10cc6ea43cae735c3c89faf738a79f836ebb63a2cf1adcc51cb154a7"
+      - accession: ERS1180524
+        source_name: "M02236016_Otud7b_wt4"
+        arm: control
+        gene: "Otud7b"
+        stage: E9.5
+        runs: [ERR1431964]
+        metadata_sha256: "ca6143bca3735092f337014b5287a27e2abbeede2fd1011714f3ed206089b0fd"
+# pin-template E-MTAB-7322 (ArrayExpress): line Pdzk1, arm ko; 9 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1081962
+        source_name: "M02318802_Pdzk1_hom1"
+        arm: ko
+        gene: "Pdzk1"
+        stage: E9.5
+        runs: [ERR1594763]
+        metadata_sha256: "bdc33a024b68b3a740a149173268c3ec2388a365b257ed449d7867f6b707ea45"
+      - accession: ERS1081963
+        source_name: "M02318803_Pdzk1_hom2"
+        arm: ko
+        gene: "Pdzk1"
+        stage: E9.5
+        runs: [ERR1594764]
+        metadata_sha256: "2f0ae2c62ddedb0dd352fb697440807b9ac49c5d15649733bfc8a1f0222165b5"
+      - accession: ERS1081965
+        source_name: "M02318805_Pdzk1_hom3"
+        arm: ko
+        gene: "Pdzk1"
+        stage: E9.5
+        runs: [ERR1594766]
+        metadata_sha256: "53b1d796cfa6bf7eab6651bf333f0f1a80503cf08b239c2c577691b9af477810"
+      - accession: ERS1081967
+        source_name: "M02318807_Pdzk1_hom4"
+        arm: ko
+        gene: "Pdzk1"
+        stage: E9.5
+        runs: [ERR1594768]
+        metadata_sha256: "f15bc48b46d9b30ebed2364eeb006c63a08d6b1fdaf0bf5c886138af773281a5"
+      - accession: ERS1081968
+        source_name: "M02318808_Pdzk1_hom5"
+        arm: ko
+        gene: "Pdzk1"
+        stage: E9.5
+        runs: [ERR1594769]
+        metadata_sha256: "396e489462c7704da459e16396577c2ea43667233b7e029adb6291ebc1a03be7"
+      - accession: ERS1081973
+        source_name: "M02320216_Pdzk1_hom6"
+        arm: ko
+        gene: "Pdzk1"
+        stage: E9.5
+        runs: [ERR1594774]
+        metadata_sha256: "a001197111e04819cee5025c13ab1381a5501704be4736167a217eac706b29c0"
+      - accession: ERS1081978
+        source_name: "M02323702_Pdzk1_hom7"
+        arm: ko
+        gene: "Pdzk1"
+        stage: E9.5
+        runs: [ERR1594779]
+        metadata_sha256: "05b923f1e248a6259ce81c3870d635c8da328d8653864320b213465539d24c47"
+      - accession: ERS1081980
+        source_name: "M02323705_Pdzk1_hom8"
+        arm: ko
+        gene: "Pdzk1"
+        stage: E9.5
+        runs: [ERR1594781]
+        metadata_sha256: "bf560f32b4486414e054df3c605bc7d70c9995ac77ae77f8b426fab53e7eb7ab"
+      - accession: ERS1081982
+        source_name: "M02323707_Pdzk1_hom9"
+        arm: ko
+        gene: "Pdzk1"
+        stage: E9.5
+        runs: [ERR1594783]
+        metadata_sha256: "90ca6b5fe1beba097050fffe40029179c0c420156ff224400e962a99eaec336b"
+# pin-template E-MTAB-7322 (ArrayExpress): line Pdzk1, arm control; 4 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1081964
+        source_name: "M02318804_Pdzk1_wt1"
+        arm: control
+        gene: "Pdzk1"
+        stage: E9.5
+        runs: [ERR1594765]
+        metadata_sha256: "730e6bf4c858a6977c284b7c86ca7cbbf7382e8a9c7403ccd48417ac02755e42"
+      - accession: ERS1081971
+        source_name: "M02320213_Pdzk1_wt2"
+        arm: control
+        gene: "Pdzk1"
+        stage: E9.5
+        runs: [ERR1594772]
+        metadata_sha256: "9749d285d0807c6b38e7cebb4085753b4dcb1d9d6cb95bcd63cc59809d281b06"
+      - accession: ERS1081977
+        source_name: "M02323701_Pdzk1_wt3"
+        arm: control
+        gene: "Pdzk1"
+        stage: E9.5
+        runs: [ERR1594778]
+        metadata_sha256: "c2d58fc49be24f7ee294cf43eaf6058d4f10a9fa4226ae09549d197449ac8807"
+      - accession: ERS1081983
+        source_name: "M02323708_Pdzk1_wt4"
+        arm: control
+        gene: "Pdzk1"
+        stage: E9.5
+        runs: [ERR1594784]
+        metadata_sha256: "f1199d9622f45cef401c05d2626aea44318d7fa22f7c6a752e3c6096e63939d9"
+# pin-template E-MTAB-7322 (ArrayExpress): line Psph, arm ko; 7 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS709865
+        source_name: "M01991899_Psph_hom1"
+        arm: ko
+        gene: "Psph"
+        stage: E9.5
+        runs: [ERR976339]
+        metadata_sha256: "cc4510de42170de19a11e2b6c4516142d846e882c6a54798e593ea3229589a80"
+      - accession: ERS709869
+        source_name: "M01991903_Psph_hom2"
+        arm: ko
+        gene: "Psph"
+        stage: E9.5
+        runs: [ERR976343]
+        metadata_sha256: "4fc6910088f659ee2a10baa43320a1b963fcc4c3994281237a0b67212fbca4ec"
+      - accession: ERS709872
+        source_name: "M02000013_Psph_hom3"
+        arm: ko
+        gene: "Psph"
+        stage: E9.5
+        runs: [ERR976346]
+        metadata_sha256: "e2c3d7799949b6f337dd8c5090e0ec408c6d8af452025046224a10e428afb30a"
+      - accession: ERS709876
+        source_name: "M02000018_Psph_hom4"
+        arm: ko
+        gene: "Psph"
+        stage: E9.5
+        runs: [ERR976350]
+        metadata_sha256: "c44d5b0b514efc90ddfb32b312754751c5eb02ea4df80747f973dba03b241b62"
+      - accession: ERS709879
+        source_name: "M02003065_Psph_hom5"
+        arm: ko
+        gene: "Psph"
+        stage: E9.5
+        runs: [ERR976353]
+        metadata_sha256: "62d24175920383f3c7efb8f4c542a7803413278693fbd6a9900e25f6434f5181"
+      - accession: ERS709882
+        source_name: "M02003069_Psph_hom6"
+        arm: ko
+        gene: "Psph"
+        stage: E9.5
+        runs: [ERR976356]
+        metadata_sha256: "35e3707b62ca0e71bfc0c02c273806e58de3519146292bb0245072ec70109a47"
+      - accession: ERS709883
+        source_name: "M02003070_Psph_hom7"
+        arm: ko
+        gene: "Psph"
+        stage: E9.5
+        runs: [ERR976357]
+        metadata_sha256: "c2ed0e67e195d83221ca4de76efee2b63c2171d0d78aca963e0f8cc4b418f9e0"
+# pin-template E-MTAB-7322 (ArrayExpress): line Psph, arm control; 6 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS709864
+        source_name: "M01991898_Psph_wt1"
+        arm: control
+        gene: "Psph"
+        stage: E9.5
+        runs: [ERR976338]
+        metadata_sha256: "d489e79d9b81845632286b3da5e6a1aecce687bd3d4b30a6c7c6dba5daf12245"
+      - accession: ERS709868
+        source_name: "M01991902_Psph_wt2"
+        arm: control
+        gene: "Psph"
+        stage: E9.5
+        runs: [ERR976342]
+        metadata_sha256: "dd38dc27a9eb488d4a2658548984ef2b4addfb827addedce63e6b4afa5042d7b"
+      - accession: ERS709870
+        source_name: "M01991904_Psph_wt3"
+        arm: control
+        gene: "Psph"
+        stage: E9.5
+        runs: [ERR976344]
+        metadata_sha256: "7b1f52d8eb14be1e41ab8a693592e8ceab316d0f1f10d38caf145901262168eb"
+      - accession: ERS709871
+        source_name: "M01991905_Psph_wt4"
+        arm: control
+        gene: "Psph"
+        stage: E9.5
+        runs: [ERR976345]
+        metadata_sha256: "d58689108f4d7b9d5e677168c55f397aa2c885d3c842609cfa267207584b89bc"
+      - accession: ERS709875
+        source_name: "M02000017_Psph_wt6"
+        arm: control
+        gene: "Psph"
+        stage: E9.5
+        runs: [ERR976349]
+        metadata_sha256: "1eafeaf4db42793995edb40f19b3a5e5c9b271c5071e72efaeb1ea8adce1e090"
+      - accession: ERS709878
+        source_name: "M02003064_Psph_wt7"
+        arm: control
+        gene: "Psph"
+        stage: E9.5
+        runs: [ERR976352]
+        metadata_sha256: "a878785006f0c472f2d751ee8f5ceed2aef35d24cf7a00c9371a54c9809b7930"
+# pin-template E-MTAB-7322 (ArrayExpress): line Sh3pxd2a, arm ko; 5 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS801109
+        source_name: "M02155972_Sh3pxd2a_hom1"
+        arm: ko
+        gene: "Sh3pxd2a"
+        stage: E9.5
+        runs: [ERR1192467]
+        metadata_sha256: "1983c3dbf2a14ca93b4af33348426b202716b16efef194a30fe99d6e00136b33"
+      - accession: ERS801116
+        source_name: "M02157757_Sh3pxd2a_hom3"
+        arm: ko
+        gene: "Sh3pxd2a"
+        stage: E9.5
+        runs: [ERR1192474]
+        metadata_sha256: "c393cf12e5ab5f8313b3cc6655b9f554c1ab9f9781f06bd8353c1b03723ff9e7"
+      - accession: ERS801120
+        source_name: "M02181329_Sh3pxd2a_hom5"
+        arm: ko
+        gene: "Sh3pxd2a"
+        stage: E9.5
+        runs: [ERR1192478]
+        metadata_sha256: "6abc800aeededa1983cd67ea6bd5b50f20c85a633b4444401332a8125711dcc8"
+      - accession: ERS801118
+        source_name: "M02181326_Sh3pxd2a_hom6"
+        arm: ko
+        gene: "Sh3pxd2a"
+        stage: E9.5
+        runs: [ERR1192476]
+        metadata_sha256: "ee9451ad61f5cb5a441a680c8128393e9b30efcedc32ed447d307f2ad3cd0f15"
+      - accession: ERS801115
+        source_name: "M02155978_Sh3pxd2a_hom7"
+        arm: ko
+        gene: "Sh3pxd2a"
+        stage: E9.5
+        runs: [ERR1192473]
+        metadata_sha256: "c868426dc54a4d615bc85824f22ab7e0e7412fa51250d00627118d6bb0ab34b2"
+# pin-template E-MTAB-7322 (ArrayExpress): line Sh3pxd2a, arm control; 4 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS801111
+        source_name: "M02155974_Sh3pxd2a_wt1"
+        arm: control
+        gene: "Sh3pxd2a"
+        stage: E9.5
+        runs: [ERR1192469]
+        metadata_sha256: "69d8d9d26ee4518840087c62d6e0a466fd5b6984c784c8e05e95631f5def7213"
+      - accession: ERS801112
+        source_name: "M02155975_Sh3pxd2a_wt2"
+        arm: control
+        gene: "Sh3pxd2a"
+        stage: E9.5
+        runs: [ERR1192470]
+        metadata_sha256: "bc242107c57c42f1f4e804712c1f48ade8c05da77a042b845962817a57293575"
+      - accession: ERS801119
+        source_name: "M02181327_Sh3pxd2a_wt4"
+        arm: control
+        gene: "Sh3pxd2a"
+        stage: E9.5
+        runs: [ERR1192477]
+        metadata_sha256: "99149ed3c7a4a07bbca6166d2d1d2eb8e3210829f9338a61203b54fc8bbc8e0b"
+      - accession: ERS801122
+        source_name: "M02181331_Sh3pxd2a_wt5"
+        arm: control
+        gene: "Sh3pxd2a"
+        stage: E9.5
+        runs: [ERR1192480]
+        metadata_sha256: "135681279169ada178aed5e667adc7479f051f609d662e759778ecde50fcb33c"
+# pin-template E-MTAB-7322 (ArrayExpress): line Smg9, arm ko; 2 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1953802
+        source_name: "M02318286_Smg9_hom1"
+        arm: ko
+        gene: "Smg9"
+        stage: E9.5
+        runs: [ERR2634828, ERR2634920, ERR2635012, ERR2635104]
+        metadata_sha256: "e8cc561b4abfa07ce4ac3226ebf43ab88d65ceb01fa7228e45660fdec548ab4a"
+      - accession: ERS1953805
+        source_name: "M02323996_Smg9_hom2"
+        arm: ko
+        gene: "Smg9"
+        stage: E9.5
+        runs: [ERR2634831, ERR2634923, ERR2635015, ERR2635107]
+        metadata_sha256: "befd60908bb0d618af163791db3a939db7c3b75d432b16c365856b7bf99c3e55"
+# pin-template E-MTAB-7322 (ArrayExpress): line Smg9, arm control; 5 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1953797
+        source_name: "M02318280_Smg9_wt1"
+        arm: control
+        gene: "Smg9"
+        stage: E9.5
+        runs: [ERR2634823, ERR2634915, ERR2635007, ERR2635099]
+        metadata_sha256: "5142912e65041d81c9d95b08d0711d5eeeecd8d929100d21f132b9ca735df06a"
+      - accession: ERS1953798
+        source_name: "M02318281_Smg9_wt2"
+        arm: control
+        gene: "Smg9"
+        stage: E9.5
+        runs: [ERR2634824, ERR2634916, ERR2635008, ERR2635100]
+        metadata_sha256: "0b157e7690b9fc533fd7d6b906e50ea81a2cf782cb82f317e35654e7dae90a35"
+      - accession: ERS1953804
+        source_name: "M02323995_Smg9_wt4"
+        arm: control
+        gene: "Smg9"
+        stage: E9.5
+        runs: [ERR2634830, ERR2634922, ERR2635014, ERR2635106]
+        metadata_sha256: "d6f3e1b8233b612a9811d0929f0c469f67ca3a31140348af6ca6634fd5365fee"
+      - accession: ERS1953806
+        source_name: "M02323997_Smg9_wt5"
+        arm: control
+        gene: "Smg9"
+        stage: E9.5
+        runs: [ERR2634832, ERR2634924, ERR2635016, ERR2635108]
+        metadata_sha256: "67834665a0de1493d2f706b54255d2a65fe5cce7fc7a4133a9f153358a8c142a"
+      - accession: ERS1953809
+        source_name: "M02324004_Smg9_wt6"
+        arm: control
+        gene: "Smg9"
+        stage: E9.5
+        runs: [ERR2634835, ERR2634927, ERR2635019, ERR2635111]
+        metadata_sha256: "535c795478b2dbb00aa1cf015ebcea81984684194f95fa533d6ce581e0758958"
+# pin-template E-MTAB-7322 (ArrayExpress): line Ssr2, arm ko; 4 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS904174
+        source_name: "M02190482_Ssr2_hom1"
+        arm: ko
+        gene: "Ssr2"
+        stage: E9.5
+        runs: [ERR1334266]
+        metadata_sha256: "daf02f45be619627ac02de6f31695c5abb545471d95ef0e997cbdf3a91680a88"
+      - accession: ERS904177
+        source_name: "M02190485_Ssr2_hom2"
+        arm: ko
+        gene: "Ssr2"
+        stage: E9.5
+        runs: [ERR1334269]
+        metadata_sha256: "efd9375763808277dac253a2f675e1128ddea98fb898f467b3ad07a545ffe2bb"
+      - accession: ERS904187
+        source_name: "M02202701_Ssr2_hom4"
+        arm: ko
+        gene: "Ssr2"
+        stage: E9.5
+        runs: [ERR1334279]
+        metadata_sha256: "f8cb01dd2d38e200522d26c48d8ab41e2edf867dfbc689a9c5a24c0a7c3399e8"
+      - accession: ERS904188
+        source_name: "M02202702_Ssr2_hom5"
+        arm: ko
+        gene: "Ssr2"
+        stage: E9.5
+        runs: [ERR1334280]
+        metadata_sha256: "926bae1b2a0189c09ba9966c3fdd1431b73f3cbc0b6d1d305f35f4800c020018"
+# pin-template E-MTAB-7322 (ArrayExpress): line Ssr2, arm control; 6 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS904176
+        source_name: "M02190484_Ssr2_wt1"
+        arm: control
+        gene: "Ssr2"
+        stage: E9.5
+        runs: [ERR1334268]
+        metadata_sha256: "208d22da4baaeb1fe7bc1709571f6e1630f25c3d8d77ad91c6906d534390e21a"
+      - accession: ERS904178
+        source_name: "M02190486_Ssr2_wt2"
+        arm: control
+        gene: "Ssr2"
+        stage: E9.5
+        runs: [ERR1334270]
+        metadata_sha256: "b2c16ebf20a94a930f4ef99adc7a71e421feedb8bb3ea97691b8f4271c2164fc"
+      - accession: ERS904182
+        source_name: "M02192376_Ssr2_wt3"
+        arm: control
+        gene: "Ssr2"
+        stage: E9.5
+        runs: [ERR1334274]
+        metadata_sha256: "9b423f27d50c34053a853612bb2b10febafc993e25b10df608fc7a74fffb0a40"
+      - accession: ERS904183
+        source_name: "M02192377_Ssr2_wt4"
+        arm: control
+        gene: "Ssr2"
+        stage: E9.5
+        runs: [ERR1334275]
+        metadata_sha256: "c49074fce689ea90131e04c54f03b706c9114a8c13c1c8644cc2e6b64f51b7da"
+      - accession: ERS904184
+        source_name: "M02202696_Ssr2_wt5"
+        arm: control
+        gene: "Ssr2"
+        stage: E9.5
+        runs: [ERR1334276]
+        metadata_sha256: "30d43dfbe557a66143bb2d47c23f9bfdc700691ce9db41217a670dca4ceeb1db"
+      - accession: ERS904186
+        source_name: "M02202699_Ssr2_wt6"
+        arm: control
+        gene: "Ssr2"
+        stage: E9.5
+        runs: [ERR1334278]
+        metadata_sha256: "33edee28047c1f030e19d1df5caf9b2ca2a782e9246a3a4f68976ffbcb6e1a5b"
+# pin-template E-MTAB-7322 (ArrayExpress): line Tial1, arm ko; 3 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1953767
+        source_name: "M02732634_Tial1_hom1"
+        arm: ko
+        gene: "Tial1"
+        stage: E9.5
+        runs: [ERR2634793, ERR2634885, ERR2634977, ERR2635069]
+        metadata_sha256: "dd58f2f7077c70d77673acba636d20eb915e663ebb421ff99653e3925b15f07d"
+      - accession: ERS1953770
+        source_name: "M02732640_Tial1_hom2"
+        arm: ko
+        gene: "Tial1"
+        stage: E9.5
+        runs: [ERR2634796, ERR2634888, ERR2634980, ERR2635072]
+        metadata_sha256: "b453d11947db03295dd07816dbaf8b2526d91cfb16254ff7ff3668117a6d4dbb"
+      - accession: ERS1953779
+        source_name: "M02736038_Tial1_hom4"
+        arm: ko
+        gene: "Tial1"
+        stage: E9.5
+        runs: [ERR2634805, ERR2634897, ERR2634989, ERR2635081]
+        metadata_sha256: "6c5671ce3f7359098180b98df75892c815b11f7abee218cc823479f220cc3f86"
+# pin-template E-MTAB-7322 (ArrayExpress): line Tial1, arm control; 6 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1953768
+        source_name: "M02732635_Tial1_wt1"
+        arm: control
+        gene: "Tial1"
+        stage: E9.5
+        runs: [ERR2634794, ERR2634886, ERR2634978, ERR2635070]
+        metadata_sha256: "33ba94f829cf580dceedba86fa51b80942546b7767eb48adf2e4a73b9c753ec2"
+      - accession: ERS1953769
+        source_name: "M02732639_Tial1_wt2"
+        arm: control
+        gene: "Tial1"
+        stage: E9.5
+        runs: [ERR2634795, ERR2634887, ERR2634979, ERR2635071]
+        metadata_sha256: "5733b63cdab16cbe1f4b2f4753705d0d7b9eb9e0d15ae1676b8fd5cf3ebe498e"
+      - accession: ERS1953773
+        source_name: "M02734432_Tial1_wt3"
+        arm: control
+        gene: "Tial1"
+        stage: E9.5
+        runs: [ERR2634799, ERR2634891, ERR2634983, ERR2635075]
+        metadata_sha256: "c9efe8bc449c2a1b3dfe562a83f89eae8af81f8f8d777e9ead06e07c76914185"
+      - accession: ERS1953774
+        source_name: "M02734433_Tial1_wt4"
+        arm: control
+        gene: "Tial1"
+        stage: E9.5
+        runs: [ERR2634800, ERR2634892, ERR2634984, ERR2635076]
+        metadata_sha256: "618702b21e71c3a2ece89dd5cafbe749fe8c35843375e00a19c5b45521bb697f"
+      - accession: ERS1953778
+        source_name: "M02736037_Tial1_wt5"
+        arm: control
+        gene: "Tial1"
+        stage: E9.5
+        runs: [ERR2634804, ERR2634896, ERR2634988, ERR2635080]
+        metadata_sha256: "c94e786d30184e1bd1cf18e8aa71583f697668e6db0f5a426ee07cb2396c176d"
+      - accession: ERS1953780
+        source_name: "M02736039_Tial1_wt6"
+        arm: control
+        gene: "Tial1"
+        stage: E9.5
+        runs: [ERR2634806, ERR2634898, ERR2634990, ERR2635082]
+        metadata_sha256: "d70cc73509c8addd2b8c8766d256e9fbea1f05ca1d8b386675aac22b425d725e"
+# pin-template E-MTAB-7322 (ArrayExpress): line Zfyve20, arm ko; 2 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1885453
+        source_name: "M02720636_Zfyve20_hom1"
+        arm: ko
+        gene: "Zfyve20"
+        stage: E9.5
+        runs: [ERR2634473, ERR2634568, ERR2634663, ERR2634758]
+        metadata_sha256: "211474032780ebea71409f153c0d31adb86079d762206b250238d605fa3a423a"
+      - accession: ERS1885465
+        source_name: "M02723042_Zfyve20_hom3"
+        arm: ko
+        gene: "Zfyve20"
+        stage: E9.5
+        runs: [ERR2634485, ERR2634580, ERR2634675, ERR2634770]
+        metadata_sha256: "c545eea10defc8bcb9e26bd29c91cd301dc9c9a0028b2711a6d374ab40882c42"
+# pin-template E-MTAB-7322 (ArrayExpress): line Zfyve20, arm control; 7 Source Names, exactly the committed rule's eligible ones
+# READ each record in the plan table before pasting (README checks B1 to B10).
+      - accession: ERS1885450
+        source_name: "M02720628_Zfyve20_wt1"
+        arm: control
+        gene: "Zfyve20"
+        stage: E9.5
+        runs: [ERR2634470, ERR2634565, ERR2634660, ERR2634755]
+        metadata_sha256: "3571562085087659046fdadf9f1520d3b69fe6feeb66023bdcbf8ebea3c3f9f5"
+      - accession: ERS1885454
+        source_name: "M02722588_Zfyve20_wt2"
+        arm: control
+        gene: "Zfyve20"
+        stage: E9.5
+        runs: [ERR2634474, ERR2634569, ERR2634664, ERR2634759]
+        metadata_sha256: "21f032d9127eaa631bc88f6de2832ffbc8e6c225348c54668ebc62fe802fc799"
+      - accession: ERS1885455
+        source_name: "M02722589_Zfyve20_wt3"
+        arm: control
+        gene: "Zfyve20"
+        stage: E9.5
+        runs: [ERR2634475, ERR2634570, ERR2634665, ERR2634760]
+        metadata_sha256: "99e6e74f2b7a44635b485a72f0e901438aae4bf5ecd4c81375a8c06e6264ad68"
+      - accession: ERS1885457
+        source_name: "M02722592_Zfyve20_wt4"
+        arm: control
+        gene: "Zfyve20"
+        stage: E9.5
+        runs: [ERR2634477, ERR2634572, ERR2634667, ERR2634762]
+        metadata_sha256: "f1f69f2123a06bb9da63d183fa787f0aa355776cbc518855c0313c373f231651"
+      - accession: ERS1885459
+        source_name: "M02722595_Zfyve20_wt5"
+        arm: control
+        gene: "Zfyve20"
+        stage: E9.5
+        runs: [ERR2634479, ERR2634574, ERR2634669, ERR2634764]
+        metadata_sha256: "eba86ec7bd3d6fed4b0b746ec394daf169cc7c17d0dfdf550f3706e343e8b334"
+      - accession: ERS1885461
+        source_name: "M02723035_Zfyve20_wt6"
+        arm: control
+        gene: "Zfyve20"
+        stage: E9.5
+        runs: [ERR2634481, ERR2634576, ERR2634671, ERR2634766]
+        metadata_sha256: "3cf0b0d879e05cd82ea52b608acc673f0fc5059721aa1174f8c920e22a68b7c1"
+      - accession: ERS1885464
+        source_name: "M02723041_Zfyve20_wt7"
+        arm: control
+        gene: "Zfyve20"
+        stage: E9.5
+        runs: [ERR2634484, ERR2634579, ERR2634674, ERR2634769]
+        metadata_sha256: "416861d863407720c606f560f770c78e83133130b91b0cc2bbbd702fe9c9dea4"
