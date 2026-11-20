@@ -1,0 +1,141 @@
+{
+ "pregate": {
+  "n_genes": 500,
+  "phi_m": {
+   "genes_changed": 0,
+   "genes_ne_1": 500,
+   "genes_at_clip": 30,
+   "sd_ln": 0.6963983459868952,
+   "gene_mean_ln": -0.036734184660334804,
+   "min": 0.25,
+   "max": 4.0,
+   "n_up": 238,
+   "n_down": 262,
+   "den_total": 0.9829619726021102,
+   "den_total_phi_m": 0.9829619726021102
+  },
+  "tables": {
+   "all": {
+    "genes_ne_1": 447,
+    "genes_at_clip": 0,
+    "sd_ln": 0.024747116559939865,
+    "gene_mean_ln": -0.0061217435375186344,
+    "min": 0.9005570457497198,
+    "max": 1.1137122932074741,
+    "n_up": 88,
+    "n_down": 359,
+    "den_total": 1.001813773031882,
+    "den_total_phi_m": 1.0,
+    "corr_ln_phi_m": 0.0373521508484521,
+    "ols_slope_ln_t_on_ln_phi_m": 0.0014015497055878958,
+    "studies": [
+     "GSE204908",
+     "GSE277839"
+    ],
+    "tiers": [
+     "unrelated"
+    ],
+    "sign_rule": "applied",
+    "sha256": "9490f524e40e146480c775f85ae8829ec9c005607104ad8ace129c5c46ed6228"
+   }
+  },
+  "products": {
+   "all": {
+    "genes_changed": 447,
+    "genes_ne_1": 500,
+    "genes_at_clip": 15,
+    "sd_ln": 0.6977064447102919,
+    "gene_mean_ln": -0.04285592819785345,
+    "min": 0.22882154105885716,
+    "max": 3.940526062126714,
+    "n_up": 237,
+    "n_down": 263,
+    "den_total": 0.9905623702046796,
+    "den_total_phi_m": 0.9829619726021102
+   }
+  },
+  "controls": {
+   "all": {
+    "genes_changed": 447,
+    "genes_ne_1": 500,
+    "genes_at_clip": 15,
+    "sd_ln": 0.6950328062021365,
+    "gene_mean_ln": -0.04285592819785344,
+    "min": 0.22882154105885716,
+    "max": 4.175297325839906,
+    "n_up": 237,
+    "n_down": 263,
+    "den_total": 0.976733640818889,
+    "den_total_phi_m": 0.9829619726021102
+   }
+  },
+  "dropped": {
+   "unrelated": "not listed in TABLES.sha256"
+  },
+  "corr_ln_all_ln_unrelated": null,
+  "constants": {
+   "min_studies": 2,
+   "min_changed": 10,
+   "max_abs_corr": 0.5,
+   "file2_max_corr": 0.9,
+   "exponent": 1.0,
+   "perm_seed": 20261113,
+   "perm_bins": 10
+  }
+ },
+ "arms": [
+  "barred_form",
+  "x_all",
+  "x_all_perm",
+  "rep_all"
+ ],
+ "dropped_arms": {
+  "x_unrel": "table unrelated: not listed in TABLES.sha256",
+  "x_unrel_perm": "table unrelated: not listed in TABLES.sha256"
+ },
+ "row": "K22",
+ "barred_factor": {
+  "name": "transfer_mab21l2_all",
+  "file": "/home/prachh/v/virtual-embryo-challenge/runs/t3_decomp/gata4_20261028T122425Z/factors/transfer_mab21l2_all.csv",
+  "sha256": "64b1e0b8572c7193ed1e1f0b7339a26081e601f1e706e6b08193e1718dc5c7e8",
+  "recorded_in": "decision file submissions.parameters.factor_files",
+  "log2_sd": 1.0046904402385703,
+  "n_up": 238,
+  "n_down": 262
+ },
+ "ext": {
+  "listing_sha256": "884b294bb8ea15b4e97b8f9f3d72869c6f9a375c55a5ca11a6daf3c70b8d94ea",
+  "combine_sha256": "719c88198194d511d57df460dd27ceaaa4d56773a6672550323cbf94f09e133b",
+  "tables": {
+   "all": "9490f524e40e146480c775f85ae8829ec9c005607104ad8ace129c5c46ed6228"
+  }
+ },
+ "table_records": {
+  "all": {
+   "name": "all",
+   "file": "<VEC_T3_EXT_TABLES>/all/factors/all.csv",
+   "dir_realpath": "/home/prachh/v/vec-ext/t3/tables",
+   "sha256": "9490f524e40e146480c775f85ae8829ec9c005607104ad8ace129c5c46ed6228",
+   "listing_sha256": "884b294bb8ea15b4e97b8f9f3d72869c6f9a375c55a5ca11a6daf3c70b8d94ea",
+   "pinned_sha256": "9490f524e40e146480c775f85ae8829ec9c005607104ad8ace129c5c46ed6228",
+   "combine_sha256": "719c88198194d511d57df460dd27ceaaa4d56773a6672550323cbf94f09e133b",
+   "manifest_sha256": "b9f6be7635dce5ebdd1fdbfcf2c65446d729be5d88220123822ea8548599394b",
+   "studies": [
+    "GSE204908",
+    "GSE277839"
+   ],
+   "tiers": [
+    "unrelated"
+   ],
+   "sign_rule": "applied",
+   "refstats_sha256": "d0fa02a747648f6896d1408b9dbddf83b7a5569ed45162d49e1b5024e6c0c718",
+   "checked": "by try K21 only, after its row"
+  }
+ },
+ "provenance": {
+  "commit": "363170234fc3de3fd14803d2ce0036833b85581c",
+  "tree_clean": true,
+  "machine": "p01r10srv05",
+  "utc": "2026-11-20 19:03:08"
+ }
+}

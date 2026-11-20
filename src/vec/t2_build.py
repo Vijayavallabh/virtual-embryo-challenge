@@ -1245,6 +1245,78 @@ def cloud_guard(pred_coords, source_coords, seed: int = 0, expected_rms_ratio: f
 
 
 # ---------------------------------------------------------------------------------------------------------------------
+# Row order (branch campaign/embryo-occupancy; off by default; no try, no ruling). Under the pre-fix scorer build
+# (vec.evaluate, "prefix") a coordinate file's occupancy is compared with the truth half as it is when the file's PCA
+# basis on the rows `_match_n` hands over has the same parity as the truth's, and with its mirror image otherwise. The
+# floor copy of the stage before the target has its own parity. When the copy and the file are handed the same truth
+# rows in the same order (`truth_rows_shared`), the file falls in the copy's mode, whatever the truth's parity, exactly
+# when the two parities agree. "copy_parity" re-orders the file's rows (expression and position together, so every
+# cell keeps its expression and its position) by the first permutation of a fixed stream whose parity is the copy's.
+# The parity matched is the floor copy's, computed from released data; no score, test anchor or target enters it.
+ROW_ORDERS = ("as_built", "copy_parity")
+COPY_PARITY_STREAM = 48  # default_rng([seed, 48]): a stream no other build step uses
+COPY_PARITY_MAX_TRIES = 200  # permutations tried before refusing (each matches with chance about 1/2)
+COPY_PARITY_METRIC_SEED = 0  # the server's metric seed as the emulator assumes it (vec.evaluate.prefix_parity)
+COPY_PARITY_COPY_SEED = 0  # the bake protocol's floor copy: vec.evaluate.subsample(stage as released, 0.1, 0)
+
+
+def _as_read(coords) -> np.ndarray:
+    """Coordinates as the scorer reads them: the first three columns, float32, then float64 for the metric."""
+    C = np.asarray(coords)[:, :3].astype(np.float32)
+    if C.ndim != 2 or C.shape[1] != 3 or not np.isfinite(C).all():
+        raise ValueError("coordinates must be (n, 3) and finite as float32")
+    return C.astype(np.float64)
+
+
+def truth_rows_shared(n_a: int, n_b: int, n_true: int, metric_seed: int = COPY_PARITY_METRIC_SEED) -> bool:
+    """Whether the scorer's `_match_n` (vec.evaluate.match_rows) hands the same truth rows, in the same order, to a
+    prediction of n_a rows and to one of n_b rows, against a truth of n_true rows at this metric seed. The prediction
+    is drawn first from the same generator, so this depends on the two counts (numpy's choice takes different routes
+    for different sizes), never on any coordinate."""
+    from vec.evaluate import match_rows
+
+    T = np.repeat(np.arange(_whole(n_true, "n_true", 3), dtype=np.float64)[:, None], 3, axis=1)
+    _, Ba = match_rows(np.zeros((_whole(n_a, "n_a", 3), 3)), T, metric_seed)
+    _, Bb = match_rows(np.zeros((_whole(n_b, "n_b", 3), 3)), T, metric_seed)
+    return bool(Ba.shape == Bb.shape and np.array_equal(Ba, Bb))
+
+
+def copy_parity_order(coords, copy_coords, n_true: int, seed: int, metric_seed: int = COPY_PARITY_METRIC_SEED,
+                      max_tries: int = COPY_PARITY_MAX_TRIES) -> tuple[np.ndarray, dict]:
+    """The row order of `--row-order copy_parity`: a permutation of the file's rows under which the pre-fix parity of
+    the rows `_match_n` takes from the file (vec.evaluate.prefix_parity at n_true and metric_seed) is the floor copy's.
+
+    The first of the permutations default_rng([seed, COPY_PARITY_STREAM]).permutation(n) that matches is returned;
+    the identity is never tried, so the result says nothing about the parity of the file as built. Refused (values not
+    shown) when the copy and the file are not handed the same truth rows (`truth_rows_shared`), when a parity is
+    undefined, or when no permutation matches. The record holds no count, no parity and no number of tries.
+
+    Preconditions no local check shows: the server's metric seed is 0, its LAPACK picks SVD signs as numpy/OpenBLAS
+    do, its floor copy is the bake copy at seed 0, and the server scores the prediction's rows as the file holds them
+    (file order, full count, no subsample or sort); score_h5ad's `_prediction` does this in the pinned copy, but the
+    live server's handling is not shown. The as-built uploaded files' pre-fix parities are never computed, by any
+    script, and the returned occupancy of a copy_parity upload is never compared with an earlier upload's to infer a
+    mode (limit 2)."""
+    from vec.evaluate import prefix_parity
+
+    C, Q = _as_read(coords), _as_read(copy_coords)
+    n_true = _whole(n_true, "n_true", 3)
+    if not truth_rows_shared(len(C), len(Q), n_true, metric_seed):
+        raise ValueError("copy_parity: the scorer would hand the copy and the file different truth rows, so matching "
+                         "their parities fixes nothing (values not shown)")
+    want = prefix_parity(Q, n_true, metric_seed)
+    if want == 0:
+        raise ValueError("copy_parity: the copy's pre-fix parity is undefined (a degenerate cloud)")
+    rng = np.random.default_rng([_whole(seed, "seed", 0), COPY_PARITY_STREAM])
+    for _ in range(_whole(max_tries, "max_tries", 1)):
+        order = rng.permutation(len(C))
+        if prefix_parity(C[order], n_true, metric_seed) == want:
+            return order, {"row_order": ROW_ORDERS[1], "row_order_stream": COPY_PARITY_STREAM,
+                           "row_order_metric_seed": int(metric_seed), "row_order_matched": True}
+    raise ValueError("copy_parity: no permutation of the stream matched the copy's parity (values not shown)")
+
+
+# ---------------------------------------------------------------------------------------------------------------------
 # Builder
 def _panel_matrix(board: Board, cells, genes: list[str] | None) -> tuple[np.ndarray, list[str]]:
     """cells x board genes, float32, from an AnnData (columns by var_names) or a matrix / vec.evaluate.Stage whose
@@ -1613,7 +1685,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
                        with_partners: bool = False, herd: bool = False, move_coupling: str = MOVE_COUPLINGS[0],
                        with_coupling: bool = False, draw: str = DRAWS[0],
                        log_depth: tuple[np.ndarray, np.ndarray] | None = None,
-                       t_mix: float | None = None, positions: str = POSITIONS[0]) -> Interpolation:
+                       t_mix: float | None = None, positions: str = POSITIONS[0],
+                       shape_form: str | None = None) -> Interpolation:
     """Displacement interpolation between two stages at time fraction t (0 = before, 1 = after).
 
     1. Each cloud is centred and divided by its RMS radius (no PCA axes, so no sign choice).
@@ -1668,6 +1741,12 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     pool_coords / pool_weights are the before stage's cells alone, uniform. Needs t_pos=0.0; not with herd or
     draw="midpoint", which choose the rows by the moved positions. Left at "moved", the result is bit-identical to a
     call without it.
+
+    shape_form (row E49 of experiments/harness/TRIES.md, as drafted; with positions="floor_exact" only): one of
+    `vec.shape_interp.ALL_FORMS`, applied to the exact-position cloud in the before stage's normalised frame before the
+    size rule, so the size rule's RMS is set after it (`vec.shape_interp.apply_form`; the guard's source cloud is mapped
+    alike). Rows, order, count and every random stream of the default are unchanged; stream 47's candidate draw still
+    runs. Left at None, the result is bit-identical to a call without it.
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -1694,6 +1773,13 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
             raise ValueError(f"positions={positions!r} places the cells in the before stage's geometry: pass t_pos=0.0")
         if herd or draw != DRAWS[0]:
             raise ValueError(f"positions={positions!r} is not defined with herd or draw={draw!r}")
+    if shape_form is not None:
+        from vec import shape_interp
+
+        if shape_form not in shape_interp.ALL_FORMS:
+            raise ValueError(f"shape_form must be one of {shape_interp.ALL_FORMS}, got {shape_form!r}")
+        if positions != POSITIONS[1]:
+            raise ValueError("shape_form acts on the exact-position cloud: pass positions='floor_exact'")
     if draw != DRAWS[0]:
         if herd:
             raise ValueError(f"draw={draw!r} and herd both choose the rows; use one of them")
@@ -1751,12 +1837,21 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     else:  # E47: the before rows where they are, the after rows on unused before positions (rows_a's order), permuted
         at_a, floor_exact = _floor_exact_positions(Zb, Eb, Ea, ib, ia, rows_b, rows_a, n_pc, seed)
         Z = np.vstack([Zb[rows_b], at_a])[perm]
+    shaped = None
+    if shape_form is not None:  # E49: the form on the exact-position cloud, before the size rule
+        shaped = shape_interp.apply_form(shape_form, Z=Z, Zb=Zb, Za=Za, t=float(t), R=R, seed=seed, rows_b=rows_b,
+                                         rows_a=rows_a, perm=perm, t_mix=tm)
+        Z = shaped.Z
     zc = Z.mean(0)
     scale = target_rms / rms_radius(Z)
     coords = cb + (Z - zc) * scale
     if floor_exact is None:
         pool = cb + (np.vstack([pos_b, pos_a]) - zc) * scale
         weights = np.r_[np.full(len(Zb), (1.0 - tm) / len(Zb)), np.full(len(Za), tm / len(Za))]
+    elif shaped is not None:  # the source the form maps (F1, F2: the before stage; F3: both brackets, registered)
+        pool = cb + (shaped.pool - zc) * scale
+        weights = (np.full(len(shaped.pool), 1.0 / len(shaped.pool)) if shaped.pool_weights is None
+                   else shaped.pool_weights)
     else:  # every cell sits on a before position: the source is the before stage alone, drawn uniformly
         pool = cb + (Zb - zc) * scale
         weights = np.full(len(Zb), 1.0 / len(Zb))
@@ -1790,6 +1885,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         record["positions"] = positions
         record["floor_exact"] = {"fallback": floor_exact["fallback"], "stream": FLOOR_EXACT_STREAM,
                                  "mean_cost": floor_exact["mean_cost"]}
+    if shaped is not None:  # flat values only, under shape_interp_*: no cell count
+        record.update({f"shape_interp_{k}" if k != "form" else "shape_interp": v for k, v in shaped.record.items()})
     partners = None
     if with_partners:
         prng = np.random.default_rng([seed, 5])

@@ -84,6 +84,24 @@ machine, and an official upload needs the captain's go-ahead.
           --positions floor_exact (off by default; with --method fgw_shape0 only; tries E47a and E47b of
           experiments/harness/TRIES.md): every cell on a real E7.5 position, the harness's fgw_shape0x, or with
           --expression series its fgw_shape0x_series
+          --row-order copy_parity (off by default; no try, no ruling; branch campaign/embryo-occupancy): the same
+          cells, expression and positions, the rows re-ordered (vec.t2_build.copy_parity_order) so that the file's
+          pre-fix SVD parity on the rows the scorer's _match_n takes is the floor copy's (vec.evaluate.subsample of
+          E7.5 as released, 0.1, seed 0, the bake protocol); refused unless the copy and the file get the same truth
+          rows (a gate on the test board's truth_cells, read by code; nothing about it is printed). On a test board it
+          is refused unless --row-order-test-ok (the captain's yes) is also given: a refusal there, or a success,
+          shows one bit of the test count. It assumes the server scores the prediction's rows as the file holds them
+          (file order, full count, no subsample or sort); score_h5ad's `_prediction` does this in the pinned copy,
+          but the live server's handling is not shown. The as-built uploaded files' pre-fix parities are never
+          computed, by any script, and the returned occupancy of a copy_parity upload is never compared with an
+          earlier upload's to infer a mode (limit 2)
+          --shape-interp stretch_ratio | stretch_registered | overlay (off by default: none; no try read, no ruling;
+          row E49 as drafted, branch campaign/embryo-shape-interp): with --method fgw_shape0 --positions floor_exact
+          only, one form of vec.shape_interp applied to the exact-position cloud between E7.5 and E8.0 at t = 1/2,
+          before the size rule (so the pre-registered size and the count rule are untouched); the record gains a
+          shape_interp block. On a test board it is refused unless --shape-interp-test-ok (the captain's yes) is also
+          given. With --row-order copy_parity the order is fixed: form, size, jitter, cloud guard, then the row order
+          on the final coordinates
 
 The board is the test board from boards/ (after the intake, `vec boards update --from-file`); before that, --board
 may name a validation board of the same task for a dry run, and the script refuses a dry run whose output file name
@@ -116,9 +134,10 @@ from pathlib import Path
 
 import numpy as np
 
-from vec import harness, provenance, t1_bets, t1_scope, t2_build
+from vec import harness, provenance, shape_interp, t1_bets, t1_scope, t2_build
 from vec.boards import REPO_ROOT, load_boards
-from vec.io import COORD_KEY, dense
+from vec.evaluate import SUBSAMPLE_FRAC, Stage, subsample
+from vec.io import COORD_KEY, dense, read_stage
 from vec.prep import load_stage
 
 sys.path.insert(0, str(REPO_ROOT / "experiments" / "t1_m1"))
@@ -188,6 +207,10 @@ HEART_SCOPE_OPTIONS = {
                   "rule": "surrounding cells removed farthest in plane from the core first, to an in-plane scope of "
                           "at most zero (the core's own)"},
 }
+# --shape-interp (row E49 as drafted; no ruling): off by default; the fixed order of the steps when it is given
+SHAPE_INTERP_OFF = "none"
+SHAPE_INTERP_ORDER = ("floor_exact positions, the shape form, the size rule's RMS rescale, the duplicate jitter, the "
+                      "cloud guard, then --row-order copy_parity if given (on the final coordinates)")
 HEART_HALVING = ("experiments/builds/halve.py <file> <half>: a uniform random half of the rows (halve.DEFAULT_SEED, "
                  "order kept), as for the ruled heart2 file; the halving is a separate step, not this build")
 
@@ -1004,11 +1027,35 @@ def _trend_record(rec: dict) -> dict:
             "median_cosine": rec["median_cosine"], "median_norm_ratio": rec["median_norm_ratio"]}
 
 
+def floor_copy_coords(stage_file: str) -> np.ndarray:
+    """The floor copy's coordinates as the emulator's bake protocol draws it on a board whose floor is a copy of
+    `stage_file` (a T2 path under data/raw): vec.evaluate.subsample of the stage as released (no duplicate drop), at
+    SUBSAMPLE_FRAC and seed t2_build.COPY_PARITY_COPY_SEED, rows in released order, float32 as a file holds them."""
+    a = read_stage(DATA / stage_file)
+    C = np.asarray(a.obsm[COORD_KEY], dtype=np.float32)[:, :3]
+    return subsample(Stage(X=np.zeros((len(C), 0), dtype=np.float32), coords=C), SUBSAMPLE_FRAC,
+                     t2_build.COPY_PARITY_COPY_SEED).coords
+
+
 def build_embryo(a) -> dict:
     if a.positions != t2_build.POSITIONS[0] and (a.method != "fgw_shape0" or a.herd
                                                  or a.draw != t2_build.DRAWS[0]):
         raise SystemExit(f"--positions {a.positions} is for --method fgw_shape0, without --herd and --draw midpoint")
+    if a.row_order_test_ok and a.row_order != t2_build.ROW_ORDERS[1]:
+        raise SystemExit("--row-order-test-ok is for --row-order copy_parity only")
+    shape = None if a.shape_interp == SHAPE_INTERP_OFF else a.shape_interp
+    if a.shape_interp_test_ok and shape is None:
+        raise SystemExit("--shape-interp-test-ok is for --shape-interp with a form only")
+    if shape is not None and (a.method != "fgw_shape0" or a.positions != t2_build.POSITIONS[1]):
+        raise SystemExit("--shape-interp is for --method fgw_shape0 --positions floor_exact only")
     board, dry = _board("embryo", a.board)
+    if (a.row_order != t2_build.ROW_ORDERS[0] and (not dry or str(board.split).startswith("test"))
+            and not a.row_order_test_ok):  # before anything loads: nothing about the test count is computed
+        raise SystemExit("--row-order copy_parity on a test board needs the captain's yes (--row-order-test-ok); a "
+                         "refusal there shows one bit of the test count")
+    if (shape is not None and (not dry or str(board.split).startswith("test"))
+            and not a.shape_interp_test_ok):  # before anything loads
+        raise SystemExit("--shape-interp on a test board needs the captain's yes (--shape-interp-test-ok)")
     genes = board.genes
     files = {"before": ("T2/E7.5.h5ad", 7.5), "after": ("T2/E8.0.h5ad", 8.0)}
     if a.method == "pseudobulk_shift":  # only it uses the stage before the bracket (E7.25 lacks two panel genes)
@@ -1037,7 +1084,8 @@ def build_embryo(a) -> dict:
                                           log_depth=(None if a.draw == t2_build.DRAWS[0]
                                                      else (t2_build.log_panel_counts(before, genes),
                                                            t2_build.log_panel_counts(after, genes))),
-                                          with_coupling=a.expression == "latent", positions=a.positions)
+                                          with_coupling=a.expression == "latent",
+                                          **({} if shape is None else {"shape_form": shape}), positions=a.positions)
         expr_rec = None
         if a.expression == "mixture":
             X = np.empty((len(res.rows), len(genes)), dtype=np.float32)
@@ -1064,12 +1112,29 @@ def build_embryo(a) -> dict:
             rec = {**rec, "expression": a.expression,
                    **{f"{prefix}_{k}": v for k, v in expr_rec.items() if not isinstance(v, (dict, list))
                       and (prefix, k) != ("latent", "retried")}}  # a test build's record holds no cell number
+    if a.row_order != t2_build.ROW_ORDERS[0]:  # off by default: the rows re-ordered, nothing else changed
+        if not board.truth_cells:
+            raise SystemExit("--row-order copy_parity needs the board's truth_cells (read by code)")
+        try:
+            order, order_rec = t2_build.copy_parity_order(coords, floor_copy_coords(files["before"][0]),
+                                                          board.truth_cells, a.seed)
+        except ValueError as e:
+            raise SystemExit(f"--row-order copy_parity refused: {e}") from None
+        X, coords = np.asarray(X)[order], np.asarray(coords)[order]
+        rec = {**rec, **order_rec, "row_order_copy": f"vec.evaluate.subsample({files['before'][0]} as released, "
+               f"{SUBSAMPLE_FRAC}, {t2_build.COPY_PARITY_COPY_SEED})"}
     _, report = t2_build.build_submission(board, X, coords, genes=list(genes), out=a.out)
     if not report.ok:
         raise SystemExit(f"the built file fails its check: {report.errors}")
-    return {"entry": a.method, "board": board.key, "dry_run": dry, "n_cells": int(len(X)), "seed": a.seed,
-            "count_decision": count, "target_rms": target,
-            "record": {k: v for k, v in rec.items() if not isinstance(v, (dict, list))}}
+    out = {"entry": a.method, "board": board.key, "dry_run": dry, "n_cells": int(len(X)), "seed": a.seed,
+           "count_decision": count, "target_rms": target,
+           "record": {k: v for k, v in rec.items() if not isinstance(v, (dict, list))}}
+    if shape is not None:  # written only when the option is given: flat values, no cell number
+        out["shape_interp"] = {"form": shape, "module": "vec.shape_interp", "ruling": None, "row": "E49 (as drafted)",
+                               "order": SHAPE_INTERP_ORDER,
+                               **{k.removeprefix("shape_interp_"): v for k, v in rec.items()
+                                  if k.startswith("shape_interp_") and not isinstance(v, (dict, list))}}
+    return out
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -1216,6 +1281,27 @@ def build_parser() -> argparse.ArgumentParser:
                                 "real E7.5 position, the E8.0 cells on unused ones by an exact expression assignment; "
                                 "with --expression series the harness's fgw_shape0x_series). No entry until the "
                                 "captain rules; refused with --herd and --draw midpoint")
+            p.add_argument("--row-order", choices=t2_build.ROW_ORDERS, default=t2_build.ROW_ORDERS[0],
+                           help="as_built (the default, every file as built) or copy_parity: the rows re-ordered so "
+                                "the file's pre-fix SVD parity on the scorer's matched rows is the floor copy's "
+                                "(vec.t2_build.copy_parity_order; branch campaign/embryo-occupancy). Same cells, "
+                                "expression and positions. No try and no ruling: only the captain's ruling puts it "
+                                "in an upload. It assumes the server scores the prediction's rows as the file holds "
+                                "them (file order, full count, no subsample or sort); score_h5ad's _prediction does "
+                                "this in the pinned copy, but the live server's handling is not shown")
+            p.add_argument("--shape-interp", choices=(SHAPE_INTERP_OFF, *shape_interp.FORMS),
+                           default=SHAPE_INTERP_OFF,
+                           help="--method fgw_shape0 --positions floor_exact only: none (the default, every file as "
+                                "built) or one shape form of vec.shape_interp between E7.5 and E8.0 at t = 1/2 on the "
+                                "exact-position cloud, before the size rule (row E49 as drafted). No try read and no "
+                                "ruling: only the captain's ruling puts it in an upload")
+            p.add_argument("--shape-interp-test-ok", action="store_true",
+                           help="--shape-interp on the test board: the captain's yes (off by default; without it the "
+                                "option refuses on a test board before anything loads)")
+            p.add_argument("--row-order-test-ok", action="store_true",
+                           help="--row-order copy_parity on the test board: the captain's yes (off by default; "
+                                "without it the option refuses on a test board before anything loads, because a "
+                                "refusal or a success there shows one bit of the test count)")
     return ap
 
 

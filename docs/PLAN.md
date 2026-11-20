@@ -7893,3 +7893,188 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     neural crest and pharyngeal mesoderm: the groups the held-out knockout's own lineage (cardiac and other mesoderm)
     is not in. The pooled form weights groups by their reference shares, so those four or five groups stand for the
     embryo. That limits what this line can add to the which-genes terms even if K22 names a form.
+- 2026-11-20 (ee), T1 outside atlases, stage 1 reviewed; the embryo's shape interpolation started (state at 18:39 UTC,
+  2026-11-20). Written by the AI assistant.
+  - **T1, several outside atlases** (wf_bca8447e-edf: a planner with repository metadata access, a cold challenger
+    with fourteen attacks, an engineer, two reviewers; branch `campaign/t1-multi-atlas`, 735c7b1,
+    `experiments/t1_ext`; nothing downloaded). The design: wave one is two studies beside the atlas in use, GSE230531
+    (whole embryo at E8.5 to whole heart at E14.5) and GSE176063 with GSE153562 (whole embryo at E9.5 to fetal heart
+    at E14.5), each contributing the cardiomyocyte group; GSE244783 (nuclei, heart at E8.5 and E16.5) is wave two;
+    GSE216970 is held. Only samples of permitted stages are fetched, one by one; cell groups are recomputed with the
+    team's frozen labeller; the consensus direction keeps a gene where most atlases agree in sign and is rescaled to
+    the ruled direction's size, so that its practice row reads direction and not size; the composition table forecasts
+    one quantity, the cardiomyocyte share of heart cells, from each atlas's own change over time.
+  - **Both reviewers: not ready, on the organisers' rule itself.** A stage written in a field the code does not read,
+    or in a form it does not parse, could leave a window sample marked as usable; one plug-day convention shifts a
+    sample into the window unseen; joint processing with window samples is screened by a negative pattern only;
+    annotation rows in dense tables load as genes. A fix and a verifier are running (wf_41879c56-f88): the stage is to
+    be read from the whole of a sample's own record and to fail closed, and an atlas's processing text is to be
+    cleared positively, by a hash of the text the main session has read.
+  - **The planner's own doubts, on record:** dissection and protocol can move the cardiomyocyte share by more than two
+    days of development; brackets that start at E8.5 carry heart-tube maturation that E10.5 cells have already done;
+    both scored T1 files already carry one atlas's direction, so a consensus mostly changes magnitudes.
+  - **Embryo, shape interpolation** (wf_145ccf29-b54; analysts other than the AI assistant, which is recused on the
+    occupancy term): a target-free interpolation of the embryo's shape between the two released bracket stages, with a
+    counted practice read before any file. The reason: a cloud on one bracket's exact positions can do no better than
+    about the baseline on the shape terms, and the morphology group is the embryo board's largest gap.
+- 2026-11-20 (ff), the embryo's row-order practice read E48: outcome (state at 18:42 UTC, 2026-11-20). Written by the AI
+  assistant, which is recused on this lever and states no preference; it quotes the fixed readings.
+  - **Valid run, one try (embryo 76).** Reading (i): the arm's mode under the earlier scorer build equals the floor's
+    on all 40 shared task-seeds; the construction is not voided. On 50 of 90 task-seeds the option refuses (the copy
+    and the file get different truth rows) and the file as built ships. Reading (ii): paired arm minus control on the
+    board score, main then earlier build: e75 -0.21 and -0.29; e725 -0.04 and -0.04; x1 +0.34 and +0.28; x2 -0.09 and
+    -0.09; nothing on the five refused tasks. Reading (iii): the proper-minus-mirror Dice gap lies between -0.008 and
+    +0.017 on every task, for the floor and for every arm.
+  - **What follows by the record.** The captain's ruling was "Use it, after a practice read", and by entries (s) and
+    (t) the rebuild follows E48 unless reading (i) voids the construction. It does not. So the row-order file is built
+    (the default command must first reproduce the positions file's bytes), and it goes to him with these readings
+    beside it. On the test board the option may refuse, as it did on five practice tasks; then no file exists and the
+    positions file already with him is the embryo's file.
+  - **The AI assistant's reading after the result, labelled as that and naming no choice:** on released stages the
+    mirror and proper comparisons differ by about a hundredth in Dice, so on practice the handedness coin has almost
+    no stake, and the option moved nothing. Practice therefore gives no reason to expect a change from this file at
+    the test; what the live board does is not shown by practice. The branch is merged at fbd7fb4 (205 targeted tests
+    pass).
+- 2026-11-20 (gg), T3 outside knockouts, widened: what the hunt and the extension returned, and two studies added
+  (state at 18:45 UTC, 2026-11-20). Written by the AI assistant.
+  - **The hunt** (wf_15a91d8d-eb8: three searchers over repository metadata, a synthesiser; no expression data
+    opened). Most embryo knockout datasets with single-cell data are sorted lineages, dissected regions, placenta or
+    yolk sac, or have their matrices only as series-level archives. Whole-embryo studies with a control in their own
+    series and per-sample files, as the pipeline takes them: GSE270969 (Cmtr2, nuclei, E9.5, five knockout and four
+    wild-type embryos) and GSE277839 (Usb1, E9.5, one library per arm), beside GSE204906 already in use. About eighty
+    accessions were set aside by the searchers as touching the held-out genes or their pathway; they are listed in the
+    scratch hand-back and none is opened. The panel study GSE137337's wild-type sister is GSE122187 (same
+    contributors, cross and pipeline; an inference, since neither record links to the other); only its four knockouts
+    on the older chemistry have a same-chemistry control there.
+  - **The extension** for series-level archives and a sister-series control (branch `campaign/t3-ext-archives`,
+    853b214): both reviewers not ready, three blockers (an archive read whole may hold more libraries than the pin
+    names; a control series could be any registered dataset on typed text alone; one wild-type archive cannot serve
+    several genes). It is not merged. It goes back for a fix only after the two-study table from per-sample data has
+    been read on practice, since that is the quicker test of whether this line carries at all.
+  - **Added to the dataset file with empty pins:** GSE277839 and GSE270969, tier unrelated. Nothing of them is fetched
+    before two readers have read their plan tables and pinned samples. With GSE204906 they would give the `unrelated`
+    and `all` tables the two or three independent studies that practice read K22 requires.
+- 2026-11-20 (hh), the embryo: no row-order file exists; the shape interpolation is ready for its practice read (state at
+  18:51 UTC, 2026-11-20). Written by the AI assistant, which is recused on the occupancy term and states no preference.
+  - **The row-order build** (`~/v/vec-campaign` at 09a41f3). The default command reproduced the positions file's bytes
+    (a03611a3...). The build with `--row-order copy_parity --row-order-test-ok` then exited 1. Its output was not
+    read; one rerun classified the last error line against the builder's own messages and printed only the category:
+    "--row-order copy_parity needs the board's truth_cells". The test board gives the builder no count of the hidden
+    stage's cells, and the option needs that count to know which rows the scorer would take. So the option cannot act
+    on the test board, no row-order file exists, and the positions file handed over on 2026-11-20 stands as the
+    embryo's candidate. Nothing about the hidden stage was learned from this beyond the fact that the board publishes
+    no such count. The captain is told.
+  - **The shape interpolation** (wf_145ccf29-b54: an analyst, a cold challenger ("stands with changes"), a writer, a
+    reviewer ("ready", no blocker); branch `campaign/embryo-shape-interp`, 63da9ad). What the analyst read in the
+    record first: on practice the exact-position form sits at the baseline on both shape terms (skills 0.47 to 0.51
+    and 0.48 to 0.54), not above it; and no whole-cloud interpolation of shape ratios, and no two-bracket overlay, was
+    ever read. Three forms, each from the two released brackets and the calendar fraction only, positions only: F1, a
+    stretch along the cloud's own axes towards the in-between axis ratios, on axes both brackets clearly separate; F2,
+    the in-between covariance after the build's own rotation lines the brackets up; F3, each later-bracket cell at its
+    own real position in the earlier bracket's frame. Four controls. A form passes only if it gains more than 0.3
+    board points on the merged mean in 8 of 10 seeds, helps the shape group overall and on the test-like tasks, hurts
+    no other group, beats its controls on shape, and never refuses; at most two candidate files follow, by a rule in
+    the row. The reviewer asked for one correction before the row is committed (the test that decides which axes are
+    safely separated); a writer is making it. Row E49 is placed on that branch before the run; the count goes from 76
+    to 83, or to 81 if the target-free first step drops F1.
+  - **J7 for E49.** E48's gate reran the floor and the exact-position control at 9cd4b6e against row E47's committed
+    scores: worst ten-seed mean difference 0.0000, worst seed difference 0.0000 on all nine tasks (gate files
+    committed with this entry).
+- 2026-11-20 (ii), T3 outside knockouts: the Usb1 pair pinned as the second study; the Cmtr2 study not usable as the
+  pipeline stands (state at 18:54 UTC, 2026-11-20). Written by the AI assistant.
+  - **Two readers on the two added studies.** The AI assistant read both series' text, all eleven sample records and
+    the shared protocol texts; a second reader agent, which had not seen that reading, read every line of both tables.
+    Neither found a held-out or pathway label, a pooled or per-cell-genotype design, or a hidden character. GSE270969
+    (Cmtr2): clean labels, one embryo per library, but its only per-sample files are unfiltered matrices, a file type
+    the pipeline denies by design; nothing is pinned, and no code is changed to take them now. GSE277839 (Usb1): the
+    second reader held on the record's sentence that "demultiplexing ... and aggregation were made using the Cell
+    Ranger software", since the readers' checklist says a demultiplexed design is not pinned, and left the ruling to
+    the main session; it also noted that the record calls the molecule nuclear RNA while the protocol describes a cell
+    suspension, and that the stated software version does not fit the stated chemistry.
+  - **The AI assistant's ruling on that sentence.** It describes the vendor pipeline's own steps, which every library
+    of this kind goes through; the two genotypes are two libraries with their own sample records and their own files.
+    That is not a pooled-genotype design. The two samples are pinned (knockout GSM8532457, control GSM8532456, gene
+    Usb1, E9.5), with hashes equal to those the second reader read; register row X014 is placed before any table
+    exists; the dataset file's hash pin is updated. The pipeline's own shrinkage leaves little of a
+    one-library-per-arm ratio, which is the right weight for it.
+  - **Why it is pinned at all:** practice read K22 requires tables from at least two independent studies, and this is
+    the only other whole-embryo study with per-sample files and its own control that the hunt found usable today. The
+    rerun covers every pinned dataset in one launch.
+- 2026-11-20 (jj), the embryo's shape-interpolation read E49: row placed, run commit fixed (state at 18:56 UTC,
+  2026-11-20). Written by the AI assistant, which is recused on the occupancy term; the design, the readings and the
+  outcome-to-file rule are the analysts' and are in the row.
+  - The reviewer's pre-run correction is made (branch `campaign/embryo-shape-interp-2`, f152e6c: the test that decides
+    which axes a bracket separates now refuses a draw that moves an axis across the cut); merged at cf75bbe; 276
+    targeted tests pass, default build bytes unchanged. Row E49 (three arms, four controls, labelled diagnostics;
+    seven tries, five if the target-free first step drops F1 and its control) is on main with its J7 figures (E48's
+    gate against E47: 0.0000 and 0.0000). The run commit is this entry's commit. Order on the compute machine, from a
+    detached worktree: tests, the target-free description, the gate against E47 within 0.01, the run on nine tasks and
+    ten seeds under both scorer builds, the reading. A form passes only by the row's six conditions; at most two
+    candidate files follow; each needs the test-board flag, which is the captain's yes, before it is built.
+  - Later the same hour: the first launch at 1dbdb9b stopped at the launcher's own tests step (exit 1) before anything
+    was described, gated or scored. One unit test of the script's refusal without its row failed once the row existed:
+    the function that looks for the row bound the ledger's path when it was defined, so the test's substitute ledger
+    was never read. The function now looks the path up at call time (one line; 107 tests of the script and the forms
+    pass with the row present). The run commit is the commit of that fix, as row E49's last cell says.
+- 2026-11-20 (kk), T3 outside knockouts: the first two-study table, and practice read K22 with its rule fixed before the
+  run (state at 19:02 UTC, 2026-11-20). Written by the AI assistant.
+  - **The run with the second study** (`~/v/vec-campaign-c` at 91f065b; every step exit 0). GSE277839: 28,196 cells in
+    its two libraries, all 500 panel genes matched, confident lineage calls for 0.65 and 0.73 of the cells; Usb1 gives
+    factors in three lineage groups (ectoderm, neural, paraxial mesoderm); the cardiac, endothelial, extra-embryonic
+    and neural-crest groups fail the control-profile guard and six small groups have too few cells. Combine wrote the
+    two-study tables `all` and `unrelated` (GSE204908 with Dnmt3a and Dnmt3b; GSE277839 with Usb1; the sign rule
+    across the two studies applied) and their leave-one-study-out forms. The two tables have the same bytes. The
+    manifest's summary of the pooled table: 88 genes up, 359 down, none at the clip.
+  - **The committed listing.** `experiments/t3_ext/TABLES.sha256` holds the tables' hashes as combine recorded them,
+    with the `unrelated` line left out: it duplicates `all`, and two identical tries would be counted twice. The pins
+    in `experiments/t3_decomp/outside_forms.py` equal the listing (71 tests of the forms and the read pass). So K22
+    runs one product arm (the barred factor times the `all` table at exponent 1), its permuted control, and the
+    replacement arm as the labelled control of the planner's doubt: three tries, T3 57 to 60, fewer if the pre-gate
+    drops an arm.
+  - **The rule that maps the outcome to files, in the challenger's final words:** Fixed before the run, in row K22 and
+    in a new decision-log entry committed with it. A result maps to files from the reading's fixed statements only. -
+    Candidates: x_all and x_unrel, only when QUALIFIED. Controls (x_all_perm, x_unrel_perm) and rep_all are never
+    named or built. The doubt statement changes no file. - Rank the qualified tries by the number of AHEAD cells, then
+    by the mean of their four paired means against barred_form. Ties go to x_all, then x_unrel. - File 1 is the
+    first-ranked try on base B. File 2 is the second-ranked try on B, named only if the pre-gate's corr(ln T_all, ln
+    T_unrel) over the genes != 1 in either table is below 0.9. Otherwise only file 1. At most two files, at most one
+    per table. - Nothing qualifies, the run is VOID, or the pre-gate dropped both tries: no file, and T3's list is
+    unchanged. - File factor: phi_M ** x * T ** 1.0. x is B's exponent. T is the named table's pooled csv at the
+    sha256 pinned in K22_TABLE_SHA256, which equals TABLES.sha256's line at the row's commit. No rescale or clip after
+    the product. Priced at x = 1 on the central composition only, so on B with x != 1 the file is unpriced. - A form
+    the builder refuses on B is not built, and nothing replaces it. - B is entry 2026-11-20 (q)'s B: the highest
+    returned headline among barred s1 (3712c3f9988d), x1.5 (c060fcaa6c7f), x2.0 (7393810fbe3b) and barred s2
+    (1b69521e3c28), fixed once both of entry (k)'s uploads are back. Ties go to s1, then to the lower exponent. B is
+    never a C file and never re-fixed after this read. - Place: after (q)'s C list and after any K21 file (K21 named
+    none). Ranking ahead of C1 or C2 would change (q), which is the captain's call. (q)'s lapse clause holds first. -
+    Before any upload: a docs/S2_RULES.md amendment with the captain's words saying it brings outside-knockout data
+    into a barred file; the datasets' EXTERNAL_DATA.md rows and the tables' sha256 committed; a build in the reference
+    checkout; a new reference list and pointer; his go-ahead per upload. A test score only chooses among the files
+    named here (Rules s.10). No constant, form, table or base is changed after any practice or test score.
+  - **What the table can and cannot be, on record before the run:** two studies, three knockout genes (two
+    DNA-methyltransferases and an RNA-processing enzyme), factors only in ectoderm, endoderm, neural, neural-crest,
+    pharyngeal and paraxial-mesoderm groups; nothing from the cardiac lineage. That three quarters of its genes move
+    down in both studies may be what knockout embryos share, or what two laboratories' knockout libraries share for
+    technical reasons; the permuted control and the read on the released Gata4 knockout are what tell a gain from a
+    table of this size apart from this table's genes.
+- 2026-11-20 (ll), T3: practice read K22's outcome (state at 19:09 UTC, 2026-11-20). Written by the AI assistant.
+  - **Outcome, as the row fixed it: "no file: nothing qualifies; T3's list is unchanged".** Valid run (the barred form
+    reproduces K18's committed scores exactly in both worlds); three tries, T3 57 to 60. Row K22 holds the fixed
+    statements; the result files are committed with it. Register rows X013 and X014 say no file uses the datasets.
+  - **The fixed statements.** The product of the barred factor with the two-study table is ahead of the barred form in
+    the plain world on both Gata4 replicates (plain g1 +0.39 (10 of 10 seeds), against its permuted control +0.47 (10
+    of 10); plain g2 +0.49 (10 of 10 seeds), against its permuted control +0.60 (10 of 10)) and level in the
+    depth-matched world; mean of the four paired means +0.29. The rule asks for both worlds, so it does not qualify.
+    The table alone in place of the barred factor loses by 5 to 12 points on three of four cells, as the planner's
+    doubt said it would.
+  - **The AI assistant's reading after the result, labelled as that and naming no file.** The table is very small: its
+    log values have a standard deviation of 0.025 against the barred factor's 0.70, because the pipeline's shrinkage
+    (few libraries per arm, weaker designs halved) leaves little. That so small a table gains in the plain world on
+    every seed, and beats its own shuffle on every seed, says its genes carry something the Gata4 knockout shares;
+    that it gains nothing in the depth-matched world says the gain may be about depth. A table from more studies and
+    more libraries would be larger by the pipeline's own rule and would need its own read, with its own row.
+  - **What follows.** By the captain's order of entry (y) the line goes on: more whole-embryo studies are needed,
+    which means two pieces of pipeline work (reading per-sample unfiltered matrices with a fixed cell-calling rule,
+    for the nine-embryo Cmtr2 study both readers found clean; and the three fixes the reviewers asked of the
+    series-archive and sister-series extension, for the knockout panel), then a new read under a new row. No guard and
+    no qualification rule is changed.

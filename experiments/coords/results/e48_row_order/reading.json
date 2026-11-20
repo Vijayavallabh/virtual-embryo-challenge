@@ -1,0 +1,3104 @@
+{
+ "void": false,
+ "why": [],
+ "commit": "9cd4b6e7d1d343e996e91591bd0d92dcdcfae284",
+ "row_arm": "fgw_shape0x_series_cp",
+ "truths": {
+  "T2/E8.0.h5ad": [
+   "half",
+   "late"
+  ],
+  "T2/E8.25_late.h5ad": [
+   "new1",
+   "x1"
+  ],
+  "T2/E8.5.h5ad": [
+   "new2",
+   "x2",
+   "x3"
+  ],
+  "T2/E7.5.h5ad": [
+   "e75"
+  ],
+  "T2/E7.25.h5ad": [
+   "e725"
+  ]
+ },
+ "rule_i": {
+  "fgw_shape0x_series_cp": {
+   "shared_task_seeds": 40,
+   "mode_differs_on": [],
+   "construction_void": false,
+   "can_price": true
+  },
+  "fgw_shape0x_cp": {
+   "shared_task_seeds": 40,
+   "mode_differs_on": [],
+   "construction_void": false,
+   "can_price": true
+  }
+ },
+ "refused_task_seeds": {
+  "fgw_shape0x_series_cp": 50,
+  "fgw_shape0x_cp": 50
+ },
+ "parity_agree_as_built": {
+  "fgw_shape0x_series": {
+   "half": null,
+   "late": null,
+   "new1": null,
+   "new2": null,
+   "e75": 0.5,
+   "e725": 0.6,
+   "x1": 0.4,
+   "x2": 0.8,
+   "x3": null
+  },
+  "fgw_shape0x": {
+   "half": null,
+   "late": null,
+   "new1": null,
+   "new2": null,
+   "e75": 0.5,
+   "e725": 0.6,
+   "x1": 0.4,
+   "x2": 0.8,
+   "x3": null
+  }
+ },
+ "tasks": {
+  "half": {
+   "paired": {
+    "fgw_shape0x_series_cp": {
+     "control": "fgw_shape0x_series",
+     "main": {
+      "board": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "occupancy_skill": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "refused_left_out": 10
+      }
+     },
+     "prefix": {
+      "board": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "occupancy_skill": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "refused_left_out": 10
+      }
+     }
+    },
+    "fgw_shape0x_cp": {
+     "control": "fgw_shape0x",
+     "main": {
+      "board": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "occupancy_skill": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "refused_left_out": 10
+      }
+     },
+     "prefix": {
+      "board": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "occupancy_skill": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "refused_left_out": 10
+      }
+     }
+    }
+   },
+   "gap": {
+    "floor": {
+     "dice_proper": 0.66364,
+     "dice_mirror": 0.67174,
+     "gap": {
+      "mean": -0.00808,
+      "sd": 0.009805871257114848,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_series": {
+     "dice_proper": 0.6929799999999999,
+     "dice_mirror": 0.6935,
+     "gap": {
+      "mean": -0.00053,
+      "sd": 0.011944878028306155,
+      "n": 10
+     }
+    },
+    "fgw_shape0x": {
+     "dice_proper": 0.6929799999999999,
+     "dice_mirror": 0.6935,
+     "gap": {
+      "mean": -0.00053,
+      "sd": 0.011944878028306155,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_series_cp": {
+     "dice_proper": 0.6929799999999999,
+     "dice_mirror": 0.6935,
+     "gap": {
+      "mean": -0.00053,
+      "sd": 0.011944878028306155,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_cp": {
+     "dice_proper": 0.6929799999999999,
+     "dice_mirror": 0.6935,
+     "gap": {
+      "mean": -0.00053,
+      "sd": 0.011944878028306155,
+      "n": 10
+     }
+    }
+   },
+   "shared_seeds": {
+    "fgw_shape0x_series_cp": 0,
+    "fgw_shape0x_cp": 0
+   },
+   "refused_seeds": {
+    "fgw_shape0x_series_cp": 10,
+    "fgw_shape0x_cp": 10
+   }
+  },
+  "late": {
+   "paired": {
+    "fgw_shape0x_series_cp": {
+     "control": "fgw_shape0x_series",
+     "main": {
+      "board": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "occupancy_skill": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "refused_left_out": 10
+      }
+     },
+     "prefix": {
+      "board": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "occupancy_skill": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "refused_left_out": 10
+      }
+     }
+    },
+    "fgw_shape0x_cp": {
+     "control": "fgw_shape0x",
+     "main": {
+      "board": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "occupancy_skill": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "refused_left_out": 10
+      }
+     },
+     "prefix": {
+      "board": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "occupancy_skill": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "refused_left_out": 10
+      }
+     }
+    }
+   },
+   "gap": {
+    "floor": {
+     "dice_proper": 0.66364,
+     "dice_mirror": 0.67174,
+     "gap": {
+      "mean": -0.00808,
+      "sd": 0.009805871257114848,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_series": {
+     "dice_proper": 0.69117,
+     "dice_mirror": 0.6899299999999999,
+     "gap": {
+      "mean": 0.0012400000000000002,
+      "sd": 0.013415099287328772,
+      "n": 10
+     }
+    },
+    "fgw_shape0x": {
+     "dice_proper": 0.69117,
+     "dice_mirror": 0.6899299999999999,
+     "gap": {
+      "mean": 0.0012400000000000002,
+      "sd": 0.013415099287328772,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_series_cp": {
+     "dice_proper": 0.69117,
+     "dice_mirror": 0.6899299999999999,
+     "gap": {
+      "mean": 0.0012400000000000002,
+      "sd": 0.013415099287328772,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_cp": {
+     "dice_proper": 0.69117,
+     "dice_mirror": 0.6899299999999999,
+     "gap": {
+      "mean": 0.0012400000000000002,
+      "sd": 0.013415099287328772,
+      "n": 10
+     }
+    }
+   },
+   "shared_seeds": {
+    "fgw_shape0x_series_cp": 0,
+    "fgw_shape0x_cp": 0
+   },
+   "refused_seeds": {
+    "fgw_shape0x_series_cp": 10,
+    "fgw_shape0x_cp": 10
+   }
+  },
+  "new1": {
+   "paired": {
+    "fgw_shape0x_series_cp": {
+     "control": "fgw_shape0x_series",
+     "main": {
+      "board": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "occupancy_skill": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "refused_left_out": 10
+      }
+     },
+     "prefix": {
+      "board": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "occupancy_skill": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "refused_left_out": 10
+      }
+     }
+    },
+    "fgw_shape0x_cp": {
+     "control": "fgw_shape0x",
+     "main": {
+      "board": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "occupancy_skill": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "refused_left_out": 10
+      }
+     },
+     "prefix": {
+      "board": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "occupancy_skill": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "refused_left_out": 10
+      }
+     }
+    }
+   },
+   "gap": {
+    "floor": {
+     "dice_proper": 0.6802900000000001,
+     "dice_mirror": 0.67883,
+     "gap": {
+      "mean": 0.00146,
+      "sd": 0.013496600394996594,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_series": {
+     "dice_proper": 0.71646,
+     "dice_mirror": 0.7183200000000001,
+     "gap": {
+      "mean": -0.0018799999999999997,
+      "sd": 0.007577422604905531,
+      "n": 10
+     }
+    },
+    "fgw_shape0x": {
+     "dice_proper": 0.71646,
+     "dice_mirror": 0.7183200000000001,
+     "gap": {
+      "mean": -0.0018799999999999997,
+      "sd": 0.007577422604905531,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_series_cp": {
+     "dice_proper": 0.71646,
+     "dice_mirror": 0.7183200000000001,
+     "gap": {
+      "mean": -0.0018799999999999997,
+      "sd": 0.007577422604905531,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_cp": {
+     "dice_proper": 0.71646,
+     "dice_mirror": 0.7183200000000001,
+     "gap": {
+      "mean": -0.0018799999999999997,
+      "sd": 0.007577422604905531,
+      "n": 10
+     }
+    }
+   },
+   "shared_seeds": {
+    "fgw_shape0x_series_cp": 0,
+    "fgw_shape0x_cp": 0
+   },
+   "refused_seeds": {
+    "fgw_shape0x_series_cp": 10,
+    "fgw_shape0x_cp": 10
+   }
+  },
+  "new2": {
+   "paired": {
+    "fgw_shape0x_series_cp": {
+     "control": "fgw_shape0x_series",
+     "main": {
+      "board": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "occupancy_skill": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "refused_left_out": 10
+      }
+     },
+     "prefix": {
+      "board": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "occupancy_skill": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "refused_left_out": 10
+      }
+     }
+    },
+    "fgw_shape0x_cp": {
+     "control": "fgw_shape0x",
+     "main": {
+      "board": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "occupancy_skill": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "refused_left_out": 10
+      }
+     },
+     "prefix": {
+      "board": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "occupancy_skill": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "refused_left_out": 10
+      }
+     }
+    }
+   },
+   "gap": {
+    "floor": {
+     "dice_proper": 0.69991,
+     "dice_mirror": 0.6948,
+     "gap": {
+      "mean": 0.005110000000000001,
+      "sd": 0.011658897413087092,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_series": {
+     "dice_proper": 0.69984,
+     "dice_mirror": 0.7019500000000001,
+     "gap": {
+      "mean": -0.00211,
+      "sd": 0.019614589241457772,
+      "n": 10
+     }
+    },
+    "fgw_shape0x": {
+     "dice_proper": 0.69984,
+     "dice_mirror": 0.7019500000000001,
+     "gap": {
+      "mean": -0.00211,
+      "sd": 0.019614589241457772,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_series_cp": {
+     "dice_proper": 0.69984,
+     "dice_mirror": 0.7019500000000001,
+     "gap": {
+      "mean": -0.00211,
+      "sd": 0.019614589241457772,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_cp": {
+     "dice_proper": 0.69984,
+     "dice_mirror": 0.7019500000000001,
+     "gap": {
+      "mean": -0.00211,
+      "sd": 0.019614589241457772,
+      "n": 10
+     }
+    }
+   },
+   "shared_seeds": {
+    "fgw_shape0x_series_cp": 0,
+    "fgw_shape0x_cp": 0
+   },
+   "refused_seeds": {
+    "fgw_shape0x_series_cp": 10,
+    "fgw_shape0x_cp": 10
+   }
+  },
+  "e75": {
+   "paired": {
+    "fgw_shape0x_series_cp": {
+     "control": "fgw_shape0x_series",
+     "main": {
+      "board": {
+       "mean": -0.20906066020117464,
+       "sd": 0.4729816515096191,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": -0.030010994148695423,
+       "sd": 0.0585144260840531,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.000983239992092233,
+        "sd": 0.00499868810601726,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.003872890058374956,
+        "sd": 0.009054004413996303,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": -0.0005483291639153565,
+        "sd": 0.005193307678863468,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": -0.030010994148695423,
+        "sd": 0.0585144260840531,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": -0.0003150853224486938,
+        "sd": 0.003921329985306481,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": -0.20906066020117464,
+        "sd": 0.4729816515096191,
+        "n": 10
+       },
+       "occupancy_skill": {
+        "mean": -0.030010994148695423,
+        "sd": 0.0585144260840531,
+        "n": 10
+       },
+       "refused_left_out": 0
+      }
+     },
+     "prefix": {
+      "board": {
+       "mean": -0.2935881643639739,
+       "sd": 0.5663275721491912,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": -0.040154294648231045,
+       "sd": 0.06870531921808158,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.000983239992092233,
+        "sd": 0.00499868810601726,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.003872890058374956,
+        "sd": 0.009054004413996303,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": -0.0005483291639153565,
+        "sd": 0.005193307678863468,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": -0.040154294648231045,
+        "sd": 0.06870531921808158,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": -0.0003150853224486938,
+        "sd": 0.003921329985306481,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": -0.2935881643639739,
+        "sd": 0.5663275721491912,
+        "n": 10
+       },
+       "occupancy_skill": {
+        "mean": -0.040154294648231045,
+        "sd": 0.06870531921808158,
+        "n": 10
+       },
+       "refused_left_out": 0
+      }
+     }
+    },
+    "fgw_shape0x_cp": {
+     "control": "fgw_shape0x",
+     "main": {
+      "board": {
+       "mean": -0.23845897428716825,
+       "sd": 0.5425337527900783,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": -0.030010994148695423,
+       "sd": 0.0585144260840531,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.002621054106922693,
+        "sd": 0.005799632896273461,
+        "n": 10
+       },
+       "variogram": {
+        "mean": -0.0012639755480687187,
+        "sd": 0.005231756436889841,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": -0.0005483291639153565,
+        "sd": 0.005193307678863468,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": -0.030010994148695423,
+        "sd": 0.0585144260840531,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": -0.00041896011220921014,
+        "sd": 0.0028878036634334848,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": -0.23845897428716825,
+        "sd": 0.5425337527900783,
+        "n": 10
+       },
+       "occupancy_skill": {
+        "mean": -0.030010994148695423,
+        "sd": 0.0585144260840531,
+        "n": 10
+       },
+       "refused_left_out": 0
+      }
+     },
+     "prefix": {
+      "board": {
+       "mean": -0.3229864784499618,
+       "sd": 0.5852029445464665,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": -0.040154294648231045,
+       "sd": 0.06870531921808158,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.002621054106922693,
+        "sd": 0.005799632896273461,
+        "n": 10
+       },
+       "variogram": {
+        "mean": -0.0012639755480687187,
+        "sd": 0.005231756436889841,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": -0.0005483291639153565,
+        "sd": 0.005193307678863468,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": -0.040154294648231045,
+        "sd": 0.06870531921808158,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": -0.00041896011220921014,
+        "sd": 0.0028878036634334848,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": -0.3229864784499618,
+        "sd": 0.5852029445464665,
+        "n": 10
+       },
+       "occupancy_skill": {
+        "mean": -0.040154294648231045,
+        "sd": 0.06870531921808158,
+        "n": 10
+       },
+       "refused_left_out": 0
+      }
+     }
+    }
+   },
+   "gap": {
+    "floor": {
+     "dice_proper": 0.6944199999999999,
+     "dice_mirror": 0.69994,
+     "gap": {
+      "mean": -0.005530000000000001,
+      "sd": 0.01816963584298449,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_series": {
+     "dice_proper": 0.70333,
+     "dice_mirror": 0.70536,
+     "gap": {
+      "mean": -0.0020399999999999993,
+      "sd": 0.013933907484183241,
+      "n": 10
+     }
+    },
+    "fgw_shape0x": {
+     "dice_proper": 0.70333,
+     "dice_mirror": 0.70536,
+     "gap": {
+      "mean": -0.0020399999999999993,
+      "sd": 0.013933907484183241,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_series_cp": {
+     "dice_proper": 0.6947000000000001,
+     "dice_mirror": 0.6967199999999999,
+     "gap": {
+      "mean": -0.0020299999999999997,
+      "sd": 0.013615681318897623,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_cp": {
+     "dice_proper": 0.6947000000000001,
+     "dice_mirror": 0.6967199999999999,
+     "gap": {
+      "mean": -0.0020299999999999997,
+      "sd": 0.013615681318897623,
+      "n": 10
+     }
+    }
+   },
+   "shared_seeds": {
+    "fgw_shape0x_series_cp": 10,
+    "fgw_shape0x_cp": 10
+   },
+   "refused_seeds": {
+    "fgw_shape0x_series_cp": 0,
+    "fgw_shape0x_cp": 0
+   }
+  },
+  "e725": {
+   "paired": {
+    "fgw_shape0x_series_cp": {
+     "control": "fgw_shape0x_series",
+     "main": {
+      "board": {
+       "mean": -0.03983999916490646,
+       "sd": 0.5285587380802875,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": -0.008701960642222705,
+       "sd": 0.060938517151359436,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": -3.351394981921385e-05,
+        "sd": 0.005981806366579186,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.004245597229075101,
+        "sd": 0.009158454346192517,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": -0.00026567491898274453,
+        "sd": 0.00499092162813072,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": -0.008701960642222705,
+        "sd": 0.060938517151359436,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": -8.701837866954553e-05,
+        "sd": 0.002891210664974326,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": -0.03983999916490646,
+        "sd": 0.5285587380802875,
+        "n": 10
+       },
+       "occupancy_skill": {
+        "mean": -0.008701960642222705,
+        "sd": 0.060938517151359436,
+        "n": 10
+       },
+       "refused_left_out": 0
+      }
+     },
+     "prefix": {
+      "board": {
+       "mean": -0.04055546894764177,
+       "sd": 0.5615174574224266,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": -0.008243431107027554,
+       "sd": 0.0682044562843915,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": -3.351394981921385e-05,
+        "sd": 0.005981806366579186,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.004245597229075101,
+        "sd": 0.009158454346192517,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": -0.00026567491898274453,
+        "sd": 0.00499092162813072,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": -0.008243431107027554,
+        "sd": 0.0682044562843915,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": -8.701837866954553e-05,
+        "sd": 0.002891210664974326,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": -0.04055546894764177,
+        "sd": 0.5615174574224266,
+        "n": 10
+       },
+       "occupancy_skill": {
+        "mean": -0.008243431107027554,
+        "sd": 0.0682044562843915,
+        "n": 10
+       },
+       "refused_left_out": 0
+      }
+     }
+    },
+    "fgw_shape0x_cp": {
+     "control": "fgw_shape0x",
+     "main": {
+      "board": {
+       "mean": 0.03308142481708813,
+       "sd": 0.6716129248530909,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": -0.008701960642222705,
+       "sd": 0.060938517151359436,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0011156346609667244,
+        "sd": 0.007138232574330576,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.007861584075535,
+        "sd": 0.01832746365972014,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": -0.00026567491898274453,
+        "sd": 0.00499092162813072,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": -0.008701960642222705,
+        "sd": 0.060938517151359436,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0002673108622862075,
+        "sd": 0.0038588548686947816,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": 0.03308142481708813,
+        "sd": 0.6716129248530909,
+        "n": 10
+       },
+       "occupancy_skill": {
+        "mean": -0.008701960642222705,
+        "sd": 0.060938517151359436,
+        "n": 10
+       },
+       "refused_left_out": 0
+      }
+     },
+     "prefix": {
+      "board": {
+       "mean": 0.036626936500969265,
+       "sd": 0.7104664546888929,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": -0.008243431107027554,
+       "sd": 0.0682044562843915,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0011156346609667244,
+        "sd": 0.007138232574330576,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.007861584075535,
+        "sd": 0.01832746365972014,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": -0.00026567491898274453,
+        "sd": 0.00499092162813072,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": -0.008243431107027554,
+        "sd": 0.0682044562843915,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0002673108622862075,
+        "sd": 0.0038588548686947816,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": 0.036626936500969265,
+        "sd": 0.7104664546888929,
+        "n": 10
+       },
+       "occupancy_skill": {
+        "mean": -0.008243431107027554,
+        "sd": 0.0682044562843915,
+        "n": 10
+       },
+       "refused_left_out": 0
+      }
+     }
+    }
+   },
+   "gap": {
+    "floor": {
+     "dice_proper": 0.77754,
+     "dice_mirror": 0.77755,
+     "gap": {
+      "mean": -2.999999999999999e-05,
+      "sd": 0.007882336089144019,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_series": {
+     "dice_proper": 0.78066,
+     "dice_mirror": 0.78138,
+     "gap": {
+      "mean": -0.0007099999999999998,
+      "sd": 0.010756749818912155,
+      "n": 10
+     }
+    },
+    "fgw_shape0x": {
+     "dice_proper": 0.78066,
+     "dice_mirror": 0.78138,
+     "gap": {
+      "mean": -0.0007099999999999998,
+      "sd": 0.010756749818912155,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_series_cp": {
+     "dice_proper": 0.77566,
+     "dice_mirror": 0.77705,
+     "gap": {
+      "mean": -0.00139,
+      "sd": 0.01009867428043019,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_cp": {
+     "dice_proper": 0.77566,
+     "dice_mirror": 0.77705,
+     "gap": {
+      "mean": -0.00139,
+      "sd": 0.01009867428043019,
+      "n": 10
+     }
+    }
+   },
+   "shared_seeds": {
+    "fgw_shape0x_series_cp": 10,
+    "fgw_shape0x_cp": 10
+   },
+   "refused_seeds": {
+    "fgw_shape0x_series_cp": 0,
+    "fgw_shape0x_cp": 0
+   }
+  },
+  "x1": {
+   "paired": {
+    "fgw_shape0x_series_cp": {
+     "control": "fgw_shape0x_series",
+     "main": {
+      "board": {
+       "mean": 0.33917466730629825,
+       "sd": 0.34626618899560846,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0167486984440475,
+       "sd": 0.0143782427820118,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.006079433962784148,
+        "sd": 0.02090284931812304,
+        "n": 10
+       },
+       "variogram": {
+        "mean": -0.003656156529485655,
+        "sd": 0.0242352298966087,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0017079682359542158,
+        "sd": 0.004526488940276445,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0167486984440475,
+        "sd": 0.0143782427820118,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0038434362888810137,
+        "sd": 0.006905937138153702,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": 0.33917466730629825,
+        "sd": 0.34626618899560846,
+        "n": 10
+       },
+       "occupancy_skill": {
+        "mean": 0.0167486984440475,
+        "sd": 0.0143782427820118,
+        "n": 10
+       },
+       "refused_left_out": 0
+      }
+     },
+     "prefix": {
+      "board": {
+       "mean": 0.27958791712558123,
+       "sd": 0.5152491471972951,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.00829998950834357,
+       "sd": 0.038246524531794196,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.006079433962784148,
+        "sd": 0.02090284931812304,
+        "n": 10
+       },
+       "variogram": {
+        "mean": -0.003656156529485655,
+        "sd": 0.0242352298966087,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0017079682359542158,
+        "sd": 0.004526488940276445,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.00829998950834357,
+        "sd": 0.038246524531794196,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0038434362888810137,
+        "sd": 0.006905937138153702,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": 0.27958791712558123,
+        "sd": 0.5152491471972951,
+        "n": 10
+       },
+       "occupancy_skill": {
+        "mean": 0.00829998950834357,
+        "sd": 0.038246524531794196,
+        "n": 10
+       },
+       "refused_left_out": 0
+      }
+     }
+    },
+    "fgw_shape0x_cp": {
+     "control": "fgw_shape0x",
+     "main": {
+      "board": {
+       "mean": 0.45116780806764184,
+       "sd": 0.3383783883851046,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0167486984440475,
+       "sd": 0.0143782427820118,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.013712444819700636,
+        "sd": 0.021672249841864447,
+        "n": 10
+       },
+       "variogram": {
+        "mean": -0.003279161102974104,
+        "sd": 0.026499969302973485,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0017079682359542158,
+        "sd": 0.004526488940276445,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0167486984440475,
+        "sd": 0.0143782427820118,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.004094308972864424,
+        "sd": 0.005928229066662302,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": 0.45116780806764184,
+        "sd": 0.3383783883851046,
+        "n": 10
+       },
+       "occupancy_skill": {
+        "mean": 0.0167486984440475,
+        "sd": 0.0143782427820118,
+        "n": 10
+       },
+       "refused_left_out": 0
+      }
+     },
+     "prefix": {
+      "board": {
+       "mean": 0.4016850668591225,
+       "sd": 0.4672549905697745,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.00829998950834357,
+       "sd": 0.038246524531794196,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.013712444819700636,
+        "sd": 0.021672249841864447,
+        "n": 10
+       },
+       "variogram": {
+        "mean": -0.003279161102974104,
+        "sd": 0.026499969302973485,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0017079682359542158,
+        "sd": 0.004526488940276445,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.00829998950834357,
+        "sd": 0.038246524531794196,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.004094308972864424,
+        "sd": 0.005928229066662302,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": 0.4016850668591225,
+        "sd": 0.4672549905697745,
+        "n": 10
+       },
+       "occupancy_skill": {
+        "mean": 0.00829998950834357,
+        "sd": 0.038246524531794196,
+        "n": 10
+       },
+       "refused_left_out": 0
+      }
+     }
+    }
+   },
+   "gap": {
+    "floor": {
+     "dice_proper": 0.7635699999999999,
+     "dice_mirror": 0.7529600000000001,
+     "gap": {
+      "mean": 0.010620000000000001,
+      "sd": 0.013239989929502717,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_series": {
+     "dice_proper": 0.74925,
+     "dice_mirror": 0.7414499999999999,
+     "gap": {
+      "mean": 0.00782,
+      "sd": 0.012466381458413129,
+      "n": 10
+     }
+    },
+    "fgw_shape0x": {
+     "dice_proper": 0.74925,
+     "dice_mirror": 0.7414499999999999,
+     "gap": {
+      "mean": 0.00782,
+      "sd": 0.012466381458413129,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_series_cp": {
+     "dice_proper": 0.76066,
+     "dice_mirror": 0.74616,
+     "gap": {
+      "mean": 0.014499999999999999,
+      "sd": 0.015145809834919872,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_cp": {
+     "dice_proper": 0.76066,
+     "dice_mirror": 0.74616,
+     "gap": {
+      "mean": 0.014499999999999999,
+      "sd": 0.015145809834919872,
+      "n": 10
+     }
+    }
+   },
+   "shared_seeds": {
+    "fgw_shape0x_series_cp": 10,
+    "fgw_shape0x_cp": 10
+   },
+   "refused_seeds": {
+    "fgw_shape0x_series_cp": 0,
+    "fgw_shape0x_cp": 0
+   }
+  },
+  "x2": {
+   "paired": {
+    "fgw_shape0x_series_cp": {
+     "control": "fgw_shape0x_series",
+     "main": {
+      "board": {
+       "mean": -0.0920629527610636,
+       "sd": 0.23043337925823001,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": -0.004586502816039251,
+       "sd": 0.018735823178514126,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.00026025026707454657,
+        "sd": 0.006414305591309528,
+        "n": 10
+       },
+       "variogram": {
+        "mean": -0.004435081386523776,
+        "sd": 0.00551841955409138,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": -0.0003667453931384901,
+        "sd": 0.003186180959204689,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": -0.004586502816039251,
+        "sd": 0.018735823178514126,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": -0.0004135529796850834,
+        "sd": 0.008543772594320967,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": -0.0920629527610636,
+        "sd": 0.23043337925823001,
+        "n": 10
+       },
+       "occupancy_skill": {
+        "mean": -0.004586502816039251,
+        "sd": 0.018735823178514126,
+        "n": 10
+       },
+       "refused_left_out": 0
+      }
+     },
+     "prefix": {
+      "board": {
+       "mean": -0.08737955286665056,
+       "sd": 0.2293424792345354,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": -0.004024494828710029,
+       "sd": 0.025910914094310178,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.00026025026707454657,
+        "sd": 0.006414305591309528,
+        "n": 10
+       },
+       "variogram": {
+        "mean": -0.004435081386523776,
+        "sd": 0.00551841955409138,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": -0.0003667453931384901,
+        "sd": 0.003186180959204689,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": -0.004024494828710029,
+        "sd": 0.025910914094310178,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": -0.0004135529796850834,
+        "sd": 0.008543772594320967,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": -0.08737955286665056,
+        "sd": 0.2293424792345354,
+        "n": 10
+       },
+       "occupancy_skill": {
+        "mean": -0.004024494828710029,
+        "sd": 0.025910914094310178,
+        "n": 10
+       },
+       "refused_left_out": 0
+      }
+     }
+    },
+    "fgw_shape0x_cp": {
+     "control": "fgw_shape0x",
+     "main": {
+      "board": {
+       "mean": -0.06967653990117598,
+       "sd": 0.2665681925368636,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": -0.004586502816039251,
+       "sd": 0.018735823178514126,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": -0.000923591095179388,
+        "sd": 0.008209370103867828,
+        "n": 10
+       },
+       "variogram": {
+        "mean": -0.0017325367865163033,
+        "sd": 0.008544953471648553,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": -0.0003667453931384901,
+        "sd": 0.003186180959204689,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": -0.004586502816039251,
+        "sd": 0.018735823178514126,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.00011119051205976671,
+        "sd": 0.010000783142116791,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": -0.06967653990117598,
+        "sd": 0.2665681925368636,
+        "n": 10
+       },
+       "occupancy_skill": {
+        "mean": -0.004586502816039251,
+        "sd": 0.018735823178514126,
+        "n": 10
+       },
+       "refused_left_out": 0
+      }
+     },
+     "prefix": {
+      "board": {
+       "mean": -0.06499314000676933,
+       "sd": 0.2566371814162527,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": -0.004024494828710029,
+       "sd": 0.025910914094310178,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": -0.000923591095179388,
+        "sd": 0.008209370103867828,
+        "n": 10
+       },
+       "variogram": {
+        "mean": -0.0017325367865163033,
+        "sd": 0.008544953471648553,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": -0.0003667453931384901,
+        "sd": 0.003186180959204689,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": -0.004024494828710029,
+        "sd": 0.025910914094310178,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.00011119051205976671,
+        "sd": 0.010000783142116791,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": -0.06499314000676933,
+        "sd": 0.2566371814162527,
+        "n": 10
+       },
+       "occupancy_skill": {
+        "mean": -0.004024494828710029,
+        "sd": 0.025910914094310178,
+        "n": 10
+       },
+       "refused_left_out": 0
+      }
+     }
+    }
+   },
+   "gap": {
+    "floor": {
+     "dice_proper": 0.6593799999999999,
+     "dice_mirror": 0.6563899999999999,
+     "gap": {
+      "mean": 0.00297,
+      "sd": 0.015602994726796663,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_series": {
+     "dice_proper": 0.6715800000000001,
+     "dice_mirror": 0.65496,
+     "gap": {
+      "mean": 0.01663,
+      "sd": 0.00967632276343768,
+      "n": 10
+     }
+    },
+    "fgw_shape0x": {
+     "dice_proper": 0.6715800000000001,
+     "dice_mirror": 0.65496,
+     "gap": {
+      "mean": 0.01663,
+      "sd": 0.00967632276343768,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_series_cp": {
+     "dice_proper": 0.6683600000000001,
+     "dice_mirror": 0.6596,
+     "gap": {
+      "mean": 0.00876,
+      "sd": 0.016835359614018743,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_cp": {
+     "dice_proper": 0.6683600000000001,
+     "dice_mirror": 0.6596,
+     "gap": {
+      "mean": 0.00876,
+      "sd": 0.016835359614018743,
+      "n": 10
+     }
+    }
+   },
+   "shared_seeds": {
+    "fgw_shape0x_series_cp": 10,
+    "fgw_shape0x_cp": 10
+   },
+   "refused_seeds": {
+    "fgw_shape0x_series_cp": 0,
+    "fgw_shape0x_cp": 0
+   }
+  },
+  "x3": {
+   "paired": {
+    "fgw_shape0x_series_cp": {
+     "control": "fgw_shape0x_series",
+     "main": {
+      "board": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "occupancy_skill": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "refused_left_out": 10
+      }
+     },
+     "prefix": {
+      "board": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "occupancy_skill": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "refused_left_out": 10
+      }
+     }
+    },
+    "fgw_shape0x_cp": {
+     "control": "fgw_shape0x",
+     "main": {
+      "board": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "occupancy_skill": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "refused_left_out": 10
+      }
+     },
+     "prefix": {
+      "board": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "occupancy_skill": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "n": 10
+      },
+      "skills": {
+       "de_score": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "de_direction": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "mmd_u": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "variogram": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "d2_shape": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "occupancy_dice": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "scale_log_ratio": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       },
+       "neighborhood_mmd": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n": 10
+       }
+      },
+      "secondary": {
+       "board": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "occupancy_skill": {
+        "mean": null,
+        "sd": null,
+        "n": 0
+       },
+       "refused_left_out": 10
+      }
+     }
+    }
+   },
+   "gap": {
+    "floor": {
+     "dice_proper": 0.6859999999999999,
+     "dice_mirror": 0.68736,
+     "gap": {
+      "mean": -0.001380000000000001,
+      "sd": 0.017447368473975284,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_series": {
+     "dice_proper": 0.6851299999999999,
+     "dice_mirror": 0.69261,
+     "gap": {
+      "mean": -0.007450000000000001,
+      "sd": 0.013644066679533473,
+      "n": 10
+     }
+    },
+    "fgw_shape0x": {
+     "dice_proper": 0.6851299999999999,
+     "dice_mirror": 0.69261,
+     "gap": {
+      "mean": -0.007450000000000001,
+      "sd": 0.013644066679533473,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_series_cp": {
+     "dice_proper": 0.6851299999999999,
+     "dice_mirror": 0.69261,
+     "gap": {
+      "mean": -0.007450000000000001,
+      "sd": 0.013644066679533473,
+      "n": 10
+     }
+    },
+    "fgw_shape0x_cp": {
+     "dice_proper": 0.6851299999999999,
+     "dice_mirror": 0.69261,
+     "gap": {
+      "mean": -0.007450000000000001,
+      "sd": 0.013644066679533473,
+      "n": 10
+     }
+    }
+   },
+   "shared_seeds": {
+    "fgw_shape0x_series_cp": 0,
+    "fgw_shape0x_cp": 0
+   },
+   "refused_seeds": {
+    "fgw_shape0x_series_cp": 10,
+    "fgw_shape0x_cp": 10
+   }
+  }
+ },
+ "merged": {
+  "fgw_shape0x_series_cp": {
+   "main": {
+    "board_mean": -0.022000195326657295,
+    "board_se": 0.0465923091613232,
+    "occupancy_mean": -0.006373487968181495,
+    "occupancy_se": 0.006273855368777271
+   },
+   "prefix": {
+    "board_mean": -0.04469523847420838,
+    "board_se": 0.05700914291788386,
+    "occupancy_mean": -0.009117845855464699,
+    "occupancy_se": 0.007327679715556852
+   }
+  },
+  "fgw_shape0x_cp": {
+   "main": {
+    "board_mean": -0.0006038317473302507,
+    "board_se": 0.05628704351409443,
+    "occupancy_mean": -0.006373487968181495,
+    "occupancy_se": 0.006273855368777271
+   },
+   "prefix": {
+    "board_mean": -0.02143627770433754,
+    "board_se": 0.06445988782390336,
+    "occupancy_mean": -0.009117845855464699,
+    "occupancy_se": 0.007327679715556852
+   }
+  }
+ },
+ "gate": {
+  "e47_commit": "9967cf1",
+  "where": "PrakashDGX_H2, campaign checkout ~/v/vec-campaign",
+  "mean": 0.1,
+  "seed": 0.5
+ }
+}

@@ -1071,7 +1071,7 @@ def _psb_size(ctx: BuildContext) -> Stage:
 def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixture", herd: bool = False,
          move_coupling: str = t2_build.MOVE_COUPLINGS[0], local_perm: bool = False,
          draw: str = t2_build.DRAWS[0], t_mix: float | None = None,
-         positions: str = t2_build.POSITIONS[0]) -> Stage:
+         positions: str = t2_build.POSITIONS[0], shape_form: str | None = None) -> Stage:
     """The T2 embryo pipeline (docs/PLAN.md 4.2): displacement interpolation between the brackets at the target's
     time fraction (vec.t2_build.interpolate_clouds: fused Gromov-Wasserstein coupling, proper rotation, McCann moves,
     a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages. t_pos:
@@ -1084,7 +1084,8 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     fixed radius (vec.t2_build.local_type_permutation); the expression rows stay where they are. draw: "uniform" (the
     entry) or "midpoint" (try E13, vec.t2_build._midpoint_draw; it needs the inputs' counts layer). positions: "moved"
     (the entry) or "floor_exact" (tries E47a and E47b, with t_pos = 0: every cell on a real position of the earlier
-    bracket, vec.t2_build._floor_exact_positions)."""
+    bracket, vec.t2_build._floor_exact_positions). shape_form (row E49, as drafted; with floor_exact only): a form of
+    vec.shape_interp on the exact-position cloud before the size rule; left at None, nothing changes."""
     t = ctx.task
     before, after = ctx.inputs["before"], ctx.inputs["after"]
     lo, hi = t.role_days["before"], t.role_days["after"]
@@ -1099,7 +1100,8 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
                                       target_rms=target_rms(ctx), t_pos=t_pos,
                                       with_partners=expression in ("blend", "latent"),
                                       herd=herd, move_coupling=move_coupling, draw=draw, log_depth=log_depth,
-                                      with_coupling=expression == "latent", t_mix=t_mix, positions=positions)
+                                      with_coupling=expression == "latent", t_mix=t_mix, positions=positions,
+                                      **({} if shape_form is None else {"shape_form": shape_form}))
     if expression == "mixture":
         X = np.empty((len(res.rows), len(g)), dtype=np.float32)
         X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
@@ -1161,6 +1163,18 @@ def _fgw_shape0x(ctx: BuildContext) -> Stage:
     """Embryo try E47a: fgw_shape0's rows, mixture and size rule, every cell on a real position of the earlier bracket
     (its own rows where they are, the later bracket's rows on unused positions by an exact expression assignment)."""
     return _fgw(ctx, t_pos=0.0, positions=t2_build.POSITIONS[1])
+
+
+# Row E49 (as drafted; branch campaign/embryo-shape-interp): fgw_shape0x with one shape form (vec.shape_interp) on its
+# exact-position cloud before the size rule. Three arms and four controls; the builder builds the arms only.
+SHAPE_CANDIDATES = {"fgw_shape0x_sr": "stretch_ratio", "fgw_shape0x_sg": "stretch_registered",
+                    "fgw_shape0x_ov": "overlay", "fgw_shape0x_sr_anti": "stretch_ratio_anti",
+                    "fgw_shape0x_sg_anti": "stretch_registered_anti", "fgw_shape0x_sg_rot": "stretch_registered_rot",
+                    "fgw_shape0x_ov_rot": "overlay_rot"}
+
+
+def _fgw_shape0x_form(form: str) -> Callable[[BuildContext], Stage]:
+    return lambda ctx: _fgw(ctx, t_pos=0.0, positions=t2_build.POSITIONS[1], shape_form=form)
 
 
 def _fgw_shape0x_series(ctx: BuildContext) -> Stage:
@@ -1702,6 +1716,13 @@ CANDIDATES = {
                                              "rendering", "rule": t2_build.SERIES_RULE,
                                      "positions": t2_build.POSITIONS[1], "stream": t2_build.FLOOR_EXACT_STREAM,
                                      "scope": "whole"}, requires=_series_applies),
+    # row E49 (as drafted): fgw_shape0x with a shape form between the brackets, three arms and four controls
+    **{name: Candidate(name, frozenset({"T2"}), (), _fgw_shape0x_form(form),
+                       {"what": "fgw_shape0x (the earlier bracket's own positions) with the shape form "
+                                f"vec.shape_interp {form} applied before the size rule",
+                        "positions": t2_build.POSITIONS[1], "stream": t2_build.FLOOR_EXACT_STREAM, "shape_form": form,
+                        "scope": "whole"}, requires=_interp)
+       for name, form in SHAPE_CANDIDATES.items()},
     # embryo tries E25a-E25c (experiments/harness/TRIES.md, registered before their run): the geometry that goes with
     # the series rendering, and the later bracket alone
     "fgw_aligned_series": Candidate("fgw_aligned_series", frozenset({"T2"}), (), _fgw_aligned_series,
