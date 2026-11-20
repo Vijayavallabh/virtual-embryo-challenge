@@ -7321,3 +7321,32 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     `experiments/builds/results/t3_exponent_3654966.txt`; ledger row R14.
   - With the barred s2 (the mild composition, built) these are T3's three candidates of entry (h). Order of
     upload, fixed now: exponent 1.5 first; then, if it beats 61.8, exponent 2.0, otherwise the barred s2.
+- 2026-11-20 (l), the embryo's occupancy term: what analysts other than the AI assistant found, and their proposal
+  (state at 12:40 UTC). Written by the AI assistant, which is recused on this lever (entry (i)) and states no
+  preference; it reports and runs what they fixed.
+  - **Who and how** (wf_409f1d09-957: an investigator, a cold challenger, a writer, a reviewer; none saw the main
+    session's conversation; verdicts "stands with changes" and "ready", no blocker). They read the pinned scorer's
+    code and the builder's and did no arithmetic on a test score.
+  - **Their finding.** The scorer puts each cloud in its own frame (centre, divide by the RMS radius, principal
+    axes), grids it, and compares occupancy over the four proper sign flips only. The fixed build forces a
+    right-handed frame. The earlier build, which section 3 ("Scorer build") says the live board behaves like, does
+    not: each cloud's handedness is then whatever the linear-algebra routine returns on the rows drawn, so a file
+    can be compared with the truth's mirror image, by a coin of its own that is separate from the baseline copy's.
+    By the code this is the only route by which a file on E7.5's own positions can differ from a copy of E7.5 on
+    this term by more than sampling. The rescale, the translation, the units and the z axis are ruled out by the
+    code. They do not say that this is what happened at the test: that would be reasoning backward from scores.
+  - **Their target-free check, run by the main session on the built positions file** (`T2embryo_s2x.h5ad` against
+    the released E7.5 copy, in the fixed build's frame; `experiments/coords/occupancy_frame_check.py` on branch
+    `campaign/embryo-occupancy`, 616984b): handedness agrees; grid overlap with the copy 0.878 against 0.868 (sd
+    0.029) between copies; the second and third principal axes are turned against the copy's (cosines 0.915 and
+    0.925), which their table reads as their third mechanism being active and not fixed by a row order. No
+    builder defect shows. The file's own handedness under the earlier build is deliberately not printed.
+  - **Their proposal:** an off-by-default builder option, `--row-order copy_parity`, that only re-orders the
+    file's rows so that its handedness under the earlier build equals the baseline copy's, computed from the
+    released stage and the public code, never from a score; cells, positions, distances and size are unchanged, and
+    under the fixed build it changes nothing. They require, before any use on the test board: the captain's
+    ruling, a counted practice read with its row first (their row E48), and a guard flag. Their challenger calls
+    it inside the rules by its wording and near the line.
+  - **What stands in the way, on record:** the captain's earlier decision, "no parity hedge without the
+    organisers' approval" (section 9's log, 2026-11-02), and the organisers' silence on the scorer-build question
+    sent on 2026-10-19. The proposal goes to him as its own question.
