@@ -19,6 +19,7 @@ COMMIT=${1:?usage: heart_candidates.sh <COMMIT>}
 export PATH=$HOME/.local/bin:$PATH
 S=~/v/scratch/heartcand
 mkdir -p "$S/tmp"
+rm -f "$S"/*.exit "$S/head" "$S/stamps" "$S/SHA256SUMS" "$S/tests.out"  # no exit file of an earlier run is left
 export NUMPY_MADVISE_HUGEPAGE=0 TMPDIR="$S/tmp"
 export OMP_NUM_THREADS=8 OPENBLAS_NUM_THREADS=8 MKL_NUM_THREADS=8
 PY="uv run --frozen --no-sync python -I -B"
