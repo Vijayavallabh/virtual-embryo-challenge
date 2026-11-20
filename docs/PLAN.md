@@ -7666,3 +7666,24 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **E48 started** at 15:50 UTC on PrakashDGX_H2 from the detached worktree `~/v/scratch/e48-wt` at the fixed run
     commit 9cd4b6e (the campaign checkout's HEAD did not move): tests, then the gate, then the run, then the reading,
     each only if the one before exits 0. The embryo's count goes from 75 to 76 when the run step starts.
+- 2026-11-20 (u), T3: the outside-knockout pipeline's third review, and a practice read on regularised forms of
+  the factor (state at 15:56 UTC). Written by the AI assistant.
+  - **Outside knockouts, third review** (wf_582ec820-15a: an engineer and two reviewers who tried to break it; branch
+    `campaign/t3-outside-knockouts-3`, 9c981e1). The pinned sample list is built: plan writes every sample's verbatim
+    text with a hash, pins are made by hand from those tables, fetch and process touch pinned samples only, held
+    series are refused by a constant, and the dataset file's own hash is pinned. Both reviewers: not ready, three
+    holes. A pinned sample that also lists a held, unscreened or foreign series in its own record passed. A resumed
+    download reused files fetched under an older pin. The readers are told to check each series' title, summary and
+    design, but the plan tables did not show that text and no hash covered it. Every label both earlier reviews listed
+    is now caught; the labels that still pass are look-alike or invisible characters and a few spaced spellings,
+    lesser now that the readers come first. Nothing was fetched. A fourth pass is running (wf_c627afe9-5c5). The AI
+    assistant's own estimate, unchanged and on record: this line has a small chance of raising T3 (the planner's doubt
+    of entry (m) stands), and it is kept going because the captain asked for outside data and it costs agent time, not
+    upload slots.
+  - **A practice read on regularised forms of the Mab21l2 factor** is being designed, challenged, written and reviewed
+    (wf_6e1610b7-d1a). The reason, from the formulas and the captain's table of entry (h): the terms that read which
+    genes move, which way, and the two cell-state terms are low on the board's best file while the severity term is
+    high; a per-gene ratio applied to every panel gene moves many genes on noise. Unlike the two-knockout files, a
+    regularised form can be read fairly: the Mab21l2 factor in any form scored on the two released Gata4 replicates,
+    as row K18 did for the built files. Its row is placed before the run; the rule that maps its outcome to at most
+    two candidate files is fixed in that row before the run.
