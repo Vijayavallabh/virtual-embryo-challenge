@@ -4,7 +4,13 @@
 # (setsid nohup ... &), and wait on $S/all.exit with a background poller; never a foreground sleep.
 #
 #   bash experiments/t3_decomp/build_outside_form.sh HEAD_SHA BASE KIND [KIND2]
+#   bash experiments/t3_decomp/build_outside_form.sh --table-exponent E HEAD_SHA BASE xall
 #
+# --table-exponent E (row K23; optional, first): E is 2.0 or 4.0, the exponent the committed K23 reading names, and the
+# one form is xall on BASE (no KIND2); the builder refuses it unless that reading names x_eE. Without the option every
+# step, folder and command below is as it was (the K22 forms at exponent 1). With it: S and the run folder end in _eE,
+# the targeted tests add tests/test_k23_outside_exponents.py, the identity gates (steps 3 and 4) are unchanged and run
+# without the option, and only step 5's builds pass --table-exponent E.
 # HEAD_SHA: the full commit the checkout must be at (it holds the committed K22 reading, TABLES.sha256 and the filled
 # pins). BASE: s1, s1x1.5, s1x2.0 or s2, the base B of decision log 2026-11-20 (q), fixed there; nothing here chooses
 # it. KIND, KIND2: the one or two forms K22's reading names, in its order (xall or xunrel); nothing here chooses them,
@@ -30,11 +36,17 @@
 # stamp's commit and clean fields only (AGENTS.md), never its log, size or cell count. Written: $S/<step>.exit,
 # $S/all.exit, $S/head, $S/SHA256SUMS and $S/stamps.
 set -u
+EXP=""
+if [ "${1:-}" = "--table-exponent" ]; then
+  EXP=${2:?usage: build_outside_form.sh --table-exponent E HEAD_SHA BASE xall}
+  shift 2
+fi
 HEAD_SHA=${1:?usage: build_outside_form.sh HEAD_SHA BASE KIND [KIND2]}
 BASE=${2:?usage: build_outside_form.sh HEAD_SHA BASE KIND [KIND2]}
 KIND1=${3:?usage: build_outside_form.sh HEAD_SHA BASE KIND [KIND2]}
 KIND2=${4:-}
 S=~/v/scratch/t3outside_${HEAD_SHA:0:7}_${BASE//[^A-Za-z0-9.]/_}
+if [ -n "$EXP" ]; then S=${S}_e${EXP//[^0-9.]/_}; fi
 mkdir -p "$S/tmp" || exit 99
 finish() { trap - ERR TERM INT HUP EXIT; echo "$1" > "$S/all.exit"; exit "$1"; }
 abort() { trap - ERR TERM INT HUP EXIT; echo 99 > "$S/all.exit"; exit 99; }
@@ -53,6 +65,15 @@ for k in "$KIND1" $KIND2; do
   CANDS="$CANDS $k-$BASE"
 done
 if [ -n "$KIND2" ] && [ "$KIND1" = "$KIND2" ]; then echo "the same form twice" >&2; finish 2; fi
+XFLAG=()
+if [ -n "$EXP" ]; then
+  case "$EXP" in
+    2.0|4.0) ;;
+    *) echo "unknown table exponent $EXP (2.0 or 4.0)" >&2; finish 2 ;;
+  esac
+  if [ "$KIND1" != xall ] || [ -n "$KIND2" ]; then echo "--table-exponent builds xall alone" >&2; finish 2; fi
+  XFLAG=(--table-exponent "$EXP")
+fi
 declare -A REF=(
   [s1]=3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2
   [s1x1.5]=c060fcaa6c7fdc6d6b1a58c8f850a1895a8295abbc50f297de71a32c97f9c420
@@ -60,6 +81,7 @@ declare -A REF=(
   [s2]=1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f
 )
 O=runs/t3_outside_form_${HEAD_SHA:0:7}_$BASE
+if [ -n "$EXP" ]; then O=${O}_e$EXP; fi
 DEC=experiments/t3_decomp/results/gata4/gata4_decisions.json
 RUN_DIR=$HOME/v/virtual-embryo-challenge/runs/t3_decomp/gata4_20261028T122425Z  # read only; fixed, no override
 TABLES=$HOME/v/vec-ext/t3/tables  # combine.py's --out; fixed, no override
@@ -68,9 +90,9 @@ export NUMPY_MADVISE_HUGEPAGE=0 TMPDIR="$S/tmp" VEC_T3_EXT_TABLES="$TABLES"
 PY="uv run --frozen --no-sync python -I -B"
 threads() { export OMP_NUM_THREADS=$1 OPENBLAS_NUM_THREADS=$1 MKL_NUM_THREADS=$1; }
 stamp() { $PY -c 'import json,sys; s=json.load(open(sys.argv[1])); print(s["commit"], s["clean"])' "$1.stamp.json"; }
-one() {  # form out -> 0, 1 (build failed), 2 (check failed), 3 (the form's own refusal: exit 4), 4 (refused: exit 2)
+one() {  # form out [flags] -> 0, 1 (build failed), 2 (check failed), 3 (the form's own refusal: exit 4), 4 (refused: exit 2)
   local b=0
-  $PY experiments/t3_decomp/build_outside_form.py build "$DEC" --form "$1" --wt "$WT" --run-dir "$RUN_DIR" \
+  $PY experiments/t3_decomp/build_outside_form.py build "$DEC" --form "$1" "${@:3}" --wt "$WT" --run-dir "$RUN_DIR" \
     --board T3:bcatenin --seed 1000001 --out "$2" > /dev/null 2>&1 || b=$?
   if [ $b = 4 ]; then return 3; fi
   if [ $b = 2 ]; then return 4; fi
@@ -90,10 +112,13 @@ mkdir -p "$O/gate" "$O/a" "$O/b"
 : > "$S/stamps"
 
 threads 8
+XTESTS=()
+if [ -n "$EXP" ]; then XTESTS=(tests/test_k23_outside_exponents.py); fi
 rc=0
 $PY -m pytest -q -p no:cacheprovider -o pythonpath=src --basetemp="$S/tmp/pytest" \
   tests/test_t3_outside_forms.py tests/test_k22_outside_forms.py tests/test_t3_two_knockout_build.py \
-  tests/test_t3_barred_exponent_build.py experiments/t3_decomp/test_build_submission.py > /dev/null 2>&1 || rc=$?
+  tests/test_t3_barred_exponent_build.py experiments/t3_decomp/test_build_submission.py ${XTESTS[@]+"${XTESTS[@]}"} \
+  > /dev/null 2>&1 || rc=$?
 echo $rc > "$S/tests.exit"
 if [ $rc != 0 ]; then finish 10; fi
 
@@ -117,7 +142,7 @@ for form in $CANDS; do
   for side in a b; do
     f="$O/$side/$form.h5ad"
     rc=0
-    one "$form" "$f" || rc=$?
+    one "$form" "$f" ${XFLAG[@]+"${XFLAG[@]}"} || rc=$?
     echo $rc > "$S/$form.$side.exit"
     if [ $rc = 4 ]; then finish 46; fi
     if [ $rc = 3 ] && [ $side = a ]; then refused=1; echo "$form" >> "$S/refused"; continue 2; fi
