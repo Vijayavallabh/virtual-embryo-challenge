@@ -97,6 +97,7 @@ CHIMERA_ARMS = ("ko_mut", "ko_host", "wt_mut", "wt_host")
 MEMBER_MAX_BYTES = 8 * 1024 ** 3   # one archive member read into memory: at most 8 GiB (fixed 2026-11-20, no score)
 MAC_APPLEDOUBLE_MAX = 4096   # a macOS tar companion member ('._name'): never read; a larger one is refused (2026-11-20)
 MAC_DS_STORE_MAX = 65536     # a macOS Finder '.DS_Store' member: never read; a larger one is refused (2026-11-20)
+MAC_SKIPPED_TOTAL_MAX = 1024 ** 2   # all skipped macOS members of one archive together: at most 1 MiB, else refused
 
 
 def _gunzip(raw: bytes, name: str) -> bytes:
@@ -195,10 +196,10 @@ def archive_members(t: tarfile.TarFile, label: str, raw_ok: bool = False,
     macOS companion members (2026-11-20, after a real archive held them): a file member named '._X' (the AppleDouble
     companion macOS tar writes beside a member X) and a file member named '.DS_Store' are NEVER READ and never classed
     as part of a triple; they pass every check above first, and are skipped only when a '._X' member is at most
-    MAC_APPLEDOUBLE_MAX bytes and the member X it names is in the archive beside it, and a '.DS_Store' member is at
-    most MAC_DS_STORE_MAX bytes; otherwise the archive is refused. Their names are appended to `skipped` when a list
-    is given."""
-    out, seen, companions, mac = [], set(), [], []
+    MAC_APPLEDOUBLE_MAX bytes and the member X it names (a file or a folder) is in the archive beside it, and a
+    '.DS_Store' member is at most MAC_DS_STORE_MAX bytes; together they hold at most MAC_SKIPPED_TOTAL_MAX bytes;
+    otherwise the archive is refused. Their names are appended to `skipped` when a list is given."""
+    out, seen, companions, mac, mac_bytes = [], set(), [], [], 0
     for m in t.getmembers():
         raw = m.name
         if raw.startswith(("/", "~")) or "\\" in raw or re.match(r"[A-Za-z]:", raw):
@@ -232,24 +233,30 @@ def archive_members(t: tarfile.TarFile, label: str, raw_ok: bool = False,
             raise Refused(f"{label}: a file member without a name: refused")
         last = parts[-1]
         if last.startswith("._") and len(last) > 2:
-            if m.size > MAC_APPLEDOUBLE_MAX:
-                raise Refused(f"{label}: member {key!r}: a '._' member larger than {MAC_APPLEDOUBLE_MAX} bytes: "
-                              "refused")
+            if not 0 <= m.size <= MAC_APPLEDOUBLE_MAX:
+                raise Refused(f"{label}: member {key!r}: a '._' member larger than {MAC_APPLEDOUBLE_MAX} bytes, or of "
+                              "a negative size: refused")
             companions.append((key, "/".join([*parts[:-1], last[2:]])))
             mac.append(key)
+            mac_bytes += m.size
             continue
         if last == ".DS_Store":
-            if m.size > MAC_DS_STORE_MAX:
-                raise Refused(f"{label}: member {key!r}: a '.DS_Store' member larger than {MAC_DS_STORE_MAX} bytes: "
-                              "refused")
+            if not 0 <= m.size <= MAC_DS_STORE_MAX:
+                raise Refused(f"{label}: member {key!r}: a '.DS_Store' member larger than {MAC_DS_STORE_MAX} bytes "
+                              "(or of a negative size): refused")
             mac.append(key)
+            mac_bytes += m.size
             continue
         kind = cm.triple_kind(last)
         if kind is None:
             raise Refused(f"{label}: member {key!r} is not part of a 10x triple: refused (a member with no rule)")
-        if m.size > MEMBER_MAX_BYTES:
-            raise Refused(f"{label}: member {key!r} is larger than {MEMBER_MAX_BYTES} bytes: refused")
+        if not 0 <= m.size <= MEMBER_MAX_BYTES:
+            raise Refused(f"{label}: member {key!r} is larger than {MEMBER_MAX_BYTES} bytes (or of a negative size): "
+                          "refused")
         out.append((parts, kind, m))
+    if mac_bytes > MAC_SKIPPED_TOTAL_MAX:
+        raise Refused(f"{label}: the skipped macOS members hold more than {MAC_SKIPPED_TOTAL_MAX} bytes together: "
+                      "refused")
     for key, beside in companions:
         if beside not in seen:
             raise Refused(f"{label}: member {key!r} names no member beside it ({beside!r} is not in the archive): "
@@ -571,7 +578,8 @@ def read_raw_sample(paths: list[Path], label: str):
     """A pinned sample's declared unfiltered matrix (one archive alone, or one loose 10x triple) through the fixed cell
     call: (CSR of the called cells, symbols, types, called barcodes, record). An archive is read member by member in
     memory with archive_members (raw_ok: only the unfiltered-matrix deny term is lifted) and must hold exactly one
-    triple in one folder, nothing else. A file above RAW_MAX_FILE_BYTES, a 10x h5, a matrix of more entries than
+    triple in one folder and nothing else but the macOS companion members archive_members skips. A file above
+    RAW_MAX_FILE_BYTES, a 10x h5, a matrix of more entries than
     RAW_MAX_ENTRIES or more barcodes than RAW_MAX_BARCODES, fewer than RAW_MIN_CELLS or more than MAX_BARCODES called
     cells: refused."""
     paths = [Path(p) for p in paths]

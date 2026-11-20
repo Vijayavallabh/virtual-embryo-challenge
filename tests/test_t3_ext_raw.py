@@ -768,6 +768,7 @@ def test_macos_companion_members_are_skipped_unread_and_recorded(tmp_path):
     ("orphan_appledouble", "names no member beside it"),
     ("big_ds_store", "a '.DS_Store' member larger than"),
     ("other_dotfile", "not part of a 10x triple"),
+    ("too_many", "hold more than"),
 ])
 def test_a_macos_companion_outside_its_rule_is_refused(tmp_path, change, match):
     rng = np.random.default_rng(2)
@@ -780,6 +781,10 @@ def test_a_macos_companion_outside_its_rule_is_refused(tmp_path, change, match):
         members[f"{folder}/._notes.txt"] = b"\x00" * 176
     elif change == "big_ds_store":
         members[f"{folder}/.DS_Store"] = b"\x00" * (pr.MAC_DS_STORE_MAX + 1)
+    elif change == "too_many":
+        for i in range(20):       # 20 further folders, each with a 64 KiB .DS_Store: over 1 MiB skipped in total
+            members[f"extra{i}"] = None
+            members[f"extra{i}/.DS_Store"] = b"\x00" * pr.MAC_DS_STORE_MAX
     else:
         members[f"{folder}/.hidden"] = b"x"
     p = _tar_with_dirs(tmp_path / raw_name("GSM1"), members)
