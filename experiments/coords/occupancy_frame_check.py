@@ -21,9 +21,10 @@ count, a size or a score.
             (or, with --nine, of the nine practice tasks of experiments/harness/nine_tasks.py) and seed, the
             harness's fgw_shape0x (the second upload's position form; its series twin has the same rows and
             positions) at its build seed, against the bake copy of the task's reference stage at that seed. Prints
-            the main-build facts and the pre-fix facts (each cloud's parity on the rows `_match_n` would take against the task's truth half, read
-            from the target file's cell count only; whether the two are handed the same truth rows), for the file as
-            built and with `--row-order copy_parity` applied (vec.t2_build.copy_parity_order).
+            the main-build facts and the pre-fix facts (each cloud's parity on the rows `_match_n` would take
+            against the task's truth half, read from the target file's cell count only; whether the two are handed
+            the same truth rows), for the file as built and with `--row-order copy_parity` applied
+            (vec.t2_build.copy_parity_order).
 
 Main-build facts (file vs copy, on the rows `_match_n` hands over at --metric-seed, the file as the prediction):
   axes_agree        each of the file's three right-handed PCA axes is closest to the copy's axis of the same rank and
