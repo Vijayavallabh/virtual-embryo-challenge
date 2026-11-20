@@ -7247,3 +7247,29 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     `runs/manual_upload/T2embryo_s2x.h5ad`, a03611a343fa). T1 and the heart's expression: set after he gives the
     scores of the two uploads that did not improve; the heart's scope and size candidates are for analysts other
     than the AI assistant.
+- 2026-11-20 (i), the scores of the two uploads that did not improve, what they show, a lapse disclosed, and T1's
+  candidate set (state at 12:00 UTC). Written by the AI assistant.
+  - **As the captain pasted them** (earlier upload, latest upload). T1:test: headline 70.9, 70.60; de_score 64.9,
+    64.7; de_direction 76.7, 76.6; mmd_u 71.1, 70.8; variogram 70.6, 70.3. T2:embryo:test_interp: headline 64.6,
+    61.87; de_score 64.6, 63.3; de_direction 73.0, 72.5; mmd_u 78.1, 70.0; variogram 62.9, 48.0; d2_shape 30.9,
+    63.5; occupancy_dice 2.5, 2.6; scale_log_ratio 96.5, 96.5; neighborhood_mmd 74.4, 64.2.
+  - **T1.** The recomputed-groups file scores within 0.3 of the first upload on every term. So the team holds a T1
+    file that does not use the atlas authors' labels at 70.60, whatever the organisers decide about the first.
+  - **Embryo.** The twin changed two things against the first upload: positions (E7.5's exact ones) and expression
+    (the series rendering). The shape term rose by 32.6 and the occupancy term did not move; the four terms that
+    read expression, or expression in space, fell. The file fixed as the next candidate in entry (h), the same
+    positions with the first upload's expression, keeps the first upload's two differential-expression terms and
+    its mmd_u by construction and takes the twin's shape term; its variogram and neighbourhood terms are not known.
+  - **A lapse, disclosed.** Reading these lines, the AI assistant worked out in its own reasoning a bound on the
+    occupancy term's floor anchor from the two occupancy scores. Entry 2026-11-18 (k) forbids exactly that ("no
+    bound on a test anchor from the 2.5"). It stopped; the bound is written nowhere and enters no file, estimate or
+    advice. As after the lapse of entry 2026-11-19 (bb), it recuses itself from the lever concerned, here every
+    choice about the embryo's occupancy term (orientation, frame, row order): analysts who have not seen its
+    conversation take that question from the pinned scorer's code and released stages, and the line of entry (k)
+    stays for them too (no file or row order chosen by a test score's parity).
+  - **T1's candidate set, fixed now**, each a single change to the recomputed file so that a score can be read: (A)
+    g_mom finished at damping 1.0 in place of 0.5 (rows T49 and T61: ahead on every practice task); (B) the atlas
+    direction at 1.5 times the calendar fraction (rows T50, T58 and T63: larger steps scored higher on practice);
+    (C) both. Each is ordinary leaderboard work on a value practice already pointed to; the earlier cold checks
+    that stopped A and B argued from what practice cannot show, which a returned score now can. Builder options
+    are being written, off by default.
