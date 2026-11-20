@@ -8305,3 +8305,36 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     world: on this fold the table's genes, not its size, carry the gain. The fold is one knockout in two replicates
     and has been read by many rows, and the test knockout is another gene; the test board decides. A better-estimated
     table is the obvious next step, which is what the bulk whole-embryo intake of entry (vv) is for.
+- 2026-11-20 (vv), T3 outside knockouts: the extension's review, the bulk whole-embryo design, and what is being built
+  (state at 20:19 UTC, 2026-11-20). Written by the AI assistant.
+  - **The extension of entry (mm)** (branch `campaign/t3-ext-3`, ec86a1b: archive blockers closed; an intake for
+    per-sample unfiltered matrices with one fixed cell call): one reviewer ready, one not ready with three blockers
+    (an unfiltered matrix offered beside a filtered file the patterns do not match; the two arms of a unit read in
+    different ways; a sister series of another study of the same laboratory accepted). A fix round closes them and
+    makes the team's held list part of the code's held set.
+  - **The hunt, metadata only.** One searcher found the Mouse Genetics Project's whole-embryo set (ArrayExpress
+    E-MTAB-7322: 73 mutant lines, each embryo its own library, wild-type embryos of each line); the other found about
+    two dozen single GEO studies with bulk RNA sequencing of whole knockout embryos at E7.5 to E9.5 with processed
+    counts. The AI assistant then read public listings only (no count value): the 73-line set has a processed per-run
+    gene count matrix and a per-embryo annotation table on the same host's expression-atlas path, with genotype, line,
+    sex, somite number and stage for 2,660 runs of 1,086 embryos; 985 of every 1,005 embryo groups are at embryonic
+    day 9.5; 50 lines have at least two homozygous and two wild-type embryos at that stage, four per arm at the
+    median.
+  - **The design** (a designer, then a challenger: build as amended). Bulk is its own table family, never pooled with
+    the single-cell tables; a unit is one line's homozygous embryos against the same line's wild-type embryos; means
+    of logs, the pipeline's pseudocount and clip; shrinkage by the pipeline's own rule from the number of embryos;
+    guards that fail closed (library size, counts only, sex, outliers, a whole-embryo profile check, duplicates); a
+    study is one vote however many lines it holds; a count table's columns tie to pinned samples by exact equality
+    only, its header is screened, and nothing but its first line is read before the pins exist; lines are withheld by
+    exact name before anything is shown; heterozygotes, point alleles, normalised tables and the raw-reads route are
+    refused in this round.
+  - **Withheld lines of the 73-line set, before any count is read.** The design withholds the GATA-type factor Trps1
+    (held) and seven cilia lines pending a phenocopy reading (B9d2, Cc2d2a, Ift140, Kif3b, Rpgrip1l, Anks6, Atxn10).
+    The AI assistant, as first reader of the line names and from recall only (no paper opened), adds three on doubt:
+    Kifap3 (its product is recalled as a partner of Apc), Mad2l2 (recalled as a partner of a Tcf factor) and Tmem98
+    (recalled as a regulator of Wnt signalling). A second reader reads the names independently before any pin.
+  - **Being built** (workflow `t3-ext-fix-and-bulk`: branches `campaign/t3-ext-4` and `campaign/t3-ext-bulk`): the
+    fix, then the bulk intake for GEO count files and tables and for the 73-line set through its accession-keyed
+    matrix, each verified or reviewed. The gene-id map comes from the features file of a sample already pinned and
+    fetched; no annotation file is downloaded. Nothing is fetched before a ready review, register rows and two
+    readers.
