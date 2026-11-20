@@ -7451,3 +7451,185 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - Order, by the analysts' rule in the amendment: K1 first, K2 in the next slot whatever K1 scores. Each upload
     is the captain's own act. When he reports a headline it goes into `results/manual_uploads.csv` and this log,
     and the heart's standing file is the highest headline of the full trim, K1 and K2. The heart list ends there.
+- 2026-11-20 (p), T1's three candidates are built and handed over (state at 15:26 UTC). Written by the AI assistant.
+  - Record: `experiments/builds/results/t1cand_1420c70.txt`. On `~/v/vec-campaign-d` at 1420c70 the default command
+    reproduced R13's file (ad8f24c7...). A (`--g-mom-damping 1.0`): `runs/manual_upload/T1_s2rcA.h5ad`, sha256
+    76865826f5a3741c7585f81c4241048ca1a95b5791ebb3c8feb1f2b536678ce4. B (`--feng-fraction-mult 1.5`):
+    `runs/manual_upload/T1_s2rcB.h5ad`, c7240cb6a7f7ee93d037f437832efbaad004f1fbe608d80072f8efd5d20a0062. C (both):
+    `runs/manual_upload/T1_s2rcC.h5ad`, 31477ef7df5d5374a74a8249c570217020c593916ab4d3780049b7b3f87b0620. Each built
+    twice with the same bytes; every stamp: commit 1420c70, clean; the local format check passes on each.
+  - Order and rule as fixed in entry (n): A and B go first; C only if A and B each return a strictly higher
+    headline than R13's file. Each upload is the captain's own act.
+  - The first design run for further T1 candidates (wf_fb892175-99c) returned nothing on T1: its agents took a
+    forwarded side note on T3's fallback for their task. It was started again with the note named as settled
+    (wf_cd20c34c-054). The wide local test run on the merged tree: 2622 passed, 1 skipped.
+- 2026-11-20 (q), T3: a second candidate list from released data only, fixed before any of its scores; the
+  outside-knockout screen fails its second review and is redesigned (state at 15:27 UTC). Written by the AI assistant.
+  - **Who.** wf_42122fd0-924: a designer, a cold challenger ("stands with changes"), a writer and a reviewer ("ready",
+    no blocker); branch `campaign/t3-two-knockout`, afc4734; a thin builder
+    `experiments/t3_decomp/build_two_knockout.py` in the manner of the exponent builder, the three frozen T3 files
+    untouched and their hashes pinned. The reviewer's lesser points are with one more writer; the merge follows.
+  - **Why a list at all.** The two scored T3 files differ in three things at once (the factor's source, the depth
+    step, the composition), so the record cannot say why the first upload scored lowest; the designer and the
+    challenger both say so. The record on the Gata4 factor is weak: on the one cross-knockout fold (rows K2a, K2b) it
+    beat its permuted control by 0.18, under the 0.3 bar. No fair practice read exists for a combination of the two
+    released knockouts (each target would hold its own knockout's factor), so these files are unpriced and a returned
+    headline chooses.
+  - **The list, in the challenger's final words:** Before these files: entry 2026-11-20 (k) stands unchanged. First
+    barred s1 at exponent 1.5 (c060fcaa6c7f). Then the exponent-2.0 file (7393810fbe3b) if 1.5 returns a headline
+    above 61.8, otherwise barred s2 (1b69521e3c28). barred_s2 carries the Mab21l2 factor at exponent 1.0
+    (barred_table; D7m m = 0.71781 > 0; decision log (m)).  B is the file with the highest returned T3 headline among
+    barred s1 (3712c3f9988d, x = 1), the 1.5 file, the 2.0 file and barred s2 (x = 1). It is fixed once both uploads
+    of entry (k) have returned. Ties go to barred s1, then to the lower exponent. phi_M =
+    <run>/factors/transfer_mab21l2_all.csv (sha 64b1e0b8572c...), phi_G = <run>/factors/gata4_pooled.csv (sha
+    36f2d65a36d2...). Both are loaded through bs.load_factor, used as loaded (already clipped to [0.25, 4]), and
+    refused unless they cover the same 500 genes in order.  1. C1, built only when B is barred s1 or barred s2 (x =
+    1): factor = np.power(phi_M, 1.0) * np.power(phi_G, 1.0). No re-rescale and no re-clip. Passed to
+    t3_decompose.build with w = 1.0. Composition, drawn cells, RNG streams (submission:barred:s1 or :s2, and
+    :assemble) and seed 1000001 are B's. No depth, stage or coverage step. The sidecar records the gene mean of ln
+    phi, cos^2(ln phi, 1), and the den-weighted mean where available, for B and for C1.  2. C2, built for every B:
+    factor = np.power(phi_M, x*c) * np.power(phi_G, c), with c = SD(x ln phi_M) / SD(x ln phi_M + ln phi_G). SD is the
+    population SD (ddof 0) over the 500 genes, computed by the builder from the tables as loaded. About 0.82 at x = 1,
+    0.89 at 1.5 and 0.93 at 2.0 (estimates). Everything else as C1.  Dropped: C3 (expected at or below B; its
+    condition picks its weakest world). G, M, S and per-lineage forms, for the designer's reasons (agreed). P is C1.
+    Identity gates on the DGX: g = 0, c = 1 reproduces each base's sha byte for byte, and each candidate is built
+    twice with identical bytes. R14's conditions apply: an amendment with the captain's words, a build in the
+    reference checkout, a new reference list and pointer, and his go-ahead per upload.
+  - **The search rule, in the challenger's final words (points 1 to 6):** Fixed in the decision log before any C file
+    has a score: (1) Entry 2026-11-20 (k) goes first, unchanged. (2) B is set as above, only after both (k) uploads
+    have returned headlines. Only team uploads' headline T3 scores choose. No per-term score of any T3 file is
+    compared with another's or read for anything. (3) If B is barred s1 or barred s2: C1 is uploaded, then C2 whatever
+    C1 returned. If B is the 1.5 or 2.0 file: only C2 is uploaded. (4) If only one T3 slot remains before 2026-11-26
+    11:59 UTC, the first file under (3) goes and the other does not. The log entry states this list's place relative
+    to any outside-knockout T3 candidates before either has a score. If the team's allowance turns out smaller than
+    two per board per day, the list lapses. (5) After (3) the list is spent. No Gata4 weight, exponent, composition,
+    rescale or other value is added, changed or re-seeded because of any score. A new candidate needs its own log
+    entry before its own score exists. (6) The board keeps the best. Under any organiser restriction or bar on the
+    Gata4 files, no C file is marked, and the Gata4-free barred file stays the mark (S2_RULES ruling switches).
+  - **Point 7, the captain's question, not yet put.** Nothing is built for upload before he answers it. Its text as
+    the challenger wrote it: "Task 3: our best file (61.8) uses only the released Mab21l2 knockout. Two more files
+    would multiply its per-gene change by the released Gata4 validation knockout's change, the same table our first
+    upload (47.8) carried. Practice cannot price them: on the one fold that tests the Gata4 change on a different
+    knockout, it beat a shuffled control by 0.18, under our 0.3 bar. The gain there rested on 10 genes, and it lowered
+    the cell-state terms. Gain if it carries: unknown, perhaps a few points. Loss: the board keeps our best, so the
+    cost is up to two T3 upload slots that outside-knockout files could use. And if the organisers later restrict the
+    Gata4 files, these cannot be marked final; the Mab21l2-only file stays our mark. May these two files use the Gata4
+    validation files?" Options: "Yes, both (C1 then C2)"; "Only C2 (held at the best file's size)"; "No, Mab21l2
+    only". It goes to him with the T1 questions that the T1 design is preparing, so that he is asked once.
+  - **Place among T3's candidates, fixed now.** Entry (k)'s two uploads go first. This list comes next, when the base
+    is fixed and he has said yes. Candidates from outside knockouts, if that work yields any, come after this list and
+    are fixed in their own entry before their own scores; they do not displace C1 or C2.
+  - **The outside-knockout screen, second review** (wf_e988fff9-6e1: an engineer and two reviewers who tried to break
+    it). Both: not ready. A text screen built from lists of prefixes and suffixes still let held-out labels through
+    (short forms glued to allele words, misspelt symbols, a range of GATA numbers, a second name of a held-out
+    compound), and a held dataset became fetchable through an edited copy of the dataset file. Nothing was fetched.
+    Decision of mine: a text blacklist can never be shown complete, so it stops being the first line. The first line
+    becomes a pinned sample list: only samples whose verbatim labels two readers have read and pinned, with a hash of
+    the text read, can ever be fetched or processed; the text screen stays as the second line and over-refuses freely;
+    held series are refused by a constant no flag can change. A third pass is running (wf_582ec820-15a).
+- 2026-11-20 (r), T1: the list after A, B and C and its rule, fixed before any score of A or B is reported (state
+  at 15:38 UTC; no T1 score of 2026-11-20's candidates has been reported to the AI assistant). Written by the AI assistant.
+  - **Who.** wf_cd20c34c-054: a designer, a cold challenger ("stands with changes"), a writer and a reviewer. The
+    reviewer's verdict is "not ready" on two blockers, both misquoted figures in the questions drafted for the captain
+    (the sign of row T26's 0.16 / 0.13; library 3's library-size ratio, 0.96, which is inside the 5% line); the
+    questions go to him with the reviewer's replacement texts. The writer's branch `campaign/t1-further` (8e66b10)
+    holds tests and a launcher only; no builder option for D or E is written before its gating answer.
+  - **The list, in the challenger's final words:** Round one, unchanged (decision log 2026-11-20 (n)): A
+    (`build_test.py t1 --g-mom --base lib3 --feng-groups recomputed --g-mom-damping 1.0`), then B (`...
+    --feng-fraction-mult 1.5`). C (both options) is uploaded only if A and B each return a strictly higher headline
+    than R13's file.  1. F, the no-outside-data file as built (row R8). No build. The file is
+    runs/manual_upload/T1_s2none.h5ad, sha256 55eaee547ff18d7477da5b730c34e7de9ab74f85cc12fd01a9eff6450367611c, built
+    twice at 385ff58 (experiments/builds/results/t1none_385ff58.txt). Before upload the sha256 is checked against that
+    record. Single change from R13's file: the atlas direction step is removed. Its only use is as a hedge: it is the
+    one T1 file without the outside atlas. It goes in the first free T1 slot after A and B.  2. D, R13's file with the
+    released momentum on the cells R1 holds. `uv run --frozen --no-sync python -I -B experiments/builds/build_test.py
+    t1 --g-mom --base lib3 --feng-groups recomputed --held-momentum 0.5 --captain-ruling R<n> --out
+    <O>/builds/T1_s2rc_D.h5ad`. Default seed 1000001, test board, built twice with the same bytes, in
+    ~/v/vec-campaign-d, after the default command has rebuilt
+    ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f. What it does: B0's per-category damped momentum
+    at 0.5 (harness.B0_DAMPING), fitted from E9.5 to E10.5's portion libraries (library 3 never enters the fit),
+    applied on build_submission's existing momentum stream [seed, 1] to the drawn cells whose label is in
+    _labels_without_direction. The held genes are R2's union, as R13. Cells with a direction keep R13's bytes. Single
+    change from R13's file: these cells move instead of staying at their E10.5 counts. Order of work: (a) a counted
+    practice row first (next free ID), with arm m1rc_gmom_heldmom against m1rc_gmom on T62's five tasks; gate:
+    m1rc_gmom reproduces T62 within 0.02 on every seed; statement: T61's AHEAD (chamber mean above 0.3 with at least 8
+    of 10 seeds above 0; whole-cut mean above 0) together with reading D's library check (every valid library at -0.3
+    or better). (b) Only if it reads AHEAD, question QD goes to the captain. (c) Only on 'reverse R1', the builder
+    option is written, reviewed and rehearsed, and the file is built.  3. E, R13's file drawn by T61's advance at tau
+    1.0 (arm name rc_advance_t1). `... t1 --g-mom --base lib3 --feng-groups recomputed --released-bet advance
+    --bet-strength 1.0 --captain-ruling R<m> --out <O>/builds/T1_s2rc_E.h5ad`. Default seed, built twice with the same
+    bytes after the default command reproduces ad8f24c7.... The draw is T61's: library 3's cells; category quotas at
+    library 3's own chamber mix; five z-quintile bins per category, with quotas in proportion to exp(1.0 z); the axes
+    run from E9.5 to E10.5's portion libraries, with T61's held list on the axes. Then R13's direction step on the
+    drawn cells ([seed, 2], fraction 2/5, R2's held genes, R1's hold), then g_mom ([seed, 5]). tau 1.0 only. Single
+    change from R13's file: which library-3 cells are drawn inside each category. E is built only after the captain
+    answers 'upload' to both E1 and E2. Pre-set advice on both: decline.  No candidate is stacked on whichever of A, B
+    or C wins.
+  - **The rule, in the challenger's final words:** Fixed before any score of A, B, C, D, E or F exists, and committed
+    to the decision log before any A or B score is reported. If a score arrives first, the entry records that the list
+    was not changed by it. The rule is put to the captain as Q0 before D, E or F is uploaded. (1) Round one is as
+    decision log 2026-11-20 (n) fixed it: A and B; then C only if A and B each return a strictly higher headline than
+    R13's file. (2) At most two T1 uploads a day until 2026-11-26 11:59 UTC. The order after A and B: F in the first
+    free slot; C if (n) fires; then D; then E. A candidate not ready when a slot comes gives the slot to the next
+    ready one in this order. (3) A candidate is uploaded only when all of these hold. F: its sha256 equals 55eaee54...
+    from the record, and the captain answered QF with 'Upload it'. D: its practice row read AHEAD as written; the
+    captain answered QD with 'reverse R1 for this file'; the file was built twice with one sha256 in a checkout where
+    the default command first rebuilt ad8f24c7.... E: the captain answered both E1 and E2 with the upload option; it
+    was built under the same build condition as D. (4) A candidate that fails a condition is skipped, never changed. D
+    and E are not built before their gating answers. (5) Nothing is re-seeded, rebuilt, resized or altered after any
+    T1 score. No damping, fraction, tau, share or other number is set from a score. No property of the hidden E12.5
+    sample is inferred or bounded from a score, in code, in text or in reasoning. F's score is read as a headline only
+    and decides nothing beyond the standing file; (n)'s 'more atlases' line stays on B's sign alone. (6) Only the
+    headlines of the team's own T1 uploads choose. The standing file is the highest headline among the first upload,
+    R13, A, B, C, D, E and F. A tie keeps the earlier file. (7) Any combination of these changes needs its own list,
+    fixed before its score.
+  - **How it is put to the captain.** Their Q0 (sign off the list) is not asked as a question of its own: F, and E's
+    two closed levers, each go to him as their own priced question, which is the sign-off for those files; D's
+    question comes only if its practice row reads AHEAD. On E the advice is the pre-set outcome, decline, on both
+    questions, and the AI assistant adds no lean (the lever was closed after an exposure). D's practice row needs a
+    new arm and a builder argument; the designer put its odds of passing at about 0.25 and the challenger at about
+    0.1, for a size the record expects under 0.3; it is queued behind the embryo's and T3's work, not dropped.
+- 2026-11-20 (s), a question dialog dismissed; the embryo's occupancy term, stage 2: what the second group of analysts
+  decided, a hold, and what runs (state at 15:47 UTC). Written by the AI assistant, which is recused on this lever and
+  states no preference.
+  - **A dialog the captain dismissed.** The AI assistant put four questions in one dialog (T3's two Gata4 files; T1's
+    no-outside-data file as a hedge; T1's advance draw, composition and depth). He dismissed the dialog without an
+    answer. Nothing that depends on those answers is built or uploaded: C1 and C2 stay unbuilt, the hedge file stays
+    where it is, and the advance draw stays declined as on 2026-11-19. The questions are not put again in that form.
+  - **Who** (wf_666d097c-21a: an analyst, a cold challenger ("stands with changes"), a writer, a reviewer ("ready", no
+    blocker); none saw the main session's conversation). Branch `campaign/embryo-occupancy-2`, head 9cd4b6e, on top of
+    616984b with main merged in.
+  - **Their reading of the check's output of entry (l), by the table fixed before it:** reading A.2 applies, read
+    strictly. A.2 in full: "The file's draw orders or turns its principal axes differently from the copy's: mechanism
+    3 is active. The scorer searches signs only, so this costs occupancy under both builds. What follows: report it.
+    The row-order option does not fix it. The only fix the code allows is giving the file the copy's own rows (the
+    investigator's Option A), which breaks the count rule and needs a ruling. Nothing is built until he rules." Their
+    reading after the result, which changes nothing in A.2: the axis order is not swapped; two cosines fall under a
+    threshold of 0.95 that was fixed a priori and never calibrated on E7.5 (turns of about 24 and 22 degrees); the
+    grid overlap with the copy (0.878) is at the level of copy against copy; the code did not measure how far plain
+    copies turn against each other.
+  - **Their decisions.** The second construction (the file takes the baseline copy's own rows and count) is NOT
+    written now. A supplementary target-free check, `occupancy_frame_check.py file_axes` (released E7.5 and the built
+    file only; 50 reference copies; no score, no target, no count printed), measures whether plain copies turn as far
+    as the file, with three readings fixed before its output: S1, at least 3 of the 50 copies turn as much or more:
+    stage noise, A.2 fired on an uncalibrated threshold, the second construction is not written, the row-order path is
+    unchanged; S2 or S3, the turn is the file's own (from its position source, or from its own rows): the second
+    construction becomes eligible to be written only if the turn also costs grid overlap against the copy beyond what
+    copies show.
+  - **A correction to their fixed text, made before any `file_axes` output exists** (the reviewer's first point):
+    option_a_eligible reads the cost side: turn_cost above the copies' 98th percentile (turn_cost is the Dice in the
+    copy's basis minus the scorer's Dice, so positive is a cost), or overlap below the copies' 2nd percentile. The
+    challenger's "below the 2nd percentile" of turn_cost was a sign slip.
+  - **The hold, in the challenger's words:** "the test-board rebuild with --row-order copy_parity waits for the
+    captain's answer to the A.2 question, whatever E48 shows." Their question for him has three options: keep his
+    answer; hold the rebuild until `file_axes` is in, with E48 still running; withdraw and keep the decision of
+    2026-11-02. It is in `docs/S2_RULES.md` as an amendment of this date. He was told of A.2 in the AI assistant's
+    message of this afternoon; that is not his answer. Since he has just dismissed a dialog, the question goes to him
+    as plain text with `file_axes`'s reading beside it, and nothing is built on the test board until he answers it.
+  - **E48 may run** (a practice read on released stages; it builds no upload file; his ruling of this date asked for
+    it). Its run script and launcher were written after the row, as the row requires:
+    `experiments/coords/e48_row_order_read.py`, `experiments/coords/run_e48.sh`. Run commit, fixed before the run:
+    9cd4b6e7d1d343e996e91591bd0d92dcdcfae284. A gate comes first: the two controls must reproduce row E47's committed
+    scores before any arm starts. The reviewer's points 2 to 4 are not applied, because they would move the fixed run
+    commit; the main session reads `files_identical_across_builds` in the result and treats any false as void (point
+    2), fixed here before the run.
