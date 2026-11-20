@@ -8703,3 +8703,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Order from here.** The whole-embryo guard's decision (entry (hhh)) and, if it changes, one rebuild of the bulk
     table; the reviewed K24 code merged; the tables' listing and pins written from the final tables; row K24 and entry
     2026-11-21 (c) placed in one commit; then the run. No bulk table value is read before the row is placed.
+- 2026-11-20 (jjj), embryo: try E49 (shape interpolation) is read; by its rule no file (state at 23:57 UTC, 2026-11-20).
+  Written by the AI assistant, who is recused on the embryo's shape forms and states no preference.
+  - **The run** (row E49, run commit d76ccd5, DGX worktree `~/v/scratch/e49-wt`): tests, description, pre-run gate,
+    nine run tasks and the read all exit 0; the run is valid; step 0 dropped nothing. Counted: seven tries, embryo 76
+    to 83.
+  - **The reading's fixed statements** (build main, merged over five truths). The stretch-by-ratio arm does not pass:
+    one clause (P4) fails; board +0.853 (SE 0.082, ten of ten seeds ahead). The registered-stretch arm does not pass:
+    two clauses (P4, P6) fail; board +0.624; it was refused on 17 task-seeds. The overlay arm does not pass: one
+    clause (P5) fails, the others hold; board +2.461 (SE 0.091, ten of ten seeds ahead), test-like board +3.247;
+    against its rotated control the ungated shape term is +0.0069 (SE 0.0044, six of ten seeds ahead).
+  - **Outcome, by the outcome-to-file rule the analysts fixed in the row before the run: no candidate file. The
+    exact-position file and the series twin stand as handed over.** Nothing is built and nothing is asked of the
+    captain. The clauses and the rule were fixed by fresh analysts before the run; the AI assistant executed them and
+    adds no reading of its own. Results: `experiments/coords/results/e49_shape_interp/`.
