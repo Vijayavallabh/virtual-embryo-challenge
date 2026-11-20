@@ -288,6 +288,8 @@ def test_the_many_line_resource_from_plan_to_tables(tmp_path, y, monkeypatch):
 
     monkeypatch.setattr(fe, "_get_ae", get)
     monkeypatch.setattr(fe, "_get", lambda *a, **k: (_ for _ in ()).throw(AssertionError("a GEO download")))
+    # the unpinned state (the committed pin is tested in test_t3_ext_panel_ids.py)
+    monkeypatch.setattr(cm, "PANEL_IDS_SHA256", None)
     with pytest.raises(cm.Refused, match="PANEL_IDS_SHA256 is None"):
         fe.fetch(ACC, dest, y)
     rows_ids = [(ID[s], s) for s in ID]
