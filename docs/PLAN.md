@@ -8199,3 +8199,61 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the loader usable on real records and so serve the team's interest; that is why each goes to a cold check before
     any data, and why the register row of the atlas in use will say that its record states no convention and that its
     half-day labels are read as labelled.
+- 2026-11-20 (ss), T3 outside knockouts: practice read K23, the K22 table at two larger exponents, with its rule fixed before
+  the run (state at 20:06 UTC, 2026-11-20). Written by the AI assistant from the challenger's final text. The planner
+  drafted the row, a challenger amended the design before the run (verdict: run as amended), an engineer built it and a
+  reviewer read the code against the rule (ready, no blocker); merged at 0892b78.
+  - **Why, said plainly.** K22 missed narrowly on this fold. Its product of the barred factor with the two-study table
+    was ahead in both plain cells (+0.39, +0.49, ten of ten seeds) and +0.28 (nine of ten) in dm g2, against a 0.3
+    bar. Its outcome, "no file: nothing qualifies", stands and is not reread.
+    - The table is very small (SD of its logs 0.025 against the barred factor's 0.70) because the pipeline shrinks
+      ratios measured on few libraries, by up to eight times.
+    - K23 turns the one size dial on the same table: its exponent. Same bytes, same pins, same pipeline, same shuffle,
+      same seeds, worlds and bars.
+    - Every arm draws the same rows from the same seeds as K22, so this is K22's response at a larger dial, not a
+      fresh sample.
+    - The choice to turn the dial follows the near miss. The values 2 and 4 come from the shrinkage range, not from
+      K22's margins.
+    - No further exponent of this table is read on this fold.
+  - **Arms.** For E = 2 and 4:
+    - the product phi_M * T ** E;
+    - its shuffled control at the same E (K22's shuffle);
+    - a size and depth twin, k_E * phi_M ** a_E, matched to the product's log SD and den-weighted total with no gene
+      of the table.
+    - Six tries, T3 60 to 66, three if the pre-gate drops E = 4. A reproduction arm, the exponent-1 product, must
+      equal K22's committed x_all within K17's tolerance or the run is VOID. It is not counted and never named.
+  - **Pre-gate, target-free:** K22's table drops, plus, per E, any of:
+    - the table's log SD above 0.25;
+    - more than 45 genes at or beyond the clip in the product or its control;
+    - the den-weighted total moved more than 5%;
+    - the product's log SD more than 5% above phi_M's.
+    - If E = 2 drops, E = 4 drops too.
+  - **Qualification.** K22's bars and constants are unchanged. Additions, each of which can only make naming harder:
+    - the dm cell that meets (a) must not differ from the barred form in gated seeds;
+    - (e): in every AHEAD cell the try beats its twin by the same bar;
+    - (f), dose-response: in every AHEAD cell the try beats the exponent-1 product, and E = 4 beats E = 2, with a
+      positive mean and at least eight of ten seeds.
+  - **The rule that maps the outcome to files, fixed now.** At most one file.
+    - If both exponents qualify: E = 2, unless E = 4 beats E = 2 directly, paired by seed, by the AHEAD bar in a plain
+      cell and a dm cell and is 0.3 behind it in none.
+    - If only E = 2 qualifies: E = 2.
+    - If only E = 4 qualifies: it is named only when E = 2 is behind in no cell, within the gate bound, and positive
+      in every cell where E = 4 is ahead.
+    - Otherwise no file, as when the run is VOID or both exponents drop.
+    - File factor: phi_M ** x * T ** E on (q)'s B, built by build_outside_form.py --form xall-<B> --table-exponent E.
+      Priced at x = 1 only.
+    - The controls, twins and the reproduction arm are never named or built. A form the builder refuses on B is not
+      built, and nothing replaces it.
+  - **Place.** After (q)'s C list and after any K21 or K22 file (both named none). (q)'s lapse clause holds first.
+    Ranking ahead of C1 or C2 would change (q), which is the captain's call. Before any upload, as (kk): the S2_RULES
+    amendment with the captain's words, the EXTERNAL_DATA rows, a reference-checkout build, a new reference list and
+    pointer, and his go-ahead per upload.
+  - **Checked and not checked.** Checked by reading the frozen code: the build does not renormalise after the gene
+    factor and returns log1p CP10k, so the twin's scalar acts through count depth only. Not checked: the clip count at
+    E = 4, which needs the gene-level files and is left to the pre-gate. The odds (about 0.4 that a file is named) are
+    the challenger's judgement, not cold-checked.
+  - **Added by the AI assistant.** The reviewer's three clarifications are written into the row (how a failed guard is
+    counted; when a run part stops without a reading; that the twins' constants are read from the pre-gate file). The
+    run uses the two-study table at the bytes K22 read: the tables folder on the compute machine is set to the copy
+    kept before the three-study rerun of entry (qq), and the script checks every byte against the pins. The
+    three-study table is read by no arm of this row.
