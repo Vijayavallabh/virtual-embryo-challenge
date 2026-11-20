@@ -7104,3 +7104,21 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     are fixed before the practice runs. Two ideas were checked against the ledger and dropped without a run: an
     outside-atlas direction on the heart panel (its target-free concordance check was null) and undoing the heart
     file's halving (row H25: halving costs nothing).
+- 2026-11-20 (c), the T3 strength read (K20) is shelved before its row: the committed record already answers it
+  (state at 09:18 UTC). Written by the AI assistant.
+  - **The AI assistant's premise was wrong.** Entry (b) expected a smaller exponent of the barred file's factor to
+    gain. The challenger of the read's design (wf_9fdc45d9-e51) checked that against results the ledger already
+    holds, and the writer confirmed the figures in the committed files: on the Gata4 practice knockout the barred
+    factor's fitted slope at exponent 1 is about 0.43 (row K18: 0.437, 0.433, 0.415, 0.513), below the ideal 1, so
+    a weaker factor moves the severity term the wrong way; exponent 0 of the same file is row K8's `s2_form`, at
+    52.42 and 48.02 against the barred form's 59.43 and 62.04; and the same dial on a second factor of like slope
+    (`xrep:F@w` in `gata4_records.csv`) scores 66.59, 67.65, 67.92, 68.08, 68.06 on replicate 1 and 62.14, 63.37,
+    64.00, 64.64, 64.98 on replicate 2 at 0.5, 0.75, 1.0, 1.25 and 1.5: lower below 1, and above 1 higher by less
+    than the truth's noise floor (1.32). Only the factor's overshoot on the distribution terms in one replicate
+    spoke for a smaller size.
+  - **The read was written and reviewed** (`campaign/t3-k20-exponent`, 3759605; verdict ready), with a bar raised
+    to the noise floor and its writer's odds of 0.88 that no exponent is ahead. **It is not registered and not
+    run:** no row is committed, T3's count stays 51, the code stays on its branch. The reason is the record above,
+    not the AI assistant's own odds: what the read could still show is an interior optimum worth less than the
+    floor, on the one practice knockout, for a file whose test value rests on a premise no released file shows.
+    The captain's barred file stands as he ruled it. He is told in one line; the read runs if he asks for it.
