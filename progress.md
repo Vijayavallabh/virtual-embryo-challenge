@@ -2,6 +2,12 @@
 
 ## Current State
 
+- **2026-11-20, 10:17 UTC.** All four last files exist as the captain named them and are handed to him: T1
+  recomputed-groups atlas file (ad8f24c71c90), heart full trim (04cde6361c04), embryo series twin (bc50d012cd2c), T3
+  barred s1 (3712c3f9988d). Reads T63, H27 and H28 are run and recorded; K20 is shelved unrun. Tries: T1 413, embryo
+  75, heart 80, T3 51. The captain's word of 20 November: no more questions about the login or disclosure; score
+  only. What waits: `session-handoff.md`, first bullet.
+
 - **2026-11-19, 21:07 UTC.** The captain named the last file on all four boards (decision log 2026-11-19 (cc),
   (ii)): heart full trim (his exception; built, held until row H27's read), embryo series twin (built), T3 barred
   s1 (built, on the reference list), T1 recomputed-groups atlas file (built after row T63's read). Rules

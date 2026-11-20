@@ -2,7 +2,38 @@
 
 ## Current Objective
 
-- **State at 2026-11-19, 21:07 UTC (newest).** Decision log 2026-11-19 (aa) to (ii). **The captain named the last
+- **State at 2026-11-20, 10:17 UTC (newest).** Decision log 2026-11-19 (jj), (kk) and 2026-11-20 (a) to (f). **All four
+  last files exist, each as the captain named it, built twice with identical bytes (T3's was already on the
+  reference list) and passing the local format check:** T1 `runs/manual_upload/T1_s2rc.h5ad`
+  (ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f; record
+  `experiments/builds/results/t1rc_5028cab.txt`); heart `runs/manual_upload/T2heart_s2core_half.h5ad`
+  (04cde6361c04840ee47fff32eb9a20f4781bd649387cc540ed9fdea71e65fa35; `heart3_3d52b83.txt`; the hold ended by his
+  answer "Full trim (as ruled)" to row H27's figures, entry (kk)); embryo `runs/manual_upload/T2embryo_s2xs.h5ad`
+  (bc50d012cd2c9481cd18c1f5bcf5b01093e22fd16ac65582a5c9f34321f13115; `embryo3_3d52b83.txt`); T3
+  `runs/archive/builds_dc7b6ae/t3_build/barred_s1.h5ad`
+  (3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2). They were handed to the captain on
+  2026-11-20 with a short "Data used" text per board. **Uploads are his acts, by hand, by 2026-11-26 11:59 UTC;
+  when he reports a score, add the row to `results/manual_uploads.csv` and a decision-log entry.**
+  **His word of 2026-11-20 (entry (b)), verbatim: "don't worry about which login. and disclosure. Focus only on
+  improving our score".** Do not raise the login question, the disclosure email or the notes to the organisers
+  again; the note drafts stay in `docs/ORGANIZER_QUESTIONS.md`, unreviewed (their three-lens review was stopped).
+  **Reads since the rulings:** T63 (T1 at the test's step size: AHEAD, epicardium PAYS, "a placebo gains as well;
+  the direction more"; recomputed independently; build as ruled); H27 (heart at forecast sizes; recomputed; he kept
+  the full trim); H28 (heart trend step at reduced strengths on the full trim: outcome PLACEBO, no question; not yet
+  recomputed independently, a negative result that changes nothing); K20 (T3 factor exponent: written and
+  reviewed on `campaign/t3-k20-exponent`, NOT registered and NOT run: the committed record already shows a weaker
+  factor scores lower; entry (c)). Tries: T1 413, embryo 75, heart 80, T3 51. `docs/S2_RULES.md` sha256
+  a5380cdfbc02 (in `docs/S2_RULES.sha256`).
+  **The AI assistant stays recused on the heart's scope and size** (entry 2026-11-19 (bb)).
+  **Open, none of it blocking:** the 23 November screened read of mail and the rules page (approved; every thread
+  with replies; a reply is never pasted into the session); `tests/test_feng_relabel.py::test_the_dry_runs_refusals`
+  reads the checkout's own data folder and fails on `~/v/vec-campaign-d`, where row N55's dry run left its start
+  record (make it use a temporary folder); the builder's help text still calls `core_trim` "no ruling";
+  METHOD_SUMMARY's `[TO CONFIRM]` and `[TO COMPLETE]` markers on what was sent wait for the captain's own word and
+  are not to be asked about; run the complete suite with its temporary folder OUTSIDE any git work tree (the home
+  directory is one; `tests/test_boards.py` fails inside it) and delete the folder after (the system disk filled on
+  19 November from agents' leftovers).
+- **State at 2026-11-19, 21:07 UTC.** Decision log 2026-11-19 (aa) to (ii). **The captain named the last
   file on all four boards** (each an answer to its own priced dialog question; entries (cc) and (ii)):
   heart = the full trim (his own named exception); embryo = the series twin on E7.5's exact positions; T3 = the
   barred branch's s1; T1 = the recomputed-groups atlas file ("proceed with your recommendation" to a question whose
