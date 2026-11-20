@@ -7874,3 +7874,22 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     X013. No code is changed to read a mixed-species capture. Fourteen samples remain (Dnmt1 null 3, Dnmt3a null 2,
     Dnmt3b null 3, wild type 6). The rerun covers all three pinned datasets in one launch, because combine refuses a
     dataset whose plan predates the dataset file it now sees.
+- 2026-11-20 (dd), T3 outside knockouts: the first tables from outside data, and why practice read K22 cannot run yet
+  (state at 18:30 UTC). Written by the AI assistant.
+  - **The run** (all three pinned datasets in one launch on `~/v/vec-campaign-c` at 53684d5; every step exit 0).
+    GSE204906: 111,368 cells in fourteen samples, 498 of 500 panel genes matched. Dnmt3a: factors in four lineage
+    groups; Dnmt3b: in five; Dnmt1: refused whole (one sample under the confident-share floor). The cardiac,
+    endothelial, paraxial-mesoderm and extra-embryonic groups fail the control-profile guard in this study too, as
+    paraxial mesoderm did in the Tbx1 data: the sequencing-to-imaging lineage step does not carry those groups. The
+    two Tbx1 datasets are left out as before. Combine wrote three tables: `all`, `unrelated` and `study_GSE204908`,
+    which here are one study's content (two knockout genes, DNA-methylation enzymes).
+  - **Why K22 does not run yet.** Its pre-gate, fixed by its designers, drops a table whose manifest lists fewer than
+    two studies, since the table's meaning (what knockouts of different genes in different laboratories share, with a
+    sign rule across studies) needs at least two. With one study both tries would be dropped and nothing counted. The
+    AI assistant does not relax that. A second whole-embryo study is the panel study GSE137337, whose use waits for
+    the pipeline's extension (series-level archives and a sister-series control) and whatever the hunt names; both are
+    with wf_15a91d8d-eb8. `experiments/t3_ext/TABLES.sha256` is written when the two-study table exists.
+  - **An honest note on reach.** Even with two studies the tables will carry factors mostly in ectoderm, endoderm,
+    neural crest and pharyngeal mesoderm: the groups the held-out knockout's own lineage (cardiac and other mesoderm)
+    is not in. The pooled form weights groups by their reference shares, so those four or five groups stand for the
+    embryo. That limits what this line can add to the which-genes terms even if K22 names a form.
