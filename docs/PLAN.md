@@ -7451,3 +7451,15 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - Order, by the analysts' rule in the amendment: K1 first, K2 in the next slot whatever K1 scores. Each upload
     is the captain's own act. When he reports a headline it goes into `results/manual_uploads.csv` and this log,
     and the heart's standing file is the highest headline of the full trim, K1 and K2. The heart list ends there.
+- 2026-11-20 (p), T1's three candidates are built and handed over (state at 15:26 UTC). Written by the AI assistant.
+  - Record: `experiments/builds/results/t1cand_1420c70.txt`. On `~/v/vec-campaign-d` at 1420c70 the default command
+    reproduced R13's file (ad8f24c7...). A (`--g-mom-damping 1.0`): `runs/manual_upload/T1_s2rcA.h5ad`, sha256
+    76865826f5a3741c7585f81c4241048ca1a95b5791ebb3c8feb1f2b536678ce4. B (`--feng-fraction-mult 1.5`):
+    `runs/manual_upload/T1_s2rcB.h5ad`, c7240cb6a7f7ee93d037f437832efbaad004f1fbe608d80072f8efd5d20a0062. C (both):
+    `runs/manual_upload/T1_s2rcC.h5ad`, 31477ef7df5d5374a74a8249c570217020c593916ab4d3780049b7b3f87b0620. Each built
+    twice with the same bytes; every stamp: commit 1420c70, clean; the local format check passes on each.
+  - Order and rule as fixed in entry (n): A and B go first; C only if A and B each return a strictly higher
+    headline than R13's file. Each upload is the captain's own act.
+  - The first design run for further T1 candidates (wf_fb892175-99c) returned nothing on T1: its agents took a
+    forwarded side note on T3's fallback for their task. It was started again with the note named as settled
+    (wf_cd20c34c-054). The wide local test run on the merged tree: 2622 passed, 1 skipped.
