@@ -7727,3 +7727,26 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Not applied before the run** (the reviewer's lesser points, which touch the build launcher and the read's
     provenance, not the read itself): a distinct exit code for a form's own refusal in the build launcher; a record of
     which code made the reading. They are applied before any K21 file is built.
+- 2026-11-20 (w), T3: practice read K21's outcome (state at 16:48 UTC). Written by the AI assistant.
+  - **Outcome, as the row fixed it: "no file: nothing qualifies; T3's list is unchanged".** Valid run (the barred
+    form reproduces K18's committed scores exactly in both worlds); six tries, T3 51 to 57. Row K21 holds the
+    fixed statements; the result files are committed with it.
+  - **What the fixed statements say.** Keeping only the 100 largest genes loses everywhere (mean -3.66 over the four
+    cells), and loses to a plain shrink of the same size, so the small ratios carry signal on the Gata4 replicates.
+    Capping the extremes changes nothing (mean -0.16). The product with the wild-type-only factor is not ahead by the
+    rule (mean +0.43; behind in three cells).
+  - **The premise was the AI assistant's and it was wrong:** the which-genes and cell-state terms do not rise when the
+    factor is made sparser. This is the third idea of the kind (a smaller or sparser step) that practice has refused,
+    after K20's shelving and row H28.
+  - **The AI assistant's reading after the result, outside the fixed statements, and it names no file.** The two
+    size-matched controls are, in effect, the barred factor at exponents 0.77 and 0.91 on built files, the first
+    direct reading of its size below 1: against the barred form +0.33, -0.42, +1.18, +0.48 at 0.77 and +0.21, -0.13,
+    +0.44, +0.26 at 0.91 (plain g1, plain g2, depth-matched g1, g2). A smaller factor gains on the cell-state terms
+    and pays on severity, and the two nearly cancel. No arm read an exponent above 1; the same trade runs the other
+    way there. So the size dial looks close to flat around 1 on practice, and the exponent files of entry (k) are a
+    coin, not a likely gain. Entry (k)'s order stands: a returned score chooses, and a lower one costs a slot. By the
+    row's own rule a control is never built or named, and no exponent below 1 is added on a reading made after the
+    result.
+  - **What is left for T3's which-genes terms:** the two-knockout files of entry (q), and whatever the
+    outside-knockout work yields on what knockouts share. Nothing else on record reaches those terms from released
+    data.

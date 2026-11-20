@@ -1,0 +1,118 @@
+Try K21: no file: nothing qualifies; T3's list is unchanged.
+arms run: barred_form, top100, uni_top, cap90, uni_cap, wtprod, wtprod_perm; tries counted: 6
+pre-gate (the Mab21l2 table alone; no score): 500 genes, 30 at the clip; phi_M genes_changed 0, genes_set_to_1 0, genes_at_clip 30, sd_ln 0.696398, gene_mean_ln -0.0367342, min 0.25, max 4
+  top100: k 100, n_genes 500, genes_at_clip 30, cut 0.945313, next 0.942176, genes_changed 400, genes_set_to_1 400, sd_ln 0.534969, gene_mean_ln -0.01864, min 0.25, max 4
+  uni_top: k 100, n_genes 500, genes_at_clip 0, cut 0.945313, next 0.942176, s 0.768194, genes_changed 500, genes_set_to_1 0, sd_ln 0.534969, gene_mean_ln -0.028219, min 0.344747, max 2.90068
+  cap90: q 0.9, t 1.02415, genes_off_clip 470, genes_at_clip 0, genes_changed 77, genes_set_to_1 0, sd_ln 0.635851, gene_mean_ln -0.0341608, min 0.359101, max 2.78474
+  uni_cap: q 0.9, t 1.02415, genes_off_clip 470, genes_at_clip 0, s 0.913057, genes_changed 500, genes_set_to_1 0, sd_ln 0.635851, gene_mean_ln -0.0335404, min 0.282023, max 3.5458
+  wtprod: applied phi_M * per_g ** 0.5 per lineage group (fallback phi_M * phi_pooled ** 0.5), min 0.125, max 8, groups ['CM', 'CardiacProgenitor', 'Ectoderm', 'Endocardium', 'Endoderm', 'Endothelium', 'ExtraEmbryonicMeso', 'NCC', 'Neural', 'ParaxialMesoderm', 'Pericardium', 'PharyngealMesoderm']
+  dropped: none
+commit 0a3152eba4ec911ac9d24c0ed0e9553bd75d8ccf, machine p01r10srv05.
+  top100: qualified no ((a) False, (b) False, (c) True, (d) True); ahead in none; behind in ['plain g1', 'plain g2', 'dm g1', 'dm g2']; mean of the four paired means -3.66; gated (arm, base) {'plain g1': [0, 0], 'plain g2': [0, 0], 'dm g1': [5, 4], 'dm g2': [0, 0]}
+  cap90: qualified no ((a) False, (b) False, (c) True, (d) True); ahead in none; behind in ['dm g1']; mean of the four paired means -0.16; gated (arm, base) {'plain g1': [0, 0], 'plain g2': [0, 0], 'dm g1': [5, 4], 'dm g2': [0, 0]}
+  wtprod: qualified no ((a) False, (b) False, (c) True, (d) True); ahead in none; behind in ['plain g1', 'plain g2', 'dm g2']; mean of the four paired means +0.43; gated (arm, base) {'plain g1': [0, 0], 'plain g2': [0, 0], 'dm g1': [0, 4], 'dm g2': [0, 0]}
+  ranked: none; named: none
+guard (barred_form against K18's committed barred_form): plain g1 mean +0.0000, largest seed 0.0000, seeds differing none; plain g2 mean +0.0000, largest seed 0.0000, seeds differing none; dm g1 mean +0.0000, largest seed 0.0000, seeds differing none; dm g2 mean +0.0000, largest seed 0.0000, seeds differing none
+U3d's check arm in the dm world, reported only: g1 mean -0.0000, largest seed 0.0000, seeds differing none; g2 mean +0.0000, largest seed 0.0000, seeds differing none
+task files: pregate.json ef42843685a3, plain_g1/seed_0.json 7bd0990dc02c, plain_g1/seed_1.json f2df68a513d1, plain_g1/seed_2.json 490911aa698d, plain_g1/seed_3.json 1719b6819f20, plain_g1/seed_4.json f55aba3be799, plain_g1/seed_5.json 91ef00a0876a, plain_g1/seed_6.json 3acb45e68ced, plain_g1/seed_7.json 2151c8e6de6d, plain_g1/seed_8.json f32d9c1b9acf, plain_g1/seed_9.json a8b689a4b240, plain_g2/seed_0.json 5ee749654c99, plain_g2/seed_1.json a191c1e7bcb4, plain_g2/seed_2.json 78e323e433f1, plain_g2/seed_3.json 378a892b820b, plain_g2/seed_4.json 126f58cf64fc, plain_g2/seed_5.json 6c3ae9ab84e0, plain_g2/seed_6.json 5a0b857398cd, plain_g2/seed_7.json 28a1d763b986, plain_g2/seed_8.json 446e81a80904, plain_g2/seed_9.json d75f447419b8, dm/g1_seed_0.json 43ad624c232c, dm/g1_seed_1.json 6cbc4d2f3d91, dm/g1_seed_2.json 157eade08913, dm/g1_seed_3.json 9756b9693c0b, dm/g1_seed_4.json 05149bdb801b, dm/g1_seed_5.json 3594fa745e47, dm/g1_seed_6.json 6dc11cdcde87, dm/g1_seed_7.json b7a258ef30c6, dm/g1_seed_8.json 500ecdc44037, dm/g1_seed_9.json 6fca4501ce88, dm/g2_seed_0.json bcbd9af2fdf9, dm/g2_seed_1.json c50f15362bbe, dm/g2_seed_2.json 26767ed82b7e, dm/g2_seed_3.json 06b84ce0b9a7, dm/g2_seed_4.json 27cc85d7cb5b, dm/g2_seed_5.json 8061ae84a2a0, dm/g2_seed_6.json e8a2c57e7d98, dm/g2_seed_7.json 4775ba487d62, dm/g2_seed_8.json 7289be9024ee, dm/g2_seed_9.json 59f0c56a5708
+g1 and g2 are two replicates of one knockout run; the controls never qualify.
+
+WORLD plain (K8's: the harness, the reference as released):
+plain g1 T3w/WT->Gata4rep1:
+    floor        50.00 (sd 0.00); severity scored 0, gated 10 {'no_response': 10}, median beta n/a, r2 n/a; skills de_score 0.500, de_direction 0.500, severity_slope 0.500, mmd_u 0.500, variogram 0.500
+    barred_form  59.43 (sd 0.46); severity scored 10, gated 0 {'scored': 10}, median beta 0.437, r2 0.167; skills de_score 0.486, de_direction 0.527, severity_slope 0.897, mmd_u 0.493, variogram 0.418
+    top100       56.54 (sd 0.93); severity scored 10, gated 0 {'scored': 10}, median beta 0.240, r2 0.073; skills de_score 0.415, de_direction 0.529, severity_slope 0.832, mmd_u 0.529, variogram 0.463
+    uni_top      59.76 (sd 0.52); severity scored 10, gated 0 {'scored': 10}, median beta 0.350, r2 0.168; skills de_score 0.484, de_direction 0.528, severity_slope 0.871, mmd_u 0.536, variogram 0.479
+    cap90        59.43 (sd 0.46); severity scored 10, gated 0 {'scored': 10}, median beta 0.397, r2 0.165; skills de_score 0.483, de_direction 0.527, severity_slope 0.886, mmd_u 0.508, variogram 0.440
+    uni_cap      59.64 (sd 0.53); severity scored 10, gated 0 {'scored': 10}, median beta 0.405, r2 0.166; skills de_score 0.487, de_direction 0.527, severity_slope 0.888, mmd_u 0.512, variogram 0.441
+    wtprod       58.89 (sd 0.40); severity scored 10, gated 0 {'scored': 10}, median beta 0.499, r2 0.170; skills de_score 0.494, de_direction 0.534, severity_slope 0.914, mmd_u 0.418, variogram 0.357
+    wtprod_perm  59.41 (sd 0.60); severity scored 10, gated 0 {'scored': 10}, median beta 0.489, r2 0.173; skills de_score 0.492, de_direction 0.529, severity_slope 0.908, mmd_u 0.463, variogram 0.396
+    top100 - barred_form: -2.89 (sd 0.82, ahead 0 of 10)
+    uni_top - barred_form: +0.33 (sd 0.28, ahead 9 of 10)
+    cap90 - barred_form: +0.00 (sd 0.22, ahead 5 of 10)
+    uni_cap - barred_form: +0.21 (sd 0.25, ahead 8 of 10)
+    wtprod - barred_form: -0.54 (sd 0.38, ahead 1 of 10)
+    wtprod_perm - barred_form: -0.02 (sd 0.38, ahead 5 of 10)
+    top100 - uni_top: -3.21 (sd 0.70, ahead 0 of 10)
+    cap90 - uni_cap: -0.21 (sd 0.21, ahead 1 of 10)
+    wtprod - wtprod_perm: -0.52 (sd 0.45, ahead 0 of 10)
+    barred_form - floor: +9.43 (sd 0.46, ahead 10 of 10)
+    per-term skill, top100 - barred_form: de_score -0.071, de_direction +0.002, severity_slope -0.065, mmd_u +0.037, variogram +0.046
+    per-term skill, uni_top - barred_form: de_score -0.002, de_direction +0.001, severity_slope -0.026, mmd_u +0.043, variogram +0.061
+    per-term skill, cap90 - barred_form: de_score -0.003, de_direction +0.000, severity_slope -0.012, mmd_u +0.015, variogram +0.023
+    per-term skill, uni_cap - barred_form: de_score +0.001, de_direction +0.000, severity_slope -0.009, mmd_u +0.019, variogram +0.024
+    per-term skill, wtprod - barred_form: de_score +0.008, de_direction +0.007, severity_slope +0.016, mmd_u -0.074, variogram -0.061
+    per-term skill, wtprod_perm - barred_form: de_score +0.006, de_direction +0.003, severity_slope +0.010, mmd_u -0.030, variogram -0.022
+plain g2 T3w/WT->Gata4rep2:
+    floor        50.00 (sd 0.00); severity scored 0, gated 10 {'no_response': 10}, median beta n/a, r2 n/a; skills de_score 0.500, de_direction 0.500, severity_slope 0.500, mmd_u 0.500, variogram 0.500
+    barred_form  62.04 (sd 0.50); severity scored 10, gated 0 {'scored': 10}, median beta 0.433, r2 0.265; skills de_score 0.499, de_direction 0.559, severity_slope 0.893, mmd_u 0.564, variogram 0.500
+    top100       56.70 (sd 0.94); severity scored 10, gated 0 {'scored': 10}, median beta 0.238, r2 0.121; skills de_score 0.402, de_direction 0.528, severity_slope 0.828, mmd_u 0.551, variogram 0.513
+    uni_top      61.62 (sd 0.47); severity scored 10, gated 0 {'scored': 10}, median beta 0.339, r2 0.260; skills de_score 0.492, de_direction 0.560, severity_slope 0.866, mmd_u 0.576, variogram 0.539
+    cap90        62.04 (sd 0.51); severity scored 10, gated 0 {'scored': 10}, median beta 0.391, r2 0.253; skills de_score 0.503, de_direction 0.560, severity_slope 0.881, mmd_u 0.568, variogram 0.514
+    uni_cap      61.91 (sd 0.42); severity scored 10, gated 0 {'scored': 10}, median beta 0.398, r2 0.261; skills de_score 0.496, de_direction 0.559, severity_slope 0.883, mmd_u 0.571, variogram 0.516
+    wtprod       61.66 (sd 0.64); severity scored 10, gated 0 {'scored': 10}, median beta 0.483, r2 0.232; skills de_score 0.517, de_direction 0.556, severity_slope 0.905, mmd_u 0.507, variogram 0.442
+    wtprod_perm  61.71 (sd 0.54); severity scored 10, gated 0 {'scored': 10}, median beta 0.451, r2 0.253; skills de_score 0.491, de_direction 0.564, severity_slope 0.898, mmd_u 0.551, variogram 0.476
+    top100 - barred_form: -5.34 (sd 0.80, ahead 0 of 10)
+    uni_top - barred_form: -0.42 (sd 0.26, ahead 0 of 10)
+    cap90 - barred_form: -0.00 (sd 0.19, ahead 5 of 10)
+    uni_cap - barred_form: -0.13 (sd 0.19, ahead 4 of 10)
+    wtprod - barred_form: -0.38 (sd 0.33, ahead 1 of 10)
+    wtprod_perm - barred_form: -0.33 (sd 0.32, ahead 2 of 10)
+    top100 - uni_top: -4.92 (sd 0.70, ahead 0 of 10)
+    cap90 - uni_cap: +0.13 (sd 0.17, ahead 7 of 10)
+    wtprod - wtprod_perm: -0.05 (sd 0.48, ahead 5 of 10)
+    barred_form - floor: +12.04 (sd 0.50, ahead 10 of 10)
+    per-term skill, top100 - barred_form: de_score -0.097, de_direction -0.031, severity_slope -0.064, mmd_u -0.014, variogram +0.013
+    per-term skill, uni_top - barred_form: de_score -0.007, de_direction +0.000, severity_slope -0.027, mmd_u +0.012, variogram +0.039
+    per-term skill, cap90 - barred_form: de_score +0.004, de_direction +0.001, severity_slope -0.012, mmd_u +0.004, variogram +0.014
+    per-term skill, uni_cap - barred_form: de_score -0.003, de_direction -0.000, severity_slope -0.010, mmd_u +0.007, variogram +0.016
+    per-term skill, wtprod - barred_form: de_score +0.018, de_direction -0.004, severity_slope +0.012, mmd_u -0.057, variogram -0.058
+    per-term skill, wtprod_perm - barred_form: de_score -0.008, de_direction +0.005, severity_slope +0.005, mmd_u -0.013, variogram -0.024
+
+WORLD dm (U3d's: the frozen script, the reference and the pool at each replicate's per-label depth):
+dm g1 T3w/WT->Gata4rep1:
+    barred_form  55.64 (sd 5.17); severity scored 6, gated 4 {'r2_gate': 4, 'scored': 6}, median beta 0.415, r2 0.017; skills de_score 0.550, de_direction 0.560, severity_slope 0.735, mmd_u 0.356, variogram 0.314
+    top100       53.71 (sd 4.81); severity scored 5, gated 5 {'r2_gate': 5, 'scored': 5}, median beta 0.240, r2 0.010; skills de_score 0.482, de_direction 0.560, severity_slope 0.666, mmd_u 0.456, variogram 0.387
+    uni_top      56.82 (sd 4.92); severity scored 6, gated 4 {'r2_gate': 4, 'scored': 6}, median beta 0.333, r2 0.014; skills de_score 0.551, de_direction 0.563, severity_slope 0.720, mmd_u 0.424, variogram 0.390
+    cap90        54.98 (sd 5.09); severity scored 5, gated 5 {'r2_gate': 5, 'scored': 5}, median beta 0.370, r2 0.006; skills de_score 0.550, de_direction 0.560, severity_slope 0.689, mmd_u 0.376, variogram 0.341
+    uni_cap      56.08 (sd 5.11); severity scored 6, gated 4 {'r2_gate': 4, 'scored': 6}, median beta 0.387, r2 0.019; skills de_score 0.551, de_direction 0.561, severity_slope 0.730, mmd_u 0.380, variogram 0.342
+    wtprod       59.55 (sd 0.60); severity scored 10, gated 0 {'scored': 10}, median beta 0.528, r2 0.114; skills de_score 0.559, de_direction 0.572, severity_slope 0.918, mmd_u 0.287, variogram 0.259
+    wtprod_perm  55.92 (sd 5.11); severity scored 7, gated 3 {'r2_gate': 3, 'scored': 7}, median beta 0.440, r2 0.028; skills de_score 0.542, de_direction 0.560, severity_slope 0.780, mmd_u 0.317, variogram 0.293
+    top100 - barred_form: -1.93 (sd 5.57, ahead 1 of 10)
+    uni_top - barred_form: +1.18 (sd 0.32, ahead 10 of 10)
+    cap90 - barred_form: -0.66 (sd 3.02, ahead 8 of 10)
+    uni_cap - barred_form: +0.44 (sd 0.16, ahead 10 of 10)
+    wtprod - barred_form: +3.91 (sd 5.04, ahead 7 of 10)
+    wtprod_perm - barred_form: +0.28 (sd 3.26, ahead 1 of 10)
+    top100 - uni_top: -3.11 (sd 5.33, ahead 1 of 10)
+    cap90 - uni_cap: -1.10 (sd 3.06, ahead 4 of 10)
+    wtprod - wtprod_perm: +3.62 (sd 4.84, ahead 10 of 10)
+    per-term skill, top100 - barred_form: de_score -0.067, de_direction +0.001, severity_slope -0.069, mmd_u +0.100, variogram +0.073
+    per-term skill, uni_top - barred_form: de_score +0.001, de_direction +0.003, severity_slope -0.015, mmd_u +0.069, variogram +0.076
+    per-term skill, cap90 - barred_form: de_score +0.001, de_direction +0.001, severity_slope -0.046, mmd_u +0.021, variogram +0.026
+    per-term skill, uni_cap - barred_form: de_score +0.001, de_direction +0.001, severity_slope -0.005, mmd_u +0.025, variogram +0.027
+    per-term skill, wtprod - barred_form: de_score +0.010, de_direction +0.012, severity_slope +0.183, mmd_u -0.068, variogram -0.056
+    per-term skill, wtprod_perm - barred_form: de_score -0.008, de_direction +0.001, severity_slope +0.045, mmd_u -0.038, variogram -0.022
+dm g2 T3w/WT->Gata4rep2:
+    barred_form  63.84 (sd 0.60); severity scored 10, gated 0 {'scored': 10}, median beta 0.513, r2 0.222; skills de_score 0.580, de_direction 0.591, severity_slope 0.914, mmd_u 0.455, variogram 0.420
+    top100       59.37 (sd 1.07); severity scored 10, gated 0 {'scored': 10}, median beta 0.273, r2 0.109; skills de_score 0.487, de_direction 0.555, severity_slope 0.843, mmd_u 0.509, variogram 0.463
+    uni_top      64.32 (sd 0.59); severity scored 10, gated 0 {'scored': 10}, median beta 0.407, r2 0.222; skills de_score 0.581, de_direction 0.593, severity_slope 0.886, mmd_u 0.502, variogram 0.486
+    cap90        63.86 (sd 0.53); severity scored 10, gated 0 {'scored': 10}, median beta 0.460, r2 0.208; skills de_score 0.581, de_direction 0.591, severity_slope 0.901, mmd_u 0.468, variogram 0.442
+    uni_cap      64.09 (sd 0.63); severity scored 10, gated 0 {'scored': 10}, median beta 0.472, r2 0.223; skills de_score 0.581, de_direction 0.592, severity_slope 0.905, mmd_u 0.474, variogram 0.447
+    wtprod       62.56 (sd 0.59); severity scored 10, gated 0 {'scored': 10}, median beta 0.609, r2 0.237; skills de_score 0.573, de_direction 0.583, severity_slope 0.936, mmd_u 0.380, variogram 0.354
+    wtprod_perm  62.95 (sd 0.44); severity scored 10, gated 0 {'scored': 10}, median beta 0.519, r2 0.202; skills de_score 0.565, de_direction 0.593, severity_slope 0.917, mmd_u 0.426, variogram 0.389
+    top100 - barred_form: -4.47 (sd 0.89, ahead 0 of 10)
+    uni_top - barred_form: +0.48 (sd 0.20, ahead 10 of 10)
+    cap90 - barred_form: +0.02 (sd 0.26, ahead 6 of 10)
+    uni_cap - barred_form: +0.26 (sd 0.19, ahead 9 of 10)
+    wtprod - barred_form: -1.28 (sd 0.24, ahead 0 of 10)
+    wtprod_perm - barred_form: -0.89 (sd 0.29, ahead 0 of 10)
+    top100 - uni_top: -4.95 (sd 0.81, ahead 0 of 10)
+    cap90 - uni_cap: -0.24 (sd 0.23, ahead 2 of 10)
+    wtprod - wtprod_perm: -0.39 (sd 0.35, ahead 1 of 10)
+    per-term skill, top100 - barred_form: de_score -0.093, de_direction -0.036, severity_slope -0.071, mmd_u +0.054, variogram +0.043
+    per-term skill, uni_top - barred_form: de_score +0.001, de_direction +0.002, severity_slope -0.028, mmd_u +0.047, variogram +0.066
+    per-term skill, cap90 - barred_form: de_score +0.001, de_direction +0.000, severity_slope -0.013, mmd_u +0.013, variogram +0.021
+    per-term skill, uni_cap - barred_form: de_score +0.001, de_direction +0.001, severity_slope -0.009, mmd_u +0.019, variogram +0.027
+    per-term skill, wtprod - barred_form: de_score -0.007, de_direction -0.008, severity_slope +0.022, mmd_u -0.075, variogram -0.067
+    per-term skill, wtprod_perm - barred_form: de_score -0.014, de_direction +0.002, severity_slope +0.003, mmd_u -0.029, variogram -0.031

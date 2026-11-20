@@ -1,0 +1,174 @@
+{
+ "pregate": {
+  "n_genes": 500,
+  "genes_at_clip_phi_m": 30,
+  "phi_m": {
+   "genes_changed": 0,
+   "genes_set_to_1": 0,
+   "genes_at_clip": 30,
+   "sd_ln": 0.6963983459868952,
+   "gene_mean_ln": -0.036734184660334804,
+   "min": 0.25,
+   "max": 4.0
+  },
+  "arms": {
+   "top100": {
+    "k": 100,
+    "n_genes": 500,
+    "genes_at_clip": 30,
+    "cut": 0.9453127717050781,
+    "next": 0.9421759794552083,
+    "genes_changed": 400,
+    "genes_set_to_1": 400,
+    "sd_ln": 0.5349692860582211,
+    "gene_mean_ln": -0.01863998242491714,
+    "min": 0.25,
+    "max": 4.0
+   },
+   "uni_top": {
+    "k": 100,
+    "n_genes": 500,
+    "genes_at_clip": 0,
+    "cut": 0.9453127717050781,
+    "next": 0.9421759794552083,
+    "s": 0.7681943662575674,
+    "genes_changed": 500,
+    "genes_set_to_1": 0,
+    "sd_ln": 0.5349692860582211,
+    "gene_mean_ln": -0.028218993705134365,
+    "min": 0.3447473261713568,
+    "max": 2.900675144041435
+   },
+   "cap90": {
+    "q": 0.9,
+    "t": 1.0241528302160519,
+    "genes_off_clip": 470,
+    "genes_at_clip": 0,
+    "genes_changed": 77,
+    "genes_set_to_1": 0,
+    "sd_ln": 0.635851041525841,
+    "gene_mean_ln": -0.03416077281088826,
+    "min": 0.3591005557199066,
+    "max": 2.784735317368837
+   },
+   "uni_cap": {
+    "q": 0.9,
+    "t": 1.0241528302160519,
+    "genes_off_clip": 470,
+    "genes_at_clip": 0,
+    "s": 0.9130565073711512,
+    "genes_changed": 500,
+    "genes_set_to_1": 0,
+    "sd_ln": 0.635851041525841,
+    "gene_mean_ln": -0.03354038634709222,
+    "min": 0.28202344095282234,
+    "max": 3.5458045495136084
+   },
+   "wtprod": {
+    "applied": "phi_M * per_g ** 0.5 per lineage group (fallback phi_M * phi_pooled ** 0.5)",
+    "min": 0.125,
+    "max": 8.0,
+    "groups": [
+     "CM",
+     "CardiacProgenitor",
+     "Ectoderm",
+     "Endocardium",
+     "Endoderm",
+     "Endothelium",
+     "ExtraEmbryonicMeso",
+     "NCC",
+     "Neural",
+     "ParaxialMesoderm",
+     "Pericardium",
+     "PharyngealMesoderm"
+    ],
+    "sd_ln_by_group": {
+     "CM": 0.7816998017800474,
+     "CardiacProgenitor": 0.8274329136892458,
+     "Ectoderm": 0.8428704343628995,
+     "Endocardium": 0.7799604155388283,
+     "Endoderm": 0.8708230520251554,
+     "Endothelium": 0.8757303948750723,
+     "ExtraEmbryonicMeso": 0.8237382372697406,
+     "NCC": 0.8008214763958226,
+     "Neural": 0.8215160440186572,
+     "ParaxialMesoderm": 0.8671705966262215,
+     "Pericardium": 0.80379797704188,
+     "PharyngealMesoderm": 0.8060469826106156,
+     "pooled_fallback": 0.8218191787632916
+    }
+   }
+  },
+  "dropped": {}
+ },
+ "arms": [
+  "barred_form",
+  "top100",
+  "uni_top",
+  "cap90",
+  "uni_cap",
+  "wtprod",
+  "wtprod_perm"
+ ],
+ "row": "K21",
+ "barred_factor": {
+  "name": "transfer_mab21l2_all",
+  "file": "/home/prachh/v/virtual-embryo-challenge/runs/t3_decomp/gata4_20261028T122425Z/factors/transfer_mab21l2_all.csv",
+  "sha256": "64b1e0b8572c7193ed1e1f0b7339a26081e601f1e706e6b08193e1718dc5c7e8",
+  "recorded_in": "decision file submissions.parameters.factor_files",
+  "log2_sd": 1.0046904402385703,
+  "n_up": 238,
+  "n_down": 262
+ },
+ "wt_revert": {
+  "rule": "per lineage group with >= 200 cells: mean within-cell panel proportions; per group held by >= 3 other wild-type samples: log(mean + 1e-5) fitted on stage day by least squares, read at the reference's day; t3_decompose.gene_factor of that trend against the reference's group means (weights: the reference's group sizes; eps 1e-5; clip 0.25-4); exponent 0.5",
+  "exponent": 0.5,
+  "applied": "per lineage group (tries K7b, K8b)",
+  "estimator": "experiments/t3_decomp/k7_wt_revert.py",
+  "estimator_sha256": "ece980fdb60bba77b581bc753d8d3991086cebad203d6ee341c2fdc9c9442a4c",
+  "groups_with_a_factor": [
+   "CM",
+   "CardiacProgenitor",
+   "Ectoderm",
+   "Endocardium",
+   "Endoderm",
+   "Endothelium",
+   "ExtraEmbryonicMeso",
+   "NCC",
+   "Neural",
+   "ParaxialMesoderm",
+   "Pericardium",
+   "PharyngealMesoderm"
+  ],
+  "sd_log_factor_pooled": 0.5359908127886033,
+  "sd_log_factor_per_group": {
+   "CM": 0.5101076728441571,
+   "CardiacProgenitor": 0.636196506953993,
+   "Ectoderm": 0.6021004941905871,
+   "Endocardium": 0.5678826816424947,
+   "Endoderm": 0.7102075522403569,
+   "Endothelium": 0.6923963438131456,
+   "ExtraEmbryonicMeso": 0.8683594490397645,
+   "NCC": 0.5699794059014649,
+   "Neural": 0.7570059733967874,
+   "ParaxialMesoderm": 0.6700002862556046,
+   "Pericardium": 0.6620216647017211,
+   "PharyngealMesoderm": 0.5700022969676061
+  },
+  "genes_at_clip_pooled": 16
+ },
+ "wt_series_sha256": {
+  "E10.5": "d6b37967f9cf3533091964cd07421c48a5c7c04628e9321123a426cb2a9c7e8b",
+  "E7.5": "e8e47255ddeca96d5604c7cd4923bbf27765c24bc6a3cd44e800cd6ea05a7d54",
+  "E8.0": "17530e23fbfa6a139ff68d0353a489d83790f5b60f036b7d2f58303a1ff8a810",
+  "E8.25_late": "d56f94d3e2d719ed3074d86c03eae457ccf90b24145d33300f9958f0e8078593",
+  "E8.5": "41c76db18bfaa92c1d66f8220ec5fbb6d6acccb0a6b78241f40080a3096d37db",
+  "E9.5": "371ca6530e084de2b6cd6703b49d95f4bb59546c9291659809575382a630ee9a"
+ },
+ "provenance": {
+  "commit": "0a3152eba4ec911ac9d24c0ed0e9553bd75d8ccf",
+  "tree_clean": true,
+  "machine": "p01r10srv05",
+  "utc": "2026-11-20 16:41:57"
+ }
+}
