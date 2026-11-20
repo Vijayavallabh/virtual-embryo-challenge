@@ -7019,3 +7019,31 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **What follows, as fixed in entry (ee):** the figures go to the captain in these words beside row H26's; the
     file he named, the full trim, stands unless he names another; with the result before him the hold on the heart
     file ends by his answer.
+- 2026-11-19 (kk), the captain keeps the full trim with row H27's result before him; the hold on the heart file
+  ends (written at 2026-11-20 08:27 UTC; his answer came at about 21:25 UTC on 19 November). Written by the AI assistant,
+  which stated no preference.
+  - **The question as put** (one dialog question, header "Heart file"): "Heart, last upload: the forecast-size read
+    from the side note you forwarded is in, and an independent recomputation matched it. It scored the three files
+    on released stages with each sized by our own forecast procedure instead of the true size. Differences from the
+    full-scope file, in heart points (Overall moves by half; a file scoring below the first upload's 46.4 just
+    leaves the 46.4 standing). If E12.5 was sampled like E10.5: full trim -2.9 (-5.4 on the two E10.5 practice
+    steps, -13.1 on the nearest one); half trim +0.4 (-1.4, -6.8). If E12.5 was dissected clean: full trim +11.3
+    (+5.5 on the E10.5 steps); half trim +5.1 (+5.0). These are close to the earlier true-size figures (-3.9 and
+    +11.8 for the full trim). The read's own limit: every practice forecast used growth rates from before E9.0,
+    which our size procedure says carry no information about later growth, and the test's forecast reaches two days
+    ahead, further than any practice one. I state no preference. Which heart file goes?"
+  - **The options as put:** "Full trim (as ruled)" ("Your ruling of 19 November stands and the hold ends. Built and
+    checked: T2heart_s2core_half.h5ad. Largest gain if E12.5 was dissected clean, largest loss if it was sampled
+    like E10.5."); "Half trim" ("Between the other two in both cases. Not built yet: needs a rules amendment with
+    your words and two builds, about an hour."); "Full-scope file" ("The file ruled on 18 November, built and
+    checked: T2heart_s2iso_half.h5ad. Ahead of both trims on the E10.5 practice steps if E12.5 was sampled like
+    E10.5; gives up the trims' gain if it was dissected clean.").
+  - **His answer, verbatim:** "Full trim (as ruled)".
+  - **So:** the heart's last upload is the file of entry (cc) and of the heart section of `docs/S2_RULES.md`:
+    `runs/manual_upload/T2heart_s2core_half.h5ad`, sha256
+    04cde6361c04840ee47fff32eb9a20f4781bd649387cc540ed9fdea71e65fa35 (record
+    `experiments/builds/results/heart3_3d52b83.txt`). The hold of entry (ee) ends by this answer. The file is
+    handed over with the others once the notes that precede the second uploads are settled with him.
+  - **A slip in housekeeping.** This entry's first write failed: the machine's system disk, which holds the
+    session's temporary folder, was full. Nothing was half-written. The AI assistant removed its own pytest
+    temporary folders there (about 10 GB of test trees from this session) and told the captain.
