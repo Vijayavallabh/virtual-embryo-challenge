@@ -7210,3 +7210,40 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     with knockouts of genes other than the two held-out ones (Task 3: the canonical Wnt pathway's other genes,
     cardiac transcription factors, and any others). It downloads nothing and reads no finding. Whether another
     gene's knockout data may shape the T3 file is put to the captain as its own question before any is used.
+- 2026-11-20 (h), the scores the captain reported for the latest uploads, what they show, and the candidate sets
+  fixed before their scores exist (state at 11:53 UTC). Written by the AI assistant.
+  - **His message, in part, verbatim:** "The following is our current leaderboard scenario. Our latest submissions
+    [Last updated] have made some improvements in some tasks, while in others, they didn't outshine our first
+    submission. Analyze it thoroughly to further improve our leaderboard score at all drastic costs. [Utilize the
+    dgx compute and space to your will]. Don't search for our position in the leaderboard at all." The table he
+    pasted, as given (score, then the change from the baseline; his column names):
+    T1, "1 day ago", rank 88, 70.9: DES 64.9, DCS 76.7, MMD 71.1, CSS 70.6.
+    T2 heart, "Today", rank 52, 56.4: DES 53.5, DCS 63.3, MMD 48.3, CSS 57.9, SDD 55.5, ODS 43.2, TSR 85.1, NFS 53.7.
+    T2 embryo, "1 day ago", rank 154, 64.6: DES 64.6, DCS 73.0, MMD 78.1, CSS 62.9, SDD 30.9, ODS 2.5, TSR 96.5,
+    NFS 74.4. T3, "Today", rank 104, 61.8: DES 53.7, DCS 59.4, PSS 85.5, MMD 48.1, CSS 46.5. The AI assistant
+    reads his columns as the scorer's terms: DES de_score, DCS de_direction, PSS the severity term, MMD mmd_u, CSS
+    the variogram, SDD d2_shape, ODS occupancy_dice, TSR the scale term, NFS neighborhood_mmd. It does not look
+    for the team's row on the site (his word).
+  - **Standing by these figures:** 70.9 + 61.8 + (56.4 + 64.6) / 2 = 193.2, up from 174.2. The heart rose by 10.0
+    with the full trim and T3 by 14.0 with the barred file, whose severity term left the floor. T1 and the embryo
+    show their first uploads; what the later uploads on those boards scored was not reported.
+  - **Lines that stay** (Official Rules, Section 10, and entry 2026-11-18 (k)): a returned score chooses among
+    predictions and is the ordinary reason to try another value; it never sets a number in a file, and no property
+    of a hidden target is solved from it (no slope from the severity term, no size from the scale term, no
+    sampling or parity of a hidden stack). So each board's next candidates are a short list fixed here, before any
+    of their scores exist, each built from released or registered data; scores then pick among them. The AI
+    assistant stays recused on the heart's scope and size, this result included.
+  - **On how many uploads the team has.** The AI assistant plans on at most two official uploads per board per
+    day, reading his sentence of entry (g) ("they havee improveed 2 submissions daily") as his statement that the
+    organisers now allow a team that; it cannot check it (he stopped the read) and relies on his word. If the
+    limit is still two per board for the phase, every board's allowance is used and it prepares nothing further
+    for upload. It builds nothing on uploads through other accounts.
+  - **Candidate sets, fixed now.** T3 (terms with most weight left: de_score, then de_direction and the state
+    terms): (1) the barred branch's s2, built and on the reference list (the same factor at the mild composition;
+    `runs/archive/builds_dc7b6ae/t3_build/barred_s2.h5ad`, 1b69521e3c28); (2) and (3) the barred s1 with its
+    factor at exponents 1.5 and 2.0 (row K18's record has the factor's slope under 1 on the practice knockout,
+    and the like dial on a second factor rose to 1.5); a builder option is being written. Embryo: the file he
+    chose on 19 November before the twin, built and checked (the first upload's cells on E7.5's exact positions,
+    `runs/manual_upload/T2embryo_s2x.h5ad`, a03611a343fa). T1 and the heart's expression: set after he gives the
+    scores of the two uploads that did not improve; the heart's scope and size candidates are for analysts other
+    than the AI assistant.
