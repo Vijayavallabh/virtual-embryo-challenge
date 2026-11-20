@@ -38,17 +38,18 @@ combined phi as given (`apply_gene_factor`, after the cells are drawn, before lo
 as `phi_M ** x` here, the same numpy operation the frozen build applies for w = x, so each identity form gives its
 base's bytes. No depth, stage or coverage step: the barred spec has none.
 
-Refusals (exit status 2), before anything loads: another form; t3_decompose.py, rules.yaml or build_submission.py
-whose sha256 differs from the bytes pinned below (the same bytes build_barred_exponent.py pins); a tree that is not
-clean by vec.provenance's rule; the frozen builder's decision-file check, with no allow flag; then, when the factor
-loads, a table whose sha256 differs from the decision file's record (the frozen loader) or from the value pinned here,
-a table whose genes differ from the reference's (order included; the frozen loader), or a combination that is not
-finite and positive.
+Refusals (exit status 2), before anything loads: another form (taken as typed, no whitespace stripped); on the command
+line a seed other than 1000001 or an --n-cells other than 'max' (the list fixes both); t3_decompose.py, rules.yaml
+or build_submission.py whose sha256 differs from the bytes pinned below (the same bytes build_barred_exponent.py
+pins); a tree that is not clean by vec.provenance's rule; the frozen builder's decision-file check, with no allow
+flag; then, when the factor loads, a table whose sha256 differs from the decision file's record (the frozen loader) or
+from the value pinned here, a table whose genes differ from the reference's (order included; the frozen loader), or a
+combination that is not finite and positive.
 
 The sidecar is the frozen builder's plus one block `combined_build` (this script and its sha256, the form, the base,
 x, the Gata4 weight, c, both tables with their paths and hashes, the SDs and correlation, the common-shift figures, the
 pinned frozen hashes, the list's entry). It adds no cell number. `inputs.factor` stays the frozen loader's record of
-phi_M; the factor applied is the one `combined_build` names.
+phi_M; the factor applied is the one `combined_build` names, as `inputs.factor_note` says in every form.
 
   uv run --frozen --no-sync python -I -B experiments/t3_decomp/build_two_knockout.py build DECISIONS.json \\
       --form c1-s1 --wt data/raw/T2/E8.75.h5ad --run-dir runs/t3_decomp/gata4_<STAMP> --board T3:bcatenin \\
@@ -105,8 +106,10 @@ REFUSED_FORMS = {"c1-s1x1.5": "C1 is fixed on the x = 1 bases only (barred s1, b
 WHERE = ("the frozen loader's phi_M and phi_G (each already rescaled and clipped to [0.25, 4] by gene_factor) are "
          "combined gene by gene here; t3_decompose.build receives the combination at w = 1 and applies it through "
          "apply_gene_factor after the cells are drawn; nothing is rescaled or clipped after the combination")
-LIST_ENTRY = ("docs/PLAN.md decision log: the entry that fixes the two-knockout list (C1, C2) and its search rule "
-              "before any of their scores; ledger row R17")
+LIST_ENTRY = "docs/PLAN.md decision log 2026-11-20 (q); experiments/harness/TRIES.md row R17"
+LIST_SEED, LIST_N_CELLS = 1_000_001, "max"
+LIST_INPUTS_REFUSAL = "the list fixes seed 1000001 and max_cells"
+FACTOR_NOTE = "the frozen loader's record of phi_M only; the factor applied is combined_build.combination"
 DEN_NOTE = ("not recorded: the factor files carry gene and factor only (t3_decompose.submission_parameters), so the "
             "den-weighted mean cannot be computed from the tables alone")
 
@@ -116,7 +119,7 @@ app = typer.Typer(no_args_is_help=True, add_completion=False)
 
 def parse_form(form) -> tuple[str, str]:
     """--form: exactly one of FORMS; returns (kind, base), else Refused."""
-    f = str(form).strip() if form is not None else ""
+    f = str(form) if form is not None else ""
     if f in REFUSED_FORMS:
         raise Refused(f"--form {form!r} is refused: {REFUSED_FORMS[f]}")
     if f not in FORMS:
@@ -252,6 +255,7 @@ def build_form(decision: Path, form, wt: Path, board, n_cells: int, out: Path, r
     if got.get("n_loads") != 1 or side["construction"]["factor_exponent"] != 1.0 or \
             side["spec"]["factor"] != FROZEN_FACTOR:
         raise RuntimeError("the build did not apply the combined factor once at w = 1")
+    side["inputs"]["factor_note"] = FACTOR_NOTE
     side["combined_build"] = {
         "script": SCRIPT, "script_sha256": bs.sha256(SCRIPT_PATH), "form": f"{kind}-{base}",
         "base": {"name": base, "slot": slot, "x": x, "reference_sha256": base_sha,
@@ -281,14 +285,17 @@ def build(
     board: str = typer.Option(..., help="T3 board key in boards/"),
     out: Path = typer.Option(..., help="output .h5ad (sidecar: same name with .json)"),
     run_dir: Path = typer.Option(None, help="run directory holding factors/"),
-    seed: int = typer.Option(1_000_001, help="as the frozen builder (never below vec.harness.BUILD_SEED_OFFSET)"),
-    n_cells: str = typer.Option("max", help="'max' (default): the board's max_cells, read in code, never printed"),
+    seed: int = typer.Option(1_000_001, help="1000001, the list's seed; any other is refused"),
+    n_cells: str = typer.Option("max", help="'max', the list's count: the board's max_cells, read in code, never "
+                                "printed; any other is refused"),
     boards_dir: Path = typer.Option(None, help="boards directory (default: the repository's boards/)"),
     overwrite: bool = typer.Option(False, help="replace an existing output"),
     threads: int = typer.Option(16, help="BLAS threads while preparing the reference (the frozen default)"),
 ):
     """Build one fixed form."""
     try:
+        if seed != LIST_SEED or n_cells != LIST_N_CELLS:
+            raise Refused(LIST_INPUTS_REFUSAL)
         parse_form(form)
         b = bs.board_spec(board, boards_dir)
         s = build_form(decision, form, wt, b, bs.resolve_n_cells(n_cells, b), out, run_dir=run_dir, seed=seed,

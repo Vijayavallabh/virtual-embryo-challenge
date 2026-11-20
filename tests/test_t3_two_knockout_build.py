@@ -132,6 +132,10 @@ def test_identity_forms_give_the_frozen_barred_files_byte_for_byte(world, tmp_pa
     assert side["inputs"]["rng_streams"] == frozen["inputs"]["rng_streams"] == [f"submission:barred:{base}",
                                                                                 f"submission:barred:{base}:assemble"]
     assert side["inputs"]["factor"] == frozen["inputs"]["factor"]
+    # the one added input is the note on what inputs.factor records; everything else is the frozen builder's
+    assert side["inputs"]["factor_note"] == ("the frozen loader's record of phi_M only; the factor applied is "
+                                             "combined_build.combination")
+    assert {k: v for k, v in side["inputs"].items() if k != "factor_note"} == frozen["inputs"]
     on_disk = json.loads((tmp_path / "id.json").read_text())
     assert set(on_disk) == set(frozen) | {"combined_build"}
     cb = on_disk["combined_build"]
@@ -142,7 +146,9 @@ def test_identity_forms_give_the_frozen_barred_files_byte_for_byte(world, tmp_pa
     assert cb["combination"]["gata4_weight"] == 0.0 and cb["combination"]["c"] == 1.0
     assert set(cb["tables"]) == {bk.TABLE_M, bk.TABLE_G}
     assert all(t["sha256"] == t["pinned_sha256"] for t in cb["tables"].values())
-    assert cb["depth_step"] is None and "list_entry" in cb
+    assert cb["depth_step"] is None
+    assert cb["list_entry"] == "docs/PLAN.md decision log 2026-11-20 (q); experiments/harness/TRIES.md row R17"
+    assert on_disk["inputs"]["factor_note"] == bk.FACTOR_NOTE
     assert not any("cell" in k.lower() for k in cb) and not any("cell" in k.lower() for k in cb["combination"])
     stamp = json.loads((tmp_path / "id.h5ad.stamp.json").read_text())
     assert stamp["sha256"] == side["output"]["sha256"] and stamp["clean"] is True
@@ -229,6 +235,8 @@ def test_the_factor_applied_is_the_forms_combination(world, tmp_path, monkeypatc
         assert np.std(np.log(phi)) == pytest.approx(np.std(x * lm), rel=1e-12, abs=0)   # held at the base's size
         assert side["combined_build"]["combination"]["c"] == pytest.approx(c, rel=1e-13)
     cb = side["combined_build"]
+    assert side["inputs"]["factor_note"] == bk.FACTOR_NOTE
+    assert json.loads((tmp_path / "f.json").read_text())["inputs"]["factor_note"] == bk.FACTOR_NOTE
     assert cb["form"] == form and cb["base"]["x"] == x and side["construction"]["factor_exponent"] == 1.0
     assert side["spec"]["factor"] == bk.FROZEN_FACTOR and side["construction"]["depth_ratios"] is None
     assert side["construction"]["stage_alphas"] is None and not side["spec"].get("depth")
@@ -265,11 +273,20 @@ def test_c1_on_the_larger_exponent_bases_is_refused(world, tmp_path, form):
 
 
 @pytest.mark.parametrize("form", ["c3-s1", "C1-s1", "c1", "identity", "c2-s1x1.25", "c2-s3", "g-s1", "m-s1", "s-s1",
-                                  "p-s1", "", None, "1.5", "c2-s1x1.5,c1-s1"])
+                                  "p-s1", "", None, "1.5", "c2-s1x1.5,c1-s1", "c1-s1 ", " c1-s1", "c1-s1\n",
+                                  "\tc2-s2", "identity-s1 ", " "])
 def test_other_forms_are_refused(world, tmp_path, form):
     with pytest.raises(bk.Refused, match="form"):
         build(world, form, tmp_path / "x.h5ad")
     assert not (tmp_path / "x.h5ad").exists() and not (tmp_path / "x.json").exists()
+
+
+@pytest.mark.parametrize("form", ["c1-s1 ", " c1-s1", "c1-s1\n", "identity-s1\t", "c2-s2\r"])
+def test_parse_form_strips_no_whitespace(form):
+    with pytest.raises(bk.Refused, match="is not one of"):
+        bk.parse_form(form)
+    kind, base = form.strip().split("-", 1)
+    assert bk.parse_form(form.strip()) == (kind, base)
 
 
 def test_the_fixed_forms():
@@ -375,8 +392,7 @@ def test_cli_takes_a_fixed_form_and_no_free_number(world, tmp_path):
     from vec.io import check_submission
 
     base = ["build", str(world.dec), "--wt", str(world.wt), "--board", "T3:synthetic", "--boards-dir",
-            str(world.d / "boards"), "--n-cells", str(N), "--run-dir", str(world.run), "--seed", str(SEED),
-            "--threads", "2"]
+            str(cli_boards(tmp_path)), "--run-dir", str(world.run), "--seed", str(SEED), "--threads", "2"]
     runner = CliRunner()
     res = runner.invoke(bk.app, [*base, "--form", "c1-s1x2.0", "--out", str(tmp_path / "a.h5ad")])
     assert res.exit_code == 2 and "refused" in res.output and not (tmp_path / "a.h5ad").exists()
@@ -391,3 +407,30 @@ def test_cli_takes_a_fixed_form_and_no_free_number(world, tmp_path):
         out = tmp_path / f"{extra[0].strip('-')}.h5ad"
         res = runner.invoke(bk.app, [*base, "--form", "c1-s1", *extra, "--out", str(out)])
         assert res.exit_code != 0 and not out.exists(), extra
+
+
+def cli_boards(tmp_path: Path) -> Path:
+    """A boards directory whose synthetic board's max_cells is N, so that the list's 'max' builds N cells."""
+    boards = tmp_path / "boards"
+    boards.mkdir()
+    (boards / "T3__synthetic.genes.txt").write_text("\n".join(GENES) + "\n")
+    (boards / "index.json").write_text(json.dumps({"T3:synthetic": {
+        "task": "T3", "genes_file": "T3__synthetic.genes.txt", "needs_coords": True, "min_cells": 200,
+        "max_cells": N}}))
+    return boards
+
+
+@pytest.mark.parametrize("extra", [["--seed", "1000002"], ["--seed", "0"], ["--n-cells", str(N)],
+                                   ["--n-cells", "3000"], ["--n-cells", "max_cells"], ["--n-cells", "MAX"],
+                                   ["--n-cells", "max "], ["--seed", "1000002", "--n-cells", str(N)]])
+def test_cli_refuses_a_seed_or_cell_count_other_than_the_lists(world, tmp_path, extra):
+    from typer.testing import CliRunner
+
+    assert SEED == bk.LIST_SEED == 1_000_001 and bk.LIST_N_CELLS == "max"
+    out = tmp_path / "x.h5ad"
+    args = ["build", str(world.dec), "--wt", str(world.wt), "--board", "T3:synthetic", "--boards-dir",
+            str(cli_boards(tmp_path)), "--run-dir", str(world.run), "--threads", "2", "--form", "c1-s1", "--out",
+            str(out), *extra]
+    res = CliRunner().invoke(bk.app, args)
+    assert res.exit_code == 2 and "refused: the list fixes seed 1000001 and max_cells" in res.output, res.output
+    assert not out.exists() and not out.with_suffix(".json").exists()
