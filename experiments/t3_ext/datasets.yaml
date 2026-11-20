@@ -327,6 +327,9 @@ datasets:
     # (the parent through every distinct field value and a pattern view of every sample line): the main session and an
     # independent second reader agent; they agree (docs/PLAN.md decision log 2026-11-20 (bb)). Each wild-type control is
     # pinned once per knockout gene it serves.
+    # Unpinned 2026-11-20 after the first fetch: GSM6202150, GSM6202152, GSM6202154 and GSM6202158. Their feature files
+    # are aligned to a mixed human and mouse reference (species-prefixed gene names), so no panel gene matches by name;
+    # a data-form exclusion made before any ratio was computed, not a label finding (decision log 2026-11-20 (cc)).
     pinned:
       # ---- ko, gene Dnmt1 (genotype as labelled: "Dnmt1 null")
       # GSM6202147: title Dnmt1_KO_1
@@ -351,13 +354,6 @@ datasets:
         files: ["GSM6202149_Dnmt1_KO_3_barcodes.tsv.gz", "GSM6202149_Dnmt1_KO_3_features.tsv.gz", "GSM6202149_Dnmt1_KO_3_matrix.mtx.gz"]
         metadata_sha256: "93083bb78b65d5e5bffc8df0267975a0e614b82cf72114c769296021183ece00"
       # ---- ko, gene Dnmt3a (genotype as labelled: "Dnmt3a null")
-      # GSM6202150: title Dnmt3a_KO_13
-      - accession: GSM6202150
-        arm: ko
-        gene: "Dnmt3a"
-        stage: E8.5
-        files: ["GSM6202150_Dnmt3a_KO_13_barcodes.tsv.gz", "GSM6202150_Dnmt3a_KO_13_features.tsv.gz", "GSM6202150_Dnmt3a_KO_13_matrix.mtx.gz"]
-        metadata_sha256: "6145175c2f824cc952841c550363cf15241a202aeca07bda2d4ac2258d42b08b"
       # GSM6202151: title Dnmt3a_KO_14
       - accession: GSM6202151
         arm: ko
@@ -365,13 +361,6 @@ datasets:
         stage: E8.5
         files: ["GSM6202151_Dnmt3a_KO_14_barcodes.tsv.gz", "GSM6202151_Dnmt3a_KO_14_features.tsv.gz", "GSM6202151_Dnmt3a_KO_14_matrix.mtx.gz"]
         metadata_sha256: "93994626d6889515685f7bb987c23913175fac09eb2a5893141a975f9d330992"
-      # GSM6202152: title Dnmt3a_KO_1
-      - accession: GSM6202152
-        arm: ko
-        gene: "Dnmt3a"
-        stage: E8.5
-        files: ["GSM6202152_Dnmt3a_KO_1_barcodes.tsv.gz", "GSM6202152_Dnmt3a_KO_1_features.tsv.gz", "GSM6202152_Dnmt3a_KO_1_matrix.mtx.gz"]
-        metadata_sha256: "967494336824de0a7b15104f645f660c4f6a3bf2839684e0a6302cf6fef0aac3"
       # GSM6202153: title Dnmt3a_KO_2
       - accession: GSM6202153
         arm: ko
@@ -380,13 +369,6 @@ datasets:
         files: ["GSM6202153_Dnmt3a_KO_2_barcodes.tsv.gz", "GSM6202153_Dnmt3a_KO_2_features.tsv.gz", "GSM6202153_Dnmt3a_KO_2_matrix.mtx.gz"]
         metadata_sha256: "ac6e9c533144b1343d812c0686bfcf1630815bf9f4ca912b03031be4900d57d8"
       # ---- ko, gene Dnmt3b (genotype as labelled: "Dnmt3b null")
-      # GSM6202154: title Dnmt3b_KO_11
-      - accession: GSM6202154
-        arm: ko
-        gene: "Dnmt3b"
-        stage: E8.5
-        files: ["GSM6202154_Dnmt3b_KO_11_barcodes.tsv.gz", "GSM6202154_Dnmt3b_KO_11_features.tsv.gz", "GSM6202154_Dnmt3b_KO_11_matrix.mtx.gz"]
-        metadata_sha256: "e0812be87d2b5397e2bf05b5eb2e76d3db9a2aef68fcb4b630c73106b6860ddf"
       # GSM6202155: title Dnmt3b_KO_12
       - accession: GSM6202155
         arm: ko
@@ -409,12 +391,6 @@ datasets:
         files: ["GSM6202157_Dnmt3b_KO_2_barcodes.tsv.gz", "GSM6202157_Dnmt3b_KO_2_features.tsv.gz", "GSM6202157_Dnmt3b_KO_2_matrix.mtx.gz"]
         metadata_sha256: "150f3aef5a79e3a88385a2734937a6d56cdd828a3c9dbba73b9a262a6dda363a"
       # ---- control, gene Dnmt1 (genotype as labelled: "Wildtype"; titles WT_1 to WT_7)
-      - accession: GSM6202158
-        arm: control
-        gene: "Dnmt1"
-        stage: E8.5
-        files: ["GSM6202158_WT_1_barcodes.tsv.gz", "GSM6202158_WT_1_features.tsv.gz", "GSM6202158_WT_1_matrix.mtx.gz"]
-        metadata_sha256: "467caf27c7226794cac4db0447b28424ff5d5d54bac5ca07b986d5583e13f47b"
       - accession: GSM6202159
         arm: control
         gene: "Dnmt1"
@@ -452,12 +428,6 @@ datasets:
         files: ["GSM6202164_WT_7_barcodes.tsv.gz", "GSM6202164_WT_7_features.tsv.gz", "GSM6202164_WT_7_matrix.mtx.gz"]
         metadata_sha256: "f5c7c2da37f1b9e838f58403c7dcd068d7c2cecc7aadcf75a6741b9caedf3cb3"
       # ---- control, gene Dnmt3a (genotype as labelled: "Wildtype"; titles WT_1 to WT_7)
-      - accession: GSM6202158
-        arm: control
-        gene: "Dnmt3a"
-        stage: E8.5
-        files: ["GSM6202158_WT_1_barcodes.tsv.gz", "GSM6202158_WT_1_features.tsv.gz", "GSM6202158_WT_1_matrix.mtx.gz"]
-        metadata_sha256: "467caf27c7226794cac4db0447b28424ff5d5d54bac5ca07b986d5583e13f47b"
       - accession: GSM6202159
         arm: control
         gene: "Dnmt3a"
@@ -495,12 +465,6 @@ datasets:
         files: ["GSM6202164_WT_7_barcodes.tsv.gz", "GSM6202164_WT_7_features.tsv.gz", "GSM6202164_WT_7_matrix.mtx.gz"]
         metadata_sha256: "f5c7c2da37f1b9e838f58403c7dcd068d7c2cecc7aadcf75a6741b9caedf3cb3"
       # ---- control, gene Dnmt3b (genotype as labelled: "Wildtype"; titles WT_1 to WT_7)
-      - accession: GSM6202158
-        arm: control
-        gene: "Dnmt3b"
-        stage: E8.5
-        files: ["GSM6202158_WT_1_barcodes.tsv.gz", "GSM6202158_WT_1_features.tsv.gz", "GSM6202158_WT_1_matrix.mtx.gz"]
-        metadata_sha256: "467caf27c7226794cac4db0447b28424ff5d5d54bac5ca07b986d5583e13f47b"
       - accession: GSM6202159
         arm: control
         gene: "Dnmt3b"
