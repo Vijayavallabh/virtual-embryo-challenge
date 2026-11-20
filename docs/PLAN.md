@@ -7416,3 +7416,26 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     of our own T3 file, which follows a board count by code. The value is quoted nowhere and enters nothing. T3
     builds are read like every other test build from here on: exit code, hash, the stamp's commit and clean
     fields.
+- 2026-11-20 (n), the captain's answer on the heart list; T1's order and rule, fixed before any candidate has a
+  score; what was started (state at 15:06 UTC). Written by the AI assistant.
+  - **The heart.** The analysts' list of entry (m) went to him in one question with their practice figures both
+    ways, the cost of a miss, and "I am recused on the heart's scope and size and state no preference" (the
+    question and its three options are in full in `docs/S2_RULES.md`, the heart amendment of 2026-11-20). His
+    answer, verbatim: "Both, K1 then K2". That is his own named exception on scope for K1 and his word for K2. The
+    amendment names row R16 and carries the analysts' ten-point rule in their words (new S2_RULES sha256 in
+    `docs/S2_RULES.sha256`). The analysts' launcher was merged (b807050; 87 targeted tests pass) and started on
+    `~/v/vec-campaign` at 1ba7c67: the full trim must reproduce 04cde636... before K1 and K2 are built, each twice.
+  - **T1: the order and the rule, fixed now.** No candidate of row R15 has a score, and none is built yet. Round
+    one: A and B, the two single changes to R13's file. C (both changes) is uploaded only if A and B each return a
+    strictly higher headline than R13's file returned; otherwise C is not uploaded. Only headlines of the team's
+    own T1 uploads choose. T1's standing file is the highest headline among the first upload, R13's file, A, B and
+    C; a tie keeps the earlier file. No candidate is re-seeded, rebuilt or changed after its score, and no
+    damping, fraction or other number is set from a score. A further T1 line (more atlases for the direction) is
+    weighed only after B's score says whether the direction is worth anything at the test; that reading uses the
+    headline's sign against R13's file and nothing else.
+  - **A point for the captain when T1 files are marked.** The first T1 upload used the atlas authors' labels; the
+    team's own odds that the organisers discount it were put at about 0.6 on 2026-11-19. Which upload is marked as
+    final per board is his act on the site; he is told once, with the T1 hand-over.
+  - **Started:** T1's builds on `~/v/vec-campaign-d` at 1420c70 (default first, which must reproduce ad8f24c7...).
+    Three agent groups: the embryo's stage 2 (wf_666d097c-21a), the T3 screen fix (wf_e988fff9-6e1), T3
+    candidates from the two released knockouts (wf_42122fd0-924).
