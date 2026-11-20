@@ -8,7 +8,10 @@ counts come from GEO through two forms, or (phase 2, ae.py) from one ArrayExpres
   per_sample    one plain text count table in each pinned sample's OWN GEO folder (the single-cell own-folder rule,
                 DENY and sample_file_patterns apply; .txt, .tsv, .csv or .tab, optionally gzipped; XLSX, RDS and
                 binary forms are refused). It holds the declared gene_columns and exactly one count column; with more
-                columns, count_column names the header, which must tie to this sample by the exact tie rule.
+                columns, count_column names the header, which must tie to this sample by the exact tie rule. Its
+                first line is screened before any value is parsed (a held-out hit refuses with the text withheld; a
+                review term needs a review_cleared entry naming the sample), and a single count column that ties by
+                the exact rule to another sample is refused (round 2).
   series_table  ONE text count table of a screened series' OWN folder. Before any pin, the header step
                 (`fetch.py header`) streams the file, stops at the first newline (at most HEADER_MAX_BYTES of
                 decompressed text), writes only that line and its sha256, screens every header and the whole line,
@@ -29,7 +32,9 @@ gene's own row; Xist, Tsix, the Y genes of the sex call and every chrY panel gen
 when the sex check finds an imbalance or cannot run. k = (m/(m+1))^2 * d (t3x_common.shrink_k_bulk), m the smaller
 number of libraries left in an arm after the guards; stages are averaged with equal weight. Counts only: finite,
 non-negative and integral within 1e-6; a table whose columns all sum to within 1% of 1e6, a second count column
-without count_column, and a column or file named as FPKM, RPKM, TPM, CPM, RSEM or normalised are refused.
+without count_column, and a column or file named as FPKM, RPKM, TPM, CPM, RSEM, normalised or expected counts are
+refused (a series or matrix table so named at the offer, the header step and the read). A GEO sample whose own title,
+source name or characteristics carry heterozygous wording is never pinned, in either arm (round 2).
 
 The guards (fail closed; every number fixed by the reviewed design before any count; outside libraries and the WT
 E8.75 reference statistics only; verdicts to QC.json; no gene-level value is printed): G1 library size, G2 counts
@@ -39,6 +44,7 @@ G9 the genotype in the counts, G10 every single-cell refusal kept, G12 compositi
 
 from __future__ import annotations
 
+import csv
 import hashlib
 import json
 import math
@@ -67,10 +73,32 @@ import t3x_tables as tb  # noqa: E402
 Refused = cm.Refused
 WHOLE = "__whole__"
 NOT_TEXT = "not a plain text table (XLSX, RDS, h5 and other binary forms are refused this round)"
-NORMALISED = re.compile(r"fpkm|rpkm|tpm|(?<![a-z])cpm|rsem|normali[sz]", re.IGNORECASE)
+NORMALISED = re.compile(r"fpkm|rpkm|tpm|(?<![a-z])cpm|rsem|normali[sz]|expected[ _.-]?counts?", re.IGNORECASE)
 HEADER_MAX_COMPRESSED = 16 * 1024 ** 2   # the header step reads at most this many bytes off the wire
+READ_BLOCK = 4096   # round 2 (the first reviewer's lesser point 1): before the pins, at most one block of this size
+#                     passes through memory past the first newline; it is never parsed or written
+# round 2 (the first reviewer's blocker 5): heterozygous wording in a GEO sample's own title, source name or
+# characteristics refuses a pin in either arm (a false hit costs one sample)
+HET_WORDING = re.compile(r"(?<![A-Za-z])het(?:erozygo\w*)?(?![A-Za-z])|\+/-|-/\+", re.IGNORECASE)
 VERSION = re.compile(r"\.\d+$")
 SPECIAL_ROW = ("__", "N_")
+
+
+def refuse_normalised_name(name: str) -> None:
+    """Round 2 (the first reviewer's blocker 4): a count table NAMED as normalised or as expected counts is refused at
+    the offer, at the header step and at the read, for the series form and the accession-keyed form alike."""
+    if NORMALISED.search(name):
+        raise Refused(f"{name}: named as normalised or expected counts: refused (counts only)")
+
+
+def het_wording(rec: dict) -> str | None:
+    """The reason a GEO sample's own record carries heterozygous wording (its title, source name or a characteristics
+    value), or None."""
+    for k in sorted(rec):
+        if k == "title" or k.startswith(("source_name", "characteristics")):
+            if any(HET_WORDING.search(v) for v in rec[k]):
+                return f"heterozygous wording in the sample's own record ({k}): never pinned this round"
+    return None
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -135,6 +163,8 @@ def series_files(ds: dict, gse: str, fields: dict) -> tuple[list[dict], list[dic
             why = "a denied file type"
         elif u and not cm.BULK_TEXT.search(name):
             why = NOT_TEXT
+        elif u and NORMALISED.search(name):
+            why = "named as normalised or expected counts"
         if why:
             other.append({"name": name, "reason": why})
         else:
@@ -201,6 +231,9 @@ def adjust_plan(ds: dict, out: dict, metas: dict) -> None:
     for rows in out["tables"].values():
         for r in rows:
             r["stage"], r["stage_from"] = row_stage(ds, r["fields"], sf)
+            het = het_wording(r["fields"])
+            if het:
+                r["not_pinnable"] = "; ".join(x for x in (r.get("not_pinnable"), het) if x)
 
 
 def declaration(ds: dict) -> dict:
@@ -236,9 +269,9 @@ def first_line(read, gz: bool, label: str) -> bytes:
     eof = False
     while True:
         if d is not None and d.unconsumed_tail:
-            chunk = d.decompress(d.unconsumed_tail, 1 << 16)
+            chunk = d.decompress(d.unconsumed_tail, READ_BLOCK)
         else:
-            block = read(1 << 16)
+            block = read(READ_BLOCK)
             if not block:
                 eof = True
                 chunk = d.flush() if d is not None else b""
@@ -247,7 +280,7 @@ def first_line(read, gz: bool, label: str) -> bytes:
                 if n_in > HEADER_MAX_COMPRESSED:
                     raise Refused(f"{label}: no newline within {HEADER_MAX_COMPRESSED} bytes read: refused")
                 try:
-                    chunk = d.decompress(block, 1 << 16) if d is not None else block
+                    chunk = d.decompress(block, READ_BLOCK) if d is not None else block
                 except zlib.error:
                     raise Refused(f"{label}: not a gzip stream: refused") from None
         buf += chunk
@@ -362,6 +395,7 @@ def record_header(ds: dict, dest: Path, series: str, name: str, url: str, line: 
     withholds the line: only the number of columns is written. A review term not cleared, or a tie problem, refuses
     the table (status refused)."""
     acc = ds["accession"]
+    refuse_normalised_name(name)
     fields = split_header(line, name)
     text = line.decode("utf-8")
     rec = {"accession": acc, "series": series, "name": name, "url": url, "n_columns": len(fields),
@@ -409,6 +443,7 @@ def header(acc: str, dest: Path, series: str | None = None, name: str | None = N
     b = pl["series"][series]
     if cm.series_metadata_sha256(series, b["fields"]) != b["series_metadata_sha256"]:
         raise Refused(f"{series}: the stored series fields no longer hash to the plan's value: plan again")
+    refuse_normalised_name(name or "")
     derived, _ = series_files(ds, series, b["fields"])
     if b.get("files") != derived:
         raise Refused(f"{series}: the stored series file list differs from the one its fields give: plan again")
@@ -458,6 +493,7 @@ def _header_check(ds: dict, pl: dict, rows: list[dict]) -> dict:
     the hash of its stored line), the url its series' hashed fields give, and its ties derived again from its line and
     the plan's rows equal to the stored ones."""
     t = ds["pinned_series_files"][0]
+    refuse_normalised_name(t["name"])
     rec = (pl.get("count_table_headers") or {}).get(t["name"])
     if not rec or rec.get("status") != "ok" or rec.get("withheld"):
         raise Refused(f"{t['name']}: no passing header record in the plan: run the header step, then plan again")
@@ -528,7 +564,7 @@ def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
         row = own[g]
         if not all(fe.plain_key(k) for k in row["fields"]):
             raise Refused(f"{g}: a field name that is not a plain GEO key: refused")
-        why = fe.pin_blocker(ds, row["fields"])
+        why = fe.pin_blocker(ds, row["fields"]) or het_wording(row["fields"])
         if why:
             raise Refused(f"{g}: {why}: refused")
         h = cm.metadata_sha256(g, row["fields"])
@@ -709,7 +745,7 @@ def pin_template(acc: str, dest: Path, arm: str, gene: str, gsms: list[str], dat
             raise Refused(f"{g} is not in the plan table of {acc}")
         if r["verdict"] != "pass":
             raise Refused(f"{g}: screen verdict {r['verdict']}: not pinned here")
-        why = r.get("not_pinnable") or fe.pin_blocker(ds, r["fields"])
+        why = r.get("not_pinnable") or fe.pin_blocker(ds, r["fields"]) or het_wording(r["fields"])
         if why:
             raise Refused(f"{g}: not pinnable: {why}")
         h = cm.metadata_sha256(g, r["fields"])
@@ -758,9 +794,12 @@ def table_template(acc: str, dest: Path, datasets: Path | None = None) -> str:
 def _read_table(src, name: str, usecols=None) -> pd.DataFrame:
     """A text table as strings (no NA conversion), the separator from the name, gzip from the name."""
     try:
+        tab = sep_of(name) == "\t"
+        # round 2 (the first reviewer's lesser point 3): a tab-separated table is read without quote handling, so a
+        # quote in an unpinned text column cannot merge rows
         return pd.read_csv(src, sep=sep_of(name), header=0, dtype=str, keep_default_na=False, na_filter=False,
                            usecols=usecols, compression="gzip" if name.lower().endswith(".gz") else None,
-                           engine="c")
+                           engine="c", **({"quoting": csv.QUOTE_NONE} if tab else {}))
     except (ValueError, pd.errors.ParserError) as e:
         raise Refused(f"{name}: not a table this intake reads ({type(e).__name__}): refused") from None
 
@@ -778,14 +817,30 @@ def counts_column(values, label: str) -> np.ndarray:
     return np.round(x)
 
 
+def screen_sample_header(ds: dict, gsm: str, fields: list[str], text: str) -> None:
+    """Round 2 (the first reviewer's blocker 2): a per-sample count file's first line, screened before any value is
+    parsed. A held-out hit refuses with the text withheld; a review term refuses unless a review_cleared entry names
+    this sample."""
+    held, bad = screen_header(ds, gsm, fields, text)
+    if held:
+        raise Refused(f"{gsm}: a held-out hit in a per-sample header (text withheld): refused")
+    if bad:
+        raise Refused(f"{gsm}: per-sample header screen: {bad}: refused")
+
+
 def read_count_file(path: Path, name: str, gene_columns: list[str], count_column: str | None,
-                    tie_ok) -> tuple[list[str], list[str] | None, np.ndarray, str]:
-    """One per-sample count table: (ids, symbols or None, counts, the count column's header). The first line must hold
-    the declared gene_columns (a headerless file is refused); exactly one other column is the count column, unless
-    count_column names one, which must tie to this sample (tie_ok(header) -> bool); more than one other column without
-    count_column is refused (a Length column, a second sample)."""
+                    tie_hits, gsm: str, screen) -> tuple[list[str], list[str] | None, np.ndarray, str]:
+    """One per-sample count table: (ids, symbols or None, counts, the count column's header). Its first line is
+    screened first (screen(fields, text), before any value is parsed). The first line must hold the declared
+    gene_columns (a headerless file is refused); exactly one other column is the count column, unless count_column
+    names one, which must tie to this sample by the exact rule (tie_hits(header) -> the samples it ties to, exactly
+    [gsm]); more than one other column without count_column is refused (a Length column, a second sample). Round 2
+    (the first reviewer's blocker 3): a single count column that ties by the exact rule to ANOTHER sample is refused
+    (its hits must be [] or exactly [gsm])."""
     with open(path, "rb") as f:
-        hdr = split_header(first_line(f.read, name.lower().endswith(".gz"), name), name)
+        line = first_line(f.read, name.lower().endswith(".gz"), name)
+    hdr = split_header(line, name)
+    screen(hdr, line.decode("utf-8"))
     missing = [c for c in gene_columns if hdr.count(c) != 1]
     if missing:
         raise Refused(f"{name}: its first line does not hold the declared gene column(s) {missing} once: a headerless "
@@ -800,10 +855,13 @@ def read_count_file(path: Path, name: str, gene_columns: list[str], count_column
         if hdr.count(count_column) != 1 or count_column in gene_columns:
             raise Refused(f"{name}: count_column {count_column!r} is not one header of the file: refused")
         col = count_column
+    hits = tie_hits(col)
     if count_column is not None or len(rest) > 1:
-        if not tie_ok(col):
+        if hits != [gsm]:
             raise Refused(f"{name}: the count column {col!r} does not tie to this sample by the exact tie rule: "
                           "refused")
+    elif hits not in ([], [gsm]):
+        raise Refused(f"{name}: the count column ties by the exact rule to another sample: refused")
     if NORMALISED.search(col) or NORMALISED.search(name):
         raise Refused(f"{name}: a column or file named as normalised or expected counts: refused (counts only)")
     df = _read_table(path, name, usecols=[*gene_columns, col])
@@ -814,8 +872,10 @@ def read_count_file(path: Path, name: str, gene_columns: list[str], count_column
 
 def read_series_table(path: Path, name: str, gene_columns: list[str], columns: list[str],
                       header_sha: str) -> tuple[list[str], list[str] | None, dict[str, np.ndarray]]:
-    """The pinned count table: refused unless its first line hashes to header_sha; read with usecols (the gene
-    columns and the pinned columns only), so no unpinned column is parsed."""
+    """The pinned count table: refused when it is named as normalised or expected counts, or unless its first line
+    hashes to header_sha; read with usecols (the gene columns and the pinned columns only), so no unpinned column is
+    parsed."""
+    refuse_normalised_name(name)
     line = _local_first_line(path, name)
     if header_sha256(line) != header_sha:
         raise Refused(f"{name}: its first line does not hash to the pinned header_sha256: refused")
@@ -1180,16 +1240,17 @@ def _check_manifest(ds, pl, man, rdir, pinned, cur, table) -> dict[str, str]:
     return count_sha
 
 
-def _tie_ok(ds: dict, pl: dict, gsm: str):
+def _tie_hits(pl: dict):
+    """hits(header) -> the samples of every plan table the header ties to by the exact rule (sorted)."""
     rows = [r for rs in pl["tables"].values() for r in rs]
     samples = {}
     for r in rows:
         samples.setdefault(r["accession"], r["fields"])
     cands = {g: tie_candidates(g, rec) for g, rec in samples.items()}
 
-    def ok(h: str) -> bool:
-        return [g for g, c in cands.items() if h in c] == [gsm]
-    return ok
+    def hits(h: str) -> list[str]:
+        return sorted(g for g, c in cands.items() if h in c)
+    return hits
 
 
 def read_libraries(ds: dict, pl: dict, pinned: list[dict], rdir: Path) -> tuple[list[dict], dict]:
@@ -1200,8 +1261,10 @@ def read_libraries(ds: dict, pl: dict, pinned: list[dict], rdir: Path) -> tuple[
     if cf == "per_sample":
         for s in pinned:
             f = s["files"][0]
-            ids, sym, x, col = read_count_file(rdir / s["accession"] / f["name"], f["name"], ds["gene_columns"],
-                                               ds.get("count_column"), _tie_ok(ds, pl, s["accession"]))
+            g = s["accession"]
+            ids, sym, x, col = read_count_file(rdir / g / f["name"], f["name"], ds["gene_columns"],
+                                               ds.get("count_column"), _tie_hits(pl), g,
+                                               lambda fields, text, g=g: screen_sample_header(ds, g, fields, text))
             libs.append({"label": s["accession"], "pin": s, "ids": ids, "symbols": sym, "x": x, "column": col})
         return libs, rec
     table = ds["pinned_series_files"][0]

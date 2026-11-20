@@ -35,8 +35,10 @@ PANEL = [f"g{i}" for i in range(38)] + ["Xist", "Tsix"]
 GROUPS = ["CM", "Endoderm", "Neural"]
 FILLERS = [f"f{i}" for i in range(100)]
 ID = {s: f"ENSMUSG{200000 + i:011d}" for i, s in enumerate(PANEL + FILLERS + list(cm.SEX_GENES[1:]) + list(LINES))}
-PAT = r"(?P<gene>[A-Za-z0-9]+)_(?P<genotype>hom|het|wt)_\d+"
-WITHHELD = ["Trps1", "B9d2", "Cc2d2a", "Ift140", "Kif3b", "Rpgrip1l", "Anks6", "Atxn10"]
+PAT = r"(?P<gene>[^_]+)_(?P<genotype>wt|het|hom)\d+"   # the README example: <line>_<wt|het|hom><n>
+WITHHELD = ["Trps1", "Anks6", "Atxn10", "B9d2", "Cc2d2a", "Ift140", "Kif3b", "Kifap3", "Rpgrip1l", "Mad2l2", "Tmem98",
+            "Nek9", "Mtor", "Map2k7", "Traf6", "Traf2", "Rala", "Pigf", "Pigl", "Pgap2", "Hira", "Smc3",
+            "1700007K13Rik", "4933434E20Rik", "Hmgxb3", "Zkscan14", "Zkscan17", "Dhx35", "Gpr107"]
 YAML = f"""version: 1
 qc_floors:
   min_confident_share_per_sample: 0.5
@@ -78,16 +80,17 @@ def embryos():
         for tok, n in arms.items():
             for k in range(1, n + 1):
                 ind += 1
-                out.append((f"{line}_{tok}_{k}", line, tok, "embryonic day 9.5", runs[(ind + k) % 3], str(ind), {}))
+                sn = f"{line}_{tok}{k}"   # the individual is the Source Name, as in the real resource
+                out.append((sn, line, tok, "embryonic day 9.5", runs[(ind + k) % 3], sn, {}))
     ind += 1
-    out.append(("Abcz1_hom_9", "Abcz1", "hom", "embryonic day 10", 1, str(ind), {}))        # past the cap
-    out.append(("Abcz1_hom_8", "Abcz1", "hom", "embryonic day 8.5", 1, str(ind + 1), {}))   # not E9.5
-    out.append(("Abcz1_wt_7", "Abcz1", "wt", "embryonic day 9.5", 2, str(ind + 2), {"sex_row2": "male"}))   # (a)
-    out.append(("Defz2_wt_9", "Defz2", "wt", "embryonic day 9.5", 1, str(ind + 3), {"genotype": GENO["hom"]}))  # (b)
-    out.append(("Defz2_wt_8", "Defz2", "wt", "embryonic day 9.5", 1, "dup-1", {}))         # (e) duplicate individual
-    out.append(("Ghiz3_wt_8", "Ghiz3", "wt", "embryonic day 9.5", 1, "dup-1", {}))
-    out.append(("baseline_wt_1", "baseline", "wt", "embryonic day 9.5", 1, str(ind + 4), {"allele": ""}))
-    out.append(("baseline_wt_2", "baseline", "wt", "embryonic day 9.5", 1, str(ind + 5), {"allele": ""}))
+    out.append(("Abcz1_hom9", "Abcz1", "hom", "embryonic day 10", 1, "Abcz1_hom9", {}))        # past the cap
+    out.append(("Abcz1_hom8", "Abcz1", "hom", "embryonic day 8.5", 1, "Abcz1_hom8", {}))   # not E9.5
+    out.append(("Abcz1_wt7", "Abcz1", "wt", "embryonic day 9.5", 2, "Abcz1_wt7", {"sex_row2": "male"}))   # (a)
+    out.append(("Defz2_wt9", "Defz2", "wt", "embryonic day 9.5", 1, "Defz2_wt9", {"genotype": GENO["hom"]}))  # (b)
+    out.append(("Defz2_wt8", "Defz2", "wt", "embryonic day 9.5", 1, "dup-1", {}))         # (e) duplicate individual
+    out.append(("Ghiz3_wt8", "Ghiz3", "wt", "embryonic day 9.5", 1, "dup-1", {}))
+    out.append(("baseline_wt1", "baseline", "wt", "embryonic day 9.5", 1, "baseline_wt1", {"allele": ""}))
+    out.append(("baseline_wt2", "baseline", "wt", "embryonic day 9.5", 1, "baseline_wt2", {"allele": ""}))
     return out
 
 
@@ -146,7 +149,7 @@ def matrix(ref, runs_of, rng) -> bytes:
     genes = PANEL + FILLERS + list(cm.SEX_GENES[1:]) + list(LINES)
     cols = {}
     for sn, runs in runs_of.items():
-        line, tok = sn.split("_")[0], sn.split("_")[1]
+        line, tok = sn.split("_")[0], sn.split("_")[1].rstrip("0123456789")
         p = tb.whole_den(ref).copy()
         if tok == "hom" and line in LINES:
             k = LINES.index(line) * 4
@@ -190,6 +193,9 @@ def stage(tmp_path, y, monkeypatch):
     assert rec["status"] == "ok", rec.get("reason")
     assert calls == ["https://ftp.ebi.ac.uk/pub/databases/microarray/data/atlas/experiments/E-MTAB-7322/"
                      "E-MTAB-7322-raw-counts.tsv.undecorated"]
+    assert pl["line_set_basis"]["final"] is False
+    pl = fe.plan(ACC, dest, y, metas=texts(sdrf))   # plan again: the line set is final after the header step
+    assert pl["status"] == "ok" and pl["line_set_basis"]["final"] is True, pl.get("reason")
     return dest, wt, refp, ref, pl, rec, data, runs_of, ers_of, sdrf
 
 
@@ -231,36 +237,36 @@ def test_the_many_line_resource_from_plan_to_tables(tmp_path, y, monkeypatch):
     assert all(r["line"] != "Trps1" for r in pl["tables"][ACC])
     # the comparisons
     c = pl["comparisons"]
-    assert c["a"] == ["Abcz1_wt_7"] and c["b"] == ["Defz2_wt_9"] and c["e"] == ["Defz2_wt_8", "Ghiz3_wt_8"]
+    assert c["a"] == ["Abcz1_wt7"] and c["b"] == ["Defz2_wt9"] and c["e"] == ["Defz2_wt8", "Ghiz3_wt8"]
     assert c["c"] == [] and c["d"] == [] and c["f"] == []
     rows = {r["source_name"]: r for r in pl["tables"][ACC]}
-    assert "after E9.5" in rows["Abcz1_hom_9"]["not_pinnable"]
-    assert "only 'embryonic day 9.5'" in rows["Abcz1_hom_8"]["not_pinnable"]
-    assert "heterozygous" in rows["Abcz1_het_1"]["not_pinnable"]
-    assert "baseline" in rows["baseline_wt_1"]["not_pinnable"]
+    assert "after E9.5" in rows["Abcz1_hom9"]["not_pinnable"]
+    assert "only 'embryonic day 9.5'" in rows["Abcz1_hom8"]["not_pinnable"]
+    assert "heterozygous" in rows["Abcz1_het1"]["not_pinnable"]
+    assert "baseline" in rows["baseline_wt1"]["not_pinnable"]
     # the record hash is the canonical serialisation of the Source Name's fields
-    r = rows["Abcz1_hom_1"]
-    want = hashlib.sha256(json.dumps({"accession": "Abcz1_hom_1", "fields": r["fields"]}, sort_keys=True,
+    r = rows["Abcz1_hom1"]
+    want = hashlib.sha256(json.dumps({"accession": "Abcz1_hom1", "fields": r["fields"]}, sort_keys=True,
                                      ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
     assert r["metadata_sha256"] == want and list(r["fields"])[0] == "001|Source Name"
-    assert len(r["runs"]) == len(runs_of["Abcz1_hom_1"]) and len(r["fields"]["013|Comment[ENA_RUN]"]) == 2 * len(
+    assert len(r["runs"]) == len(runs_of["Abcz1_hom1"]) and len(r["fields"]["013|Comment[ENA_RUN]"]) == 2 * len(
         r["runs"])
     # the committed rule fixes the line set
-    assert pl["line_set"] == {"Abcz1": {"ko": ["Abcz1_hom_1", "Abcz1_hom_2", "Abcz1_hom_3"],
-                                        "control": ["Abcz1_wt_1", "Abcz1_wt_2", "Abcz1_wt_3"]},
-                              "Defz2": {"ko": ["Defz2_hom_1", "Defz2_hom_2"],
-                                        "control": ["Defz2_wt_1", "Defz2_wt_2", "Defz2_wt_3"]}}
+    assert pl["line_set"] == {"Abcz1": {"ko": ["Abcz1_hom1", "Abcz1_hom2", "Abcz1_hom3"],
+                                        "control": ["Abcz1_wt1", "Abcz1_wt2", "Abcz1_wt3"]},
+                              "Defz2": {"ko": ["Defz2_hom1", "Defz2_hom2"],
+                                        "control": ["Defz2_wt1", "Defz2_wt2", "Defz2_wt3"]}}
     # the header: the withheld line's runs and the unannotated run are tied to nothing and never read
     trps_runs = sum(len(v) for k, v in runs_of.items() if k.startswith("Trps1"))
     assert rec["ties"]["untied"] == trps_runs + 1 and rec["ties"]["incomplete"] == []
     assert "ERR9999999" not in "\n".join(ae.header_lines(rec))
     # pins: exactly the rule's eligible Source Names, by line and arm
     with pytest.raises(cm.Refused, match="exactly the rule's eligible"):
-        ae.pin_template(ACC, dest, "ko", "Abcz1", ["Abcz1_hom_1", "Abcz1_hom_2"], y)
+        ae.pin_template(ACC, dest, "ko", "Abcz1", ["Abcz1_hom1", "Abcz1_hom2"], y)
     with pytest.raises(cm.Refused, match="not a line of the committed rule"):
-        ae.pin_template(ACC, dest, "ko", "Trps1", ["Trps1_hom_1", "Trps1_hom_2"], y)
+        ae.pin_template(ACC, dest, "ko", "Trps1", ["Trps1_hom1", "Trps1_hom2"], y)
     with pytest.raises(cm.Refused, match="not a line of the committed rule"):
-        ae.pin_template(ACC, dest, "ko", "Ghiz3", ["Ghiz3_hom_1"], y)
+        ae.pin_template(ACC, dest, "ko", "Ghiz3", ["Ghiz3_hom1"], y)
     pin_all(dest, y, pl)
     ds = cm.dataset(ACC, y)
     assert {p["accession"] for p in ds["pinned"]} == {ers_of[s] for v in pl["line_set"].values() for a in v.values()
@@ -300,8 +306,8 @@ def test_the_many_line_resource_from_plan_to_tables(tmp_path, y, monkeypatch):
     assert qc["read"]["columns_read"] == n_runs
     assert set(qc["units"]) == {"Abcz1", "Defz2"} and all(u["status"] == "ok" for u in qc["units"].values()), {
         g: u.get("reason") for g, u in qc["units"].items()}
-    lab = ers_of["Abcz1_hom_1"]
-    assert qc["libraries"][lab]["column"] == "+".join(runs_of["Abcz1_hom_1"])
+    lab = ers_of["Abcz1_hom1"]
+    assert qc["libraries"][lab]["column"] == "+".join(runs_of["Abcz1_hom1"])
     for g in ("Abcz1", "Defz2"):
         L = json.loads(Path(qc["units"][g]["unit_file"]).read_text())["L"]["__whole__"]
         assert L[PANEL.index("Xist")] is None and L[PANEL.index("Tsix")] is None
@@ -319,7 +325,7 @@ def test_pins_that_are_not_the_rule_s_set_are_refused(tmp_path, y, monkeypatch):
     ds = cm.dataset(ACC, y)
     pl2 = fe.plan(ACC, dest, y, metas=texts(sdrf))
     # a hand-picked subset (one control dropped)
-    drop = [p for p in ds["pinned"] if p["source_name"] != "Abcz1_wt_3"]
+    drop = [p for p in ds["pinned"] if p["source_name"] != "Abcz1_wt3"]
     with pytest.raises(cm.Refused, match="not exactly the rule's eligible"):
         ae.verify_pins({**ds, "pinned": drop}, pl2)
     # a line dropped
@@ -364,7 +370,7 @@ def test_grammar_and_text_refusals_withhold_the_text(tmp_path, y):
 def test_a_near_match_of_a_withheld_line_refuses_the_resource(tmp_path, y):
     sdrf, *_ = sdrf_and_runs()
     lines = sdrf.decode().split("\n")
-    lines.append(lines[1].replace("Abcz1_hom_1", "trps1_hom_1").replace("\tAbcz1\t", "\tTRPS1\t"))
+    lines.append(lines[1].replace("Abcz1_hom1", "trps1_hom1").replace("\tAbcz1\t", "\tTRPS1\t"))
     pl = fe.plan(ACC, tmp_path / "d", y, metas=texts("\n".join(lines).encode()))
     assert pl["status"] == "refused" and "near the withheld" in pl["reason"]
 
@@ -413,7 +419,7 @@ def test_the_run_ties_refuse_a_doubled_header_a_run_of_two_records_and_mark_part
     sdrf, runs_of, ers_of = sdrf_and_runs()
     pl = fe.plan(ACC, tmp_path / "d", y, metas=texts(sdrf))
     rows = pl["tables"][ACC]
-    run = runs_of["Abcz1_hom_1"][0]
+    run = runs_of["Abcz1_hom1"][0]
     ties, problems = ae.run_ties(["Gene ID", run, run], rows, ["Gene ID"])
     assert any("twice" in p for p in problems)
     ties, problems = ae.run_ties(["ID", run], rows, ["Gene ID"])
@@ -423,8 +429,8 @@ def test_the_run_ties_refuse_a_doubled_header_a_run_of_two_records_and_mark_part
     multi = [r for r in rows if len(r["runs"]) > 1][0]
     ties, problems = ae.run_ties(["Gene ID", multi["runs"][0]], rows, ["Gene ID"])
     assert problems == [] and multi["source_name"] in ties["incomplete"]
-    ties, _ = ae.run_ties(["Gene ID", "Abcz1_hom_1", *runs_of["Abcz1_hom_1"]], rows, ["Gene ID"])
-    assert "Abcz1_hom_1" in ties["other_tie"]   # tied through a non-run header too: not pinnable (double count)
+    ties, _ = ae.run_ties(["Gene ID", "Abcz1_hom1", *runs_of["Abcz1_hom1"]], rows, ["Gene ID"])
+    assert "Abcz1_hom1" in ties["other_tie"]   # tied through a non-run header too: not pinnable (double count)
     dest = tmp_path / "d"
     rec = ae.record_header(cm.dataset(ACC, y), dest, pl, ae.matrix_name(ACC), ae.urls(ACC)["matrix"],
                            b"Gene ID\tCtnnb1_ERR1\t" + run.encode())
@@ -435,3 +441,165 @@ def _y(tmp_path, text):
     p = tmp_path / "y2.yaml"
     p.write_text(text)
     return p
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# stage 9 round 2: each blocker of the two reviews of 120af2f, replayed
+
+
+def drop_columns(data: bytes, drop: set[str]) -> bytes:
+    lines = data.decode().rstrip("\n").split("\n")
+    keep = [i for i, h in enumerate(lines[0].split("\t")) if h not in drop]
+    return ("\n".join("\t".join(ln.split("\t")[i] for i in keep) for ln in lines) + "\n").encode()
+
+
+def fetch_process_combine(tmp_path, dest, y, ref, wt, refp, data, monkeypatch):
+    staging = tmp_path / "staging"
+    staging.mkdir()
+    (staging / ae.matrix_name(ACC)).write_bytes(data)
+
+    def get(url, dst, max_bytes):
+        dst = cm.outside_repo(dst)
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(staging / Path(url).name, dst)
+        return dst.stat().st_size, cm.sha256_file(dst)
+
+    monkeypatch.setattr(fe, "_get_ae", get)
+    text = mpi.build([(ID[s], s) for s in ID], ref["genes"], list(LINES), "GSE0/GSM0/GSM0_features.tsv.gz", "0" * 64)
+    pf = tmp_path / "panel_ids.tsv"
+    pf.write_text(text)
+    monkeypatch.setattr(cm, "PANEL_IDS", pf)
+    monkeypatch.setattr(cm, "PANEL_IDS_SHA256", cm.sha256_file(pf))
+    fe.fetch(ACC, dest, y)
+    qc = pr.run(ACC, dest, wt, refp, tmp_path / "processed", y)
+    r = co.combine(tmp_path / "processed", refp, tmp_path / "tables", y, dest=dest)
+    return qc, r
+
+
+def with_reused_run(sdrf: bytes, runs_of: dict) -> tuple[bytes, str]:
+    """The first reviewer's probe: a kept Abcz1 wild-type row whose run is a withheld (Trps1) row's run."""
+    trun = runs_of["Trps1_hom1"][0]
+    lines = sdrf.decode().rstrip("\n").split("\n")
+    f = next(ln for ln in lines[1:] if ln.startswith("Abcz1_wt1\t")).split("\t")
+    f[0], f[1], f[9], f[11], f[12] = "Abcz1_wt9", "ERS3999999", "Abcz1_wt9", "Abcz1_wt9_0", trun
+    f[13] = f"ftp.sra.ebi.ac.uk/vol1/fastq/ERR100/{trun}/{trun}_1.fastq.gz"
+    lines.append("\t".join(f))
+    return ("\n".join(lines) + "\n").encode(), trun
+
+
+def test_r2_blocker1_a_kept_row_reusing_a_withheld_run_is_withheld_and_the_run_is_never_pinned(tmp_path, y,
+                                                                                                monkeypatch):
+    sdrf, runs_of, ers_of = sdrf_and_runs()
+    bad, trun = with_reused_run(sdrf, runs_of)
+    pl = fe.plan(ACC, tmp_path / "d", y, metas=texts(bad))
+    assert pl["status"] == "ok", pl.get("reason")
+    rows = {r["source_name"]: r for r in pl["tables"][ACC]}
+    # the reviewer's result was: not_pinnable None, in line_set['Abcz1']['control'], run_ties 'complete'
+    assert "Abcz1_wt9" not in rows and "Abcz1_wt9" not in pl["line_set"]["Abcz1"]["control"]
+    assert pl["withheld_linked_rows"] == 1 and ae.run_digest(trun) in pl["withheld_run_sha256"]
+    text = (tmp_path / "d" / "meta" / ACC / "plan.json").read_text() + (
+        tmp_path / "d" / "meta" / ACC / f"plan_table_{ACC}.txt").read_text()
+    assert trun not in text and "Abcz1_wt9" not in text and "Trps1_hom" not in text
+    # an empty value links nothing (the second reviewer's lesser point 5)
+    kept, _, linked, _ = ae.withhold_rows(cm.dataset(ACC, y), H, [
+        ["Trps1_hom1", "", "x", "s", "Trps1", "a", "1", "f", "g", "", "p", "a", "ERR1", "u", "1"],
+        ["Abcz1_wt1", "", "x", "s", "Abcz1", "a", "1", "f", "g", "", "p", "a", "ERR2", "u", "1"]])
+    assert linked == 0 and len(kept) == 1
+    # the pin check and the pin template refuse a withheld run
+    dest, wt, refp, ref, pl, rec, data, runs_of, ers_of, sdrf = stage(tmp_path, y, monkeypatch)
+    pin_all(dest, y, pl)
+    ds = cm.dataset(ACC, y)
+    pl2 = fe.plan(ACC, dest, y, metas=texts(sdrf))
+    assert pl2["status"] == "ok", pl2.get("reason")
+    trun = runs_of["Trps1_hom1"][0]
+    p0 = ds["pinned"][0]
+    with pytest.raises(cm.Refused, match="withheld line"):
+        ae.verify_pins({**ds, "pinned": [{**p0, "runs": [*p0["runs"], trun]}, *ds["pinned"][1:]]}, pl2)
+    pp = dest / "meta" / ACC / "plan.json"
+    stored = json.loads(pp.read_text())
+    for r in stored["tables"][ACC]:
+        if r["source_name"] == "Abcz1_hom1":
+            r["runs"].append(trun)
+    pp.write_text(json.dumps(stored))
+    with pytest.raises(cm.Refused, match="withheld line"):
+        ae.pin_template(ACC, dest, "ko", "Abcz1", pl2["line_set"]["Abcz1"]["ko"], y)
+    with pytest.raises(cm.Refused, match="withheld line"):
+        ae.verify_pins(ds, stored)
+
+
+def test_r2_blocker6_one_eligible_run_missing_from_the_matrix_the_rest_pins_fetches_processes_and_combines(
+        tmp_path, y, monkeypatch):
+    wt, refp, ref = make_ref(tmp_path)
+    dest = tmp_path / "dest"
+    sdrf, runs_of, ers_of = sdrf_and_runs()
+    pl = fe.plan(ACC, dest, y, metas=texts(sdrf))
+    table = (dest / "meta" / ACC / f"plan_table_{ACC}.txt").read_text()
+    assert pl["line_set_basis"]["final"] is False and "THE LINE SET IS PROVISIONAL" in table
+    assert "Defz2_wt1" in pl["line_set"]["Defz2"]["control"]
+    gone = runs_of["Defz2_wt1"][0]
+    data = drop_columns(matrix(ref, runs_of, np.random.default_rng(3)), {gone})
+    monkeypatch.setattr(fe, "_open", opener(data, []))
+    rec = bulk.header(ACC, dest, datasets=y)
+    assert rec["status"] == "ok" and rec["ties"]["incomplete"] == ["Defz2_wt1"]
+    # the template refuses until the plan carries the passing header record (the line set is provisional)
+    with pytest.raises(cm.Refused, match="provisional"):
+        ae.pin_template(ACC, dest, "control", "Defz2", ["Defz2_wt2", "Defz2_wt3"], y)
+    pl = fe.plan(ACC, dest, y, metas=texts(sdrf))
+    assert pl["status"] == "ok" and pl["line_set_basis"]["final"] is True
+    rows = {r["source_name"]: r for r in pl["tables"][ACC]}
+    assert "(h) a run missing from the matrix header" in rows["Defz2_wt1"]["not_pinnable"]
+    assert pl["comparisons"]["h"] == ["Defz2_wt1"]
+    assert pl["line_set"]["Defz2"] == {"ko": ["Defz2_hom1", "Defz2_hom2"], "control": ["Defz2_wt2", "Defz2_wt3"]}
+    table = (dest / "meta" / ACC / f"plan_table_{ACC}.txt").read_text()
+    assert "THE LINE SET IS FINAL" in table and "(h) 1 disagreements" in table
+    # the reviewer's probe: the old set is refused, the remaining set pins
+    with pytest.raises(cm.Refused, match="exactly the rule's eligible"):
+        ae.pin_template(ACC, dest, "control", "Defz2", ["Defz2_wt1", "Defz2_wt2", "Defz2_wt3"], y)
+    pin_all(dest, y, pl)
+    pl2 = fe.plan(ACC, dest, y, metas=texts(sdrf))
+    assert pl2["status"] == "ok", pl2.get("reason")
+    qc, r = fetch_process_combine(tmp_path, dest, y, ref, wt, refp, data, monkeypatch)
+    assert qc["status"] == "ok" and set(qc["units"]) == {"Abcz1", "Defz2"}
+    assert all(u["status"] == "ok" for u in qc["units"].values()), {g: u.get("reason") for g, u in qc["units"].items()}
+    assert ers_of["Defz2_wt1"] not in qc["libraries"] and ers_of["Defz2_wt2"] in qc["libraries"]
+    assert r["tables"] == ["bulk_all", "bulk_study_MGP-DMDD"]
+    # the stored ties edited after the re-plan: the pin check refuses
+    ds = cm.dataset(ACC, y)
+    pl3 = json.loads(json.dumps(pl2))
+    pl3["line_set"]["Defz2"]["control"].insert(0, "Defz2_wt1")
+    with pytest.raises(cm.Refused, match="line set"):
+        ae.verify_pins(ds, pl3)
+
+
+def test_r2_blocker6_a_line_that_drops_under_two_in_an_arm_leaves_the_set(tmp_path, y, monkeypatch):
+    wt, refp, ref = make_ref(tmp_path)
+    dest = tmp_path / "dest"
+    sdrf, runs_of, ers_of = sdrf_and_runs()
+    fe.plan(ACC, dest, y, metas=texts(sdrf))
+    data = drop_columns(matrix(ref, runs_of, np.random.default_rng(3)), {runs_of["Defz2_hom1"][-1]})
+    monkeypatch.setattr(fe, "_open", opener(data, []))
+    assert bulk.header(ACC, dest, datasets=y)["status"] == "ok"
+    pl = fe.plan(ACC, dest, y, metas=texts(sdrf))
+    assert pl["status"] == "ok" and set(pl["line_set"]) == {"Abcz1"}
+    with pytest.raises(cm.Refused, match="not a line of the committed rule"):
+        ae.pin_template(ACC, dest, "ko", "Defz2", ["Defz2_hom2"], y)
+    pin_all(dest, y, pl)
+    assert fe.plan(ACC, dest, y, metas=texts(sdrf))["status"] == "ok"
+
+
+def test_r2_blocker4_a_matrix_named_as_normalised_is_refused_at_the_header_step_and_the_read(tmp_path, y,
+                                                                                             monkeypatch):
+    assert not bulk.NORMALISED.search(ae.matrix_name(ACC))   # the one name the resource offers
+    sdrf, runs_of, _ = sdrf_and_runs()
+    pl = fe.plan(ACC, tmp_path / "d", y, metas=texts(sdrf))
+    calls: list = []
+    monkeypatch.setattr(fe, "_open", opener(b"Gene ID\tERR1\n", calls))
+    for name in ("E-MTAB-7322-normalized-counts.tsv", "E-MTAB-7322-expected_counts.tsv"):
+        monkeypatch.setattr(ae, "matrix_name", lambda acc, name=name: name)
+        with pytest.raises(cm.Refused, match="normalised or expected counts"):
+            ae.header(ACC, tmp_path / "d", y)
+        with pytest.raises(cm.Refused, match="normalised or expected counts"):
+            ae.record_header(cm.dataset(ACC, y), tmp_path / "d", pl, name, ae.urls(ACC)["matrix"], b"Gene ID\tERR1")
+        with pytest.raises(cm.Refused, match="normalised or expected counts"):
+            bulk.read_series_table(tmp_path / "absent", name, ["Gene ID"], ["ERR1"], "0" * 64)
+    assert calls == []

@@ -116,8 +116,26 @@ def _read_text(raw: bytes, name: str) -> list[str]:
     return raw.decode("utf-8", errors="replace").splitlines()
 
 
+_NOT_COMMENT = rb"(?m)^(?![ \t]*%)[ \t]*\S+"
+# a line that is not a comment with four or more fields, or with one or two
+_FOUR_FIELDS = re.compile(_NOT_COMMENT + rb"(?:[ \t]+\S+){3,}")
+_FEW_FIELDS = re.compile(_NOT_COMMENT + rb"(?:[ \t]+\S+)?[ \t]*\r?$")
+
+
+def _three_fields(data: bytes, mtx_name: str) -> None:
+    """Stage 9 round 2 (the verification of 9edee21, lesser point 1): on the filtered route too, every line after the
+    size line that is not a comment or empty is 'feature barcode value' (three fields), checked before scipy's mmread,
+    which takes the first three fields of a longer line and drops the rest."""
+    fh = io.BytesIO(data)
+    _mtx_header(fh, mtx_name)
+    body = data[fh.tell():]
+    if _FOUR_FIELDS.search(body) or _FEW_FIELDS.search(body):
+        raise Refused(f"{mtx_name}: a matrix line is not 'feature barcode value': refused")
+
+
 def _from_parts(mtx: bytes, mtx_name: str, feats: list[str], bcs: list[str]):
     data = _gunzip(mtx, mtx_name) if mtx_name.endswith(".gz") else mtx
+    _three_fields(data, mtx_name)
     M = sparse.csr_matrix(spio.mmread(io.BytesIO(data), spmatrix=False).T)  # cells x features
     rows = [r.split("\t") for r in feats if r.strip()]
     symbols = [r[1] if len(r) > 1 else r[0] for r in rows]
@@ -1092,6 +1110,9 @@ def main(argv: list[str] | None = None) -> int:
     for gsm, v in (qc.get("confidence_by_sample") or {}).items():
         print(f"  {gsm}: {v['cells']} cells, confident share {v['confident_share']:.3f}")
     for gname, v in (qc.get("units") or {}).items():
+        if qc.get("modality") == "bulk":   # round 2 (the second reviewer's lesser point 6): status and reason only
+            print(f"  {gname}: {v['status']}" + (f"; {v['reason']}" if v.get("reason") else ""))
+            continue
         passed = sorted(v.get("groups", {}))
         print(f"  {gname}: {v['status']}; groups with a factor: {passed}")
     return 0 if qc["status"] != "failed" else 1

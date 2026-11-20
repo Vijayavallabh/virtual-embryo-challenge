@@ -1,4 +1,4 @@
-# T3 outside-knockout factor tables (stage 9: bulk whole-embryo units, phases 1 and 2, on stage 8)
+# T3 outside-knockout factor tables (stage 9 round 2: bulk whole-embryo units, phases 1 and 2, on stage 8)
 
 Campaign branches `campaign/t3-outside-knockouts` (stage 1), `-2` (stage 2), `-3` (stage 3), `-4` (stage 4: series
 membership, files bound to their pin, the series text shown and pinned), `-5` (stage 5: file urls
@@ -9,7 +9,9 @@ series of the same study; sections "Series-level files" and "A control from a si
 `campaign/t3-ext-3` (stage 7: the three blockers and the lesser points of the two reviews of stage 6 closed, section
 "Stage 7" below, and an intake for per-sample unfiltered matrices, section "Unfiltered per-sample matrices") and `campaign/t3-ext-4` (stage 8:
 the three blockers and the lesser points of the two reviews of stage 7 closed, section "Stage 8" below) and
-`campaign/t3-ext-bulk` (stage 9: bulk whole-embryo knockout units, section "Bulk whole-embryo units"). Everything of stage 5 stands. Under the captain's ruling of 2026-11-20 (`docs/PLAN.md` decision log
+`campaign/t3-ext-bulk` (stage 9: bulk whole-embryo knockout units, section "Bulk whole-embryo units") and
+`campaign/t3-ext-bulk-2` (stage 9 round 2: the six blockers and the lesser points of the two reviews of stage 9
+closed, section "Stage 9 round 2" below). Everything of stage 5 stands. Under the captain's ruling of 2026-11-20 (`docs/PLAN.md` decision log
 2026-11-20 (j), "All three tiers"), outside single-cell data on knockouts of OTHER genes may shape the Task 3 file.
 This folder turns such data into per-gene factor tables in the frozen factor's form, so that a later thin builder can
 take one in place of the Mab21l2 factor. Stage 1 builds the tables only. Nothing here enters a model, a check or an
@@ -482,7 +484,8 @@ processed/<ACC>/tables/<ACC>__<gene>/      finished per-dataset tables
 tables/<name>/factors/<name>.csv           pooled form (gene, factor; reference gene order) + factors/factors.json
 tables/<name>/<name>_per_group.csv         per-group form (group, gene, factor); a missing group = 1
 tables/<name>/<name>_manifest.json         studies, genes, sign agreement, input sha256, 'checked' note
-tables/COMBINE.json                        every table's files and sha256; left-out and not-cleared datasets
+tables/COMBINE.json                        every single-cell table's files and sha256; its left-out and not-cleared datasets
+tables/COMBINE_bulk.json                   stage 9: the same for the bulk family (only when bulk units are combined)
 logs/<step>.log, logs/<step>.exit, logs/ALL.exit
 ```
 
@@ -641,12 +644,21 @@ must hold the declared gene columns (a headerless file, STAR's ReadsPerGene incl
 column is the count column, unless `count_column` names one, and then (or whenever the file has more than one other
 column) that header must tie to this sample by the exact tie rule below; a second integral column (featureCounts'
 Length) without count_column is refused. Two pinned samples whose files have one sha256, or identical count vectors,
-refuse the dataset (G8).
+refuse the dataset (G8). Round 2: the file's first line is screened before any value is parsed (every field and the
+whole line through `t3x_screen`): a held-out hit fails the dataset's QC with the text withheld, and a review term
+refuses unless a `review_cleared` entry names that sample. A single count column whose header ties by the exact rule
+to ANOTHER sample (its accession, title, a description value or a characteristics value) is refused. count_column is
+one header for the whole dataset, so it can tie to at most one sample: in practice a per_sample dataset takes only
+files holding the gene column(s) and one count column; featureCounts (seven columns), HTSeq (headerless) and
+multi-sample files are refused.
 
 ### Intake B: series_table, the header step and the exact tie rule
 
 1. Only a file of a screened series' OWN folder is offered (`fetch.own_series_file`, a plain name, not denied, a plain
-   text table); its url is derived from the hashed `!Series_supplementary_file` value.
+   text table, not NAMED as normalised or expected counts); its url is derived from the hashed
+   `!Series_supplementary_file` value. A name matching `bulk.NORMALISED` (fpkm, rpkm, tpm, cpm, rsem, normalised,
+   expected counts) is refused at the offer, again at the header step and again at the read (round 2), for this form
+   and the ArrayExpress matrix alike.
 2. **The header step** (`fetch.py header ACC --dest D --series GSE --name FILE`, or `run_dgx.sh ... header
    "ACC:GSE:FILE"`), after a passing plan and before any pin: the file is streamed (`fetch._open`), gzip is
    decompressed incrementally, reading stops at the first newline (at most `HEADER_MAX_BYTES` = 1 MiB of decompressed
@@ -654,7 +666,9 @@ refuse the dataset (G8).
    sha256 are written (`meta/<ACC>/header_<FILE>.txt` and `.json`). Every header field and the whole line go through
    `t3x_screen`: a held-out hit refuses with the line withheld (only the number of columns is written); a review term
    needs a `review_cleared` entry naming the series. The step prints the line, its `escaped:` form when it is not
-   plain ASCII, and the tie table.
+   plain ASCII, and the tie table. The stream is read in blocks of 4,096 bytes (gzip decompressed 4,096 bytes at a
+   time). Before the pins, at most one read block past the first newline passes through memory; it is never parsed or
+   written.
 3. **The tie rule** (mechanical, no tokens): a header ties to a sample of the screened series when it equals EXACTLY
    the sample's accession, its whole title value, a whole description value, or the value part of one characteristics
    entry (the text after the first `': '`). Every header is a declared gene column or ties to exactly one sample; no
@@ -668,10 +682,16 @@ refuse the dataset (G8).
    holding `series_metadata_sha256`, url, `pins_sha256` and `header_sha256`; a file whose first line does not hash to
    the pin is deleted and refused at once. `process` refuses it again unless its first line hashes to
    `header_sha256`, and reads it with `usecols` (the gene columns and the pinned columns only): the other columns'
-   bytes pass through memory, never parsed (accepted by the design; a test holds a text column there).
+   bytes pass through memory, never parsed (accepted by the design; a test holds a text column there). A
+   tab-separated table is read without quote handling (`csv.QUOTE_NONE`), so a quote in an unpinned text column cannot
+   merge rows.
 6. The superseries rule: a series whose `relation` names a held accession refuses the plan (for a bulk dataset the
    own series' SOFT is fetched first, so the refusal comes before any other screened series' SOFT is fetched); a
    sample whose `series_id` lists a series outside `screen_series` is NOT PINNABLE, as before.
+7. **Heterozygous wording** (round 2, both GEO forms): a sample whose own title, source name or a characteristics
+   value matches `bulk.HET_WORDING` (`het` or `heterozygo...` as a word, `+/-`, `-/+`) is NOT PINNABLE in the plan
+   table and refused by `pin-template` and by `verify_pins` in either arm. A false hit costs one sample; a reviewed
+   exception can restore it later.
 
 ### The math (`bulk.bulk_log_ratio`, pure numpy)
 
@@ -686,8 +706,9 @@ always; the other chrX panel genes when the sex check (G3) finds an imbalance or
 (`t3x_common.shrink_k_bulk`, equal to `shrink_k` with no cell term), m the smaller number of libraries left in an arm
 after the guards; stages are averaged with equal weight. The unit file holds L under `__whole__` with `"modality":
 "bulk"`, `present`, k and m. **Counts only**: every value finite, non-negative and integral within 1e-6; a table whose
-library totals all lie within 1% of 1e6 (a CPM or TPM signature), a column or file named as FPKM, RPKM, TPM, CPM, RSEM
-or normalised, and a second integral column without count_column are refused (G2: the dataset's QC fails).
+library totals all lie within 1% of 1e6 (a CPM or TPM signature), a column or file named as FPKM, RPKM, TPM, CPM, RSEM,
+normalised or expected counts, and a second integral column without count_column are refused (G2: the dataset's QC
+fails).
 
 ### The id routes and the gene-id map (`panel_ids.tsv`)
 
@@ -753,7 +774,10 @@ non-zero sign number at least max(2, ceil(2h/3)), h the studies holding the gene
 is struck: it is vacuous once two thirds share the mean's sign). Single-cell tables keep today's rule for every number
 of studies. Manifests add `modality_by_study`, `sign_rule`, `k_by_unit`, `libraries_by_unit`, `guards_by_unit`, the
 within-study line agreement per gene (a study of several genes, for reading only) and `checked: by the practice read
-named in its TRIES row only`.
+named in its TRIES row only`. Round 2: each family's manifests carry a combine record limited to its own accessions
+(inputs, left-out units, not-cleared datasets): the single-cell manifests and `COMBINE.json` are byte-identical with
+and without bulk units in the same run (apart from each manifest's `created` time), and the bulk family's record goes
+to `COMBINE_bulk.json`.
 
 ## The many-line resource (stage 9, phase 2: E-MTAB-7322)
 
@@ -772,8 +796,11 @@ methods text   https://ftp.ebi.ac.uk/pub/databases/microarray/data/atlas/experim
    somite stage, sex, individual, allele, ENA_RUN) not appearing exactly once refuses the resource with its text
    withheld.
 2. **withheld_lines**, applied BEFORE the screen, the views, the hashes and the tables: every SDRF row whose
-   `Characteristics[mutant line]` equals a withheld value exactly is dropped, with every other row of a Source Name,
-   ENA sample or individual that a withheld row names. Only `<gene>: n rows withheld (reason)` is printed. A line
+   `Characteristics[mutant line]` equals a withheld value exactly is dropped, and so is every row of a Source Name
+   one of whose rows shares a Source Name, ENA sample, individual or run (`Comment[ENA_RUN]`) with a withheld row
+   (to a fixed point; an empty value links nothing). Only `<gene>: n rows withheld (reason)`, the number of linked
+   rows and the number of withheld runs are printed. The withheld runs are kept in the plan as sha256 digests only;
+   `pin-template` and `verify_pins` refuse a pin or a record that lists one (round 2). A line
    value equal to a withheld value after case folding and removing spaces, `-`, `_` and `.` (a near-match) refuses the
    resource. A held-out term or a held accession anywhere in what remains withholds the whole resource, as now.
 3. **Records**: a sample is one Source Name; its fields map `<3-digit column number>|<header>` to its rows' values in
@@ -788,21 +815,30 @@ methods text   https://ftp.ebi.ac.uk/pub/databases/microarray/data/atlas/experim
    `embryonic day 9.5` is pinnable (days 10 and 10.5 fall under the stage cap; 8, 8.5 and 9 are not pinnable); hets and
    the line `baseline` are never pinned.
 6. **The committed rule fixes the line set**: every line not withheld (not `baseline`) with at least 2 homozygous and
-   2 wild-type pinnable E9.5 Source Names. `pin-template ACC --dest D --arm ko|control --gene LINE --source ...
-   [--source-file F]` refuses unless the names are exactly the rule's eligible Source Names of that line and arm, and
-   `verify_pins` refuses pins that are not exactly the rule's set (no hand-picking).
+   2 wild-type pinnable E9.5 Source Names, comparison (h) included. Round 2: the header ties are part of the rule.
+   Once the header step has passed and the plan is made again, (h) marks every Source Name with a run missing from
+   the matrix header (`(h) a run missing from the matrix header`) or tied through a header that is not a run (`(h)
+   tied through a non-run header`) as NOT PINNABLE, and the line set is computed over the remaining rows; a line that
+   drops under 2 in an arm leaves the set. One function (`ae.committed`) gives the set to the plan, `pin-template`
+   and `verify_pins`. Before the header step the plan table says `THE LINE SET IS PROVISIONAL`, and `pin-template`
+   refuses until the plan carries the passing header record. `pin-template ACC --dest D --arm ko|control --gene LINE
+   --source ... [--source-file F]` refuses unless the names are exactly the rule's eligible Source Names of that line
+   and arm, and `verify_pins` refuses pins that are not exactly the rule's set (no hand-picking).
 7. **The header step** (`fetch.py header E-MTAB-7322 --dest D`): the matrix's first line, streamed and closed at the
    first newline, screened, tied by exact equality with an ERR run (or ENA sample, or Source Name) of a KEPT record. A
    header tying to two records, a doubled header or a gene column not appearing once refuses the table; a header tying
    to no kept record (the 369 unannotated runs, the withheld lines' runs) is never read and only counted; a record with
-   a run missing from the header, or tied through a non-run header, is not pinnable. The line is kept in the record
-   for the re-derivation and never printed.
+   a run missing from the header, or tied through a non-run header, is not pinnable (comparison (h), item 6). The line
+   is kept in the record for the re-derivation and never printed. The matrix name is checked against
+   `bulk.NORMALISED` at the header step and at the read.
 8. **fetch** downloads the matrix (about 380 MB) into `raw/<ACC>/_series/` only after the pins; **process** reads it
    with usecols = `Gene ID` and the pinned runs; the matrix's gene ids are Ensembl ids, so the resource needs the
    pinned gene-id map.
 
-An example entry (the main session writes the real one after reading the listings; `source_name_pattern` must be
-written from the real Source Names, which were not seen):
+An example entry (the main session writes the real one; `source_name_pattern` follows the form the main session read
+in the resource's public metadata, no count value: `<line>_<genotype><n>`, the genotype one of `wt`, `het`, `hom`, for
+example `Pigf_wt1` or `4933434E20Rik_het1`, the same string as `Characteristics[individual]`; the withheld lines are
+the two readers' result):
 
 ```yaml
   - accession: E-MTAB-7322
@@ -820,14 +856,35 @@ written from the real Source Names, which were not seen):
     gene_columns: ["Gene ID"]
     withheld_lines:                       # applied before the screen, the views, the hashes and the tables
       - {line: Trps1, reason: held}       # a GATA-type zinc-finger factor ('any GATA factor')
+      - {line: Anks6, reason: pending_phenocopy}
+      - {line: Atxn10, reason: pending_phenocopy}
       - {line: B9d2, reason: pending_phenocopy}
       - {line: Cc2d2a, reason: pending_phenocopy}
       - {line: Ift140, reason: pending_phenocopy}
       - {line: Kif3b, reason: pending_phenocopy}
+      - {line: Kifap3, reason: pending_phenocopy}
       - {line: Rpgrip1l, reason: pending_phenocopy}
-      - {line: Anks6, reason: pending_phenocopy}
-      - {line: Atxn10, reason: pending_phenocopy}
-    source_name_pattern: '(?P<gene>[A-Za-z0-9]+)_(?P<genotype>hom|het|wt)_\d+'   # TO WRITE from the real names
+      - {line: Mad2l2, reason: pending_phenocopy}
+      - {line: Tmem98, reason: pending_phenocopy}
+      - {line: Nek9, reason: pending_phenocopy}
+      - {line: Mtor, reason: pending_phenocopy}
+      - {line: Map2k7, reason: pending_phenocopy}
+      - {line: Traf6, reason: pending_phenocopy}
+      - {line: Traf2, reason: pending_phenocopy}
+      - {line: Rala, reason: pending_phenocopy}
+      - {line: Pigf, reason: pending_phenocopy}
+      - {line: Pigl, reason: pending_phenocopy}
+      - {line: Pgap2, reason: pending_phenocopy}
+      - {line: Hira, reason: pending_phenocopy}
+      - {line: Smc3, reason: pending_phenocopy}
+      - {line: 1700007K13Rik, reason: pending_phenocopy}
+      - {line: 4933434E20Rik, reason: pending_phenocopy}
+      - {line: Hmgxb3, reason: pending_phenocopy}
+      - {line: Zkscan14, reason: pending_phenocopy}
+      - {line: Zkscan17, reason: pending_phenocopy}
+      - {line: Dhx35, reason: pending_phenocopy}
+      - {line: Gpr107, reason: pending_phenocopy}
+    source_name_pattern: '(?P<gene>[^_]+)_(?P<genotype>wt|het|hom)\d+'   # <line>_<wt|het|hom><n>; (c) checks the line
     screen_series: [E-MTAB-7322]
     stages_used: [E9.5]
     licence: "..."
@@ -845,14 +902,16 @@ the dataset is pinned and the question goes to the main session.
   wild type (control). A bare KO, Mut or CTRL label needs another field of the same record naming the gene. Hets,
   point, ENU, catalytic, hypomorph and isoform alleles are not pinned.
 - **B2 Held and phenocopy.** Check 2 applies to every series block, sample, IDF line, the header line and the line
-  names. Lines in withheld_lines (Trps1: held; B9d2, Cc2d2a, Ift140, Kif3b, Rpgrip1l, Anks6, Atxn10: pending
-  phenocopy) never appear in the views; confirm only the printed `<gene>: n rows withheld` lines. Check the accession
+  names. Lines in withheld_lines (Trps1: held; the 28 others of the example entry: pending phenocopy) never appear in
+  the views; confirm only the printed `<gene>: n rows withheld` lines. Trps1 is not a screen term; a Trps1 mention in
+  any GEO bulk dataset is caught by readers only and means do not pin. Check the accession
   character by character: E-MTAB-7322, not E-MTAB-7325. If any series text links a gene to Wnt, beta-catenin or a GATA
   factor, do not pin, and send the question to the main session. Sox7 (SoxF) and Cables2: the screen and this check
-  decide. A Sox17 mention is a review term.
+  decide. A Sox17 mention is a reader's review item (check 2), not a screen term: the code does not catch it.
 - **B3 Library design.** One embryo, or one single-genotype pool, per library. Read the IDF protocols or the
   extract_protocol, data_processing and overall_design in full: pooling of mixed genotypes, hashing or demultiplexing
-  means do not pin. Where the text does not say embryo or pool, note it.
+  means do not pin. Where the text does not say embryo or pool, note it. GEO has no individual field; two GSMs of one
+  embryo are a reader check (B3).
 - **B4 Same-study control.** Same series and line, same stage. Littermates stated in words (quote them) sets d = 1,
   else 0.5. Not 'previously published', not a baseline staging series, not another strain or line.
 - **B5 Stage.** One E-day at or before E9.5, from stage_fields or stage_from_series. Samples past E9.5 in the same
@@ -867,9 +926,10 @@ the dataset is pinned and the question goes to the main session.
   columns; header_sha256 equals the printed one. A table whose headers do not tie is not pinned; do not decide a tie
   by eye. Superseries: if a sample lists a superseries, confirm its sample list holds no held accession; if unsure, do
   not take the dataset.
-- **B8 Mechanical comparisons (ArrayExpress).** (a) to (g), including one Source Name per individual and per ENA
+- **B8 Mechanical comparisons (ArrayExpress).** (a) to (h), including one Source Name per individual and per ENA
   sample, printed 0 disagreements for the Source Names pinned, or the disagreeing ones stay unpinned. The line set
-  equals the committed rule's output: non-withheld lines with >= 2 hom and >= 2 WT at E9.5. No hand-picking.
+  equals the committed rule's output: non-withheld lines with >= 2 hom and >= 2 WT at E9.5 after (h). The plan table
+  read for pinning says the line set is final (after the header step), not provisional. No hand-picking.
 - **B9 Hidden characters, hashes and superseries rows**: as in checks 8 and 9.
 - **B10 Sex and somite fields.** Read their distinct values and note an arm that is all one sex. Nothing is decided on
   this: G3 and G6 handle it.
@@ -880,36 +940,47 @@ value or a table value. Nothing is pinned or added after a practice read without
 
 ## Stage 9: the steps for the main session, in order (none was run by the engineer)
 
-1. **Merge** `campaign/t3-ext-bulk` (it holds `campaign/t3-ext-4`, stage 8) into `main` after its review. Nothing in
-   `datasets.yaml` changes, so `DATASETS_SHA256` stays; stored plans of stage 8 stay valid for single-cell datasets.
-2. **The id map** (only for a dataset with `id_type: ensembl`, E-MTAB-7322 included): after a pinned single-cell
-   10x sample has been fetched, run `make_panel_ids.py` on its features file with `--extra` for every knocked-out
-   gene to be read (the MGP lines included); commit `panel_ids.tsv` and its sha256 in `t3x_common.PANEL_IDS_SHA256`
-   in one reviewed commit.
+1. **Merge** `campaign/t3-ext-bulk-2` (it holds `campaign/t3-ext-bulk` and `campaign/t3-ext-4`, stage 8, and main as
+   of 4b096ef) into `main` after its review. Nothing in `datasets.yaml` changes, so `DATASETS_SHA256` stays; stored
+   plans of stage 8 stay valid for single-cell datasets. Sync the DGX campaign checkout.
+2. **The gene-id map** (only for a dataset with `id_type: ensembl`, E-MTAB-7322 included): after a pinned single-cell
+   10x sample has been fetched, run `make_panel_ids.py --dest D --accession ACC --gsm GSM --file <its features file or
+   per-sample archive> --refstats D/reference/refstats.npz --extra <every knocked-out gene to be read, the MGP lines
+   included>`; commit `panel_ids.tsv` and its sha256 in `t3x_common.PANEL_IDS_SHA256` in one reviewed commit.
 3. **Dataset entries**: one reviewed commit per batch, each entry with `modality: bulk` and its keys, the dataset-file
-   hash updated in the same commit (`fetch.py datasets-sha`). For E-MTAB-7322 the example above, with
-   `source_name_pattern` written from the real Source Names and the withheld lines first.
-4. **Plan** (metadata only): `run_dgx.sh "$PWD" plan "ACC ..."`. For a series_table dataset then the header step:
-   `run_dgx.sh "$PWD" header "ACC:GSE:FILE"`; for E-MTAB-7322 `run_dgx.sh "$PWD" header "E-MTAB-7322"`.
-5. **The readers**: two readers read every plan table (and the header lines, the tie table, the views and the
-   comparisons) and apply checks 1 to 6, 8, 9 and B1 to B10.
-6. **Pins**: `fetch.py pin-template ... --series`, `pin-template` per arm (`--gsm`/`--gsm-file`, or `--source`/
-   `--source-file` for the resource), `table-template` for a count table; paste, `fetch.py datasets-sha`, commit with
-   the two readers named. Then plan again (the plan with pins carries the header records).
-7. **Fetch, process, combine**: `run_dgx.sh "$PWD" all "<accessions>"` (the pinned gate refuses an Ensembl-route
-   dataset while the id map is not pinned). Raise `--max-gb` only in a reviewed commit if the matrix exceeds it.
-8. **Afterwards**: read each `processed/<ACC>/QC.json` (status, the guard verdicts per unit and stage, the library
-   records; no gene-level value) and `tables/COMBINE.json`, then the practice read named in its TRIES row (its forms
-   fixed first: bulk_all alone; bulk_all times the frozen factor; the comparison with the single-cell all table; and
-   bulk_all__loso_MGP-DMDD if the resource is in). Every dataset needs its `EXTERNAL_DATA.md` row before a table
-   enters a model or a check.
+   hash updated in the same commit (`fetch.py datasets-sha`). For E-MTAB-7322 the example above, withheld lines
+   first. Every stored plan is then made again (the dataset-file hash changed).
+4. **Plan** (metadata only): `run_dgx.sh "$PWD" plan "ACC ..."`. For the resource the plan table says the line set is
+   provisional.
+5. **The header step** (series_table and arrayexpress only): `run_dgx.sh "$PWD" header "ACC:GSE:FILE"`; for
+   E-MTAB-7322 `run_dgx.sh "$PWD" header "E-MTAB-7322"`. Read the printed status, tie counts and (h) lists.
+6. **Plan again**, so the plan carries the header records; for the resource the plan table now says the line set is
+   final and lists (h).
+7. **The readers**: two readers read the series block, the column and per-line views, the comparison counts, the
+   line set and the full record of every Source Name in the line set (for the resource); every plan table, header
+   line and tie table (for a GEO dataset). The held-out screen has run mechanically over every record; a reader who
+   sees a problem in a view opens the records it names. Any doubt means nothing is pinned. They apply checks 1 to 6,
+   8, 9 and B1 to B10.
+8. **Register rows**: the `EXTERNAL_DATA.md` row of each dataset to be pinned, written by the main session (this
+   branch does not edit `EXTERNAL_DATA.md`) before any table enters a model or a check.
+9. **Pins**: `fetch.py pin-template ACC --dest D --series`, `pin-template` per arm (`--gsm`/`--gsm-file`, or
+   `--source`/`--source-file` with exactly the final line set for the resource), `table-template` for a count table;
+   paste, `fetch.py datasets-sha`, commit with the two readers named. Then plan again (the plan with pins checks them
+   live).
+10. **Fetch, process, combine**: `run_dgx.sh "$PWD" all "<accessions>"` (the pinned gate refuses an Ensembl-route
+    dataset while the id map is not pinned). Raise `--max-gb` only in a reviewed commit if the matrix exceeds it.
+11. **Afterwards**: read each `processed/<ACC>/QC.json` (status, the guard verdicts per unit and stage, the library
+    records, each library's count column header under `column`, which check B2 applies to; no gene-level value),
+    `tables/COMBINE.json` and `tables/COMBINE_bulk.json`, then the practice read named
+    in its TRIES row (its forms fixed first: bulk_all alone; bulk_all times the frozen factor; the comparison with the
+    single-cell all table; and bulk_all__loso_MGP-DMDD if the resource is in).
 
 ## What stage 9 could not check
 
 Nothing ran against GEO, BioStudies or Expression Atlas, and nothing ran on real data: the tables, headers, IDF,
-SDRF, methods text and matrix of the tests are synthetic. The resource's real Source Name grammar was not seen, so
-`source_name_pattern` is a dataset key the main session writes; if the real names carry no gene and genotype tokens,
-comparisons (b) and (c) make every Source Name NOT PINNABLE until a reviewed change. Whether wild-type littermates'
+SDRF, methods text and matrix of the tests are synthetic. The resource's Source Name form comes from the main
+session's read of its public metadata (round 2); the engineer did not see it. If a real name does not match
+`source_name_pattern`, comparisons (b) and (c) make that Source Name NOT PINNABLE until a reviewed change. Whether wild-type littermates'
 `Comment[allele]` names the line's allele was not seen (comparison (c) needs it). Whether `Characteristics[individual]`
 values are unique across lines was not seen (comparison (e) refuses a repeated value). The SDRF's paired rows were
 assumed to repeat ENA_RUN with one FASTQ_URI each. The matrix's real header was not read; whether every annotated
@@ -917,6 +988,38 @@ run is a column is checked by the header step. A 10x features file states no chr
 other than the named sex genes are unknown: an imbalanced unit is refused. Trps1 was not added to the screen (see the
 hand-back). How the guards behave on real whole embryos (G5 against an E8.75 pseudo-bulk, G12 on a bulk profile) is
 unknown; E7.5 studies are expected to fail G5.
+
+## Stage 9 round 2 (campaign/t3-ext-bulk-2): what changed after the two reviews of 120af2f
+
+Each blocker has a test that replays the reviewer's own probe (`tests/test_t3_ext_bulk.py`,
+`tests/test_t3_ext_bulk_ae.py`, names starting `test_r2_`). Every refusal of the earlier rounds stays.
+
+1. **A withheld line's runs are withheld.** Every run of a withheld row joins the linked keys; a kept row that carries
+   one (or shares a Source Name, ENA sample or individual) is withheld with every row of its Source Name, to a fixed
+   point, and counted; empty values link nothing. The withheld runs stay in the plan as sha256 digests only, and
+   `pin-template` and `verify_pins` refuse a pin or a record that lists one.
+2. **Per-sample headers are screened** before any value is parsed (`bulk.screen_sample_header`): a held-out hit fails
+   the dataset with the text withheld; a review term refuses unless a `review_cleared` entry names that sample.
+3. **A single count column that ties by the exact rule to another sample** (its accession, title, description or a
+   characteristics value) is refused.
+4. **A count table named as normalised or expected counts** (`bulk.NORMALISED`, now with `expected counts`) is
+   refused at the offer, at the header step and at the read, for the series form and the ArrayExpress matrix.
+5. **Heterozygous wording** in a GEO sample's own title, source name or characteristics (`bulk.HET_WORDING`) makes
+   the sample NOT PINNABLE and is refused by `pin-template` and by `verify_pins` in either arm. The pattern is
+   stricter than the reviewer's (`het` is matched between non-letters, so `HET_rep1` and `Pigf_het1` hit).
+6. **The header ties are part of the committed rule** (`ae.committed`, comparison (h)): see "The many-line
+   resource", item 6.
+
+Lesser points applied: the pre-pin read block is 4,096 bytes; each table family gets a combine record limited to its
+own accessions (`COMBINE_bulk.json` for the bulk family); a tab-separated table is read with `csv.QUOTE_NONE`; the
+readers' step for the resource reads the views and the full records of the line set, not every record; Trps1 and the
+GEO individual sentences in B2 and B3; the count_column sentence in Intake A; `process.py run` prints a bulk unit's
+status and reason; a four-field matrix line is refused on the filtered single-cell route too (`process._three_fields`,
+before scipy's `mmread`). The example entry for E-MTAB-7322 carries the Source Name form and the 29 withheld lines.
+
+Not changed: the screen (`t3x_screen.py`). Trps1, Sox17 and the other reader-only terms of check 2 are not screen
+terms, so a per-sample count column headed by one of them is read; its header is recorded in QC.json under
+`libraries` (`column`), and the readers read those headers after `process` (step 11 above).
 
 ## Stage 8 (campaign/t3-ext-4): what changed after the two reviews of stage 7
 

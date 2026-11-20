@@ -29,7 +29,9 @@ Stage 9 (README "Bulk whole-embryo units"): bulk units (key '__whole__', modalit
 bulk_all, bulk_study_<s> and bulk_all__loso_<s> (pooled form, finished against the reference's whole-embryo
 pseudo-bulk), with the 'two_thirds' sign rule for a table of 3 or more studies; the single-cell family above reads
 single-cell units only and is unchanged. A study spanning modalities, a '__whole__' key outside a bulk unit, and one
-count file sha256 under two bulk datasets are refused.
+count file sha256 under two bulk datasets are refused. Each family's manifests carry a record limited to its own
+accessions: COMBINE.json is the single-cell family's (byte-identical with and without bulk units, as are its
+manifests apart from their 'created' time), COMBINE_bulk.json the bulk family's.
 """
 
 from __future__ import annotations
@@ -231,13 +233,33 @@ def combine(processed: Path, refstats: Path, out: Path, datasets: Path | None = 
     mixed = sorted({u["study"] for u in units} & {u["study"] for u in bulk_units})
     if mixed:
         raise Refused(f"studies {mixed} span modalities ['bulk', 'single_cell']: a study is one or the other")
-    written = {}
+    # round 2 (both reviewers' lesser points): each family gets a record limited to its own accessions, so the
+    # single-cell manifests and COMBINE.json are byte-identical with and without bulk units; the bulk family's record
+    # goes to COMBINE_bulk.json
+    mod_of = {acc: cm.modality(d) for acc, d in cm.load_datasets(datasets).items()}
+    mod_of.update({u["accession"]: u.get("modality", "single_cell") for u in all_units})
+    sc_record, bulk_record = (family_record(record, mod_of, m) for m in ("single_cell", "bulk"))
+    written, bulk_written = {}, {}
     if units:
-        written.update(single_cell_tables(units, ref, record, out))
+        written.update(single_cell_tables(units, ref, sc_record, out))
     if bulk_units:
-        written.update(bulk_tables(bulk_units, ref, record, out))
-    cm.dump_json({"tables": written, "record": record}, out / "COMBINE.json")
-    return {"tables": sorted(written), "record": record}
+        bulk_written.update(bulk_tables(bulk_units, ref, bulk_record, out))
+    cm.dump_json({"tables": written, "record": sc_record}, out / "COMBINE.json")
+    (out / "COMBINE_bulk.json").unlink(missing_ok=True)
+    if bulk_units:
+        cm.dump_json({"tables": bulk_written, "record": bulk_record}, out / "COMBINE_bulk.json")
+    return {"tables": sorted({**written, **bulk_written}), "record": record}
+
+
+def family_record(record: dict, mod_of: dict[str, str], mod: str) -> dict:
+    """The combine record limited to one family's accessions (an accession of unknown modality is single-cell, as
+    before stage 9)."""
+    def mine(acc: str) -> bool:
+        return mod_of.get(acc, "single_cell") == mod
+
+    return {"left_out": [x for x in record["left_out"] if mine(x.split(":", 1)[0])],
+            "not_cleared": [a for a in record["not_cleared"] if mine(a)],
+            "inputs": {a: v for a, v in record["inputs"].items() if mine(a)}}
 
 
 def single_cell_tables(units: list[dict], ref: dict, record: dict, out: Path) -> dict:

@@ -186,7 +186,7 @@ def panel_file(tmp_path, ref) -> tuple[Path, str]:
 PS = {f"GSM91000{i}": ("Kozz -/-" if i <= 3 else "wild type") for i in range(1, 7)}
 
 
-def run_per_sample(tmp_path, y, monkeypatch, folds=None, sexes=None, owns=None, extra_samples=None):
+def run_per_sample(tmp_path, y, monkeypatch, folds=None, sexes=None, owns=None, extra_samples=None, cols=None):
     wt, refp, ref = make_ref(tmp_path)
     rng = np.random.default_rng(1)
     dest = tmp_path / "dest"
@@ -208,7 +208,7 @@ def run_per_sample(tmp_path, y, monkeypatch, folds=None, sexes=None, owns=None, 
     for g in PS:
         c = lib(rng, ref, fold=(folds or {}).get(g, fold if g in ko else None), sex=(sexes or {}).get(g, "female"),
                 own=(owns or {}).get(g, 200 if g in ko else 4000))
-        (staging / f"{g}_counts.txt.gz").write_bytes(per_sample_file(c))
+        (staging / f"{g}_counts.txt.gz").write_bytes(per_sample_file(c, col=(cols or {}).get(g, "counts")))
     calls: list = []
     monkeypatch.setattr(fe, "_get", fake_get(staging, calls))
     fe.fetch("GSE910001", dest, y)
@@ -565,28 +565,55 @@ def _write(tmp_path, name, text):
 
 def test_read_count_file_rules(tmp_path):
     def yes(h):
-        return True
+        return ["GSM1"]
 
     def no(h):
-        return False
+        return []
+
+    def other(h):
+        return ["GSM2"]
+
+    def screen(fields, text):
+        return None
+
+    def rd(p, name, count_column, hits):
+        return bulk.read_count_file(p, name, ["gene"], count_column, hits, "GSM1", screen)
 
     p = _write(tmp_path, "a.txt", "gene\tcounts\ng1\t5\ng2\t7\n")
-    ids, sym, x, col = bulk.read_count_file(p, "a.txt", ["gene"], None, no)
+    ids, sym, x, col = rd(p, "a.txt", None, no)
     assert ids == ["g1", "g2"] and x.tolist() == [5, 7] and col == "counts"
+    assert rd(p, "a.txt", None, yes)[2].tolist() == [5, 7]
+    with pytest.raises(cm.Refused, match="another sample"):
+        rd(p, "a.txt", None, other)    # round 2: a single count column tying to another sample
     p = _write(tmp_path, "b.txt", "gene\tcounts\tLength\ng1\t5\t900\n")
     with pytest.raises(cm.Refused, match="Length"):
-        bulk.read_count_file(p, "b.txt", ["gene"], None, yes)
-    assert bulk.read_count_file(p, "b.txt", ["gene"], "counts", yes)[2].tolist() == [5]
+        rd(p, "b.txt", None, yes)
+    assert rd(p, "b.txt", "counts", yes)[2].tolist() == [5]
     with pytest.raises(cm.Refused, match="does not tie"):
-        bulk.read_count_file(p, "b.txt", ["gene"], "counts", no)    # count_column naming another sample's header
+        rd(p, "b.txt", "counts", no)    # count_column naming another sample's header
     p = _write(tmp_path, "c.txt", "g1\t5\ng2\t7\n")
     with pytest.raises(cm.Refused, match="headerless"):
-        bulk.read_count_file(p, "c.txt", ["gene"], None, yes)
+        rd(p, "c.txt", None, yes)
     p = _write(tmp_path, "d_tpm.txt", "gene\tvalue\ng1\t5\n")
     with pytest.raises(cm.Refused, match="normalised"):
-        bulk.read_count_file(p, "d_tpm.txt", ["gene"], None, yes)
+        rd(p, "d_tpm.txt", None, no)
     p = _write(tmp_path, "e.csv.gz", "gene,counts\ng1,5\n")
-    assert bulk.read_count_file(p, "e.csv.gz", ["gene"], None, no)[2].tolist() == [5]
+    assert rd(p, "e.csv.gz", None, no)[2].tolist() == [5]
+    # the screen runs on the first line before any value is parsed (a value that would refuse is never reached)
+    p = _write(tmp_path, "f.txt", "gene\tcounts\ng1\tnot a number\n")
+    seen = []
+
+    def stop(fields, text):
+        seen.append(fields)
+        raise cm.Refused("stopped by the screen")
+
+    with pytest.raises(cm.Refused, match="stopped by the screen"):
+        bulk.read_count_file(p, "f.txt", ["gene"], None, no, "GSM1", stop)
+    assert seen == [["gene", "counts"]]
+    # a tab-separated table is read without quote handling: a quote in a value cannot merge rows
+    p = _write(tmp_path, "g.txt", 'gene\tcounts\n"g1\t5\ng2"\t7\n')
+    ids, _, x, _ = rd(p, "g.txt", None, no)
+    assert ids == ['"g1', 'g2"'] and x.tolist() == [5, 7]
 
 
 def test_counts_only():
@@ -1148,3 +1175,173 @@ def _with_pins(f):
         d["GSE910002"]["pinned"] = [{"accession": "GSM1"}]
         return d
     return g
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# stage 9 round 2: each blocker of the first review of 120af2f, replayed on the engineer's own synthetic studies
+
+
+@pytest.mark.parametrize("hdr,term", [("Gata4_KO_1", None), ("Ctnnb1_null_rep2", None), ("Axin2_KO", "axin2")])
+def test_r2_blocker2_a_per_sample_header_is_screened_before_any_value_is_read(tmp_path, y, monkeypatch, hdr, term):
+    dest, wt, refp, ref, _ = run_per_sample(tmp_path, y, monkeypatch, cols={"GSM910002": hdr})
+    qc = pr.run("GSE910001", dest, wt, refp, tmp_path / "processed", y)
+    assert qc["status"] == "failed"
+    stored = (tmp_path / "processed" / "GSE910001" / "QC.json").read_text()
+    if term is None:   # a held-out hit: the text is withheld
+        assert "held-out hit in a per-sample header (text withheld)" in qc["reason"] and hdr not in stored
+        assert hdr.split("_")[0] not in stored
+    else:
+        assert "per-sample header screen" in qc["reason"] and "review" in qc["reason"]
+
+
+def test_r2_blocker2_a_review_term_in_a_per_sample_header_is_cleared_only_by_an_entry_naming_that_sample(
+        tmp_path, y, monkeypatch):
+    for who, status in (("GSM910003", "failed"), ("GSM910002", "ok")):
+        y.write_text(YAML.replace("    somite_field: \"characteristics_ch1:somites\"\n",
+                                  "    somite_field: \"characteristics_ch1:somites\"\n    review_cleared: [{sample: "
+                                  f"{who}, term: axin2, reason: a header read}}]\n"))
+        d = tmp_path / who
+        d.mkdir()
+        dest, wt, refp, ref, _ = run_per_sample(d, y, monkeypatch, cols={"GSM910002": "Axin2_KO"})
+        qc = pr.run("GSE910001", dest, wt, refp, d / "processed", y)
+        assert qc["status"] == status, qc.get("reason")
+
+
+def test_r2_blocker3_a_single_count_column_headed_by_another_sample_is_refused(tmp_path, y, monkeypatch):
+    # the reviewer's probe: every file's one column headed 'GSM910006' (a control's accession)
+    dest, wt, refp, ref, _ = run_per_sample(tmp_path, y, monkeypatch, cols={g: "GSM910006" for g in PS})
+    qc = pr.run("GSE910001", dest, wt, refp, tmp_path / "processed", y)
+    assert qc["status"] == "failed" and "ties by the exact rule to another sample" in qc["reason"]
+    # a title or a characteristics value of another sample, likewise
+    for col in ("GSM910005", "Kozz -/-"):
+        d = tmp_path / col.replace(" ", "_").replace("/", "_")
+        d.mkdir()
+        y.write_text(YAML)
+        dest, wt, refp, ref, _ = run_per_sample(d, y, monkeypatch, cols={"GSM910001": col})
+        qc = pr.run("GSE910001", dest, wt, refp, d / "processed", y)
+        assert qc["status"] == "failed" and "another sample" in qc["reason"], qc.get("reason")
+
+
+@pytest.mark.parametrize("short", ["normalized_counts.txt.gz", "expected_count.tsv", "counts_TPM.txt"])
+def test_r2_blocker4_a_series_table_named_as_normalised_is_refused_at_the_offer_header_step_and_read(
+        tmp_path, y, monkeypatch, short):
+    name = f"GSE910002_{short}"
+    dest = tmp_path / "dest"
+    metas = {"GSE910002": fe.parse_soft(soft("GSE910002", st_samples(), design="whole embryos at E8.5",
+                                              series_files=(short,)))}
+    pl = fe.plan("GSE910002", dest, y, metas=metas)
+    assert pl["status"] == "ok", pl.get("reason")
+    b = pl["series"]["GSE910002"]
+    assert b["files"] == [] and "normalised or expected counts" in b["other_files"][0]["reason"]   # the offer
+    calls: list = []
+    monkeypatch.setattr(fe, "_open", opener(gzip.compress(b"gene_id\tKO_rep1\n1\t2\n"), calls)[0])
+    with pytest.raises(cm.Refused, match="normalised or expected counts"):
+        bulk.header("GSE910002", dest, "GSE910002", name, y)   # the header step
+    assert calls == []
+    rows = [r for rs in pl["tables"].values() for r in rs]
+    with pytest.raises(cm.Refused, match="normalised or expected counts"):
+        bulk.record_header(cm.dataset("GSE910002", y), dest, "GSE910002", name, "u", b"gene_id\tKO_rep1", rows, "x")
+    p = tmp_path / name
+    p.write_bytes(gzip.compress(b"gene_id\tKO_rep1\ng1\t5\n") if name.endswith(".gz") else b"gene_id\tKO_rep1\ng1\t5\n")
+    with pytest.raises(cm.Refused, match="normalised or expected counts"):   # the read
+        bulk.read_series_table(p, name, ["gene_id"], ["KO_rep1"], hashlib.sha256(b"gene_id\tKO_rep1").hexdigest())
+    ds = {**cm.dataset("GSE910002", y), "pinned_series_files": [{"series": "GSE910002", "name": name,
+                                                                 "header_sha256": "0" * 64}]}
+    with pytest.raises(cm.Refused, match="normalised or expected counts"):
+        bulk._header_check(ds, pl, rows)
+
+
+def test_r2_blocker5_heterozygous_wording_refuses_a_pin_in_either_arm(tmp_path, y, monkeypatch):
+    dest = tmp_path / "dest"
+    smp = {g: sample(g, geno) for g, geno in PS.items()}
+    smp["GSM910009"] = sample("GSM910009", "Kozz +/-")
+    smp["GSM910010"] = sample("GSM910010", "wild type", extra=["note: littermate of a het embryo"])
+    smp["GSM910011"] = {**sample("GSM910011", "Kozz -/-"), "title": "Kozz heterozygous embryo 2"}
+    metas = {"GSE910001": fe.parse_soft(soft("GSE910001", smp))}
+    pl = fe.plan("GSE910001", dest, y, metas=metas)
+    assert pl["status"] == "ok", pl.get("reason")
+    rows = {r["accession"]: r for r in pl["tables"]["GSE910001"]}
+    for g in ("GSM910009", "GSM910010", "GSM910011"):
+        assert "heterozygous wording" in rows[g]["not_pinnable"]
+    assert rows["GSM910001"]["not_pinnable"] is None
+    table = (dest / "meta" / "GSE910001" / "plan_table_GSE910001.txt").read_text()
+    assert "heterozygous wording" in table
+    # the reviewer's probe: a ko pin of the +/- sample beside a clean one; and the control arm
+    with pytest.raises(cm.Refused, match="heterozygous"):
+        bulk.pin_template("GSE910001", dest, "ko", KO, ["GSM910001", "GSM910009"], y)
+    with pytest.raises(cm.Refused, match="heterozygous"):
+        bulk.pin_template("GSE910001", dest, "control", KO, ["GSM910004", "GSM910010"], y)
+    with pytest.raises(cm.Refused, match="heterozygous"):
+        bulk.pin_template("GSE910001", dest, "ko", KO, ["GSM910011"], y)
+    # the pin check: a pin of the het sample, forged past the template, is refused in either arm
+    pins = (bulk.pin_template("GSE910001", dest, "ko", KO, list(PS)[:3], y)
+            + bulk.pin_template("GSE910001", dest, "control", KO, list(PS)[3:], y))
+    paste(y, "GSE910001", pins, fe.series_pin_template("GSE910001", dest, y))
+    ds = cm.dataset("GSE910001", y)
+    pl = fe.plan("GSE910001", dest, y, metas=metas)
+    assert pl["status"] == "ok", pl.get("reason")
+    for g, arm in (("GSM910009", "ko"), ("GSM910010", "control")):
+        r = {x["accession"]: x for x in pl["tables"]["GSE910001"]}[g]
+        forged = {"accession": g, "arm": arm, "gene": KO, "stage": "E8.5", "files": [f"{g}_counts.txt.gz"],
+                  "metadata_sha256": r["metadata_sha256"]}
+        with pytest.raises(cm.Refused, match="heterozygous"):
+            fe.verify_pins({**ds, "pinned": [*ds["pinned"], forged]}, pl)
+    # the series-table form: the 'Kozz het' sample titled HET_rep1
+    st = tmp_path / "st"
+    st.mkdir()
+    dest2, *_ = run_series_table(st, y, monkeypatch)
+    with pytest.raises(cm.Refused, match="heterozygous"):
+        bulk.pin_template("GSE910002", dest2, "ko", KO, ["GSM920005"], y)
+
+
+def test_r2_het_wording_rule():
+    for v in ("Kozz +/-", "-/+", "het", "HET_rep1", "Pigf_het1", "heterozygous", "Heterozygote", "het embryo"):
+        assert bulk.HET_WORDING.search(v), v
+    for v in ("wild type", "Kozz -/-", "heterogeneous tissue", "methyl", "Chet1", "whole embryo", "null"):
+        assert not bulk.HET_WORDING.search(v), v
+
+
+def test_r2_the_header_step_reads_4096_byte_blocks():
+    data = b"gene\tA\n" + b"x" * 100_000
+    seen = []
+
+    def read(n):
+        seen.append(n)
+        return io.BytesIO(data).read(n) if len(seen) == 1 else b""
+    assert bulk.first_line(read, False, "t") == b"gene\tA" and seen == [bulk.READ_BLOCK] and bulk.READ_BLOCK == 4096
+    src = io.BytesIO(gzip.compress(data))
+    got = []
+    d = bulk.first_line(lambda n: (got.append(n), src.read(n))[1], True, "t")
+    assert d == b"gene\tA" and set(got) == {4096}
+
+
+def test_r2_single_cell_manifests_and_combine_json_are_byte_identical_with_and_without_bulk_units(tmp_path,
+                                                                                                  monkeypatch):
+    _, refp, ref = make_ref(tmp_path)
+    rng = np.random.default_rng(1)
+    sc_units = _units(ref, rng, ["S1", "S2", "S3"], mod="sc")
+    b_units = _units(ref, rng, ["B1", "B2", "B3"])
+    sc_rec = {"left_out": ["AS1:Gz"], "not_cleared": ["GSE1"], "inputs": {
+        f"AS{i}": {"qc": f"q{i}", "qc_sha256": "s", "plan_sha256": "p"} for i in (1, 2, 3)}}
+    both_rec = {"left_out": ["AB1:Gz", "AS1:Gz"], "not_cleared": ["GSE1"], "inputs": {
+        **{f"AB{i}": {"qc": f"b{i}", "qc_sha256": "s", "plan_sha256": "p"} for i in (1, 2, 3)}, **sc_rec["inputs"]}}
+    state = {}
+    monkeypatch.setattr(co, "load_units", lambda *a, **k: (list(state["units"]), json.loads(json.dumps(state["rec"]))))
+    monkeypatch.setattr(co.time, "strftime", lambda *a, **k: "2026-11-21 00:00:00 UTC")
+    out, a = tmp_path / "tables", tmp_path / "sc_only"   # one output folder (the files name their own paths)
+    state.update(units=sc_units, rec=sc_rec)
+    co.combine(tmp_path, refp, out, dest=tmp_path)
+    shutil.copytree(out, a)
+    shutil.rmtree(out)
+    state.update(units=sc_units + b_units, rec=both_rec)
+    co.combine(tmp_path, refp, out, dest=tmp_path)
+    b = out
+    files = sorted(p.relative_to(a) for p in a.rglob("*") if p.is_file())
+    assert any(str(f).endswith("_manifest.json") for f in files) and Path("COMBINE.json") in files
+    for f in files:
+        assert (a / f).read_bytes() == (b / f).read_bytes(), f
+    bulk_rec = json.loads((b / "COMBINE_bulk.json").read_text())["record"]
+    assert bulk_rec == {"left_out": ["AB1:Gz"], "not_cleared": [], "inputs": {
+        f"AB{i}": {"qc": f"b{i}", "qc_sha256": "s", "plan_sha256": "p"} for i in (1, 2, 3)}}
+    man = json.loads((b / "bulk_all" / "bulk_all_manifest.json").read_text())
+    assert man["inputs"] == bulk_rec and not (a / "COMBINE_bulk.json").exists()

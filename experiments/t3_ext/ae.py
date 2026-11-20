@@ -11,10 +11,12 @@ plan downloads the IDF, the SDRF and the methods text only (metadata; no count).
 paragraph separator inside a line, an IDF key or SDRF header outside the closed grammar, or a row of another width
 refuses the dataset with its text withheld. Then, BEFORE the screen, the views, the hashes and the tables, every SDRF
 row whose line column ('Characteristics[mutant line]') equals a withheld_lines value exactly is dropped, with every
-other row of a Source Name, ENA sample or individual that a withheld row names; only '<gene>: n rows withheld
-(reason)' is printed. A line value that differs from a withheld value but equals it after case folding and removing
-spaces, '-', '_' and '.' refuses the dataset. A sample is one Source Name: its fields map '<3-digit column number>|
-<header>' to the list of its rows' values in file order, hashed with t3x_common.canonical_metadata(Source Name, ...).
+row of a Source Name one of whose rows shares a Source Name, ENA sample, individual or run (Comment[ENA_RUN]) with a
+withheld row (to a fixed point); only '<gene>: n rows withheld (reason)' is printed, and the withheld runs are kept
+as sha256 digests only, which the pin template and the pin check refuse. A line value that differs from a withheld
+value but equals it after case folding and removing spaces, '-', '_' and '.' refuses the dataset. A sample is one
+Source Name: its fields map '<3-digit column number>|<header>' to the list of its rows' values in file order,
+hashed with t3x_common.canonical_metadata(Source Name, ...).
 The series block is the IDF (each key under 'idf|<key>'), the SDRF header row and the methods text, hashed alike and
 pinned as pinned_series. The screen runs on every series field and name and on every Source Name's record; a held-out
 hit anywhere withholds the text.
@@ -29,14 +31,19 @@ The mechanical comparisons, each printing its number of disagreements (a disagre
   (e) exactly one ENA sample per Source Name, one Source Name per individual and per ENA sample, and no Source Name
       or ENA sample under two lines;
   (f) every run is an ERR accession of its own record (its FASTQ_URI names it) and of no other Source Name;
-  (g) the pin hash equals the plan hash (verify_pins).
+  (g) the pin hash equals the plan hash (verify_pins);
+  (h) after the header step: every run of the Source Name is a header of the count matrix, and no header that is not
+      a run ties to it.
 Only 'embryonic day 9.5' is pinnable (days 10 and 10.5 fall under the stage cap); hets and the line 'baseline' are
 never pinned. The committed rule fixes the line set: every line not withheld with at least BULK_MIN_LIBS homozygous and
-BULK_MIN_LIBS wild-type pinnable E9.5 Source Names; verify_pins refuses pins that are not exactly that set.
+BULK_MIN_LIBS wild-type pinnable E9.5 Source Names, (h) included; before the header step and the plan made again after
+it, the line set is provisional. One function (committed) gives it to the plan, pin_template and verify_pins;
+verify_pins refuses pins that are not exactly that set.
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import sys
@@ -177,11 +184,23 @@ def _norm(v: str) -> str:
     return re.sub(r"[\s\-_.]", "", v).casefold()
 
 
-def withhold_rows(ds: dict, header: list[str], rows: list[list[str]]) -> tuple[list[list[str]], dict, int]:
-    """(the rows kept, {gene: (n rows withheld, reason)}, n rows withheld because their Source Name, ENA sample or
-    individual is named by a withheld row). A near-match of a withheld value refuses."""
+LINK_KEYS = ("source", "ers", "individual", "run")
+
+
+def run_digest(run: str) -> str:
+    """The sha256 of a run accession: a withheld run is kept in the plan by this digest only (no withheld text)."""
+    return hashlib.sha256(run.encode("utf-8")).hexdigest()
+
+
+def withhold_rows(ds: dict, header: list[str], rows: list[list[str]]) -> tuple[list[list[str]], dict, int, set]:
+    """(the rows kept, {gene: (n rows withheld, reason)}, n rows withheld because they are linked to a withheld row,
+    the withheld runs). A row is linked when its Source Name, ENA sample, individual or run (Comment[ENA_RUN]) is a
+    value a withheld row names (empty values link nothing); every row of a linked row's Source Name is withheld with
+    it (stage 9 round 2, the first reviewer's blocker 1: a run of a withheld line is withheld too). A near-match of a
+    withheld value refuses."""
     wl = {e["line"]: e["reason"] for e in ds.get("withheld_lines") or []}
     li = header.index(COL["line"])
+    idx = {c: header.index(COL[c]) for c in LINK_KEYS}
     near = sorted({w for v in {r[li] for r in rows} for w in wl if v != w and _norm(v) == _norm(w)})
     if near:
         raise Withhold(f"a line value near the withheld line(s) {near} (a case, space or separator variant): the "
@@ -192,17 +211,30 @@ def withhold_rows(ds: dict, header: list[str], rows: list[list[str]]) -> tuple[l
     for r in rows:
         if r[li] in wl:
             counts[r[li]][0] += 1
-            for c in ("source", "ers", "individual"):
-                linked_keys.add((c, r[header.index(COL[c])]))
+            for c in LINK_KEYS:
+                if r[idx[c]].strip():   # the second reviewer's lesser point 5: an empty value links nothing
+                    linked_keys.add((c, r[idx[c]]))
         else:
             keep.append(r)
+    # to a fixed point: a linked Source Name's own keys link further rows (one shared run is enough)
+    linked_sources: set[str] = set()
+    while True:
+        new = {r[idx["source"]] for r in keep if r[idx["source"]] not in linked_sources
+               and any((c, r[idx[c]]) in linked_keys for c in LINK_KEYS)}
+        if not new:
+            break
+        linked_sources |= new
+        for r in keep:
+            if r[idx["source"]] in new:
+                linked_keys |= {(c, r[idx[c]]) for c in LINK_KEYS if r[idx[c]].strip()}
     kept, linked = [], 0
     for r in keep:
-        if any((c, r[header.index(COL[c])]) in linked_keys for c in ("source", "ers", "individual")):
+        if r[idx["source"]] in linked_sources:
             linked += 1
         else:
             kept.append(r)
-    return kept, {w: tuple(v) for w, v in counts.items()}, linked
+    withheld_runs = {v for c, v in linked_keys if c == "run"}
+    return kept, {w: tuple(v) for w, v in counts.items()}, linked, withheld_runs
 
 
 def records(header: list[str], rows: list[list[str]]) -> dict[str, dict]:
@@ -321,6 +353,58 @@ def line_set(rows: list[dict]) -> dict[str, dict[str, list[str]]]:
             and len(v["control"]) >= cm.BULK_MIN_LIBS}
 
 
+HEADER_REASONS = {"incomplete": "(h) a run missing from the matrix header",
+                  "other_tie": "(h) tied through a non-run header"}
+PROVISIONAL = ("provisional: the line set is final only after the header step has passed and the plan has been made "
+               "again")
+
+
+def passing_header(acc: str, headers: dict | None) -> dict | None:
+    """The count matrix's header record when it passed (status ok, not withheld), else None."""
+    rec = (headers or {}).get(matrix_name(acc))
+    return rec if rec and rec.get("status") == "ok" and not rec.get("withheld") else None
+
+
+def mark_rows(rows: list[dict], ties: dict | None) -> list[dict]:
+    """Copies of the rows with not_pinnable set from the SDRF reasons and, when ties are given, the header reason (h):
+    a Source Name with a run missing from the matrix header, or tied through a header that is not a run, is not
+    pinnable."""
+    out = []
+    for r in rows:
+        r = dict(r)
+        base = r.get("not_pinnable_sdrf", r.get("not_pinnable"))
+        h = None
+        if ties is not None:
+            for k, why in HEADER_REASONS.items():
+                if r["source_name"] in ties[k]:
+                    h = why
+        r["header"] = h
+        r["not_pinnable"] = "; ".join(x for x in (base, h) if x) or None
+        out.append(r)
+    return out
+
+
+def committed(ds: dict, rows: list[dict], headers: dict | None) -> tuple[list[dict], dict, dict]:
+    """The committed rule, one function for the plan, pin_template and verify_pins: (rows marked, line set, basis).
+    Once the matrix header step has passed, its run ties are derived again from the stored line and these rows; every
+    Source Name with a run missing from the header or tied through a non-run header is NOT PINNABLE (h), and the line
+    set is computed over the remaining rows (a line that drops under BULK_MIN_LIBS in an arm leaves the set). Before
+    the header step (or when the stored record no longer derives) the line set is provisional."""
+    acc = ds["accession"]
+    rec = passing_header(acc, headers)
+    if rec is None:
+        rows = mark_rows(rows, None)
+        return rows, line_set(rows), {"final": False, "reason": PROVISIONAL}
+    ties, problems = run_ties(bulk.split_header(rec["text"].encode("utf-8"), rec["name"]), rows, ds["gene_columns"])
+    if problems or ties != rec.get("ties"):
+        rows = mark_rows(rows, None)
+        return rows, line_set(rows), {"final": False, "reason": "provisional: the stored header record does not "
+                                      "derive again from this plan's rows: run the header step again, then plan again"}
+    rows = mark_rows(rows, ties)
+    return rows, line_set(rows), {"final": True, "header_sha256": rec["header_sha256"],
+                                  "reason": "final: after the header step (h applied)"}
+
+
 def plan_from_texts(ds: dict, idf: bytes, sdrf: bytes, methods: bytes, headers: dict | None = None) -> dict:
     """The plan of the resource from its three texts (no network)."""
     acc = ds["accession"]
@@ -331,11 +415,12 @@ def plan_from_texts(ds: dict, idf: bytes, sdrf: bytes, methods: bytes, headers: 
         sfields = parse_idf(idf)
         header, rows = parse_sdrf(sdrf)
         mlines = text_lines(methods, "methods")
-        rows, wcounts, linked = withhold_rows(ds, header, rows)
+        rows, wcounts, linked, wruns = withhold_rows(ds, header, rows)
     except Withhold as e:
         return {**out, "status": "refused", "reason": str(e)}
     out["withheld_rows"] = {g: {"rows": n, "reason": why} for g, (n, why) in wcounts.items()}
     out["withheld_linked_rows"] = linked
+    out["withheld_run_sha256"] = sorted(run_digest(x) for x in wruns)   # digests only: no withheld text
     sfields["sdrf|header"] = list(header)
     sfields["methods|lines"] = mlines
     recs = records(header, rows)
@@ -390,14 +475,18 @@ def plan_from_texts(ds: dict, idf: bytes, sdrf: bytes, methods: bytes, headers: 
         rows_out.append({"source_name": sn, "accession": ers[0] if len(ers) == 1 else None, "fields": f,
                          "metadata_sha256": cm.metadata_sha256(sn, f), "verdict": scr[sn]["verdict"],
                          "hits": [list(h) for h in scr[sn]["hits"]], "clearance_void": scr[sn]["clearance_void"],
-                         "comparisons": why, "not_pinnable": "; ".join(reasons) or None, "line": line,
+                         "comparisons": why, "not_pinnable_sdrf": "; ".join(reasons) or None,
+                         "not_pinnable": "; ".join(reasons) or None, "line": line,
                          "genotype": geno, "stage": e, "stage_value": stage_v,
                          "somite": _one(_vals(f, header, COL["somite"])), "sex": _one(_vals(f, header, COL["sex"])),
                          "individual": _one(_vals(f, header, COL["individual"])),
                          "runs": list(dict.fromkeys(_vals(f, header, COL["run"])))})
     out["tables"] = {acc: rows_out}
     out["comparisons"] = {k: sorted(sn for sn, c in comp.items() if k in c) for k in "abcdef"}
-    out["line_set"] = line_set(rows_out)
+    # stage 9 round 2 (the second reviewer's blocker): the header ties are part of the committed rule
+    rows_out, out["line_set"], out["line_set_basis"] = committed(ds, rows_out, out["count_table_headers"])
+    out["tables"] = {acc: rows_out}
+    out["comparisons"]["h"] = sorted(r["source_name"] for r in rows_out if r.get("header"))
     out["views"] = views(header, recs, rows_out)
     out["screen"]["refusals"] = refusals
     if refusals:
@@ -494,8 +583,10 @@ def write_tables(pl: dict, mdir: Path) -> list[str]:
     for g, v in (pl.get("withheld_rows") or {}).items():
         L.append(f"# {g}: {v['rows']} rows withheld ({v['reason']})")
     if "withheld_linked_rows" in pl:
-        L.append(f"# {pl['withheld_linked_rows']} more rows withheld: their Source Name, ENA sample or individual is "
-                 "named by a withheld row")
+        L.append(f"# {pl['withheld_linked_rows']} more rows withheld: their Source Name, ENA sample, individual or run "
+                 "is named by a withheld row (with every row of their Source Name)")
+    if "withheld_run_sha256" in pl:
+        L.append(f"# {len(pl['withheld_run_sha256'])} runs withheld (kept as digests only; never pinnable)")
     if pl.get("withheld"):
         L.append(f"# WITHHELD ({pl.get('reason')}): no text of this resource is written. Do not pin.")
     else:
@@ -516,11 +607,14 @@ def write_tables(pl: dict, mdir: Path) -> list[str]:
         L += ["", "# PER LINE: genotype | stage counts, sex, somite range, pinnable E9.5 Source Names"]
         for line, v in pl["views"]["per_line"].items():
             L.append(f"  {line}: {json.dumps(v, sort_keys=True)}")
-        L += ["", "# MECHANICAL COMPARISONS (a disagreeing Source Name is NOT PINNABLE)"]
+        L += ["", "# MECHANICAL COMPARISONS (a disagreeing Source Name is NOT PINNABLE; (h) is the header step's: a "
+                  "run missing from the matrix header or a tie through a non-run header)"]
         for k, sns in pl["comparisons"].items():
             L.append(f"  ({k}) {len(sns)} disagreements" + (f": {sns}" if sns else ""))
         L += ["", f"# LINE SET (the committed rule: lines not withheld with at least {cm.BULK_MIN_LIBS} homozygous and "
-                  f"{cm.BULK_MIN_LIBS} wild-type pinnable Source Names at '{PINNABLE_STAGE}'; no hand-picking)"]
+                  f"{cm.BULK_MIN_LIBS} wild-type pinnable Source Names at '{PINNABLE_STAGE}', comparison (h) of the "
+                  "header step included; no hand-picking)",
+              f"# THE LINE SET IS {pl['line_set_basis']['reason'].upper()}"]
         for line, v in pl["line_set"].items():
             L.append(f"  {line}: ko {v['ko']}; control {v['control']}")
         L += ["", "# SOURCE NAMES"]
@@ -595,6 +689,7 @@ def header(acc: str, dest: Path, datasets: Path | None = None) -> dict:
     if pl.get("withheld") or acc not in (pl.get("series") or {}):
         raise Refused(f"{acc}: the stored plan holds no readable record")
     name, url = matrix_name(acc), urls(acc)["matrix"]
+    bulk.refuse_normalised_name(name)
     with fe._open(url) as r:
         line = bulk.first_line(r.read, False, name)
     return record_header(ds, dest, pl, name, url, line)
@@ -602,6 +697,7 @@ def header(acc: str, dest: Path, datasets: Path | None = None) -> dict:
 
 def record_header(ds: dict, dest: Path, pl: dict, name: str, url: str, line: bytes) -> dict:
     acc = ds["accession"]
+    bulk.refuse_normalised_name(name)
     fields = bulk.split_header(line, name)
     text = line.decode("utf-8")
     rec = {"accession": acc, "series": acc, "name": name, "url": url, "n_columns": len(fields),
@@ -673,12 +769,23 @@ def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
     if (bulk.header_sha256(line) != t["header_sha256"] or rec["header_sha256"] != t["header_sha256"]
             or rec["url"] != urls(acc)["matrix"]):
         raise Refused(f"{t['name']}: the stored header is not the pinned one (hash or url): refused")
-    rows = pl["tables"][acc]
-    ties, problems = run_ties(bulk.split_header(line, t["name"]), rows, ds["gene_columns"])
+    bulk.refuse_normalised_name(t["name"])
+    # round 2 (the first reviewer's blocker 1): a withheld run is refused first, in a pin or in its plan record
+    wruns = set(pl.get("withheld_run_sha256") or [])
+    raw = {r["source_name"]: r for r in pl["tables"][acc]}
+    for p in pins:
+        if any(run_digest(x) in wruns for x in p.get("runs") or []):
+            raise Refused(f"{p['source_name']}: a pinned run is a run of a withheld line: refused")
+        if any(run_digest(x) in wruns for x in (raw.get(p["source_name"]) or {}).get("runs") or []):
+            raise Refused(f"{p['source_name']}: its record lists a run of a withheld line: refused")
+    ties, problems = run_ties(bulk.split_header(line, t["name"]), pl["tables"][acc], ds["gene_columns"])
     if problems or ties != rec["ties"]:
         raise Refused(f"{t['name']}: the run ties derived again differ from the stored ones: refused")
+    rows, ls, basis = committed(ds, pl["tables"][acc], pl.get("count_table_headers"))
+    if not basis["final"] or ls != pl.get("line_set"):
+        raise Refused(f"{acc}: the plan's line set is not the committed rule's after the header step "
+                      f"({basis['reason']}): plan again")
     by_sn = {r["source_name"]: r for r in rows}
-    ls = line_set(rows)
     per: dict[str, dict] = {}
     for p in pins:
         sn = p["source_name"]
@@ -741,23 +848,37 @@ def pin_template(acc: str, dest: Path, arm: str, gene: str, sources: list[str], 
         raise Refused(f"arm must be exactly one of {cm.PIN_ARMS}")
     if not sources or len(set(sources)) != len(sources):
         raise Refused("name every Source Name to pin, each once (--source or --source-file)")
+    ds = cm.dataset(acc, datasets)
     pl = _stored(acc, dest, datasets)
-    rows = {r["source_name"]: r for r in pl["tables"][acc]}
-    ls = line_set(pl["tables"][acc])
+    wruns = set(pl.get("withheld_run_sha256") or [])
+    for r in pl["tables"][acc]:
+        if r["source_name"] in sources and any(run_digest(x) in wruns for x in r["runs"]):
+            raise Refused(f"{r['source_name']}: its record lists a run of a withheld line: refused")
+    hdrs = [h for h in bulk.stored_headers(dest, acc).values() if h.get("status") == "ok"]
+    if len(hdrs) != 1:
+        raise Refused(f"{acc}: run the header step first ({len(hdrs)} passing header records)")
+    in_plan = passing_header(acc, pl.get("count_table_headers"))
+    if in_plan is None or in_plan.get("header_sha256") != hdrs[0]["header_sha256"] or in_plan.get(
+            "ties") != hdrs[0].get("ties"):
+        raise Refused(f"{acc}: the stored plan does not carry the passing header record: the line set is provisional "
+                      "until the plan is made again after the header step")
+    rows_l, ls, basis = committed(ds, pl["tables"][acc], pl.get("count_table_headers"))
+    if not basis["final"] or ls != pl.get("line_set"):
+        raise Refused(f"{acc}: the line set is not final ({basis['reason']}): plan again")
+    rows = {r["source_name"]: r for r in rows_l}
     if gene not in ls:
         raise Refused(f"{gene}: not a line of the committed rule's line set {sorted(ls)}")
     if set(sources) != set(ls[gene][arm]):
         raise Refused(f"{gene} {arm}: name exactly the rule's eligible Source Names ({len(ls[gene][arm])}), not "
                       f"{len(sources)}")
-    hdrs = [h for h in bulk.stored_headers(dest, acc).values() if h.get("status") == "ok"]
-    if len(hdrs) != 1:
-        raise Refused(f"{acc}: run the header step first ({len(hdrs)} passing header records)")
     complete = set(hdrs[0]["ties"]["complete"])
     out = [f"# pin-template {acc} (ArrayExpress): line {gene}, arm {arm}; {len(sources)} Source Names, exactly the "
            "committed rule's eligible ones", "# READ each record in the plan table before pasting (README checks B1 "
            "to B10)."]
     for sn in sources:
         r = rows[sn]
+        if any(run_digest(x) in wruns for x in r["runs"]):
+            raise Refused(f"{sn}: its record lists a run of a withheld line: refused")
         if r["not_pinnable"] or sn not in complete:
             raise Refused(f"{sn}: not pinnable ({r['not_pinnable'] or 'a run missing from the header'})")
         h = cm.metadata_sha256(sn, r["fields"])
