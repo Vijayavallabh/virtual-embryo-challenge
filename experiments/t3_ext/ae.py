@@ -73,7 +73,8 @@ SDRF_HEADER = re.compile(
     r"Material Type|Protocol REF|Term Source REF|Term Accession Number|Performer|Technology Type|Array Design REF|"
     r"Array Data File|Derived Array Data File|Normalization Name|"
     rf"Comment{_BR}|Characteristics{_BR}|Factor Value{_BR}|Unit{_BR}|Parameter Value{_BR})")
-IDF_KEY = re.compile(rf"[A-Za-z][A-Za-z0-9 ]*(?:{_BR})?")
+# A hyphen is allowed inside a key: the real description file holds "MAGE-TAB Version" (seen 2026-11-20, metadata only).
+IDF_KEY = re.compile(rf"[A-Za-z][A-Za-z0-9 \-]*(?:{_BR})?")
 STAGE_VALUE = re.compile(r"embryonic day (\d+(?:\.\d+)?)")
 SOMITE_VALUE = re.compile(r"^(\d+)-somite stage$")
 ERR_RX = re.compile(r"ERR\d{6,7}")
@@ -281,7 +282,8 @@ def comparisons(ds: dict, header: list[str], recs: dict[str, dict]) -> dict[str,
             elif cm.GENOTYPE_MAP.get(m.group("genotype")) != geno:
                 out[sn].setdefault("b", "its genotype token does not map to its genotype value")
             allele = _one(_vals(f, header, COL["allele"]))
-            prefix = allele.split("<", 1)[0] if allele else None
+            # the allele is written line<allele> or, in the real sample table, line^allele (seen 2026-11-20)
+            prefix = re.split(r"[<^]", allele, maxsplit=1)[0] if allele else None
             if m is None or line is None or not prefix or not (m.group("gene") == line == prefix):
                 out[sn].setdefault("c", "the Source Name's gene token, the line and the allele prefix differ")
         stage = _one(_vals(f, header, COL["stage"]))

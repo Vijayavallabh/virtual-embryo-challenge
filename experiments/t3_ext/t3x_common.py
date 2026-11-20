@@ -133,6 +133,12 @@ ALIASES = {"T": "Tbxt", "Tbxt": "T", "Hbb-y": "Hbb-bh0", "Hbb-bh0": "Hbb-y"}
 # design number, fixed before any bulk count was read; none comes from a score.
 MODALITIES = ("single_cell", "bulk")
 COUNT_FORMS = ("per_sample", "series_table", "arrayexpress")
+# The two GEO bulk forms are CLOSED (2026-11-20): their verification left two blockers open (heterozygous wording in
+# notations the pattern misses; a per-sample count column that names another sample by a token). No dataset may use
+# them until a reviewed change closes both and sets this to True. The arrayexpress form passed its end-to-end check.
+GEO_BULK_OPEN = False
+# Lines a named resource must withhold as held (a slip when pasting an entry must not make one pinnable).
+REQUIRED_HELD_LINES = {"E-MTAB-7322": ("Trps1",)}
 ID_TYPES = ("ensembl", "symbol")
 BULK_MIN_LIBS = 2                # libraries per arm per stage, at pin time and again after the guards
 BULK_MIN_LIB_TOTAL = 1_000_000   # G1: a library's total over all gene rows
@@ -952,7 +958,13 @@ def check_bulk(acc, ds: dict, where: str = "datasets.yaml") -> None:
                 raise Refused(f"{where}: {acc}: withheld_lines entry {e!r} must be {{line, reason}} with a line "
                               f"named once and a reason in {WITHHELD_REASONS}")
             seen.add(e["line"])
+        for need in REQUIRED_HELD_LINES.get(str(acc), ()):
+            if {"line": need, "reason": "held"} not in wl:
+                raise Refused(f"{where}: {acc}: withheld_lines must hold {{line: {need}, reason: held}}")
     else:
+        if not GEO_BULK_OPEN:
+            raise Refused(f"{where}: {acc}: count_form {cf}: the GEO bulk forms are closed until their two review "
+                          "blockers of 2026-11-20 are resolved (t3x_common.GEO_BULK_OPEN)")
         if ds.get("repository") != "geo":
             raise Refused(f"{where}: {acc}: count_form {cf} is taken from GEO only")
         for k in ("withheld_lines", "source_name_pattern"):

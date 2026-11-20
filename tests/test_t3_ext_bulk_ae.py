@@ -29,6 +29,13 @@ import process as pr  # noqa: E402
 import t3x_common as cm  # noqa: E402
 import t3x_tables as tb  # noqa: E402
 
+
+@pytest.fixture(autouse=True)
+def _geo_bulk_forms_open_for_these_tests(monkeypatch):
+    """The GEO bulk forms are closed in the committed code (t3x_common.GEO_BULK_OPEN is False); the synthetic tests
+    of those forms open them for their own run only."""
+    monkeypatch.setattr(cm, "GEO_BULK_OPEN", True)
+
 ACC = "E-MTAB-7322"
 LINES = ("Abcz1", "Defz2", "Ghiz3")
 PANEL = [f"g{i}" for i in range(38)] + ["Xist", "Tsix"]
@@ -603,3 +610,59 @@ def test_r2_blocker4_a_matrix_named_as_normalised_is_refused_at_the_header_step_
         with pytest.raises(cm.Refused, match="normalised or expected counts"):
             bulk.read_series_table(tmp_path / "absent", name, ["Gene ID"], ["ERR1"], "0" * 64)
     assert calls == []
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# what the resource's real description and sample tables showed (2026-11-20, metadata only), and two closures
+
+
+def test_a_description_key_with_a_hyphen_is_read_and_other_punctuation_still_withholds(y):
+    idf = IDF + b"MAGE-TAB Version\t1.1\n"
+    pl = ae.plan_from_texts(cm.dataset(ACC, y), idf, sdrf_and_runs()[0], METHODS)
+    assert pl["status"] == "ok" and pl["series"][ACC]["fields"]["idf|MAGE-TAB Version"] == ["1.1"]
+    for bad in (b"Bad;Key\tx\n", b"Key/Other\tx\n", b"-Leading\tx\n", b"Key(1)\tx\n"):
+        got = ae.plan_from_texts(cm.dataset(ACC, y), IDF + bad, sdrf_and_runs()[0], METHODS)
+        assert got["status"] == "refused" and "closed grammar" in got["reason"] and "text withheld" in got["reason"]
+
+
+def test_an_allele_written_with_a_caret_passes_the_name_comparison_and_a_wrong_prefix_does_not(y):
+    sdrf = sdrf_and_runs()[0].decode()
+    caret = sdrf.replace("<tm1a(EUCOMM)Wtsi>", "^tm1a(EUCOMM)Wtsi")
+    assert caret != sdrf and "Abcz1^tm1a(EUCOMM)Wtsi" in caret
+    base = ae.plan_from_texts(cm.dataset(ACC, y), IDF, sdrf.encode(), METHODS)
+    got = ae.plan_from_texts(cm.dataset(ACC, y), IDF, caret.encode(), METHODS)
+    assert got["status"] == "ok" and got["line_set"] == base["line_set"]
+    assert got["comparisons"]["c"] == base["comparisons"]["c"]
+    wrong = caret.replace("Abcz1^tm1a(EUCOMM)Wtsi", "Abcz^tm1a(EUCOMM)Wtsi")
+    bad = ae.plan_from_texts(cm.dataset(ACC, y), IDF, wrong.encode(), METHODS)
+    assert len(bad["comparisons"]["c"]) > len(base["comparisons"]["c"]) and "Abcz1" not in bad["line_set"]
+
+
+def test_the_named_resource_must_withhold_its_held_line(tmp_path):
+    for text, ok in ((YAML, True),
+                     (YAML.replace("      - {line: Trps1, reason: held}\n", ""), False),
+                     (YAML.replace("{line: Trps1, reason: held}", "{line: Trps1, reason: pending_phenocopy}"), False)):
+        p = tmp_path / f"d{ok}{len(text)}.yaml"
+        p.write_text(text)
+        if ok:
+            assert cm.dataset(ACC, p)["withheld_lines"][0] == {"line": "Trps1", "reason": "held"}
+        else:
+            with pytest.raises(cm.Refused, match="withheld_lines must hold"):
+                cm.load_datasets(p)
+
+
+def test_the_geo_bulk_forms_are_closed_in_the_committed_code(tmp_path, monkeypatch):
+    assert "GEO_BULK_OPEN = False" in (EXT / "t3x_common.py").read_text()
+    monkeypatch.setattr(cm, "GEO_BULK_OPEN", False)
+    geo = YAML.replace("repository: arrayexpress", "repository: geo")
+    geo = geo.replace("count_form: arrayexpress", "count_form: per_sample")
+    geo = geo.replace(f"accession: {ACC}", "accession: GSE910001")
+    geo = geo.replace(f"screen_series: [{ACC}]", "screen_series: [GSE910001]")
+    p = tmp_path / "geo.yaml"
+    p.write_text(geo)
+    with pytest.raises(cm.Refused, match="the GEO bulk forms are closed"):
+        cm.load_datasets(p)
+    # the arrayexpress form is not affected
+    q = tmp_path / "ae.yaml"
+    q.write_text(YAML)
+    assert cm.dataset(ACC, q)["count_form"] == "arrayexpress"

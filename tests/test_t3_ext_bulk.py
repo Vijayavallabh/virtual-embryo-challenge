@@ -32,6 +32,13 @@ import process as pr  # noqa: E402
 import t3x_common as cm  # noqa: E402
 import t3x_tables as tb  # noqa: E402
 
+
+@pytest.fixture(autouse=True)
+def _geo_bulk_forms_open_for_these_tests(monkeypatch):
+    """The GEO bulk forms are closed in the committed code (t3x_common.GEO_BULK_OPEN is False); the synthetic tests
+    of those forms open them for their own run only."""
+    monkeypatch.setattr(cm, "GEO_BULK_OPEN", True)
+
 KO = "Kozz"
 PANEL = [f"g{i}" for i in range(37)] + ["Xist", "Ddx3y", KO]
 GROUPS = ["CM", "Endoderm", "Neural"]

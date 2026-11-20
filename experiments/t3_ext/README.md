@@ -884,7 +884,7 @@ the two readers' result):
       - {line: Zkscan17, reason: pending_phenocopy}
       - {line: Dhx35, reason: pending_phenocopy}
       - {line: Gpr107, reason: pending_phenocopy}
-    source_name_pattern: '(?P<gene>[^_]+)_(?P<genotype>wt|het|hom)\d+'   # <line>_<wt|het|hom><n>; (c) checks the line
+    source_name_pattern: '(?:M\d+_)?(?P<gene>[A-Za-z0-9]+)_(?P<genotype>hom|het|wt)\d+'   # [M<number>_]<line>_<wt|het|hom><n>
     screen_series: [E-MTAB-7322]
     stages_used: [E9.5]
     licence: "..."
@@ -988,6 +988,31 @@ run is a column is checked by the header step. A 10x features file states no chr
 other than the named sex genes are unknown: an imbalanced unit is refused. Trps1 was not added to the screen (see the
 hand-back). How the guards behave on real whole embryos (G5 against an E8.75 pseudo-bulk, G12 on a bulk profile) is
 unknown; E7.5 studies are expected to fail G5.
+
+## Stage 9 round 3 (campaign/t3-ext-bulk-3, by the main session): the real tables, and two closures
+
+After the second verification (not ready: two blockers, both on the GEO forms) the main session ran the planner, in a
+scratch copy, on the resource's own description and sample tables (metadata only; no count read) and changed four
+things, each with a test in `tests/test_t3_ext_bulk_ae.py`:
+
+1. **The description file's keys may hold a hyphen.** The real file has the key `MAGE-TAB Version`; the key grammar
+   refused it and with it the whole plan. Any other punctuation in a key still withholds.
+2. **An allele is written `line<allele>` or `line^allele`.** The real sample table uses the caret; with only `<` read,
+   569 of 680 kept records failed comparison (c).
+3. **The named resource must withhold its held line.** `check_bulk` refuses E-MTAB-7322 unless `withheld_lines` holds
+   `{line: Trps1, reason: held}` (`t3x_common.REQUIRED_HELD_LINES`).
+4. **The two GEO bulk forms are closed.** `t3x_common.GEO_BULK_OPEN` is False: a dataset with `count_form: per_sample`
+   or `series_table` is refused at load until a reviewed change closes the two open blockers (heterozygous wording
+   written with a Unicode minus or as an allele pair such as KO/+; a per-sample count column that names another sample
+   by a token) and sets it to True. The arrayexpress form passed its end-to-end verification and is not affected.
+
+Real forms the main session saw in the sample table: Source Names are `M<number>_<line>_<wt|het|hom><n>` for most
+embryos and `<line>_<wt|het|hom><n>` for some (the example entry's pattern takes both); a few lines spell the line
+differently in the Source Name and in the line column, which leaves them not pinnable; `Term Source REF` and some
+comment columns carry stray whitespace, which comparison (d) does not read. Two README sentences are corrected: before
+the pins the code reads at most one 4,096-byte block past the first newline, and the HTTP and TLS layers below it may
+buffer a few more kilobytes, none of it parsed or written; after the header step the plan carries the matrix header
+line verbatim for the re-derivation, withheld runs' accessions included, never printed or tied.
 
 ## Stage 9 round 2 (campaign/t3-ext-bulk-2): what changed after the two reviews of 120af2f
 
