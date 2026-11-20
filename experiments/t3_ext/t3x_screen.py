@@ -18,6 +18,12 @@ Every text is normalised before matching, and every variant is screened: the tex
 repair ('Î²-catenin' -> 'β-catenin'), URL and HTML unescaping ('%CE%B2', '&beta;'), Unicode NFKC (fullwidth letters,
 superscripts, 'ϐ' -> 'β'), zero-width characters and soft hyphens removed, every Unicode dash mapped to '-', a fold
 of Cyrillic look-alike letters to Latin ('Gаta4' with a Cyrillic 'а' -> 'Gata4'), then lower case ('ß' is kept).
+Stage 4 adds, each as a further variant: every Unicode control (Cc) and format (Cf) character and U+034F deleted
+('Ctnn<RLO>b1', 'Ga<LRM>ta4', 'Gata<BS>4', 'Ctn<CGJ>nb1'); the fold extended to Greek and Latin look-alikes (Α Β Τ Ε Ο
+Ν Κ Ι, α ο τ β ν ι κ, ɑ and small capitals; so 'Gαta4', 'GΑΤΑ4', 'Gɑta4' and 'CTNNβ1' fold to the gene); every
+non-ASCII decimal digit mapped to its ASCII digit ('Gata٤' -> 'Gata4'), and, in one more variant, deleted ('Gata١4'
+-> 'Gata4'). A text holding any Cc or Cf character (TAB excepted: it hides nothing) also gets the review term
+'control-or-format character', clearable for one named sample like any review term.
 
 HELD-OUT spelling families (each has test strings in tests/test_t3_ext_screen.py):
   Ctnnb1  ctnn + optional separators + b anywhere (ctnnb1, Ctnn-b1, ctnnb2, Ctnnb1tm1Mmt, Ctnnbip1); old symbol Catnb;
@@ -63,6 +69,12 @@ Lef1, TCF/LEF, also after a dominant-negative or truncation prefix (dnTCF, dnTcf
 caTcf), 'dominant negative ... Tcf/Lef', the fly dTCF and pangolin; pyrvinium, NSC668036, niclosamide; Wls, Gpr177,
 Wntless; the word phenocopy; exon-3 alleles without a symbol (lox(ex3), delta ex3, ex3 flox); a bare deltaN / ΔN;
 pannier (the fly Gata4 orthologue); 'arm' + RNAi / dsRNA / KD / mutant / null / KO / -/- (the fly beta-catenin).
+Stage 4 (the spelling gaps the reviewers of 9c981e1 listed): spaced or split symbols ('C-t-n-n-b-1', 'Ctn-nb1',
+'Cat-nb1', 'G a t a 4', 'Ga-ta-4', 'GATA bp 4', 'G-4 KO', 'CTNNβ1'), short forms ('bkat', 'βc-KO', 'bc-cKO'), catenin
+after a digit or LaTeX ('$\\beta$-catenin', 'beta$catenin', 'β1-catenin', 'beta1-catenin'; also EXTENDED, so a bare
+'catenin' clearance never passes them), Fzd / Frizzled, Dvl / Dishevelled, Csnk1a1 / CK1alpha, Amer1 / WTX, Bcl9,
+Pygo1/2, Rnf43 / Znrf3, BML-284, SKL2001, WAY-262611, QS11, indirubin, Foxy-5, KY02111, LF3, and the README's
+phenocopy list Hand2, Mef2c, Zfpm2 / Fog2.
 
 EXTENDED forms: a text that matches one (a Ctnnb1 or Gata4 typo form, beta / bet + 'cat' in any context but
 catalogue wording, 'catenine') voids every review clearance of that sample (or series): its review hits refuse
@@ -87,6 +99,9 @@ import pandas as pd
 from t3x_common import Refused
 
 _SEP = r"[\s_\-./:;,()\[\]{}'\"*+&#|~^]*"
+# the separators plus LaTeX's '$' and '\' (stage 4: '$\beta$-catenin'), and a beta written in any of its forms
+_SEPX = r"[\s_\-./:;,()\[\]{}'\"*+&#|~^$\\]*"
+_LATEX_B = r"(?:beta|β|ß|ꞵ)"
 _B = r"(?:beta|β|ß|ꞵ|b)"
 # catalogue wording after 'cat': 'Cat#', 'Cat. No.', 'cat no', 'Cat nr', 'Cat number', 'catalogue', 'category'
 _CATALOGUE = r"\s*(?:\.|#|no(?![a-z])|nr(?![a-z])|number|alog|egor)"
@@ -172,12 +187,30 @@ REVIEW_PATTERNS = [
     rf"(?<![a-z])(?:δ|delta){_SEP}n(?![a-z])",
     r"pannier",
     rf"(?<![a-z])arm{_SEP}(?:rnai|ds?rna|kd|mutant|null|ko|-/-)",
+    # stage 4: the spelling gaps both reviewers of 9c981e1 listed (all REVIEW: over-refuse). Spaced and split symbols:
+    rf"(?<![a-z])c{_SEP}t{_SEP}n{_SEP}n{_SEP}b", rf"(?<![a-z])cat{_SEP}nb", rf"ctnn{_SEP}(?:β|ß|ꞵ)",
+    rf"(?<![a-z])g{_SEP}a{_SEP}t{_SEP}a{_SEP}4(?![0-9])", rf"gata{_SEP}bp{_SEP}4",
+    rf"(?<![a-z0-9])g{_SEP}-{_SEP}4{_SEP}{_G4W}(?![a-z])",
+    rf"(?<![a-z])b{_SEP}kat", rf"(?:β|ß|ꞵ){_SEP}c(?![a-z])", rf"(?<![a-z])bc{_SEP}c?kos?(?![a-z])",
+    # catenin after a digit or LaTeX ('$\beta$-catenin', 'beta$catenin', 'β1-catenin', 'beta1-catenin'); also EXTENDED
+    rf"{_LATEX_B}{_SEPX}1?{_SEPX}catenin", rf"(?:β|ß|ꞵ)1{_SEP}cat",
+    # pathway members and compounds
+    rf"(?<![a-z])fzd{_SEP}\d*", r"frizzled", rf"(?<![a-z])dvl{_SEP}[1-3]?(?![a-z])", r"dishevelled",
+    rf"csnk{_SEP}1{_SEP}a{_SEP}1", rf"(?<![a-z])ck{_SEP}1{_SEP}(?:alpha|α|a)(?![a-z])",
+    r"(?<![a-z])(?:amer1|wtx)(?![a-z])", rf"(?<![a-z])bcl{_SEP}9",
+    rf"(?<![a-z])pygo{_SEP}[12]?(?![a-z])", rf"(?<![a-z])(?:rnf{_SEP}43|znrf{_SEP}3)",
+    rf"bml{_SEP}284", rf"skl{_SEP}2001", rf"way{_SEP}262611", rf"(?<![a-z])qs{_SEP}11(?![0-9])", r"indirubin",
+    rf"foxy{_SEP}5(?![0-9])", rf"ky{_SEP}02111", rf"(?<![a-z])lf{_SEP}3(?![0-9])",
+    # the README's phenocopy list (Gata4 partners and heart regulators held under the phenocopy clause)
+    rf"(?<![a-z])hand{_SEP}2(?![0-9])", rf"(?<![a-z])mef{_SEP}2{_SEP}c", rf"(?<![a-z])zfpm{_SEP}2(?![0-9])",
+    rf"(?<![a-z])fog{_SEP}2(?![0-9])",
     r"catenin",
 ]
 # a text matching one of these voids every review clearance of its sample (or series)
 EXTENDED_PATTERNS = [
     r"(?<![a-z])c[tn]{2,4}b{1,2}(?:[0-9]|(?![a-z]))", rf"(?<![a-z])g[at]{{2,4}}{_SEP}4(?![0-9])",
     rf"beta?{_SEP}cat(?!{_CATALOGUE})", r"catenine",
+    rf"{_LATEX_B}{_SEPX}1?{_SEPX}catenin", rf"(?:β|ß|ꞵ)1{_SEP}cat",
 ]
 HELD_OUT = re.compile("|".join(HELD_OUT_PATTERNS), re.IGNORECASE)
 REVIEW = re.compile("|".join(REVIEW_PATTERNS), re.IGNORECASE)
@@ -190,13 +223,45 @@ GUIDE_COLUMN = re.compile(r"sgrna|guide|grna|protospacer|crispr_?id", re.IGNOREC
 
 _ZERO_WIDTH = dict.fromkeys(map(ord, "­​‌‍⁠﻿"), None)
 _DASHES = dict.fromkeys(map(ord, "‐‑‒–—―−﹘﹣－"), "-")
-# Cyrillic letters that look like Latin ones (and the Latin script 'ɡ'): folded in one extra variant
+# Cyrillic, Greek and Latin letters that look like the Latin letters of the two gene names and their short forms
+# (stage 4 adds the Greek and Latin ones, and β -> b): folded in one extra variant
 _CONFUSABLE = str.maketrans({
     "а": "a", "е": "e", "о": "o", "р": "p", "с": "c", "у": "y", "х": "x", "і": "i", "ј": "j", "ѕ": "s", "ԁ": "d",
     "к": "k", "м": "m", "т": "t", "в": "b", "н": "h", "г": "r", "ɡ": "g",
     "А": "A", "В": "B", "Е": "E", "К": "K", "М": "M", "Н": "H", "О": "O", "Р": "P", "С": "C", "Т": "T", "Х": "X",
     "У": "Y", "І": "I", "Ј": "J", "Ѕ": "S",
+    "Α": "A", "Β": "B", "Τ": "T", "Ε": "E", "Ο": "O", "Ν": "N", "Κ": "K", "Ι": "I",
+    "α": "a", "ο": "o", "τ": "t", "β": "b", "ν": "v", "ι": "i", "κ": "k",
+    "ɑ": "a", "ᴀ": "A", "ʙ": "B", "ɢ": "G", "ᴛ": "T", "ɴ": "N",
 })
+# a character that is a Unicode control (Cc) or format (Cf) character, or the combining grapheme joiner: deleted in
+# an extra variant, and (TAB excepted, which hides nothing) a review term of its own
+FORMAT_TERM = "control-or-format character"
+
+
+def _is_format(ch: str) -> bool:
+    return ch == "͏" or unicodedata.category(ch) in ("Cc", "Cf")
+
+
+def _strip_format(t: str) -> str:
+    return "".join(c for c in t if not _is_format(c))
+
+
+def has_format_char(text) -> bool:
+    """True if the text holds a control or format character other than TAB (a review term: FORMAT_TERM)."""
+    return any(_is_format(c) and c != "\t" for c in str(text))
+
+
+def _ascii_digits(t: str, drop: bool = False) -> str:
+    """Every non-ASCII character with a decimal value mapped to its ASCII digit (or, with drop, deleted)."""
+    out = []
+    for c in t:
+        if not c.isascii() and unicodedata.decimal(c, None) is not None:
+            if not drop:
+                out.append(str(unicodedata.decimal(c)))
+        else:
+            out.append(c)
+    return "".join(out)
 
 
 def _variants(v) -> list[str]:
@@ -213,7 +278,9 @@ def _variants(v) -> list[str]:
     for r in raw:
         for t in (r, html.unescape(urllib.parse.unquote(r))):
             t = unicodedata.normalize("NFKC", t).translate(_ZERO_WIDTH).translate(_DASHES)
-            for u in (t, t.translate(_CONFUSABLE)):
+            st = _strip_format(t)
+            fold = st.translate(_CONFUSABLE)
+            for u in (t, t.translate(_CONFUSABLE), st, fold, _ascii_digits(fold), _ascii_digits(fold, drop=True)):
                 if u not in out:
                     out.append(u)
     return out
@@ -237,6 +304,8 @@ def hits(text) -> list[tuple[str, str]]:
         for m in REVIEW_CASE.finditer(v):
             if ("review", m.group(0).lower()) not in out:
                 out.append(("review", m.group(0).lower()))
+    if has_format_char(text):
+        out.append(("review", FORMAT_TERM))
     return out
 
 
@@ -259,7 +328,7 @@ def match(text) -> tuple[str, str] | None:
 
 def is_review_term(term: str) -> bool:
     t = _text(term)
-    return bool(REVIEW.fullmatch(t) or REVIEW_CASE.fullmatch(t.upper()))
+    return bool(t == FORMAT_TERM or REVIEW.fullmatch(t) or REVIEW_CASE.fullmatch(t.upper()))
 
 
 def check_review_cleared(entries: list) -> None:

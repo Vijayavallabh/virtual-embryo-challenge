@@ -7,9 +7,12 @@
   run ACC --dest D --wt WT_E8.75.h5ad --refstats D/reference/refstats.npz --out D/processed
       reads D/meta/ACC/plan.json and D/raw/ACC/MANIFEST.json (every file's sha256 checked). It touches ONLY the
       samples in datasets.yaml's pinned block: it refuses a dataset with no pins, a manifest fetched under other pins,
-      a pinned accession absent from its own series' plan table, a pinned sample whose stored metadata no longer
-      hashes to its pin, and screens each pinned sample's record again with t3x_screen BEFORE any count is read (a
-      sample that does not pass refuses the run). Arms, genes and stages come from the pins only; no file of an
+      a pinned series whose stored text no longer hashes to its pin, a pinned accession absent from its own series'
+      plan table, a pinned sample whose record's series_id lists a series outside screen_series (or a held one, or
+      none), a pinned sample whose stored metadata no longer hashes to its pin, a file whose manifest record was
+      written under another metadata_sha256, url or pins, a file in a pinned sample's folder that is not one of its
+      pinned files with a record, and screens each pinned sample's record again with t3x_screen BEFORE any count is
+      read (a sample that does not pass refuses the run). Arms, genes and stages come from the pins only; no file of an
       unpinned sample is opened. It reads each pinned sample's counts restricted to the panel genes, labels every
       cell with a lineage group by transfer
       from the WT reference, and computes one log-ratio table per knockout gene with the fixed guards, minimum-cells
@@ -372,11 +375,35 @@ def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Pat
     man = json.loads(mp.read_text())
     if man.get("plan_sha256") != cm.sha256_file(dest / "meta" / acc / "plan.json"):
         raise Refused(f"{acc}: the manifest was not fetched from this plan")
-    if man.get("pins_sha256") != cm.pins_sha256(ds["pinned"]) or man.get("pinned") != ds["pinned"]:
-        raise Refused(f"{acc}: the samples, arms, genes or stages are not exactly as pinned when the files were "
-                      "fetched: fetch again")
-    # 1. the pins against the stored metadata, and the screen again on every pinned sample, before any count is read
+    cur = cm.pins_sha256(ds)
+    if (man.get("pins_sha256") != cur or man.get("pinned") != ds["pinned"]
+            or man.get("pinned_series") != ds["pinned_series"]):
+        raise Refused(f"{acc}: the samples, arms, genes, stages or series are not exactly as pinned when the files "
+                      "were fetched: fetch again")
+    # 1. the pins against the stored metadata (samples and series), the series membership of every pinned sample, and
+    #    the screen again on every pinned sample, before any count is read
     pinned = fe.verify_pins(ds, pl)
+    # 1b. every file of a pinned sample is bound to the pin it was fetched under (stage 4): a manifest record per file
+    #     with this pin's metadata_sha256, this url and these pins; no other file in a pinned sample's folder
+    for s in pinned:
+        gsm = s["accession"]
+        names = {f["name"] for f in s["files"]}
+        sdir = dest / "raw" / acc / gsm
+        on_disk = sorted(q.name for q in sdir.iterdir()) if sdir.is_dir() else []
+        for name in on_disk:
+            if name not in names or f"{gsm}/{name}" not in man["files"]:
+                raise Refused(f"{gsm}/{name}: a file in a pinned sample's folder that is not one of its pinned files "
+                              "with a manifest record: refused (fetch again)")
+        for f in s["files"]:
+            rec = man["files"].get(f"{gsm}/{f['name']}")
+            if rec is None:
+                raise Refused(f"{gsm}/{f['name']}: no manifest record: refused (fetch again)")
+            if rec.get("metadata_sha256") != s["metadata_sha256"]:
+                raise Refused(f"{gsm}/{f['name']}: fetched under metadata_sha256 {rec.get('metadata_sha256')}, but "
+                              f"the sample is pinned now with {s['metadata_sha256']}: refused (fetch again)")
+            if rec.get("url") != f["url"] or rec.get("pins_sha256") != cur:
+                raise Refused(f"{gsm}/{f['name']}: fetched from another url or under other pins: refused (fetch "
+                              "again)")
     units = cm.pinned_units(ds["pinned"])
     for s in pinned:
         cm.stage_ok(f"E{s['stage']:g}")
@@ -412,7 +439,7 @@ def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Pat
     C = sparse.vstack(blocks).tocsr()
     obs = pd.concat(obs_parts)
     qc = {"accession": acc, "tier": ds["tier"], "study": ds["study"], "d": ds["d"], "screened_samples": screen,
-          "pinned": ds["pinned"], "pins_sha256": cm.pins_sha256(ds["pinned"]),
+          "pinned": ds["pinned"], "pinned_series": ds["pinned_series"], "pins_sha256": cur,
           "screen_record": pl["screen"], "cells_dropped_low_genes": dropped, "panel_match": panel_rec,
           "panel_genes_present": int(present.sum()), "panel_genes": len(genes),
           "created": time.strftime("%Y-%m-%d %H:%M:%S %Z"), "git": _git_head()}

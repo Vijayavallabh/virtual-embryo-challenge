@@ -31,10 +31,13 @@
 # empty until the main session and a second, independent reader have read the plan table and pinned, per sample:
 #   - {accession: GSMnnn, arm: ko|control, gene: <knockout gene; a control names the gene it controls>,
 #      stage: E8.5, files: [<per-sample file names from the plan table>], metadata_sha256: <from the plan table>}
-# Paste the block `fetch.py pin-template` prints; never type a hash by hand. A dataset with an empty block is never
-# fetched or processed. Every edit of this file changes its sha256: update t3x_common.DATASETS_SHA256 in the SAME
-# commit (`fetch.py datasets-sha` prints the value), or every step refuses. The five accessions in
-# t3x_common.NEVER_FETCH stay held or excluded whatever this file says.
+# and (stage 4), beside it, the dataset's `pinned_series` block: one entry per series of screen_series,
+#   - {accession: GSEnnn, series_metadata_sha256: <from the SERIES block at the top of the plan tables>}
+# Paste what `fetch.py pin-template` prints (one command per arm, every sample named with --gsm; --series for the
+# series); never type a hash by hand. A dataset with an empty block is never fetched or processed. Every edit of this
+# file changes its sha256: update t3x_common.DATASETS_SHA256 in the SAME commit (`fetch.py datasets-sha` prints the
+# value), or every step refuses. The accessions in t3x_common.NEVER_FETCH (and every series a held or excluded
+# dataset screens) stay held whatever this file says; a cleared dataset's screen_series may hold none of them.
 
 version: 1
 fixed: "2026-11-20, the AI assistant (engineer of the outside-knockout campaign), before any download"

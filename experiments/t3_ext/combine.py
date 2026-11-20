@@ -72,7 +72,7 @@ def load_units(processed: Path, datasets: Path | None, ref: dict) -> tuple[list[
             continue
         if qc.get("status") == "failed":
             raise Refused(f"{acc}: its QC failed ({qc.get('reason')}): refused")
-        if not allds[acc]["pinned"] or qc.get("pins_sha256") != cm.pins_sha256(allds[acc]["pinned"]):
+        if not allds[acc]["pinned"] or qc.get("pins_sha256") != cm.pins_sha256(allds[acc]):
             raise Refused(f"{acc}: processed under other pins than datasets.yaml holds now: refused")
         record["inputs"][acc] = {"qc": str(qcp), "qc_sha256": cm.sha256_file(qcp)}
         for gene, u in (qc.get("units") or {}).items():

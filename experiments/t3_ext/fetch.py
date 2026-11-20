@@ -7,28 +7,42 @@ t3x_common.DATASETS_SHA256); no step takes another dataset list, and the NEVER_F
 the list says.
 
   plan ACC --dest D    downloads only the family SOFT metadata of every series in screen_series
-                       (D/meta/<ACC>/<series>_family.soft.gz, sha256 recorded) and writes D/meta/<ACC>/plan.json plus
-                       one plan table per series, D/meta/<ACC>/plan_table_<SERIES>.txt: EVERY sample of the series, its
-                       accession, the verbatim text of every field (all are screened), the sha256 of their canonical
-                       serialisation (t3x_common.canonical_metadata), the screen's verdict and hits, the per-sample
-                       files, the parsed stage and chemistry, and the selectors' SUGGESTED arm (a guess, never used).
-                       A held-out hit anywhere refuses the dataset and withholds every text of it from the plan (only
-                       accessions, verdicts and the fields hit are written). A review term not cleared refuses it too.
-                       If the dataset already has pins, each pinned sample's LIVE metadata must hash to its pin.
-  pin-template ACC --dest D --arm ko|control --gene G (--gsm GSM ... | --title REGEX | --suggested)
-                       prints a ready-to-paste `pinned` block for the samples the selector matches, from the stored
-                       plan (hashes recomputed from the stored fields and checked against the table). It never writes
-                       datasets.yaml: the readers paste it after reading each sample's table entry.
+                       (D/meta/<ACC>/<series>_family.soft.gz, sha256 recorded; bytes that are not UTF-8 refuse the
+                       dataset) and writes D/meta/<ACC>/plan.json plus one plan table per series,
+                       D/meta/<ACC>/plan_table_<SERIES>.txt. Each table starts with a SERIES block per screened series
+                       (accession, series_metadata_sha256, every field verbatim, contact fields included), then lists
+                       EVERY sample of the series: its accession, the verbatim text of every field (all are screened),
+                       an ascii() escape line under any value that is not plain printable ASCII, the sha256 of the
+                       canonical serialisation (t3x_common.canonical_metadata), the screen's verdict and hits, its
+                       series membership (NOT PINNABLE when its series_id lists a series outside screen_series or has
+                       none), the per-sample files, the parsed stage and chemistry, and the selectors' SUGGESTED arm
+                       (a guess, never used). A held-out hit anywhere, or a sample of a screened series that also
+                       belongs to a held series, refuses the dataset and withholds every text of it (only accessions,
+                       verdicts and the fields hit are written). A review term not cleared refuses it too. If the
+                       dataset already has pins, each pinned series' and sample's LIVE metadata must hash to its pin.
+                       plan.json says 'in_progress' from the start of a run until it finishes.
+  pin-template ACC --dest D --arm ko|control --gene G --gsm GSM [--gsm GSM ...]
+                       prints a ready-to-paste entry for each NAMED sample (no bulk selector), every field of it as a
+                       comment above, from the stored plan (hashes recomputed and checked against the table).
+  pin-template ACC --dest D --series
+                       prints the ready-to-paste `pinned_series` block: one entry per screened series with its
+                       series_metadata_sha256. pin-template never writes datasets.yaml: the readers paste its output
+                       after reading the plan tables.
   check-pins ACC ...   the gate before any fetch: each accession is cleared, has a non-empty pinned block of the
                        right form, and the committed datasets.yaml hashes to its pin. Exit 2 otherwise.
   datasets-sha         prints datasets.yaml's sha256 and t3x_common.DATASETS_SHA256 (exit 2 if they differ).
   fetch ACC --dest D   downloads exactly the pinned samples' pinned files to D/raw/<ACC>/<GSM>/ (.part, then renamed)
-                       and records each file's url, size and sha256, the pins and their sha256 in
-                       D/raw/<ACC>/MANIFEST.json. It refuses a dataset with no pins, a plan that did not pass or was
-                       made from another datasets.yaml, a pinned accession that is not in its own series' plan table (or
-                       belongs to another series), a pinned sample whose stored metadata no longer hashes to its pin or
-                       no longer passes the screen, a file not in that sample's plan entry. Nothing is unpacked, no
-                       count is read, and no file of an unpinned sample is requested.
+                       and records each file's url, size, sha256, the sample's pinned metadata_sha256 and the
+                       pins_sha256 in force in D/raw/<ACC>/MANIFEST.json. A file is reused only when its record's
+                       metadata_sha256, url and pins_sha256 all equal the current ones; otherwise it is deleted and
+                       downloaded again, and any other file in a pinned sample's folder is deleted. It refuses a dataset
+                       with no pins, a plan that did not pass or was made from another datasets.yaml, a pinned series
+                       whose stored text no longer hashes to its pin, a pinned accession that is not in its own series'
+                       plan table (or belongs to another series, or whose series_id lists a series outside
+                       screen_series or a held one), a pinned sample whose stored metadata no longer hashes to its pin
+                       or no longer passes the screen, a file not in that sample's plan entry. Nothing is unpacked, no
+                       count is read, and no file of an unpinned sample is requested. fetch checks the STORED plan:
+                       run it only through run_dgx.sh MODE all, whose replan checks the live metadata first.
 
 Requests go only to ftp.ncbi.nlm.nih.gov over https, with a generic user agent and nothing that names a team, a
 person or a challenge. Exit status 2 on a refusal.
@@ -89,11 +103,30 @@ def https_url(url: str) -> str:
     return u
 
 
+OTHER = "_other_lines"
+
+
+def decode_soft(raw: bytes, series: str) -> str:
+    """A family SOFT file's text, decoded as strict UTF-8: bytes that do not decode refuse the dataset (they are never
+    replaced, so nothing reaches a reader, the hash or the screen in a changed form)."""
+    try:
+        return raw.decode("utf-8")
+    except UnicodeDecodeError as e:
+        raise Refused(f"{series}: undecodable bytes in the family SOFT (byte {e.start}): the dataset is refused; read "
+                      "the raw file by hand") from None
+
+
 def parse_soft(text: str) -> dict:
-    """{'series': {key: [values]}, 'samples': {GSM: {key: [values]}}} from a family SOFT text. Values are stripped of
-    surrounding whitespace and otherwise kept verbatim, in file order."""
+    """{'series': {key: [values]}, 'samples': {GSM: {key: [values]}}, 'not_shown': {block kind: lines}} from a family
+    SOFT text. Values are stripped of surrounding whitespace and otherwise kept verbatim, in file order (a key's values
+    together, keys in the order they first appear). Every other non-empty line of a SERIES or SAMPLE block (a '!'
+    line of another prefix or without '=', a '#' column description, a table row) is KEPT, stripped, under the field
+    '_other_lines', so it is shown, hashed and screened like any field. Lines outside those blocks (PLATFORM and
+    DATABASE blocks, lines before the first block) are not kept: they are counted per block kind in 'not_shown', and
+    the plan table prints the counts."""
     series: dict[str, list[str]] = {}
     samples: dict[str, dict[str, list[str]]] = {}
+    not_shown: dict[str, int] = {}
     cur, cur_kind = None, None
     for line in text.splitlines():
         if line.startswith("^"):
@@ -102,15 +135,21 @@ def parse_soft(text: str) -> dict:
             if cur_kind == "SAMPLE":
                 samples.setdefault(cur, {})
             continue
-        if not line.startswith("!") or "=" not in line:
+        if not line.strip():
             continue
-        key, _, val = line[1:].partition("=")
+        if cur_kind not in ("SAMPLE", "SERIES"):
+            k = cur_kind or "before any block"
+            not_shown[k] = not_shown.get(k, 0) + 1
+            continue
+        rec = samples[cur] if cur_kind == "SAMPLE" else series
+        prefix = "Sample_" if cur_kind == "SAMPLE" else "Series_"
+        key, eq, val = line[1:].partition("=")
         key, val = key.strip(), val.strip()
-        if cur_kind == "SAMPLE" and key.startswith("Sample_"):
-            samples[cur].setdefault(key[len("Sample_"):], []).append(val)
-        elif cur_kind == "SERIES" and key.startswith("Series_"):
-            series.setdefault(key[len("Series_"):], []).append(val)
-    return {"series": series, "samples": samples}
+        if line.startswith("!") and eq and key.startswith(prefix) and key[len(prefix):] != OTHER:
+            rec.setdefault(key[len(prefix):], []).append(val)
+        else:
+            rec.setdefault(OTHER, []).append(line.strip())
+    return {"series": series, "samples": samples, "not_shown": not_shown}
 
 
 def sample_text(rec: dict) -> str:
@@ -229,6 +268,30 @@ def screen_all(ds: dict, metas: dict[str, dict]) -> dict:
     return {"n_samples": len(records), "records": records, "refusals": refusals, "held_out": held}
 
 
+def held_set(ds: dict) -> set[str]:
+    """The held series for this dataset's checks: what load_datasets derived (t3x_common.held_series) and
+    NEVER_FETCH. A record without the derived list is refused (every record comes through t3x_common.dataset)."""
+    if not isinstance(ds.get("held_series"), list):
+        raise Refused(f"{ds.get('accession')}: the record carries no derived held set: load it through "
+                      "t3x_common.dataset")
+    return set(ds["held_series"]) | set(cm.NEVER_FETCH)
+
+
+def series_membership(ds: dict, rec: dict) -> str | None:
+    """None if every value of the record's own series_id field is one of this dataset's screened series and none is
+    held; else the reason the sample can never be pinned (a missing series_id included)."""
+    sid = rec.get("series_id")
+    if not sid:
+        return "its record lists no series_id: its series cannot be checked"
+    held = sorted(set(sid) & held_set(ds))
+    if held:
+        return f"its record lists the held or excluded series {held}"
+    extra = [s for s in sid if s not in (ds.get("screen_series") or [])]
+    if extra:
+        return f"its record lists series {extra} outside this dataset's screened series {ds.get('screen_series')}"
+    return None
+
+
 def _row(ds: dict, series: str, gsm: str, rec: dict, scr: dict, in_series: list[str]) -> dict:
     files, other = sample_files(ds, rec)
     arm, gene = resolve_arm(ds, rec)
@@ -236,32 +299,50 @@ def _row(ds: dict, series: str, gsm: str, rec: dict, scr: dict, in_series: list[
     return {"accession": gsm, "series": series, "in_series": in_series, "fields": rec,
             "metadata_sha256": cm.metadata_sha256(gsm, rec), "verdict": scr["verdict"],
             "hits": [list(h) for h in scr["hits"]], "clearance_void": scr["clearance_void"],
-            "suggested": {"arm": arm, "gene": gene}, "stage": e, "stage_from": how,
-            "chemistry": sample_chemistry(rec), "files": files, "other_files": other}
+            "not_pinnable": series_membership(ds, rec), "suggested": {"arm": arm, "gene": gene}, "stage": e,
+            "stage_from": how, "chemistry": sample_chemistry(rec), "files": files, "other_files": other}
+
+
+def _withheld(out: dict, metas: dict, by_id: dict, reason: str) -> dict:
+    """Nothing of the dataset's text is written: accessions, verdicts and the fields hit only."""
+    out["tables"] = {s: [{"accession": g, "verdict": by_id[(s, g)]["verdict"],
+                          "fields_hit": sorted({h[0] for h in by_id[(s, g)]["hits"]})}
+                         for g in meta["samples"]] for s, meta in metas.items()}
+    out["withheld"] = True
+    out["screen"]["refusals"] = [WITHHELD]
+    return {**out, "status": "refused", "reason": reason}
 
 
 def plan_from_meta(ds: dict, metas: dict[str, dict]) -> dict:
-    """The plan for one dataset from parsed SOFT metadata (no network): the screen, one table per series, and, when
-    the dataset has pins, their check against this (live) metadata."""
+    """The plan for one dataset from parsed SOFT metadata (no network): the screen, the series membership of every
+    sample, the series blocks (every screened series' fields and series_metadata_sha256), one table per series, and,
+    when the dataset has pins, their check against this (live) metadata."""
     acc = ds["accession"]
     if acc not in metas:
         raise Refused(f"{acc}: its own series' metadata is missing")
+    if set(metas) != set(ds["screen_series"]):
+        raise Refused(f"{acc}: the metadata holds series {sorted(metas)}, not exactly screen_series "
+                      f"{ds['screen_series']}")
     scr = screen_all(ds, metas)
     by_id = {(r["series"], r["sample"]): r for r in scr["records"]}
     where: dict[str, list[str]] = {}
     for series, meta in metas.items():
         for gsm in meta["samples"]:
             where.setdefault(gsm, []).append(series)
-    out = {"accession": acc, "own_series": acc, "screen": {"n_samples": scr["n_samples"]}}
+    out = {"accession": acc, "own_series": acc, "screen": {"n_samples": scr["n_samples"]},
+           "not_shown": {s: meta.get("not_shown", {}) for s, meta in metas.items()}}
     if scr["held_out"]:
-        # nothing of a dataset with a held-out hit is written: accessions, verdicts and the fields hit only
-        out["tables"] = {s: [{"accession": g, "verdict": by_id[(s, g)]["verdict"],
-                              "fields_hit": sorted({h[0] for h in by_id[(s, g)]["hits"]})}
-                             for g in meta["samples"]] for s, meta in metas.items()}
-        out["withheld"] = True
-        out["screen"]["refusals"] = [WITHHELD]
-        return {**out, "status": "refused", "reason": "screen: a held-out hit in the dataset (text withheld)"}
+        return _withheld(out, metas, by_id, "screen: a held-out hit in the dataset (text withheld)")
+    held = held_set(ds)
+    in_held = sorted(g for meta in metas.values() for g, rec in meta["samples"].items()
+                     if set(rec.get("series_id") or []) & held)
+    if in_held:
+        return _withheld(out, metas, by_id, f"series membership: {len(in_held)} sample(s) of the screened series "
+                                            "also belong to a held or excluded series (text withheld)")
     out["withheld"] = False
+    out["series"] = {s: {"accession": s, "fields": meta["series"],
+                         "series_metadata_sha256": cm.series_metadata_sha256(s, meta["series"])}
+                     for s, meta in metas.items()}
     out["tables"] = {s: [_row(ds, s, g, rec, by_id[(s, g)], where[g]) for g, rec in meta["samples"].items()]
                      for s, meta in metas.items()}
     out["screen"]["refusals"] = scr["refusals"]
@@ -289,11 +370,13 @@ def _selector_notes(ds: dict, rows: list[dict]) -> list[str]:
 
 
 def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
-    """Each pinned sample checked against the plan's own-series table: present there (not only in another series),
-    its stored (or, with live, just-fetched) metadata hashing to the pin, screened clean again now, its parsed stage
-    equal to the pin's, its files in its table entry, its chemistry equal to its controls' where the dataset reads
-    chemistry. Returns [{accession, arm, genes, stage, files: [{name, url}], metadata_sha256, row}]. Refused on any
-    failure, with the reason."""
+    """Each pinned series and sample checked against the plan. Every screened series: its pinned
+    series_metadata_sha256 equal to the hash of its stored (or, with live, just-fetched) fields. Each pinned sample:
+    present in the own-series table (not only in another series), every value of its record's series_id one of the
+    dataset's screened series and none held (a missing series_id refuses), its metadata hashing to the pin, screened
+    clean again now, its parsed stage equal to the pin's, its files in its table entry, its chemistry equal to its
+    controls' where the dataset reads chemistry. Returns [{accession, arm, genes, stage, files: [{name, url}],
+    metadata_sha256, row}]. Refused on any failure, with the reason."""
     acc = ds["accession"]
     pins = ds.get("pinned") or []
     if not pins:
@@ -301,9 +384,21 @@ def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
                       "samples (README, 'The pinned sample list')")
     if pl.get("withheld") or "tables" not in pl or acc not in pl["tables"]:
         raise Refused(f"{acc}: the plan holds no readable table for its own series")
+    what = "live" if live else "stored"
+    sp = cm.check_series_pins(acc, ds, True)
+    blocks = pl.get("series") or {}
+    if set(blocks) != set(ds["screen_series"]):
+        raise Refused(f"{acc}: the plan's series blocks {sorted(blocks)} are not exactly screen_series "
+                      f"{ds['screen_series']}")
+    for e in sp:
+        b = blocks[e["accession"]]
+        h = cm.series_metadata_sha256(e["accession"], b["fields"])
+        if h != e["series_metadata_sha256"] or h != b["series_metadata_sha256"]:
+            raise Refused(f"series {e['accession']}: its {what} text hashes to {h}, not to the pinned "
+                          f"{e['series_metadata_sha256']}: the series text the readers read has changed; read and "
+                          "pin again")
     own = {r["accession"]: r for r in pl["tables"][acc]}
     elsewhere = {r["accession"]: s for s, rows in pl["tables"].items() if s != acc for r in rows}
-    what = "live" if live else "stored"
     per: dict[str, dict] = {}
     for p in pins:
         g = p["accession"]
@@ -312,6 +407,9 @@ def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
                 raise Refused(f"{g} belongs to another series ({elsewhere[g]}), not to {acc}")
             raise Refused(f"{g} is not in the plan table of {acc}")
         row = own[g]
+        why = series_membership(ds, row["fields"])
+        if why:
+            raise Refused(f"{g}: {why}: refused (a pinned sample belongs to this dataset's screened series only)")
         h = cm.metadata_sha256(g, row["fields"])
         if h != p["metadata_sha256"] or h != row["metadata_sha256"]:
             raise Refused(f"{g}: its {what} metadata hashes to {h}, not to the pinned {p['metadata_sha256']}: the "
@@ -346,25 +444,63 @@ def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
     return list(per.values())
 
 
+def plain(v: str) -> bool:
+    """True if the value is plain printable ASCII (nothing a terminal could hide, reorder or render as another
+    letter)."""
+    return v.isascii() and v.isprintable()
+
+
+def field_lines(fields: dict, indent: str = "  ") -> list[str]:
+    """Every field verbatim, one line per value in file order; under any value that is not plain printable ASCII a
+    second line with its ascii() escape, so a reader sees what is really there."""
+    out = []
+    for k, vals in fields.items():
+        for v in vals:
+            out.append(f"{indent}{k}: {v}")
+            if not plain(v):
+                out.append(f"{indent}  escaped: {ascii(v)}")
+    return out
+
+
+def series_block(b: dict) -> list[str]:
+    n_other = len(b["fields"].get(OTHER, []))
+    return ["", f"==== SERIES {b['accession']}  series_metadata_sha256 {b['series_metadata_sha256']}",
+            "  # every field of the series' family SOFT record verbatim, in file order (a key's values together),"
+            " contact fields included (shown and hashed, not screened); "
+            f"{n_other} other line(s) of the series block kept under {OTHER}",
+            *field_lines(b["fields"])]
+
+
 def write_tables(pl: dict, mdir: Path) -> list[str]:
-    """One human-readable plan table per series (the readers read these)."""
+    """One human-readable plan table per series (the readers read these). At the top of each, before any sample, a
+    block per screened series: its accession, series_metadata_sha256 and every field verbatim."""
     written = []
     for series, rows in pl["tables"].items():
         lines = [f"# plan table {series} (dataset {pl['accession']}, own series {pl['own_series']}): {len(rows)} "
                  f"samples; plan status {pl['status']}; written {pl.get('created', '')}",
                  "# Field values are verbatim from GEO's family SOFT (surrounding whitespace stripped by the parser).",
-                 "# metadata_sha256 is the sha256 of t3x_common.canonical_metadata(accession, fields): README, 'The "
-                 "pinned sample list'.",
-                 "# 'suggested' is the selectors' guess and chooses nothing; only datasets.yaml's pinned block does."]
+                 "# A value that is not plain printable ASCII is followed by an 'escaped:' line, its Python ascii().",
+                 "# metadata_sha256 and series_metadata_sha256 are the sha256 of t3x_common.canonical_metadata("
+                 "accession, fields): README, 'The pinned sample list'.",
+                 "# 'suggested' is the selectors' guess and chooses nothing; only datasets.yaml's pinned block does.",
+                 f"# SOFT lines outside the series and sample blocks, not shown or screened: "
+                 f"{pl.get('not_shown', {}).get(series) or 'none'}"]
         if pl.get("withheld"):
-            lines.append("# WITHHELD: a held-out hit in this dataset; no text of it is written. Do not pin.")
+            lines.append(f"# WITHHELD ({pl.get('reason')}): no text of this dataset is written. Do not pin.")
             for r in rows:
                 lines.append(f"{r['accession']}  verdict {r['verdict']}  fields hit {r['fields_hit']}")
         else:
+            lines.append("# SERIES BLOCKS: read every one; the series are pinned together with the samples.")
+            for s in pl["series"]:
+                lines += series_block(pl["series"][s])
+            lines += ["", "# SAMPLES"]
             for r in rows:
                 lines.append("")
                 lines.append(f"==== {r['accession']}  verdict {r['verdict']}  metadata_sha256 {r['metadata_sha256']}")
-                lines.append(f"  in series: {', '.join(r['in_series'])}")
+                lines.append(f"  in series (screened tables): {', '.join(r['in_series'])}")
+                if series == pl["own_series"]:
+                    why = r["not_pinnable"]
+                    lines.append(f"  series membership: {'NOT PINNABLE: ' + why if why else 'ok'}")
                 stage = "none" if r["stage"] is None else f"E{r['stage']:g}"
                 lines.append(f"  suggested (selectors, a guess): arm {r['suggested']['arm']}, gene "
                              f"{r['suggested']['gene']}; parsed stage {stage} ({r['stage_from']}); "
@@ -373,9 +509,7 @@ def write_tables(pl: dict, mdir: Path) -> list[str]:
                 lines.append(f"  other supplementary files (never fetched): {r['other_files'] or 'none'}")
                 lines.append(f"  screen hits: {r['hits'] or 'none'}"
                              + (f"; clearances void: {r['clearance_void']}" if r["clearance_void"] else ""))
-                for k, vals in r["fields"].items():
-                    for v in vals:
-                        lines.append(f"  {k}: {v}")
+                lines += field_lines(r["fields"])
         p = cm.outside_repo(mdir / f"plan_table_{series}.txt")
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -416,15 +550,26 @@ def plan(acc: str, dest: Path, datasets: Path | None = None, metas: dict | None 
         raise Refused(f"{acc}: only GEO is fetched")
     dest = cm.outside_repo(dest)
     mdir = dest / "meta" / acc
+    # an earlier plan stops counting before anything is downloaded: if this run dies, fetch finds no passing plan
+    cm.dump_json({"accession": acc, "status": "in_progress", "reason": "a plan run started and did not finish"},
+                 mdir / "plan.json")
     soft_files = {}
-    if metas is None:
-        metas = {}
-        for series in ds["screen_series"]:
-            p = mdir / f"{series}_family.soft.gz"
-            size, digest = _get(soft_url(series), p, 2 * 1024 ** 3)
-            soft_files[series] = {"url": soft_url(series), "file": str(p), "size": size, "sha256": digest}
-            with gzip.open(p, "rt", encoding="utf-8", errors="replace") as f:
-                metas[series] = parse_soft(f.read())
+    try:
+        if metas is None:
+            metas = {}
+            for series in ds["screen_series"]:
+                p = mdir / f"{series}_family.soft.gz"
+                size, digest = _get(soft_url(series), p, 2 * 1024 ** 3)
+                soft_files[series] = {"url": soft_url(series), "file": str(p), "size": size, "sha256": digest}
+                with gzip.open(p, "rb") as f:
+                    metas[series] = parse_soft(decode_soft(f.read(), series))
+    except Refused as e:
+        pl = {"accession": acc, "own_series": acc, "status": "refused", "reason": str(e), "withheld": True,
+              "tables": {}, "screen": {"n_samples": 0, "refusals": [str(e)]}, "soft_files": soft_files,
+              "datasets_sha256": cm.datasets_sha256(datasets), "created": time.strftime("%Y-%m-%d %H:%M:%S %Z")}
+        pl["table_files"] = []
+        cm.dump_json(pl, mdir / "plan.json")
+        return pl
     pl = plan_from_meta(ds, metas)
     pl.update(datasets_sha256=cm.datasets_sha256(datasets), soft_files=soft_files,
               created=time.strftime("%Y-%m-%d %H:%M:%S %Z"), d=ds["d"], tier=ds["tier"], study=ds["study"])
@@ -456,25 +601,47 @@ def fetch(acc: str, dest: Path, datasets: Path | None = None, max_bytes: int = M
     rdir = dest / "raw" / acc
     mf = rdir / "MANIFEST.json"
     man = json.loads(mf.read_text()) if mf.is_file() else {"accession": acc, "files": {}}
+    cur = cm.pins_sha256(ds)
     man["files"] = {k: v for k, v in man["files"].items() if k.split("/")[0] in {s["accession"] for s in pinned}}
     total = 0
     for s in pinned:
+        gsm = s["accession"]
+        sdir = cm.outside_repo(rdir / gsm)
+        names = {f["name"] for f in s["files"]}
+        # a pinned sample's folder holds its pinned files only: anything else (an earlier pin's file, a .part) goes
+        if sdir.is_dir():
+            for q in sorted(sdir.iterdir()):
+                if q.name in names:
+                    continue
+                if not q.is_file() or q.is_symlink():
+                    raise Refused(f"{q}: not a plain file in a pinned sample's folder: remove it by hand")
+                q.unlink()
+                man["files"].pop(f"{gsm}/{q.name}", None)
         for f in s["files"]:
             if DENY.search(f["name"]):
                 raise Refused(f"{f['name']}: a denied file type")
-            key = f"{s['accession']}/{f['name']}"
-            p = rdir / s["accession"] / f["name"]
+            key = f"{gsm}/{f['name']}"
+            p = sdir / f["name"]
             rec = man["files"].get(key)
-            if rec and p.is_file() and cm.sha256_file(p) == rec["sha256"]:
+            # reused only when fetched under this very pin: the sample's metadata_sha256, the url and the pins
+            if (rec and p.is_file() and not p.is_symlink() and rec.get("metadata_sha256") == s["metadata_sha256"]
+                    and rec.get("url") == f["url"] and rec.get("pins_sha256") == cur
+                    and cm.sha256_file(p) == rec["sha256"]):
                 total += rec["size"]
                 continue
+            man["files"].pop(key, None)
+            if p.is_symlink() or p.exists():
+                if not p.is_file() and not p.is_symlink():
+                    raise Refused(f"{p}: not a plain file: remove it by hand")
+                p.unlink()
             size, digest = _get(f["url"], p, max_bytes - total)
             total += size
-            man["files"][key] = {"url": f["url"], "size": size, "sha256": digest, "gsm": s["accession"],
+            man["files"][key] = {"url": f["url"], "size": size, "sha256": digest, "gsm": gsm,
+                                 "metadata_sha256": s["metadata_sha256"], "pins_sha256": cur,
                                  "fetched": time.strftime("%Y-%m-%d %H:%M:%S %Z")}
             cm.dump_json(man, mf)
     man.update(plan_sha256=cm.sha256_file(pp), d=ds["d"], total_bytes=total, pinned=ds["pinned"],
-               pins_sha256=cm.pins_sha256(ds["pinned"]))
+               pinned_series=ds["pinned_series"], pins_sha256=cur)
     cm.dump_json(man, mf)
     return man
 
@@ -483,59 +650,91 @@ def fetch(acc: str, dest: Path, datasets: Path | None = None, max_bytes: int = M
 # Pinning helpers (never write datasets.yaml)
 
 
-def pin_template(acc: str, dest: Path, arm: str, gene: str, gsms: list[str] | None = None, title: str | None = None,
-                 suggested: bool = False, datasets: Path | None = None) -> str:
-    """A ready-to-paste YAML pinned block for the samples one selector matches (exactly one of gsms, title, suggested),
-    from the stored plan. Refused for a withheld plan, a held-out sample, a sample whose stage does not parse or
-    that has no allowed per-sample file, and when the stored fields no longer hash to the table's value."""
-    if arm not in cm.PIN_ARMS:
-        raise Refused(f"arm must be exactly one of {cm.PIN_ARMS}")
-    if sum(bool(x) for x in (gsms, title, suggested)) != 1:
-        raise Refused("give exactly one selector: --gsm, --title or --suggested")
+def _comment_lines(fields: dict, indent: str) -> list[str]:
+    """Every field as a YAML comment line, a value that is not plain printable ASCII as its ascii() escape (a comment
+    then never carries a control or format character into datasets.yaml)."""
+    return [f"{indent}# {k}: {v if plain(v) else 'escaped ' + ascii(v)}" for k, vals in fields.items() for v in vals]
+
+
+def _stored_plan(acc: str, dest: Path, datasets: Path | None) -> tuple[Path, dict]:
     cm.dataset(acc, datasets)
     pp = cm.outside_repo(dest) / "meta" / acc / "plan.json"
     if not pp.is_file():
         raise Refused(f"{pp}: no plan; run plan first")
     pl = json.loads(pp.read_text(encoding="utf-8"))
-    if pl.get("withheld"):
-        raise Refused(f"{acc}: a held-out hit in the dataset: nothing of it is pinned")
-    rows = pl["tables"][acc]
-    if gsms:
-        missing = sorted(set(gsms) - {r["accession"] for r in rows})
-        if missing:
-            raise Refused(f"{missing} are not in the plan table of {acc}")
-        pick = [r for r in rows if r["accession"] in gsms]
-    elif title:
-        rx = re.compile(title, re.IGNORECASE)
-        pick = [r for r in rows if any(rx.search(t) for t in r["fields"].get("title", []))]
-    else:
-        pick = [r for r in rows if r["suggested"]["arm"] == arm
-                and (arm == "control" or r["suggested"]["gene"] == gene)]
-    if not pick:
-        raise Refused("the selector matches no sample")
-    out = [f"# pin-template {acc}: arm {arm}, gene {gene}; {len(pick)} sample(s); from {pp}",
+    if pl.get("withheld") or "series" not in pl or acc not in (pl.get("tables") or {}):
+        raise Refused(f"{acc}: the plan is withheld or holds no readable table ({pl.get('reason')}): nothing of it "
+                      "is pinned")
+    return pp, pl
+
+
+def pin_template(acc: str, dest: Path, arm: str, gene: str, gsms: list[str], datasets: Path | None = None) -> str:
+    """A ready-to-paste YAML entry for each sample NAMED in gsms (one arm and one gene per call; there is no bulk
+    selector, so a reader names every sample pinned), from the stored plan, each preceded by every field of the
+    sample as a comment. Refused for a withheld plan, an unnamed or unknown sample, a held-out sample, a sample that is
+    not pinnable (its series_id), a sample whose stage does not parse or that has no allowed per-sample file, and when
+    the stored fields no longer hash to the table's value."""
+    if arm not in cm.PIN_ARMS:
+        raise Refused(f"arm must be exactly one of {cm.PIN_ARMS}")
+    if not gsms or not all(isinstance(g, str) and re.fullmatch(r"GSM\d+", g) for g in gsms):
+        raise Refused("name every sample to pin with --gsm GSMnnn (one per sample; there is no bulk selector)")
+    if len(set(gsms)) != len(gsms):
+        raise Refused("a sample is named twice")
+    pp, pl = _stored_plan(acc, dest, datasets)
+    rows = {r["accession"]: r for r in pl["tables"][acc]}
+    missing = [g for g in gsms if g not in rows]
+    if missing:
+        raise Refused(f"{missing} are not in the plan table of {acc}")
+    out = [f"# pin-template {acc}: arm {arm}, gene {gene}; {len(gsms)} sample(s) named; from {pp}",
            "# READ each sample's entry in its plan table before pasting. The arm and gene are what you asserted.",
-           "# A control names the knockout gene it controls; pin it once per gene it serves."]
-    for r in pick:
+           "# A control names the knockout gene it controls; pin it once per gene it serves.",
+           f"# The series are pinned too: `fetch.py pin-template {acc} --dest D --series` prints pinned_series."]
+    for g in gsms:
+        r = rows[g]
         if r["verdict"] == "held_out":
-            raise Refused(f"{r['accession']}: held out: never pinned")
-        h = cm.metadata_sha256(r["accession"], r["fields"])
+            raise Refused(f"{g}: held out: never pinned")
+        if r.get("not_pinnable") or "not_pinnable" not in r:
+            raise Refused(f"{g}: not pinnable: {r.get('not_pinnable') or 'no series membership record'}")
+        h = cm.metadata_sha256(g, r["fields"])
         if h != r["metadata_sha256"]:
-            raise Refused(f"{r['accession']}: the stored fields hash to {h}, not to the table's value: plan again")
+            raise Refused(f"{g}: the stored fields hash to {h}, not to the table's value: plan again")
         if r["stage"] is None:
-            raise Refused(f"{r['accession']}: no single stage parses ({r['stage_from']}): it cannot be pinned")
+            raise Refused(f"{g}: no single stage parses ({r['stage_from']}): it cannot be pinned")
         if not r["files"]:
-            raise Refused(f"{r['accession']}: no per-sample file the dataset's patterns allow")
+            raise Refused(f"{g}: no per-sample file the dataset's patterns allow")
         if r["verdict"] == "review":
-            out.append(f"# {r['accession']} has review terms {sorted({h[2] for h in r['hits'] if h[1] == 'review'})}"
+            out.append(f"# {g} has review terms {sorted({x[2] for x in r['hits'] if x[1] == 'review'})}"
                        ": pin it only with review_cleared entries the readers agree")
         files = ", ".join(json.dumps(f["name"]) for f in r["files"])
-        out += [f"      - accession: {r['accession']}",
+        out += [f"      # ---- {g}: its fields as read in the plan table", *_comment_lines(r["fields"], "      "),
+                f"      - accession: {g}",
                 f"        arm: {arm}",
                 f"        gene: {json.dumps(gene)}",
                 f"        stage: E{r['stage']:g}",
                 f"        files: [{files}]",
                 f'        metadata_sha256: "{h}"']
+    return "\n".join(out) + "\n"
+
+
+def series_pin_template(acc: str, dest: Path, datasets: Path | None = None) -> str:
+    """The ready-to-paste `pinned_series` block: one entry per screened series, its series_metadata_sha256 recomputed
+    from the stored fields and checked against the table's value. Each entry is preceded by the series title as a
+    comment; the readers read the full series block in the plan table."""
+    pp, pl = _stored_plan(acc, dest, datasets)
+    ds = cm.dataset(acc, datasets)
+    out = [f"# pin-template {acc} --series: {len(ds['screen_series'])} screened series; from {pp}",
+           "# READ every SERIES block at the top of the plan tables before pasting. Paste under the dataset's",
+           "# `pinned_series:` key (beside `pinned:`)."]
+    for s in ds["screen_series"]:
+        b = pl["series"].get(s)
+        if b is None:
+            raise Refused(f"{s}: no series block in the stored plan: plan again")
+        h = cm.series_metadata_sha256(s, b["fields"])
+        if h != b["series_metadata_sha256"]:
+            raise Refused(f"{s}: the stored series fields hash to {h}, not to the table's value: plan again")
+        out += [*_comment_lines({"title": b["fields"].get("title", [])}, "      "),
+                f"      - accession: {s}",
+                f'        series_metadata_sha256: "{h}"']
     return "\n".join(out) + "\n"
 
 
@@ -568,11 +767,10 @@ def main(argv: list[str] | None = None) -> int:
     t = sub.add_parser("pin-template")
     t.add_argument("accession")
     t.add_argument("--dest", required=True, type=Path)
-    t.add_argument("--arm", required=True)
-    t.add_argument("--gene", required=True)
+    t.add_argument("--arm")
+    t.add_argument("--gene")
     t.add_argument("--gsm", action="append")
-    t.add_argument("--title")
-    t.add_argument("--suggested", action="store_true")
+    t.add_argument("--series", action="store_true", help="print the pinned_series block instead")
     g = sub.add_parser("check-pins")
     g.add_argument("accessions", nargs="+")
     sub.add_parser("datasets-sha")
@@ -597,7 +795,14 @@ def main(argv: list[str] | None = None) -> int:
             print(f"fetched: {a.accession}: {len(man['files'])} files of the pinned samples, {man['total_bytes']} "
                   "bytes")
         elif a.step == "pin-template":
-            print(pin_template(a.accession, a.dest, a.arm, a.gene, a.gsm, a.title, a.suggested), end="")
+            if a.series:
+                if a.arm or a.gene or a.gsm:
+                    raise Refused("--series takes no --arm, --gene or --gsm")
+                print(series_pin_template(a.accession, a.dest), end="")
+            else:
+                if not a.arm or not a.gene:
+                    raise Refused("--arm and --gene are required (one arm per command)")
+                print(pin_template(a.accession, a.dest, a.arm, a.gene, a.gsm), end="")
         elif a.step == "check-pins":
             bad = check_gate(a.accessions)
             for b in bad:

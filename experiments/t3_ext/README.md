@@ -1,6 +1,7 @@
-# T3 outside-knockout factor tables (stage 3: the pinned sample list)
+# T3 outside-knockout factor tables (stage 4: the pinned sample and series list)
 
-Campaign branches `campaign/t3-outside-knockouts` (stage 1), `-2` (stage 2) and `-3` (stage 3, this text). Under the captain's ruling of 2026-11-20 (`docs/PLAN.md` decision log
+Campaign branches `campaign/t3-outside-knockouts` (stage 1), `-2` (stage 2), `-3` (stage 3) and `-4` (stage 4, this
+text: series membership, files bound to their pin, the series text shown and pinned). Under the captain's ruling of 2026-11-20 (`docs/PLAN.md` decision log
 2026-11-20 (j), "All three tiers"), outside single-cell data on knockouts of OTHER genes may shape the Task 3 file.
 This folder turns such data into per-gene factor tables in the frozen factor's form, so that a later thin builder can
 take one in place of the Mab21l2 factor. Stage 1 builds the tables only. Nothing here enters a model, a check or an
@@ -15,7 +16,7 @@ scored, and (3) the captain rules on any change to an upload, with a `docs/S2_RU
 | `t3x_screen.py` | The held-out-gene screen, the second line (Ctnnb1 / beta-catenin, Gata4, their drugs; review terms such as Gata6, Apc, Axin, Gsk3). It has no switch. |
 | `t3x_common.py` | Fixed constants, `NEVER_FETCH`, `DATASETS_SHA256`, the dataset loader and the pinned-block check, the canonical metadata serialisation, the stage cap (E9.5 inclusive for every cell), shrinkage, the outside-the-repository guard. |
 | `t3x_tables.py` | Finishing a log table into factors (rescale, clip, absent = 1), writing the pooled and per-group forms, the reference statistics. |
-| `fetch.py` | `plan` writes a plan table of every sample of every screened series from GEO's family SOFT; `pin-template` prints a pinned block to paste; `check-pins` is the gate; `datasets-sha` prints the hash; `fetch` downloads exactly the pinned files of the pinned samples. |
+| `fetch.py` | `plan` writes a plan table of every sample of every screened series from GEO's family SOFT; `pin-template` prints the entries of named samples, or with `--series` the series entries, to paste; `check-pins` is the gate; `datasets-sha` prints the hash; `fetch` downloads exactly the pinned files of the pinned samples. |
 | `process.py` | `reference` writes the WT E8.75 statistics. `run` turns the pinned samples of one fetched dataset into one table per knockout gene plus `QC.json`. |
 | `combine.py` | Tier tables (wnt, cardiac, unrelated), the all-knockouts table, one table per study, and leave-one-study-out tables. |
 | `run_dgx.sh` | The detached DGX launcher, with exit files: mode `plan` (the default) or `all` (behind the pinned gate). |
@@ -27,32 +28,52 @@ cleared series (GSE205117, GSE168768, GSE186934, GSE137337, GSE204906), a few do
 is an explicit list of the samples two people have read.
 
 1. **Plan** (metadata only). `fetch.py plan ACC` writes `meta/<ACC>/plan.json` and one table per screened series,
-   `meta/<ACC>/plan_table_<SERIES>.txt`: every sample of the series, its accession, the verbatim text of every field
-   of its GEO record (all are screened), the sha256 of those fields, the screen's verdict and hits, the per-sample
-   files the dataset's patterns allow (and the other file names, never fetched), the parsed stage and chemistry, and
-   the selectors' suggested arm, which chooses nothing. A dataset with a held-out hit anywhere is refused and none of
-   its text is written: the table holds accessions, verdicts and the names of the fields hit, and nothing can be
-   pinned from it.
+   `meta/<ACC>/plan_table_<SERIES>.txt`. Each table starts with a **SERIES block for every screened series**: its
+   accession, its `series_metadata_sha256` and every field of its record verbatim (title, summary, overall_design,
+   type, relations, sample list, contact fields: all shown and hashed; contact fields are not screened). Then every
+   sample of the series: its accession, the verbatim text of every field of its GEO record (all are screened), the
+   sha256 of those fields, the screen's verdict and hits, its **series membership** (`NOT PINNABLE` when its own
+   `series_id` lists a series outside `screen_series` or none), the per-sample files the dataset's patterns allow (and
+   the other file names, never fetched), the parsed stage and chemistry, and the selectors' suggested arm, which
+   chooses nothing. Under any value that is not plain printable ASCII the table prints a second line, `escaped:`, its
+   Python `ascii()` form, so a hidden, reordering or look-alike character shows. Lines of a sample or series block
+   that are not `key = value` fields are kept under `_other_lines` (shown, hashed, screened); the header counts the
+   SOFT lines outside the series and sample blocks (PLATFORM and DATABASE blocks), which are not shown. A dataset
+   with a held-out hit anywhere, or with a sample of a screened series whose `series_id` also names a held series, is
+   refused and none of its text is written: the table holds accessions, verdicts and the names of the fields hit, and
+   nothing can be pinned from it. SOFT bytes that are not UTF-8 refuse the dataset. `plan.json` says `in_progress`
+   from the start of a run, so a run that dies leaves no passing plan behind.
 2. **Read and pin.** The main session and a second, independent reader each read the plan tables (what they check is
-   below). For each sample both agree on, `fetch.py pin-template` prints the entry, and the block is pasted into the
-   dataset's `pinned` list in `datasets.yaml`:
+   below). For each sample both agree on, `fetch.py pin-template ACC --dest D --arm ko|control --gene G --gsm GSM ...`
+   prints the entry (one command per arm; every sample is named, there is no bulk selector), with every field of the
+   sample as a comment above it, and it is pasted into the dataset's `pinned` list in `datasets.yaml`:
    `{accession: GSMnnn, arm: ko|control, gene: <knockout gene>, stage: E8.5, files: [...], metadata_sha256: "..."}`.
-   A control names the knockout gene it controls; a control that serves several knockouts is pinned once per gene.
-   pin-template never writes `datasets.yaml` and refuses a held-out sample, a sample whose stage does not parse to one
-   value, and a sample with no allowed per-sample file; it marks a sample with review terms (pin it only together with
-   the `review_cleared` entries both readers agree).
+   `fetch.py pin-template ACC --dest D --series` prints the `pinned_series` block, one entry per screened series,
+   `{accession: GSEnnn, series_metadata_sha256: "..."}`; it is pasted beside `pinned`, and is required whenever
+   `pinned` is not empty. A control names the knockout gene it controls; a control that serves several knockouts is
+   pinned once per gene. pin-template never writes `datasets.yaml` and refuses a held-out sample, a NOT PINNABLE
+   sample, a sample whose stage does not parse to one value, and a sample with no allowed per-sample file; it marks a
+   sample with review terms (pin it only together with the `review_cleared` entries both readers agree).
 3. **Commit.** Every edit of `datasets.yaml` changes its sha256. The same commit puts the new value
    (`fetch.py datasets-sha`) into `t3x_common.DATASETS_SHA256`; otherwise every step refuses the committed file, and
    `tests/test_t3_ext_screen.py::test_the_committed_dataset_list_hashes_to_its_pin_in_t3x_common` fails with the
    reason.
-4. **Fetch and process** touch only pinned accessions. They refuse a dataset whose pinned block is empty; a plan that
-   did not pass or was made from another `datasets.yaml`; a pinned accession that is not in its own series' plan table
-   or belongs to another series; a pinned sample whose live metadata (when plan runs again) or stored metadata (fetch,
-   process) no longer hashes to the pinned value; a pinned sample that no longer passes the screen; a pinned stage
+4. **Fetch and process** touch only pinned accessions. They refuse a dataset whose pinned block is empty or has no
+   `pinned_series` for every screened series; a plan that did not pass or was made from another `datasets.yaml`; a
+   pinned series whose live text (when plan runs again) or stored text (fetch, process) no longer hashes to its pin;
+   a pinned accession that is not in its own series' plan table or belongs to another series; a pinned sample whose
+   own `series_id` field is missing, or lists a series outside the dataset's `screen_series`, a `NEVER_FETCH` series,
+   or the accession or a screened series of any dataset that is not cleared; a pinned sample whose live or stored
+   metadata no longer hashes to the pinned value; a pinned sample that no longer passes the screen; a pinned stage
    that differs from the record's; a pinned file not in the sample's plan entry; knockouts and controls whose stages
    do not pair, or whose chemistry differs where the dataset reads chemistry; a manifest fetched under other pins;
-   a processed QC made under other pins (combine). Arms, genes and stages come from the pins only. No count file of
-   an unpinned sample is opened (a test holds one beside the pinned ones and fails on any open of it).
+   a processed QC made under other pins (combine). **Files are bound to the pin they were fetched under:** each
+   manifest file record holds the sample's pinned `metadata_sha256`, the url and the `pins_sha256` (samples and series)
+   in force at download time. fetch reuses a file only when all three equal the current values, otherwise it deletes
+   it and downloads again, and it deletes any other file in a pinned sample's folder. process refuses a file whose
+   record holds another `metadata_sha256`, url or `pins_sha256`, and any file in a pinned sample's folder that is not
+   one of its pinned files with a record. Arms, genes and stages come from the pins only. No count file of an
+   unpinned sample is opened (a test holds one beside the pinned ones and fails on any open of it).
 5. **Per-cell genotype designs** (cell-level labels inside one sample: MULTI-seq, gem.group, chimera sorts) are
    excluded in this stage: a dataset with `cell_labels` cannot hold pins, and `process.py` refuses it.
 
@@ -65,38 +86,57 @@ json.dumps({"accession": GSM, "fields": F}, sort_keys=True, ensure_ascii=False, 
 where `F` maps every field name of the sample's GEO family SOFT record (the `!Sample_` prefix removed, so `title`,
 `characteristics_ch1`, `supplementary_file_1` ...) to the list of its values, each a string exactly as
 `fetch.parse_soft` gives it (surrounding whitespace stripped, nothing else changed), in the order of the SOFT file
-(`t3x_common.canonical_metadata`; `tests/test_t3_ext_pipeline.py` pins the exact bytes for one example). The hash is
-taken from the sample's record in its own series' SOFT file.
+(a key's values together, keys in the order they first appear), plus the key `_other_lines` holding the record's
+other non-empty lines when it has any (`t3x_common.canonical_metadata`; `tests/test_t3_ext_pipeline.py` pins the exact
+bytes for one example). The hash is taken from the sample's record in its own series' SOFT file. A series'
+`series_metadata_sha256` is the same serialisation with the series accession and `F` its fields with the `!Series_`
+prefix removed, contact fields included (`t3x_common.series_metadata_sha256`; the exact bytes are pinned by a test).
 
-**Held datasets.** `t3x_common.NEVER_FETCH` holds GSE165300, GSE126128, GSE280543, GSE259342 and E-MTAB-7325.
+**Held datasets.** `t3x_common.NEVER_FETCH` holds GSE165300, GSE126128, GSE280543, GSE280587 (GSE280543's second
+screened series, added in stage 4), GSE259342 and E-MTAB-7325. The held set the code checks is `NEVER_FETCH` together
+with the accession and every screened series of every dataset that is not cleared (`t3x_common.held_series`), so a
+held series missing from the constant is still held; a test pins that the two agree for the committed file.
 `dataset()` refuses them whatever a YAML says, `load_datasets()` refuses a YAML that gives any of them a status other
-than `held_phenocopy` or `excluded_design`, and combine refuses any processed output of them. No CLI takes a
+than `held_phenocopy` or `excluded_design` and a cleared dataset whose `screen_series` holds any held series, and
+combine refuses any processed output of them. No CLI takes a
 `--datasets` path: every step reads the committed file, checked against `DATASETS_SHA256`. Tests reach other YAML
 content through a function argument only.
 
 ## What the two readers check in a plan table before pinning a sample
 
 Each reader reads the whole plan table of the dataset's own series and of every other screened series (the
-superseries), not only the rows the selectors suggest, and pins a sample only if both agree on all of these:
+superseries), the SERIES blocks at its top included, not only the rows the selectors suggest, and pins a sample (and
+the series) only if both agree on all of these:
 
 1. **Genotype and arm.** The sample's own text (title, source, characteristics, description, protocols, file names)
    states its genotype, and it is the arm being pinned: a knockout of the named gene, or that knockout's control as
    `control_definition` describes it. A label that names no gene (a bare 'F/F', 'cKO', 'mutant') is not pinned unless
    another field of the same record names the gene.
-2. **No held-out or phenocopy label anywhere in the series.** No sample, series title, summary or design of any
-   screened series mentions beta-catenin, Ctnnb1, Gata4, another allele of either, a drug or construct acting on
-   them, or a perturbation of their pathway that could phenocopy them (Wnt, Wls, Apc, Axin, Gsk3, Tcf/Lef, Hand2,
-   Mef2c, any GATA factor), in any spelling. The screen's verdicts help; they do not decide. If in doubt, nothing in
-   the dataset is pinned and the question goes to the main session.
+2. **No held-out or phenocopy label anywhere in the series.** Nothing in any SERIES block (title, summary,
+   overall_design, type, relations, `_other_lines`) and no sample of any screened series mentions beta-catenin,
+   Ctnnb1, Gata4, another allele of either, a drug or construct acting on them, or a perturbation of their pathway
+   that could phenocopy them (Wnt, Wls, Apc, Axin, Gsk3, Tcf/Lef, Fzd, Dvl, Csnk1a1, Hand2, Mef2c, Zfpm2, any GATA
+   factor), in any spelling. The screen's verdicts help; they do not decide. If in doubt, nothing in the dataset is
+   pinned and the question goes to the main session.
 3. **No pooled design.** The sample is one embryo pool of one genotype: no MULTI-seq, cell hashing, CRISPR guide
-   pool, chimera, mixed-genotype capture or per-cell genotype label (those are excluded in this stage).
+   pool, chimera, mixed-genotype capture or per-cell genotype label (those are excluded in this stage). Read
+   `extract_protocol`, `data_processing` and the series' overall_design in full: pooling, hashing or demultiplexing
+   (HTO, CMO, MULTI-seq, demuxlet, souporcell, SNP, genotype calling) anywhere means do not pin.
 4. **Same-study control.** The control comes from the same series and experiment, at the same stage, with the same
    chemistry where the dataset reads chemistry (GSE137337), and the relation is the one `control_relation` records.
-5. **Stage.** The parsed stage in the table matches what the text says, is a single stage at or before E9.5, and is
+   A control whose text, or whose series' text, cites another GEO series, another paper or "previously published"
+   data is not pinned.
+5. **Series membership.** The sample's `series membership` line says `ok`: its own `series_id` lists only this
+   dataset's screened series.
+6. **Stage.** The parsed stage in the table matches what the text says, is a single stage at or before E9.5, and is
    in `stages_used`.
-6. **Assay.** Single-cell or single-nucleus RNA (the GEX part of a multiome), not ATAC, bisulfite, methylation, bulk
+7. **Assay.** Single-cell or single-nucleus RNA (the GEX part of a multiome), not ATAC, bisulfite, methylation, bulk
    or spatial; the pinned files are that sample's own per-sample matrices (no series-level files, no fragments).
-7. **The hash** in the pinned entry equals the one printed for that sample in the table the reader read.
+8. **Hidden characters.** Every `escaped:` line is read: a control, format or bidirectional character, a look-alike
+   letter or a non-ASCII digit is explained or the sample (or series) is not pinned. The header's count of lines not
+   shown (PLATFORM and DATABASE blocks) is noted; those lines are platform descriptions, not sample labels.
+9. **The hashes** in the pasted entries equal the ones printed in the table the reader read: each sample's
+   `metadata_sha256` and each series' `series_metadata_sha256`.
 
 ## The rules each step keeps
 
@@ -112,7 +152,11 @@ superseries), not only the rows the selectors suggest, and pins a sample only if
   `process.py run` screen each pinned record again before a file is requested or a count is read. Since stage 3 the
   screen over-refuses by design: no allowlist on either side of the beta short names, catalogue wording and the like
   as review terms, typo forms as review terms, and an EXTENDED form (a Ctnnb1 or Gata4 typo, beta + 'cat',
-  'catenine') voids every review clearance of the sample it appears in. Per-cell label tables go through
+  'catenine', and since stage 4 '$\beta$-catenin' and 'β1-catenin') voids every review clearance of the sample it
+  appears in. Stage 4 also deletes Unicode control and format characters (and U+034F) in an extra variant, folds
+  Greek and Latin look-alike letters and non-ASCII digits, makes a text holding any control or format character
+  (TAB excepted) a review term 'control-or-format character', and adds the spelling gaps the reviewers of 9c981e1
+  listed as review terms (`t3x_screen.py` docstring). Per-cell label tables go through
   `t3x_screen.screen_cells`, but no loader uses it and a dataset that needs it is refused. Series-level files are
   never fetched.
 - **Phenocopy clause.** Wls (GSE165300), Hand2 (GSE126128) and Mef2c (GSE280543) have status `held_phenocopy`, and
@@ -194,7 +238,7 @@ unless `vec` is imported from that checkout. The WT E8.75 file is read, never wr
 
 The steps for the main session, in order (none was run by the engineer):
 
-1. **Merge.** On this machine, merge `campaign/t3-outside-knockouts-3` into `main` after its review.
+1. **Merge.** On this machine, merge `campaign/t3-outside-knockouts-4` into `main` after its review.
 2. **Sync.** Only when nothing runs in `~/v/vec-campaign-c`: the `docs/COMPUTE.md` rsync line with the target
    `PrakashDGX_H2:v/vec-campaign-c/`, then on the DGX `git -C ~/v/vec-campaign-c checkout --detach <main's commit>`
    and `git -C ~/v/vec-campaign-c status --porcelain --untracked-files=no` (empty). Check `df -h /home`.
@@ -206,8 +250,10 @@ The steps for the main session, in order (none was run by the engineer):
    second, independent reader each read every `plan_table_<SERIES>.txt` of each dataset and apply the checks above.
    A review refusal is resolved only by `review_cleared` entries both readers agree (sample, term, reason); a
    held-out refusal is never resolved, and that dataset is dropped.
-5. **Pin.** For each agreed sample, `fetch.py pin-template ACC --dest ~/v/vec-ext/t3 --arm ko|control --gene G
-   --gsm GSM...` (no network; it reads the stored plan) and paste its output under the dataset's `pinned:`.
+5. **Pin.** For each agreed arm, `fetch.py pin-template ACC --dest ~/v/vec-ext/t3 --arm ko|control --gene G
+   --gsm GSM1 --gsm GSM2 ...` (every sample named; no network, it reads the stored plan) and paste its output under
+   the dataset's `pinned:`. Then `fetch.py pin-template ACC --dest ~/v/vec-ext/t3 --series` and paste its output
+   under a `pinned_series:` key beside `pinned:`.
 6. **Commit.** `fetch.py datasets-sha`, put the printed value into `t3x_common.DATASETS_SHA256`, run the three test
    files, and commit `datasets.yaml` and `t3x_common.py` together on `main` (or on a branch merged into it), with the
    two readers named in the message. The `EXTERNAL_DATA.md` rows for the datasets that will be fetched go in before
@@ -217,7 +263,7 @@ The steps for the main session, in order (none was run by the engineer):
    `cd ~/v/vec-campaign-c && setsid nohup bash experiments/t3_ext/run_dgx.sh "$PWD" all "<pinned accessions>" > ~/v/vec-ext/t3/launcher_all.log 2>&1 < /dev/null &`.
    The launcher first runs the pinned gate (`fetch.py check-pins`; ALL.exit 6 if any accession has no pins or the
    YAML hash is not the pinned one), then the reference statistics, then per accession a fresh plan that checks each
-   pinned sample's LIVE metadata against its pinned hash (`replan_<ACC>`), and only if it passes the fetch of the
+   pinned series' and sample's LIVE metadata against its pinned hash (`replan_<ACC>`), and only if it passes the fetch of the
    pinned files and the processing of the pinned samples; combine last. Wait on `logs/ALL.exit` in the background.
 9. **Afterwards**: read `processed/<ACC>/QC.json` (status, confidence_by_sample, the guard records; no gene-level
    value is printed anywhere) and `tables/COMBINE.json`. `raw/` stays until the main session decides to delete it.
@@ -260,3 +306,15 @@ be pinned). Whether GEO edits a record between the reading and the fetch (the li
 design). How many review round trips the over-refusing screen costs on the five series (catalogue wording, 'Chi',
 '2i', APC fluorochromes and G4 ES cells are all review terms). Cyrillic look-alikes are folded; other scripts'
 look-alikes are not.
+
+## What stage 4 could not check
+
+Still nothing ran against GEO. That a real sample record lists every series it belongs to in `!Sample_series_id`
+(one line per series) is GEO's documented SOFT format as I remember it, not checked on a real file: if a real record
+lists only its own series, the membership check passes it, and the superseries is still screened through
+`screen_series`; if it lists a superseries missing from `screen_series`, that sample is NOT PINNABLE until a reviewed
+commit adds the superseries. Whether real family SOFT files carry sample table rows or other lines that would now be
+kept under `_other_lines` (and so change the hash and enter the screen): I expect none for scRNA records. How a real
+terminal shows bidirectional characters in the raw value line: the `escaped:` line below it is ASCII and shows them.
+The Greek and Latin fold covers only the letters listed in `t3x_screen.py`; other scripts are not folded. Hand2, Mef2c
+and Zfpm2 are review terms now, so a cardiac series that names them as markers needs a review clearance.

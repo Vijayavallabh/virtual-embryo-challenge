@@ -75,6 +75,9 @@ HELD = [
     "G4 morphant", "ibeta-catenin", "TGFbeta-catenin",
     # homoglyphs: a Cyrillic 'а' and 'С'
     "Gаta4", "Сtnnb1 KO",
+    # stage 4: the second reviewer of 9c981e1's invisible-character and look-alike strings, now held out
+    "Ctnn‮b1", "Ctnn⁦b1", "Ctn͏nb1", "Ga‎ta4", "Gata\x084", "Gαta4", "GΑΤΑ4",
+    "Gɑta4", "Gata٤", "Gata١4", "CTNNβ1", "Ctnn‪b1 cKO", "Gat­a4",
 ]
 REVIEW = ["Gata6 F/+", "GATA-6 het", "Gata5 KO", "GATA VI", "G4 ESC chimera", "Apc min", "ApcMin/+", "Apc fl",
           "adenomatous polyposis coli", "Axin2 KO", "Axin1/2", "conductin", "Gsk3b inhibitor", "Gsk-3",
@@ -95,15 +98,26 @@ REVIEW = ["Gata6 F/+", "GATA-6 het", "Gata5 KO", "GATA VI", "G4 ESC chimera", "A
           "arm RNAi", "arm mutant", "pangolin", "dTCF", "sFRP", "CP21R7", "IM-12", "Chip B, Cat# 1000073",
           "Buffer B (Cat. No. 123)", "Kit B cat no 1000", "LB catalogue", "subcategory", "bobcat",
           "TGFbeta (Cat# 1)", "APC-conjugated anti-CD45", "APC-Cy7", "Wnt1-Cre", "ICG staining", "catenin alpha",
-          "delta-catenin", "Gata6", "GATA binding protein 6", "Atg4 KO", "G4 ES cells"]
-CLEAN = ["Tbx1Cre/flox; Rosa26-GFPflox/+", "wild type", "E8.5_CRISPR_T_WT", "E8.5_CRISPR_T_KO", "Hand2 null",
-         "Mef2c KO", "Dnmt3a+3b", "Eed+Cdkn2a", "Gata1 chimera", "whole embryo", "C57BL/6",
+          "delta-catenin", "Gata6", "GATA binding protein 6", "Atg4 KO", "G4 ES cells",
+          # stage 4: every string the second reviewer of 9c981e1 found passing (the invisible-character and
+          # look-alike ones are in HELD), and the README's phenocopy list
+          "Cat-nb1", "C-t-n-n-b-1", "Ctn-nb1", "bkat KO", "βc-KO", "bc-cKO", "G-4 KO", "GATA bp 4", "Ga ta4",
+          "Ga-ta-4", "G a t a 4", "BML-284", "SKL2001", "WAY-262611", "QS11", "indirubin", "Foxy-5", "KY02111", "LF3",
+          "Fzd7 KO", "Frizzled", "Dvl2 KO", "Dishevelled", "Csnk1a1 KO", "CK1alpha", "Amer1 KO", "Bcl9 KO",
+          "Pygo2 KO", "Rnf43/Znrf3 DKO", "Hand2 KO", "Mef2c KO", "Zfpm2 KO", "Fog2 KO", "Hand2 null",
+          "$\\beta$-catenin", "beta$catenin", "β1-catenin", "beta1-catenin",
+          # a control or format character alone (no gene behind it) is a review term of its own
+          "E8.5​embryo", "wild­type", "wild type\x07"]
+CLEAN = ["Tbx1Cre/flox; Rosa26-GFPflox/+", "wild type", "E8.5_CRISPR_T_WT", "E8.5_CRISPR_T_KO", "Dnmt3a+3b",
+         "Eed+Cdkn2a", "Gata1 chimera", "whole embryo", "C57BL/6",
          "bio replicate 1", "biological replicate 2", "conducting", "ΔNp63", "abcam", "Chromium Single Cell 3' v2",
          "Mesp1Cre; Tbx1 flox/flox", "Dnmt1 KO E8.5 rep2", "armadillo repeat protein Armc5", "category",
          "embryonic day 8.5", "10x Genomics", "L3mbtl2 KO", "Kmt2b null", "Rnf2", "G9a / Ehmt2",
          # stage 3: the reviewers' clean strings that stay clean
          "Gata1 KO", "Gata2", "Gata3", "Gata2/3 DKO", "Gata1, Gata2", "Gata 1-3", "Ctnna1", "Ctnnd1", "Mesp1-Cre",
-         "Isl1 KO", "Tbx1 KO", "Hand1", "Nkx2-5 KO", "chirality", "E8.5 wild type", "centrifuged at 500 g at 4 C"]
+         "Isl1 KO", "Tbx1 KO", "Hand1", "Nkx2-5 KO", "chirality", "E8.5 wild type", "centrifuged at 500 g at 4 C",
+         # stage 4: the new folds and terms leave these alone
+         "β-actin", "TGFβ1", "integrin β1", "staging at a 4-somite stage", "Gata1\tKO", "Tbx1é"]
 # glued affixes (no separator) for the second property test (the second reviewer's list)
 AFFIXES = ["f/f", "fx", "floxed", "mutant", "knockout", "lof", "deficient", "i", "ca", "oe", "lenti", "deltaN", "ΔN",
            "shRNA", "sgRNA"]
@@ -207,6 +221,26 @@ def test_an_extended_form_voids_every_review_clearance_of_its_sample():
         sc.check_review_cleared([{"sample": "GSM1", "term": "gata6"}])
 
 
+def test_a_control_or_format_character_is_a_review_term_and_a_catenin_clearance_never_passes_latex_beta():
+    """Stage 4: a record holding a Cc or Cf character (TAB excepted) is under review until that term is cleared for
+    it; a clearance of the bare 'catenin' never passes '$\\beta$-catenin' or 'β1-catenin' (they are EXTENDED)."""
+    rec = {**CLEAN_RECORD, "description": ["10x Chromium 3'‎ v3 library"]}
+    r = sc.screen_record("GSM1", rec)
+    assert r["verdict"] == "review" and ("description", "review", sc.FORMAT_TERM) in r["hits"]
+    ok = [{"sample": "GSM1", "term": sc.FORMAT_TERM, "reason": "a left-to-right mark in a kit name, read escaped"}]
+    assert sc.screen_record("GSM1", rec, review_cleared=ok)["verdict"] == "pass"
+    assert sc.screen_record("GSM1", {**CLEAN_RECORD, "title": ["E8.5\tembryo 3"]})["verdict"] == "pass"
+    hidden = {**CLEAN_RECORD, "title": ["E8.5 Ga‎ta4 embryo"]}
+    assert sc.screen_record("GSM1", hidden, review_cleared=ok)["verdict"] == "held_out"
+    cat = [{"sample": "GSM1", "term": "catenin", "reason": "alpha-catenin staining only"}]
+    assert sc.screen_record("GSM1", {"title": ["alpha-catenin"]}, review_cleared=cat)["verdict"] == "pass"
+    for text in ("$\\beta$-catenin", "beta$catenin", "β1-catenin", "beta1-catenin"):
+        r = sc.screen_record("GSM1", {"title": [text]}, review_cleared=cat)
+        assert r["verdict"] != "pass" and r["clearance_void"], text
+        with pytest.raises(cm.Refused):
+            sc.check_review_cleared([{"sample": "GSM1", "term": text, "reason": "x"}])
+
+
 def test_record_screens_every_field_and_refuses_an_empty_record():
     rec = {"title": ["E8.5 embryo 3"], "source_name_ch1": ["whole embryo"],
            "supplementary_file_1": ["ftp://x/GSM1_Gata4KO_matrix.mtx.gz"]}
@@ -296,7 +330,8 @@ def test_guides_need_a_map_and_a_held_out_guide_is_removed():
         sc.screen_cells(obs, ["genotype"])
     with pytest.raises(cm.Refused, match="not in the map"):
         sc.screen_cells(obs, ["genotype"], guide_map={"g1": "Hand2", "g2": "Tbx1"})
-    keep, _ = sc.screen_cells(obs, ["genotype"], guide_map={"g1": "Hand2", "g2": "Ctnnb1", "g3": "non-targeting"})
+    # (stage 4: Hand2 is a review term now, so the clean guide target is Isl1)
+    keep, _ = sc.screen_cells(obs, ["genotype"], guide_map={"g1": "Isl1", "g2": "Ctnnb1", "g3": "non-targeting"})
     assert keep.tolist() == [True, False, True]
 
 
@@ -331,11 +366,17 @@ def test_the_committed_dataset_list_loads_and_holds_back_what_the_plan_holds_bac
         cm.dataset("GSE165300")
     with pytest.raises(cm.Refused):
         cm.dataset("GSE000001")
-    # the held and excluded accessions are exactly NEVER_FETCH; every cleared dataset has a pinned block (empty until
-    # the two readers fill it)
-    assert {a for a, d in ds.items() if d["status"] != "cleared"} == cm.NEVER_FETCH
+    # the held and excluded accessions and every series they screen are exactly NEVER_FETCH (stage 4: GSE280587, the
+    # second series of GSE280543, joined it), the derived held set equals it, and no cleared dataset screens a held
+    # series; every cleared dataset has a pinned block (empty until the two readers fill it)
+    held = {a for a, d in ds.items() if d["status"] != "cleared"}
+    held |= {s for a in held for s in ds[a]["screen_series"]}
+    assert held == cm.NEVER_FETCH == cm.held_series(ds) and "GSE280587" in cm.NEVER_FETCH
     for a in cleared:
+        assert not set(ds[a]["screen_series"]) & cm.NEVER_FETCH
         assert ds[a]["pinned"] == [] or all(p["arm"] in cm.PIN_ARMS for p in ds[a]["pinned"])
+        assert ds[a]["pinned_series"] == [] or {e["accession"] for e in ds[a]["pinned_series"]} == set(
+            ds[a]["screen_series"])
     assert "Nomaru et al. (per the scout)" in ds["GSE186934"]["citation"]
 
 

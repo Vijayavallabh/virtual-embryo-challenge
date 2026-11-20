@@ -6,9 +6,12 @@ Every constant below was fixed on 2026-11-20, before any outside count was read,
 of the T3 outside-knockout campaign and the challenger's required changes). None comes from a score.
 
 Two pins live here (stage 3, 2026-11-20):
-  NEVER_FETCH       the held and excluded accessions. dataset() refuses them whatever a YAML says, and
-                    load_datasets() refuses a YAML that gives any of them a status other than held_phenocopy or
-                    excluded_design. Moving one out needs a reviewed commit that cites the captain's ruling.
+  NEVER_FETCH       the held and excluded accessions, a held dataset's second screened series included (GSE280587
+                    of GSE280543, stage 4). dataset() refuses them whatever a YAML says, and load_datasets() refuses
+                    a YAML that gives any of them a status other than held_phenocopy or excluded_design. Moving one
+                    out needs a reviewed commit that cites the captain's ruling. The held set the code checks is
+                    NEVER_FETCH together with the accession and every screened series of every dataset that is not
+                    cleared (held_series()), so a held series missing from this constant is still held.
   DATASETS_SHA256   the sha256 of the committed datasets.yaml. Reading the committed file refuses when its bytes no
                     longer hash to this value, so the pin-and-commit step (README, "The pinned sample list") updates
                     both in the same commit. Tests reach other YAML content only through a function argument; no CLI
@@ -56,10 +59,11 @@ RELATIONS = ("littermate", "same_capture", "same_series", "heterozygous")
 TIERS = ("wnt", "cardiac", "unrelated")
 STATUSES = ("cleared", "held_phenocopy", "excluded_design")
 # Held and excluded datasets: never fetched by any flag or YAML (the main session's decision of 2026-11-20).
-NEVER_FETCH = frozenset({"GSE165300", "GSE126128", "GSE280543", "GSE259342", "E-MTAB-7325"})
+NEVER_FETCH = frozenset({"GSE165300", "GSE126128", "GSE280543", "GSE280587", "GSE259342", "E-MTAB-7325"})
 # sha256 of the committed datasets.yaml; the pin-and-commit step updates it in the same commit as the YAML.
-DATASETS_SHA256 = "a14a4bb51486f94b82a64f5c48e36dc0a791b1f6791a374be3568ff99ab70f5a"
+DATASETS_SHA256 = "79cb2d5aa363e55fc281399969a875d1d19c0e46bf5e621ff2d7d2e10f0baf67"
 PIN_KEYS = ("accession", "arm", "gene", "stage", "files", "metadata_sha256")
+SERIES_PIN_KEYS = ("accession", "series_metadata_sha256")
 PIN_ARMS = ("ko", "control")
 # Aliases matched only after an exact symbol fails (both directions); nothing else is renamed.
 ALIASES = {"T": "Tbxt", "Tbxt": "T", "Hbb-y": "Hbb-bh0", "Hbb-bh0": "Hbb-y"}
@@ -148,9 +152,11 @@ _KEYS = {"accession", "status", "status_reason", "tier", "study", "kind", "desig
          "repository", "screen_series", "stages_used", "control_definition", "arms", "exclude_match",
          "exclude_match_on",
          "design_refuse", "chemistry", "expect", "sample_file_patterns", "files_note", "licence", "why", "risks",
-         "verified", "screen_extra_refuse", "review_cleared", "cell_labels", "citation", "pinned"}
+         "verified", "screen_extra_refuse", "review_cleared", "cell_labels", "citation", "pinned",
+         "pinned_series"}
 _SHA = re.compile(r"[0-9a-f]{64}")
 _GSM = re.compile(r"GSM\d+")
+_GSE = re.compile(r"GSE\d+")
 
 
 def design_factor(ds: dict) -> float:
@@ -225,7 +231,37 @@ def check_pins(acc: str, ds: dict, where: str = "datasets.yaml") -> list[dict]:
         same = (p["arm"], stage_ok(p["stage"]), tuple(p["files"]), p["metadata_sha256"])
         if per_sample.setdefault(a, same) != same:
             raise Refused(f"{where}: {acc}: {a} is pinned with two different arms, stages, file lists or hashes")
+    check_series_pins(acc, ds, bool(pins), where)
     return pins
+
+
+def check_series_pins(acc: str, ds: dict, required: bool, where: str = "datasets.yaml") -> list[dict]:
+    """The pinned_series block of one dataset, checked for form (stage 4). With sample pins it is required: a list of
+    {accession, series_metadata_sha256}, exact keys, one entry for each series of screen_series and no other, each hash
+    64 lower-case hex digits. Without sample pins it must be empty. Its hashes are checked against the plan's series
+    text by fetch.verify_pins (live at plan time, stored at fetch and process time)."""
+    sp = ds.get("pinned_series")
+    if sp is None:
+        sp = []
+    if not isinstance(sp, list):
+        raise Refused(f"{where}: {acc}: pinned_series must be a list")
+    if not required:
+        if sp:
+            raise Refused(f"{where}: {acc}: pinned_series without sample pins: the readers pin both together")
+        return sp
+    for e in sp:
+        if not isinstance(e, dict) or sorted(e) != sorted(SERIES_PIN_KEYS):
+            raise Refused(f"{where}: {acc}: series pin {e!r} must have exactly the keys {SERIES_PIN_KEYS}")
+        if not isinstance(e["accession"], str) or not _GSE.fullmatch(e["accession"]):
+            raise Refused(f"{where}: {acc}: series pin accession {e['accession']!r} is not a GEO series")
+        if not isinstance(e["series_metadata_sha256"], str) or not _SHA.fullmatch(e["series_metadata_sha256"]):
+            raise Refused(f"{where}: {acc}: {e['accession']}: series_metadata_sha256 must be 64 lower-case hex digits")
+    got = [e["accession"] for e in sp]
+    want = list(ds.get("screen_series") or [])
+    if len(got) != len(set(got)) or set(got) != set(want):
+        raise Refused(f"{where}: {acc}: pinned_series must name every screened series exactly once ({want}), not "
+                      f"{got}: the readers pin the series text together with the samples")
+    return sp
 
 
 def pinned_units(pins: list[dict]) -> list[dict]:
@@ -284,6 +320,8 @@ def load_datasets(path: Path | None = None) -> dict[str, dict]:
             stage_ok(s)
         if acc in out:
             raise Refused(f"{path}: {acc} listed twice")
+        if not isinstance(ds.get("screen_series"), list) or acc not in ds["screen_series"]:
+            raise Refused(f"{path}: {acc}: screen_series must be a list that holds the dataset's own accession")
         from t3x_screen import check_review_cleared
 
         check_review_cleared(ds.get("review_cleared") or [])
@@ -295,8 +333,28 @@ def load_datasets(path: Path | None = None) -> dict[str, dict]:
             if other != acc:
                 raise Refused(f"{path}: {p['accession']} is pinned under {other} and {acc}: a sample belongs to one "
                               "series")
-        out[acc] = {**ds, "pinned": list(pins), "d": design_factor(ds)}
+        out[acc] = {**ds, "pinned": list(pins), "pinned_series": list(ds.get("pinned_series") or []),
+                    "d": design_factor(ds)}
+    held = held_series(out)
+    for acc, ds in out.items():
+        bad = sorted(set(ds["screen_series"]) & held)
+        if ds["status"] == "cleared" and bad:
+            raise Refused(f"{path}: {acc}: screen_series includes the held or excluded series {bad}: refused (a "
+                          "cleared dataset never screens, fetches or reads a held series)")
+        ds["held_series"] = sorted(held)
     return out
+
+
+def held_series(allds: dict[str, dict]) -> set[str]:
+    """The held set: NEVER_FETCH plus the accession and every screened series of every dataset that is not cleared.
+    A pinned sample whose record lists any of them is refused (fetch.verify_pins), and a plan whose screened series
+    hold such a sample is refused with its text withheld."""
+    held = set(NEVER_FETCH)
+    for acc, ds in allds.items():
+        if ds.get("status") != "cleared":
+            held.add(acc)
+            held |= set(ds.get("screen_series") or [])
+    return held
 
 
 def qc_floors(path: Path | None = None) -> dict:
@@ -335,7 +393,10 @@ def canonical_metadata(gsm: str, fields: dict) -> bytes:
         json.dumps({"accession": gsm, "fields": F}, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
     where F maps every field name of the sample's GEO family SOFT record (the 'Sample_' prefix removed) to the list of
     its values, each a string exactly as fetch.parse_soft gives it (surrounding whitespace stripped, nothing else
-    changed), in the order of the SOFT file. Every field is included because the screen reads every field."""
+    changed), in the order of the SOFT file, plus the key '_other_lines' when the record holds lines that are not
+    'key = value' fields (parse_soft keeps them). Every field is included because the screen reads every field. A
+    series is serialised the same way (series_metadata_sha256): its accession, and F its fields with the 'Series_'
+    prefix removed, contact fields included."""
     if not isinstance(fields, dict) or not all(
             isinstance(k, str) and isinstance(v, list) and all(isinstance(x, str) for x in v)
             for k, v in fields.items()):
@@ -348,9 +409,16 @@ def metadata_sha256(gsm: str, fields: dict) -> str:
     return hashlib.sha256(canonical_metadata(gsm, fields)).hexdigest()
 
 
-def pins_sha256(pins: list[dict]) -> str:
-    """sha256 of a pinned block, canonically serialised (the fetch manifest records it; process refuses on change)."""
-    return hashlib.sha256(json.dumps(pins, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+def series_metadata_sha256(gse: str, fields: dict) -> str:
+    """A series' hash: the same canonical serialisation as a sample's (canonical_metadata)."""
+    return metadata_sha256(gse, fields)
+
+
+def pins_sha256(ds: dict) -> str:
+    """sha256 of one dataset's pins, canonically serialised: {"samples": pinned, "series": pinned_series}. The fetch
+    manifest and each of its file records keep it; fetch downloads again and process refuses on any change."""
+    rec = {"samples": ds.get("pinned") or [], "series": ds.get("pinned_series") or []}
+    return hashlib.sha256(json.dumps(rec, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
                           .encode("utf-8")).hexdigest()
 
 

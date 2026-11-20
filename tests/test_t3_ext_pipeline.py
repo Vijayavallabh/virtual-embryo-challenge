@@ -93,11 +93,13 @@ datasets:
 
 
 def _soft(samples: dict[str, dict], title="A series", design="embryos", summary="a summary", acc="GSE900001") -> str:
+    """A family SOFT text. Each sample lists its own series in series_id, as GEO does, unless it gives series_id
+    itself (an empty list writes none)."""
     lines = [f"^SERIES = {acc}", f"!Series_title = {title}", f"!Series_overall_design = {design}",
-             f"!Series_summary = {summary}"]
+             f"!Series_summary = {summary}", "!Series_contact_name = A,,Person"]
     for gsm, f in samples.items():
         lines.append(f"^SAMPLE = {gsm}")
-        for k, vals in f.items():
+        for k, vals in {**f, **({} if "series_id" in f else {"series_id": acc})}.items():
             for v in (vals if isinstance(vals, list) else [vals]):
                 lines.append(f"!Sample_{k} = {v}")
     return "\n".join(lines) + "\n"
@@ -125,10 +127,11 @@ def _plan(dsy, dest, samples, acc="GSE900001", extra_series=None, **kw):
 
 
 def _pin(dsy, dest, acc, groups):
-    """Paste pin-template output (one call per (arm, gene, gsms)) into the YAML, as the readers would."""
+    """Paste pin-template output (one call per (arm, gene, gsms), then --series) into the YAML, as the readers would."""
     marker = PIN1 if acc == "GSE900001" else PIN2
     block = "".join(fe.pin_template(acc, dest, arm, gene, gsms, datasets=dsy) for arm, gene, gsms in groups)
-    dsy.write_text(dsy.read_text().replace(marker, "    pinned:\n" + block))
+    series = fe.series_pin_template(acc, dest, datasets=dsy)
+    dsy.write_text(dsy.read_text().replace(marker, "    pinned_series:\n" + series + "    pinned:\n" + block))
 
 
 TWO = {"GSM1": _sample("GSM1", "Hoxz KO"), "GSM2": _sample("GSM2", "WT")}
@@ -241,17 +244,34 @@ def test_pin_template_prints_a_block_that_loads_and_never_writes_the_yaml(dsy, t
     assert pins == [{"accession": "GSM1", "arm": "ko", "gene": "Hoxz", "stage": "E8.5",
                      "files": ["GSM1_matrix.mtx.gz", "GSM1_barcodes.tsv.gz", "GSM1_features.tsv.gz"],
                      "metadata_sha256": rows["GSM1"]["metadata_sha256"]}]
-    assert fe.pin_template("GSE900001", tmp_path / "d", "control", "Hoxz", suggested=True, datasets=dsy).count(
-        "accession: GSM2") == 1
-    assert "GSM1" in fe.pin_template("GSE900001", tmp_path / "d", "ko", "Hoxz", title="^gsm1$", datasets=dsy)
-    for kw in ({"arm": "KO"}, {"gsms": None}, {"gsms": ["GSM404"]}):
+    assert "      # characteristics_ch1: genotype: Hoxz KO" in out          # the text it pins rides along
+    for kw in ({"arm": "KO"}, {"gsms": None}, {"gsms": []}, {"gsms": ["GSM404"]}, {"gsms": ["GSM1", "GSM1"]}):
         with pytest.raises(cm.Refused):
             fe.pin_template("GSE900001", tmp_path / "d", kw.get("arm", "ko"), "Hoxz", kw.get("gsms", ["GSM1"]),
                             datasets=dsy)
+    sp = yaml.safe_load("pinned_series:\n" + fe.series_pin_template("GSE900001", tmp_path / "d", datasets=dsy))
+    blocks = json.loads((tmp_path / "d" / "meta" / "GSE900001" / "plan.json").read_text())["series"]
+    assert sp["pinned_series"] == [{"accession": "GSE900001",
+                                    "series_metadata_sha256": blocks["GSE900001"]["series_metadata_sha256"]}]
     _pin(dsy, tmp_path / "d", "GSE900001", [("ko", "Hoxz", ["GSM1"]), ("control", "Hoxz", ["GSM2"])])
     ds = cm.dataset("GSE900001", dsy)
     assert [p["accession"] for p in ds["pinned"]] == ["GSM1", "GSM2"]
     assert cm.pinned_units(ds["pinned"]) == [{"gene": "Hoxz", "ko": ["GSM1"], "control": ["GSM2"], "stages": [8.5]}]
+
+
+def test_pin_template_has_no_bulk_mode(tmp_path, capsys):
+    """Stage 4: pins are made only by naming sample accessions, one arm per command (--suggested and --title are
+    gone), so a reader names every sample pinned."""
+    import inspect
+
+    assert set(inspect.signature(fe.pin_template).parameters) == {"acc", "dest", "arm", "gene", "gsms", "datasets"}
+    for flag in (["--suggested"], ["--title", "."]):
+        with pytest.raises(SystemExit) as e:
+            fe.main(["pin-template", "GSE205117", "--dest", str(tmp_path), "--arm", "ko", "--gene", "X", *flag])
+        assert e.value.code == 2
+    assert fe.main(["pin-template", "GSE205117", "--dest", str(tmp_path), "--arm", "ko", "--gene", "X"]) == 2
+    assert fe.main(["pin-template", "GSE205117", "--dest", str(tmp_path), "--series", "--gsm", "GSM1"]) == 2
+    assert "refused" in capsys.readouterr().out
 
 
 def test_pin_template_refuses_a_sample_without_one_stage(dsy, tmp_path):
@@ -270,7 +290,8 @@ def test_pin_template_refuses_a_sample_without_one_stage(dsy, tmp_path):
 def test_the_pinned_block_form_is_checked(dsy, edit, match):
     good = {"accession": "GSM1", "arm": "ko", "gene": "Hoxz", "stage": "E8.5", "files": ["a.mtx.gz"],
             "metadata_sha256": "a" * 64}
-    ds = cm.load_datasets(dsy)["GSE900001"]
+    ds = {**cm.load_datasets(dsy)["GSE900001"],
+          "pinned_series": [{"accession": "GSE900001", "series_metadata_sha256": "c" * 64}]}
     assert cm.check_pins("GSE900001", {**ds, "pinned": [good]}) == [good]
     with pytest.raises(cm.Refused, match=match):
         cm.check_pins("GSE900001", {**ds, "pinned": [edit(good)]})
@@ -290,7 +311,9 @@ def test_a_sample_pinned_under_two_datasets_is_refused(dsy, tmp_path):
     p = ("    pinned:\n      - {accession: GSM1, arm: ko, gene: Aaa, stage: E8.5, files: [x.gz], metadata_sha256: "
          f"'{'a' * 64}'}}\n      - {{accession: GSM2, arm: control, gene: Aaa, stage: E8.5, files: [y.gz], "
          f"metadata_sha256: '{'b' * 64}'}}\n")
-    dsy.write_text(DS_YAML.replace(PIN2, p).replace(PIN1, p.replace("Aaa", "Hoxz")))
+    s = "    pinned_series: [{{accession: {}, series_metadata_sha256: '" + "c" * 64 + "'}}]\n"
+    dsy.write_text(DS_YAML.replace(PIN2, s.format("GSE900002") + p)
+                   .replace(PIN1, s.format("GSE900001") + p.replace("Aaa", "Hoxz")))
     with pytest.raises(cm.Refused, match="pinned under"):
         cm.load_datasets(dsy)
 
@@ -354,7 +377,7 @@ def test_fetch_requests_only_the_pinned_files_of_pinned_samples(dsy, tmp_path, m
     monkeypatch.setattr(fe, "_get", _fake_get(tmp_path / "staging", calls))
     man = fe.fetch("GSE900001", tmp_path / "d", dsy)
     assert sorted({Path(u).name.split("_")[0] for u in calls}) == ["GSM1", "GSM2"] and len(calls) == 6
-    assert man["pins_sha256"] == cm.pins_sha256(cm.dataset("GSE900001", dsy)["pinned"])
+    assert man["pins_sha256"] == cm.pins_sha256(cm.dataset("GSE900001", dsy))
     assert not (tmp_path / "d" / "raw" / "GSE900001" / "GSM3").exists()
 
 
@@ -379,6 +402,7 @@ def test_a_pinned_sample_whose_live_or_stored_metadata_changed_is_refused(dsy, t
 
 
 def test_a_pinned_accession_must_be_in_its_own_series_table(dsy, tmp_path):
+    dsy.write_text(DS_YAML.replace("screen_series: [GSE900001]", "screen_series: [GSE900001, GSE900009]"))
     other = {"GSE900009": fe.parse_soft(_soft({"GSM8": _sample("GSM8", "WT")}, acc="GSE900009"))}
     assert _pinned_plan(dsy, tmp_path, extra_series=other)["status"] == "ok"
     ds = cm.dataset("GSE900001", dsy)
@@ -436,7 +460,7 @@ def test_a_never_fetch_accession_is_refused_whatever_a_yaml_says(tmp_path):
             fe.fetch(acc, tmp_path / "d", y)
         with pytest.raises(cm.Refused, match="NEVER_FETCH"):
             pr.run(acc, tmp_path / "d", tmp_path / "wt", tmp_path / "r", tmp_path / "o", y)
-    assert cm.NEVER_FETCH == {"GSE165300", "GSE126128", "GSE280543", "GSE259342", "E-MTAB-7325"}
+    assert cm.NEVER_FETCH == {"GSE165300", "GSE126128", "GSE280543", "GSE280587", "GSE259342", "E-MTAB-7325"}
     for status in ("held_phenocopy", "excluded_design"):
         y.write_text(HELD_CLEARED.replace("status: cleared", f"status: {status}"))
         assert cm.load_datasets(y)["GSE165300"]["status"] == status
@@ -792,3 +816,301 @@ def test_no_t1_or_t2_builder_reads_the_outside_knockout_code():
     assert files
     for f in files:
         assert "t3_ext" not in f.read_text(errors="replace"), f
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# stage 4: (A) series membership, (B) files bound to the pin they were fetched under, (C) series text shown and
+# hashed, and the lesser points. Each blocker test replays the reviewer's own attack on 9c981e1.
+
+
+def _no_get(*a, **k):
+    raise AssertionError("a download was requested")
+
+
+def _attack_samples(sid):
+    rec = _sample("GSM1", "Hoxz KO")
+    rec["series_id"] = sid
+    return {"GSM1": rec, "GSM2": TWO["GSM2"]}
+
+
+def _restamp(dest, dsy, edit):
+    """Edit the stored plan as given, keep its status ok, and restamp it and the manifest so that only the edited
+    content can refuse (the state the reviewer reached on 9c981e1: every other check passes)."""
+    pp = dest / "meta" / "GSE900001" / "plan.json"
+    pl = json.loads(pp.read_text())
+    edit(pl)
+    pl["datasets_sha256"] = cm.datasets_sha256(dsy)
+    pp.write_text(json.dumps(pl))
+    mp = dest / "raw" / "GSE900001" / "MANIFEST.json"
+    man = json.loads(mp.read_text())
+    ds = cm.dataset("GSE900001", dsy)
+    man.update(plan_sha256=cm.sha256_file(pp), pinned=ds["pinned"], pinned_series=ds["pinned_series"],
+               pins_sha256=cm.pins_sha256(ds))
+    for rec in man["files"].values():
+        rec["pins_sha256"] = man["pins_sha256"]
+    mp.write_text(json.dumps(man))
+    return pl
+
+
+@pytest.mark.parametrize("sid,held", [
+    (["GSE900001", "GSE165300"], True),      # a NEVER_FETCH series (the reviewer's case)
+    (["GSE900001", "GSE280587"], True),      # the second series of the held GSE280543
+    (["GSE900001", "GSE900003"], True),      # a dataset of this YAML that is not cleared
+    (["GSE900001", "GSE777777"], False),     # a series nobody screened
+    (["GSE900001", "GSE900002"], False),     # another cleared dataset's series
+    ([], False)])                            # no series_id at all
+def test_a_sample_whose_record_lists_another_series_is_never_offered_and_never_read(tmp_path, dsy, monkeypatch,
+                                                                                    sid, held):
+    """Blocker A. A pinned sample whose own record's series_id lists a series outside the dataset's screened series
+    (held, unscreened, another dataset's) or none is refused at plan (never offered), at plan with pins (live), at
+    fetch and at process (stored)."""
+    attack = _attack_samples(sid)
+    parsed = fe.parse_soft(_soft(attack))["samples"]["GSM1"]
+    assert parsed.get("series_id", []) == sid
+    # 1. plan never offers it: a held series withholds the dataset, any other makes the row NOT PINNABLE
+    fresh = tmp_path / "fresh" / "datasets.yaml"
+    fresh.parent.mkdir()
+    fresh.write_text(DS_YAML)
+    pl = _plan(fresh, tmp_path / "f", attack)
+    table = (tmp_path / "f" / "meta" / "GSE900001" / "plan_table_GSE900001.txt").read_text()
+    if held:
+        assert pl["status"] == "refused" and pl["withheld"] and "series membership" in pl["reason"]
+        assert "Hoxz" not in table and "Hoxz" not in (tmp_path / "f" / "meta" / "GSE900001" / "plan.json").read_text()
+    else:
+        assert pl["status"] == "ok" and {r["accession"]: r for r in pl["tables"]["GSE900001"]}["GSM1"]["not_pinnable"]
+        assert "series membership: NOT PINNABLE" in table and "series membership: ok" in table   # GSM2 is fine
+    with pytest.raises(cm.Refused, match="withheld|not pinnable"):
+        fe.pin_template("GSE900001", tmp_path / "f", "ko", "Hoxz", ["GSM1"], datasets=fresh)
+    # 2. the readers pin it anyway (its true hash typed in): the live re-plan refuses
+    dest, wt, refp, clf = _synthetic_run(tmp_path, dsy, monkeypatch)
+    old_h = cm.dataset("GSE900001", dsy)["pinned"][0]["metadata_sha256"]
+    new_h = cm.metadata_sha256("GSM1", parsed)
+    dsy.write_text(dsy.read_text().replace(old_h, new_h))
+    live = _plan(dsy, tmp_path / "live", attack)
+    assert live["status"] == "refused" and "series" in live["reason"]
+    if not held:
+        assert live["reason"].startswith("pins: GSM1:")
+    # 3. a stored plan that says ok but holds the attack record: fetch and process refuse before any file
+    def edit(pl):
+        row = next(r for r in pl["tables"]["GSE900001"] if r["accession"] == "GSM1")
+        row["fields"], row["metadata_sha256"], row["not_pinnable"] = parsed, new_h, None
+    pl = _restamp(dest, dsy, edit)
+    with pytest.raises(cm.Refused, match="series"):
+        fe.verify_pins(cm.dataset("GSE900001", dsy), pl)
+    monkeypatch.setattr(fe, "_get", _no_get)
+    with pytest.raises(cm.Refused, match="series"):
+        fe.fetch("GSE900001", dest, dsy)
+    with pytest.raises(cm.Refused, match="series"):
+        pr.run("GSE900001", dest, wt, refp, tmp_path / "o", dsy, classifier=lambda *a: pytest.fail("read"))
+
+
+def test_load_datasets_refuses_a_cleared_dataset_that_screens_a_held_series(tmp_path):
+    """Blocker A, the dataset list: a cleared dataset's screen_series may hold no NEVER_FETCH series and no accession
+    or screened series of a dataset that is not cleared (the held set is derived, so a held series missing from
+    NEVER_FETCH is still held). A superseries shared by two cleared datasets stays allowed."""
+    y = tmp_path / "datasets.yaml"
+    base = DS_YAML.replace("screen_series: [GSE900003]", "screen_series: [GSE900003, GSE900088]")
+    y.write_text(base)
+    assert {"GSE900003", "GSE900088", "GSE280587"} <= cm.held_series(cm.load_datasets(y))
+    for extra in ("GSE165300", "GSE280587", "GSE900003", "GSE900088"):
+        y.write_text(base.replace("screen_series: [GSE900001]", f"screen_series: [GSE900001, {extra}]"))
+        with pytest.raises(cm.Refused, match="held or excluded series"):
+            cm.load_datasets(y)
+    y.write_text(base.replace("screen_series: [GSE900001]", "screen_series: [GSE900001, GSE900050]")
+                 .replace("screen_series: [GSE900002]", "screen_series: [GSE900002, GSE900050]"))
+    assert cm.load_datasets(y)["GSE900001"]["screen_series"] == ["GSE900001", "GSE900050"]
+    y.write_text(base.replace("screen_series: [GSE900001]", "screen_series: [GSE900050]"))
+    with pytest.raises(cm.Refused, match="own accession"):
+        cm.load_datasets(y)
+
+
+def test_a_file_fetched_under_an_earlier_pin_is_fetched_again_and_process_refuses_the_old_record(tmp_path, dsy,
+                                                                                                 monkeypatch):
+    """Blocker B, the reviewer's attack: fetch, change GSM1's metadata, re-pin, fetch again. On 9c981e1 the second
+    fetch downloaded nothing and process accepted the old files. Now every file is downloaded again, and process
+    refuses a record fetched under the old metadata hash, under other pins, or a file without a record."""
+    dest, wt, refp, clf = _synthetic_run(tmp_path, dsy, monkeypatch)
+    mp = dest / "raw" / "GSE900001" / "MANIFEST.json"
+    old = json.loads(mp.read_text())
+    key = "GSM1/GSM1_matrix.mtx.gz"
+    old_h = cm.dataset("GSE900001", dsy)["pinned"][0]["metadata_sha256"]
+    assert old["files"][key]["metadata_sha256"] == old_h and old["files"][key]["pins_sha256"] == old["pins_sha256"]
+    assert old["files"][key]["url"].endswith("GSM1_matrix.mtx.gz")
+    changed = {"GSM1": {**_sample("GSM1", "Hoxz KO"), "description": "a corrected description"}, "GSM2": TWO["GSM2"]}
+    dsy.write_text(DS_YAML)
+    _plan(dsy, dest, changed)
+    _pin(dsy, dest, "GSE900001", [("ko", "Hoxz", ["GSM1"]), ("control", "Hoxz", ["GSM2"])])
+    assert _plan(dsy, dest, changed)["status"] == "ok"
+    new_h = cm.dataset("GSE900001", dsy)["pinned"][0]["metadata_sha256"]
+    assert new_h != old_h
+    calls: list = []
+    monkeypatch.setattr(fe, "_get", _fake_get(tmp_path / "staging", calls))
+    man = fe.fetch("GSE900001", dest, dsy)
+    assert len(calls) == 6     # every file again: the pins changed (9c981e1 downloaded 0 here)
+    assert man["files"][key]["metadata_sha256"] == new_h and man["files"][key]["pins_sha256"] == man["pins_sha256"]
+    calls.clear()
+    fe.fetch("GSE900001", dest, dsy)
+    assert calls == []          # under the same pins every file is reused
+    good = mp.read_text()
+    m = json.loads(good)
+    m["files"][key]["metadata_sha256"] = old_h       # the old manifest record
+    mp.write_text(json.dumps(m))
+    with pytest.raises(cm.Refused, match="fetched under metadata_sha256"):
+        pr.run("GSE900001", dest, wt, refp, tmp_path / "o", dsy, classifier=clf)
+    mp.write_text(json.dumps(old))                    # the whole old manifest
+    with pytest.raises(cm.Refused, match="not fetched from this plan|not exactly as pinned"):
+        pr.run("GSE900001", dest, wt, refp, tmp_path / "o", dsy, classifier=clf)
+    for field, val in (("pins_sha256", old["pins_sha256"]), ("url", "https://ftp.ncbi.nlm.nih.gov/x/other.gz")):
+        m = json.loads(good)
+        m["files"][key][field] = val
+        mp.write_text(json.dumps(m))
+        with pytest.raises(cm.Refused, match="another url or under other pins"):
+            pr.run("GSE900001", dest, wt, refp, tmp_path / "o", dsy, classifier=clf)
+    mp.write_text(good)
+    m = json.loads(good)
+    del m["files"]["GSM2/GSM2_barcodes.tsv.gz"]       # a pinned file on disk without a record
+    mp.write_text(json.dumps(m))
+    with pytest.raises(cm.Refused, match="manifest record"):
+        pr.run("GSE900001", dest, wt, refp, tmp_path / "o", dsy, classifier=clf)
+    mp.write_text(good)
+    stray = dest / "raw" / "GSE900001" / "GSM1" / "GSM1_old_matrix.mtx.gz"   # an earlier pin's file left behind
+    stray.write_bytes(b"old")
+    with pytest.raises(cm.Refused, match="not one of its pinned files"):
+        pr.run("GSE900001", dest, wt, refp, tmp_path / "o", dsy, classifier=clf)
+    fe.fetch("GSE900001", dest, dsy)                  # fetch removes it, and nothing is downloaded
+    assert not stray.exists() and calls == []
+    assert pr.run("GSE900001", dest, wt, refp, tmp_path / "o", dsy, classifier=clf)["status"] == "ok"
+
+
+def test_every_plan_table_starts_with_every_series_block_verbatim_and_hashed(dsy, tmp_path):
+    """Blocker C: the readers are shown each screened series' fields (contact fields included), in file order, with
+    the series_metadata_sha256 they pin, at the top of every plan table before any sample."""
+    dsy.write_text(DS_YAML.replace("screen_series: [GSE900001]", "screen_series: [GSE900001, GSE900009]"))
+    summary = "Hoxz knockouts; embryos of both genotypes pooled before capture"
+    other = {"GSE900009": fe.parse_soft(_soft({"GSM8": _sample("GSM8", "WT")}, acc="GSE900009",
+                                              title="The superseries", design="see the subseries"))}
+    pl = _plan(dsy, tmp_path / "d", TWO, extra_series=other, summary=summary)
+    assert pl["status"] == "ok"
+    parsed = fe.parse_soft(_soft(TWO, summary=summary))["series"]
+    b = pl["series"]["GSE900001"]
+    assert b["fields"] == parsed and b["series_metadata_sha256"] == cm.series_metadata_sha256("GSE900001", parsed)
+    assert list(parsed) == ["title", "overall_design", "summary", "contact_name"]
+    for name in ("GSE900001", "GSE900009"):
+        txt = (tmp_path / "d" / "meta" / "GSE900001" / f"plan_table_{name}.txt").read_text()
+        head, samples = txt.split("# SAMPLES", 1)
+        assert f"==== SERIES GSE900001  series_metadata_sha256 {b['series_metadata_sha256']}" in head
+        assert f"==== SERIES GSE900009  series_metadata_sha256 {pl['series']['GSE900009']['series_metadata_sha256']}" \
+            in head and "  title: The superseries" in head and "  overall_design: see the subseries" in head
+        i = [head.index(f"  {k}\n") for k in ("title: A series", "overall_design: embryos", f"summary: {summary}",
+                                               "contact_name: A,,Person")]
+        assert i == sorted(i) and "contact fields included" in head
+        assert "==== GSM" not in head and "==== GSM" in samples
+
+
+def test_the_series_canonical_serialisation_is_exactly_as_documented():
+    fields = {"title": ["A series "], "summary": ["é one"], "contact_name": ["A,,Person"]}
+    want = ('{"accession":"GSE7","fields":{"contact_name":["A,,Person"],"summary":["é one"],'
+            '"title":["A series "]}}').encode()
+    assert cm.canonical_metadata("GSE7", fields) == want
+    assert cm.series_metadata_sha256("GSE7", fields) == hashlib.sha256(want).hexdigest()
+
+
+def test_series_pins_are_required_and_a_changed_series_text_refuses_plan_fetch_and_process(tmp_path, dsy,
+                                                                                           monkeypatch):
+    """Blocker C: the series are pinned with the samples; a series text edited after the reading refuses the live
+    plan, fetch and process; a pinned block without its series list is refused."""
+    dest, wt, refp, clf = _synthetic_run(tmp_path, dsy, monkeypatch)
+    ds = cm.dataset("GSE900001", dsy)
+    assert [e["accession"] for e in ds["pinned_series"]] == ["GSE900001"]
+    good = ds["pinned_series"][0]
+    for sp, match in (([], "every screened series"), (None, "every screened series"),
+                      ([good, good], "exactly once"), ([{**good, "accession": "GSE900002"}], "every screened"),
+                      ([good, {**good, "accession": "GSE900009"}], "every screened"),
+                      ([{**good, "series_metadata_sha256": "abc"}], "hex"),
+                      ([{"accession": "GSE900001"}], "keys"), ("GSE900001", "a list")):
+        with pytest.raises(cm.Refused, match=match):
+            cm.check_pins("GSE900001", {**ds, "pinned_series": sp})
+    with pytest.raises(cm.Refused, match="without sample pins"):
+        cm.check_pins("GSE900001", {**ds, "pinned": []})
+    series_text = fe.series_pin_template("GSE900001", dest, datasets=dsy)
+    pinned_yaml = dsy.read_text()
+    assert "    pinned_series:\n" + series_text in pinned_yaml
+    dsy.write_text(pinned_yaml.replace("    pinned_series:\n" + series_text, ""))
+    with pytest.raises(cm.Refused, match="pinned_series"):
+        cm.load_datasets(dsy)
+    dsy.write_text(pinned_yaml)
+    # live: GEO edits the summary after the reading
+    live = _plan(dsy, tmp_path / "live", TWO, summary="a summary, edited after the reading")
+    assert live["status"] == "refused" and "series GSE900001" in live["reason"] and "live text" in live["reason"]
+    # stored: the stored series text no longer hashes to the pin (with or without the stored hash edited alike)
+    for rehash in (False, True):
+        def edit(pl, rehash=rehash):
+            b = pl["series"]["GSE900001"]
+            b["fields"]["summary"] = ["Hoxz with the other series' controls"]
+            if rehash:
+                b["series_metadata_sha256"] = cm.series_metadata_sha256("GSE900001", b["fields"])
+        _restamp(dest, dsy, edit)
+        monkeypatch.setattr(fe, "_get", _no_get)
+        with pytest.raises(cm.Refused, match="series GSE900001: its stored text"):
+            fe.fetch("GSE900001", dest, dsy)
+        with pytest.raises(cm.Refused, match="series GSE900001: its stored text"):
+            pr.run("GSE900001", dest, wt, refp, tmp_path / "o", dsy, classifier=lambda *a: pytest.fail("read"))
+
+
+def test_a_value_that_is_not_plain_ascii_is_printed_with_its_escape(dsy, tmp_path):
+    s = {"GSM1": {**_sample("GSM1", "Hoxz KO"), "description": "Hoxz‮ KO é"}, "GSM2": TWO["GSM2"]}
+    pl = _plan(dsy, tmp_path / "d", s, title="Embryos été")
+    assert pl["status"] == "refused" and "control-or-format character" in pl["reason"] and not pl["withheld"]
+    txt = (tmp_path / "d" / "meta" / "GSE900001" / "plan_table_GSE900001.txt").read_text()
+    assert "    escaped: 'Hoxz\\u202e KO \\xe9'" in txt and "    escaped: 'Embryos \\xe9t\\xe9'" in txt
+    assert "  description: Hoxz‮ KO é" in txt
+    assert txt.count("    escaped: ") == 2              # plain ASCII values get no escape line
+
+
+def test_soft_bytes_that_do_not_decode_refuse_the_dataset(dsy, tmp_path, monkeypatch):
+    def getter(raw):
+        def get(url, dst, max_bytes):
+            dst = cm.outside_repo(dst)
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            dst.write_bytes(gzip.compress(raw))
+            return dst.stat().st_size, cm.sha256_file(dst)
+        return get
+    raw = _soft(TWO).encode()
+    monkeypatch.setattr(fe, "_get", getter(raw.replace(b"whole embryo", b"whole \xff embryo")))
+    pl = fe.plan("GSE900001", tmp_path / "d", dsy)
+    assert pl["status"] == "refused" and "undecodable bytes" in pl["reason"] and pl["withheld"]
+    assert json.loads((tmp_path / "d" / "meta" / "GSE900001" / "plan.json").read_text())["status"] == "refused"
+    with pytest.raises(cm.Refused, match="undecodable"):
+        fe.decode_soft(b"ok \xff", "GSE1")
+    monkeypatch.setattr(fe, "_get", getter(raw))          # the same route with clean bytes passes
+    assert fe.plan("GSE900001", tmp_path / "d", dsy)["status"] == "ok"
+
+
+def test_parse_soft_keeps_a_records_other_lines_and_counts_the_lines_it_does_not_show(dsy, tmp_path):
+    extra = "#ID_REF = probe\n!sample_table_begin\nID_REF\tVALUE\n!sample_table_end\n"
+    text = ("!a line before any block\n^DATABASE = GeoMiame\n!Database_name = GEO\n"
+            + _soft(TWO).replace("^SAMPLE = GSM1\n", "^SAMPLE = GSM1\n" + extra)
+            + "^PLATFORM = GPL1\n!Platform_title = a platform\n!Platform_x = y\n")
+    m = fe.parse_soft(text)
+    assert m["samples"]["GSM1"]["_other_lines"] == ["#ID_REF = probe", "!sample_table_begin", "ID_REF\tVALUE",
+                                                    "!sample_table_end"]
+    assert m["not_shown"] == {"before any block": 1, "DATABASE": 1, "PLATFORM": 2}
+    pl = fe.plan("GSE900001", tmp_path / "d", dsy, metas={"GSE900001": m})
+    assert pl["status"] == "ok"
+    txt = (tmp_path / "d" / "meta" / "GSE900001" / "plan_table_GSE900001.txt").read_text()
+    assert "  _other_lines: #ID_REF = probe" in txt and "'PLATFORM': 2" in txt
+    # a line the parser used to drop is screened now
+    held = fe.parse_soft(text.replace("!sample_table_end\n", "!sample_table_end\n!Extra_note = Ctnnb1 fl/fl\n"))
+    assert fe.plan("GSE900001", tmp_path / "d2", dsy, metas={"GSE900001": held})["withheld"]
+
+
+def test_a_plan_run_that_dies_leaves_no_passing_plan(dsy, tmp_path):
+    _plan(dsy, tmp_path / "d", TWO)
+    _pin(dsy, tmp_path / "d", "GSE900001", [("ko", "Hoxz", ["GSM1"]), ("control", "Hoxz", ["GSM2"])])
+    assert _plan(dsy, tmp_path / "d", TWO)["status"] == "ok"
+    with pytest.raises(cm.Refused):     # an unscreenable record raises inside the run
+        fe.plan("GSE900001", tmp_path / "d", dsy, metas={"GSE900001": {"series": {"title": ["x"]},
+                                                                       "samples": {"GSM9": {}}}})
+    assert json.loads((tmp_path / "d" / "meta" / "GSE900001" / "plan.json").read_text())["status"] == "in_progress"
+    with pytest.raises(cm.Refused, match="did not pass"):
+        fe.fetch("GSE900001", tmp_path / "d", dsy)
