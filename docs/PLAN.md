@@ -7589,3 +7589,47 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     questions, and the AI assistant adds no lean (the lever was closed after an exposure). D's practice row needs a
     new arm and a builder argument; the designer put its odds of passing at about 0.25 and the challenger at about
     0.1, for a size the record expects under 0.3; it is queued behind the embryo's and T3's work, not dropped.
+- 2026-11-20 (s), a question dialog dismissed; the embryo's occupancy term, stage 2: what the second group of analysts
+  decided, a hold, and what runs (state at 15:47 UTC). Written by the AI assistant, which is recused on this lever and
+  states no preference.
+  - **A dialog the captain dismissed.** The AI assistant put four questions in one dialog (T3's two Gata4 files; T1's
+    no-outside-data file as a hedge; T1's advance draw, composition and depth). He dismissed the dialog without an
+    answer. Nothing that depends on those answers is built or uploaded: C1 and C2 stay unbuilt, the hedge file stays
+    where it is, and the advance draw stays declined as on 2026-11-19. The questions are not put again in that form.
+  - **Who** (wf_666d097c-21a: an analyst, a cold challenger ("stands with changes"), a writer, a reviewer ("ready", no
+    blocker); none saw the main session's conversation). Branch `campaign/embryo-occupancy-2`, head 9cd4b6e, on top of
+    616984b with main merged in.
+  - **Their reading of the check's output of entry (l), by the table fixed before it:** reading A.2 applies, read
+    strictly. A.2 in full: "The file's draw orders or turns its principal axes differently from the copy's: mechanism
+    3 is active. The scorer searches signs only, so this costs occupancy under both builds. What follows: report it.
+    The row-order option does not fix it. The only fix the code allows is giving the file the copy's own rows (the
+    investigator's Option A), which breaks the count rule and needs a ruling. Nothing is built until he rules." Their
+    reading after the result, which changes nothing in A.2: the axis order is not swapped; two cosines fall under a
+    threshold of 0.95 that was fixed a priori and never calibrated on E7.5 (turns of about 24 and 22 degrees); the
+    grid overlap with the copy (0.878) is at the level of copy against copy; the code did not measure how far plain
+    copies turn against each other.
+  - **Their decisions.** The second construction (the file takes the baseline copy's own rows and count) is NOT
+    written now. A supplementary target-free check, `occupancy_frame_check.py file_axes` (released E7.5 and the built
+    file only; 50 reference copies; no score, no target, no count printed), measures whether plain copies turn as far
+    as the file, with three readings fixed before its output: S1, at least 3 of the 50 copies turn as much or more:
+    stage noise, A.2 fired on an uncalibrated threshold, the second construction is not written, the row-order path is
+    unchanged; S2 or S3, the turn is the file's own (from its position source, or from its own rows): the second
+    construction becomes eligible to be written only if the turn also costs grid overlap against the copy beyond what
+    copies show.
+  - **A correction to their fixed text, made before any `file_axes` output exists** (the reviewer's first point):
+    option_a_eligible reads the cost side: turn_cost above the copies' 98th percentile (turn_cost is the Dice in the
+    copy's basis minus the scorer's Dice, so positive is a cost), or overlap below the copies' 2nd percentile. The
+    challenger's "below the 2nd percentile" of turn_cost was a sign slip.
+  - **The hold, in the challenger's words:** "the test-board rebuild with --row-order copy_parity waits for the
+    captain's answer to the A.2 question, whatever E48 shows." Their question for him has three options: keep his
+    answer; hold the rebuild until `file_axes` is in, with E48 still running; withdraw and keep the decision of
+    2026-11-02. It is in `docs/S2_RULES.md` as an amendment of this date. He was told of A.2 in the AI assistant's
+    message of this afternoon; that is not his answer. Since he has just dismissed a dialog, the question goes to him
+    as plain text with `file_axes`'s reading beside it, and nothing is built on the test board until he answers it.
+  - **E48 may run** (a practice read on released stages; it builds no upload file; his ruling of this date asked for
+    it). Its run script and launcher were written after the row, as the row requires:
+    `experiments/coords/e48_row_order_read.py`, `experiments/coords/run_e48.sh`. Run commit, fixed before the run:
+    9cd4b6e7d1d343e996e91591bd0d92dcdcfae284. A gate comes first: the two controls must reproduce row E47's committed
+    scores before any arm starts. The reviewer's points 2 to 4 are not applied, because they would move the fixed run
+    commit; the main session reads `files_identical_across_builds` in the result and treats any false as void (point
+    2), fixed here before the run.

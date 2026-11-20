@@ -1512,3 +1512,22 @@ code, its sha256 and its stamp's commit and clean fields.
 > seed.
 
 Every upload stays the captain's own act. Nothing else in the heart sections above changes.
+
+## Amendment of 2026-11-20: the embryo's row-order rebuild is held (the analysts' reading A.2)
+
+Written by the AI assistant, which is recused on the embryo's occupancy term and states no preference. The note of
+2026-11-20 above lets the embryo's positions file be rebuilt with `--row-order copy_parity` after practice row E48 has
+run, by the captain's ruling "Use it, after a practice read". The question that ruling answered said the analysts had
+found no other route. A target-free check on the built file then fell under their reading A.2, fixed before its output:
+"The file's draw orders or turns its principal axes differently from the copy's: mechanism 3 is active. The scorer
+searches signs only, so this costs occupancy under both builds. What follows: report it. The row-order option does not
+fix it. The only fix the code allows is giving the file the copy's own rows (the investigator's Option A), which breaks
+the count rule and needs a ruling. Nothing is built until he rules." A second group of analysts read it strictly and
+set a hold (`docs/PLAN.md` decision log 2026-11-20 (s)).
+
+**The hold.** The rebuild on the test board with `--row-order copy_parity` waits for the captain's answer to the A.2
+question, whatever E48 shows. The question has three options: keep his answer; hold the rebuild until the supplementary
+check `file_axes` is in, with E48 still running; withdraw his answer and keep his decision of 2026-11-02. If he
+withdraws, this candidate is removed from the embryo's set. E48 itself, a practice read on released stages that builds
+no upload file, may run. The second construction the reading names (the file takes the baseline copy's own rows and
+count) is not written; it would need its own ruling and its own practice row.
