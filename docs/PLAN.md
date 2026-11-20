@@ -7917,3 +7917,21 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     occupancy term): a target-free interpolation of the embryo's shape between the two released bracket stages, with a
     counted practice read before any file. The reason: a cloud on one bracket's exact positions can do no better than
     about the baseline on the shape terms, and the morphology group is the embryo board's largest gap.
+- 2026-11-20 (ff), the embryo's row-order practice read E48: outcome (state at 18:42 UTC, 2026-11-20). Written by the AI
+  assistant, which is recused on this lever and states no preference; it quotes the fixed readings.
+  - **Valid run, one try (embryo 76).** Reading (i): the arm's mode under the earlier scorer build equals the floor's
+    on all 40 shared task-seeds; the construction is not voided. On 50 of 90 task-seeds the option refuses (the copy
+    and the file get different truth rows) and the file as built ships. Reading (ii): paired arm minus control on the
+    board score, main then earlier build: e75 -0.21 and -0.29; e725 -0.04 and -0.04; x1 +0.34 and +0.28; x2 -0.09 and
+    -0.09; nothing on the five refused tasks. Reading (iii): the proper-minus-mirror Dice gap lies between -0.008 and
+    +0.017 on every task, for the floor and for every arm.
+  - **What follows by the record.** The captain's ruling was "Use it, after a practice read", and by entries (s) and
+    (t) the rebuild follows E48 unless reading (i) voids the construction. It does not. So the row-order file is built
+    (the default command must first reproduce the positions file's bytes), and it goes to him with these readings
+    beside it. On the test board the option may refuse, as it did on five practice tasks; then no file exists and the
+    positions file already with him is the embryo's file.
+  - **The AI assistant's reading after the result, labelled as that and naming no choice:** on released stages the
+    mirror and proper comparisons differ by about a hundredth in Dice, so on practice the handedness coin has almost
+    no stake, and the option moved nothing. Practice therefore gives no reason to expect a change from this file at
+    the test; what the live board does is not shown by practice. The branch is merged at fbd7fb4 (205 targeted tests
+    pass).

@@ -1,0 +1,43 @@
+Try E48 (run commit 9cd4b6e7d1d343e996e91591bd0d92dcdcfae284); the pre-run gate passed on all nine tasks (the controls under main within 0.1 / 0.5 of E47 at 9967cf1).
+Reading (i), fixed in row E48 (the row's arm is fgw_shape0x_series_cp):
+  fgw_shape0x_series_cp: the prefix mode equals the floor's on all 40 shared task-seeds
+    refused task-seeds (the file as built ships): 50 of 90
+  fgw_shape0x_cp: the prefix mode equals the floor's on all 40 shared task-seeds
+    refused task-seeds (the file as built ships): 50 of 90
+Reading (ii), per task, arm minus control, paired by seed (primary: every seed, a refused seed counts as the control): board mean (sd) and occupancy skill mean (sd), main | prefix; secondary (refused seeds left out) board mean, main | prefix:
+  half  fgw_shape0x_series_cp  board +0.000 (0.000) | +0.000 (0.000)   occupancy +0.000 (0.000) | +0.000 (0.000)   secondary   n/a   |   n/a   (left out 10)
+  half  fgw_shape0x_cp         board +0.000 (0.000) | +0.000 (0.000)   occupancy +0.000 (0.000) | +0.000 (0.000)   secondary   n/a   |   n/a   (left out 10)
+  late  fgw_shape0x_series_cp  board +0.000 (0.000) | +0.000 (0.000)   occupancy +0.000 (0.000) | +0.000 (0.000)   secondary   n/a   |   n/a   (left out 10)
+  late  fgw_shape0x_cp         board +0.000 (0.000) | +0.000 (0.000)   occupancy +0.000 (0.000) | +0.000 (0.000)   secondary   n/a   |   n/a   (left out 10)
+  new1  fgw_shape0x_series_cp  board +0.000 (0.000) | +0.000 (0.000)   occupancy +0.000 (0.000) | +0.000 (0.000)   secondary   n/a   |   n/a   (left out 10)
+  new1  fgw_shape0x_cp         board +0.000 (0.000) | +0.000 (0.000)   occupancy +0.000 (0.000) | +0.000 (0.000)   secondary   n/a   |   n/a   (left out 10)
+  new2  fgw_shape0x_series_cp  board +0.000 (0.000) | +0.000 (0.000)   occupancy +0.000 (0.000) | +0.000 (0.000)   secondary   n/a   |   n/a   (left out 10)
+  new2  fgw_shape0x_cp         board +0.000 (0.000) | +0.000 (0.000)   occupancy +0.000 (0.000) | +0.000 (0.000)   secondary   n/a   |   n/a   (left out 10)
+  e75   fgw_shape0x_series_cp  board -0.209 (0.473) | -0.294 (0.566)   occupancy -0.030 (0.059) | -0.040 (0.069)   secondary -0.209 (0.473) | -0.294 (0.566) (left out 0)
+  e75   fgw_shape0x_cp         board -0.238 (0.543) | -0.323 (0.585)   occupancy -0.030 (0.059) | -0.040 (0.069)   secondary -0.238 (0.543) | -0.323 (0.585) (left out 0)
+  e725  fgw_shape0x_series_cp  board -0.040 (0.529) | -0.041 (0.562)   occupancy -0.009 (0.061) | -0.008 (0.068)   secondary -0.040 (0.529) | -0.041 (0.562) (left out 0)
+  e725  fgw_shape0x_cp         board +0.033 (0.672) | +0.037 (0.710)   occupancy -0.009 (0.061) | -0.008 (0.068)   secondary +0.033 (0.672) | +0.037 (0.710) (left out 0)
+  x1    fgw_shape0x_series_cp  board +0.339 (0.346) | +0.280 (0.515)   occupancy +0.017 (0.014) | +0.008 (0.038)   secondary +0.339 (0.346) | +0.280 (0.515) (left out 0)
+  x1    fgw_shape0x_cp         board +0.451 (0.338) | +0.402 (0.467)   occupancy +0.017 (0.014) | +0.008 (0.038)   secondary +0.451 (0.338) | +0.402 (0.467) (left out 0)
+  x2    fgw_shape0x_series_cp  board -0.092 (0.230) | -0.087 (0.229)   occupancy -0.005 (0.019) | -0.004 (0.026)   secondary -0.092 (0.230) | -0.087 (0.229) (left out 0)
+  x2    fgw_shape0x_cp         board -0.070 (0.267) | -0.065 (0.257)   occupancy -0.005 (0.019) | -0.004 (0.026)   secondary -0.070 (0.267) | -0.065 (0.257) (left out 0)
+  x3    fgw_shape0x_series_cp  board +0.000 (0.000) | +0.000 (0.000)   occupancy +0.000 (0.000) | +0.000 (0.000)   secondary   n/a   |   n/a   (left out 10)
+  x3    fgw_shape0x_cp         board +0.000 (0.000) | +0.000 (0.000)   occupancy +0.000 (0.000) | +0.000 (0.000)   secondary   n/a   |   n/a   (left out 10)
+  every ranked metric's paired difference per task and build: reading.json, tasks.<task>.paired
+Reading (iii), per task, proper-minus-mirror Dice gap (mean over seeds):
+  half  floor -0.0081, fgw_shape0x_series -0.0005, fgw_shape0x -0.0005, fgw_shape0x_series_cp -0.0005, fgw_shape0x_cp -0.0005
+  late  floor -0.0081, fgw_shape0x_series +0.0012, fgw_shape0x +0.0012, fgw_shape0x_series_cp +0.0012, fgw_shape0x_cp +0.0012
+  new1  floor +0.0015, fgw_shape0x_series -0.0019, fgw_shape0x -0.0019, fgw_shape0x_series_cp -0.0019, fgw_shape0x_cp -0.0019
+  new2  floor +0.0051, fgw_shape0x_series -0.0021, fgw_shape0x -0.0021, fgw_shape0x_series_cp -0.0021, fgw_shape0x_cp -0.0021
+  e75   floor -0.0055, fgw_shape0x_series -0.0020, fgw_shape0x -0.0020, fgw_shape0x_series_cp -0.0020, fgw_shape0x_cp -0.0020
+  e725  floor -0.0000, fgw_shape0x_series -0.0007, fgw_shape0x -0.0007, fgw_shape0x_series_cp -0.0014, fgw_shape0x_cp -0.0014
+  x1    floor +0.0106, fgw_shape0x_series +0.0078, fgw_shape0x +0.0078, fgw_shape0x_series_cp +0.0145, fgw_shape0x_cp +0.0145
+  x2    floor +0.0030, fgw_shape0x_series +0.0166, fgw_shape0x +0.0166, fgw_shape0x_series_cp +0.0088, fgw_shape0x_cp +0.0088
+  x3    floor -0.0014, fgw_shape0x_series -0.0075, fgw_shape0x -0.0075, fgw_shape0x_series_cp -0.0075, fgw_shape0x_cp -0.0075
+Reported, read by nothing: as built, the share of shared seeds where the control's pre-fix parity agrees with the floor's (reading B.1):
+  fgw_shape0x_series: half n/a, late n/a, new1 n/a, new2 n/a, e75 0.5, e725 0.6, x1 0.4, x2 0.8, x3 n/a
+  fgw_shape0x: half n/a, late n/a, new1 n/a, new2 n/a, e75 0.5, e725 0.6, x1 0.4, x2 0.8, x3 n/a
+Reported, read by nothing: nine-task merged paired means (tasks sharing a truth merged) with their SE over seeds:
+  fgw_shape0x_series_cp: main board -0.022 (SE 0.047), occupancy -0.0064 (SE 0.0063); prefix board -0.045 (SE 0.057), occupancy -0.0091 (SE 0.0073)
+  fgw_shape0x_cp: main board -0.001 (SE 0.056), occupancy -0.0064 (SE 0.0063); prefix board -0.021 (SE 0.064), occupancy -0.0091 (SE 0.0073)
+Note: on the option's own rows the shared-rows and parity checks re-test its gate; only the prefix modes scored against the fold truth test the mechanism. Nothing here shows the live board's build, metric seed, LAPACK, floor copy draw, row handling or whether the test counts share truth rows.
