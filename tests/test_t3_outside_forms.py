@@ -647,3 +647,167 @@ def test_the_constants_of_the_launchers():
     assert "VEC_T3_EXT_TABLES=\"$TABLES\"" in run and "k22_outside_forms.py" in run
     assert "if [ $rc = 5 ]; then finish 25; fi" in run and "if [ $rc = 4 ]; then finish 44; fi" in run
     assert math.isclose(ext.EXPONENT, 1.0) and os.sep == "/"
+
+
+# ---------------------------------------------------------------------------------------------- --table-exponent (K23)
+
+OUTSIDE_BUILD_KEYS = {"script", "script_sha256", "outside_forms", "outside_forms_sha256", "form", "base", "table_m",
+                      "table", "exponent", "factor", "frozen_files_sha256", "tree_at_start", "k22_reading",
+                      "list_entry", "identity", "depth_step"}  # the sidecar block as row K22 built it
+
+
+def k23_reading(lst, names=("x_e2",), void=False, incomplete=False, tables=None, exponents=(2.0, 4.0), dropped=None,
+                rel="k23_reading.json") -> Path:
+    pins = {n: v for n, v in ext.K22_TABLE_SHA256.items() if v}
+    body = {"incomplete": incomplete, "void": void, "names": list(names), "outcome": "test",
+            "ext": {"listing_sha256": ext.K22_LISTING_SHA256, "tables": tables or pins},
+            "pregate": {"constants": {"exponents": list(exponents)}, "dropped": dropped or {}}}
+    return commit_file(lst, rel, json.dumps(body))
+
+
+def test_the_default_table_exponent_is_byte_identical(world, bw, tmp_path, monkeypatch):
+    """With the default exponent the builder takes K22's path: the same file as the frozen builder given phi_M * T,
+    the same file with table_exponent 1.0 given, and the sidecar block row K22 built."""
+    side = build(world, bw, "xall-s1", tmp_path / "a.h5ad")
+    one = build(world, bw, "xall-s1", tmp_path / "b.h5ad", table_exponent=1.0)
+    assert (tmp_path / "a.h5ad").read_bytes() == (tmp_path / "b.h5ad").read_bytes()
+    assert side["outside_build"] == one["outside_build"]
+    ob = json.loads((tmp_path / "a.json").read_text())["outside_build"]
+    assert set(ob) == OUTSIDE_BUILD_KEYS and ob["exponent"] == 1.0 and ob["list_entry"] == bo.LIST_ENTRY
+    assert ob["k22_reading"]["names"] == ["x_all", "x_unrel"]
+    original = bs.load_factor
+    T = TABLES["all"][0]
+    with monkeypatch.context() as m:
+        m.setattr(bs, "load_factor", lambda run_dir, name, genes, dec: (lambda r: (r[0] * T, r[1]))(
+            original(run_dir, name, genes, dec)))
+        bs.build_submission(world.dec, "barred", "s1", world.wt, world.board, N, tmp_path / "frozen.h5ad",
+                            run_dir=world.run, seed=SEED, threads=2)
+    assert (tmp_path / "frozen.h5ad").read_bytes() == (tmp_path / "a.h5ad").read_bytes()
+    phi_m = np.asarray(PHI, dtype=np.float64)
+    for x in (1.0, 1.5, 2.0):
+        a, ra = bo.form_factor("xall", x, phi_m, T)
+        b, rb = bo.form_factor("xall", x, phi_m, T, 1.0)
+        assert np.array_equal(a, b) and ra == rb and np.array_equal(a, ext.product(phi_m, x, T))
+
+
+@pytest.mark.parametrize("e", [2.0, 4.0])
+@pytest.mark.parametrize("base", ["s1", "s1x1.5", "s1x2.0"])
+def test_the_k23_forms_apply_the_shared_product_at_the_exponent(world, bw, lst, tmp_path, monkeypatch, e, base):
+    spy = Spy(monkeypatch)
+    r = k23_reading(lst, names=(f"x_e{e:g}",))
+    side = build(world, bw, f"xall-{base}", tmp_path / "f.h5ad", table_exponent=e, k23_reading=r)
+    (phi,) = spy.seen
+    x = bo.BASES[base][1]
+    T = TABLES["all"][0]
+    assert np.array_equal(phi, ext.product(np.asarray(PHI, dtype=np.float64), x, T, e))
+    assert np.allclose(phi, (PHI if x == 1.0 else PHI ** x) * T ** e, rtol=1e-14, atol=0)
+    a, _ = bo.form_factor("xall", x, PHI, T, e)
+    assert np.array_equal(a, phi)
+    ob = side["outside_build"]
+    assert ob["exponent"] == e and ob["priced_at"] == "x = 1 only" and ob["k22_reading"] is None
+    assert ob["k23_reading"]["names"] == [f"x_e{e:g}"] and ob["k23_reading"]["sha256"] == t3d.sha256(r)
+    assert ob["list_entry"] == "experiments/harness/TRIES.md row K23 and decision log 2026-11-21 (a)"
+    assert ob["base"]["x"] == x and ob["table"]["sha256"] == bw.shas["all"]
+    assert side["construction"]["factor_exponent"] == 1.0
+
+
+def test_a_k23_form_is_the_frozen_builder_given_its_factor(world, bw, lst, tmp_path, monkeypatch):
+    r = k23_reading(lst, names=("x_e4",))
+    build(world, bw, "xall-s1", tmp_path / "a.h5ad", table_exponent=4.0, k23_reading=r)
+    original = bs.load_factor
+    T = TABLES["all"][0]
+    with monkeypatch.context() as m:
+        m.setattr(bs, "load_factor", lambda run_dir, name, genes, dec: (lambda q: (q[0] * T ** 4.0, q[1]))(
+            original(run_dir, name, genes, dec)))
+        bs.build_submission(world.dec, "barred", "s1", world.wt, world.board, N, tmp_path / "frozen.h5ad",
+                            run_dir=world.run, seed=SEED, threads=2)
+    assert (tmp_path / "frozen.h5ad").read_bytes() == (tmp_path / "a.h5ad").read_bytes()
+
+
+def test_the_k23_refusals(world, bw, lst, tmp_path):
+    good = k23_reading(lst, names=("x_e2",), rel="good.json")
+    for e in (0.5, 3.0, 8.0, 1.5, "x", -2.0):
+        with pytest.raises(bo.Refused, match="--table-exponent"):
+            build(world, bw, "xall-s1", tmp_path / "x.h5ad", table_exponent=e, k23_reading=good)
+    for form in ("xunrel-s1", "identity-s1", "identity-s2"):
+        with pytest.raises(bo.Refused, match="xall only"):
+            build(world, bw, form, tmp_path / "x.h5ad", table_exponent=2.0, k23_reading=good)
+    for form in ("x_e1-s1", "x_e2-s1", "x_e4-s2", "x_e2_perm-s1", "x_e4_perm-s1", "x_e2_size-s1", "x_e4_size-s1"):
+        with pytest.raises(bo.Refused, match="K23|table-exponent"):
+            build(world, bw, form, tmp_path / "x.h5ad", table_exponent=2.0, k23_reading=good)
+        with pytest.raises(bo.Refused):
+            build(world, bw, form, tmp_path / "x.h5ad")
+    cases = ((bw.reading, "does not name x_e2"),  # K22's reading (names x_all, x_unrel) is not K23's
+             (k23_reading(lst, names=("x_e4",), rel="r1.json"), "does not name x_e2"),
+             (k23_reading(lst, names=("x_e2", "x_e4"), rel="r2.json"), "does not name x_e2"),
+             (k23_reading(lst, names=("x_e2_perm",), rel="r3.json"), "does not name x_e2"),
+             (k23_reading(lst, void=True, rel="r4.json"), "VOID"),
+             (k23_reading(lst, incomplete=True, rel="r5.json"), "VOID or incomplete"),
+             (k23_reading(lst, tables={"all": "0" * 64}, rel="r6.json"), "other tables"),
+             (k23_reading(lst, exponents=(4.0,), rel="r7.json"), "undropped"),
+             (k23_reading(lst, dropped={"2": "test"}, rel="r8.json"), "undropped"),
+             (tmp_path / "none.json", "no K23 reading"))
+    for r, why in cases:
+        with pytest.raises(bo.Refused, match=why):
+            build(world, bw, "xall-s1", tmp_path / "x.h5ad", table_exponent=2.0, k23_reading=r)
+    loose = tmp_path / "loose.json"
+    loose.write_bytes(good.read_bytes())
+    with pytest.raises(bo.Refused, match="not committed"):
+        build(world, bw, "xall-s1", tmp_path / "x.h5ad", table_exponent=2.0, k23_reading=loose)
+    # at the default exponent a K23 reading is never used: K22's reading decides
+    with pytest.raises(bo.Refused, match="does not name x_all"):
+        build(world, bw, "xall-s1", tmp_path / "x.h5ad", reading=good, k23_reading=good)
+    with pytest.raises(bo.Refused):
+        bo.form_factor("identity", 1.0, PHI, None, 2.0)
+    assert not (tmp_path / "x.h5ad").exists()
+
+
+def test_the_k23_form_s_own_refusal_is_distinct(world, tmp_path, lst, monkeypatch):
+    monkeypatch.setattr(bo, "TABLE_SHA256", world.pin)
+    few = np.ones(G)
+    few[30:33] = 2.0
+    s = setup_tables(tmp_path, lst, monkeypatch, tables={**TABLES, "all": (few, ["a", "b"], ["unrelated"])})
+    r = k23_reading(lst, names=("x_e2",))
+    with pytest.raises(bo.FormRefused, match="fewer than 10|< 10"):
+        bo.build_form(world.dec, "xall-s1", world.wt, world.board, N, tmp_path / "x.h5ad", run_dir=world.run,
+                      seed=SEED, threads=2, env=s.env, table_exponent=2.0, k23_reading=r)
+    assert not (tmp_path / "x.h5ad").exists()
+
+
+def test_the_cli_s_table_exponent(world, bw, lst, tmp_path, monkeypatch):
+    from typer.testing import CliRunner
+
+    monkeypatch.setattr(bo, "READING", bw.reading)
+    monkeypatch.setattr(bo, "READING_K23", k23_reading(lst, names=("x_e2",)))
+    monkeypatch.setenv(ext.ENV, bw.env[ext.ENV])
+    base = ["build", str(world.dec), "--wt", str(world.wt), "--board", "T3:synthetic", "--boards-dir",
+            str(_boards(tmp_path)), "--run-dir", str(world.run), "--threads", "2", "--form", "xall-s1"]
+    runner = CliRunner()
+    for bad in ("3.0", "0.5", "8"):
+        out = tmp_path / f"bad{bad}.h5ad"
+        res = runner.invoke(bo.app, [*base, "--table-exponent", bad, "--out", str(out)])
+        assert res.exit_code == 2 and "refused" in res.output and not out.exists(), bad
+    res = runner.invoke(bo.app, [*base, "--table-exponent", "4.0", "--out", str(tmp_path / "e4.h5ad")])
+    assert res.exit_code == 2 and "does not name x_e4" in res.output and not (tmp_path / "e4.h5ad").exists()
+    res = runner.invoke(bo.app, [*base, "--table-exponent", "2.0", "--out", str(tmp_path / "e2.h5ad")])
+    assert res.exit_code == 0, res.output
+    assert json.loads((tmp_path / "e2.json").read_text())["outside_build"]["exponent"] == 2.0
+    res = runner.invoke(bo.app, [*base, "--out", str(tmp_path / "e1.h5ad")])
+    assert res.exit_code == 0, res.output
+    assert set(json.loads((tmp_path / "e1.json").read_text())["outside_build"]) == OUTSIDE_BUILD_KEYS
+
+
+def test_the_cli_s_form_refusal_exit_code_at_an_exponent(world, tmp_path, lst, monkeypatch):
+    from typer.testing import CliRunner
+
+    monkeypatch.setattr(bo, "TABLE_SHA256", world.pin)
+    few = np.ones(G)
+    few[30:33] = 2.0
+    s = setup_tables(tmp_path, lst, monkeypatch, tables={**TABLES, "all": (few, ["a", "b"], ["unrelated"])})
+    monkeypatch.setattr(bo, "READING_K23", k23_reading(lst, names=("x_e4",)))
+    monkeypatch.setenv(ext.ENV, s.env[ext.ENV])
+    res = CliRunner().invoke(bo.app, ["build", str(world.dec), "--wt", str(world.wt), "--board", "T3:synthetic",
+                                      "--boards-dir", str(_boards(tmp_path)), "--run-dir", str(world.run),
+                                      "--threads", "2", "--form", "xall-s1", "--table-exponent", "4.0", "--out",
+                                      str(tmp_path / "c.h5ad")])
+    assert res.exit_code == 4 and "own refusal" in res.output and not (tmp_path / "c.h5ad").exists()
