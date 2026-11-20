@@ -7778,3 +7778,31 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     files already in hand. To resume: `experiments/t3_ext/README.md`, the plan tables under `~/v/vec-ext/t3/meta`, and
     the stage-2 practice read and builder that wf_eb0c3caa-38d is writing (they stay on their branch, unmerged, until
     tables exist). The captain is told plainly; his ruling on the tiers stands if he wants the line resumed.
+- 2026-11-20 (y), the captain orders the outside-knockout line resumed and external datasets used widely; what was
+  started (state at 17:49 UTC). Written by the AI assistant.
+  - **His message, verbatim:** "ultrathink deeply internalize that the current time we have is more than sufficient
+    for us to optimize our solution to place at the Top of the leaderboard and resume outside knockouts and external
+    datasets wildly". It reverses the parking of entry (x) and repeats his approval of outside sources in bulk (entry
+    (g)). The AI assistant works as if the aim is within reach and keeps its estimates its own; what the message does
+    not lift: the organisers' protected windows, their rule on the two held-out genes and on perturbations that
+    phenocopy them, the never-open list, and "scores choose, never compute". Each outside dataset gets its register
+    row before it enters a model.
+  - **T3, outside knockouts, resumed.** (1) The two Tbx1 series: the AI assistant, as first reader, read both series'
+    text, the parent series' text and every sample record of the parent table (eleven samples), and each of the six
+    samples to be pinned in full; nothing names a held-out gene or a pathway stand-in; no pooled design. A second,
+    independent reader has the same tables, with the DNA-methylation study's own table and its very large parent table
+    and the refused T study's table (to give a view on the review term). Pins follow only where both agree. (2)
+    wf_15a91d8d-eb8: three searchers hunt repository metadata for more embryo knockout datasets the pipeline can take
+    as it is; an engineer extends the pipeline so that the panel study (GSE137337) becomes usable: series-level
+    archives pinned to samples, and a control from a sister series of the same study that is shown, hashed and pinned
+    like the dataset's own; two reviewers. (3) Stage 2 (practice read K22 and its builder; tables enter only by a name
+    whose hash is committed) is reviewed ready and merged at b4faaa8.
+  - **T1, several outside atlases on both sides of the protected window** (wf_bca8447e-edf: a planner, a cold
+    challenger, an engineer, two reviewers; no download by agents). E12.5 lies midway between the released E10.5 and
+    the E14.5 that outside atlases measure. Two tables are to come from atlases that sample both sides in one
+    protocol, with every cell after E9.5 through E13.5 removed by its stage before anything else is read and groups
+    recomputed from permitted cells only: a consensus per-group direction with a sign rule, in place of the one-atlas
+    direction; and a share trajectory whose calendar-fraction interpolation forecasts E12.5's composition. Each is
+    read on practice first, with its row. Composition is in the block closed after an exposure: a file that carries it
+    goes to the captain as one short question with a default before it is handed over; his message names external
+    datasets, not that lever.
