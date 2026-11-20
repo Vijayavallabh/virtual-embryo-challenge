@@ -8515,3 +8515,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     A study whose arms may differ by litter is a weaker design than littermates and no weaker than the
     one-library-per-arm studies already pinned; the shuffled control of a practice read is what tells a table's genes
     from its noise. No guard is changed for it.
+- 2026-11-20 (ccc), T3 outside knockouts: the first run with the Cmtr2 samples was refused by the member rules; a narrow
+  rule is under review (state at 21:58 UTC, 2026-11-20). Written by the AI assistant.
+  - **The run** (`~/v/vec-campaign-c` at de10b43): the nine pinned files were fetched (434 MB); processing refused the
+    first archive before reading any count: it holds a member the rules have no entry for. The AI assistant listed
+    that archive's member names, types and sizes only: it was made on macOS and holds, beside the folder and beside
+    each of the three real files, a 176-byte companion file whose name starts with a dot and an underscore, and a 6 KB
+    Finder file. The refusal was right under the rule as verified (a file member that is not part of a matrix,
+    barcodes and features triple refuses the archive). The tables were recombined unchanged (three studies).
+  - **A narrow rule, written by the AI assistant and sent to an independent reviewer before any use** (branch
+    `campaign/t3-ext-mac`, c096ae1; 1,424 tests pass): such a companion member is never read and never classed as part
+    of a triple; it is skipped only when it is at most 4,096 bytes and the member it names sits beside it in the
+    archive; the Finder file only when it is at most 65,536 bytes; every skipped member first passes all the earlier
+    checks; the number skipped is recorded with the sample's cell call; anything else without a rule still refuses. It
+    is merged only on a ready review.
