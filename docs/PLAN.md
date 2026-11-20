@@ -7845,3 +7845,20 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     what the panel study (GSE137337) and the DNA-methylation nulls (GSE204906) are, and why the pipeline's extension
     for series-level archives and a sister-series control, and a rule to read GSE204906's stage, are the next steps of
     this line. No guard is loosened to make the sorted data pass.
+- 2026-11-20 (bb), T3 outside knockouts: the DNA-methylation study is pinned and registered (state at 18:12 UTC).
+  Written by the AI assistant.
+  - **The stage rule.** A writer added a per-dataset `stage_fields` key (default: the characteristics alone, today's
+    behaviour, pinned byte for byte by a test); GSE204906 alone lists its source and description fields, which is
+    where its records state E8.5; all listed fields that state a stage must agree, otherwise the sample cannot be
+    pinned. Merged at e7fa8a1; the pipeline's 1,234 tests pass. The re-plan parsed E8.5 for all eighteen samples.
+  - **The first reader's pass.** The AI assistant read the series text of GSE204906 and of its parent, every one of
+    the eighteen sample records, and the parent's 2,617 records as distinct field values and collapsed patterns with
+    counts. It agrees with the second reader of entry (z): three Dnmt1 nulls, four Dnmt3a nulls, four Dnmt3b nulls and
+    seven wild-type embryos of the same study, one embryo per library, whole embryos at E8.5; the parent's other
+    samples are plate-based cells without genotype and eight Tet chimera samples, none fetched; no held-out or pathway
+    label anywhere.
+  - **Pinned.** Eleven knockout entries and twenty-one control entries (each wild-type embryo once per knockout gene
+    it serves) with the two series' text hashes, in `experiments/t3_ext/datasets.yaml`; every pinned hash equals the
+    hash printed in the tables both readers read; the file's own hash pin updated in the same commit. Register row
+    X013 placed before any table exists. Fetch, process and combine for this accession follow; it is whole-embryo
+    data, which the sorted Tbx1 cells of entry (aa) were not.

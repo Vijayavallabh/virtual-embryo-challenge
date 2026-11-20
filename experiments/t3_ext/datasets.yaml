@@ -323,7 +323,225 @@ datasets:
     why: "a second lab on three of GSE137337's genes: the cross-lab consistency guard"
     risks: "129S4 background, unlike GSE137337's hybrid"
     verified: false
-    pinned: []
+    # Pinned 2026-11-20 by two readers who each read this series' table and its parent series' 2,617 sample records
+    # (the parent through every distinct field value and a pattern view of every sample line): the main session and an
+    # independent second reader agent; they agree (docs/PLAN.md decision log 2026-11-20 (bb)). Each wild-type control is
+    # pinned once per knockout gene it serves.
+    pinned:
+      # ---- ko, gene Dnmt1 (genotype as labelled: "Dnmt1 null")
+      # GSM6202147: title Dnmt1_KO_1
+      - accession: GSM6202147
+        arm: ko
+        gene: "Dnmt1"
+        stage: E8.5
+        files: ["GSM6202147_Dnmt1_KO_1_barcodes.tsv.gz", "GSM6202147_Dnmt1_KO_1_features.tsv.gz", "GSM6202147_Dnmt1_KO_1_matrix.mtx.gz"]
+        metadata_sha256: "925ad4b3ef0eebc5ec0e83ed37577b1d4034c13c0f5f93c31a1c3eea89d2792d"
+      # GSM6202148: title Dnmt1_KO_2
+      - accession: GSM6202148
+        arm: ko
+        gene: "Dnmt1"
+        stage: E8.5
+        files: ["GSM6202148_Dnmt1_KO_2_barcodes.tsv.gz", "GSM6202148_Dnmt1_KO_2_features.tsv.gz", "GSM6202148_Dnmt1_KO_2_matrix.mtx.gz"]
+        metadata_sha256: "1f0c638d40c50a5a349c7c10910082e7c98236e074e23b1b26de0335e99fe019"
+      # GSM6202149: title Dnmt1_KO_3
+      - accession: GSM6202149
+        arm: ko
+        gene: "Dnmt1"
+        stage: E8.5
+        files: ["GSM6202149_Dnmt1_KO_3_barcodes.tsv.gz", "GSM6202149_Dnmt1_KO_3_features.tsv.gz", "GSM6202149_Dnmt1_KO_3_matrix.mtx.gz"]
+        metadata_sha256: "93083bb78b65d5e5bffc8df0267975a0e614b82cf72114c769296021183ece00"
+      # ---- ko, gene Dnmt3a (genotype as labelled: "Dnmt3a null")
+      # GSM6202150: title Dnmt3a_KO_13
+      - accession: GSM6202150
+        arm: ko
+        gene: "Dnmt3a"
+        stage: E8.5
+        files: ["GSM6202150_Dnmt3a_KO_13_barcodes.tsv.gz", "GSM6202150_Dnmt3a_KO_13_features.tsv.gz", "GSM6202150_Dnmt3a_KO_13_matrix.mtx.gz"]
+        metadata_sha256: "6145175c2f824cc952841c550363cf15241a202aeca07bda2d4ac2258d42b08b"
+      # GSM6202151: title Dnmt3a_KO_14
+      - accession: GSM6202151
+        arm: ko
+        gene: "Dnmt3a"
+        stage: E8.5
+        files: ["GSM6202151_Dnmt3a_KO_14_barcodes.tsv.gz", "GSM6202151_Dnmt3a_KO_14_features.tsv.gz", "GSM6202151_Dnmt3a_KO_14_matrix.mtx.gz"]
+        metadata_sha256: "93994626d6889515685f7bb987c23913175fac09eb2a5893141a975f9d330992"
+      # GSM6202152: title Dnmt3a_KO_1
+      - accession: GSM6202152
+        arm: ko
+        gene: "Dnmt3a"
+        stage: E8.5
+        files: ["GSM6202152_Dnmt3a_KO_1_barcodes.tsv.gz", "GSM6202152_Dnmt3a_KO_1_features.tsv.gz", "GSM6202152_Dnmt3a_KO_1_matrix.mtx.gz"]
+        metadata_sha256: "967494336824de0a7b15104f645f660c4f6a3bf2839684e0a6302cf6fef0aac3"
+      # GSM6202153: title Dnmt3a_KO_2
+      - accession: GSM6202153
+        arm: ko
+        gene: "Dnmt3a"
+        stage: E8.5
+        files: ["GSM6202153_Dnmt3a_KO_2_barcodes.tsv.gz", "GSM6202153_Dnmt3a_KO_2_features.tsv.gz", "GSM6202153_Dnmt3a_KO_2_matrix.mtx.gz"]
+        metadata_sha256: "ac6e9c533144b1343d812c0686bfcf1630815bf9f4ca912b03031be4900d57d8"
+      # ---- ko, gene Dnmt3b (genotype as labelled: "Dnmt3b null")
+      # GSM6202154: title Dnmt3b_KO_11
+      - accession: GSM6202154
+        arm: ko
+        gene: "Dnmt3b"
+        stage: E8.5
+        files: ["GSM6202154_Dnmt3b_KO_11_barcodes.tsv.gz", "GSM6202154_Dnmt3b_KO_11_features.tsv.gz", "GSM6202154_Dnmt3b_KO_11_matrix.mtx.gz"]
+        metadata_sha256: "e0812be87d2b5397e2bf05b5eb2e76d3db9a2aef68fcb4b630c73106b6860ddf"
+      # GSM6202155: title Dnmt3b_KO_12
+      - accession: GSM6202155
+        arm: ko
+        gene: "Dnmt3b"
+        stage: E8.5
+        files: ["GSM6202155_Dnmt3b_KO_12_barcodes.tsv.gz", "GSM6202155_Dnmt3b_KO_12_features.tsv.gz", "GSM6202155_Dnmt3b_KO_12_matrix.mtx.gz"]
+        metadata_sha256: "3c2054285e2d8111b9df3eb9c2be39782d7ae0f91a00145db2582f4afcf706ad"
+      # GSM6202156: title Dnmt3b_KO_1
+      - accession: GSM6202156
+        arm: ko
+        gene: "Dnmt3b"
+        stage: E8.5
+        files: ["GSM6202156_Dnmt3b_KO_1_barcodes.tsv.gz", "GSM6202156_Dnmt3b_KO_1_features.tsv.gz", "GSM6202156_Dnmt3b_KO_1_matrix.mtx.gz"]
+        metadata_sha256: "c831637c43f22caf7bfc14265f41b498dc4bd34bad048bef03387e0cbbdd932a"
+      # GSM6202157: title Dnmt3b_KO_2
+      - accession: GSM6202157
+        arm: ko
+        gene: "Dnmt3b"
+        stage: E8.5
+        files: ["GSM6202157_Dnmt3b_KO_2_barcodes.tsv.gz", "GSM6202157_Dnmt3b_KO_2_features.tsv.gz", "GSM6202157_Dnmt3b_KO_2_matrix.mtx.gz"]
+        metadata_sha256: "150f3aef5a79e3a88385a2734937a6d56cdd828a3c9dbba73b9a262a6dda363a"
+      # ---- control, gene Dnmt1 (genotype as labelled: "Wildtype"; titles WT_1 to WT_7)
+      - accession: GSM6202158
+        arm: control
+        gene: "Dnmt1"
+        stage: E8.5
+        files: ["GSM6202158_WT_1_barcodes.tsv.gz", "GSM6202158_WT_1_features.tsv.gz", "GSM6202158_WT_1_matrix.mtx.gz"]
+        metadata_sha256: "467caf27c7226794cac4db0447b28424ff5d5d54bac5ca07b986d5583e13f47b"
+      - accession: GSM6202159
+        arm: control
+        gene: "Dnmt1"
+        stage: E8.5
+        files: ["GSM6202159_WT_2_barcodes.tsv.gz", "GSM6202159_WT_2_features.tsv.gz", "GSM6202159_WT_2_matrix.mtx.gz"]
+        metadata_sha256: "220a72c50c5f6a5703535b24d036a9ae61e651c89162a14cb74d03d4c70aaed6"
+      - accession: GSM6202160
+        arm: control
+        gene: "Dnmt1"
+        stage: E8.5
+        files: ["GSM6202160_WT_3_barcodes.tsv.gz", "GSM6202160_WT_3_features.tsv.gz", "GSM6202160_WT_3_matrix.mtx.gz"]
+        metadata_sha256: "a63b03e2c36191b99a07d9ae3f723f4fdac20220510a0dbfb4818bf5144ab738"
+      - accession: GSM6202161
+        arm: control
+        gene: "Dnmt1"
+        stage: E8.5
+        files: ["GSM6202161_WT_4_barcodes.tsv.gz", "GSM6202161_WT_4_features.tsv.gz", "GSM6202161_WT_4_matrix.mtx.gz"]
+        metadata_sha256: "8fc4a68dcebdaf48a23b7b756223dbd2cfd11899aa5f20531a59a881ee763eb5"
+      - accession: GSM6202162
+        arm: control
+        gene: "Dnmt1"
+        stage: E8.5
+        files: ["GSM6202162_WT_5_barcodes.tsv.gz", "GSM6202162_WT_5_features.tsv.gz", "GSM6202162_WT_5_matrix.mtx.gz"]
+        metadata_sha256: "d55f958079ccd20ecf916d6d8864a9a7ec75d5683bdefe921ee6fa305ab44415"
+      - accession: GSM6202163
+        arm: control
+        gene: "Dnmt1"
+        stage: E8.5
+        files: ["GSM6202163_WT_6_barcodes.tsv.gz", "GSM6202163_WT_6_features.tsv.gz", "GSM6202163_WT_6_matrix.mtx.gz"]
+        metadata_sha256: "997a65a0bca05bf830ed6384a961ea64d09dbac83814a4cd315fcfc98bcba9a4"
+      - accession: GSM6202164
+        arm: control
+        gene: "Dnmt1"
+        stage: E8.5
+        files: ["GSM6202164_WT_7_barcodes.tsv.gz", "GSM6202164_WT_7_features.tsv.gz", "GSM6202164_WT_7_matrix.mtx.gz"]
+        metadata_sha256: "f5c7c2da37f1b9e838f58403c7dcd068d7c2cecc7aadcf75a6741b9caedf3cb3"
+      # ---- control, gene Dnmt3a (genotype as labelled: "Wildtype"; titles WT_1 to WT_7)
+      - accession: GSM6202158
+        arm: control
+        gene: "Dnmt3a"
+        stage: E8.5
+        files: ["GSM6202158_WT_1_barcodes.tsv.gz", "GSM6202158_WT_1_features.tsv.gz", "GSM6202158_WT_1_matrix.mtx.gz"]
+        metadata_sha256: "467caf27c7226794cac4db0447b28424ff5d5d54bac5ca07b986d5583e13f47b"
+      - accession: GSM6202159
+        arm: control
+        gene: "Dnmt3a"
+        stage: E8.5
+        files: ["GSM6202159_WT_2_barcodes.tsv.gz", "GSM6202159_WT_2_features.tsv.gz", "GSM6202159_WT_2_matrix.mtx.gz"]
+        metadata_sha256: "220a72c50c5f6a5703535b24d036a9ae61e651c89162a14cb74d03d4c70aaed6"
+      - accession: GSM6202160
+        arm: control
+        gene: "Dnmt3a"
+        stage: E8.5
+        files: ["GSM6202160_WT_3_barcodes.tsv.gz", "GSM6202160_WT_3_features.tsv.gz", "GSM6202160_WT_3_matrix.mtx.gz"]
+        metadata_sha256: "a63b03e2c36191b99a07d9ae3f723f4fdac20220510a0dbfb4818bf5144ab738"
+      - accession: GSM6202161
+        arm: control
+        gene: "Dnmt3a"
+        stage: E8.5
+        files: ["GSM6202161_WT_4_barcodes.tsv.gz", "GSM6202161_WT_4_features.tsv.gz", "GSM6202161_WT_4_matrix.mtx.gz"]
+        metadata_sha256: "8fc4a68dcebdaf48a23b7b756223dbd2cfd11899aa5f20531a59a881ee763eb5"
+      - accession: GSM6202162
+        arm: control
+        gene: "Dnmt3a"
+        stage: E8.5
+        files: ["GSM6202162_WT_5_barcodes.tsv.gz", "GSM6202162_WT_5_features.tsv.gz", "GSM6202162_WT_5_matrix.mtx.gz"]
+        metadata_sha256: "d55f958079ccd20ecf916d6d8864a9a7ec75d5683bdefe921ee6fa305ab44415"
+      - accession: GSM6202163
+        arm: control
+        gene: "Dnmt3a"
+        stage: E8.5
+        files: ["GSM6202163_WT_6_barcodes.tsv.gz", "GSM6202163_WT_6_features.tsv.gz", "GSM6202163_WT_6_matrix.mtx.gz"]
+        metadata_sha256: "997a65a0bca05bf830ed6384a961ea64d09dbac83814a4cd315fcfc98bcba9a4"
+      - accession: GSM6202164
+        arm: control
+        gene: "Dnmt3a"
+        stage: E8.5
+        files: ["GSM6202164_WT_7_barcodes.tsv.gz", "GSM6202164_WT_7_features.tsv.gz", "GSM6202164_WT_7_matrix.mtx.gz"]
+        metadata_sha256: "f5c7c2da37f1b9e838f58403c7dcd068d7c2cecc7aadcf75a6741b9caedf3cb3"
+      # ---- control, gene Dnmt3b (genotype as labelled: "Wildtype"; titles WT_1 to WT_7)
+      - accession: GSM6202158
+        arm: control
+        gene: "Dnmt3b"
+        stage: E8.5
+        files: ["GSM6202158_WT_1_barcodes.tsv.gz", "GSM6202158_WT_1_features.tsv.gz", "GSM6202158_WT_1_matrix.mtx.gz"]
+        metadata_sha256: "467caf27c7226794cac4db0447b28424ff5d5d54bac5ca07b986d5583e13f47b"
+      - accession: GSM6202159
+        arm: control
+        gene: "Dnmt3b"
+        stage: E8.5
+        files: ["GSM6202159_WT_2_barcodes.tsv.gz", "GSM6202159_WT_2_features.tsv.gz", "GSM6202159_WT_2_matrix.mtx.gz"]
+        metadata_sha256: "220a72c50c5f6a5703535b24d036a9ae61e651c89162a14cb74d03d4c70aaed6"
+      - accession: GSM6202160
+        arm: control
+        gene: "Dnmt3b"
+        stage: E8.5
+        files: ["GSM6202160_WT_3_barcodes.tsv.gz", "GSM6202160_WT_3_features.tsv.gz", "GSM6202160_WT_3_matrix.mtx.gz"]
+        metadata_sha256: "a63b03e2c36191b99a07d9ae3f723f4fdac20220510a0dbfb4818bf5144ab738"
+      - accession: GSM6202161
+        arm: control
+        gene: "Dnmt3b"
+        stage: E8.5
+        files: ["GSM6202161_WT_4_barcodes.tsv.gz", "GSM6202161_WT_4_features.tsv.gz", "GSM6202161_WT_4_matrix.mtx.gz"]
+        metadata_sha256: "8fc4a68dcebdaf48a23b7b756223dbd2cfd11899aa5f20531a59a881ee763eb5"
+      - accession: GSM6202162
+        arm: control
+        gene: "Dnmt3b"
+        stage: E8.5
+        files: ["GSM6202162_WT_5_barcodes.tsv.gz", "GSM6202162_WT_5_features.tsv.gz", "GSM6202162_WT_5_matrix.mtx.gz"]
+        metadata_sha256: "d55f958079ccd20ecf916d6d8864a9a7ec75d5683bdefe921ee6fa305ab44415"
+      - accession: GSM6202163
+        arm: control
+        gene: "Dnmt3b"
+        stage: E8.5
+        files: ["GSM6202163_WT_6_barcodes.tsv.gz", "GSM6202163_WT_6_features.tsv.gz", "GSM6202163_WT_6_matrix.mtx.gz"]
+        metadata_sha256: "997a65a0bca05bf830ed6384a961ea64d09dbac83814a4cd315fcfc98bcba9a4"
+      - accession: GSM6202164
+        arm: control
+        gene: "Dnmt3b"
+        stage: E8.5
+        files: ["GSM6202164_WT_7_barcodes.tsv.gz", "GSM6202164_WT_7_features.tsv.gz", "GSM6202164_WT_7_matrix.mtx.gz"]
+        metadata_sha256: "f5c7c2da37f1b9e838f58403c7dcd068d7c2cecc7aadcf75a6741b9caedf3cb3"
+    pinned_series:
+      - accession: GSE204906
+        series_metadata_sha256: "0d9599b44ab3d21163e2c112f5bee9d4835caddbfc99f189d010446f784ac710"
+      - accession: GSE204908
+        series_metadata_sha256: "72c2800a83c93421db7a84f2d607c98dd2bbbdf78e6eefcbef9037e17192d9df"
 
   - accession: GSE259342
     status: excluded_design
