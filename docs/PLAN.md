@@ -7273,3 +7273,42 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     (C) both. Each is ordinary leaderboard work on a value practice already pointed to; the earlier cold checks
     that stopped A and B argued from what practice cannot show, which a returned score now can. Builder options
     are being written, off by default.
+- 2026-11-20 (j), two uploads a day in the captain's words; his ruling on outside knockout data for T3; the scout's
+  result; what is running (state at 12:10 UTC). Written by the AI assistant.
+  - **His message, verbatim:** "let's upload all the 4 filees after full optimization to beat the leadeerboard
+    scores [2 times a day]". The AI assistant takes "[2 times a day]" as his statement of the team's allowance
+    (entry (h)) and plans rounds of at most two files per board per day until 2026-11-26 11:59 UTC. Each board's
+    candidates are fixed in the log before their scores exist; a returned score chooses among them.
+  - **The scout** (wf_afafc97d-455; four searchers and a synthesiser; metadata only, nothing downloaded, no finding
+    read; the rules page not opened). Task 1: six studies sample both sides of the protected window in one
+    protocol (GSE230531, GSE244783, GSE176063 with GSE153562, GSE216970, GSE230849, GSE108427), three of them heart
+    tissue at both ends; 26 add late stages only and 15 early stages only. Task 3: 42 single-cell datasets of
+    mouse embryos with knockouts of genes other than the two held-out ones: the canonical Wnt pathway and its
+    direct targets (Wls in GSE165300; T in E-MTAB-8811 and GSE205117; Sp5 and Sp8, Axin1 and Axin2 in forms less
+    like the test), nine on cardiac transcription factors (Hand2, Tbx1, Mef2c, Mesp1, Hand1, Nkx2-5), 27 on other
+    genes. Four records hold or may hold a held-out-gene sample and are kept out (GSE208162, GSE93524, GSE183343,
+    GSE347882); four more are screened by gene name before any use (GSE199308, GSE302657, GSE118545, GSE272048).
+    The lists are in the session's scratch, not in the repository.
+  - **The question as put** (one dialog question, header "T3 data"): "Task 3 is our weakest full-weight board
+    (61.8) and its two largest terms (DES 53.7, DCS 59.4) depend on predicting which genes move and which way.
+    Today our file borrows that from one unrelated knockout (Mab21l2). The scout found public single-cell data on
+    knockouts of OTHER genes in mouse embryos at E7.5-E9.5: none perturbs beta-catenin or Gata4. The organisers'
+    ruling bars outside gene-level findings on the two held-out genes; it does not mention other genes, and it
+    allows pathway knowledge. A cautious organiser could still say that knockouts of beta-catenin's own pathway
+    (Wls, T/Brachyury, Sp5/Sp8, Axin) are a stand-in for the held-out knockout. Whatever is used goes in our data
+    register. Which outside knockout data may shape the Task 3 file?" Options: "All three tiers (Recommended)"
+    ("Unrelated genes, cardiac transcription factors, and Wnt-pathway genes other than beta-catenin. Highest
+    upside: the Wnt-pathway knockouts are the closest biology to the test. My reading is that the ruling allows
+    it; the risk is an organiser reading the Wnt tier as a proxy and discounting the file, in which case 61.8 stays
+    banked."); "No Wnt-pathway tier"; "Unrelated genes only"; "Released data only".
+  - **His answer, verbatim:** "All three tiers (Recommended)". This is his approval, as `docs/DATA_POLICY.md`
+    requires for a new outside source and use, and his reading of the organisers' ruling of 2026-10-15 for other
+    genes' knockouts. Each dataset gets its row in `EXTERNAL_DATA.md` before it enters a model. Nothing on a
+    perturbation of beta-catenin or Gata4 is opened; samples of either are removed by genotype before anything
+    else is read; the Task 1 and heart window still removes heart cells measured after E9.5 through E13.5.
+  - **Running.** T3: the barred file at exponents 1.5 and 2.0 is building on `~/v/vec-campaign-c` at 3654966 (a
+    reviewed, off-by-default builder; exponent 1.0 must first reproduce the reference hash); 14 untracked scripts
+    of earlier campaign branches in that checkout were moved aside, not deleted
+    (`~/v/scratch/vec-campaign-c_leftovers_20261120`). T1: builder options for candidates A, B and C
+    (wf_729a761e-919). Embryo: fresh analysts on the occupancy term (wf_409f1d09-957). Heart: fresh analysts fix
+    the next candidates (wf_5fc02235-25b). T3's outside-knockout work starts now.
