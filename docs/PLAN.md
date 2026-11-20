@@ -7862,3 +7862,15 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     hash printed in the tables both readers read; the file's own hash pin updated in the same commit. Register row
     X013 placed before any table exists. Fetch, process and combine for this accession follow; it is whole-embryo
     data, which the sorted Tbx1 cells of entry (aa) were not.
+- 2026-11-20 (cc), T3 outside knockouts: four samples of the DNA-methylation study unpinned after the first fetch
+  (state at 18:22 UTC). Written by the AI assistant.
+  - **What happened.** The eighteen pinned samples were fetched (1.9 GB). Processing failed before any ratio: "only 0
+    of 500 panel genes matched". Fourteen samples match 498 of the 500 panel genes by name; four (GSM6202150,
+    GSM6202152, GSM6202154, GSM6202158) match none, because their feature files come from an alignment to a mixed
+    human and mouse reference and carry species-prefixed gene names, and the pipeline takes the genes common to all
+    samples. Nothing in the samples' records states this; it shows only in the feature files.
+  - **Decision of the AI assistant.** The four are unpinned: a data-form exclusion, made before any
+    knockout-over-control ratio was computed and recorded in the dataset file beside the pins and in register row
+    X013. No code is changed to read a mixed-species capture. Fourteen samples remain (Dnmt1 null 3, Dnmt3a null 2,
+    Dnmt3b null 3, wild type 6). The rerun covers all three pinned datasets in one launch, because combine refuses a
+    dataset whose plan predates the dataset file it now sees.
