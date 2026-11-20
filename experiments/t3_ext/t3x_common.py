@@ -16,6 +16,19 @@ Two pins live here (stage 3, 2026-11-20):
                     longer hash to this value, so the pin-and-commit step (README, "The pinned sample list") updates
                     both in the same commit. Tests reach other YAML content only through a function argument; no CLI
                     takes another path.
+
+Stage 6 (2026-11-20, campaign/t3-ext-archives) adds two declarations, checked here for form:
+  series_files      per named series, the patterns a file of that series' OWN supplementary list must match to be
+                    offered; pinned_series_files maps each pinned series file (one archive, or a loose 10x triple) to
+                    the pinned samples whose cells it holds, with a split rule (check_series_file_pins).
+  control_series    a sister series of the same study that supplies controls only; it is screened, shown, hashed and
+                    pinned like the dataset's own series, with its relation and a reader note stated
+                    (check_control_series). A knockout unit whose controls come from it takes d = SISTER_D.
+
+Stage 7 (2026-11-21, campaign/t3-ext-3): a control series belongs to no other entry (check_sister_unregistered), and
+a file used as one unit (split none) holds one arm and one stage, each sample pinned for the same genes.
+
+Stage 8 (2026-11-21, campaign/t3-ext-4): HELD_EXTRA, the team's held list, joins the derived held set.
 """
 
 from __future__ import annotations
@@ -60,11 +73,53 @@ TIERS = ("wnt", "cardiac", "unrelated")
 STATUSES = ("cleared", "held_phenocopy", "excluded_design")
 # Held and excluded datasets: never fetched by any flag or YAML (the main session's decision of 2026-11-20).
 NEVER_FETCH = frozenset({"GSE165300", "GSE126128", "GSE280543", "GSE280587", "GSE259342", "E-MTAB-7325"})
+# stage 8 (2026-11-21, campaign/t3-ext-4; the first reviewer of ec86a1b, lesser point 2): the team's held list,
+# exactly the accessions of its held-accession file (82 accessions, sha256 of the sorted list with newlines
+# 5df13a82927231c28227232e061452651099050ad02d6a6b6ca1adcc21852048; pinned by tests/test_t3_ext_held.py). Every one
+# joins the derived held set (held_series): it is refused as a dataset, a screened series or a control series, and a
+# sample whose record lists one is not pinnable. NEVER_FETCH is a subset of it. Changed only in a reviewed commit.
+HELD_EXTRA = frozenset({
+    "E-MTAB-13409", "E-MTAB-7325", "E-MTAB-8811", "E-MTAB-9785", "GSE103789", "GSE111172", "GSE114186", "GSE125321",
+    "GSE125322", "GSE125323", "GSE126128", "GSE137274", "GSE137285", "GSE137786", "GSE141175", "GSE143806",
+    "GSE144384", "GSE147088", "GSE157720", "GSE158887", "GSE160136", "GSE160137", "GSE165300", "GSE167576",
+    "GSE171337", "GSE181251", "GSE183343", "GSE184921", "GSE189224", "GSE193356", "GSE194018", "GSE195589",
+    "GSE197353", "GSE198025", "GSE199308", "GSE203116", "GSE205117", "GSE208162", "GSE210521", "GSE213336",
+    "GSE214389", "GSE215977", "GSE223271", "GSE245105", "GSE259342", "GSE272479", "GSE272483", "GSE274603",
+    "GSE275548", "GSE278123", "GSE278124", "GSE278883", "GSE278884", "GSE280538", "GSE280543", "GSE280587",
+    "GSE280804", "GSE293888", "GSE293955", "GSE293961", "GSE295521", "GSE296732", "GSE299253", "GSE299536",
+    "GSE299682", "GSE302657", "GSE308175", "GSE309624", "GSE315754", "GSE318090", "GSE318465", "GSE331509",
+    "GSE337739", "GSE347882", "GSE42389", "GSE5424", "GSE60066", "GSE72539", "GSE72720", "GSE74994", "GSE84899",
+    "GSE93524"
+})
 # sha256 of the committed datasets.yaml; the pin-and-commit step updates it in the same commit as the YAML.
-DATASETS_SHA256 = "1f5613d90f5e9a51d6c3fd76d6f766064398902971481d28ea28cf95a603a4f2"
+DATASETS_SHA256 = "6f473054d4434f941befd22d0920b125cb6139ab1b25b029bbe1b67faaedafed"
 PIN_KEYS = ("accession", "arm", "gene", "stage", "files", "metadata_sha256")
 SERIES_PIN_KEYS = ("accession", "series_metadata_sha256")
 PIN_ARMS = ("ko", "control")
+# stage 6: a series-level file of a dataset (README, "Series-level files"), and a sister-series control
+SERIES_FILE_UNIT_KEYS = ("series", "files", "samples", "split")
+SPLITS = ("none", "barcode_suffix", "folder")
+CONTROL_SERIES_KEYS = ("accession", "screen_series", "relation", "reader_note")
+RELATION_KEYS = ("same_lab", "same_protocol", "same_publication")
+# d for a knockout unit whose controls come from a sister series: the weaker value design_factor gives controls that
+# are not littermates or same-capture (fixed 2026-11-20, stage 6; no score)
+SISTER_D = 0.5
+PLACEHOLDER = "TO FILL"
+# stage 7, piece 2 (2026-11-21): per-sample UNFILTERED matrices (README "Unfiltered per-sample matrices"). ONE fixed
+# cell call, the same for every sample of every dataset; not configurable per dataset, from the command line or the
+# environment. Per library: the total UMIs of each barcode over gene-expression features; m = the 99th percentile
+# (numpy's default linear interpolation) of the RAW_CALL_N largest totals (all of them when the file holds fewer
+# barcodes); a barcode is a cell when its total is at least max(RAW_CALL_MIN_UMI, m / RAW_CALL_RATIO). Fixed by the
+# design brief of 2026-11-21 before any raw count was read (no score, no data).
+RAW_CALL_N = 3000
+RAW_CALL_PERCENTILE = 99.0
+RAW_CALL_RATIO = 10.0
+RAW_CALL_MIN_UMI = 500
+RAW_MIN_CELLS = 500                     # a library with fewer called cells is refused (more than MAX_BARCODES too)
+RAW_MAX_FILE_BYTES = 16 * 1024 ** 3     # a raw file (archive or triple member file) above this size is refused
+RAW_MAX_ENTRIES = 400_000_000           # a raw matrix whose header states more entries is refused
+RAW_MAX_BARCODES = 20_000_000           # a raw matrix with more barcodes in its file is refused
+RAW_KEYS = ("patterns", "reason")
 # Aliases matched only after an exact symbol fails (both directions); nothing else is renamed.
 ALIASES = {"T": "Tbxt", "Tbxt": "T", "Hbb-y": "Hbb-bh0", "Hbb-bh0": "Hbb-y"}
 
@@ -153,10 +208,13 @@ _KEYS = {"accession", "status", "status_reason", "tier", "study", "kind", "desig
          "exclude_match_on",
          "design_refuse", "chemistry", "expect", "sample_file_patterns", "files_note", "licence", "why", "risks",
          "verified", "screen_extra_refuse", "review_cleared", "cell_labels", "citation", "pinned",
-         "pinned_series", "stage_fields"}
+         "pinned_series", "stage_fields", "series_files", "pinned_series_files", "control_series", "raw_matrices"}
 _SHA = re.compile(r"[0-9a-f]{64}")
 _GSM = re.compile(r"GSM\d+")
 _GSE = re.compile(r"GSE\d+")
+_PLAIN_NAME = re.compile(r"[A-Za-z0-9._+-]+")
+_SUFFIX_KEY = re.compile(r"[-_.][A-Za-z0-9]+")
+_ARCHIVE = re.compile(r"\.(tar\.gz|tgz|tar)$", re.IGNORECASE)
 _FIELD = re.compile(r"[A-Za-z0-9_]+")
 # the sample fields a stage is read from when a dataset lists no stage_fields: the characteristics alone (with the
 # title fallback of fetch.sample_stage's default rule), exactly the rule from before stage_fields existed
@@ -179,6 +237,12 @@ def check_stage_fields(acc, ds: dict, where: str = "datasets.yaml") -> tuple[str
 def stage_fields(ds: dict) -> tuple[str, ...]:
     """The sample fields one dataset's stage is read from (check_stage_fields)."""
     return check_stage_fields(ds.get("accession"), ds)
+
+
+def unit_design_factor(ds: dict, sister_control: bool) -> float:
+    """d of one knockout unit: the dataset's d, but at most SISTER_D when any of its controls comes from a sister
+    series (stage 6)."""
+    return min(float(ds["d"]), SISTER_D) if sister_control else float(ds["d"])
 
 
 def design_factor(ds: dict) -> float:
@@ -229,6 +293,8 @@ def check_pins(acc: str, ds: dict, where: str = "datasets.yaml") -> list[dict]:
         raise Refused(f"{where}: {acc}: per-cell genotype designs are excluded in this stage: no pins")
     used = {stage_ok(s) for s in ds.get("stages_used") or []}
     seen, per_sample = set(), {}
+    from_series = {g for u in (ds.get("pinned_series_files") or []) if isinstance(u, dict)
+                   for g in (u.get("samples") or []) if isinstance(g, str)}
     for p in pins:
         if not isinstance(p, dict) or sorted(p) != sorted(PIN_KEYS):
             raise Refused(f"{where}: {acc}: pin {p!r} must have exactly the keys {PIN_KEYS}")
@@ -241,10 +307,17 @@ def check_pins(acc: str, ds: dict, where: str = "datasets.yaml") -> list[dict]:
             raise Refused(f"{where}: {acc}: {a}: gene must be named (a control names the knockout gene it controls)")
         if stage_ok(p["stage"]) not in used:
             raise Refused(f"{where}: {acc}: {a}: stage {p['stage']!r} is not in stages_used")
-        if (not isinstance(p["files"], list) or not p["files"]
+        if (not isinstance(p["files"], list)
                 or not all(isinstance(f, str) and f and "/" not in f for f in p["files"])
                 or len(set(p["files"])) != len(p["files"])):
             raise Refused(f"{where}: {acc}: {a}: files must be a non-empty list of distinct file names")
+        # stage 6: a sample takes its cells from exactly one source, its own per-sample files or one pinned series file
+        if a in from_series and p["files"]:
+            raise Refused(f"{where}: {acc}: {a}: a sample named by a pinned series file is pinned with files: [] (its "
+                          "cells come from that file only)")
+        if a not in from_series and not p["files"]:
+            raise Refused(f"{where}: {acc}: {a}: files must be a non-empty list of distinct file names (only a sample "
+                          "named by a pinned series file has none)")
         if not isinstance(p["metadata_sha256"], str) or not _SHA.fullmatch(p["metadata_sha256"]):
             raise Refused(f"{where}: {acc}: {a}: metadata_sha256 must be 64 lower-case hex digits")
         if (a, p["gene"]) in seen:
@@ -254,6 +327,7 @@ def check_pins(acc: str, ds: dict, where: str = "datasets.yaml") -> list[dict]:
         if per_sample.setdefault(a, same) != same:
             raise Refused(f"{where}: {acc}: {a} is pinned with two different arms, stages, file lists or hashes")
     check_series_pins(acc, ds, bool(pins), where)
+    check_series_file_pins(acc, ds, pins, where)
     return pins
 
 
@@ -279,11 +353,251 @@ def check_series_pins(acc: str, ds: dict, required: bool, where: str = "datasets
         if not isinstance(e["series_metadata_sha256"], str) or not _SHA.fullmatch(e["series_metadata_sha256"]):
             raise Refused(f"{where}: {acc}: {e['accession']}: series_metadata_sha256 must be 64 lower-case hex digits")
     got = [e["accession"] for e in sp]
-    want = list(ds.get("screen_series") or [])
+    want = all_screened(ds)
     if len(got) != len(set(got)) or set(got) != set(want):
         raise Refused(f"{where}: {acc}: pinned_series must name every screened series exactly once ({want}), not "
                       f"{got}: the readers pin the series text together with the samples")
     return sp
+
+
+def control_series(ds: dict) -> dict | None:
+    """The dataset's sister control series when it is declared AND named (accession set), else None (absent, or the
+    placeholder with accession null, which is inert)."""
+    c = ds.get("control_series")
+    return c if isinstance(c, dict) and c.get("accession") else None
+
+
+def all_screened(ds: dict) -> list[str]:
+    """Every series the dataset screens, shows, hashes and pins: screen_series, then a named control series'
+    screen_series (stage 6)."""
+    out = list(ds.get("screen_series") or [])
+    c = control_series(ds)
+    for s in (c.get("screen_series") or []) if c else []:
+        if s not in out:
+            out.append(s)
+    return out
+
+
+def sister_series(ds: dict) -> list[str]:
+    """The series screened for the named control series only (its screen_series), or []."""
+    c = control_series(ds)
+    return list(c.get("screen_series") or []) if c else []
+
+
+def check_control_series(acc: str, ds: dict, where: str = "datasets.yaml") -> dict | None:
+    """The control_series declaration, checked for form (stage 6). Absent or null: none. Else a mapping with exactly
+    {accession, screen_series, relation, reader_note}. With accession null it is a placeholder: inert, its
+    screen_series empty, and no sample can be pinned from it. Named: a GEO series other than the dataset's own, not
+    among screen_series, listed first in its own screen_series (which shares no series with the dataset's
+    screen_series); relation exactly {same_lab, same_protocol, same_publication}, each a statement; and a reader
+    note; none of them may still hold the placeholder text."""
+    c = ds.get("control_series")
+    if c is None:
+        return None
+    if not isinstance(c, dict) or sorted(c) != sorted(CONTROL_SERIES_KEYS):
+        raise Refused(f"{where}: {acc}: control_series must have exactly the keys {CONTROL_SERIES_KEYS}")
+    rel = c["relation"]
+    if not isinstance(rel, dict) or sorted(rel) != sorted(RELATION_KEYS):
+        raise Refused(f"{where}: {acc}: control_series.relation must state exactly {RELATION_KEYS}")
+    if not isinstance(c["screen_series"], list):
+        raise Refused(f"{where}: {acc}: control_series.screen_series must be a list")
+    if c["accession"] is None:
+        if c["screen_series"]:
+            raise Refused(f"{where}: {acc}: a control_series placeholder (accession null) screens nothing")
+        return None
+    s = c["accession"]
+    if not isinstance(s, str) or not _GSE.fullmatch(s) or s == acc or s in (ds.get("screen_series") or []):
+        raise Refused(f"{where}: {acc}: control_series.accession {s!r} must be a GEO series other than the dataset's "
+                      "own screened series")
+    if not c["screen_series"] or c["screen_series"][0] != s or not all(
+            isinstance(x, str) and _GSE.fullmatch(x) for x in c["screen_series"]):
+        raise Refused(f"{where}: {acc}: control_series.screen_series must list GEO series, its own accession first")
+    if len(set(c["screen_series"])) != len(c["screen_series"]) or set(c["screen_series"]) & set(
+            ds.get("screen_series") or []):
+        raise Refused(f"{where}: {acc}: control_series.screen_series must be distinct and share no series with the "
+                      "dataset's screen_series")
+    for k in RELATION_KEYS:
+        v = rel[k]
+        if not isinstance(v, str) or not v.strip() or PLACEHOLDER in v:
+            raise Refused(f"{where}: {acc}: control_series.relation.{k} must be a statement the readers checked")
+    if not isinstance(c["reader_note"], str) or not c["reader_note"].strip() or PLACEHOLDER in c["reader_note"]:
+        raise Refused(f"{where}: {acc}: control_series.reader_note is required (what both readers checked)")
+    return c
+
+
+def check_series_file_patterns(acc: str, ds: dict, where: str = "datasets.yaml") -> list[dict]:
+    """The series_files declaration (stage 6): a list of {series, patterns}, each series one the dataset screens (its
+    own or a named control series'), named once, each pattern a regular expression that compiles."""
+    sf = ds.get("series_files")
+    if sf is None:
+        return []
+    if not isinstance(sf, list):
+        raise Refused(f"{where}: {acc}: series_files must be a list")
+    seen = set()
+    screened = set(all_screened(ds))
+    for e in sf:
+        if not isinstance(e, dict) or sorted(e) != ["patterns", "series"]:
+            raise Refused(f"{where}: {acc}: series_files entry {e!r} must have exactly series and patterns")
+        if not isinstance(e["series"], str) or e["series"] not in screened or e["series"] in seen:
+            raise Refused(f"{where}: {acc}: series_files names {e['series']!r}: it must be a series the dataset "
+                          "screens, named once")
+        seen.add(e["series"])
+        if not isinstance(e["patterns"], list) or not e["patterns"]:
+            raise Refused(f"{where}: {acc}: {e['series']}: series_files patterns must be a non-empty list")
+        for pat in e["patterns"]:
+            try:
+                re.compile(pat)
+            except (re.error, TypeError):
+                raise Refused(f"{where}: {acc}: {e['series']}: pattern {pat!r} does not compile") from None
+    return sf
+
+
+def check_raw_matrices(acc, ds: dict, where: str = "datasets.yaml") -> dict | None:
+    """The raw_matrices declaration (stage 7, piece 2), checked for form: absent means none; else exactly {patterns,
+    reason}, patterns a non-empty list of regular expressions that compile (matched against a sample's OWN file
+    name), reason a statement (no placeholder). Only for such a dataset, and only for a sample file a pattern
+    matches, is the deny term for unfiltered matrices lifted (fetch.denied); every other deny term stays."""
+    r = ds.get("raw_matrices")
+    if r is None:
+        return None
+    if not isinstance(r, dict) or sorted(r) != sorted(RAW_KEYS):
+        raise Refused(f"{where}: {acc}: raw_matrices must have exactly the keys {RAW_KEYS}")
+    if not isinstance(r["patterns"], list) or not r["patterns"]:
+        raise Refused(f"{where}: {acc}: raw_matrices.patterns must be a non-empty list")
+    for pat in r["patterns"]:
+        try:
+            re.compile(pat)
+        except (re.error, TypeError):
+            raise Refused(f"{where}: {acc}: raw_matrices pattern {pat!r} does not compile") from None
+    if not isinstance(r["reason"], str) or not r["reason"].strip() or PLACEHOLDER in r["reason"]:
+        raise Refused(f"{where}: {acc}: raw_matrices.reason must state why the samples' raw files are taken")
+    return r
+
+
+def raw_patterns(ds: dict) -> list[re.Pattern]:
+    """The compiled raw_matrices patterns of one dataset ([] without the declaration)."""
+    r = ds.get("raw_matrices")
+    return [re.compile(p) for p in r["patterns"]] if isinstance(r, dict) else []
+
+
+def raw_cell_call(totals) -> tuple:
+    """The ONE fixed cell call of an unfiltered library (README "Unfiltered per-sample matrices"): (called mask, {m,
+    cutoff, cells_called}). totals: each barcode's total UMIs over gene-expression features. m is the 99th percentile
+    (numpy's default linear interpolation) of the RAW_CALL_N largest totals; a barcode is called when its total is at
+    least max(RAW_CALL_MIN_UMI, m / RAW_CALL_RATIO). No argument changes the rule."""
+    import numpy as np
+
+    t = np.asarray(totals, dtype=np.float64)
+    top = np.sort(t)[::-1][:RAW_CALL_N]
+    m = float(np.percentile(top, RAW_CALL_PERCENTILE)) if len(top) else 0.0
+    cutoff = max(float(RAW_CALL_MIN_UMI), m / RAW_CALL_RATIO)
+    called = t >= cutoff
+    return called, {"m": m, "cutoff": cutoff, "cells_called": int(called.sum())}
+
+
+def raw_call_rule() -> dict:
+    """The constants of the fixed cell call, as QC.json records them."""
+    return {"n_largest": RAW_CALL_N, "percentile": RAW_CALL_PERCENTILE, "ratio": RAW_CALL_RATIO,
+            "min_umi": RAW_CALL_MIN_UMI, "min_cells": RAW_MIN_CELLS, "max_cells": MAX_BARCODES,
+            "per_cell_rule": f"at least {MIN_GENES_PER_CELL} detected genes, applied to the called cells"}
+
+
+def triple_kind(name: str) -> str | None:
+    """'matrix', 'barcodes' or 'features' when a file or member name is part of a 10x triple (the kind's name alone
+    or after '_', '-' or '.', optionally gzipped; genes.tsv counts as features), else None."""
+    low = name.lower()
+    for kind, keys in (("matrix", ("matrix.mtx",)), ("barcodes", ("barcodes.tsv",)),
+                       ("features", ("features.tsv", "genes.tsv"))):
+        for k in keys:
+            for end in (k, k + ".gz"):
+                if low == end or (low.endswith(end) and low[-len(end) - 1] in "_-."):
+                    return kind
+    return None
+
+
+def series_file_form(files) -> str:
+    """'archive' (one .tar.gz, .tgz or .tar) or 'triple' (exactly a matrix, a barcodes and a features or genes file),
+    else Refused."""
+    if not isinstance(files, list) or not files or not all(
+            isinstance(f, str) and _PLAIN_NAME.fullmatch(f) and ".." not in f for f in files):
+        raise Refused(f"series file {files!r}: a non-empty list of plain file names")
+    if len(files) == 1 and _ARCHIVE.search(files[0]):
+        return "archive"
+    if len(files) == 3 and sorted(triple_kind(f) or "" for f in files) == ["barcodes", "features", "matrix"]:
+        return "triple"
+    raise Refused(f"series file {files}: one archive (.tar.gz, .tgz, .tar) or one 10x triple (matrix, barcodes, "
+                  "features or genes), nothing else")
+
+
+def check_series_file_pins(acc: str, ds: dict, pins: list[dict], where: str = "datasets.yaml") -> list[dict]:
+    """The pinned_series_files block (stage 6), checked for form. Each entry {series, files, samples, split}: a series
+    that series_files declares; files one archive or one loose 10x triple, no file in two entries; samples pinned
+    samples of this dataset, none in two entries (each is pinned with files: [], check_pins); split {by: none} or
+    {by: barcode_suffix | folder, map: {key: GSM}} whose map names every sample of the entry and no other (a suffix
+    is one separator then letters or digits, '-1'; a folder is one plain path component; a folder split needs an
+    archive). With by none every sample of the entry is pinned with ONE arm, ONE gene and ONE stage: the file is then
+    used as one unit and counts as one library."""
+    units = ds.get("pinned_series_files")
+    if units is None:
+        units = []
+    if not isinstance(units, list):
+        raise Refused(f"{where}: {acc}: pinned_series_files must be a list")
+    if units and not pins:
+        raise Refused(f"{where}: {acc}: pinned_series_files without sample pins")
+    declared = {e["series"] for e in check_series_file_patterns(acc, ds, where)}
+    by_gsm: dict[str, list[dict]] = {}
+    for p in pins:
+        by_gsm.setdefault(p["accession"], []).append(p)
+    seen_files, seen_samples = set(), set()
+    for u in units:
+        if not isinstance(u, dict) or sorted(u) != sorted(SERIES_FILE_UNIT_KEYS):
+            raise Refused(f"{where}: {acc}: series file pin {u!r} must have exactly the keys {SERIES_FILE_UNIT_KEYS}")
+        if u["series"] not in declared:
+            raise Refused(f"{where}: {acc}: a series file pin names series {u['series']!r}, which series_files does "
+                          "not declare")
+        form = series_file_form(u["files"])
+        if set(u["files"]) & seen_files:
+            raise Refused(f"{where}: {acc}: {sorted(set(u['files']) & seen_files)} pinned in two series file entries")
+        seen_files |= set(u["files"])
+        sm = u["samples"]
+        if (not isinstance(sm, list) or not sm or not all(isinstance(g, str) and _GSM.fullmatch(g) for g in sm)
+                or len(set(sm)) != len(sm)):
+            raise Refused(f"{where}: {acc}: {u['files']}: samples must be a non-empty list of distinct GSM accessions")
+        for g in sm:
+            if g not in by_gsm:
+                raise Refused(f"{where}: {acc}: {u['files']}: {g} is not a pinned sample")
+            if g in seen_samples:
+                raise Refused(f"{where}: {acc}: {g} is named by two series file entries")
+            seen_samples.add(g)
+        sp = u["split"]
+        if not isinstance(sp, dict) or sp.get("by") not in SPLITS:
+            raise Refused(f"{where}: {acc}: {u['files']}: split.by must be one of {SPLITS}")
+        if sp["by"] == "none":
+            if sorted(sp) != ["by"]:
+                raise Refused(f"{where}: {acc}: {u['files']}: split by none takes no map")
+            # stage 7 (the second reviewer of 853b214): one arm and one stage, and every sample pinned for the same
+            # genes, so a one-library wild-type file may control several knockouts (a control is pinned once per gene)
+            kinds = {(p["arm"], stage_ok(p["stage"]), frozenset(q["gene"] for q in by_gsm[g])) for g in sm
+                     for p in by_gsm[g]}
+            if len(kinds) != 1:
+                raise Refused(f"{where}: {acc}: {u['files']}: a file used as one unit holds samples of ONE arm and "
+                              f"stage, each pinned for the same genes, not {sorted(kinds, key=str)}: state a split "
+                              "rule or do not pin it")
+            continue
+        if sorted(sp) != ["by", "map"] or not isinstance(sp["map"], dict) or not sp["map"]:
+            raise Refused(f"{where}: {acc}: {u['files']}: split by {sp['by']} needs a non-empty map {{key: GSM}}")
+        if sp["by"] == "folder" and form != "archive":
+            raise Refused(f"{where}: {acc}: {u['files']}: a folder split needs an archive")
+        for k in sp["map"]:
+            ok = isinstance(k, str) and (_SUFFIX_KEY.fullmatch(k) if sp["by"] == "barcode_suffix"
+                                         else (_PLAIN_NAME.fullmatch(k) and k not in (".", "..")))
+            if not ok:
+                raise Refused(f"{where}: {acc}: {u['files']}: split key {k!r} is not a plain "
+                              f"{'barcode suffix (-1)' if sp['by'] == 'barcode_suffix' else 'folder name'}")
+        if set(sp["map"].values()) != set(sm):
+            raise Refused(f"{where}: {acc}: {u['files']}: the split map must name every sample of the entry and no "
+                          "other")
+    return units
 
 
 def pinned_units(pins: list[dict]) -> list[dict]:
@@ -348,6 +662,9 @@ def load_datasets(path: Path | None = None) -> dict[str, dict]:
         from t3x_screen import check_review_cleared
 
         check_review_cleared(ds.get("review_cleared") or [])
+        check_control_series(acc, ds, str(path))
+        check_series_file_patterns(acc, ds, str(path))
+        check_raw_matrices(acc, ds, str(path))
         pins = check_pins(acc, ds, str(path))
         if pins:
             pinned_units(pins)
@@ -357,10 +674,12 @@ def load_datasets(path: Path | None = None) -> dict[str, dict]:
                 raise Refused(f"{path}: {p['accession']} is pinned under {other} and {acc}: a sample belongs to one "
                               "series")
         out[acc] = {**ds, "pinned": list(pins), "pinned_series": list(ds.get("pinned_series") or []),
-                    "d": design_factor(ds)}
+                    "pinned_series_files": list(ds.get("pinned_series_files") or []),
+                    "series_files": list(ds.get("series_files") or []), "d": design_factor(ds)}
+    check_sister_unregistered(out, str(path))
     held = held_series(out)
     for acc, ds in out.items():
-        bad = sorted(set(ds["screen_series"]) & held)
+        bad = sorted(set(all_screened(ds)) & held)
         if ds["status"] == "cleared" and bad:
             raise Refused(f"{path}: {acc}: screen_series includes the held or excluded series {bad}: refused (a "
                           "cleared dataset never screens, fetches or reads a held series)")
@@ -368,15 +687,41 @@ def load_datasets(path: Path | None = None) -> dict[str, dict]:
     return out
 
 
+def check_sister_unregistered(allds: dict[str, dict], where: str = "datasets.yaml") -> None:
+    """Stage 7 (the first reviewer of 853b214, blocker 2, part 1): a named control series, and every series of its
+    screen_series, belongs to no other entry: it is not another dataset's accession, not one of another dataset's
+    screen_series, and (stricter than the reviewer's text) not a series of another dataset's control_series."""
+    owner: dict[str, set[str]] = {}
+    for acc, ds in allds.items():
+        for s in [acc, *(ds.get("screen_series") or [])]:
+            owner.setdefault(s, set()).add(acc)
+        c = ds.get("control_series")
+        if isinstance(c, dict) and c.get("accession"):
+            for s in [c["accession"], *(c.get("screen_series") or [])]:
+                owner.setdefault(s, set()).add(acc)
+    for acc, ds in allds.items():
+        c = control_series(ds)
+        if not c:
+            continue
+        for s in [c["accession"], *(c.get("screen_series") or [])]:
+            others = sorted(owner.get(s, set()) - {acc})
+            if others:
+                raise Refused(f"{where}: {acc}: control_series {s} is registered as (or screened by) dataset "
+                              f"{others[0]}: a sister series belongs to no other entry")
+
+
 def held_series(allds: dict[str, dict]) -> set[str]:
-    """The held set: NEVER_FETCH plus the accession and every screened series of every dataset that is not cleared.
-    A pinned sample whose record lists any of them is refused (fetch.verify_pins), and a plan whose screened series
-    hold such a sample is refused with its text withheld."""
-    held = set(NEVER_FETCH)
+    """The held set: NEVER_FETCH and HELD_EXTRA (stage 8: the team's held list) plus the accession and every screened
+    series of every dataset that is not cleared. A pinned sample whose record lists any of them is refused
+    (fetch.verify_pins), and a plan whose screened series hold such a sample is refused with its text withheld."""
+    held = set(NEVER_FETCH) | set(HELD_EXTRA)
     for acc, ds in allds.items():
         if ds.get("status") != "cleared":
             held.add(acc)
             held |= set(ds.get("screen_series") or [])
+            c = ds.get("control_series")   # stage 6: a held dataset's sister series is held too
+            if isinstance(c, dict):
+                held |= {x for x in [c.get("accession"), *(c.get("screen_series") or [])] if isinstance(x, str)}
     return held
 
 
@@ -398,6 +743,8 @@ def dataset(acc: str, path: Path | None = None, need_cleared: bool = True) -> di
     it is not cleared (when need_cleared)."""
     if acc in NEVER_FETCH:
         raise Refused(f"{acc} is in t3x_common.NEVER_FETCH (held or excluded): refused whatever a YAML says")
+    if acc in HELD_EXTRA:
+        raise Refused(f"{acc} is in t3x_common.HELD_EXTRA (the team's held list): refused whatever a YAML says")
     allds = load_datasets(path)
     if acc not in allds:
         raise Refused(f"{acc} is not in datasets.yaml: refused")
@@ -438,9 +785,17 @@ def series_metadata_sha256(gse: str, fields: dict) -> str:
 
 
 def pins_sha256(ds: dict) -> str:
-    """sha256 of one dataset's pins, canonically serialised: {"samples": pinned, "series": pinned_series}. The fetch
-    manifest and each of its file records keep it; fetch downloads again and process refuses on any change."""
+    """sha256 of one dataset's pins, canonically serialised: {"samples": pinned, "series": pinned_series}, plus (stage
+    6, only when present, so a dataset without them keeps its hash) "series_files": pinned_series_files and
+    "control_series": the named control_series declaration. The fetch manifest and each of its file records keep it;
+    fetch downloads again and process refuses on any change."""
     rec = {"samples": ds.get("pinned") or [], "series": ds.get("pinned_series") or []}
+    if ds.get("pinned_series_files"):
+        rec["series_files"] = ds["pinned_series_files"]
+    if control_series(ds):
+        rec["control_series"] = control_series(ds)
+    if ds.get("raw_matrices"):   # stage 7: only when present, so a dataset without it keeps its hash
+        rec["raw_matrices"] = ds["raw_matrices"]
     return hashlib.sha256(json.dumps(rec, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
                           .encode("utf-8")).hexdigest()
 

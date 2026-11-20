@@ -22,6 +22,18 @@
       symlinked raw, dataset or sample folder, manifest or file; it takes each pinned file's url only from the list
       verify_pins derives from the hashed fields; QC.json records plan_sha256 (the sha256 of the plan it ran under,
       checked by combine), the manifest's sha256 and each count file's sha256.
+      Stage 6: a sample pinned with files [] takes its cells from its pinned series file (read_series_unit: an archive
+      read member by member in memory after archive_members has checked every member, or a loose triple), split by
+      the pin's rule; a unit with a control from the named control series takes d = t3x_common.SISTER_D, and QC.json
+      says so (series_file_units, sister_series_controls, per unit d and control_source).
+      Stage 7: a pinned sample whose file a raw_matrices declaration names is an unfiltered matrix: read sparsely in
+      two streamed passes (read_raw_sample), the ONE fixed cell call of t3x_common.raw_cell_call keeps its cells, and
+      the ordinary per-cell rule and barcode cap then apply to them; QC.json holds raw_cell_call (the rule and each
+      raw sample's record) and each unit's QC raw_called and raw_called_samples. Nothing else downstream differs.
+      Stage 8: a unit whose samples are not all raw-called or all filtered is refused (a second guard behind
+      fetch.check_unit_forms); a raw-called unit's QC holds raw_call_arms, the per-arm medians of the cutoff, the cells
+      called and the UMI share in called cells and their knockout-to-control ratios (a record only); a matrix line
+      that is not three fields, and more than 1,000 comment lines before the size line, are refused.
 
 The rules (constants in t3x_common.py, fixed 2026-11-20, none from a score):
   * Cells: stage capped at E9.5 (the T1 window applied to every cell); fewer than 200 detected genes is not a cell;
@@ -51,6 +63,7 @@ from __future__ import annotations
 import gzip
 import io
 import json
+import re
 import shutil
 import sys
 import tarfile
@@ -68,6 +81,7 @@ if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 import fetch as fe  # noqa: E402  (experiments/t3_ext/fetch.py: the plan loader and the pin check)
 import t3x_common as cm  # noqa: E402
+import t3x_screen as sc  # noqa: E402
 import t3x_tables as tb  # noqa: E402
 
 Refused = cm.Refused
@@ -80,14 +94,30 @@ CHIMERA_ARMS = ("ko_mut", "ko_host", "wt_mut", "wt_host")
 # Reading one sample's counts (no extraction into any folder)
 
 
+MEMBER_MAX_BYTES = 8 * 1024 ** 3   # one archive member read into memory: at most 8 GiB (fixed 2026-11-20, no score)
+
+
+def _gunzip(raw: bytes, name: str) -> bytes:
+    """A gzip stream decompressed in chunks, refused once it passes MEMBER_MAX_BYTES (stage 7: the first reviewer of
+    853b214, lesser point 2; the 8 GiB check on an archive member covers its compressed size only)."""
+    out, n = io.BytesIO(), 0
+    with gzip.GzipFile(fileobj=io.BytesIO(raw)) as g:
+        while block := g.read(1 << 24):
+            n += len(block)
+            if n > MEMBER_MAX_BYTES:
+                raise Refused(f"{name}: decompresses to more than {MEMBER_MAX_BYTES} bytes: refused")
+            out.write(block)
+    return out.getvalue()
+
+
 def _read_text(raw: bytes, name: str) -> list[str]:
     if name.endswith(".gz"):
-        raw = gzip.decompress(raw)
+        raw = _gunzip(raw, name)
     return raw.decode("utf-8", errors="replace").splitlines()
 
 
 def _from_parts(mtx: bytes, mtx_name: str, feats: list[str], bcs: list[str]):
-    data = gzip.decompress(mtx) if mtx_name.endswith(".gz") else mtx
+    data = _gunzip(mtx, mtx_name) if mtx_name.endswith(".gz") else mtx
     M = sparse.csr_matrix(spio.mmread(io.BytesIO(data), spmatrix=False).T)  # cells x features
     rows = [r.split("\t") for r in feats if r.strip()]
     symbols = [r[1] if len(r) > 1 else r[0] for r in rows]
@@ -129,22 +159,12 @@ def read_sample(paths: list[Path]):
             barcodes = dec(g["barcodes"][()])
         return M, symbols, types, barcodes
     if tars:
-        if len(tars) != 1:
-            raise Refused(f"{len(tars)} archives for one sample")
-        with tarfile.open(tars[0], "r:*") as t:
-            members = {m.name: m for m in t.getmembers() if m.isfile()}
-            names = list(members)
-            mtx = _pick(names, "matrix.mtx")
-            feat = [n for n in names if Path(n).name.lower().startswith(("features.tsv", "genes.tsv"))
-                    or Path(n).name.lower().endswith(("features.tsv", "features.tsv.gz", "genes.tsv", "genes.tsv.gz"))]
-            if len(feat) != 1:
-                raise Refused(f"{tars[0].name}: expected one features/genes file, found {len(feat)}")
-            bc = _pick(names, "barcodes.tsv")
-
-            def rd(n):
-                return t.extractfile(members[n]).read()
-
-            return _from_parts(rd(mtx), mtx, _read_text(rd(feat[0]), feat[0]), _read_text(rd(bc), bc))
+        if len(tars) != 1 or len(paths) != 1:
+            raise Refused(f"{len(tars)} archives (and {len(paths) - len(tars)} other files) for one sample: one "
+                          "archive alone")
+        # stage 7 (both reviewers of 853b214): the per-sample archive route checks every member with the same rules
+        # as a series archive, and holds exactly one 10x triple in one folder, nothing else
+        return _read_sample_archive(tars[0])
     names = [str(p) for p in paths]
     mtx = _pick(names, "matrix.mtx")
     feat = [n for n in names if "features.tsv" in Path(n).name.lower() or "genes.tsv" in Path(n).name.lower()]
@@ -153,6 +173,408 @@ def read_sample(paths: list[Path]):
     bc = _pick(names, "barcodes.tsv")
     return _from_parts(Path(mtx).read_bytes(), mtx, _read_text(Path(feat[0]).read_bytes(), feat[0]),
                        _read_text(Path(bc).read_bytes(), bc))
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Stage 6: a pinned series file (one archive or a loose 10x triple), read only inside itself and split by its pin's rule
+
+_MEMBER_PART = re.compile(r"[A-Za-z0-9._+-]+")
+
+
+def archive_members(t: tarfile.TarFile, label: str,
+                    raw_ok: bool = False) -> list[tuple[list[str], str, tarfile.TarInfo]]:
+    """The archive's file members as (path parts, triple kind, member), every member checked first: refused for an
+    absolute path, a '..' component, an empty component, a backslash, a name part outside letters, digits and
+    . _ + -, a symlink, a hard link, a device or FIFO, a duplicate name, a name the held-out screen hits (held out or
+    review), a member larger than MEMBER_MAX_BYTES, and a file member that is not part of a 10x triple (a member it has
+    no rule for). Directory members are allowed and read nothing. Nothing is extracted to disk. raw_ok (stage 7: a
+    declared raw file only, read_raw_sample) lifts the unfiltered-matrix deny term alone for the member names."""
+    out, seen = [], set()
+    for m in t.getmembers():
+        raw = m.name
+        if raw.startswith(("/", "~")) or "\\" in raw or re.match(r"[A-Za-z]:", raw):
+            raise Refused(f"{label}: member {raw!r}: an absolute path (or a backslash or drive letter): refused")
+        parts = raw.split("/")
+        if ".." in parts:
+            raise Refused(f"{label}: member {raw!r}: a '..' component (path traversal): refused")
+        if m.isdir() and len(parts) > 1 and parts[-1] == "":
+            parts = parts[:-1]
+        if parts[:1] == ["."]:
+            parts = parts[1:]
+        if any(p in ("", ".") for p in parts):
+            raise Refused(f"{label}: member {raw!r}: an empty or '.' path component: refused")
+        if m.issym() or m.islnk():
+            raise Refused(f"{label}: member {raw!r}: a symlink or hard link: refused")
+        if not (m.isfile() or m.isdir()):
+            raise Refused(f"{label}: member {raw!r}: not a regular file or folder: refused")
+        if not all(_MEMBER_PART.fullmatch(p) for p in parts):
+            raise Refused(f"{label}: a member name holds a character outside letters, digits and . _ + -: refused")
+        key = "/".join(parts)
+        if key in seen:
+            raise Refused(f"{label}: member {key!r} appears twice: refused")
+        seen.add(key)
+        if parts and sc.hits(key):
+            raise Refused(f"{label}: a member name hits the held-out screen: refused (name withheld)")
+        if parts and fe.denied(key, raw_ok=raw_ok):
+            raise Refused(f"{label}: member {key!r} is a denied type (unfiltered, fragments, peaks ...): refused")
+        if m.isdir():
+            continue
+        if not parts:
+            raise Refused(f"{label}: a file member without a name: refused")
+        kind = cm.triple_kind(parts[-1])
+        if kind is None:
+            raise Refused(f"{label}: member {key!r} is not part of a 10x triple: refused (a member with no rule)")
+        if m.size > MEMBER_MAX_BYTES:
+            raise Refused(f"{label}: member {key!r} is larger than {MEMBER_MAX_BYTES} bytes: refused")
+        out.append((parts, kind, m))
+    return out
+
+
+def _one_triple(items: list, label: str) -> dict:
+    by = {}
+    for it in items:
+        if it[1] in by:
+            raise Refused(f"{label}: two '{it[1]}' members in one library: refused")
+        by[it[1]] = it
+    if sorted(by) != ["barcodes", "features", "matrix"]:
+        raise Refused(f"{label}: a library needs exactly one matrix, barcodes and features (or genes) member, found "
+                      f"{sorted(by)}")
+    return by
+
+
+def _triple_from(by: dict, read) -> tuple:
+    def name(k):
+        return "/".join(by[k][0]) if isinstance(by[k][0], list) else by[k][0]
+
+    return _from_parts(read(by["matrix"]), name("matrix"), _read_text(read(by["features"]), name("features")),
+                       _read_text(read(by["barcodes"]), name("barcodes")))
+
+
+def _one_folder_triple(items: list, label: str) -> dict:
+    """The single 10x triple of a per-sample archive: its three members in one folder (or none), nothing else
+    (archive_members has already refused any member that is not part of a triple)."""
+    if len({tuple(it[0][:-1]) for it in items}) > 1:
+        raise Refused(f"{label}: members in more than one folder: a per-sample archive holds one library, refused")
+    return _one_triple(items, label)
+
+
+def _read_sample_archive(path: Path):
+    """A per-sample archive read member by member in memory, every member checked by archive_members first."""
+    with tarfile.open(path, "r:*") as t:
+        items = archive_members(t, path.name)
+        by = _one_folder_triple(items, path.name)
+
+        def read(it):
+            f = t.extractfile(it[2])
+            if f is None:
+                raise Refused(f"{path.name}: member {'/'.join(it[0])!r} cannot be read")
+            return f.read()
+
+        return _triple_from(by, read)
+
+
+def read_series_unit(paths: list[Path], unit: dict) -> list[tuple[str, str, list[str], tuple]]:
+    """The libraries of one pinned series file, split by its pin's rule: [(GSM, folder or '', barcodes kept, (M,
+    symbols, types, barcodes))]. An archive is read member by member in memory (never extracted; archive_members
+    checks every member first); a loose triple is read from its three files. split none: the file is one unit (its
+    samples are one arm and one stage, each pinned for the same genes, checked when the pins load); each folder of an
+    archive (a member's parent path) must hold exactly one triple, the file must hold exactly as many libraries as
+    the entry names samples (stage 7), and every library is returned under the entry's first sample.
+    barcode_suffix: every barcode must end with exactly one key of the map (with something before it); a barcode no
+    key fits refuses the file, and so does a key whose sample gets no barcode. folder: every file member lies in a
+    top-level folder that the map names; each folder holds exactly one triple. A matrix of more barcodes than
+    MAX_BARCODES per library is refused."""
+    split = unit["split"]
+    label = f"{unit['series']}/{'+'.join(unit['files'])}"
+    libs = []
+    if len(paths) == 1 and cm.series_file_form(unit["files"]) == "archive":
+        with tarfile.open(paths[0], "r:*") as t:
+            items = archive_members(t, label)
+
+            def read(it):
+                f = t.extractfile(it[2])
+                if f is None:
+                    raise Refused(f"{label}: member {'/'.join(it[0])!r} cannot be read")
+                return f.read()
+
+            if split["by"] == "folder":
+                groups: dict[str, list] = {}
+                for it in items:
+                    if len(it[0]) < 2 or it[0][0] not in split["map"]:
+                        raise Refused(f"{label}: member {'/'.join(it[0])!r} lies in no folder the split map names: "
+                                      "refused")
+                    groups.setdefault(it[0][0], []).append(it)
+                if set(groups) != set(split["map"]):
+                    raise Refused(f"{label}: folders {sorted(set(split['map']) - set(groups))} of the split map hold "
+                                  "no library: refused")
+                for folder in sorted(groups):
+                    libs.append((split["map"][folder], folder, _triple_from(_one_triple(groups[folder], label), read)))
+            elif split["by"] == "none":
+                # used as one unit: each folder (a member's parent path) holds one library, all pooled under one label
+                groups = {}
+                for it in items:
+                    groups.setdefault("/".join(it[0][:-1]), []).append(it)
+                _none_count(label, len(groups), unit)
+                for folder in sorted(groups):
+                    libs.append((None, folder, _triple_from(_one_triple(groups[folder], label), read)))
+            else:
+                libs.append((None, "", _triple_from(_one_triple(items, label), read)))
+    else:
+        if split["by"] == "none":
+            _none_count(label, 1, unit)   # a loose triple is one library
+        items = [(p.name, cm.triple_kind(p.name), p) for p in paths]
+        libs.append((None, "", _triple_from(_one_triple(items, label), lambda it: Path(it[2]).read_bytes())))
+    out = []
+    for gsm, folder, (M, symbols, types, bcs) in libs:
+        if split["by"] == "barcode_suffix":
+            keys = list(split["map"])
+            key_of = []
+            for b in bcs:
+                fit = [k for k in keys if b.endswith(k) and len(b) > len(k)]
+                if len(fit) != 1:
+                    raise Refused(f"{label}: a barcode that no split key (or more than one) fits: refused")
+                key_of.append(fit[0])
+            key_of = np.array(key_of, dtype=object)
+            for k in keys:
+                n_k = int((key_of == k).sum())
+                if n_k > cm.MAX_BARCODES:
+                    raise Refused(f"{label}: {n_k} barcodes under {k}: an unfiltered matrix, refused")
+            owner = np.array([split["map"][k] for k in key_of], dtype=object)
+            for g in unit["samples"]:
+                rows = np.flatnonzero(owner == g)
+                if not len(rows):
+                    raise Refused(f"{label}: no barcode carries a split key of {g}: the file does not fit its rule, "
+                                  "refused")
+                kept = [bcs[i] for i in rows]
+                out.append((g, folder, kept, (M[rows], symbols, types, kept)))
+        else:
+            # stage 7: the cap applies to each library (each folder, or the one loose triple), under every split
+            if M.shape[0] > cm.MAX_BARCODES:
+                raise Refused(f"{label}{'/' + folder if folder else ''}: {M.shape[0]} barcodes in one library: an "
+                              "unfiltered matrix, refused")
+            out.append((gsm or unit["samples"][0], folder, bcs, (M, symbols, types, bcs)))
+    return out
+
+
+def _none_count(label: str, n_libs: int, unit: dict) -> None:
+    """Stage 7 (the first reviewer of 853b214, blocker 1): under split none a file holds exactly as many libraries
+    (folders with a triple, or the one loose or flat triple) as its entry names samples; otherwise refused before any
+    count is read."""
+    m = len(unit["samples"])
+    if n_libs != m:
+        raise Refused(f"{label}: split none: the file holds {n_libs} libraries but the entry names {m} samples: "
+                      "refused (state a folder or suffix rule from the records, or do not pin)")
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Stage 7, piece 2: a per-sample UNFILTERED matrix (a raw_matrices dataset's declared file), read sparsely in two
+# streamed passes and through the ONE fixed cell call (t3x_common.raw_cell_call); never densified, never unpacked
+
+RAW_CHUNK_BYTES = 64 * 1024 ** 2   # decompressed matrix bytes parsed per block
+RAW_MAX_LINE = 1024 ** 2           # a matrix line longer than this refuses the file
+RAW_MAX_COMMENT_LINES = 1000       # stage 8: more comment or empty lines before the size line refuse the file
+
+
+def _decompressed(fh, name: str):
+    """A binary stream of one member or file, decompressed when its name ends in .gz."""
+    return gzip.GzipFile(fileobj=fh) if name.endswith(".gz") else fh
+
+
+def _read_capped(fh, name: str) -> bytes:
+    """A whole (small) member read in chunks, refused past MEMBER_MAX_BYTES once decompressed."""
+    out, n = io.BytesIO(), 0
+    while block := fh.read(1 << 24):
+        n += len(block)
+        if n > MEMBER_MAX_BYTES:
+            raise Refused(f"{name}: decompresses to more than {MEMBER_MAX_BYTES} bytes: refused")
+        out.write(block)
+    return out.getvalue()
+
+
+def _mtx_header(fh, label: str) -> tuple[int, int, int]:
+    """(features, barcodes, entries) of a MatrixMarket coordinate file, read from its banner and size line."""
+    head = fh.readline(RAW_MAX_LINE).decode("ascii", errors="replace").strip().lower().split()
+    if (len(head) != 5 or head[0] != "%%matrixmarket" or head[1:3] != ["matrix", "coordinate"]
+            or head[3] not in ("integer", "real") or head[4] != "general"):
+        raise Refused(f"{label}: the matrix is not a MatrixMarket coordinate integer or real general file: refused")
+    skipped = 0
+    while True:
+        line = fh.readline(RAW_MAX_LINE)
+        if not line:
+            raise Refused(f"{label}: the matrix has no size line: refused")
+        if line.startswith(b"%") or not line.strip():
+            # stage 8 (the first reviewer of ec86a1b, lesser point 5): a bounded comment block
+            skipped += 1
+            if skipped > RAW_MAX_COMMENT_LINES:
+                raise Refused(f"{label}: more than {RAW_MAX_COMMENT_LINES} comment or empty lines before the size "
+                              "line: refused")
+            continue
+        parts = line.split()
+        if len(parts) != 3 or not all(p.isdigit() for p in parts):
+            raise Refused(f"{label}: the matrix size line is not three counts: refused")
+        return int(parts[0]), int(parts[1]), int(parts[2])
+
+
+def _parse_entries(block: bytes, label: str, shape: tuple[int, int]) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """(feature, barcode, value) arrays, 0-based, of whole lines; refused for a malformed line, an index out of
+    range or a negative or non-finite value."""
+    if not block.strip():
+        return np.zeros(0, np.int64), np.zeros(0, np.int64), np.zeros(0)
+    # stage 8 (the first reviewer of ec86a1b, lesser point 1): read with no column names, so a line of four fields is
+    # refused rather than its first field taken as an index; ragged rows already raise ParserError
+    try:
+        df = pd.read_csv(io.BytesIO(block), sep=r"\s+", header=None, engine="c")
+    except (ValueError, pd.errors.ParserError):
+        raise Refused(f"{label}: a matrix line is not 'feature barcode value': refused") from None
+    if df.shape[1] != 3:
+        raise Refused(f"{label}: a matrix line is not 'feature barcode value': refused")
+    df.columns = ["r", "c", "v"]
+    # the two indices must parse as integers (a '1.5' or a missing field is refused, never truncated or filled)
+    if df.isna().any().any() or not (pd.api.types.is_integer_dtype(df["r"]) and pd.api.types.is_integer_dtype(df["c"])
+            and (pd.api.types.is_integer_dtype(df["v"]) or pd.api.types.is_float_dtype(df["v"]))):
+        raise Refused(f"{label}: a matrix line is not 'feature barcode value': refused")
+    df = df.astype({"r": np.int64, "c": np.int64, "v": np.float64})
+    r, c, v = df["r"].to_numpy() - 1, df["c"].to_numpy() - 1, df["v"].to_numpy()
+    if df.isna().any().any() or (r < 0).any() or (r >= shape[0]).any() or (c < 0).any() or (c >= shape[1]).any() \
+            or (v < 0).any() or not np.isfinite(v).all():
+        raise Refused(f"{label}: a matrix entry out of range, negative or not finite: refused")
+    return r, c, v
+
+
+def _mtx_entries(fh, label: str, shape: tuple[int, int], nnz: int):
+    """The entries after the size line, block by block; refused for a line longer than RAW_MAX_LINE and for more or
+    fewer entries than the header states."""
+    carry, seen = b"", 0
+    while True:
+        block = fh.read(RAW_CHUNK_BYTES)
+        if not block:
+            break
+        block = carry + block
+        cut = block.rfind(b"\n")
+        carry = block[cut + 1:]
+        if len(carry) > RAW_MAX_LINE:
+            raise Refused(f"{label}: a matrix line longer than {RAW_MAX_LINE} bytes: refused")
+        if cut < 0:
+            continue
+        r, c, v = _parse_entries(block[:cut + 1], label, shape)
+        seen += len(r)
+        if seen > nnz:
+            raise Refused(f"{label}: more matrix entries than its header states ({nnz}): refused")
+        yield r, c, v
+    if carry.strip():
+        r, c, v = _parse_entries(carry, label, shape)
+        seen += len(r)
+        yield r, c, v
+    if seen != nnz:
+        raise Refused(f"{label}: {seen} matrix entries, not the {nnz} its header states: refused")
+
+
+def _raw_from(stream, label: str):
+    """The called cells of one unfiltered library: (cells x features CSR of the called barcodes only, symbols, feature
+    types, called barcodes, the cell call record). stream(kind) opens a fresh decompressed binary stream of the
+    matrix, features or barcodes member."""
+    def text(kind):
+        fh = stream(kind)
+        try:
+            return _read_capped(fh, f"{label} {kind}").decode("utf-8", errors="replace").splitlines()
+        finally:
+            fh.close()
+
+    rows = [r.split("\t") for r in text("features") if r.strip()]
+    symbols = [r[1] if len(r) > 1 else r[0] for r in rows]
+    types = [r[2] if len(r) > 2 else "Gene Expression" for r in rows]
+    barcodes = [b.split("\t")[0] for b in text("barcodes") if b.strip()]
+    if len(barcodes) > cm.RAW_MAX_BARCODES:
+        raise Refused(f"{label}: {len(barcodes)} barcodes in the file, more than {cm.RAW_MAX_BARCODES}: refused")
+    gex = np.array([("gene" in t.lower() and "expression" in t.lower()) or t == "" for t in types])
+    fh = stream("matrix")
+    try:
+        n_f, n_b, nnz = _mtx_header(fh, label)
+        if (n_f, n_b) != (len(symbols), len(barcodes)):
+            raise Refused(f"{label}: the matrix header ({n_f} x {n_b}) does not match {len(symbols)} features x "
+                          f"{len(barcodes)} barcodes: refused")
+        if nnz > cm.RAW_MAX_ENTRIES:
+            raise Refused(f"{label}: {nnz} matrix entries, more than {cm.RAW_MAX_ENTRIES}: refused")
+        # pass 1: each barcode's total over gene-expression features, and whether it holds any count at all
+        totals, anyc = np.zeros(n_b), np.zeros(n_b, bool)
+        for r, c, v in _mtx_entries(fh, label, (n_f, n_b), nnz):
+            g = gex[r]
+            totals += np.bincount(c[g], weights=v[g], minlength=n_b)
+            anyc[c[v > 0]] = True
+    finally:
+        fh.close()
+    called, rec = cm.raw_cell_call(totals)
+    n = rec["cells_called"]
+    ct = totals[called]
+    rec = {"barcodes_in_file": n_b, "barcodes_with_any_count": int(anyc.sum()), **rec,
+           "umi_share_called": float(totals[called].sum() / totals.sum()) if totals.sum() > 0 else 0.0,
+           "features": n_f, "entries": nnz,
+           # stage 8 (the second reviewer of ec86a1b, lesser point 1): records only, read by no guard
+           **{f"called_total_p{q}": (float(np.percentile(ct, q)) if len(ct) else None) for q in (5, 25, 50)},
+           "called_under_twice_cutoff": int((ct < 2 * rec["cutoff"]).sum())}
+    if n < cm.RAW_MIN_CELLS:
+        raise Refused(f"{label}: the fixed cell call keeps {n} cells, fewer than {cm.RAW_MIN_CELLS}: refused")
+    if n > cm.MAX_BARCODES:
+        raise Refused(f"{label}: the fixed cell call keeps {n} cells, more than the cap {cm.MAX_BARCODES}: refused")
+    # pass 2: the called barcodes' entries only
+    col = np.full(n_b, -1, np.int64)
+    idx = np.flatnonzero(called)
+    col[idx] = np.arange(len(idx))
+    parts_r, parts_c, parts_v = [], [], []
+    fh = stream("matrix")
+    try:
+        _mtx_header(fh, label)
+        for r, c, v in _mtx_entries(fh, label, (n_f, n_b), nnz):
+            k = called[c]
+            parts_r.append(col[c[k]])
+            parts_c.append(r[k])
+            parts_v.append(v[k])
+    finally:
+        fh.close()
+    M = sparse.coo_matrix((np.concatenate(parts_v) if parts_v else np.zeros(0),
+                           (np.concatenate(parts_r) if parts_r else np.zeros(0, np.int64),
+                            np.concatenate(parts_c) if parts_c else np.zeros(0, np.int64))),
+                          shape=(len(idx), n_f)).tocsr()
+    return M, symbols, types, [barcodes[i] for i in idx], rec
+
+
+def read_raw_sample(paths: list[Path], label: str):
+    """A pinned sample's declared unfiltered matrix (one archive alone, or one loose 10x triple) through the fixed cell
+    call: (CSR of the called cells, symbols, types, called barcodes, record). An archive is read member by member in
+    memory with archive_members (raw_ok: only the unfiltered-matrix deny term is lifted) and must hold exactly one
+    triple in one folder, nothing else. A file above RAW_MAX_FILE_BYTES, a 10x h5, a matrix of more entries than
+    RAW_MAX_ENTRIES or more barcodes than RAW_MAX_BARCODES, fewer than RAW_MIN_CELLS or more than MAX_BARCODES called
+    cells: refused."""
+    paths = [Path(p) for p in paths]
+    for p in paths:
+        if p.stat().st_size > cm.RAW_MAX_FILE_BYTES:
+            raise Refused(f"{label}: {p.name} is larger than {cm.RAW_MAX_FILE_BYTES} bytes: refused")
+    if any(p.name.endswith(".h5") for p in paths):
+        raise Refused(f"{label}: the unfiltered intake reads a MatrixMarket triple only, not an h5 file: refused")
+    tars = [p for p in paths if p.name.endswith((".tar.gz", ".tgz", ".tar"))]
+    if tars:
+        if len(paths) != 1:
+            raise Refused(f"{label}: an unfiltered archive comes alone, not with {len(paths) - 1} other files")
+        with tarfile.open(paths[0], "r:*") as t:
+            by = _one_folder_triple(archive_members(t, label, raw_ok=True), label)
+
+            def stream(kind):
+                f = t.extractfile(by[kind][2])
+                if f is None:
+                    raise Refused(f"{label}: member {'/'.join(by[kind][0])!r} cannot be read")
+                return _decompressed(f, by[kind][0][-1])
+
+            return _raw_from(stream, label)
+    items = [(p.name, cm.triple_kind(p.name), p) for p in paths]
+    if any(it[1] is None for it in items):
+        raise Refused(f"{label}: a file of the unfiltered triple is not a matrix, barcodes or features file: refused")
+    by = _one_triple(items, label)
+
+    def stream_file(kind):
+        p = by[kind][2]
+        return gzip.open(p, "rb") if p.name.endswith(".gz") else open(p, "rb")   # noqa: SIM115 (closed by _raw_from)
+
+    return _raw_from(stream_file, label)
 
 
 def to_panel(M, symbols: list[str], types: list[str], genes: list[str]) -> tuple[sparse.csr_matrix, np.ndarray, dict]:
@@ -395,12 +817,34 @@ def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Pat
         raise Refused(f"{acc}: the manifest was not fetched from this plan")
     cur = cm.pins_sha256(ds)
     if (man.get("pins_sha256") != cur or man.get("pinned") != ds["pinned"]
-            or man.get("pinned_series") != ds["pinned_series"]):
-        raise Refused(f"{acc}: the samples, arms, genes, stages or series are not exactly as pinned when the files "
-                      "were fetched: fetch again")
+            or man.get("pinned_series") != ds["pinned_series"]
+            or (man.get("pinned_series_files") or []) != (ds.get("pinned_series_files") or [])):
+        raise Refused(f"{acc}: the samples, arms, genes, stages, series or series files are not exactly as pinned when "
+                      "the files were fetched: fetch again")
     # 1. the pins against the stored metadata (samples and series), the series membership of every pinned sample, and
-    #    the screen again on every pinned sample, before any count is read
+    #    the screen again on every pinned sample, before any count is read; stage 6: the pinned series files, their
+    #    links derived again from the hashed series fields
     pinned = fe.verify_pins(ds, pl)
+    sunits = fe.verify_series_units(ds, pl)
+    for su in sunits:
+        sdir = rdir / su["series"]
+        if sdir.is_symlink():
+            raise Refused(f"{su['series']}: a symlinked series folder: refused")
+        names = {f["name"] for u in sunits if u["series"] == su["series"] for f in u["files"]}
+        for q in (sorted(sdir.iterdir()) if sdir.is_dir() else []):
+            if q.is_symlink():
+                raise Refused(f"{su['series']}/{q.name}: a symlink in a pinned series folder: refused")
+            if q.name not in names or f"{su['series']}/{q.name}" not in man["files"]:
+                raise Refused(f"{su['series']}/{q.name}: a file in a pinned series folder that is not a pinned series "
+                              "file with a manifest record: refused (fetch again)")
+        for f in su["files"]:
+            rec = man["files"].get(f"{su['series']}/{f['name']}")
+            if rec is None:
+                raise Refused(f"{su['series']}/{f['name']}: no manifest record: refused (fetch again)")
+            if (rec.get("series_metadata_sha256") != su["series_metadata_sha256"] or rec.get("url") != f["url"]
+                    or rec.get("pins_sha256") != cur):
+                raise Refused(f"{su['series']}/{f['name']}: fetched under another series text, url or pins: refused "
+                              "(fetch again)")
     # 1b. every file of a pinned sample is bound to the pin it was fetched under (stage 4): a manifest record per file
     #     with this pin's metadata_sha256, this url and these pins; no other file in a pinned sample's folder
     for s in pinned:
@@ -436,31 +880,74 @@ def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Pat
     genes = ref["genes"]
     # 2. verify the pinned files, then read counts on the panel (no other sample's file is opened)
     blocks, obs_parts, presence, panel_rec, dropped, count_sha = [], [], [], {}, {}, {}
-    for s in pinned:
-        gsm = s["accession"]
-        files = []
-        for f in s["files"]:
-            key = f"{gsm}/{f['name']}"
-            p = dest / "raw" / acc / gsm / f["name"]
-            if p.is_symlink():
-                raise Refused(f"{key}: a symlink: refused")
-            digest = cm.sha256_file(p) if p.is_file() else None
-            if key not in man["files"] or digest is None or digest != man["files"][key]["sha256"]:
-                raise Refused(f"{key}: missing or its sha256 differs from the manifest")
-            count_sha[key] = digest
-            files.append(p)
-        M, symbols, types, bcs = read_sample(files)
-        if M.shape[0] > cm.MAX_BARCODES:
-            raise Refused(f"{gsm}: {M.shape[0]} barcodes: an unfiltered matrix, refused")
+    by_gsm = {s["accession"]: s for s in pinned}
+    # the library label each pinned sample's cells carry (m and the confidence floor count labels): its own accession,
+    # or for a series file used as one unit (split none) with several samples, one label for the whole file
+    label_of = {g: g for g in by_gsm}
+    unit_recs = []
+
+    def checked(key: str, p: Path) -> Path:
+        if p.is_symlink():
+            raise Refused(f"{key}: a symlink: refused")
+        digest = cm.sha256_file(p) if p.is_file() else None
+        if key not in man["files"] or digest is None or digest != man["files"][key]["sha256"]:
+            raise Refused(f"{key}: missing or its sha256 differs from the manifest")
+        count_sha[key] = digest
+        return p
+
+    def add(label: str, pin: str, M, symbols, types, bcs, folder: str = "") -> None:
+        s = by_gsm[pin]
+        prefix = f"{folder}/" if folder else ""
         keep = cell_filter(M, types)
-        dropped[gsm] = int((~keep).sum())
+        dropped[label] = dropped.get(label, 0) + int((~keep).sum())
         Cp, pres, prec = to_panel(M[np.flatnonzero(keep)], symbols, types, genes)
-        panel_rec[gsm] = prec
+        panel_rec[label + (f"/{folder}" if folder else "")] = prec
         presence.append(pres)
         blocks.append(Cp)
         obs_parts.append(pd.DataFrame({"arm": s["arm"], "gene": ";".join(s["genes"]), "stage": s["stage"],
-                                       "sample": gsm},
-                                      index=[f"{gsm}:{b}" for b, k in zip(bcs, keep, strict=True) if k]))
+                                       "sample": label, "pin": pin},
+                                      index=[f"{label}:{prefix}{b}" for b, k in zip(bcs, keep, strict=True) if k]))
+
+    raw_rec: dict[str, dict] = {}
+    for s in pinned:
+        gsm = s["accession"]
+        if not s["files"]:
+            continue   # stage 6: its cells come from a pinned series file (check_pins, check_series_file_pins)
+        files = [checked(f"{gsm}/{f['name']}", dest / "raw" / acc / gsm / f["name"]) for f in s["files"]]
+        raw = {bool(f.get("raw")) for f in s["files"]}
+        if raw == {True}:
+            # stage 7: a declared unfiltered matrix: the one fixed cell call, the same for every sample of every arm;
+            # then the ordinary per-cell rule (add) on the called cells, as for any filtered library
+            M, symbols, types, bcs, raw_rec[gsm] = read_raw_sample(files, gsm)
+        elif raw == {False}:
+            M, symbols, types, bcs = read_sample(files)
+            if M.shape[0] > cm.MAX_BARCODES:
+                raise Refused(f"{gsm}: {M.shape[0]} barcodes: an unfiltered matrix, refused")
+        else:
+            raise Refused(f"{gsm}: an unfiltered matrix mixed with other files: refused")
+        add(gsm, gsm, M, symbols, types, bcs)
+    for su in sunits:
+        paths = [checked(f"{su['series']}/{f['name']}", rdir / su["series"] / f["name"]) for f in su["files"]]
+        one = su["split"]["by"] == "none" and len(su["samples"]) > 1
+        label = f"series:{su['series']}/{su['files'][0]['name']}" if one else None
+        libs = read_series_unit(paths, {**su, "files": [f["name"] for f in su["files"]]})
+        rec = {"series": su["series"], "files": [f["name"] for f in su["files"]], "samples": su["samples"],
+               "split": su["split"], "libraries": []}
+        for gsm, folder, kept, (M, symbols, types, bcs) in libs:
+            lab = label or gsm
+            for g in su["samples"]:
+                if one:
+                    label_of[g] = lab
+            add(lab, gsm, M, symbols, types, bcs, folder=folder)
+            rec["libraries"].append({"label": lab, "folder": folder, "barcodes": len(kept)})
+        unit_recs.append(rec)
+    # stage 8 (the first reviewer of ec86a1b, blocker 2; the second reviewer's lesser point 2): the second guard
+    # behind fetch.check_unit_forms. Both arms of a unit are read the same way, before any group call is made
+    for u in units:
+        members = u["ko"] + u["control"]
+        n_raw = sum(g in raw_rec for g in members)
+        if 0 < n_raw < len(members):
+            raise Refused(f"{u['gene']}: an unfiltered and a filtered library in one unit: refused")
     present = np.logical_and.reduce(presence)
     C = sparse.vstack(blocks).tocsr()
     obs = pd.concat(obs_parts)
@@ -470,6 +957,16 @@ def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Pat
           "screen_record": pl["screen"], "cells_dropped_low_genes": dropped, "panel_match": panel_rec,
           "panel_genes_present": int(present.sum()), "panel_genes": len(genes),
           "created": time.strftime("%Y-%m-%d %H:%M:%S %Z"), "git": _git_head()}
+    if sunits:
+        qc["series_file_units"] = unit_recs
+        qc["pinned_series_files"] = ds["pinned_series_files"]
+    if cm.control_series(ds):
+        qc["control_series"] = cm.control_series(ds)
+        qc["sister_series_controls"] = sorted(g for g, s in by_gsm.items() if s.get("sister"))
+    if ds.get("raw_matrices"):
+        # stage 7: per raw sample, barcodes in the file, barcodes with any count, m, the cutoff, cells called and the
+        # share of all gene-expression UMIs the called cells hold; the rule's constants once
+        qc["raw_cell_call"] = {"rule": cm.raw_call_rule(), "raw_matrices": ds["raw_matrices"], "samples": raw_rec}
     if present.mean() < cm.MIN_PANEL_MATCH:
         qc.update(status="failed", reason=f"only {present.sum()} of {len(genes)} panel genes matched")
         cm.dump_json(qc, adir / "QC.json")
@@ -489,24 +986,54 @@ def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Pat
     # 4. one table per knockout gene
     qc["units"] = {}
     for u in units:
-        low = sorted(g for g in u["ko"] + u["control"] if by_sample.get(g, {}).get("confident_share", 0.0) < floor)
+        low = sorted(g for g in u["ko"] + u["control"]
+                     if by_sample.get(label_of[g], {}).get("confident_share", 0.0) < floor)
         if low:
             qc["units"][u["gene"]] = {"status": "refused_low_confidence", "samples_under_floor": low,
                                       "reason": f"confident share under {floor} in {low}: no table written"}
             continue
-        rows = obs["sample"].isin(u["ko"] + u["control"]).to_numpy()
+        rows = obs["pin"].isin(u["ko"] + u["control"]).to_numpy()
         sub = obs[rows].copy()
-        sub["arm"] = np.where(sub["sample"].isin(u["ko"]), "ko", "control")
-        Lg, uqc = unit_log_ratios(C[np.flatnonzero(rows)], present, sub, ref, ds["d"])
+        sub["arm"] = np.where(sub["pin"].isin(u["ko"]), "ko", "control")
+        # stage 6: a control from the sister series fixes d at the weaker value (t3x_common.unit_design_factor)
+        sister = sorted(g for g in u["control"] if by_gsm[g].get("sister"))
+        d_u = cm.unit_design_factor(ds, bool(sister))
+        Lg, uqc = unit_log_ratios(C[np.flatnonzero(rows)], present, sub, ref, d_u)
         cells = sub.groupby(["stage", "arm"]).size()
         uqc["cells_per_stage_and_arm"] = {f"E{s:g}:{a}": int(v) for (s, a), v in cells.items()}
-        meta = {"tier": ds["tier"], "study": ds["study"], "d": ds["d"], "ko_samples": u["ko"],
+        meta = {"tier": ds["tier"], "study": ds["study"], "d": d_u, "ko_samples": u["ko"],
                 "control_samples": u["control"], "present": present.tolist(), "git": qc["git"]}
+        if ds.get("raw_matrices"):
+            # stage 7: the one flag downstream that says a library was called from an unfiltered matrix
+            uqc["raw_called_samples"] = sorted(g for g in u["ko"] + u["control"] if g in raw_rec)
+            uqc["raw_called"] = bool(uqc["raw_called_samples"])
+            if uqc["raw_called"]:
+                uqc["raw_call_arms"] = raw_call_arms(raw_rec, u["ko"], u["control"])
+        if cm.control_series(ds):
+            uqc["d"] = meta["d"]
+            uqc["control_source"] = meta["control_source"] = (
+                f"sister series {cm.control_series(ds)['accession']} (control_series): {sister}" if sister
+                else "the dataset's own series")
         uqc.update(write_unit(adir, acc, u["gene"], Lg, uqc, ref, meta))
         qc["units"][u["gene"]] = uqc
     qc["status"] = "ok" if any(v["status"] == "ok" for v in qc["units"].values()) else "left_out"
     cm.dump_json(qc, adir / "QC.json")
     return qc
+
+
+RAW_ARM_KEYS = ("cutoff", "cells_called", "umi_share_called")
+
+
+def raw_call_arms(raw_rec: dict[str, dict], ko: list[str], control: list[str]) -> dict:
+    """Stage 8 (the second reviewer of ec86a1b, lesser point 1): for a unit read through the fixed cell call, the
+    per-arm medians over its samples of the cutoff, the cells called and the share of gene-expression UMIs in called
+    cells, and their knockout-to-control ratios (None where the control median is 0). A record only: no guard and no
+    threshold reads it."""
+    med = {arm: {k: float(np.median([raw_rec[g][k] for g in gs])) for k in RAW_ARM_KEYS}
+           for arm, gs in (("ko", ko), ("control", control))}
+    ratio = {k: (med["ko"][k] / med["control"][k] if med["control"][k] else None) for k in RAW_ARM_KEYS}
+    return {"median_ko": med["ko"], "median_control": med["control"], "ko_to_control": ratio,
+            "note": "a record only: no guard or threshold reads it"}
 
 
 def _git_head() -> dict:

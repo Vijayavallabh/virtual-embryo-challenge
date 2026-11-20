@@ -7,7 +7,8 @@
 #         held_phenocopy     not fetched: DATA_POLICY's genotype clause ("a perturbation that phenocopies them counts as
 #                            held out") was not quoted to the captain; it waits for one priced question to him (Wls) or
 #                            the stricter reading of the Gata4 validation genotype (Hand2, Mef2c). Flip to cleared only
-#                            by a commit that cites his ruling.
+#                            by a commit that cites his ruling. It is also the status of a registered dataset on the
+#                            team's held list (t3x_common.HELD_EXTRA, stage 8): GSE205117.
 #         excluded_design    not fetched: a chimera with no wild-type-chimera second difference (the challenger's change
 #                            3: strain cis-eQTLs of ESC-derived cells against host cells would read as knockout effects).
 #
@@ -52,7 +53,8 @@ datasets:
 
   # ------------------------------------------------------------------------------------------------- (a) canonical Wnt
   - accession: GSE205117
-    status: cleared
+    status: held_phenocopy
+    status_reason: "the two readers did not clear its review term (decision log 2026-11-20)"
     tier: wnt
     study: GSE205117
     kind: "T (Brachyury) F0 CRISPR knockout, whole embryo, 10x Multiome (RNA part only)"
@@ -293,6 +295,30 @@ datasets:
     why: "one lab, one pipeline, many genes: what knockouts share; one study weight in the all-knockouts table"
     risks: "F0 mosaicism (d = 0.5); WT may not be littermates; chemistry read from free text"
     verified: false
+    # Stage 6 (2026-11-20, campaign/t3-ext-archives; README "Series-level files" and "A control from a sister
+    # series"). The metadata step (docs/PLAN.md decision log 2026-11-20 (x)) found this series' matrices only as
+    # series-level files named by gene (archives such as GSE137337_RNF2_E8.5_1ab.tar.gz, and three genes as loose
+    # barcodes / features / matrix files) and no wild-type single-cell sample in the series. series_files OFFERS such
+    # files of this series' own folder in the plan table; nothing is fetched until the readers pin each file under
+    # pinned_series_files with its samples and split rule. The loose files' exact names were not seen by the engineer:
+    # a name the second pattern misses is listed as never fetched, and only a reviewed commit changes the pattern.
+    series_files:
+      - series: GSE137337
+        patterns:
+          - '^GSE137337_(?!.*(bisulf|wgbs|rrbs|methyl|scbs|atac))[A-Za-z0-9+-]+_E8\.5[A-Za-z0-9_.+-]*\.(tar\.gz|tgz|tar)$'
+          - '^GSE137337_(?!.*(bisulf|wgbs|rrbs|methyl|scbs|atac))[A-Za-z0-9_.+-]*(matrix\.mtx|barcodes\.tsv|features\.tsv|genes\.tsv)\.gz$'
+    # The study's wild-type embryos are in another series of the same lab. A placeholder until the hunt names that
+    # series: accession null screens and pins nothing. The main session fills accession, screen_series (its own
+    # accession first, then any superseries), the three relation statements and the reader note, in a reviewed commit
+    # with the new t3x_common.DATASETS_SHA256; a unit with such a control takes d = 0.5.
+    control_series:
+      accession: null
+      screen_series: []
+      relation:
+        same_lab: "TO FILL"
+        same_protocol: "TO FILL"
+        same_publication: "TO FILL"
+      reader_note: "TO FILL"
     pinned: []
 
   - accession: GSE204906
@@ -612,6 +638,15 @@ datasets:
     why: "a whole-embryo E9.5 knockout of an RNA cap methyltransferase with several embryos per arm and a same-series control"
     risks: "nuclei, not cells; unfiltered matrices, so the cell floor does the cell calling and the library cap may refuse; stage and genotype fields not yet read"
     verified: false
+    # Stage 7 (2026-11-21, campaign/t3-ext-3; README "Unfiltered per-sample matrices"). Its only per-sample files are the
+    # vendor pipeline's unfiltered output, one raw_feature_bc_matrix archive per sample (per the searchers; the exact
+    # names were not seen by the engineer). This declaration lifts the unfiltered-matrix deny term for a sample's OWN
+    # file that the pattern names, and for nothing else; process reads such a file through the one fixed cell call of
+    # t3x_common (RAW_CALL_*). Nothing is pinned: the two readers read the plan table first and confirm from the record
+    # that each raw file is one library of one sample. A name the pattern misses is listed as never fetched.
+    raw_matrices:
+      patterns: ['^GSM\d+_[A-Za-z0-9_.+-]*raw_feature_bc_matrix\.tar\.gz$']
+      reason: "the series' only per-sample files are unfiltered matrices (raw_feature_bc_matrix), one archive per single-embryo library; the fixed cell call of t3x_common turns each into called cells"
     pinned: []
 
   # GSE299068 joined the cleared list on 2026-11-20 for its metadata step only (docs/PLAN.md decision log 2026-11-20

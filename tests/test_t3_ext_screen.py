@@ -382,9 +382,10 @@ def test_the_committed_dataset_list_loads_and_holds_back_what_the_plan_holds_bac
     cleared = {a for a, d in ds.items() if d["status"] == "cleared"}
     # GSE277839 and GSE270969 joined the cleared list on 2026-11-20 (docs/PLAN.md decision log 2026-11-20 (gg))
     # GSE299068 joined it the same day for its metadata step (decision log 2026-11-20 (oo))
-    assert cleared == {"GSE205117", "GSE168768", "GSE186934", "GSE137337", "GSE204906", "GSE277839", "GSE270969",
-                       "GSE299068"}
-    assert {a for a, d in ds.items() if d["status"] == "held_phenocopy"} == {"GSE165300", "GSE126128", "GSE280543"}
+    # GSE205117 is held since stage 8: on the team's held list (t3x_common.HELD_EXTRA), its review term not cleared
+    assert cleared == {"GSE168768", "GSE186934", "GSE137337", "GSE204906", "GSE277839", "GSE270969", "GSE299068"}
+    assert {a for a, d in ds.items() if d["status"] == "held_phenocopy"} == {"GSE165300", "GSE126128", "GSE280543",
+                                                                             "GSE205117"}
     assert {a for a, d in ds.items() if d["status"] == "excluded_design"} == {"GSE259342", "E-MTAB-7325"}
     assert ds["GSE205117"]["d"] == 0.5 and ds["GSE137337"]["d"] == 0.5 and ds["GSE168768"]["d"] == 0.5
     for d in ds.values():
@@ -404,7 +405,9 @@ def test_the_committed_dataset_list_loads_and_holds_back_what_the_plan_holds_bac
     # series; every cleared dataset has a pinned block (empty until the two readers fill it)
     held = {a for a, d in ds.items() if d["status"] != "cleared"}
     held |= {s for a in held for s in ds[a]["screen_series"]}
-    assert held == cm.NEVER_FETCH == cm.held_series(ds) and "GSE280587" in cm.NEVER_FETCH
+    # stage 8: the derived held set is those plus the team's held list (HELD_EXTRA, of which NEVER_FETCH is a part)
+    assert held == cm.NEVER_FETCH | {"GSE205117"} and "GSE280587" in cm.NEVER_FETCH
+    assert cm.held_series(ds) == held | cm.HELD_EXTRA == cm.HELD_EXTRA
     for a in cleared:
         assert not set(ds[a]["screen_series"]) & cm.NEVER_FETCH
         assert ds[a]["pinned"] == [] or all(p["arm"] in cm.PIN_ARMS for p in ds[a]["pinned"])
