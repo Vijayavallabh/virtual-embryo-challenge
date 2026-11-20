@@ -8455,3 +8455,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     embryos at embryonic day 9.5 in the public annotation table, 27 remain. This list goes into the dataset entry's
     withheld lines before any plan table is made; no count of any line has been read. The cost of the caution is about
     a fifth of the usable lines; the AI assistant judges that worth it.
+- 2026-11-20 (zz), T1: row T64's outcome; candidate D ends (state at 21:15 UTC, 2026-11-20). Written by the AI assistant.
+  - **Outcome, in the read's fixed words: "D is NOT AHEAD (the chamber cut's mean is not above +0.3)". "What follows:
+    candidate D ends. No question goes to the captain, nothing is built, and nothing is rerun under another row."**
+    Five tries, T1 413 to 418; row T64 holds the fixed statements and the result files are committed.
+  - **The fixed statements.** The arm (the released per-category momentum on the cells ruling R1 holds, here Blood
+    cells alone) against the practice analogue of the file in force, paired per seed: chamber cut +0.12, whole cut
+    +0.09, the three library tasks +1.97, +1.70 and +0.62, ten of ten seeds ahead on every task. The statement asks
+    for a chamber mean above +0.3; it is +0.12. By the rule fixed before the run, candidate D ends and R1 stands.
+  - **The AI assistant's reading after the result, labelled as that, changing nothing.** The sign is the same on all
+    fifty seed-and-task pairs, and the size follows the share of Blood cells in the draw (2.7% of the cuts' cells,
+    about a third of library 1's). The row's own caveats hold: the practice arm prices Blood alone, R1's readout read
+    the same momentum on the same truth, and the library tasks' gains are bounds from in-sample diagnostics. The rule
+    was written to be decided by the chamber cut, and it decided. T1's list after A, B and C is now the hedge file F
+    and the advance file E, each only at the captain's specific word.
