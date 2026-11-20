@@ -2,6 +2,14 @@
 
 ## Current State
 
+- **2026-11-20, 23:33 UTC.** Files are still with the captain on all four boards; no new score reported. The 73-line
+  public knockout set is pinned by two readers (25 lines), its gene-id map is reviewed and pinned, and its first run
+  is done: 12 lines pass every guard. One guard turned out to drop four in ten genuine whole-embryo control libraries
+  at a threshold fixed blind; that question is with independent analysts before any table is read. The practice row
+  for the wider tables (K24) is designed and built; its one review blocker is being fixed. A third round closes the
+  blockers on single-study bulk sets from GEO. Running: E49 (embryo shape), the rebuild of all outside tables. Tries
+  unchanged. What waits: `session-handoff.md`, first bullet.
+
 - **2026-11-20, 22:51 UTC.** Files are still with the captain on all four boards; no new score reported. Since the
   last entry: Task 1's candidate D read NOT AHEAD on practice (T64) and ends. Task 3's combination file CK (the
   two-knockout factor times the square of the outside table) is built for every base under a rule fixed before any
