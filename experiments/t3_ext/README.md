@@ -1,4 +1,4 @@
-# T3 outside-knockout factor tables (stage 7: the stage 6 blockers closed)
+# T3 outside-knockout factor tables (stage 7: the stage 6 blockers closed; unfiltered per-sample matrices)
 
 Campaign branches `campaign/t3-outside-knockouts` (stage 1), `-2` (stage 2), `-3` (stage 3), `-4` (stage 4: series
 membership, files bound to their pin, the series text shown and pinned), `-5` (stage 5: file urls
@@ -7,7 +7,7 @@ on newlines only, plain field names that are screened) and `campaign/t3-ext-arch
 gene-named archives or loose matrices, pinned to the samples they hold with a split rule, and controls from a sister
 series of the same study; sections "Series-level files" and "A control from a sister series" below) and
 `campaign/t3-ext-3` (stage 7: the three blockers and the lesser points of the two reviews of stage 6 closed, section
-"Stage 7" below). Everything of stage 5 stands. Under the captain's ruling of 2026-11-20 (`docs/PLAN.md` decision log
+"Stage 7" below, and an intake for per-sample unfiltered matrices, section "Unfiltered per-sample matrices"). Everything of stage 5 stands. Under the captain's ruling of 2026-11-20 (`docs/PLAN.md` decision log
 2026-11-20 (j), "All three tiers"), outside single-cell data on knockouts of OTHER genes may shape the Task 3 file.
 This folder turns such data into per-gene factor tables in the frozen factor's form, so that a later thin builder can
 take one in place of the Mab21l2 factor. Stage 1 builds the tables only. Nothing here enters a model, a check or an
@@ -23,7 +23,7 @@ scored, and (3) the captain rules on any change to an upload, with a `docs/S2_RU
 | `t3x_common.py` | Fixed constants, `NEVER_FETCH`, `DATASETS_SHA256`, the dataset loader and the pinned-block check, the canonical metadata serialisation, the stage cap (E9.5 inclusive for every cell), shrinkage, the outside-the-repository guard. |
 | `t3x_tables.py` | Finishing a log table into factors (rescale, clip, absent = 1), writing the pooled and per-group forms, the reference statistics. |
 | `fetch.py` | `plan` writes a plan table of every sample of every screened series from GEO's family SOFT; `pin-template` prints the entries of named samples (with `--from-series-file` for samples whose cells are in a series file), or with `--series` the series entries, to paste; `series-file-template` prints one pinned series file entry (stage 6); `check-pins` is the gate; `datasets-sha` prints the hash; `fetch` downloads exactly the pinned files of the pinned samples and the pinned series files. |
-| `process.py` | `reference` writes the WT E8.75 statistics. `run` turns the pinned samples of one fetched dataset (their own files, or their pinned series file split by its rule) into one table per knockout gene plus `QC.json`. |
+| `process.py` | `reference` writes the WT E8.75 statistics. `run` turns the pinned samples of one fetched dataset (their own files, or their pinned series file split by its rule; since stage 7 a declared unfiltered matrix through the one fixed cell call) into one table per knockout gene plus `QC.json`. |
 | `combine.py` | Tier tables (wnt, cardiac, unrelated), the all-knockouts table, one table per study, and leave-one-study-out tables. |
 | `run_dgx.sh` | The detached DGX launcher, with exit files: mode `plan` (the default) or `all` (behind the pinned gate). |
 
@@ -204,6 +204,57 @@ control_series; list under control_series.screen_series only series that hold th
 says the two records share an institute and a contact or a publication; it does not say the protocol is the same or
 that the wild-type embryos fit the knockouts: the readers still check that (check 11).
 
+## Unfiltered per-sample matrices (stage 7)
+
+Some studies' only per-sample files are the vendor pipeline's UNFILTERED output (GSE270969: nine single-embryo
+libraries, each sample with one `raw_feature_bc_matrix` archive of its own). Such a file holds every barcode the
+pipeline saw, empty droplets included. Stage 7 takes it through one fixed cell call, without loosening any rule above.
+
+1. **Declared.** A dataset may declare
+
+   ```yaml
+   raw_matrices:
+     patterns: ['^GSM\d+_[A-Za-z0-9_.+-]*raw_feature_bc_matrix\.tar\.gz$']   # a sample's OWN file name (case kept)
+     reason: "..."                                                             # why the raw files are taken
+   ```
+
+   Only for a dataset with that declaration, and only for a sample file of the sample's own folder that a declared
+   pattern matches, the deny term for unfiltered matrices (`raw_feature_bc_matrix`) is lifted (`fetch.denied`); every
+   other deny term stays (fragments, ATAC, peaks, BAM, the series' `_RAW.tar` ...), the file must still match
+   `sample_file_patterns`, and a name a pattern misses stays denied. A sample that also lists a filtered (not raw)
+   file of its own must use the filtered one: its raw file is then listed as never fetched. A sample's pinned files
+   are all raw or all filtered. Pins, the screen, `NEVER_FETCH`, the derived held set and the dataset-file hash work
+   as before; the plan stores the declaration and a plan made under another is refused; `pins_sha256` takes the
+   declaration in when it is present (a dataset without it keeps its hash). Only GSE270969 declares it, with no pins.
+   The plan table prints the declaration and the cell call at its top, and under each sample with a raw file an
+   `UNFILTERED ...` line; pin-template marks such a sample.
+2. **One fixed cell call**, the same for every sample of every dataset, as constants in `t3x_common` (`RAW_CALL_*`,
+   `RAW_MIN_CELLS`; not configurable per dataset, from the command line or the environment). Per library: each
+   barcode's total UMIs over gene-expression features; N = 3000; m = the 99th percentile (numpy's default linear
+   interpolation) of the N largest totals (all of them when the file holds fewer); a barcode is called a cell when
+   its total is at least max(500, m / 10). Then the pipeline's ordinary per-cell rule (200 detected genes) and its
+   cap on barcodes (60,000) apply to the CALLED cells; a library with fewer than 500 called cells, or more called
+   cells than the cap, is refused. `QC.json` holds `raw_cell_call`: the rule's constants and, per raw sample, the
+   barcodes in the file, the barcodes with any count, m, the cutoff, the cells called and the share of all
+   gene-expression UMIs that the called cells hold (with the feature and entry counts). Each unit's QC says
+   `raw_called` and `raw_called_samples`. Nothing else downstream (unit files, tables, combine) tells a raw-called
+   library from a filtered one.
+3. **Read sparsely.** A raw matrix can hold millions of barcodes and of the order of a hundred million entries. It
+   is read in two streamed passes, never densified and never unpacked: the MatrixMarket header and size line, then
+   the entries in blocks of 64 MiB of text; pass one sums each barcode's gene-expression total, pass two keeps only
+   the called barcodes' entries. Refused: a file above 16 GiB (`RAW_MAX_FILE_BYTES`), a header stating more than 400
+   million entries (`RAW_MAX_ENTRIES`), more than 20 million barcodes (`RAW_MAX_BARCODES`), a header that does not
+   match the features and barcodes files, an entry out of range, negative or not finite, a line over 1 MiB, more or
+   fewer entries than the header states, and a 10x h5 file (the intake reads MatrixMarket triples only). A per-sample
+   archive is read with the member rules of the archive routes (no absolute path, no parent step, no link or device
+   member, no name the screen hits, exactly one barcodes, features and matrix triple in one folder, nothing else;
+   for the members alone the unfiltered-matrix deny term is lifted). A loose raw triple of three files is read the
+   same way.
+4. **What it does not do.** It does not tell nuclei from cells, remove ambient RNA, detect doublets or check that a
+   raw file is one library of one sample: the readers check that from the record (check 12), and the per-sample
+   confidence floor and the guards act downstream as for any library. The cell call was fixed by the design brief
+   before any raw count was read; it was not tuned on any data.
+
 **The canonical serialisation.** A pin's `metadata_sha256` is the sha256 of the UTF-8 bytes of
 
 ```python
@@ -300,6 +351,15 @@ the series) only if both agree on all of these:
     contact name, laboratory or PubMed id); both readers find those values in both SERIES blocks, and the match is a
     floor, not the relation: (a) to (d) still decide; (g) control_series.screen_series lists only series that hold
     the sister's samples alone (a shared superseries goes in the dataset's own screen_series).
+12. **An unfiltered matrix (stage 7, `raw_matrices`).** For each sample whose `UNFILTERED` line names a raw file,
+    both readers confirm from the record (title, description, data_processing, the file name, the series'
+    overall_design) that the raw file is ONE library of ONE sample: one embryo (or one pool of one genotype) in one
+    capture, not an aggregate of several captures or samples, and no other sample of any screened series names the
+    same capture; a record that leaves this open means do not pin. They also check that the sample lists no filtered
+    matrix of its own (the plan table would then list the raw file as never fetched), that the raw file is
+    single-cell or single-nucleus RNA (not ATAC, not a multiome's peaks), and that the knockout and its controls are
+    read the same way (a raw-called arm against a filtered arm is allowed by the code; the readers say so in the
+    pinning commit if they pin it).
 
 ## The rules each step keeps
 
@@ -436,8 +496,11 @@ The steps for the main session, in order (none was run by the engineer):
    ... --from-series-file` (it prints `files: []`), and per file `fetch.py series-file-template ACC --dest
    ~/v/vec-ext/t3 --series GSE --file F --gsm GSM ... --split none|barcode_suffix|folder [--key K=GSM ...]`, pasted
    under a `pinned_series_files:` key. Controls of the sister series are pinned with `--arm control` like any other.
+   A sample of a `raw_matrices` dataset (GSE270969) is pinned with plain `pin-template` (its raw file is in
+   `per-sample files allowed`) only after both readers have applied check 12 to it.
 6. **Commit.** `fetch.py datasets-sha`, put the printed value into `t3x_common.DATASETS_SHA256`, run the t3_ext
-   test files (tests/test_t3_ext_pipeline.py, _ratios.py, _screen.py, _stage_fields.py, _archives.py), and commit `datasets.yaml` and `t3x_common.py` together on `main` (or on a branch merged into it), with the
+   test files (tests/test_t3_ext_pipeline.py, _ratios.py, _screen.py, _stage_fields.py, _archives.py, _raw.py),
+   and commit `datasets.yaml` and `t3x_common.py` together on `main` (or on a branch merged into it), with the
    two readers named in the message. The `EXTERNAL_DATA.md` rows for the datasets that will be fetched go in before
    any table enters a model or a check.
 7. **Sync again** as in step 2, so the DGX checkout holds the pinned `datasets.yaml`.
@@ -521,6 +584,18 @@ Commit 1 of the branch, each with a test that replays the reviewer's reproductio
 - **The per-sample archive route** (stage 1) reads every member through the same checks as a series archive, and a
   per-sample archive holds exactly one triple in one folder and nothing else; a gzipped member is decompressed in
   chunks and refused past 8 GiB.
+
+Commit 2: the intake for per-sample unfiltered matrices (section "Unfiltered per-sample matrices"), declared on
+GSE270969 only, with no pins, and its tests (`tests/test_t3_ext_raw.py`).
+
+What stage 7 could not check: nothing ran against GEO or on real data. GSE270969's real file names, archive layout
+(a `raw_feature_bc_matrix/` folder or loose members, gzipped or not), feature types and sizes were not seen: a name
+the declared pattern misses is listed as never fetched, and an archive that does not fit the member rules is refused
+after the download. How the fixed cell call behaves on single-nucleus libraries of whole E9.5 embryos (how many
+nuclei it calls, how much ambient RNA the called nuclei carry) is unknown until the QC records exist; the readers of
+those records do not change the rule. The sister-series match was tested on synthetic records only: real GEO
+contact fields may differ in spelling between two series of one lab, and the plan then refuses (by design) until a
+reviewed change.
 
 ## What stage 6 could not check
 

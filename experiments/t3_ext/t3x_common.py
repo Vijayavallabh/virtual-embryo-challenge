@@ -72,7 +72,7 @@ STATUSES = ("cleared", "held_phenocopy", "excluded_design")
 # Held and excluded datasets: never fetched by any flag or YAML (the main session's decision of 2026-11-20).
 NEVER_FETCH = frozenset({"GSE165300", "GSE126128", "GSE280543", "GSE280587", "GSE259342", "E-MTAB-7325"})
 # sha256 of the committed datasets.yaml; the pin-and-commit step updates it in the same commit as the YAML.
-DATASETS_SHA256 = "2b18574c6d26fd57eeda84fc29a336024104cce328240d72711d628c6b46cf6e"
+DATASETS_SHA256 = "a22f3f6108e42a024cac2a2b241ded7aa226962bf4e2ebf2c65689b12b9d542f"
 PIN_KEYS = ("accession", "arm", "gene", "stage", "files", "metadata_sha256")
 SERIES_PIN_KEYS = ("accession", "series_metadata_sha256")
 PIN_ARMS = ("ko", "control")
@@ -85,6 +85,21 @@ RELATION_KEYS = ("same_lab", "same_protocol", "same_publication")
 # are not littermates or same-capture (fixed 2026-11-20, stage 6; no score)
 SISTER_D = 0.5
 PLACEHOLDER = "TO FILL"
+# stage 7, piece 2 (2026-11-21): per-sample UNFILTERED matrices (README "Unfiltered per-sample matrices"). ONE fixed
+# cell call, the same for every sample of every dataset; not configurable per dataset, from the command line or the
+# environment. Per library: the total UMIs of each barcode over gene-expression features; m = the 99th percentile
+# (numpy's default linear interpolation) of the RAW_CALL_N largest totals (all of them when the file holds fewer
+# barcodes); a barcode is a cell when its total is at least max(RAW_CALL_MIN_UMI, m / RAW_CALL_RATIO). Fixed by the
+# design brief of 2026-11-21 before any raw count was read (no score, no data).
+RAW_CALL_N = 3000
+RAW_CALL_PERCENTILE = 99.0
+RAW_CALL_RATIO = 10.0
+RAW_CALL_MIN_UMI = 500
+RAW_MIN_CELLS = 500                     # a library with fewer called cells is refused (more than MAX_BARCODES too)
+RAW_MAX_FILE_BYTES = 16 * 1024 ** 3     # a raw file (archive or triple member file) above this size is refused
+RAW_MAX_ENTRIES = 400_000_000           # a raw matrix whose header states more entries is refused
+RAW_MAX_BARCODES = 20_000_000           # a raw matrix with more barcodes in its file is refused
+RAW_KEYS = ("patterns", "reason")
 # Aliases matched only after an exact symbol fails (both directions); nothing else is renamed.
 ALIASES = {"T": "Tbxt", "Tbxt": "T", "Hbb-y": "Hbb-bh0", "Hbb-bh0": "Hbb-y"}
 
@@ -173,7 +188,7 @@ _KEYS = {"accession", "status", "status_reason", "tier", "study", "kind", "desig
          "exclude_match_on",
          "design_refuse", "chemistry", "expect", "sample_file_patterns", "files_note", "licence", "why", "risks",
          "verified", "screen_extra_refuse", "review_cleared", "cell_labels", "citation", "pinned",
-         "pinned_series", "stage_fields", "series_files", "pinned_series_files", "control_series"}
+         "pinned_series", "stage_fields", "series_files", "pinned_series_files", "control_series", "raw_matrices"}
 _SHA = re.compile(r"[0-9a-f]{64}")
 _GSM = re.compile(r"GSM\d+")
 _GSE = re.compile(r"GSE\d+")
@@ -417,6 +432,56 @@ def check_series_file_patterns(acc: str, ds: dict, where: str = "datasets.yaml")
     return sf
 
 
+def check_raw_matrices(acc, ds: dict, where: str = "datasets.yaml") -> dict | None:
+    """The raw_matrices declaration (stage 7, piece 2), checked for form: absent means none; else exactly {patterns,
+    reason}, patterns a non-empty list of regular expressions that compile (matched against a sample's OWN file
+    name), reason a statement (no placeholder). Only for such a dataset, and only for a sample file a pattern
+    matches, is the deny term for unfiltered matrices lifted (fetch.denied); every other deny term stays."""
+    r = ds.get("raw_matrices")
+    if r is None:
+        return None
+    if not isinstance(r, dict) or sorted(r) != sorted(RAW_KEYS):
+        raise Refused(f"{where}: {acc}: raw_matrices must have exactly the keys {RAW_KEYS}")
+    if not isinstance(r["patterns"], list) or not r["patterns"]:
+        raise Refused(f"{where}: {acc}: raw_matrices.patterns must be a non-empty list")
+    for pat in r["patterns"]:
+        try:
+            re.compile(pat)
+        except (re.error, TypeError):
+            raise Refused(f"{where}: {acc}: raw_matrices pattern {pat!r} does not compile") from None
+    if not isinstance(r["reason"], str) or not r["reason"].strip() or PLACEHOLDER in r["reason"]:
+        raise Refused(f"{where}: {acc}: raw_matrices.reason must state why the samples' raw files are taken")
+    return r
+
+
+def raw_patterns(ds: dict) -> list[re.Pattern]:
+    """The compiled raw_matrices patterns of one dataset ([] without the declaration)."""
+    r = ds.get("raw_matrices")
+    return [re.compile(p) for p in r["patterns"]] if isinstance(r, dict) else []
+
+
+def raw_cell_call(totals) -> tuple:
+    """The ONE fixed cell call of an unfiltered library (README "Unfiltered per-sample matrices"): (called mask, {m,
+    cutoff, cells_called}). totals: each barcode's total UMIs over gene-expression features. m is the 99th percentile
+    (numpy's default linear interpolation) of the RAW_CALL_N largest totals; a barcode is called when its total is at
+    least max(RAW_CALL_MIN_UMI, m / RAW_CALL_RATIO). No argument changes the rule."""
+    import numpy as np
+
+    t = np.asarray(totals, dtype=np.float64)
+    top = np.sort(t)[::-1][:RAW_CALL_N]
+    m = float(np.percentile(top, RAW_CALL_PERCENTILE)) if len(top) else 0.0
+    cutoff = max(float(RAW_CALL_MIN_UMI), m / RAW_CALL_RATIO)
+    called = t >= cutoff
+    return called, {"m": m, "cutoff": cutoff, "cells_called": int(called.sum())}
+
+
+def raw_call_rule() -> dict:
+    """The constants of the fixed cell call, as QC.json records them."""
+    return {"n_largest": RAW_CALL_N, "percentile": RAW_CALL_PERCENTILE, "ratio": RAW_CALL_RATIO,
+            "min_umi": RAW_CALL_MIN_UMI, "min_cells": RAW_MIN_CELLS, "max_cells": MAX_BARCODES,
+            "per_cell_rule": f"at least {MIN_GENES_PER_CELL} detected genes, applied to the called cells"}
+
+
 def triple_kind(name: str) -> str | None:
     """'matrix', 'barcodes' or 'features' when a file or member name is part of a 10x triple (the kind's name alone
     or after '_', '-' or '.', optionally gzipped; genes.tsv counts as features), else None."""
@@ -579,6 +644,7 @@ def load_datasets(path: Path | None = None) -> dict[str, dict]:
         check_review_cleared(ds.get("review_cleared") or [])
         check_control_series(acc, ds, str(path))
         check_series_file_patterns(acc, ds, str(path))
+        check_raw_matrices(acc, ds, str(path))
         pins = check_pins(acc, ds, str(path))
         if pins:
             pinned_units(pins)
@@ -706,6 +772,8 @@ def pins_sha256(ds: dict) -> str:
         rec["series_files"] = ds["pinned_series_files"]
     if control_series(ds):
         rec["control_series"] = control_series(ds)
+    if ds.get("raw_matrices"):   # stage 7: only when present, so a dataset without it keeps its hash
+        rec["raw_matrices"] = ds["raw_matrices"]
     return hashlib.sha256(json.dumps(rec, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
                           .encode("utf-8")).hexdigest()
 

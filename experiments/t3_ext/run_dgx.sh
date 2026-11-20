@@ -19,6 +19,12 @@
 #        raw/<ACC>/<GSE>/, never unpacked; process reads them member by member in memory and splits them by their
 #        pinned rule. The --max-gb 30 cap covers series files too: a dataset over it refuses (raise it only in a
 #        reviewed commit).
+#   Stage 7: a dataset with a raw_matrices declaration (GSE270969 only) offers its samples' own unfiltered matrices in
+#        its plan tables; once two readers have pinned them (README check 12), fetch downloads the pinned raw files
+#        like any other and process reads each through the one fixed cell call of t3x_common (README "Unfiltered
+#        per-sample matrices"), streamed in two passes, never unpacked. A raw archive may be several GiB: the
+#        --max-gb 30 cap covers it too (raise it only in a reviewed commit). Name GSE270969 explicitly, e.g.
+#        run_dgx.sh "$PWD" plan "GSE270969", while it is not in the default list below.
 #   ACCESSIONS: a quoted, space-separated subset (default: the five cleared datasets).
 #   WT (environment, optional): the WT E8.75 file, read only; default CHECKOUT/data/raw/T2/E8.75.h5ad.
 #

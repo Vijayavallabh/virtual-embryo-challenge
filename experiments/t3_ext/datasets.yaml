@@ -636,4 +636,13 @@ datasets:
     why: "a whole-embryo E9.5 knockout of an RNA cap methyltransferase with several embryos per arm and a same-series control"
     risks: "nuclei, not cells; unfiltered matrices, so the cell floor does the cell calling and the library cap may refuse; stage and genotype fields not yet read"
     verified: false
+    # Stage 7 (2026-11-21, campaign/t3-ext-3; README "Unfiltered per-sample matrices"). Its only per-sample files are the
+    # vendor pipeline's unfiltered output, one raw_feature_bc_matrix archive per sample (per the searchers; the exact
+    # names were not seen by the engineer). This declaration lifts the unfiltered-matrix deny term for a sample's OWN
+    # file that the pattern names, and for nothing else; process reads such a file through the one fixed cell call of
+    # t3x_common (RAW_CALL_*). Nothing is pinned: the two readers read the plan table first and confirm from the record
+    # that each raw file is one library of one sample. A name the pattern misses is listed as never fetched.
+    raw_matrices:
+      patterns: ['^GSM\d+_[A-Za-z0-9_.+-]*raw_feature_bc_matrix\.tar\.gz$']
+      reason: "the series' only per-sample files are unfiltered matrices (raw_feature_bc_matrix), one archive per single-embryo library; the fixed cell call of t3x_common turns each into called cells"
     pinned: []

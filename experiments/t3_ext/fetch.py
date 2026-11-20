@@ -59,6 +59,11 @@ Stage 6 (README "Series-level files", "A control from a sister series"):
                        D/raw/<ACC>/<GSE>/, their links derived again from the hashed series fields
                        (verify_series_units), each record bound to the series' text hash, url and pins.
 
+Stage 7 (README "Unfiltered per-sample matrices"): a dataset's raw_matrices declaration names, by pattern, the samples'
+OWN unfiltered matrix files; for such a file alone the unfiltered-matrix deny term is lifted (denied), every other term
+stays, and a sample that also lists a filtered file of its own uses that one. A named control series is accepted only
+when its record and the own series' share an institute and a contact or publication value (sister_match).
+
 Stage 5 parsing: a SOFT text is split on "\\n" only; a line holding another line or paragraph separator, a field name
 that is not a plain GEO key, or a block accession that is not GSM/GSE digits refuses the dataset, its text withheld.
 Field names are screened like values, and the series' contact fields are screened too.
@@ -93,6 +98,17 @@ USER_AGENT = "python-urllib (public metadata and data download)"
 # never fetched, whatever a dataset's patterns say
 DENY = re.compile(r"fastq|\.bam$|\.bai$|fragments|atac|peaks?[._]|\.bw$|bigwig|\.bed(\.gz)?$|raw_feature_bc_matrix|"
                   r"cloupe|\.sra$|_raw\.tar$|\.h5seurat$", re.IGNORECASE)
+# stage 7, piece 2: DENY is the two parts below. The unfiltered-matrix term alone is lifted, and only for a sample
+# file that a dataset's raw_matrices declaration names (denied(name, raw_ok=True)); every other term always stays.
+DENY_RAW = re.compile(r"raw_feature_bc_matrix", re.IGNORECASE)
+DENY_NOT_RAW = re.compile(r"fastq|\.bam$|\.bai$|fragments|atac|peaks?[._]|\.bw$|bigwig|\.bed(\.gz)?$|cloupe|\.sra$|"
+                          r"_raw\.tar$|\.h5seurat$", re.IGNORECASE)
+
+
+def denied(name: str, raw_ok: bool = False) -> bool:
+    """True if the name is a denied type: any DENY term, or with raw_ok (a declared raw file of a raw_matrices
+    dataset only) any term but the unfiltered-matrix one."""
+    return bool(DENY_NOT_RAW.search(name) or (not raw_ok and DENY_RAW.search(name)))
 _STAGE_KEY = re.compile(r"stage|age|time|day", re.IGNORECASE)
 _STAGE_VAL = re.compile(r"(?<![a-z0-9])(?:e\s?|embryonic day\s*)(\d+(?:\.\d+)?)", re.IGNORECASE)
 _STAGE_RANGE = re.compile(r"\d\s*(?:-|–|to)\s*e?\s*\d", re.IGNORECASE)
@@ -378,6 +394,7 @@ def sample_files(ds: dict, rec: dict, gsm: str) -> tuple[list[dict], list[dict]]
     is not a denied type and matches a sample_file_patterns entry. The list is derived from the record's (hashed)
     fields: verify_pins derives it again and never trusts a stored list."""
     pats = [re.compile(p, re.IGNORECASE) for p in ds.get("sample_file_patterns") or []]
+    raw_pats = cm.raw_patterns(ds)
     ok, other = [], []
     for f in [v for k in sorted(rec) if k.startswith("supplementary_file") for v in rec[k]]:
         if f.upper() == "NONE":
@@ -385,16 +402,24 @@ def sample_files(ds: dict, rec: dict, gsm: str) -> tuple[list[dict], list[dict]]
         name = Path(urllib.parse.urlparse(f).path).name
         named = _named_held(ds, f)
         u, why = own_file(gsm, f)
+        # stage 7: a file of the sample's own folder that a raw_matrices pattern names is an unfiltered matrix read
+        # through the fixed cell call; for it alone the unfiltered-matrix deny term is lifted
+        raw = bool(u) and any(p.search(name) for p in raw_pats)
         if named:
             why = f"url names a held or excluded accession {sorted(named)}"
-        elif u and DENY.search(name):
+        elif u and denied(name, raw_ok=raw):
             why = "a denied file type"
         elif u and not any(p.search(name) for p in pats):
             why = "not matched by the dataset's sample_file_patterns"
         if why:
             other.append({"name": name, "reason": why})
         else:
-            ok.append({"name": name, "url": u})
+            ok.append({"name": name, "url": u, **({"raw": True} if raw else {})})
+    # stage 7: a sample that also lists a filtered (not raw) file of its own uses that one; its raw files are refused
+    if any(f.get("raw") for f in ok) and any(not f.get("raw") for f in ok):
+        other += [{"name": f["name"], "reason": "an unfiltered matrix of a sample that lists a filtered file of its "
+                   "own: the filtered one is used"} for f in ok if f.get("raw")]
+        ok = [f for f in ok if not f.get("raw")]
     return ok, other
 
 
@@ -637,6 +662,8 @@ def plan_from_meta(ds: dict, metas: dict[str, dict]) -> dict:
                             "role": ("control series" if s in cm.sister_series(ds) else "screened series")}
     c = cm.control_series(ds)
     sister_refusal = None
+    if ds.get("raw_matrices"):
+        out["raw_matrices"] = ds["raw_matrices"]   # stage 7: the plan is bound to the raw declaration it was made under
     if c:
         out["control_series"] = c
         # stage 7: the code matches the two records before any reader is asked to (blocker 2 of 853b214)
@@ -704,6 +731,8 @@ def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
     c = cm.control_series(ds)
     if (pl.get("control_series") or None) != (c or None):
         raise Refused(f"{acc}: the plan was made under another control_series declaration: plan again")
+    if (pl.get("raw_matrices") or None) != (ds.get("raw_matrices") or None):
+        raise Refused(f"{acc}: the plan was made under another raw_matrices declaration: plan again")
     if c:
         # stage 7: the two series' records must still share the institute and one more contact or publication value,
         # derived again from the stored (or live) series fields, and equal to what the plan table printed
@@ -767,9 +796,11 @@ def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
         if dup:
             raise Refused(f"{g}: two supplementary links share the file name(s) {dup}: refused")
         allowed = {f["name"]: f for f in derived}
-        bad = [f for f in p["files"] if f not in allowed or DENY.search(f)]
+        bad = [f for f in p["files"] if f not in allowed or denied(f, raw_ok=bool(allowed[f].get("raw")))]
         if bad:
             raise Refused(f"{g}: pinned files {bad} are not per-sample files of its plan entry")
+        if len({bool(allowed[f].get("raw")) for f in p["files"]}) > 1:
+            raise Refused(f"{g}: pinned files mix an unfiltered matrix with other files: refused")
         for pat in ds.get("design_refuse") or []:
             if re.search(pat, sample_text(row["fields"]), re.IGNORECASE):
                 raise Refused(f"{g}: design_refuse {pat!r} matches a pinned sample")
@@ -874,6 +905,19 @@ def control_series_lines(c: dict | None, match: dict | None = None) -> list[str]
             *(shared or ["#   the code matched: nothing (the plan is refused)"])]
 
 
+def raw_matrices_lines(r: dict | None) -> list[str]:
+    """The raw_matrices declaration and the fixed cell call, as the readers check them (stage 7, piece 2)."""
+    if not r:
+        return []
+    return ["# RAW MATRICES (datasets.yaml raw_matrices): a sample's OWN file matching one of these patterns is an "
+            "unfiltered matrix; the unfiltered-matrix deny term is lifted for it alone",
+            f"#   patterns {r['patterns']}; reason: {r['reason']}",
+            f"#   the one fixed cell call (t3x_common): per library, m = the {cm.RAW_CALL_PERCENTILE:g}th percentile "
+            f"of the {cm.RAW_CALL_N} largest gene-expression UMI totals; a cell has a total of at least max("
+            f"{cm.RAW_CALL_MIN_UMI}, m / {cm.RAW_CALL_RATIO:g}); fewer than {cm.RAW_MIN_CELLS} or more than "
+            f"{cm.MAX_BARCODES} called cells refuse the library"]
+
+
 def write_tables(pl: dict, mdir: Path) -> list[str]:
     """One human-readable plan table per series (the readers read these). At the top of each, before any sample, a
     block per screened series: its accession, series_metadata_sha256 and every field verbatim."""
@@ -894,6 +938,7 @@ def write_tables(pl: dict, mdir: Path) -> list[str]:
                 lines.append(f"{r['accession']}  verdict {r['verdict']}  fields hit {r['fields_hit']}")
         else:
             lines += control_series_lines(pl.get("control_series"), pl.get("control_series_match"))
+            lines += raw_matrices_lines(pl.get("raw_matrices"))
             sister = (pl.get("control_series") or {}).get("accession")
             if series == sister:
                 lines.append(f"# THIS IS THE CONTROL SERIES of {pl['accession']}: a sample here is pinned as a control "
@@ -914,6 +959,9 @@ def write_tables(pl: dict, mdir: Path) -> list[str]:
                              f"{r['suggested']['gene']}; parsed stage {stage} ({r['stage_from']}); "
                              f"parsed chemistry {r['chemistry']}")
                 lines.append(f"  per-sample files allowed: {[f['name'] for f in r['files']] or 'none'}")
+                if any(f.get("raw") for f in r["files"]):
+                    lines.append("  UNFILTERED (raw_matrices; read through the fixed cell call; confirm it is ONE "
+                                 f"library of THIS sample): {[f['name'] for f in r['files'] if f.get('raw')]}")
                 never = "; ".join(f"{o['name']} ({o['reason']})" for o in r["other_files"])
                 lines.append(f"  other supplementary files (never fetched, with the reason): {never or 'none'}")
                 lines.append(f"  screen hits: {r['hits'] or 'none'}"
@@ -1035,7 +1083,7 @@ def fetch(acc: str, dest: Path, datasets: Path | None = None, max_bytes: int = M
                 q.unlink()
                 man["files"].pop(f"{gsm}/{q.name}", None)
         for f in s["files"]:
-            if DENY.search(f["name"]):
+            if denied(f["name"], raw_ok=bool(f.get("raw"))):
                 raise Refused(f"{f['name']}: a denied file type")
             key = f"{gsm}/{f['name']}"
             p = sdir / f["name"]
@@ -1198,6 +1246,10 @@ def _pin_template(acc: str, dest: Path, arm: str, gene: str, gsms: list[str], da
                        ": pin it only with review_cleared entries the readers agree")
         if g not in {x["accession"] for x in pl["tables"][acc]}:
             out.append(f"# {g} is a sample of the CONTROL SERIES {c['accession']}: its unit takes d = {cm.SISTER_D}")
+        if not from_series_file and any(f.get("raw") for f in r["files"]):
+            out.append(f"# {g}: its file is an UNFILTERED matrix (raw_matrices): process applies the one fixed cell "
+                       "call; pin it only if both readers confirmed from the record that it is ONE library of THIS "
+                       "sample")
         files = "" if from_series_file else ", ".join(json.dumps(f["name"]) for f in r["files"])
         if from_series_file:
             out.append(f"# {g}: files [] because its cells come from a pinned series file (series-file-template)")
