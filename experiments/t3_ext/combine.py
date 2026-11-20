@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 """Tier tables, the all-knockouts table and leave-one-study-out tables from processed outside-knockout units.
 
-  combine --processed D/processed --refstats D/reference/refstats.npz --out D/tables
+  combine --processed D/processed --refstats D/reference/refstats.npz --out D/tables --dest D
 
 Inputs: every <ACC>/QC.json under --processed whose accession is in datasets.yaml with status cleared. A QC that
 failed, a unit file whose sha256 differs from its QC record, a unit computed against other reference statistics, a
 QC made under other pins than the committed datasets.yaml holds, or any output of a NEVER_FETCH accession refuses the
-run. Only the committed datasets.yaml is read (no flag takes another). A dataset or unit with status 'left_out' (no
-group passed its guards) is left out and recorded.
+run. Stage 5: so does a QC whose plan is gone or changed: D/meta/<ACC>/plan.json must exist, pass (status ok, the
+committed datasets.yaml, its pins verified) and hash to the QC's plan_sha256. Only the committed datasets.yaml is
+read (no flag takes another). A dataset or unit with status 'left_out' (no group passed its guards) is left out and
+recorded.
 
 Weights, fixed 2026-11-20 (none from a score), all in log space before each table's finish (t3x_tables.finish):
   * inside a study: a knockout gene's value per (group, gene) is the mean over every (dataset, stage) entry of that
@@ -36,6 +38,7 @@ import numpy as np
 HERE = Path(__file__).resolve().parent
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
+import fetch as fe  # noqa: E402  (experiments/t3_ext/fetch.py: the plan loader and the pin check)
 import t3x_common as cm  # noqa: E402
 import t3x_tables as tb  # noqa: E402
 
@@ -59,7 +62,24 @@ def sign_rule_mean(V: np.ndarray, n_table_studies: int) -> tuple[np.ndarray, np.
     return out, same, n
 
 
-def load_units(processed: Path, datasets: Path | None, ref: dict) -> tuple[list[dict], dict]:
+def check_plan(acc: str, qc: dict, dest: Path, datasets: Path | None) -> None:
+    """Stage 5: a QC counts only while the plan it ran under is still the stored plan: dest/meta/<ACC>/plan.json
+    exists, says ok, was made from the committed datasets.yaml, its pins still verify, and it hashes to the QC's
+    plan_sha256. Refused otherwise."""
+    pp = Path(dest) / "meta" / acc / "plan.json"
+    if pp.is_symlink() or not pp.is_file():
+        raise Refused(f"{acc}: no stored plan at {pp}: its processed output is refused")
+    want = qc.get("plan_sha256")
+    if not isinstance(want, str) or cm.sha256_file(pp) != want:
+        raise Refused(f"{acc}: its plan no longer passes or changed since processing (plan_sha256): refused")
+    try:
+        pl = fe._load_plan(acc, Path(dest), datasets)
+        fe.verify_pins(cm.dataset(acc, datasets), pl)
+    except Refused as e:
+        raise Refused(f"{acc}: its plan no longer passes or changed since processing ({e}): refused") from None
+
+
+def load_units(processed: Path, datasets: Path | None, ref: dict, dest: Path) -> tuple[list[dict], dict]:
     allds = cm.load_datasets(datasets)
     units, record = [], {"left_out": [], "not_cleared": [], "inputs": {}}
     for qcp in sorted(Path(processed).glob("*/QC.json")):
@@ -74,7 +94,8 @@ def load_units(processed: Path, datasets: Path | None, ref: dict) -> tuple[list[
             raise Refused(f"{acc}: its QC failed ({qc.get('reason')}): refused")
         if not allds[acc]["pinned"] or qc.get("pins_sha256") != cm.pins_sha256(allds[acc]):
             raise Refused(f"{acc}: processed under other pins than datasets.yaml holds now: refused")
-        record["inputs"][acc] = {"qc": str(qcp), "qc_sha256": cm.sha256_file(qcp)}
+        check_plan(acc, qc, dest, datasets)
+        record["inputs"][acc] = {"qc": str(qcp), "qc_sha256": cm.sha256_file(qcp), "plan_sha256": qc["plan_sha256"]}
         for gene, u in (qc.get("units") or {}).items():
             if u.get("status") == "failed":
                 raise Refused(f"{acc} {gene}: unit QC failed: refused")
@@ -150,10 +171,10 @@ def finish_pooled_log(pooled: np.ndarray, per_group: dict, studies: dict, names:
     return tb.finish(pooled, den)
 
 
-def combine(processed: Path, refstats: Path, out: Path, datasets: Path | None = None) -> dict:
+def combine(processed: Path, refstats: Path, out: Path, datasets: Path | None = None, *, dest: Path) -> dict:
     out = cm.outside_repo(out)
     ref = tb.load_ref_stats(refstats)
-    units, record = load_units(processed, datasets, ref)
+    units, record = load_units(processed, datasets, ref, cm.outside_repo(dest))
     if not units:
         raise Refused("no unit passed: nothing to combine")
     studies = study_tables(units, ref["groups"], len(ref["genes"]))
@@ -194,9 +215,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--processed", type=Path, required=True)
     ap.add_argument("--refstats", type=Path, required=True)
     ap.add_argument("--out", type=Path, required=True)
+    ap.add_argument("--dest", type=Path, required=True, help="the fetch destination holding meta/<ACC>/plan.json")
     a = ap.parse_args(argv)
     try:
-        r = combine(a.processed, a.refstats, a.out)
+        r = combine(a.processed, a.refstats, a.out, dest=a.dest)
     except Refused as e:
         print(f"refused: {e}")
         return 2

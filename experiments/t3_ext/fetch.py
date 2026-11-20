@@ -41,8 +41,15 @@ the list says.
                        plan table (or belongs to another series, or whose series_id lists a series outside
                        screen_series or a held one), a pinned sample whose stored metadata no longer hashes to its pin
                        or no longer passes the screen, a file not in that sample's plan entry. Nothing is unpacked, no
-                       count is read, and no file of an unpinned sample is requested. fetch checks the STORED plan:
-                       run it only through run_dgx.sh MODE all, whose replan checks the live metadata first.
+                       count is read, and no file of an unpinned sample is requested. Stage 5: the urls come only from
+                       the file list derived again from each pinned sample's hashed fields (a stored list that differs
+                       refuses), and a symlinked raw, dataset or sample folder or manifest refuses. fetch checks the
+                       STORED plan: run it only through run_dgx.sh MODE all, whose replan checks the live metadata
+                       first. raw/ and MANIFEST.json are written by fetch only.
+
+Stage 5 parsing: a SOFT text is split on "\\n" only; a line holding another line or paragraph separator, a field name
+that is not a plain GEO key, or a block accession that is not GSM/GSE digits refuses the dataset, its text withheld.
+Field names are screened like values, and the series' contact fields are screened too.
 
 Requests go only to ftp.ncbi.nlm.nih.gov over https, with a generic user agent and nothing that names a team, a
 person or a challenge. Exit status 2 on a refusal.
@@ -104,6 +111,28 @@ def https_url(url: str) -> str:
 
 
 OTHER = "_other_lines"
+# the characters str.splitlines() also splits on, besides "\n": after a split on "\n" alone (one trailing "\r" stripped
+# per line) any of these left in a line refuses the dataset, its text withheld (stage 5)
+LINE_SEPARATORS = "\r\x0b\x0c\x1c\x1d\x1e\x85  "
+# a field name is a plain GEO key: ASCII letters, digits and underscores. One exception, GEO's own contact field name
+# 'contact_zip/postal_code' (from memory of the SOFT format, not checked on a real file)
+_KEY = re.compile(r"[A-Za-z0-9_]+")
+KEY_EXCEPTIONS = frozenset({"contact_zip/postal_code"})
+
+
+def plain_key(key: str) -> bool:
+    return bool(_KEY.fullmatch(key)) or key in KEY_EXCEPTIONS
+
+
+def bad_field_names(metas: dict[str, dict]) -> list[str]:
+    """The series and sample accessions whose records hold a field name that is not a plain GEO key (never the name
+    itself: the dataset's text is withheld)."""
+    bad = []
+    for series, meta in metas.items():
+        if not all(plain_key(k) for k in meta.get("series", {})):
+            bad.append(series)
+        bad += [g for g, rec in meta.get("samples", {}).items() if not all(plain_key(k) for k in rec)]
+    return bad
 
 
 def decode_soft(raw: bytes, series: str) -> str:
@@ -123,15 +152,33 @@ def parse_soft(text: str) -> dict:
     line of another prefix or without '=', a '#' column description, a table row) is KEPT, stripped, under the field
     '_other_lines', so it is shown, hashed and screened like any field. Lines outside those blocks (PLATFORM and
     DATABASE blocks, lines before the first block) are not kept: they are counted per block kind in 'not_shown', and
-    the plan table prints the counts."""
+    the plan table prints the counts.
+
+    Lines are split on "\n" only, with one trailing "\r" stripped per line (stage 5: str.splitlines() also split a
+    field on U+2028, U+2029, U+0085, vertical tab, form feed, the file, group and record separators and a lone carriage
+    return, so a field's tail could land in a PLATFORM block that is only counted). A line that still holds any of
+    those characters (LINE_SEPARATORS), or a '!Series_' or '!Sample_' field whose name is not a plain GEO key (ASCII
+    letters, digits, underscore; KEY_EXCEPTIONS aside), refuses the dataset with its text withheld: Refused names the
+    block and the line number only."""
     series: dict[str, list[str]] = {}
     samples: dict[str, dict[str, list[str]]] = {}
     not_shown: dict[str, int] = {}
     cur, cur_kind = None, None
-    for line in text.splitlines():
+    for i, line in enumerate(text.split("\n"), 1):
+        if line.endswith("\r"):
+            line = line[:-1]
+        if any(c in LINE_SEPARATORS for c in line):
+            where = cur if cur_kind in ("SAMPLE", "SERIES") else "the SOFT file"
+            raise Refused(f"{where}: a line-separator or paragraph-separator character inside a SOFT "
+                          f"line (line {i}; one of CR, VT, FF, FS, GS, RS, NEL, U+2028, U+2029): the dataset is "
+                          "refused, its text withheld; read the raw file by hand")
         if line.startswith("^"):
             kind, _, ident = line[1:].partition("=")
             cur_kind, cur = kind.strip().upper(), ident.strip()
+            if ((cur_kind == "SAMPLE" and not re.fullmatch(r"GSM\d+", cur))
+                    or (cur_kind == "SERIES" and not re.fullmatch(r"GSE\d+", cur))):
+                raise Refused(f"a {cur_kind} block whose accession is not a plain GEO accession (line {i}): the "
+                              "dataset is refused, its text withheld; read the raw file by hand")
             if cur_kind == "SAMPLE":
                 samples.setdefault(cur, {})
             continue
@@ -146,6 +193,9 @@ def parse_soft(text: str) -> dict:
         key, eq, val = line[1:].partition("=")
         key, val = key.strip(), val.strip()
         if line.startswith("!") and eq and key.startswith(prefix) and key[len(prefix):] != OTHER:
+            if not plain_key(key[len(prefix):]):
+                raise Refused(f"{cur}: a field name that is not a plain GEO key (line {i}): the dataset is refused, "
+                              "its text withheld; read the raw file by hand")
             rec.setdefault(key[len(prefix):], []).append(val)
         else:
             rec.setdefault(OTHER, []).append(line.strip())
@@ -214,22 +264,80 @@ def resolve_arm(ds: dict, rec: dict) -> tuple[str | None, str | None]:
     return None, None
 
 
-def sample_files(ds: dict, rec: dict) -> tuple[list[dict], list[str]]:
-    """(per-sample files the dataset's patterns allow, as {name, url}; every other supplementary file name)."""
+def sample_stub(gsm: str) -> str:
+    """GEO's folder stub of a sample accession: GSM1234567 -> GSM1234nnn, GSM123 -> GSMnnn."""
+    if not re.fullmatch(r"GSM\d+", gsm):
+        raise Refused(f"{gsm}: not a GEO sample accession")
+    return "GSM" + gsm[3:-3] + "nnn"
+
+
+_FILE_NAME = re.compile(r"[A-Za-z0-9._+-]+")
+_ACCESSION = re.compile(r"(?:GSE|GSM|GPL|GDS)\d+|E-[A-Z]+-\d+", re.IGNORECASE)
+
+
+def _named_held(ds: dict, text: str) -> set[str]:
+    held = {h.upper() for h in held_set(ds)}
+    return {m.group(0).upper() for m in _ACCESSION.finditer(text)} & held
+
+
+def held_links(ds: dict, rec: dict) -> list[str]:
+    """The held accessions (held_set) that any supplementary link of the record names."""
+    return sorted({h for k in rec if k.startswith("supplementary_file") for v in rec[k] for h in _named_held(ds, v)})
+
+
+def own_file(gsm: str, url: str) -> tuple[str | None, str]:
+    """(the https url, '') if the link is a file in the sample's OWN GEO folder, exactly
+    https://ftp.ncbi.nlm.nih.gov/geo/samples/<stub>/<gsm>/suppl/<gsm>_<name> (no port, user, query or fragment, a plain
+    file name); else (None, the reason)."""
+    if not re.fullmatch(r"GSM\d+", gsm):
+        return None, "the record is not a GEO sample accession"
+    try:
+        u = https_url(url)
+    except Refused:
+        return None, "not an https or ftp link on the repository host"
+    p = urllib.parse.urlparse(u)
+    if p.netloc != HOSTS[0] or p.params or p.query or p.fragment:
+        return None, "not a plain link on the repository host"
+    name = p.path.rsplit("/", 1)[-1]
+    if p.path != f"/geo/samples/{sample_stub(gsm)}/{gsm}/suppl/{name}":
+        return None, "url not under the sample's own GEO folder"
+    if not _FILE_NAME.fullmatch(name) or ".." in name:
+        return None, "file name holds a character outside letters, digits and . _ + -"
+    if not name.startswith(f"{gsm}_"):
+        return None, "file name does not start with the sample's accession"
+    return u, ""
+
+
+def sample_files(ds: dict, rec: dict, gsm: str) -> tuple[list[dict], list[dict]]:
+    """(per-sample files the dataset's patterns allow, as {name, url}, in the record's order; every other
+    supplementary link as {name, reason}, never fetched). Stage 5: a file is kept only when its link is in the
+    sample's own GEO folder with a name that starts with the sample's accession (own_file), names no held accession,
+    is not a denied type and matches a sample_file_patterns entry. The list is derived from the record's (hashed)
+    fields: verify_pins derives it again and never trusts a stored list."""
     pats = [re.compile(p, re.IGNORECASE) for p in ds.get("sample_file_patterns") or []]
     ok, other = [], []
     for f in [v for k in sorted(rec) if k.startswith("supplementary_file") for v in rec[k]]:
         if f.upper() == "NONE":
             continue
         name = Path(urllib.parse.urlparse(f).path).name
-        if DENY.search(name) or not any(p.search(name) for p in pats):
-            other.append(name)
-            continue
-        try:
-            ok.append({"name": name, "url": https_url(f)})
-        except Refused:
-            other.append(name)
+        named = _named_held(ds, f)
+        u, why = own_file(gsm, f)
+        if named:
+            why = f"url names a held or excluded accession {sorted(named)}"
+        elif u and DENY.search(name):
+            why = "a denied file type"
+        elif u and not any(p.search(name) for p in pats):
+            why = "not matched by the dataset's sample_file_patterns"
+        if why:
+            other.append({"name": name, "reason": why})
+        else:
+            ok.append({"name": name, "url": u})
     return ok, other
+
+
+def duplicate_names(files: list[dict]) -> list[str]:
+    names = [f["name"] for f in files]
+    return sorted({n for n in names if names.count(n) > 1})
 
 
 def screen_all(ds: dict, metas: dict[str, dict]) -> dict:
@@ -238,12 +346,12 @@ def screen_all(ds: dict, metas: dict[str, dict]) -> dict:
     extra, cleared = ds.get("screen_extra_refuse"), ds.get("review_cleared")
     pinned = {p["accession"] for p in ds.get("pinned") or []}
     for series, meta in metas.items():
-        # every series-level text field (title, summary, overall_design, type, relations ...) is screened alike: a
-        # held-out term refuses, and so does a review term not cleared for this series; contact fields are skipped
+        # every series-level text field (title, summary, overall_design, type, relations and, since stage 5, the
+        # contact fields) and every field NAME is screened alike: a held-out term refuses, and so does a review term
+        # not cleared for this series
         texts = []
         for key, vals in meta["series"].items():
-            if key.startswith("contact_"):
-                continue
+            texts.append((f"{key} (field name)", key))
             for v in vals:
                 texts.append((key, Path(urllib.parse.urlparse(v).path).name if key == "supplementary_file" else v))
         void = any(sc.extended(t) for _, t in texts)
@@ -292,21 +400,37 @@ def series_membership(ds: dict, rec: dict) -> str | None:
     return None
 
 
+def pin_blocker(ds: dict, rec: dict) -> str | None:
+    """Why the sample can never be pinned (its series membership, or a supplementary link that names a held
+    accession), or None."""
+    why = series_membership(ds, rec)
+    if why:
+        return why
+    held = held_links(ds, rec)
+    return f"a supplementary link names the held or excluded accession(s) {held}" if held else None
+
+
 def _row(ds: dict, series: str, gsm: str, rec: dict, scr: dict, in_series: list[str]) -> dict:
-    files, other = sample_files(ds, rec)
+    files, other = sample_files(ds, rec, gsm)
     arm, gene = resolve_arm(ds, rec)
     e, how = sample_stage(rec)
     return {"accession": gsm, "series": series, "in_series": in_series, "fields": rec,
             "metadata_sha256": cm.metadata_sha256(gsm, rec), "verdict": scr["verdict"],
             "hits": [list(h) for h in scr["hits"]], "clearance_void": scr["clearance_void"],
-            "not_pinnable": series_membership(ds, rec), "suggested": {"arm": arm, "gene": gene}, "stage": e,
+            "not_pinnable": pin_blocker(ds, rec), "suggested": {"arm": arm, "gene": gene}, "stage": e,
             "stage_from": how, "chemistry": sample_chemistry(rec), "files": files, "other_files": other}
 
 
 def _withheld(out: dict, metas: dict, by_id: dict, reason: str) -> dict:
     """Nothing of the dataset's text is written: accessions, verdicts and the fields hit only."""
+    def label(field: str) -> str:
+        # a hit in a field NAME is text of the dataset: never written, nor a name that is not a plain GEO key
+        if field.endswith(" (field name)"):
+            return "<a field name (withheld)>"
+        return field if plain_key(field) else "<a field name that is not a plain GEO key>"
+
     out["tables"] = {s: [{"accession": g, "verdict": by_id[(s, g)]["verdict"],
-                          "fields_hit": sorted({h[0] for h in by_id[(s, g)]["hits"]})}
+                          "fields_hit": sorted({label(h[0]) for h in by_id[(s, g)]["hits"]})}
                          for g in meta["samples"]] for s, meta in metas.items()}
     out["withheld"] = True
     out["screen"]["refusals"] = [WITHHELD]
@@ -333,6 +457,10 @@ def plan_from_meta(ds: dict, metas: dict[str, dict]) -> dict:
            "not_shown": {s: meta.get("not_shown", {}) for s, meta in metas.items()}}
     if scr["held_out"]:
         return _withheld(out, metas, by_id, "screen: a held-out hit in the dataset (text withheld)")
+    bad_keys = bad_field_names(metas)
+    if bad_keys:
+        return _withheld(out, metas, by_id, f"field names: {bad_keys} hold a field name that is not a plain GEO key "
+                                            "(text withheld)")
     held = held_set(ds)
     in_held = sorted(g for meta in metas.values() for g, rec in meta["samples"].items()
                      if set(rec.get("series_id") or []) & held)
@@ -375,7 +503,10 @@ def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
     present in the own-series table (not only in another series), every value of its record's series_id one of the
     dataset's screened series and none held (a missing series_id refuses), its metadata hashing to the pin, screened
     clean again now, its parsed stage equal to the pin's, its files in its table entry, its chemistry equal to its
-    controls' where the dataset reads chemistry. Returns [{accession, arm, genes, stage, files: [{name, url}],
+    controls' where the dataset reads chemistry. Stage 5: every field name a plain GEO key; no supplementary link
+    naming a held accession; the file list (names AND urls) derived again from the hashed fields by sample_files, the
+    stored list refused when it differs, two derived files of one name refused, and only the derived entries
+    returned. Returns [{accession, arm, genes, stage, files: [{name, url}],
     metadata_sha256, row}]. Refused on any failure, with the reason."""
     acc = ds["accession"]
     pins = ds.get("pinned") or []
@@ -392,6 +523,8 @@ def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
                       f"{ds['screen_series']}")
     for e in sp:
         b = blocks[e["accession"]]
+        if not all(plain_key(k) for k in b["fields"]):
+            raise Refused(f"series {e['accession']}: a field name that is not a plain GEO key: refused")
         h = cm.series_metadata_sha256(e["accession"], b["fields"])
         if h != e["series_metadata_sha256"] or h != b["series_metadata_sha256"]:
             raise Refused(f"series {e['accession']}: its {what} text hashes to {h}, not to the pinned "
@@ -407,7 +540,9 @@ def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
                 raise Refused(f"{g} belongs to another series ({elsewhere[g]}), not to {acc}")
             raise Refused(f"{g} is not in the plan table of {acc}")
         row = own[g]
-        why = series_membership(ds, row["fields"])
+        if not all(plain_key(k) for k in row["fields"]):
+            raise Refused(f"{g}: a field name that is not a plain GEO key: refused")
+        why = pin_blocker(ds, row["fields"])
         if why:
             raise Refused(f"{g}: {why}: refused (a pinned sample belongs to this dataset's screened series only)")
         h = cm.metadata_sha256(g, row["fields"])
@@ -420,7 +555,15 @@ def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
         e, how = sample_stage(row["fields"])
         if e is None or e != cm.stage_ok(p["stage"]):
             raise Refused(f"{g}: pinned stage {p['stage']} but the record gives {how if e is None else f'E{e:g}'}")
-        allowed = {f["name"]: f for f in row["files"]}
+        # stage 5: the file list (names and urls) is derived again from the HASHED fields; the stored list is only
+        # compared with it, never used
+        derived, _ = sample_files(ds, row["fields"], g)
+        if row.get("files") != derived:
+            raise Refused(f"{g}: the stored file list differs from the one its pinned fields give: plan again")
+        dup = duplicate_names(derived)
+        if dup:
+            raise Refused(f"{g}: two supplementary links share the file name(s) {dup}: refused")
+        allowed = {f["name"]: f for f in derived}
         bad = [f for f in p["files"] if f not in allowed or DENY.search(f)]
         if bad:
             raise Refused(f"{g}: pinned files {bad} are not per-sample files of its plan entry")
@@ -466,7 +609,7 @@ def series_block(b: dict) -> list[str]:
     n_other = len(b["fields"].get(OTHER, []))
     return ["", f"==== SERIES {b['accession']}  series_metadata_sha256 {b['series_metadata_sha256']}",
             "  # every field of the series' family SOFT record verbatim, in file order (a key's values together),"
-            " contact fields included (shown and hashed, not screened); "
+            " contact fields included (shown, hashed and, since stage 5, screened); field names screened too; "
             f"{n_other} other line(s) of the series block kept under {OTHER}",
             *field_lines(b["fields"])]
 
@@ -506,7 +649,8 @@ def write_tables(pl: dict, mdir: Path) -> list[str]:
                              f"{r['suggested']['gene']}; parsed stage {stage} ({r['stage_from']}); "
                              f"parsed chemistry {r['chemistry']}")
                 lines.append(f"  per-sample files allowed: {[f['name'] for f in r['files']] or 'none'}")
-                lines.append(f"  other supplementary files (never fetched): {r['other_files'] or 'none'}")
+                never = "; ".join(f"{o['name']} ({o['reason']})" for o in r["other_files"])
+                lines.append(f"  other supplementary files (never fetched, with the reason): {never or 'none'}")
                 lines.append(f"  screen hits: {r['hits'] or 'none'}"
                              + (f"; clearances void: {r['clearance_void']}" if r["clearance_void"] else ""))
                 lines += field_lines(r["fields"])
@@ -599,7 +743,12 @@ def fetch(acc: str, dest: Path, datasets: Path | None = None, max_bytes: int = M
     pinned = verify_pins(ds, pl)
     pp = dest / "meta" / acc / "plan.json"
     rdir = dest / "raw" / acc
+    for d in (dest / "raw", rdir, *(rdir / s["accession"] for s in pinned)):
+        if d.is_symlink():
+            raise Refused(f"{d}: a symlinked folder: remove it by hand (fetch writes only into plain folders)")
     mf = rdir / "MANIFEST.json"
+    if mf.is_symlink():
+        raise Refused(f"{mf}: a symlinked manifest: remove it by hand")
     man = json.loads(mf.read_text()) if mf.is_file() else {"accession": acc, "files": {}}
     cur = cm.pins_sha256(ds)
     man["files"] = {k: v for k, v in man["files"].items() if k.split("/")[0] in {s["accession"] for s in pinned}}
@@ -681,6 +830,7 @@ def pin_template(acc: str, dest: Path, arm: str, gene: str, gsms: list[str], dat
     if len(set(gsms)) != len(gsms):
         raise Refused("a sample is named twice")
     pp, pl = _stored_plan(acc, dest, datasets)
+    ds = cm.dataset(acc, datasets)
     rows = {r["accession"]: r for r in pl["tables"][acc]}
     missing = [g for g in gsms if g not in rows]
     if missing:
@@ -693,15 +843,23 @@ def pin_template(acc: str, dest: Path, arm: str, gene: str, gsms: list[str], dat
         r = rows[g]
         if r["verdict"] == "held_out":
             raise Refused(f"{g}: held out: never pinned")
-        if r.get("not_pinnable") or "not_pinnable" not in r:
-            raise Refused(f"{g}: not pinnable: {r.get('not_pinnable') or 'no series membership record'}")
+        why = r.get("not_pinnable") or pin_blocker(ds, r["fields"])
+        if why or "not_pinnable" not in r:
+            raise Refused(f"{g}: not pinnable: {why or 'no series membership record'}")
+        if not all(plain_key(k) for k in r["fields"]):
+            raise Refused(f"{g}: a field name that is not a plain GEO key")
         h = cm.metadata_sha256(g, r["fields"])
         if h != r["metadata_sha256"]:
             raise Refused(f"{g}: the stored fields hash to {h}, not to the table's value: plan again")
         if r["stage"] is None:
             raise Refused(f"{g}: no single stage parses ({r['stage_from']}): it cannot be pinned")
+        derived, _ = sample_files(ds, r["fields"], g)
+        if r["files"] != derived:
+            raise Refused(f"{g}: the stored file list differs from the one its fields give: plan again")
+        if duplicate_names(derived):
+            raise Refused(f"{g}: two supplementary links share the file name(s) {duplicate_names(derived)}")
         if not r["files"]:
-            raise Refused(f"{g}: no per-sample file the dataset's patterns allow")
+            raise Refused(f"{g}: no per-sample file in the sample's own GEO folder that the dataset's patterns allow")
         if r["verdict"] == "review":
             out.append(f"# {g} has review terms {sorted({x[2] for x in r['hits'] if x[1] == 'review'})}"
                        ": pin it only with review_cleared entries the readers agree")

@@ -70,6 +70,10 @@ step pinned_gate "${PY[@]}" experiments/t3_ext/fetch.py check-pins $ACCS || { ec
 step reference "${PY[@]}" experiments/t3_ext/process.py reference --wt "$WT" --out "$REF" \
   || { echo 1 > "$D/logs/ALL.exit"; exit 1; }
 for A in $ACCS; do
+  # no stale output: an accession's processed outputs go before its re-plan, so a refused re-plan, fetch or process
+  # leaves nothing for combine to read (stage 5)
+  if ! [[ "$A" =~ ^GSE[0-9]+$ ]]; then echo "refused: not a GEO series accession" >> "$D/logs/replan_bad.log"; continue; fi
+  rm -rf "${D:?}/processed/$A"
   step "replan_$A" "${PY[@]}" experiments/t3_ext/fetch.py plan "$A" --dest "$D" || {
     echo "skipped: the plan with pins did not pass for $A" > "$D/logs/fetch_$A.log"; echo 2 > "$D/logs/fetch_$A.exit"; continue; }
   step "fetch_$A" "${PY[@]}" experiments/t3_ext/fetch.py fetch "$A" --dest "$D" --max-gb 30 || continue
@@ -77,5 +81,5 @@ for A in $ACCS; do
     --wt "$WT" --refstats "$REF" --out "$D/processed" --threads 8 || true
 done
 step combine "${PY[@]}" experiments/t3_ext/combine.py --processed "$D/processed" \
-  --refstats "$REF" --out "$D/tables"
+  --refstats "$REF" --out "$D/tables" --dest "$D"
 echo $? > "$D/logs/ALL.exit"

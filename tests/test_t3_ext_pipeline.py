@@ -107,7 +107,8 @@ def _soft(samples: dict[str, dict], title="A series", design="embryos", summary=
 
 def _sample(title, geno, stage="E8.5", files=("matrix.mtx.gz", "barcodes.tsv.gz", "features.tsv.gz"), extra=None):
     gsm = title
-    sup = [f"ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM9nnn/{gsm}/suppl/{gsm}_{f}" for f in files]
+    stub = "GSM" + gsm[3:-3] + "nnn" if gsm.startswith("GSM") and gsm[3:].isdigit() else "GSMnnn"   # GEO's folder stub
+    sup = [f"ftp://ftp.ncbi.nlm.nih.gov/geo/samples/{stub}/{gsm}/suppl/{gsm}_{f}" for f in files]
     return {"title": title, "source_name_ch1": "whole embryo",
             "characteristics_ch1": [f"genotype: {geno}", f"developmental stage: {stage}"] + (extra or []),
             **{f"supplementary_file_{i + 1}": s for i, s in enumerate(sup)}}
@@ -157,7 +158,8 @@ def test_plan_writes_a_table_of_every_sample_with_verbatim_fields_hash_and_verdi
     assert rows["GSM1"]["suggested"] == {"arm": "ko", "gene": "Hoxz"} and rows["GSM6"]["suggested"]["arm"] is None
     assert [f["name"] for f in rows["GSM1"]["files"]] == ["GSM1_matrix.mtx.gz", "GSM1_barcodes.tsv.gz",
                                                           "GSM1_features.tsv.gz"]
-    assert rows["GSM6"]["files"] == [] and rows["GSM6"]["other_files"] == ["GSM6_atac_fragments.tsv.gz"]
+    assert rows["GSM6"]["files"] == [] and rows["GSM6"]["other_files"] == [{"name": "GSM6_atac_fragments.tsv.gz",
+                                                                             "reason": "a denied file type"}]
     assert all(f["url"].startswith("https://ftp.ncbi.nlm.nih.gov/") for f in rows["GSM1"]["files"])
     txt = (tmp_path / "d" / "meta" / "GSE900001" / "plan_table_GSE900001.txt").read_text()
     assert "genotype: Hoxz KO" in txt and rows["GSM5"]["metadata_sha256"] in txt and "verdict pass" in txt
@@ -487,7 +489,7 @@ def test_no_cli_takes_another_dataset_list(tmp_path, capsys):
     q.mkdir(parents=True)
     (q / "QC.json").write_text(json.dumps({"accession": "GSE165300", "status": "ok", "units": {}}))
     with pytest.raises(cm.Refused, match="NEVER_FETCH"):
-        co.load_units(tmp_path / "processed", y, {})
+        co.load_units(tmp_path / "processed", y, {}, tmp_path / "d")
 
 
 def test_the_pinned_gate_and_the_datasets_sha_command(dsy, tmp_path, capsys):
@@ -614,7 +616,7 @@ def test_end_to_end_synthetic_run_writes_only_outside_and_combine_takes_it(tmp_p
 
     phi, _ = bs.load_factor(Path(u["tables"]["GSE900001__Hoxz"]["file"]).parents[1], "GSE900001__Hoxz", PANEL, {})
     assert np.all((phi >= 0.25) & (phi <= 4)) and phi[:4].min() > 1
-    r = co.combine(out, refp, tmp_path / "tables", dsy)
+    r = co.combine(out, refp, tmp_path / "tables", dsy, dest=dest)
     assert set(r["tables"]) == {"study_GSE900000", "cardiac", "all"}
     man = json.loads((tmp_path / "tables" / "cardiac" / "cardiac_manifest.json").read_text())
     assert man["sign_rule"] == "single study" and man["studies"] == ["GSE900000"]
@@ -622,7 +624,7 @@ def test_end_to_end_synthetic_run_writes_only_outside_and_combine_takes_it(tmp_p
     with pytest.raises(cm.Refused, match="inside the repository"):
         pr.run("GSE900001", dest, wt, refp, EXT / "out", dsy, classifier=clf)
     with pytest.raises(cm.Refused, match="inside the repository"):
-        co.combine(out, refp, ROOT / "tables_here", dsy)
+        co.combine(out, refp, ROOT / "tables_here", dsy, dest=dest)
 
 
 def test_process_never_opens_a_count_file_of_an_unpinned_sample(tmp_path, dsy, monkeypatch):
@@ -688,7 +690,7 @@ def test_confident_shares_are_recorded_and_a_table_under_the_floor_is_refused(tm
     saved = json.loads((out / "GSE900001" / "QC.json").read_text())
     assert saved["confidence_by_sample"]["GSM1"]["cells"] == 320
     with pytest.raises(cm.Refused, match="no unit passed"):
-        co.combine(out, refp, tmp_path / "t", dsy)
+        co.combine(out, refp, tmp_path / "t", dsy, dest=dest)
     dsy.write_text(dsy.read_text().replace("qc_floors:\n  min_confident_share_per_sample: 0.5\n", ""))
     with pytest.raises(cm.Refused, match="qc_floors"):
         pr.run("GSE900001", dest, wt, refp, tmp_path / "o2", dsy, classifier=clf)
@@ -748,17 +750,17 @@ def test_combine_refuses_a_failed_qc_a_changed_unit_or_other_pins(tmp_path, dsy,
     qc["pins_sha256"] = "0" * 64
     qcp.write_text(json.dumps(qc))
     with pytest.raises(cm.Refused, match="other pins"):
-        co.combine(out, refp, tmp_path / "t", dsy)
+        co.combine(out, refp, tmp_path / "t", dsy, dest=dest)
     qcp.write_text(good)
     unit = next((out / "GSE900001").glob("*.unit.json"))
     unit.write_text(unit.read_text().replace('"gene"', '"gene" ', 1))
     with pytest.raises(cm.Refused, match="changed"):
-        co.combine(out, refp, tmp_path / "t", dsy)
+        co.combine(out, refp, tmp_path / "t", dsy, dest=dest)
     qc = json.loads(good)
     qc["status"] = "failed"
     qcp.write_text(json.dumps(qc))
     with pytest.raises(cm.Refused, match="QC failed"):
-        co.combine(out, refp, tmp_path / "t", dsy)
+        co.combine(out, refp, tmp_path / "t", dsy, dest=dest)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -1114,3 +1116,347 @@ def test_a_plan_run_that_dies_leaves_no_passing_plan(dsy, tmp_path):
     assert json.loads((tmp_path / "d" / "meta" / "GSE900001" / "plan.json").read_text())["status"] == "in_progress"
     with pytest.raises(cm.Refused, match="did not pass"):
         fe.fetch("GSE900001", tmp_path / "d", dsy)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# stage 5: the five holes the reviewers of bf78b1a found, each replayed and refused, and their lesser points
+
+
+def _plan_soft(dsy, dest, text, monkeypatch, acc="GSE900001"):
+    """The real plan route (download, strict decode, parse) on a synthetic family SOFT text, through a stub download."""
+    def get(url, dst, max_bytes):
+        dst = cm.outside_repo(dst)
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        dst.write_bytes(gzip.compress(text.encode("utf-8")))
+        return dst.stat().st_size, cm.sha256_file(dst)
+    monkeypatch.setattr(fe, "_get", get)
+    return fe.plan(acc, dest, dsy)
+
+
+def _fresh(tmp_path, name="fresh"):
+    y = tmp_path / name / "datasets.yaml"
+    y.parent.mkdir(parents=True)
+    y.write_text(DS_YAML)
+    return y
+
+
+def _written(dest, acc="GSE900001") -> str:
+    """Every file plan wrote for the readers (plan.json and the tables; not the downloaded SOFT)."""
+    return "".join(p.read_text(encoding="utf-8") for p in sorted((dest / "meta" / acc).glob("*")) if p.suffix != ".gz")
+
+
+def _pin_hash(dsy, gsm_index, new_h):
+    """The readers pin a record anyway: its true hash typed into the pinned entry."""
+    old_h = cm.dataset("GSE900001", dsy)["pinned"][gsm_index]["metadata_sha256"]
+    dsy.write_text(dsy.read_text().replace(old_h, new_h))
+
+
+def test_a_hand_edited_url_in_the_stored_plan_is_never_fetched_or_read(tmp_path, dsy, monkeypatch):
+    """Hole 1, the first reviewer's attack: GSM1's stored file urls are pointed at the unpinned GSM3's files, names
+    kept, and the plan and manifest restamped. verify_pins derives the list again from the hashed fields: fetch
+    requests nothing and process reads no count."""
+    dest, wt, refp, clf = _synthetic_run(tmp_path, dsy, monkeypatch, unpinned=True)
+    ds = cm.dataset("GSE900001", dsy)
+    pl = json.loads((dest / "meta" / "GSE900001" / "plan.json").read_text())
+    assert fe.verify_pins(ds, pl)[0]["files"][0]["url"].endswith("/GSMnnn/GSM1/suppl/GSM1_matrix.mtx.gz")
+
+    def edit(pl):
+        row = next(r for r in pl["tables"]["GSE900001"] if r["accession"] == "GSM1")
+        for f in row["files"]:
+            f["url"] = f["url"].replace("GSM1", "GSM3")
+    _restamp(dest, dsy, edit)
+    mp = dest / "raw" / "GSE900001" / "MANIFEST.json"
+    man = json.loads(mp.read_text())
+    for key, rec in man["files"].items():          # the manifest bound to the edited urls, as fetch would have
+        if key.startswith("GSM1/"):
+            rec["url"] = rec["url"].replace("GSM1", "GSM3")
+    mp.write_text(json.dumps(man))
+    pl = json.loads((dest / "meta" / "GSE900001" / "plan.json").read_text())
+    assert next(r for r in pl["tables"]["GSE900001"] if r["accession"] == "GSM1")["files"][0]["url"].endswith(
+        "/GSM3/suppl/GSM3_matrix.mtx.gz")
+    with pytest.raises(cm.Refused, match="stored file list differs"):
+        fe.verify_pins(ds, pl)
+    monkeypatch.setattr(fe, "_get", _no_get)
+    with pytest.raises(cm.Refused, match="stored file list differs"):
+        fe.fetch("GSE900001", dest, dsy)
+    with pytest.raises(cm.Refused, match="stored file list differs"):
+        pr.run("GSE900001", dest, wt, refp, tmp_path / "o", dsy, classifier=lambda *a: pytest.fail("read"))
+
+
+def test_two_links_of_one_file_name_are_refused(tmp_path, dsy, monkeypatch):
+    """Hole 1, the first reviewer's lesser point 3: two supplementary links with one base name are refused by
+    pin-template and, pinned anyway, by the live plan with pins."""
+    rec = {**_sample("GSM1", "Hoxz KO"), "supplementary_file_4": _sample("GSM1", "x")["supplementary_file_1"]}
+    s = {"GSM1": rec, "GSM2": TWO["GSM2"]}
+    y = _fresh(tmp_path)
+    assert _plan(y, tmp_path / "f", s)["status"] == "ok"
+    with pytest.raises(cm.Refused, match="share the file name"):
+        fe.pin_template("GSE900001", tmp_path / "f", "ko", "Hoxz", ["GSM1"], datasets=y)
+    _synthetic_run(tmp_path / "run", dsy, monkeypatch)
+    _pin_hash(dsy, 0, cm.metadata_sha256("GSM1", fe.parse_soft(_soft(s))["samples"]["GSM1"]))
+    live = _plan(dsy, tmp_path / "live", s)
+    assert live["status"] == "refused" and "share the file name" in live["reason"]
+
+
+ELSEWHERE = {
+    "held-series-folder": ("ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE165nnn/GSE165300/suppl/GSM1_{f}",
+                           "held or excluded accession"),
+    "another-samples-folder": ("ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM7nnn/GSM7777/suppl/GSM1_{f}",
+                               "own GEO folder"),
+    "own-folder-other-name": ("ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSMnnn/GSM1/suppl/GSM3_{f}",
+                              "start with the sample's accession"),
+    "climbing-out": ("ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSMnnn/GSM1/suppl/../../GSM3/suppl/GSM1_{f}",
+                     "own GEO folder"),
+    "a-query": ("https://ftp.ncbi.nlm.nih.gov/geo/samples/GSMnnn/GSM1/suppl/GSM1_{f}?acc=GSM3", "plain link"),
+    "a-port": ("https://ftp.ncbi.nlm.nih.gov:8443/geo/samples/GSMnnn/GSM1/suppl/GSM1_{f}", "plain link"),
+    "another-host": ("https://example.org/geo/samples/GSMnnn/GSM1/suppl/GSM1_{f}", "repository host"),
+}
+FILES3 = ("matrix.mtx.gz", "barcodes.tsv.gz", "features.tsv.gz")
+
+
+@pytest.mark.parametrize("case", list(ELSEWHERE))
+def test_a_link_outside_the_samples_own_folder_is_never_fetched(tmp_path, dsy, monkeypatch, case):
+    """Hole 2, the first reviewer's attack: a pinned sample's own supplementary links point into a held series'
+    folder or another sample's folder (and the other ways out). Each link is listed as never fetched with its reason
+    in the plan table; pin-template refuses (no allowed file); pinned anyway, the live plan refuses; a stored plan that
+    lists the links is refused by verify_pins, fetch (no request) and process (no count read)."""
+    tpl, reason = ELSEWHERE[case]
+    rec = _sample("GSM1", "Hoxz KO")
+    for i, f in enumerate(FILES3):
+        rec[f"supplementary_file_{i + 1}"] = tpl.format(f=f)
+    s = {"GSM1": rec, "GSM2": TWO["GSM2"]}
+    parsed = fe.parse_soft(_soft(s))["samples"]["GSM1"]
+    y = _fresh(tmp_path)
+    pl = _plan(y, tmp_path / "f", s)
+    assert pl["status"] == "ok"
+    row = {r["accession"]: r for r in pl["tables"]["GSE900001"]}["GSM1"]
+    assert row["files"] == [] and len(row["other_files"]) == 3
+    assert all(reason in o["reason"] for o in row["other_files"])
+    table = (tmp_path / "f" / "meta" / "GSE900001" / "plan_table_GSE900001.txt").read_text()
+    assert "never fetched, with the reason" in table and reason in table
+    with pytest.raises(cm.Refused, match="no per-sample file|not pinnable"):
+        fe.pin_template("GSE900001", tmp_path / "f", "ko", "Hoxz", ["GSM1"], datasets=y)
+    # pinned anyway: the live plan with pins refuses
+    dest, wt, refp, clf = _synthetic_run(tmp_path / "run", dsy, monkeypatch)
+    new_h = cm.metadata_sha256("GSM1", parsed)
+    _pin_hash(dsy, 0, new_h)
+    live = _plan(dsy, tmp_path / "live", s)
+    assert live["status"] == "refused" and live["reason"].startswith("pins: GSM1:")
+
+    # a stored plan that lists the links as allowed: refused before any request or read
+    def edit(pl):
+        r = next(r for r in pl["tables"]["GSE900001"] if r["accession"] == "GSM1")
+        r["fields"], r["metadata_sha256"], r["not_pinnable"] = parsed, new_h, None
+        r["files"] = [{"name": f"GSM1_{f}", "url": tpl.format(f=f).replace("ftp://", "https://")} for f in FILES3]
+    pl = _restamp(dest, dsy, edit)
+    with pytest.raises(cm.Refused, match="stored file list differs|held or excluded"):
+        fe.verify_pins(cm.dataset("GSE900001", dsy), pl)
+    monkeypatch.setattr(fe, "_get", _no_get)
+    with pytest.raises(cm.Refused, match="stored file list differs|held or excluded"):
+        fe.fetch("GSE900001", dest, dsy)
+    with pytest.raises(cm.Refused, match="stored file list differs|held or excluded"):
+        pr.run("GSE900001", dest, wt, refp, tmp_path / "o", dsy, classifier=lambda *a: pytest.fail("read"))
+
+
+def test_own_file_takes_only_the_samples_own_folder_and_geos_stub():
+    assert fe.sample_stub("GSM1234567") == "GSM1234nnn" and fe.sample_stub("GSM123") == "GSMnnn"
+    good = "ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM1234nnn/GSM1234567/suppl/GSM1234567_E8.5_matrix.mtx.gz"
+    assert fe.own_file("GSM1234567", good) == (good.replace("ftp://", "https://"), "")
+    assert fe.own_file("GSM1234568", good)[0] is None
+    assert fe.own_file("GSM1234567", good.replace("GSM1234nnn", "GSM1nnn"))[0] is None
+    held = good.replace("E8.5_matrix", "GSE165300_matrix")
+    ok, other = fe.sample_files({"held_series": [], "sample_file_patterns": ["matrix"]},
+                                {"supplementary_file_1": [held]}, "GSM1234567")
+    assert ok == [] and "held or excluded" in other[0]["reason"]
+
+
+def test_no_stale_output_reaches_combine(tmp_path, dsy, monkeypatch):
+    """Hole 3, the first reviewer's attack: process ran; then GSM1's live record came to list GSE165300 and the
+    re-plan refused, yet combine read the old QC. Now process records the sha256 of the plan it ran under (and of the
+    manifest and each count file), combine checks it against the stored plan, a refused process leaves no output, and
+    the launcher removes an accession's outputs before its re-plan (next test)."""
+    dest, wt, refp, clf = _synthetic_run(tmp_path, dsy, monkeypatch)
+    out = tmp_path / "processed"
+    pp = dest / "meta" / "GSE900001" / "plan.json"
+    mp = dest / "raw" / "GSE900001" / "MANIFEST.json"
+    qc = pr.run("GSE900001", dest, wt, refp, out, dsy, classifier=clf)
+    man = json.loads(mp.read_text())
+    assert qc["plan_sha256"] == cm.sha256_file(pp) and qc["manifest_sha256"] == cm.sha256_file(mp)
+    assert qc["count_files_sha256"] == {k: v["sha256"] for k, v in man["files"].items()} and len(man["files"]) == 6
+    assert co.combine(out, refp, tmp_path / "t0", dsy, dest=dest)["tables"]
+    qcp = out / "GSE900001" / "QC.json"
+    good = qcp.read_text()
+    for bad in (None, "0" * 64):
+        q = json.loads(good)
+        if bad is None:
+            del q["plan_sha256"]
+        else:
+            q["plan_sha256"] = bad
+        qcp.write_text(json.dumps(q))
+        with pytest.raises(cm.Refused, match="no longer passes or changed since processing"):
+            co.combine(out, refp, tmp_path / "t1", dsy, dest=dest)
+    qcp.write_text(good)
+    keep = pp.read_bytes()
+    pp.write_bytes(keep + b"\n")                       # the plan rewritten since processing, still 'ok'
+    with pytest.raises(cm.Refused, match="no longer passes or changed since processing"):
+        co.combine(out, refp, tmp_path / "t2", dsy, dest=dest)
+    pp.unlink()
+    with pytest.raises(cm.Refused, match="no stored plan"):
+        co.combine(out, refp, tmp_path / "t3", dsy, dest=dest)
+    # the reviewer's case: the re-plan refuses for a held series in GSM1's live record
+    assert _plan(dsy, dest, _attack_samples(["GSE900001", "GSE165300"]))["status"] == "refused"
+    with pytest.raises(cm.Refused, match="no longer passes or changed since processing"):
+        co.combine(out, refp, tmp_path / "t4", dsy, dest=dest)
+    pp.write_bytes(keep)
+    assert co.combine(out, refp, tmp_path / "t5", dsy, dest=dest)["tables"]
+    # a process run that refuses leaves no output behind, so combine has nothing of the accession to read
+    p = next((dest / "raw" / "GSE900001" / "GSM1").glob("*barcodes*"))
+    p.write_bytes(gzip.compress(b"changed"))
+    with pytest.raises(cm.Refused, match="sha256"):
+        pr.run("GSE900001", dest, wt, refp, out, dsy, classifier=clf)
+    assert not (out / "GSE900001").exists()
+    with pytest.raises(cm.Refused, match="no unit passed"):
+        co.combine(out, refp, tmp_path / "t6", dsy, dest=dest)
+
+
+def test_the_launcher_removes_an_accessions_outputs_before_its_replan_and_combine_takes_the_destination():
+    text = (EXT / "run_dgx.sh").read_text()
+    all_part = text.split('if [ "$MODE" = plan ]; then', 1)[1].split("\nfi\n", 1)[1]
+    loop = all_part[all_part.index("for A in $ACCS; do"):]
+    assert loop.index('rm -rf "${D:?}/processed/$A"') < loop.index('step "replan_$A"')
+    assert loop.index("^GSE[0-9]+$") < loop.index('rm -rf "${D:?}/processed/$A"')
+    assert '--out "$D/tables" --dest "$D"' in all_part
+    with pytest.raises(SystemExit):
+        co.main(["--processed", "p", "--refstats", "r", "--out", "o"])      # --dest is required
+
+
+SEPARATORS = [" ", " ", "\x85", "\x0b", "\x0c", "\x1c", "\x1d", "\x1e", "\r"]
+
+
+@pytest.mark.parametrize("sep", SEPARATORS, ids=[f"U+{ord(c):04X}" for c in SEPARATORS])
+def test_a_line_separator_inside_a_field_refuses_the_dataset_with_its_text_withheld(tmp_path, dsy, monkeypatch,
+                                                                                     sep):
+    """Hole 4, the second reviewer's attack: GSM2's description holds '<SEP>^PLATFORM = GPL1<SEP>!Platform_note = ...'
+    so the tail used to land in a counted-only PLATFORM block and the sample was fetched. The parser splits on "\\n"
+    only and refuses the dataset, text withheld; a pinned dataset's live plan refuses and nothing is fetched."""
+    tail = (f"control embryo{sep}^PLATFORM = GPL1{sep}!Platform_note = Ctnnb1 flox/flox; Mesp1-Cre (beta-catenin cKO)"
+            " littermates")
+    s = {"GSM1": TWO["GSM1"], "GSM2": {**TWO["GSM2"], "description": tail}}
+    text = _soft(s)
+    with pytest.raises(cm.Refused, match="line-separator"):
+        fe.parse_soft(text)
+    y = _fresh(tmp_path)
+    pl = _plan_soft(y, tmp_path / "f", text, monkeypatch)
+    assert pl["status"] == "refused" and pl["withheld"] and "line-separator" in pl["reason"]
+    assert pl["reason"].startswith("GSM2:")
+    written = _written(tmp_path / "f")
+    assert "Ctnnb1" not in written and "control embryo" not in written and "Hoxz" not in written
+    with pytest.raises(cm.Refused):
+        fe.pin_template("GSE900001", tmp_path / "f", "control", "Hoxz", ["GSM2"], datasets=y)
+    dest, wt, refp, clf = _synthetic_run(tmp_path / "run", dsy, monkeypatch)
+    live = _plan_soft(dsy, dest, text, monkeypatch)
+    assert live["status"] == "refused" and "line-separator" in live["reason"]
+    monkeypatch.setattr(fe, "_get", _no_get)
+    with pytest.raises(cm.Refused, match="did not pass"):
+        fe.fetch("GSE900001", dest, dsy)
+    with pytest.raises(cm.Refused, match="did not pass"):
+        pr.run("GSE900001", dest, wt, refp, tmp_path / "o", dsy, classifier=lambda *a: pytest.fail("read"))
+
+
+def test_crlf_line_ends_parse_as_newlines_and_a_second_carriage_return_refuses():
+    text = _soft(TWO)
+    assert fe.parse_soft(text.replace("\n", "\r\n")) == fe.parse_soft(text)
+    with pytest.raises(cm.Refused, match="line-separator"):
+        fe.parse_soft(text.replace("\n", "\r\r\n"))
+    with pytest.raises(cm.Refused, match="not a plain GEO accession"):
+        fe.parse_soft(text.replace("^SAMPLE = GSM2", "^SAMPLE = GSM2 Ctnnb1 cKO"))
+
+
+BAD_KEYS = [
+    ("sample", "characteristics_ch1\x1b[8m Ctnnb1 cKO, beta-catenin deleted\x1b[28m", "wild type"),
+    ("sample", "characteristics_ch1‮1bnntC", "wild type"),
+    ("sample", "Ctnnb1_floxed_beta-catenin_cKO_genotype", "wild type"),
+    ("sample", "genotype (Ctnnb1)", "wild type"),
+    ("series", "overall_design\x1b[8m: embryos pooled by MULTI-seq with Ctnnb1 cKO\x1b[28m", "littermates"),
+]
+
+
+def _with_key(where, key, val):
+    text = _soft(TWO)
+    if where == "sample":
+        return text.replace("^SAMPLE = GSM2\n", f"^SAMPLE = GSM2\n!Sample_{key} = {val}\n")
+    return text.replace("^SERIES = GSE900001\n", f"^SERIES = GSE900001\n!Series_{key} = {val}\n")
+
+
+@pytest.mark.parametrize("where,key,val", BAD_KEYS, ids=["ansi", "rlo", "dash", "space", "series-ansi"])
+def test_a_field_name_that_is_not_a_plain_key_refuses_the_dataset_with_its_text_withheld(tmp_path, dsy, monkeypatch,
+                                                                                          where, key, val):
+    """Hole 5, the second reviewer's attack: a field NAME carrying an ANSI conceal sequence, a bidi control or the
+    label itself was printed raw, never escaped and never screened. A name that is not a plain GEO key now refuses
+    the dataset, text withheld, at the parser and (for metadata that reaches plan_from_meta another way) there; a
+    pinned dataset's live plan refuses and nothing is fetched."""
+    text = _with_key(where, key, val)
+    with pytest.raises(cm.Refused, match="not a plain GEO key"):
+        fe.parse_soft(text)
+    y = _fresh(tmp_path)
+    pl = _plan_soft(y, tmp_path / "f", text, monkeypatch)
+    assert pl["status"] == "refused" and pl["withheld"] and "not a plain GEO key" in pl["reason"]
+    written = _written(tmp_path / "f")
+    assert "Ctnnb1" not in written and "1bnntC" not in written and "\\u001b" not in written and "\x1b" not in written
+    meta = fe.parse_soft(_soft(TWO))
+    rec = meta["series"] if where == "series" else meta["samples"]["GSM2"]
+    rec[key] = [val]
+    pl = fe.plan("GSE900001", tmp_path / "g", y, metas={"GSE900001": meta})
+    assert pl["status"] == "refused" and pl["withheld"]
+    written = _written(tmp_path / "g")
+    assert "Ctnnb1" not in written and "1bnntC" not in written and "\x1b" not in written and "Hoxz" not in written
+    dest, wt, refp, clf = _synthetic_run(tmp_path / "run", dsy, monkeypatch)
+    assert _plan_soft(dsy, dest, text, monkeypatch)["status"] == "refused"
+    monkeypatch.setattr(fe, "_get", _no_get)
+    with pytest.raises(cm.Refused, match="did not pass"):
+        fe.fetch("GSE900001", dest, dsy)
+
+
+def test_plain_field_names_are_screened_and_series_contact_fields_too(tmp_path, monkeypatch):
+    """Hole 5 (names screened like values) and the second reviewer's lesser point 4 (contact fields screened)."""
+    y = _fresh(tmp_path)
+    pl = _plan_soft(y, tmp_path / "a", _with_key("sample", "Ctnnb1_genotype", "wild type"), monkeypatch)
+    assert pl["withheld"] and "Ctnnb1" not in _written(tmp_path / "a")
+    assert _plan_soft(y, tmp_path / "b", _with_key("series", "Gata4_design", "x"), monkeypatch)["withheld"]
+    pl = _plan_soft(y, tmp_path / "c", _with_key("sample", "Hand2_genotype", "wild type"), monkeypatch)
+    assert pl["status"] == "refused" and not pl["withheld"] and "hand2" in pl["reason"]
+    pl = _plan_soft(y, tmp_path / "d", _with_key("series", "contact_laboratory", "Gata4 laboratory"), monkeypatch)
+    assert pl["withheld"]
+    pl = _plan_soft(y, tmp_path / "e", _with_key("series", "contact_zip/postal_code", "92093"), monkeypatch)
+    assert pl["status"] == "ok"                                   # GEO's own contact field name is accepted
+
+
+def test_symlinked_sample_folders_and_files_are_refused(tmp_path, dsy, monkeypatch):
+    """The first reviewer's lesser point 2: fetch and process refuse a symlinked sample folder, and process a
+    symlinked pinned file, even one that points at byte-identical content."""
+    dest, wt, refp, clf = _synthetic_run(tmp_path, dsy, monkeypatch)
+    sdir = dest / "raw" / "GSE900001" / "GSM1"
+    p = next(sdir.glob("*barcodes*"))
+    copy = tmp_path / "elsewhere" / p.name
+    copy.parent.mkdir()
+    shutil.copyfile(p, copy)
+    p.unlink()
+    p.symlink_to(copy)
+    with pytest.raises(cm.Refused, match="symlink"):
+        pr.run("GSE900001", dest, wt, refp, tmp_path / "o", dsy, classifier=lambda *a: pytest.fail("read"))
+    p.unlink()
+    shutil.copyfile(copy, p)
+    assert pr.run("GSE900001", dest, wt, refp, tmp_path / "o", dsy, classifier=clf)["status"] == "ok"
+    moved = tmp_path / "elsewhere" / "GSM1"
+    shutil.move(str(sdir), str(moved))
+    sdir.symlink_to(moved, target_is_directory=True)
+    monkeypatch.setattr(fe, "_get", _no_get)
+    with pytest.raises(cm.Refused, match="symlinked folder"):
+        fe.fetch("GSE900001", dest, dsy)
+    with pytest.raises(cm.Refused, match="symlinked sample folder"):
+        pr.run("GSE900001", dest, wt, refp, tmp_path / "o", dsy, classifier=lambda *a: pytest.fail("read"))
+    assert not (tmp_path / "o" / "GSE900001").exists()
+
+
+def test_the_readme_says_raw_files_and_the_manifest_are_written_by_fetch_only():
+    assert "`raw/` and `MANIFEST.json` are written by `fetch` only" in (EXT / "README.md").read_text()

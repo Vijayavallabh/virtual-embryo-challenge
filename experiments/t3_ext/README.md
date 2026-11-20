@@ -1,7 +1,9 @@
-# T3 outside-knockout factor tables (stage 4: the pinned sample and series list)
+# T3 outside-knockout factor tables (stage 5: the pinned sample and series list)
 
-Campaign branches `campaign/t3-outside-knockouts` (stage 1), `-2` (stage 2), `-3` (stage 3) and `-4` (stage 4, this
-text: series membership, files bound to their pin, the series text shown and pinned). Under the captain's ruling of 2026-11-20 (`docs/PLAN.md` decision log
+Campaign branches `campaign/t3-outside-knockouts` (stage 1), `-2` (stage 2), `-3` (stage 3), `-4` (stage 4: series
+membership, files bound to their pin, the series text shown and pinned) and `-5` (stage 5, this text: file urls
+derived from the hashed fields only, links only from the sample's own folder, no stale output, a parser that splits
+on newlines only, plain field names that are screened). Under the captain's ruling of 2026-11-20 (`docs/PLAN.md` decision log
 2026-11-20 (j), "All three tiers"), outside single-cell data on knockouts of OTHER genes may shape the Task 3 file.
 This folder turns such data into per-gene factor tables in the frozen factor's form, so that a later thin builder can
 take one in place of the Mab21l2 factor. Stage 1 builds the tables only. Nothing here enters a model, a check or an
@@ -30,19 +32,29 @@ is an explicit list of the samples two people have read.
 1. **Plan** (metadata only). `fetch.py plan ACC` writes `meta/<ACC>/plan.json` and one table per screened series,
    `meta/<ACC>/plan_table_<SERIES>.txt`. Each table starts with a **SERIES block for every screened series**: its
    accession, its `series_metadata_sha256` and every field of its record verbatim (title, summary, overall_design,
-   type, relations, sample list, contact fields: all shown and hashed; contact fields are not screened). Then every
-   sample of the series: its accession, the verbatim text of every field of its GEO record (all are screened), the
-   sha256 of those fields, the screen's verdict and hits, its **series membership** (`NOT PINNABLE` when its own
-   `series_id` lists a series outside `screen_series` or none), the per-sample files the dataset's patterns allow (and
-   the other file names, never fetched), the parsed stage and chemistry, and the selectors' suggested arm, which
-   chooses nothing. Under any value that is not plain printable ASCII the table prints a second line, `escaped:`, its
+   type, relations, sample list, contact fields: all shown, hashed and, since stage 5, screened). Then every
+   sample of the series: its accession, the verbatim text of every field of its GEO record (all are screened, and
+   since stage 5 every field NAME is screened too), the sha256 of those fields, the screen's verdict and hits, its
+   **series membership** (`NOT PINNABLE` when its own `series_id` lists a series outside `screen_series` or none, or
+   when a supplementary link names a held accession), the per-sample files allowed and every other supplementary link
+   with the reason it is never fetched, the parsed stage and chemistry, and the selectors' suggested arm, which
+   chooses nothing. **A file is allowed only when its link is the sample's own GEO folder**, exactly
+   `ftp.ncbi.nlm.nih.gov/geo/samples/<stub>/<GSM>/suppl/<GSM>_<name>` (GEO's stub: GSM1234567 -> GSM1234nnn; no port,
+   query or fragment; a plain file name), names no held accession, is not a denied type and matches the dataset's
+   `sample_file_patterns`. A link into a series folder, another sample's folder or another host is listed as never
+   fetched with its reason. Under any value that is not plain printable ASCII the table prints a second line, `escaped:`, its
    Python `ascii()` form, so a hidden, reordering or look-alike character shows. Lines of a sample or series block
    that are not `key = value` fields are kept under `_other_lines` (shown, hashed, screened); the header counts the
    SOFT lines outside the series and sample blocks (PLATFORM and DATABASE blocks), which are not shown. A dataset
    with a held-out hit anywhere, or with a sample of a screened series whose `series_id` also names a held series, is
    refused and none of its text is written: the table holds accessions, verdicts and the names of the fields hit, and
-   nothing can be pinned from it. SOFT bytes that are not UTF-8 refuse the dataset. `plan.json` says `in_progress`
-   from the start of a run, so a run that dies leaves no passing plan behind.
+   nothing can be pinned from it. SOFT bytes that are not UTF-8 refuse the dataset. Since stage 5 the SOFT text is
+   split on the newline character only (one trailing carriage return stripped per line), and the dataset is refused,
+   its text withheld, when a line still holds a line or paragraph separator (CR, VT, FF, FS, GS, RS, NEL, U+2028,
+   U+2029), when a `!Series_` or `!Sample_` field name is not a plain GEO key (ASCII letters, digits, underscore; the
+   one exception is GEO's `contact_zip/postal_code`), or when a SAMPLE or SERIES block's accession is not `GSM` or
+   `GSE` digits. `plan.json` says `in_progress` from the start of a run, so a run that dies leaves no passing plan
+   behind.
 2. **Read and pin.** The main session and a second, independent reader each read the plan tables (what they check is
    below). For each sample both agree on, `fetch.py pin-template ACC --dest D --arm ko|control --gene G --gsm GSM ...`
    prints the entry (one command per arm; every sample is named, there is no bulk selector), with every field of the
@@ -73,7 +85,16 @@ is an explicit list of the samples two people have read.
    it and downloads again, and it deletes any other file in a pinned sample's folder. process refuses a file whose
    record holds another `metadata_sha256`, url or `pins_sha256`, and any file in a pinned sample's folder that is not
    one of its pinned files with a record. Arms, genes and stages come from the pins only. No count file of an
-   unpinned sample is opened (a test holds one beside the pinned ones and fails on any open of it).
+   unpinned sample is opened (a test holds one beside the pinned ones and fails on any open of it). **Since stage 5
+   the urls come from the hashed fields only:** verify_pins derives each pinned sample's file list (names and urls)
+   again from its pinned fields, refuses a stored list that differs and two files of one name, and fetch and process
+   use only the derived list. fetch and process refuse a symlinked raw, dataset or sample folder, manifest or file.
+   **`raw/` and `MANIFEST.json` are written by `fetch` only.** Nobody copies, edits or moves a file in them; to redo a
+   sample, delete its folder and fetch again. **No stale output:** process first deletes `processed/<ACC>/`, and
+   writes into `QC.json` the sha256 of the plan it ran under (`plan_sha256`), of the manifest and of each count file;
+   combine takes `--dest` and refuses a QC unless `meta/<ACC>/plan.json` exists, passes (status ok, the committed
+   `datasets.yaml`, its pins verified) and hashes to that `plan_sha256`; the launcher removes `processed/<ACC>/`
+   before the accession's re-plan, so a refused re-plan, fetch or process leaves nothing for combine.
 5. **Per-cell genotype designs** (cell-level labels inside one sample: MULTI-seq, gem.group, chimera sorts) are
    excluded in this stage: a dataset with `cell_labels` cannot hold pins, and `process.py` refuses it.
 
@@ -116,7 +137,9 @@ the series) only if both agree on all of these:
    overall_design, type, relations, `_other_lines`) and no sample of any screened series mentions beta-catenin,
    Ctnnb1, Gata4, another allele of either, a drug or construct acting on them, or a perturbation of their pathway
    that could phenocopy them (Wnt, Wls, Apc, Axin, Gsk3, Tcf/Lef, Fzd, Dvl, Csnk1a1, Hand2, Mef2c, Zfpm2, any GATA
-   factor), in any spelling. The screen's verdicts help; they do not decide. If in doubt, nothing in the dataset is
+   factor; Tbx5, Baf60c/Smarcd3, Sox17, Foxa2 (Gata4 partners); Tbx6, Sp5/8, T/Brachyury, Mixl1, Cdx2 (Wnt targets);
+   Evi, Notum, ICAT, Chibby, Jup/plakoglobin), in any spelling, in a field's value or in a field's NAME. The
+   screen's verdicts help; they do not decide. If in doubt, nothing in the dataset is
    pinned and the question goes to the main session.
 3. **No pooled design.** The sample is one embryo pool of one genotype: no MULTI-seq, cell hashing, CRISPR guide
    pool, chimera, mixed-genotype capture or per-cell genotype label (those are excluded in this stage). Read
@@ -132,17 +155,20 @@ the series) only if both agree on all of these:
    in `stages_used`.
 7. **Assay.** Single-cell or single-nucleus RNA (the GEX part of a multiome), not ATAC, bisulfite, methylation, bulk
    or spatial; the pinned files are that sample's own per-sample matrices (no series-level files, no fragments).
+   The `per-sample files allowed` line names only files of the sample's own folder; read the `never fetched` line's
+   reasons too: a link that points into a series folder or another sample's folder is a reason to ask, not to pin.
 8. **Hidden characters.** Every `escaped:` line is read: a control, format or bidirectional character, a look-alike
    letter or a non-ASCII digit is explained or the sample (or series) is not pinned. The header's count of lines not
    shown (PLATFORM and DATABASE blocks) is noted; those lines are platform descriptions, not sample labels.
 9. **The hashes** in the pasted entries equal the ones printed in the table the reader read: each sample's
-   `metadata_sha256` and each series' `series_metadata_sha256`.
+   `metadata_sha256` and each series' `series_metadata_sha256`. A pinned sample's row in every other screened table
+   (the superseries) must read the same as its own-series row; if not, do not pin (only the own-series row is hashed).
 
 ## The rules each step keeps
 
 - **Held-out genes (the second line).** Before any file is chosen, `fetch.py plan` screens every sample of every listed series, plus
-  every series-level field (title, summary, overall_design, type, file names and the rest; contact fields are
-  skipped). A held-out hit anywhere, a review term not cleared for that sample (or, for a series-level field, that
+  every series-level field (title, summary, overall_design, type, file names, contact fields since stage 5, and the
+  rest) and every field name. A held-out hit anywhere, a review term not cleared for that sample (or, for a series-level field, that
   series accession), or a record with no text refuses the whole dataset. Clearing one review term never passes a
   second term in the same text, and nothing clears a held-out term. The spelling families caught, the review terms
   and the known over-refusals are listed in `t3x_screen.py`'s docstring; each has a test string, and a property
@@ -156,7 +182,9 @@ the series) only if both agree on all of these:
   appears in. Stage 4 also deletes Unicode control and format characters (and U+034F) in an extra variant, folds
   Greek and Latin look-alike letters and non-ASCII digits, makes a text holding any control or format character
   (TAB excepted) a review term 'control-or-format character', and adds the spelling gaps the reviewers of 9c981e1
-  listed as review terms (`t3x_screen.py` docstring). Per-cell label tables go through
+  listed as review terms (`t3x_screen.py` docstring). Stage 5 adds the aliases Evi, Notum, ICAT, Chibby / Cby1,
+  dHand / eHand, Jup / plakoglobin / gamma-catenin and the Wnt targets Tbx6, Sp5 / Sp8, Tbxt / Brachyury / 'T/T',
+  Mixl1 and Cdx2 as review terms. Per-cell label tables go through
   `t3x_screen.screen_cells`, but no loader uses it and a dataset that needs it is refused. Series-level files are
   never fetched.
 - **Phenocopy clause.** Wls (GSE165300), Hand2 (GSE126128) and Mef2c (GSE280543) have status `held_phenocopy`, and
@@ -215,7 +243,8 @@ meta/<ACC>/<series>_family.soft.gz         GEO metadata, sha256 in plan.json
 meta/<ACC>/plan.json                       screen record, every sample's table row, pins verified (if any), units
 meta/<ACC>/plan_table_<SERIES>.txt         the plan table the two readers read (verbatim fields, hash, verdict)
 raw/<ACC>/<GSM>/<file>, raw/<ACC>/MANIFEST.json   pinned downloads with url, size, sha256; the pins and their sha256
-processed/<ACC>/QC.json                    cells per stage and arm, call shares, guards, panel genes, status
+processed/<ACC>/QC.json                    cells per stage and arm, call shares, guards, panel genes, status,
+                                           plan_sha256, manifest_sha256, count_files_sha256
 processed/<ACC>/<ACC>__<gene>.unit.json    log-space table for combine
 processed/<ACC>/tables/<ACC>__<gene>/      finished per-dataset tables
 tables/<name>/factors/<name>.csv           pooled form (gene, factor; reference gene order) + factors/factors.json
@@ -238,7 +267,7 @@ unless `vec` is imported from that checkout. The WT E8.75 file is read, never wr
 
 The steps for the main session, in order (none was run by the engineer):
 
-1. **Merge.** On this machine, merge `campaign/t3-outside-knockouts-4` into `main` after its review.
+1. **Merge.** On this machine, merge `campaign/t3-outside-knockouts-5` into `main` after its review.
 2. **Sync.** Only when nothing runs in `~/v/vec-campaign-c`: the `docs/COMPUTE.md` rsync line with the target
    `PrakashDGX_H2:v/vec-campaign-c/`, then on the DGX `git -C ~/v/vec-campaign-c checkout --detach <main's commit>`
    and `git -C ~/v/vec-campaign-c status --porcelain --untracked-files=no` (empty). Check `df -h /home`.
@@ -264,7 +293,9 @@ The steps for the main session, in order (none was run by the engineer):
    The launcher first runs the pinned gate (`fetch.py check-pins`; ALL.exit 6 if any accession has no pins or the
    YAML hash is not the pinned one), then the reference statistics, then per accession a fresh plan that checks each
    pinned series' and sample's LIVE metadata against its pinned hash (`replan_<ACC>`), and only if it passes the fetch of the
-   pinned files and the processing of the pinned samples; combine last. Wait on `logs/ALL.exit` in the background.
+   pinned files and the processing of the pinned samples; combine last (`--dest`, so each QC is checked against its
+   stored plan). Before each re-plan the launcher deletes that accession's `processed/<ACC>/`. Wait on
+   `logs/ALL.exit` in the background.
 9. **Afterwards**: read `processed/<ACC>/QC.json` (status, confidence_by_sample, the guard records; no gene-level
    value is printed anywhere) and `tables/COMBINE.json`. `raw/` stays until the main session decides to delete it.
 
@@ -318,3 +349,14 @@ kept under `_other_lines` (and so change the hash and enter the screen): I expec
 terminal shows bidirectional characters in the raw value line: the `escaped:` line below it is ASCII and shows them.
 The Greek and Latin fold covers only the letters listed in `t3x_screen.py`; other scripts are not folded. Hand2, Mef2c
 and Zfpm2 are review terms now, so a cardiac series that names them as markers needs a review clearance.
+
+## What stage 5 could not check
+
+Still nothing ran against GEO. The own-folder rule assumes GEO's sample file links have the form
+`ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM1234nnn/GSM1234567/suppl/GSM1234567_<name>` (and `GSMnnn` for accessions
+of three digits or fewer), as I remember it: a real record whose links differ gets no allowed file and cannot be
+pinned until a reviewed change. The one exception to the plain-key rule, `contact_zip/postal_code`, is GEO's own
+field name from memory; if real files hold other field names with punctuation, every such dataset is refused, text
+withheld, until a reviewed change lists them. A real SOFT file holding a form feed or U+2028 inside a field is refused
+the same way. The Wnt-target review terms (Tbx6, Sp5/8, T, Mixl1, Cdx2) will cost review round trips on series that
+name them as markers.

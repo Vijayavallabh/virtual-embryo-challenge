@@ -18,6 +18,10 @@
       from the WT reference, and computes one log-ratio table per knockout gene with the fixed guards, minimum-cells
       rule and shrinkage below. It writes per gene <out>/<ACC>/<ACC>__<gene>.unit.json (log space, for combine) and
       its finished tables (pooled and per group), and <out>/<ACC>/QC.json. It prints no gene-level value.
+      Stage 5: it first deletes <out>/<ACC> (so a run that refuses leaves no output combine could read); it refuses a
+      symlinked raw, dataset or sample folder, manifest or file; it takes each pinned file's url only from the list
+      verify_pins derives from the hashed fields; QC.json records plan_sha256 (the sha256 of the plan it ran under,
+      checked by combine), the manifest's sha256 and each count file's sha256.
 
 The rules (constants in t3x_common.py, fixed 2026-11-20, none from a score):
   * Cells: stage capped at E9.5 (the T1 window applied to every cell); fewer than 200 detected genes is not a cell;
@@ -47,6 +51,7 @@ from __future__ import annotations
 import gzip
 import io
 import json
+import shutil
 import sys
 import tarfile
 import time
@@ -368,12 +373,25 @@ def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Pat
     if not ds.get("pinned"):
         raise Refused(f"{acc}: the pinned block is empty: nothing is processed")
     dest, out = cm.outside_repo(dest), cm.outside_repo(out)
+    # stage 5: no stale output. This accession's earlier outputs go before any check, so a run that refuses leaves
+    # nothing that combine could read
+    adir = out / acc
+    if adir.is_symlink():
+        raise Refused(f"{adir}: a symlinked output folder: remove it by hand")
+    if adir.exists():
+        shutil.rmtree(adir)
     pl = fe._load_plan(acc, dest, datasets)
-    mp = dest / "raw" / acc / "MANIFEST.json"
+    plan_sha = cm.sha256_file(dest / "meta" / acc / "plan.json")
+    rdir = dest / "raw" / acc
+    mp = rdir / "MANIFEST.json"
+    for d in (dest / "raw", rdir, mp):
+        if d.is_symlink():
+            raise Refused(f"{d}: a symlink in the raw folder: refused (raw/ and MANIFEST.json are written by fetch "
+                          "only)")
     if not mp.is_file():
         raise Refused(f"{mp}: no manifest; fetch first")
     man = json.loads(mp.read_text())
-    if man.get("plan_sha256") != cm.sha256_file(dest / "meta" / acc / "plan.json"):
+    if man.get("plan_sha256") != plan_sha:
         raise Refused(f"{acc}: the manifest was not fetched from this plan")
     cur = cm.pins_sha256(ds)
     if (man.get("pins_sha256") != cur or man.get("pinned") != ds["pinned"]
@@ -389,8 +407,12 @@ def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Pat
         gsm = s["accession"]
         names = {f["name"] for f in s["files"]}
         sdir = dest / "raw" / acc / gsm
+        if sdir.is_symlink():
+            raise Refused(f"{gsm}: a symlinked sample folder: refused")
         on_disk = sorted(q.name for q in sdir.iterdir()) if sdir.is_dir() else []
         for name in on_disk:
+            if (sdir / name).is_symlink():
+                raise Refused(f"{gsm}/{name}: a symlink in a pinned sample's folder: refused")
             if name not in names or f"{gsm}/{name}" not in man["files"]:
                 raise Refused(f"{gsm}/{name}: a file in a pinned sample's folder that is not one of its pinned files "
                               "with a manifest record: refused (fetch again)")
@@ -413,15 +435,19 @@ def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Pat
         raise Refused("the WT file is not the one the reference statistics were computed from")
     genes = ref["genes"]
     # 2. verify the pinned files, then read counts on the panel (no other sample's file is opened)
-    blocks, obs_parts, presence, panel_rec, dropped = [], [], [], {}, {}
+    blocks, obs_parts, presence, panel_rec, dropped, count_sha = [], [], [], {}, {}, {}
     for s in pinned:
         gsm = s["accession"]
         files = []
         for f in s["files"]:
             key = f"{gsm}/{f['name']}"
             p = dest / "raw" / acc / gsm / f["name"]
-            if key not in man["files"] or not p.is_file() or cm.sha256_file(p) != man["files"][key]["sha256"]:
+            if p.is_symlink():
+                raise Refused(f"{key}: a symlink: refused")
+            digest = cm.sha256_file(p) if p.is_file() else None
+            if key not in man["files"] or digest is None or digest != man["files"][key]["sha256"]:
                 raise Refused(f"{key}: missing or its sha256 differs from the manifest")
+            count_sha[key] = digest
             files.append(p)
         M, symbols, types, bcs = read_sample(files)
         if M.shape[0] > cm.MAX_BARCODES:
@@ -440,10 +466,10 @@ def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Pat
     obs = pd.concat(obs_parts)
     qc = {"accession": acc, "tier": ds["tier"], "study": ds["study"], "d": ds["d"], "screened_samples": screen,
           "pinned": ds["pinned"], "pinned_series": ds["pinned_series"], "pins_sha256": cur,
+          "plan_sha256": plan_sha, "manifest_sha256": cm.sha256_file(mp), "count_files_sha256": count_sha,
           "screen_record": pl["screen"], "cells_dropped_low_genes": dropped, "panel_match": panel_rec,
           "panel_genes_present": int(present.sum()), "panel_genes": len(genes),
           "created": time.strftime("%Y-%m-%d %H:%M:%S %Z"), "git": _git_head()}
-    adir = out / acc
     if present.mean() < cm.MIN_PANEL_MATCH:
         qc.update(status="failed", reason=f"only {present.sum()} of {len(genes)} panel genes matched")
         cm.dump_json(qc, adir / "QC.json")

@@ -107,7 +107,11 @@ REVIEW = ["Gata6 F/+", "GATA-6 het", "Gata5 KO", "GATA VI", "G4 ESC chimera", "A
           "Pygo2 KO", "Rnf43/Znrf3 DKO", "Hand2 KO", "Mef2c KO", "Zfpm2 KO", "Fog2 KO", "Hand2 null",
           "$\\beta$-catenin", "beta$catenin", "β1-catenin", "beta1-catenin",
           # a control or format character alone (no gene behind it) is a review term of its own
-          "E8.5​embryo", "wild­type", "wild type\x07"]
+          "E8.5​embryo", "wild­type", "wild type\x07",
+          # stage 5: the second reviewer of bf78b1a's aliases and Wnt / beta-catenin targets
+          "Evi KO", "Evi/Wls", "Notum", "ICAT overexpression", "Chibby", "Cby1 KO", "Cby KO", "dHand", "eHand KO",
+          "d-Hand null", "Jup KO", "plakoglobin", "gamma-catenin", "γ-catenin", "Tbx6 KO", "Tbx-6", "Sp5", "Sp8 null",
+          "Sp5/8", "Tbxt KO", "Brachyury", "T/T embryos", "Mixl1 KO", "Cdx2 cKO"]
 CLEAN = ["Tbx1Cre/flox; Rosa26-GFPflox/+", "wild type", "E8.5_CRISPR_T_WT", "E8.5_CRISPR_T_KO", "Dnmt3a+3b",
          "Eed+Cdkn2a", "Gata1 chimera", "whole embryo", "C57BL/6",
          "bio replicate 1", "biological replicate 2", "conducting", "ΔNp63", "abcam", "Chromium Single Cell 3' v2",
@@ -117,7 +121,19 @@ CLEAN = ["Tbx1Cre/flox; Rosa26-GFPflox/+", "wild type", "E8.5_CRISPR_T_WT", "E8.
          "Gata1 KO", "Gata2", "Gata3", "Gata2/3 DKO", "Gata1, Gata2", "Gata 1-3", "Ctnna1", "Ctnnd1", "Mesp1-Cre",
          "Isl1 KO", "Tbx1 KO", "Hand1", "Nkx2-5 KO", "chirality", "E8.5 wild type", "centrifuged at 500 g at 4 C",
          # stage 4: the new folds and terms leave these alone
-         "β-actin", "TGFβ1", "integrin β1", "staging at a 4-somite stage", "Gata1\tKO", "Tbx1é"]
+         "β-actin", "TGFβ1", "integrin β1", "staging at a 4-somite stage", "Gata1\tKO", "Tbx1é",
+         # stage 5: the new terms leave these alone
+         "the hand", "evidence", "Sp1", "Cdx1", "Tbx5", "Tbx16", "spleen", "notochord", "Mixl2"]
+# stage 5: GEO's usual field names, screened as names, hit nothing
+GEO_KEYS = ["title", "geo_accession", "status", "submission_date", "last_update_date", "type", "channel_count",
+            "source_name_ch1", "organism_ch1", "taxid_ch1", "characteristics_ch1", "treatment_protocol_ch1",
+            "growth_protocol_ch1", "molecule_ch1", "extract_protocol_ch1", "label_ch1", "label_protocol_ch1",
+            "description", "data_processing", "platform_id", "contact_name", "contact_email", "contact_phone",
+            "contact_fax", "contact_laboratory", "contact_department", "contact_institute", "contact_address",
+            "contact_city", "contact_state", "contact_zip/postal_code", "contact_country", "contact_web_link",
+            "instrument_model", "library_selection", "library_source", "library_strategy", "relation",
+            "supplementary_file_1", "series_id", "data_row_count", "summary", "overall_design", "pubmed_id",
+            "web_link", "contributor", "sample_id", "platform_taxid", "sample_taxid", "_other_lines"]
 # glued affixes (no separator) for the second property test (the second reviewer's list)
 AFFIXES = ["f/f", "fx", "floxed", "mutant", "knockout", "lof", "deficient", "i", "ca", "oe", "lenti", "deltaN", "ΔN",
            "shRNA", "sgRNA"]
@@ -147,6 +163,20 @@ def test_clean_labels_pass(text):
 
 def test_the_clean_record_is_clean():
     assert sc.screen_record("GSM1", CLEAN_RECORD)["verdict"] == "pass"
+
+
+def test_field_names_are_screened_like_values_and_geos_usual_names_pass():
+    """Stage 5 (the second reviewer of bf78b1a): a field NAME is screened like a value; its hits carry
+    '(field name)'."""
+    assert sc.screen_record("GSM1", {k: ["x"] for k in GEO_KEYS})["verdict"] == "pass"
+    r = sc.screen_record("GSM1", {**CLEAN_RECORD, "Ctnnb1_genotype": ["wild type"]})
+    assert r["verdict"] == "held_out" and ("Ctnnb1_genotype (field name)", "held_out", "ctnnb") in r["hits"]
+    r = sc.screen_record("GSM1", {**CLEAN_RECORD, "Hand2_genotype": ["wild type"]})
+    assert r["verdict"] == "review" and r["hits"][0][0] == "Hand2_genotype (field name)"
+    # an EXTENDED form in a field name voids the record's clearances
+    cleared = [{"sample": "GSM1", "term": "hand2", "reason": "a marker"}]
+    assert sc.screen_record("GSM1", {**CLEAN_RECORD, "Hand2_genotype": ["x"]}, None, cleared)["verdict"] == "pass"
+    assert sc.screen_record("GSM1", {**CLEAN_RECORD, "Hand2_Ctnb1": ["x"]}, None, cleared)["verdict"] == "review"
 
 
 def _insertions(value, spelling, join):

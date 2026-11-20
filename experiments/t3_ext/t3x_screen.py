@@ -75,6 +75,9 @@ after a digit or LaTeX ('$\\beta$-catenin', 'beta$catenin', 'β1-catenin', 'beta
 'catenin' clearance never passes them), Fzd / Frizzled, Dvl / Dishevelled, Csnk1a1 / CK1alpha, Amer1 / WTX, Bcl9,
 Pygo1/2, Rnf43 / Znrf3, BML-284, SKL2001, WAY-262611, QS11, indirubin, Foxy-5, KY02111, LF3, and the README's
 phenocopy list Hand2, Mef2c, Zfpm2 / Fog2.
+Stage 5 (the reviewers of bf78b1a): the aliases Evi (Wls), Notum, ICAT, Chibby / Cby1, dHand / eHand, Jup /
+plakoglobin / gamma-catenin, and the Wnt / beta-catenin targets Tbx6, Sp5 / Sp8, Tbxt / Brachyury / 'T/T', Mixl1 and
+Cdx2. Field NAMES are screened like values (screen_record, fetch.screen_all), and a series' contact fields are screened.
 
 EXTENDED forms: a text that matches one (a Ctnnb1 or Gata4 typo form, beta / bet + 'cat' in any context but
 catalogue wording, 'catenine') voids every review clearance of that sample (or series): its review hits refuse
@@ -204,6 +207,14 @@ REVIEW_PATTERNS = [
     # the README's phenocopy list (Gata4 partners and heart regulators held under the phenocopy clause)
     rf"(?<![a-z])hand{_SEP}2(?![0-9])", rf"(?<![a-z])mef{_SEP}2{_SEP}c", rf"(?<![a-z])zfpm{_SEP}2(?![0-9])",
     rf"(?<![a-z])fog{_SEP}2(?![0-9])",
+    # stage 5 (the second reviewer of bf78b1a): aliases of listed terms (Evi = Wls; Notum; ICAT and Chibby, the
+    # beta-catenin inhibitors; dHand / eHand, the Hand2 / Hand1 aliases; Jup, plakoglobin, gamma-catenin) ...
+    r"(?<![a-z])evi(?![a-z])", r"notum", r"(?<![a-z])icat(?![a-z])", r"chibby|(?<![a-z])cby1?(?![a-z])",
+    rf"(?<![a-z])[de]{_SEP}hand(?![a-z0-9])", rf"(?<![a-z])jup(?![a-z])|plakoglobin|(?:gamma|γ){_SEP}catenin",
+    # ... and Wnt / beta-catenin targets whose loss phenocopies Ctnnb1 loss in the posterior mesoderm
+    rf"(?<![a-z])tbx{_SEP}6(?![0-9])", rf"(?<![a-z])sp{_SEP}[58](?![0-9])",
+    rf"(?<![a-z])tbxt(?![a-z])|brachyury|(?<![a-z])t{_SEP}/{_SEP}t(?![a-z])", rf"(?<![a-z])mixl{_SEP}1",
+    rf"(?<![a-z])cdx{_SEP}2(?![0-9])",
     r"catenin",
 ]
 # a text matching one of these voids every review clearance of its sample (or series)
@@ -377,16 +388,18 @@ def screen_record(sample_id: str, fields: dict, extra_refuse: list[str] | None =
     """Screen every text field of one sample record (title, characteristics, source, description, protocols, file
     names ...). Returns {'sample', 'verdict': 'pass'|'held_out'|'review', 'hits': [(field, kind, term)],
     'clearance_void': [extended forms]}. A record with no text field at all cannot be screened and is refused. If any
-    field matches an EXTENDED form, no review clearance applies to the record."""
+    field matches an EXTENDED form, no review clearance applies to the record. Since stage 5 every field NAME is
+    screened like a value too (its hits are reported under '<name> (field name)')."""
     flat = _flat(fields)
     if not any(str(x).strip() for x in flat):
         raise Refused(f"{sample_id}: no text field to screen: refused (unscreenable)")
-    void = sorted({t for x in flat for t in extended(x)})
+    void = sorted({t for x in [*flat, *(fields or {})] for t in extended(x)})
     out, verdict = [], "pass"
     for k, v in fields.items():
-        for one in (v if isinstance(v, list | tuple) else [v]):
+        vals = v if isinstance(v, list | tuple) else [v]
+        for one, label in [(k, f"{k} (field name)"), *((x, k) for x in vals)]:
             for kind, term in screen_text(sample_id, one, extra_refuse, review_cleared, void=bool(void)):
-                out.append((k, kind, term))
+                out.append((label, kind, term))
                 if kind == "held_out":
                     verdict = "held_out"
                 elif verdict == "pass":
