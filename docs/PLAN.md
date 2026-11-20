@@ -8000,3 +8000,14 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Why it is pinned at all:** practice read K22 requires tables from at least two independent studies, and this is
     the only other whole-embryo study with per-sample files and its own control that the hunt found usable today. The
     rerun covers every pinned dataset in one launch.
+- 2026-11-20 (jj), the embryo's shape-interpolation read E49: row placed, run commit fixed (state at 18:56 UTC,
+  2026-11-20). Written by the AI assistant, which is recused on the occupancy term; the design, the readings and the
+  outcome-to-file rule are the analysts' and are in the row.
+  - The reviewer's pre-run correction is made (branch `campaign/embryo-shape-interp-2`, f152e6c: the test that decides
+    which axes a bracket separates now refuses a draw that moves an axis across the cut); merged at cf75bbe; 276
+    targeted tests pass, default build bytes unchanged. Row E49 (three arms, four controls, labelled diagnostics;
+    seven tries, five if the target-free first step drops F1 and its control) is on main with its J7 figures (E48's
+    gate against E47: 0.0000 and 0.0000). The run commit is this entry's commit. Order on the compute machine, from a
+    detached worktree: tests, the target-free description, the gate against E47 within 0.01, the run on nine tasks and
+    ten seeds under both scorer builds, the reading. A form passes only by the row's six conditions; at most two
+    candidate files follow; each needs the test-board flag, which is the captain's yes, before it is built.
