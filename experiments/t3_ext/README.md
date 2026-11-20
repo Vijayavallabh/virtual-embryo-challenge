@@ -1,12 +1,13 @@
-# T3 outside-knockout factor tables (stage 6: series-level files and a sister-series control)
+# T3 outside-knockout factor tables (stage 7: the stage 6 blockers closed)
 
 Campaign branches `campaign/t3-outside-knockouts` (stage 1), `-2` (stage 2), `-3` (stage 3), `-4` (stage 4: series
 membership, files bound to their pin, the series text shown and pinned), `-5` (stage 5: file urls
 derived from the hashed fields only, links only from the sample's own folder, no stale output, a parser that splits
 on newlines only, plain field names that are screened) and `campaign/t3-ext-archives` (stage 6: a series' own
 gene-named archives or loose matrices, pinned to the samples they hold with a split rule, and controls from a sister
-series of the same study; sections "Series-level files" and "A control from a sister series" below). Everything of
-stage 5 stands. Under the captain's ruling of 2026-11-20 (`docs/PLAN.md` decision log
+series of the same study; sections "Series-level files" and "A control from a sister series" below) and
+`campaign/t3-ext-3` (stage 7: the three blockers and the lesser points of the two reviews of stage 6 closed, section
+"Stage 7" below). Everything of stage 5 stands. Under the captain's ruling of 2026-11-20 (`docs/PLAN.md` decision log
 2026-11-20 (j), "All three tiers"), outside single-cell data on knockouts of OTHER genes may shape the Task 3 file.
 This folder turns such data into per-gene factor tables in the frozen factor's form, so that a later thin builder can
 take one in place of the Mab21l2 factor. Stage 1 builds the tables only. Nothing here enters a model, a check or an
@@ -136,8 +137,10 @@ file be used without loosening any rule above.
    that no entry names; a split map that does not name every sample of the entry exactly; a suffix that is not one
    separator and letters or digits (`-1`); a folder that is not one plain path component; a folder split of a loose
    triple. **When a file cannot be split by a rule stated in the pin** (split none), every sample of the entry must be
-   pinned with ONE arm, ONE gene and ONE stage; the file is then used as one unit and counts as ONE library (m), and
-   its confidence share is recorded under one label `series:<GSE>/<file>`.
+   pinned with ONE arm and ONE stage, and for the same genes (a wild-type file may serve several knockouts); the file
+   must hold exactly as many libraries as the entry names samples (stage 7, checked by process before any count is
+   read); the file is then used as one unit and counts as ONE library (m), and its confidence share is recorded
+   under one label `series:<GSE>/<file>` (with one sample, under that sample's accession).
 3. **Checked again.** `verify_pins` (plan with pins, fetch, process, combine) derives the series' offered files again
    from the pinned series fields, refuses a stored list that differs, two links of one file name, a pinned file that
    is not offered, and a sample of an entry that is not in that series' plan table.
@@ -153,9 +156,12 @@ file be used without loosening any rule above.
    folder: every file member lies in a top-level folder the map names, and each folder holds exactly one triple.
    Split barcode_suffix: every barcode ends with exactly one key (with something before it), and every key's sample
    gets cells; a barcode no key fits refuses the file. Split none: each folder of the file holds exactly one triple,
-   and all its libraries are pooled under one label. A member whose path is a denied type (an unfiltered
+   the file holds exactly as many libraries (folders with a triple, or the one loose or flat triple) as the entry names
+   samples, else it is refused ("the file holds N libraries but the entry names M samples"), and all its libraries
+   are pooled under one label. A member whose path is a denied type (an unfiltered
    `raw_feature_bc_matrix`, fragments, peaks, ATAC) is refused too. More than 60,000
-   barcodes per library is refused as unfiltered. `QC.json` records each file's libraries (label, folder, barcodes)
+   barcodes in one library (each folder, or the one loose triple, under every split) is refused as unfiltered. A
+   gzipped member is decompressed in chunks and refused once it passes 8 GiB (stage 7). `QC.json` records each file's libraries (label, folder, barcodes)
    and its sha256 under `count_files_sha256` as `<GSE>/<file>`.
 
 ## A control from a sister series (stage 6)
@@ -183,6 +189,20 @@ declaration is refused. **d**: a knockout unit with any control from the sister 
 (`t3x_common.SISTER_D`, the weaker value the pipeline gives controls that are not littermates or same-capture), whatever
 the dataset's design; the unit's QC entry and unit file say `d` and `control_source: sister series <GSE>
 (control_series): [GSM...]`, and `QC.json` lists `sister_series_controls`.
+
+**Checked by code, not on typed text alone (stage 7).** (1) `load_datasets` refuses a control series, or any series of
+its screen_series, that is another dataset's accession, one of another dataset's screen_series, or a series of another
+dataset's control_series: a sister series belongs to no other entry. (2) `plan` refuses the dataset (status refused,
+the reason stated) unless the dataset's own series record and the sister series' record share a `contact_institute`
+value AND at least one value of `contact_name`, `contact_laboratory` or `pubmed_id`. Values are compared exactly as
+the SOFT parser gives them (whitespace stripped, case kept), the stricter of the readings the reviewer's text allows.
+The values matched are printed on the `CONTROL SERIES` lines of every plan table (`the code matched ...`), stored in
+the plan, and derived again from the stored series fields by `verify_pins` (fetch, process, combine). (3) A series of
+control_series.screen_series that holds a sample of the dataset's own screened series refuses the plan: a superseries
+that holds samples of the dataset's own series is listed once, in the dataset's screen_series, never under
+control_series; list under control_series.screen_series only series that hold the sister's samples alone. The match
+says the two records share an institute and a contact or a publication; it does not say the protocol is the same or
+that the wild-type embryos fit the knockouts: the readers still check that (check 11).
 
 **The canonical serialisation.** A pin's `metadata_sha256` is the sha256 of the UTF-8 bytes of
 
@@ -257,12 +277,13 @@ the series) only if both agree on all of these:
     tie the file to exactly those samples: the gene in the file name is the gene those samples are pinned for, the
     stage in the name (if any) is their stage, and the replicate tags (for example `1ab`) match the samples' titles;
     (c) no other sample of any screened series could also be in the file (a series text or sample text that says the
-    file holds more libraries than the entry names means do not pin); (d) the split rule is stated by the records
+    file holds more libraries than the entry names means do not pin), and the number of libraries the file is
+    expected to hold equals the number of samples named (process refuses a file whose library count differs); (d) the split rule is stated by the records
     themselves: a barcode suffix only where a record (the sample's or the series' data_processing, description or
     overall_design) says which suffix is which sample, a folder only where a record names the folders; otherwise
-    `split: {by: none}`, which needs every sample of the entry to be ONE arm, gene and stage, and which counts the
-    file as ONE library; (e) every sample of the entry is pinned with `files: []`, by `pin-template
-    --from-series-file`; (f) the file holds expression matrices of single-cell RNA, not bisulfite, ATAC or methylation
+    `split: {by: none}`, which needs every sample of the entry to be ONE arm and ONE stage, and pinned for the same
+    genes (a wild-type file may serve several knockouts), and which counts the file as ONE library; (e) every
+    sample of the entry is pinned with `files: []`, by `pin-template --from-series-file`; (f) the file holds expression matrices of single-cell RNA, not bisulfite, ATAC or methylation
     data (the name and the series' overall_design and data_processing say so). What the archive really holds is
     checked only by process, after the download, and a file that does not fit its rule is refused, never repaired.
 11. **A control from a sister series (stage 6).** Both readers read the sister series' SERIES block and EVERY sample of
@@ -274,7 +295,11 @@ the series) only if both agree on all of these:
     wild-type (or the control `control_definition` names) at the knockouts' stage, of the same strain background and
     chemistry where the records say them; (c) nothing in the sister series' text names a held-out gene, its pathway
     or a phenocopy (check 2); (d) the reader note says what both read and agree, in plain words; (e) every unit with
-    such a control will take d = 0.5, and the plan table's `CONTROL SERIES` lines match the declaration they agreed.
+    such a control will take d = 0.5, and the plan table's `CONTROL SERIES` lines match the declaration they agreed;
+    (f) stage 7: the `the code matched` lines name the values the code found shared (a contact_institute and a
+    contact name, laboratory or PubMed id); both readers find those values in both SERIES blocks, and the match is a
+    floor, not the relation: (a) to (d) still decide; (g) control_series.screen_series lists only series that hold
+    the sister's samples alone (a shared superseries goes in the dataset's own screen_series).
 
 ## The rules each step keeps
 
@@ -317,8 +342,8 @@ the series) only if both agree on all of these:
   confident, call-share ratio 2, Spearman margin 0.05, 100 cells, 20 UMIs, pseudocount 10, n_h/(n_h+200) capped by
   m/(m+1), d = 1 or 0.5, clip [0.25, 4].
 - **Repository.** Every write goes through `t3x_common.outside_repo`, which refuses this checkout and the main
-  checkout. Downloads are never unpacked. A per-sample tar.gz, and since stage 6 a pinned series archive (every member
-  checked first), is read member by member in memory.
+  checkout. Downloads are never unpacked. A per-sample tar.gz and a pinned series archive are read member by member
+  in memory, every member checked first (the per-sample route since stage 7).
 - **Printing.** No step prints a gene-level value. Logs hold counts, statuses and sample titles of clean samples.
 
 ## How a table is computed
@@ -382,12 +407,17 @@ unless `vec` is imported from that checkout. The WT E8.75 file is read, never wr
 
 The steps for the main session, in order (none was run by the engineer):
 
-1. **Merge.** On this machine, merge `campaign/t3-ext-archives` (stage 6) into `main` after its review. To use a
+1. **Merge.** On this machine, merge `campaign/t3-ext-3` (stage 7, which holds stage 6) into `main` after its
+   review; the merge changes `DATASETS_SHA256`, so every stored plan is stale and is made again by the launcher's
+   re-plan (`run_dgx.sh ... all`) or a plan run, never by editing `plan.json` by hand. To use a
    sister series, first fill GSE137337's `control_series` placeholder (accession, screen_series, the three relation
    statements, the reader note) in a reviewed commit with the new `t3x_common.DATASETS_SHA256`; the relation
    statements and the note are written only after the two readers have read both series (step 4), so the first plan
    of the sister series runs with a declaration whose statements say what the hunt saw and are confirmed or corrected
-   by the readers before any pin.
+   by the readers before any pin. If the readers change any word of control_series, commit it with the new
+   DATASETS_SHA256 and run plan mode again before any pin-template; pins are made only from a plan made under the
+   final declaration. The plan of a dataset with a sister series is refused unless the two series' records share an
+   institute and a contact or publication value (section "A control from a sister series", stage 7).
 2. **Sync.** Only when nothing runs in `~/v/vec-campaign-c`: the `docs/COMPUTE.md` rsync line with the target
    `PrakashDGX_H2:v/vec-campaign-c/`, then on the DGX `git -C ~/v/vec-campaign-c checkout --detach <main's commit>`
    and `git -C ~/v/vec-campaign-c status --porcelain --untracked-files=no` (empty). Check `df -h /home`.
@@ -406,8 +436,8 @@ The steps for the main session, in order (none was run by the engineer):
    ... --from-series-file` (it prints `files: []`), and per file `fetch.py series-file-template ACC --dest
    ~/v/vec-ext/t3 --series GSE --file F --gsm GSM ... --split none|barcode_suffix|folder [--key K=GSM ...]`, pasted
    under a `pinned_series_files:` key. Controls of the sister series are pinned with `--arm control` like any other.
-6. **Commit.** `fetch.py datasets-sha`, put the printed value into `t3x_common.DATASETS_SHA256`, run the three test
-   files, and commit `datasets.yaml` and `t3x_common.py` together on `main` (or on a branch merged into it), with the
+6. **Commit.** `fetch.py datasets-sha`, put the printed value into `t3x_common.DATASETS_SHA256`, run the t3_ext
+   test files (tests/test_t3_ext_pipeline.py, _ratios.py, _screen.py, _stage_fields.py, _archives.py), and commit `datasets.yaml` and `t3x_common.py` together on `main` (or on a branch merged into it), with the
    two readers named in the message. The `EXTERNAL_DATA.md` rows for the datasets that will be fetched go in before
    any table enters a model or a check.
 7. **Sync again** as in step 2, so the DGX checkout holds the pinned `datasets.yaml`.
@@ -418,7 +448,8 @@ The steps for the main session, in order (none was run by the engineer):
    pinned series' and sample's LIVE metadata against its pinned hash (`replan_<ACC>`), and only if it passes the fetch of the
    pinned files and the processing of the pinned samples; combine last (`--dest`, so each QC is checked against its
    stored plan). Before each re-plan the launcher deletes that accession's `processed/<ACC>/`. Wait on
-   `logs/ALL.exit` in the background.
+   `logs/ALL.exit` in the background. If fetch stops at the byte cap (`--max-gb 30`), raise `--max-gb` in a reviewed
+   commit; do not split the run by hand.
 9. **Afterwards**: read `processed/<ACC>/QC.json` (status, confidence_by_sample, the guard records; no gene-level
    value is printed anywhere) and `tables/COMBINE.json`. `raw/` stays until the main session decides to delete it.
 
@@ -473,6 +504,24 @@ terminal shows bidirectional characters in the raw value line: the `escaped:` li
 The Greek and Latin fold covers only the letters listed in `t3x_screen.py`; other scripts are not folded. Hand2, Mef2c
 and Zfpm2 are review terms now, so a cardiac series that names them as markers needs a review clearance.
 
+## Stage 7 (campaign/t3-ext-3): what changed after the two reviews of stage 6
+
+Commit 1 of the branch, each with a test that replays the reviewer's reproduction (`tests/test_t3_ext_archives.py`):
+
+- **Split none counts libraries.** A file used as one unit is refused unless it holds exactly as many libraries
+  (folders with a triple, or the one loose or flat triple) as its entry names samples. An archive with folders
+  `KO_1a`, `WT_littermate` and `unlisted_3` pinned to one knockout sample is refused and nothing is written. So a
+  flat or loose file that aggregates two samples' libraries (one triple) cannot be used whole any more: it needs a
+  barcode suffix rule from the records. The 60,000-barcode cap applies to each library.
+- **A sister series is checked by code** (section "A control from a sister series"): not registered as or screened
+  by another dataset, a shared institute and a shared contact or publication value, no superseries of the own series
+  under the sister.
+- **A one-library file may control several knockouts.** Split none needs one arm and one stage, each sample pinned
+  for the same genes, not one gene.
+- **The per-sample archive route** (stage 1) reads every member through the same checks as a series archive, and a
+  per-sample archive holds exactly one triple in one folder and nothing else; a gzipped member is decompressed in
+  chunks and refused past 8 GiB.
+
 ## What stage 6 could not check
 
 Nothing ran against GEO or on real data: the archives, loose triples and sister series of the tests are synthetic.
@@ -482,8 +531,8 @@ whose links differ offers no file. GSE137337's archive names other than the brie
 what the archives hold (one library or several; folders or barcode suffixes; whether each holds a 10x triple at all;
 member names with other characters), and whether the records state a split rule were not seen: a file whose contents
 do not fit its pin is refused by process after the download, and a member name outside `[A-Za-z0-9._+-]` (a space,
-for example) refuses the whole file until a reviewed change. A per-sample tar.gz (stage 1 route) is still read
-without the stage 6 member checks; no pinned sample uses one today. The sister series was not named (the placeholder
+for example) refuses the whole file until a reviewed change. A per-sample tar.gz (stage 1 route) was still read
+without the stage 6 member checks; stage 7 closes that. The sister series was not named (the placeholder
 is inert), so no real record of it was screened.
 
 ## What stage 5 could not check

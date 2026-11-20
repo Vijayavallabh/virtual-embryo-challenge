@@ -24,6 +24,9 @@ Stage 6 (2026-11-20, campaign/t3-ext-archives) adds two declarations, checked he
   control_series    a sister series of the same study that supplies controls only; it is screened, shown, hashed and
                     pinned like the dataset's own series, with its relation and a reader note stated
                     (check_control_series). A knockout unit whose controls come from it takes d = SISTER_D.
+
+Stage 7 (2026-11-21, campaign/t3-ext-3): a control series belongs to no other entry (check_sister_unregistered), and
+a file used as one unit (split none) holds one arm and one stage, each sample pinned for the same genes.
 """
 
 from __future__ import annotations
@@ -487,10 +490,14 @@ def check_series_file_pins(acc: str, ds: dict, pins: list[dict], where: str = "d
         if sp["by"] == "none":
             if sorted(sp) != ["by"]:
                 raise Refused(f"{where}: {acc}: {u['files']}: split by none takes no map")
-            kinds = {(p["arm"], p["gene"], stage_ok(p["stage"])) for g in sm for p in by_gsm[g]}
+            # stage 7 (the second reviewer of 853b214): one arm and one stage, and every sample pinned for the same
+            # genes, so a one-library wild-type file may control several knockouts (a control is pinned once per gene)
+            kinds = {(p["arm"], stage_ok(p["stage"]), frozenset(q["gene"] for q in by_gsm[g])) for g in sm
+                     for p in by_gsm[g]}
             if len(kinds) != 1:
-                raise Refused(f"{where}: {acc}: {u['files']}: a file used as one unit holds samples of ONE arm, gene "
-                              f"and stage only, not {sorted(kinds, key=str)}: state a split rule or do not pin it")
+                raise Refused(f"{where}: {acc}: {u['files']}: a file used as one unit holds samples of ONE arm and "
+                              f"stage, each pinned for the same genes, not {sorted(kinds, key=str)}: state a split "
+                              "rule or do not pin it")
             continue
         if sorted(sp) != ["by", "map"] or not isinstance(sp["map"], dict) or not sp["map"]:
             raise Refused(f"{where}: {acc}: {u['files']}: split by {sp['by']} needs a non-empty map {{key: GSM}}")
@@ -583,6 +590,7 @@ def load_datasets(path: Path | None = None) -> dict[str, dict]:
         out[acc] = {**ds, "pinned": list(pins), "pinned_series": list(ds.get("pinned_series") or []),
                     "pinned_series_files": list(ds.get("pinned_series_files") or []),
                     "series_files": list(ds.get("series_files") or []), "d": design_factor(ds)}
+    check_sister_unregistered(out, str(path))
     held = held_series(out)
     for acc, ds in out.items():
         bad = sorted(set(all_screened(ds)) & held)
@@ -591,6 +599,29 @@ def load_datasets(path: Path | None = None) -> dict[str, dict]:
                           "cleared dataset never screens, fetches or reads a held series)")
         ds["held_series"] = sorted(held)
     return out
+
+
+def check_sister_unregistered(allds: dict[str, dict], where: str = "datasets.yaml") -> None:
+    """Stage 7 (the first reviewer of 853b214, blocker 2, part 1): a named control series, and every series of its
+    screen_series, belongs to no other entry: it is not another dataset's accession, not one of another dataset's
+    screen_series, and (stricter than the reviewer's text) not a series of another dataset's control_series."""
+    owner: dict[str, set[str]] = {}
+    for acc, ds in allds.items():
+        for s in [acc, *(ds.get("screen_series") or [])]:
+            owner.setdefault(s, set()).add(acc)
+        c = ds.get("control_series")
+        if isinstance(c, dict) and c.get("accession"):
+            for s in [c["accession"], *(c.get("screen_series") or [])]:
+                owner.setdefault(s, set()).add(acc)
+    for acc, ds in allds.items():
+        c = control_series(ds)
+        if not c:
+            continue
+        for s in [c["accession"], *(c.get("screen_series") or [])]:
+            others = sorted(owner.get(s, set()) - {acc})
+            if others:
+                raise Refused(f"{where}: {acc}: control_series {s} is registered as (or screened by) dataset "
+                              f"{others[0]}: a sister series belongs to no other entry")
 
 
 def held_series(allds: dict[str, dict]) -> set[str]:

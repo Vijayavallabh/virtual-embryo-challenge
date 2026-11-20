@@ -104,7 +104,9 @@ def _sample(gsm, title, geno, series, own_files=False):
 def _soft(acc, samples, files) -> str:
     stub = acc[:-3] + "nnn"
     lines = [f"^SERIES = {acc}", f"!Series_title = A synthetic series {acc}", "!Series_summary = embryos",
-             "!Series_overall_design = one embryo pool per sample", "!Series_contact_name = A,,Person"]
+             "!Series_overall_design = one embryo pool per sample", "!Series_contact_name = A,,Person",
+             # stage 7: a sister series is accepted only when both records share the institute and a contact
+             "!Series_contact_institute = A Synthetic Institute"]
     lines += [f"!Series_supplementary_file = {HOST}/series/{stub}/{acc}/suppl/{f}" for f in files]
     for gsm, rec in samples.items():
         lines.append(f"^SAMPLE = {gsm}")
@@ -212,9 +214,11 @@ def _stage(staging: Path, rng, mu):
     _tar(staging / ARCHIVES[0], {f"AAA_1{x}/{k}": v for x, t in (("a", a1), ("b", a2))
                                  for k, v in zip(("matrix.mtx.gz", "features.tsv.gz", "barcodes.tsv.gz"), t,
                                                  strict=True)})
-    c = _join([_triple(rng, mu, fold, tag="a"), _triple(rng, mu, fold, tag="b")])
-    _tar(staging / ARCHIVES[1], dict(zip(("CCC/matrix.mtx.gz", "CCC/features.tsv.gz", "CCC/barcodes.tsv.gz"), c,
-                                         strict=True)))
+    # stage 7: a file used whole holds as many libraries as its entry names samples (two folders, two samples)
+    c1, c2 = _triple(rng, mu, fold, tag="a"), _triple(rng, mu, fold, tag="b")
+    _tar(staging / ARCHIVES[1], {f"CCC_1{x}/{k}": v for x, t in (("a", c1), ("b", c2))
+                                 for k, v in zip(("matrix.mtx.gz", "features.tsv.gz", "barcodes.tsv.gz"), t,
+                                                 strict=True)})
     _tar(staging / ARCHIVES[2], {"DDD/matrix.mtx.gz": b"never read"})
     b = _join([_triple(rng, mu, fold, suffix="-1"), _triple(rng, mu, fold, suffix="-2")])
     for name, data in zip((LOOSE[2], LOOSE[1], LOOSE[0]), b, strict=True):
@@ -354,7 +358,7 @@ def test_a_unit_used_whole_holds_one_arm_gene_and_stage_and_a_sample_has_one_sou
     # GSM9107 re-pinned as gene Aaa: the CCC archive used as one unit would mix two genes
     i = t.index("- accession: GSM9107")
     y.write_text(t[:i] + t[i:].replace('gene: "Ccc"', 'gene: "Aaa"', 1))
-    with pytest.raises(cm.Refused, match="ONE arm, gene"):
+    with pytest.raises(cm.Refused, match="ONE arm and stage, each pinned for the same genes"):
         cm.load_datasets(y)
     # a sample named by a series file but pinned with its own files too
     i = t.index("- accession: GSM9101")
@@ -479,7 +483,8 @@ def test_end_to_end_archives_split_by_folder_suffix_and_whole(tmp_path, monkeypa
     assert [lib["label"] for lib in units[ARCHIVES[0]]["libraries"]] == ["GSM9101", "GSM9102"]
     assert [lib["label"] for lib in units[LOOSE[0]]["libraries"]] == ["GSM9103", "GSM9104"]
     whole = f"series:{ACC}/{ARCHIVES[1]}"
-    assert [lib["label"] for lib in units[ARCHIVES[1]]["libraries"]] == [whole]
+    assert [(lib["label"], lib["folder"]) for lib in units[ARCHIVES[1]]["libraries"]] == [(whole, "CCC_1a"),
+                                                                                           (whole, "CCC_1b")]
     # the whole archive counts as ONE library: one confidence record, m = 1 for its knockout arm
     assert set(qc["confidence_by_sample"]) == {"GSM9101", "GSM9102", "GSM9103", "GSM9104", "GSM9105", whole}
     for gene in ("Aaa", "Bbb", "Ccc"):
@@ -724,3 +729,261 @@ def test_the_readme_and_launcher_describe_series_files_and_the_sister_series():
     assert "series files" in sh and "control series" in sh
     y = yaml.safe_load((EXT / "datasets.yaml").read_text())
     assert [d["accession"] for d in y["datasets"] if "series_files" in d or "control_series" in d] == ["GSE137337"]
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# stage 7 (campaign/t3-ext-3): the three blockers of the two reviews of 853b214, each replaying the reviewer's
+# reproduction, and the lesser points
+
+
+def _lib(rng, n=3):
+    mu = {g: rng.dirichlet(np.full(len(PANEL), 0.5)) for g in GROUPS}
+    return dict(zip(("matrix.mtx.gz", "features.tsv.gz", "barcodes.tsv.gz"), _triple(rng, mu, np.ones(len(PANEL)), n=n),
+                    strict=True))
+
+
+def test_blocker_1_split_none_refuses_a_file_with_more_libraries_than_samples_and_writes_nothing(tmp_path):
+    """The first reviewer's reproduction: a tar.gz with folders KO_1a, WT_littermate and unlisted_3 pinned split none
+    to one knockout sample GSM100 returned three libraries under GSM100 (another arm's and an unpinned sample's
+    cells in the knockout arm). Now it is refused before any count is read."""
+    rng = np.random.default_rng(11)
+    members = {f"{d}/{k}": v for d in ("KO_1a", "WT_littermate", "unlisted_3") for k, v in _lib(rng).items()}
+    p = _tar(tmp_path / "in" / "GSE1_x.tar.gz", members)
+    before = sorted(tmp_path.rglob("*"))
+    with pytest.raises(cm.Refused, match="split none: the file holds 3 libraries but the entry names 1 samples"):
+        pr.read_series_unit([p], _unit({"by": "none"}, samples=("GSM100",)))
+    assert sorted(tmp_path.rglob("*")) == before
+    # one sample, two folders (the reviewer's suggested test) and a loose triple named for two samples: refused too
+    two = _tar(tmp_path / "in" / "GSE1_y.tar.gz", {f"{d}/{k}": v for d in ("A", "B") for k, v in _lib(rng).items()})
+    with pytest.raises(cm.Refused, match="holds 2 libraries but the entry names 1 samples"):
+        pr.read_series_unit([two], _unit({"by": "none"}, samples=("GSM1",)))
+    names = ["GSE1_m_matrix.mtx.gz", "GSE1_m_features.tsv.gz", "GSE1_m_barcodes.tsv.gz"]
+    for n, v in zip(names, _lib(rng).values(), strict=True):
+        (tmp_path / n).write_bytes(v)
+    loose = {"series": "GSE1", "files": names, "samples": ["GSM1", "GSM2"], "split": {"by": "none"}}
+    with pytest.raises(cm.Refused, match="holds 1 libraries but the entry names 2 samples"):
+        pr.read_series_unit([tmp_path / n for n in names], loose)
+    # equal counts pass, every library under the entry's first sample, its folder recorded
+    libs = pr.read_series_unit([two], _unit({"by": "none"}, samples=("GSM1", "GSM2")))
+    assert [(g, f) for g, f, _, _ in libs] == [("GSM1", "A"), ("GSM1", "B")]
+
+
+def test_blocker_1_the_barcode_cap_applies_to_each_library_under_split_none(tmp_path):
+    """The reviewers' second finding: under split none the cap was MAX_BARCODES times the number of samples per
+    folder. One folder of 60,001 barcodes beside a small one, two samples: refused now (120,000 was allowed)."""
+    rng = np.random.default_rng(12)
+    n_bc, n_ft = cm.MAX_BARCODES + 1, 300
+    big = sparse.coo_matrix((np.ones(10), (np.arange(10), np.arange(10))), shape=(n_ft, n_bc))
+    b = io.BytesIO()
+    spio.mmwrite(b, big)
+    feats = "\n".join(f"E{i}\tx{i}\tGene Expression" for i in range(n_ft)).encode()
+    members = {"A/matrix.mtx.gz": gzip.compress(b.getvalue()), "A/features.tsv.gz": gzip.compress(feats),
+               "A/barcodes.tsv.gz": gzip.compress("\n".join(f"B{i}-1" for i in range(n_bc)).encode()),
+               **{f"B/{k}": v for k, v in _lib(rng).items()}}
+    p = _tar(tmp_path / "GSE1_x.tar.gz", members)
+    with pytest.raises(cm.Refused, match=f"{n_bc} barcodes in one library"):
+        pr.read_series_unit([p], _unit({"by": "none"}))
+
+
+def _committed_with_sister(acc, screen=None):
+    t = cm.DATASETS.read_text()
+    old = ('    control_series:\n      accession: null\n      screen_series: []\n      relation:\n'
+           '        same_lab: "TO FILL"\n        same_protocol: "TO FILL"\n        same_publication: "TO FILL"\n'
+           '      reader_note: "TO FILL"\n')
+    assert t.count(old) == 1
+    listed = ", ".join(screen or [acc])
+    return t.replace(old, f"    control_series:\n      accession: {acc}\n      screen_series: [{listed}]\n"
+                          '      relation: {same_lab: "yes", same_protocol: "yes", same_publication: "yes"}\n'
+                          '      reader_note: "yes"\n')
+
+
+@pytest.mark.parametrize("acc,screen", [("GSE204906", None), ("GSE204908", None),
+                                        ("GSE930001", ["GSE930001", "GSE167493"])])
+def test_blocker_2_a_sister_series_registered_or_screened_by_another_dataset_is_refused(tmp_path, acc, screen):
+    """The first reviewer's reproduction: control_series.accession = GSE204906 (the Dnmt3a/b study, its own cleared
+    dataset) with relation strings 'yes' passed. Now load_datasets refuses it, its superseries, and a sister whose
+    screen_series names another dataset's superseries."""
+    y = tmp_path / "datasets.yaml"
+    y.write_text(_committed_with_sister(acc, screen))
+    with pytest.raises(cm.Refused, match="is registered as \\(or screened by\\) dataset GSE"):
+        cm.load_datasets(y)
+    # an unregistered sister passes this check (it is still matched against the records at plan time)
+    y.write_text(_committed_with_sister("GSE930001"))
+    assert cm.control_series(cm.load_datasets(y)["GSE137337"])["accession"] == "GSE930001"
+
+
+def _sister_metas(own_extra=(), sister_extra=(), drop=("contact_institute",), extra_series=None):
+    """Own and sister SOFT with chosen contact lines: the sister's listed fields dropped, then lines added."""
+    own = _soft(ACC, OWN, ARCHIVES + LOOSE + OTHER_SERIES_FILES).replace(
+        "!Series_contact_name = A,,Person\n", "!Series_contact_name = A,,Person\n" + "".join(own_extra))
+    sis = _soft(SIS, SISTER, [])
+    for k in drop:
+        sis = "\n".join(x for x in sis.split("\n") if not x.startswith(f"!Series_{k} =")) + "\n"
+    sis = sis.replace("!Series_overall_design = one embryo pool per sample\n",
+                      "!Series_overall_design = one embryo pool per sample\n" + "".join(sister_extra))
+    m = {ACC: fe.parse_soft(own), SIS: fe.parse_soft(sis)}
+    m.update(extra_series or {})
+    return m
+
+
+def test_blocker_2_a_sister_series_needs_a_shared_institute_and_a_shared_contact_or_publication(tmp_path):
+    y = _yaml(tmp_path, named=True)
+    # a different institute: refused, the reason stated
+    m = _sister_metas(sister_extra=["!Series_contact_institute = Another Institute\n"])
+    pl = fe.plan(ACC, tmp_path / "a", y, metas=m)
+    assert pl["status"] == "refused" and "do not share a contact_institute" in pl["reason"]
+    # the same institute but no other shared contact, laboratory or publication value: refused
+    m = _sister_metas(sister_extra=["!Series_contact_institute = A Synthetic Institute\n"],
+                      drop=("contact_institute", "contact_name"))
+    pl = fe.plan(ACC, tmp_path / "b", y, metas=m)
+    assert pl["status"] == "refused" and "nothing else" in pl["reason"]
+    # case is kept: 'a synthetic institute' is not the same value
+    m = _sister_metas(sister_extra=["!Series_contact_institute = a synthetic institute\n"])
+    assert fe.plan(ACC, tmp_path / "c", y, metas=m)["status"] == "refused"
+    # a shared institute and a shared PubMed id: passes, and the plan tables print what the code matched
+    m = _sister_metas(own_extra=["!Series_pubmed_id = 123\n"],
+                      sister_extra=["!Series_contact_institute = A Synthetic Institute\n", "!Series_pubmed_id = 123\n"],
+                      drop=("contact_institute", "contact_name"))
+    pl = fe.plan(ACC, tmp_path / "d", y, metas=m)
+    assert pl["status"] == "ok"
+    assert pl["control_series_match"] == {"contact_institute": ["A Synthetic Institute"], "pubmed_id": ["123"]}
+    for s in (ACC, SIS):
+        text = (tmp_path / "d" / "meta" / ACC / f"plan_table_{s}.txt").read_text()
+        assert ("the code matched (shared by the own series' and the control series' records): contact_institute = "
+                "A Synthetic Institute") in text and "pubmed_id = 123" in text
+    # the shared institute and contact name of the fixtures: passes
+    assert _plan(y, tmp_path / "e", named=True)["control_series_match"] == {
+        "contact_institute": ["A Synthetic Institute"], "contact_name": ["A,,Person"]}
+
+
+def test_blocker_2_the_match_is_derived_again_when_pins_are_verified(tmp_path):
+    y, dest = _pinned_yaml(tmp_path, named=True)
+    assert _plan(y, dest, named=True)["status"] == "ok"
+    ds = cm.dataset(ACC, y)
+    pp = dest / "meta" / ACC / "plan.json"
+    pl = json.loads(pp.read_text())
+    fe.verify_pins(ds, pl)
+    with pytest.raises(cm.Refused, match="control series match differs"):
+        fe.verify_pins(ds, {**pl, "control_series_match": {"contact_institute": ["typed by hand"]}})
+    # a stored sister block edited so that the records no longer share an institute: refused too
+    bad = json.loads(pp.read_text())
+    bad["series"][SIS]["fields"]["contact_institute"] = ["Another Institute"]
+    with pytest.raises(cm.Refused, match="do not share a contact_institute"):
+        fe.verify_pins(ds, bad)
+
+
+def test_a_superseries_of_the_own_series_listed_under_the_sister_is_refused(tmp_path):
+    """The second reviewer's lesser point 3: a superseries holding the knockout samples, listed under the sister
+    alone, satisfied the knockouts' membership check through the sister's declaration."""
+    y = _yaml(tmp_path, named=True)
+    y.write_text(y.read_text().replace("screen_series: [GSE910002]", "screen_series: [GSE910002, GSE910003]"))
+    sup = {"GSM9101": OWN["GSM9101"], "GSM9201": SISTER["GSM9201"]}
+    m = _sister_metas(sister_extra=["!Series_contact_institute = A Synthetic Institute\n"],
+                      extra_series={"GSE910003": fe.parse_soft(_soft("GSE910003", sup, []))})
+    pl = fe.plan(ACC, tmp_path / "d", y, metas=m)
+    assert pl["status"] == "refused" and "['GSE910003'] hold samples of the dataset's own series" in pl["reason"]
+
+
+SIS_ARCH = "GSE910002_WT_E8.5_3.tar.gz"
+SIS_PATTERN = "      - series: GSE910002\n        patterns: ['^GSE910002_WT_E8\\.5_[0-9]+\\.tar\\.gz$']\n"
+
+
+def test_blocker_3_a_one_library_sister_file_controls_several_knockouts(tmp_path, monkeypatch):
+    """The second reviewer's reproduction: a sister archive holding one wild-type library (one flat triple, one
+    sample), pinned split none as control for two genes, was refused ('ONE arm, gene and stage'). Now it loads,
+    fetches and processes, and every unit takes d = 0.5."""
+    y = _yaml(tmp_path, named=True)
+    t = y.read_text()
+    i = t.index("    control_series:")
+    y.write_text(t[:i] + SIS_PATTERN + t[i:])
+    assert [e["series"] for e in cm.dataset(ACC, y)["series_files"]] == [ACC, SIS]
+    sister = {**SISTER, "GSM9203": _sample("GSM9203", "WT E8.5 3", "wild type", SIS)}
+    metas = {ACC: _metas()[ACC], SIS: fe.parse_soft(_soft(SIS, sister, [SIS_ARCH]))}
+    dest = tmp_path / "dest"
+    assert fe.plan(ACC, dest, y, metas=metas)["status"] == "ok"
+    genes = ("Aaa", "Bbb", "Ccc")
+    block = "".join([
+        fe.pin_template_from_series_file(ACC, dest, "ko", "Aaa", ["GSM9101", "GSM9102"], datasets=y),
+        fe.pin_template_from_series_file(ACC, dest, "ko", "Bbb", ["GSM9103", "GSM9104"], datasets=y),
+        fe.pin_template_from_series_file(ACC, dest, "ko", "Ccc", ["GSM9106", "GSM9107"], datasets=y),
+        *[fe.pin_template_from_series_file(ACC, dest, "control", g, ["GSM9203"], datasets=y) for g in genes]])
+    units = "".join([
+        fe.series_file_template(ACC, dest, ACC, [ARCHIVES[0]], ["GSM9101", "GSM9102"], "folder",
+                                ["AAA_1a=GSM9101", "AAA_1b=GSM9102"], datasets=y),
+        fe.series_file_template(ACC, dest, ACC, LOOSE, ["GSM9103", "GSM9104"], "barcode_suffix",
+                                ["-1=GSM9103", "-2=GSM9104"], datasets=y),
+        fe.series_file_template(ACC, dest, ACC, [ARCHIVES[1]], ["GSM9106", "GSM9107"], "none", datasets=y),
+        fe.series_file_template(ACC, dest, SIS, [SIS_ARCH], ["GSM9203"], "none", datasets=y)])
+    _paste(y, "    pinned_series:\n" + fe.series_pin_template(ACC, dest, datasets=y) + "    pinned_series_files:\n"
+           + units + "    pinned:\n" + block)
+    ds = cm.dataset(ACC, y)   # loads: one arm (control), one stage, the same three genes
+    assert sorted(p["gene"] for p in ds["pinned"] if p["accession"] == "GSM9203") == sorted(genes)
+    assert fe.plan(ACC, dest, y, metas=metas)["status"] == "ok"
+    rng = np.random.default_rng(5)
+    mu = {g: rng.dirichlet(np.full(len(PANEL), 0.5)) for g in GROUPS}
+    staging = tmp_path / "staging"
+    _stage(staging, rng, mu)
+    _tar(staging / SIS_ARCH, dict(zip(("matrix.mtx.gz", "features.tsv.gz", "barcodes.tsv.gz"),
+                                      _triple(rng, mu, np.ones(len(PANEL))), strict=True)))
+    calls: list = []
+    monkeypatch.setattr(fe, "_get", _fake_get(staging, calls))
+    fe.fetch(ACC, dest, y)
+    assert any(u.endswith(f"/series/GSE910nnn/{SIS}/suppl/{SIS_ARCH}") for u in calls)
+    wt = tmp_path / "wt.h5ad"
+    wt.write_bytes(b"stand-in for the WT reference")
+    refp = tmp_path / "ref" / "refstats.npz"
+    tb.save_ref_stats({"genes": PANEL, "groups": GROUPS, "shares": {"CM": 0.2, "Endoderm": 0.3, "Neural": 0.5},
+                       "mu": mu, "count": {"CM": 20, "Endoderm": 30, "Neural": 50}}, refp, cm.sha256_file(wt))
+    qc = pr.run(ACC, dest, wt, refp, tmp_path / "processed", y, classifier=_clf)
+    assert qc["status"] == "ok" and qc["sister_series_controls"] == ["GSM9203"]
+    for g in genes:
+        u = qc["units"][g]
+        assert u["status"] == "ok" and u["d"] == 0.5 and u["control_source"].endswith("['GSM9203']"), (g, u)
+    # the gene condition still guards a file of SEVERAL samples: two samples pinned for different genes refuse
+    t = y.read_text()
+    i = t.index("- accession: GSM9107")
+    y.write_text(t[:i] + t[i:].replace('gene: "Ccc"', 'gene: "Aaa"', 1))
+    with pytest.raises(cm.Refused, match="each pinned for the same genes"):
+        cm.load_datasets(y)
+
+
+def test_the_per_sample_archive_route_checks_every_member_like_a_series_archive(tmp_path):
+    """Both reviewers' lesser point: read_sample's tar route read members with no checks (and _pick took the first
+    match). Now every member goes through archive_members and the archive holds one triple in one folder."""
+    rng = np.random.default_rng(13)
+    lib = _lib(rng)
+    ok = _tar(tmp_path / "GSM1_ok.tar.gz", {f"GSM1/{k}": v for k, v in lib.items()})
+    M, _, _, bcs = pr.read_sample([ok])
+    assert M.shape[0] == len(bcs) == 6
+    s_lib = {f"S/{k}": v for k, v in lib.items()}
+    cases = {"extra": ({**s_lib, "S/README.txt": b"x"}, "no rule"),
+             "two_folders": ({**s_lib, **{f"T/{k}": v for k, v in lib.items()}}, "more than one folder"),
+             "two_triples": ({**s_lib, "S/x_matrix.mtx.gz": b"y"}, "two 'matrix'"),
+             "traversal": ({**s_lib, "S/../../evil/matrix.mtx.gz": b"y"}, "path traversal"),
+             "screened": ({f"S/Gata4_{k}": v for k, v in lib.items()}, "held-out screen")}
+    for name, (members, match) in cases.items():
+        p = _tar(tmp_path / f"GSM2_{name}.tar.gz", members)
+        with pytest.raises(cm.Refused, match=match):
+            pr.read_sample([p])
+    sym = tmp_path / "GSM3_sym.tar.gz"
+    with tarfile.open(sym, "w:gz") as t:
+        for k, v in s_lib.items():
+            ti = tarfile.TarInfo(k)
+            ti.size = len(v)
+            t.addfile(ti, io.BytesIO(v))
+        ti = tarfile.TarInfo("S/link")
+        ti.type, ti.linkname = tarfile.SYMTYPE, "/etc/passwd"
+        t.addfile(ti)
+    with pytest.raises(cm.Refused, match="symlink"):
+        pr.read_sample([sym])
+
+
+def test_a_gzip_member_is_decompressed_in_chunks_and_refused_past_the_cap(tmp_path, monkeypatch):
+    rng = np.random.default_rng(14)
+    for k, v in _lib(rng).items():
+        (tmp_path / f"GSM1_{k}").write_bytes(v)
+    paths = sorted(tmp_path.iterdir())
+    assert pr.read_sample(paths)[0].shape[0] == 6
+    monkeypatch.setattr(pr, "MEMBER_MAX_BYTES", 64)
+    with pytest.raises(cm.Refused, match="decompresses to more than 64 bytes"):
+        pr.read_sample(paths)

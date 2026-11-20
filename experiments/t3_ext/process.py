@@ -86,14 +86,30 @@ CHIMERA_ARMS = ("ko_mut", "ko_host", "wt_mut", "wt_host")
 # Reading one sample's counts (no extraction into any folder)
 
 
+MEMBER_MAX_BYTES = 8 * 1024 ** 3   # one archive member read into memory: at most 8 GiB (fixed 2026-11-20, no score)
+
+
+def _gunzip(raw: bytes, name: str) -> bytes:
+    """A gzip stream decompressed in chunks, refused once it passes MEMBER_MAX_BYTES (stage 7: the first reviewer of
+    853b214, lesser point 2; the 8 GiB check on an archive member covers its compressed size only)."""
+    out, n = io.BytesIO(), 0
+    with gzip.GzipFile(fileobj=io.BytesIO(raw)) as g:
+        while block := g.read(1 << 24):
+            n += len(block)
+            if n > MEMBER_MAX_BYTES:
+                raise Refused(f"{name}: decompresses to more than {MEMBER_MAX_BYTES} bytes: refused")
+            out.write(block)
+    return out.getvalue()
+
+
 def _read_text(raw: bytes, name: str) -> list[str]:
     if name.endswith(".gz"):
-        raw = gzip.decompress(raw)
+        raw = _gunzip(raw, name)
     return raw.decode("utf-8", errors="replace").splitlines()
 
 
 def _from_parts(mtx: bytes, mtx_name: str, feats: list[str], bcs: list[str]):
-    data = gzip.decompress(mtx) if mtx_name.endswith(".gz") else mtx
+    data = _gunzip(mtx, mtx_name) if mtx_name.endswith(".gz") else mtx
     M = sparse.csr_matrix(spio.mmread(io.BytesIO(data), spmatrix=False).T)  # cells x features
     rows = [r.split("\t") for r in feats if r.strip()]
     symbols = [r[1] if len(r) > 1 else r[0] for r in rows]
@@ -135,22 +151,12 @@ def read_sample(paths: list[Path]):
             barcodes = dec(g["barcodes"][()])
         return M, symbols, types, barcodes
     if tars:
-        if len(tars) != 1:
-            raise Refused(f"{len(tars)} archives for one sample")
-        with tarfile.open(tars[0], "r:*") as t:
-            members = {m.name: m for m in t.getmembers() if m.isfile()}
-            names = list(members)
-            mtx = _pick(names, "matrix.mtx")
-            feat = [n for n in names if Path(n).name.lower().startswith(("features.tsv", "genes.tsv"))
-                    or Path(n).name.lower().endswith(("features.tsv", "features.tsv.gz", "genes.tsv", "genes.tsv.gz"))]
-            if len(feat) != 1:
-                raise Refused(f"{tars[0].name}: expected one features/genes file, found {len(feat)}")
-            bc = _pick(names, "barcodes.tsv")
-
-            def rd(n):
-                return t.extractfile(members[n]).read()
-
-            return _from_parts(rd(mtx), mtx, _read_text(rd(feat[0]), feat[0]), _read_text(rd(bc), bc))
+        if len(tars) != 1 or len(paths) != 1:
+            raise Refused(f"{len(tars)} archives (and {len(paths) - len(tars)} other files) for one sample: one "
+                          "archive alone")
+        # stage 7 (both reviewers of 853b214): the per-sample archive route checks every member with the same rules
+        # as a series archive, and holds exactly one 10x triple in one folder, nothing else
+        return _read_sample_archive(tars[0])
     names = [str(p) for p in paths]
     mtx = _pick(names, "matrix.mtx")
     feat = [n for n in names if "features.tsv" in Path(n).name.lower() or "genes.tsv" in Path(n).name.lower()]
@@ -164,7 +170,6 @@ def read_sample(paths: list[Path]):
 # ---------------------------------------------------------------------------------------------------------------------
 # Stage 6: a pinned series file (one archive or a loose 10x triple), read only inside itself and split by its pin's rule
 
-MEMBER_MAX_BYTES = 8 * 1024 ** 3   # one archive member read into memory: at most 8 GiB (fixed 2026-11-20, no score)
 _MEMBER_PART = re.compile(r"[A-Za-z0-9._+-]+")
 
 
@@ -235,12 +240,36 @@ def _triple_from(by: dict, read) -> tuple:
                        _read_text(read(by["barcodes"]), name("barcodes")))
 
 
+def _one_folder_triple(items: list, label: str) -> dict:
+    """The single 10x triple of a per-sample archive: its three members in one folder (or none), nothing else
+    (archive_members has already refused any member that is not part of a triple)."""
+    if len({tuple(it[0][:-1]) for it in items}) > 1:
+        raise Refused(f"{label}: members in more than one folder: a per-sample archive holds one library, refused")
+    return _one_triple(items, label)
+
+
+def _read_sample_archive(path: Path):
+    """A per-sample archive read member by member in memory, every member checked by archive_members first."""
+    with tarfile.open(path, "r:*") as t:
+        items = archive_members(t, path.name)
+        by = _one_folder_triple(items, path.name)
+
+        def read(it):
+            f = t.extractfile(it[2])
+            if f is None:
+                raise Refused(f"{path.name}: member {'/'.join(it[0])!r} cannot be read")
+            return f.read()
+
+        return _triple_from(by, read)
+
+
 def read_series_unit(paths: list[Path], unit: dict) -> list[tuple[str, str, list[str], tuple]]:
     """The libraries of one pinned series file, split by its pin's rule: [(GSM, folder or '', barcodes kept, (M,
     symbols, types, barcodes))]. An archive is read member by member in memory (never extracted; archive_members
     checks every member first); a loose triple is read from its three files. split none: the file is one unit (its
-    samples are one arm, gene and stage, checked when the pins load); each folder of an archive (a member's parent
-    path) must hold exactly one triple, and every library is returned under the entry's first sample.
+    samples are one arm and one stage, each pinned for the same genes, checked when the pins load); each folder of an
+    archive (a member's parent path) must hold exactly one triple, the file must hold exactly as many libraries as
+    the entry names samples (stage 7), and every library is returned under the entry's first sample.
     barcode_suffix: every barcode must end with exactly one key of the map (with something before it); a barcode no
     key fits refuses the file, and so does a key whose sample gets no barcode. folder: every file member lies in a
     top-level folder that the map names; each folder holds exactly one triple. A matrix of more barcodes than
@@ -275,11 +304,14 @@ def read_series_unit(paths: list[Path], unit: dict) -> list[tuple[str, str, list
                 groups = {}
                 for it in items:
                     groups.setdefault("/".join(it[0][:-1]), []).append(it)
+                _none_count(label, len(groups), unit)
                 for folder in sorted(groups):
                     libs.append((None, folder, _triple_from(_one_triple(groups[folder], label), read)))
             else:
                 libs.append((None, "", _triple_from(_one_triple(items, label), read)))
     else:
+        if split["by"] == "none":
+            _none_count(label, 1, unit)   # a loose triple is one library
         items = [(p.name, cm.triple_kind(p.name), p) for p in paths]
         libs.append((None, "", _triple_from(_one_triple(items, label), lambda it: Path(it[2]).read_bytes())))
     out = []
@@ -306,11 +338,22 @@ def read_series_unit(paths: list[Path], unit: dict) -> list[tuple[str, str, list
                 kept = [bcs[i] for i in rows]
                 out.append((g, folder, kept, (M[rows], symbols, types, kept)))
         else:
-            cap = cm.MAX_BARCODES * (len(unit["samples"]) if split["by"] == "none" else 1)
-            if M.shape[0] > cap:
-                raise Refused(f"{label}: {M.shape[0]} barcodes: an unfiltered matrix, refused")
+            # stage 7: the cap applies to each library (each folder, or the one loose triple), under every split
+            if M.shape[0] > cm.MAX_BARCODES:
+                raise Refused(f"{label}{'/' + folder if folder else ''}: {M.shape[0]} barcodes in one library: an "
+                              "unfiltered matrix, refused")
             out.append((gsm or unit["samples"][0], folder, bcs, (M, symbols, types, bcs)))
     return out
+
+
+def _none_count(label: str, n_libs: int, unit: dict) -> None:
+    """Stage 7 (the first reviewer of 853b214, blocker 1): under split none a file holds exactly as many libraries
+    (folders with a triple, or the one loose or flat triple) as its entry names samples; otherwise refused before any
+    count is read."""
+    m = len(unit["samples"])
+    if n_libs != m:
+        raise Refused(f"{label}: split none: the file holds {n_libs} libraries but the entry names {m} samples: "
+                      "refused (state a folder or suffix rule from the records, or do not pin)")
 
 
 def to_panel(M, symbols: list[str], types: list[str], genes: list[str]) -> tuple[sparse.csr_matrix, np.ndarray, dict]:

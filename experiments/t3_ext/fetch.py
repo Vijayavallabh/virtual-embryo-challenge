@@ -535,6 +535,41 @@ def pin_blocker(ds: dict, rec: dict) -> str | None:
     return f"a supplementary link names the held or excluded accession(s) {held}" if held else None
 
 
+# stage 7 (the first reviewer of 853b214, blocker 2, part 2): a sister series is accepted only when the two series'
+# own family SOFT records share a contact_institute value AND at least one value of these fields. Values are compared
+# exactly as parse_soft gives them (stripped, case kept): the stricter reading of "share".
+SISTER_INSTITUTE = "contact_institute"
+SISTER_ALSO = ("contact_name", "contact_laboratory", "pubmed_id")
+
+
+def sister_match(own: dict, sister: dict) -> dict[str, list[str]]:
+    """The values the dataset's own series record and the sister series' record share: {field: [values]} with
+    contact_institute and at least one of contact_name, contact_laboratory or pubmed_id; else Refused. `own` and
+    `sister` are the two series' fields (the 'Series_' prefix removed)."""
+    def shared(k: str) -> list[str]:
+        return sorted({v for v in own.get(k, []) if v.strip()} & {v for v in sister.get(k, []) if v.strip()})
+
+    inst = shared(SISTER_INSTITUTE)
+    also = {k: shared(k) for k in SISTER_ALSO if shared(k)}
+    if not inst or not also:
+        raise Refused("the control series' record and the dataset's own series record do not share a "
+                      f"{SISTER_INSTITUTE} value and at least one value of {', '.join(SISTER_ALSO)} (shared: "
+                      f"{SISTER_INSTITUTE} {inst or 'none'}; {also or 'nothing else'}): a sister series is not "
+                      "accepted on typed text alone")
+    return {SISTER_INSTITUTE: inst, **also}
+
+
+def sister_superseries_clash(ds: dict, metas: dict[str, dict]) -> list[str]:
+    """Stage 7 (the second reviewer of 853b214, lesser point 3): the series of control_series.screen_series that
+    hold a sample of the dataset's own screened series (a superseries of the dataset's own series listed under the
+    sister). Such a series belongs in the dataset's screen_series, never under control_series."""
+    c = cm.control_series(ds)
+    if not c:
+        return []
+    own = {g for s in ds.get("screen_series") or [] for g in metas.get(s, {}).get("samples", {})}
+    return [s for s in c["screen_series"] if set(metas.get(s, {}).get("samples", {})) & own]
+
+
 def _row(ds: dict, series: str, gsm: str, rec: dict, scr: dict, in_series: list[str]) -> dict:
     files, other = sample_files(ds, rec, gsm)
     arm, gene = resolve_arm(ds, rec)
@@ -601,14 +636,26 @@ def plan_from_meta(ds: dict, metas: dict[str, dict]) -> dict:
                             "files": sfiles, "other_files": sother,
                             "role": ("control series" if s in cm.sister_series(ds) else "screened series")}
     c = cm.control_series(ds)
+    sister_refusal = None
     if c:
         out["control_series"] = c
+        # stage 7: the code matches the two records before any reader is asked to (blocker 2 of 853b214)
+        try:
+            out["control_series_match"] = sister_match(metas[acc]["series"], metas[c["accession"]]["series"])
+        except Refused as e:
+            sister_refusal = f"control series {c['accession']}: {e}"
+        clash = sister_superseries_clash(ds, metas)
+        if clash and not sister_refusal:
+            sister_refusal = (f"control series: {clash} hold samples of the dataset's own series: a superseries of "
+                              "the dataset's own series is listed in its screen_series, never under control_series")
     out["tables"] = {s: [_row(ds, s, g, rec, by_id[(s, g)], where[g]) for g, rec in meta["samples"].items()]
                      for s, meta in metas.items()}
     out["screen"]["refusals"] = scr["refusals"]
     out["selector_notes"] = _selector_notes(ds, out["tables"][acc])
     if scr["refusals"]:
         return {**out, "status": "refused", "reason": "screen: " + "; ".join(scr["refusals"][:10])}
+    if sister_refusal:
+        return {**out, "status": "refused", "reason": sister_refusal}
     pins = ds.get("pinned") or []
     if pins:
         try:
@@ -657,6 +704,13 @@ def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
     c = cm.control_series(ds)
     if (pl.get("control_series") or None) != (c or None):
         raise Refused(f"{acc}: the plan was made under another control_series declaration: plan again")
+    if c:
+        # stage 7: the two series' records must still share the institute and one more contact or publication value,
+        # derived again from the stored (or live) series fields, and equal to what the plan table printed
+        got = sister_match(blocks[acc]["fields"], blocks[c["accession"]]["fields"])
+        if pl.get("control_series_match") != got:
+            raise Refused(f"{acc}: the plan's control series match differs from the one the series fields give: plan "
+                          "again")
     for e in sp:
         b = blocks[e["accession"]]
         if not all(plain_key(k) for k in b["fields"]):
@@ -805,15 +859,19 @@ def series_block(b: dict) -> list[str]:
     return lines + field_lines(b["fields"])
 
 
-def control_series_lines(c: dict | None) -> list[str]:
-    """The control_series declaration as the readers check it (stage 6)."""
+def control_series_lines(c: dict | None, match: dict | None = None) -> list[str]:
+    """The control_series declaration as the readers check it (stage 6), and (stage 7) the values the code found
+    shared by the two series' records."""
     if not c:
         return []
+    shared = [f"#   the code matched (shared by the own series' and the control series' records): {k} = "
+              f"{', '.join(v if plain(v) else ascii(v) for v in vals)}" for k, vals in (match or {}).items()]
     return ["# CONTROL SERIES (datasets.yaml control_series): its samples may be pinned as CONTROLS only; a unit with "
             f"such a control takes d = {cm.SISTER_D}",
             f"#   accession {c['accession']}; screened with {c['screen_series']}",
             *[f"#   relation {k}: {c['relation'][k]}" for k in cm.RELATION_KEYS],
-            f"#   reader note: {c['reader_note']}"]
+            f"#   reader note: {c['reader_note']}",
+            *(shared or ["#   the code matched: nothing (the plan is refused)"])]
 
 
 def write_tables(pl: dict, mdir: Path) -> list[str]:
@@ -835,7 +893,7 @@ def write_tables(pl: dict, mdir: Path) -> list[str]:
             for r in rows:
                 lines.append(f"{r['accession']}  verdict {r['verdict']}  fields hit {r['fields_hit']}")
         else:
-            lines += control_series_lines(pl.get("control_series"))
+            lines += control_series_lines(pl.get("control_series"), pl.get("control_series_match"))
             sister = (pl.get("control_series") or {}).get("accession")
             if series == sister:
                 lines.append(f"# THIS IS THE CONTROL SERIES of {pl['accession']}: a sample here is pinned as a control "
