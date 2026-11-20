@@ -7527,3 +7527,65 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     becomes a pinned sample list: only samples whose verbatim labels two readers have read and pinned, with a hash of
     the text read, can ever be fetched or processed; the text screen stays as the second line and over-refuses freely;
     held series are refused by a constant no flag can change. A third pass is running (wf_582ec820-15a).
+- 2026-11-20 (r), T1: the list after A, B and C and its rule, fixed before any score of A or B is reported (state
+  at 15:38 UTC; no T1 score of 2026-11-20's candidates has been reported to the AI assistant). Written by the AI assistant.
+  - **Who.** wf_cd20c34c-054: a designer, a cold challenger ("stands with changes"), a writer and a reviewer. The
+    reviewer's verdict is "not ready" on two blockers, both misquoted figures in the questions drafted for the captain
+    (the sign of row T26's 0.16 / 0.13; library 3's library-size ratio, 0.96, which is inside the 5% line); the
+    questions go to him with the reviewer's replacement texts. The writer's branch `campaign/t1-further` (8e66b10)
+    holds tests and a launcher only; no builder option for D or E is written before its gating answer.
+  - **The list, in the challenger's final words:** Round one, unchanged (decision log 2026-11-20 (n)): A
+    (`build_test.py t1 --g-mom --base lib3 --feng-groups recomputed --g-mom-damping 1.0`), then B (`...
+    --feng-fraction-mult 1.5`). C (both options) is uploaded only if A and B each return a strictly higher headline
+    than R13's file.  1. F, the no-outside-data file as built (row R8). No build. The file is
+    runs/manual_upload/T1_s2none.h5ad, sha256 55eaee547ff18d7477da5b730c34e7de9ab74f85cc12fd01a9eff6450367611c, built
+    twice at 385ff58 (experiments/builds/results/t1none_385ff58.txt). Before upload the sha256 is checked against that
+    record. Single change from R13's file: the atlas direction step is removed. Its only use is as a hedge: it is the
+    one T1 file without the outside atlas. It goes in the first free T1 slot after A and B.  2. D, R13's file with the
+    released momentum on the cells R1 holds. `uv run --frozen --no-sync python -I -B experiments/builds/build_test.py
+    t1 --g-mom --base lib3 --feng-groups recomputed --held-momentum 0.5 --captain-ruling R<n> --out
+    <O>/builds/T1_s2rc_D.h5ad`. Default seed 1000001, test board, built twice with the same bytes, in
+    ~/v/vec-campaign-d, after the default command has rebuilt
+    ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f. What it does: B0's per-category damped momentum
+    at 0.5 (harness.B0_DAMPING), fitted from E9.5 to E10.5's portion libraries (library 3 never enters the fit),
+    applied on build_submission's existing momentum stream [seed, 1] to the drawn cells whose label is in
+    _labels_without_direction. The held genes are R2's union, as R13. Cells with a direction keep R13's bytes. Single
+    change from R13's file: these cells move instead of staying at their E10.5 counts. Order of work: (a) a counted
+    practice row first (next free ID), with arm m1rc_gmom_heldmom against m1rc_gmom on T62's five tasks; gate:
+    m1rc_gmom reproduces T62 within 0.02 on every seed; statement: T61's AHEAD (chamber mean above 0.3 with at least 8
+    of 10 seeds above 0; whole-cut mean above 0) together with reading D's library check (every valid library at -0.3
+    or better). (b) Only if it reads AHEAD, question QD goes to the captain. (c) Only on 'reverse R1', the builder
+    option is written, reviewed and rehearsed, and the file is built.  3. E, R13's file drawn by T61's advance at tau
+    1.0 (arm name rc_advance_t1). `... t1 --g-mom --base lib3 --feng-groups recomputed --released-bet advance
+    --bet-strength 1.0 --captain-ruling R<m> --out <O>/builds/T1_s2rc_E.h5ad`. Default seed, built twice with the same
+    bytes after the default command reproduces ad8f24c7.... The draw is T61's: library 3's cells; category quotas at
+    library 3's own chamber mix; five z-quintile bins per category, with quotas in proportion to exp(1.0 z); the axes
+    run from E9.5 to E10.5's portion libraries, with T61's held list on the axes. Then R13's direction step on the
+    drawn cells ([seed, 2], fraction 2/5, R2's held genes, R1's hold), then g_mom ([seed, 5]). tau 1.0 only. Single
+    change from R13's file: which library-3 cells are drawn inside each category. E is built only after the captain
+    answers 'upload' to both E1 and E2. Pre-set advice on both: decline.  No candidate is stacked on whichever of A, B
+    or C wins.
+  - **The rule, in the challenger's final words:** Fixed before any score of A, B, C, D, E or F exists, and committed
+    to the decision log before any A or B score is reported. If a score arrives first, the entry records that the list
+    was not changed by it. The rule is put to the captain as Q0 before D, E or F is uploaded. (1) Round one is as
+    decision log 2026-11-20 (n) fixed it: A and B; then C only if A and B each return a strictly higher headline than
+    R13's file. (2) At most two T1 uploads a day until 2026-11-26 11:59 UTC. The order after A and B: F in the first
+    free slot; C if (n) fires; then D; then E. A candidate not ready when a slot comes gives the slot to the next
+    ready one in this order. (3) A candidate is uploaded only when all of these hold. F: its sha256 equals 55eaee54...
+    from the record, and the captain answered QF with 'Upload it'. D: its practice row read AHEAD as written; the
+    captain answered QD with 'reverse R1 for this file'; the file was built twice with one sha256 in a checkout where
+    the default command first rebuilt ad8f24c7.... E: the captain answered both E1 and E2 with the upload option; it
+    was built under the same build condition as D. (4) A candidate that fails a condition is skipped, never changed. D
+    and E are not built before their gating answers. (5) Nothing is re-seeded, rebuilt, resized or altered after any
+    T1 score. No damping, fraction, tau, share or other number is set from a score. No property of the hidden E12.5
+    sample is inferred or bounded from a score, in code, in text or in reasoning. F's score is read as a headline only
+    and decides nothing beyond the standing file; (n)'s 'more atlases' line stays on B's sign alone. (6) Only the
+    headlines of the team's own T1 uploads choose. The standing file is the highest headline among the first upload,
+    R13, A, B, C, D, E and F. A tie keeps the earlier file. (7) Any combination of these changes needs its own list,
+    fixed before its score.
+  - **How it is put to the captain.** Their Q0 (sign off the list) is not asked as a question of its own: F, and E's
+    two closed levers, each go to him as their own priced question, which is the sign-off for those files; D's
+    question comes only if its practice row reads AHEAD. On E the advice is the pre-set outcome, decline, on both
+    questions, and the AI assistant adds no lean (the lever was closed after an exposure). D's practice row needs a
+    new arm and a builder argument; the designer put its odds of passing at about 0.25 and the challenger at about
+    0.1, for a size the record expects under 0.3; it is queued behind the embryo's and T3's work, not dropped.
