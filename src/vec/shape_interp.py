@@ -96,13 +96,14 @@ def identifiable(Z, draws: int = IDENT_DRAWS, frac: float = IDENT_FRAC,
                  stream: int = IDENT_STREAM) -> tuple[bool, bool]:
     """Whether the axis pairs (1, 2) and (2, 3) of a bracket are identifiable at the scorer's count: in each of `draws`
     draws of max(MIN_CLOUD, round(frac N)) cells without replacement (stream default_rng([stream, h]), no build seed),
-    each draw axis j is given its nearest full-stage axis, argmax_k |<v_j(draw), v_k(full)>|; the pair (j, j + 1) is
-    identifiable if no draw swaps it: in no draw is axis j nearest the full axis j + 1, or axis j + 1 nearest the full
-    axis j. It certifies only that no draw swaps the axes, not that an axis is anatomical.
+    each draw axis j is given its nearest full-stage axis, argmax_k |<v_j(draw), v_k(full)>|; a pair is stretched apart
+    only if, in every draw, the draw's axes on each side of the cut are nearest full axes on the same side. It certifies
+    only that no draw moves an axis across the cut, not that an axis is anatomical.
 
-    Why "no swap" and not "both axes matched": with a round (2, 3) plane, draw axis 2 is nearest full axis 3 about
-    half the time, so "both axes of (1, 2) matched" would fail too and merge all three axes (the identity), although
-    axis 1 is well separated from the plane. "No swap" gives the blocks {1}, {2, 3} the row's fallback describes."""
+    Why sides of the cut and not "both axes matched": with a round (2, 3) plane, draw axis 2 is nearest full axis 3
+    about half the time, so "both axes of (1, 2) matched" would fail too and merge all three axes (the identity),
+    although axis 1 is well separated from the plane. The sides of the cut give the blocks {1}, {2, 3} the row's
+    fallback describes."""
     Z = _check_cloud(Z, "bracket")
     _, V = principal(Z)
     m = min(len(Z), max(MIN_CLOUD, int(round(frac * len(Z)))))
@@ -112,7 +113,8 @@ def identifiable(Z, draws: int = IDENT_DRAWS, frac: float = IDENT_FRAC,
         _, v = principal(Z[rows])
         near = np.argmax(np.abs(v @ V.T), axis=1)
         for j in (0, 1):
-            if near[j] == j + 1 or near[j + 1] == j:
+            if not (set(near[:j + 1].tolist()) <= set(range(j + 1))
+                    and set(near[j + 1:].tolist()) <= set(range(j + 1, 3))):
                 ok[j] = False
     return bool(ok[0]), bool(ok[1])
 

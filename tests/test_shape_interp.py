@@ -100,10 +100,44 @@ def test_f1_is_the_identity_when_no_axis_is_identifiable():
 
 
 def test_a_round_plane_still_lets_its_well_separated_axis_stretch():
-    """The "no swap" criterion: a round (2, 3) plane merges axes 2 and 3 only; "both axes matched" would merge all."""
+    """The sides-of-the-cut criterion: a round (2, 3) plane merges axes 2 and 3 only; "both axes matched" would merge
+    all."""
     Zb = _ellipsoid(20000, [3.0, 1.0, 1.0], 9, _rot(9))
     ident = si.identifiable(Zb)
     assert ident == (True, False)
+
+
+def _identifiable_with_draw_axes(monkeypatch, Vt_draw) -> tuple[bool, bool]:
+    """identifiable() on a stub cloud whose full frame is the identity and whose every draw has the axes Vt_draw."""
+    calls = {"n": 0}
+
+    def fake_principal(Z):
+        calls["n"] += 1
+        return np.full(3, 3 ** -0.5), (np.eye(3) if calls["n"] == 1 else np.asarray(Vt_draw, float))
+
+    monkeypatch.setattr(si, "principal", fake_principal)
+    Z = np.random.default_rng(0).normal(size=(max(si.MIN_CLOUD, 100), 3))
+    return si.identifiable(Z)
+
+
+def test_a_draw_exchanging_the_first_and_third_axes_fails_both_pairs(monkeypatch):
+    """near = [2, 1, 0]: no adjacent index pair is swapped, yet axes cross both cuts, so both pairs fail."""
+    assert _identifiable_with_draw_axes(monkeypatch, np.eye(3)[[2, 1, 0]]) == (False, False)
+
+
+@pytest.mark.parametrize("perm, want", [([0, 1, 2], (True, True)), ([1, 0, 2], (False, True)),
+                                        ([0, 2, 1], (True, False)), ([1, 2, 0], (False, False)),
+                                        ([2, 0, 1], (False, False)), ([0, 2, 2], (True, False)),
+                                        ([1, 1, 2], (False, True))])
+def test_the_sides_of_the_cut_by_hand(monkeypatch, perm, want):
+    Vt = np.eye(3)[perm] + 1e-3 * np.eye(3)  # a repeated nearest axis: the first of the pair stays nearest
+    assert _identifiable_with_draw_axes(monkeypatch, Vt) == want
+
+
+def test_the_hand_brackets_still_give_their_blocks():
+    assert si.blocks_text(si.blocks_from(si.identifiable(_ellipsoid(20000, [3.0, 1.0, 1.0], 4, _rot(4))))) == "1|2,3"
+    assert si.blocks_text(si.blocks_from(si.identifiable(_ellipsoid(20000, [1.0, 1.0, 1.0], 6)))) == "1,2,3"
+    assert si.blocks_text(si.blocks_from(si.identifiable(_ellipsoid(20000, [3.0, 2.0, 1.0], 1, _rot(1))))) == "1|2|3"
 
 
 def test_the_identifiability_draws_are_seed_free():
