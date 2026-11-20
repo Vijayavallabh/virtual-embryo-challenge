@@ -7954,3 +7954,29 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Added to the dataset file with empty pins:** GSE277839 and GSE270969, tier unrelated. Nothing of them is fetched
     before two readers have read their plan tables and pinned samples. With GSE204906 they would give the `unrelated`
     and `all` tables the two or three independent studies that practice read K22 requires.
+- 2026-11-20 (hh), the embryo: no row-order file exists; the shape interpolation is ready for its practice read (state at
+  18:51 UTC, 2026-11-20). Written by the AI assistant, which is recused on the occupancy term and states no preference.
+  - **The row-order build** (`~/v/vec-campaign` at 09a41f3). The default command reproduced the positions file's bytes
+    (a03611a3...). The build with `--row-order copy_parity --row-order-test-ok` then exited 1. Its output was not
+    read; one rerun classified the last error line against the builder's own messages and printed only the category:
+    "--row-order copy_parity needs the board's truth_cells". The test board gives the builder no count of the hidden
+    stage's cells, and the option needs that count to know which rows the scorer would take. So the option cannot act
+    on the test board, no row-order file exists, and the positions file handed over on 2026-11-20 stands as the
+    embryo's candidate. Nothing about the hidden stage was learned from this beyond the fact that the board publishes
+    no such count. The captain is told.
+  - **The shape interpolation** (wf_145ccf29-b54: an analyst, a cold challenger ("stands with changes"), a writer, a
+    reviewer ("ready", no blocker); branch `campaign/embryo-shape-interp`, 63da9ad). What the analyst read in the
+    record first: on practice the exact-position form sits at the baseline on both shape terms (skills 0.47 to 0.51
+    and 0.48 to 0.54), not above it; and no whole-cloud interpolation of shape ratios, and no two-bracket overlay, was
+    ever read. Three forms, each from the two released brackets and the calendar fraction only, positions only: F1, a
+    stretch along the cloud's own axes towards the in-between axis ratios, on axes both brackets clearly separate; F2,
+    the in-between covariance after the build's own rotation lines the brackets up; F3, each later-bracket cell at its
+    own real position in the earlier bracket's frame. Four controls. A form passes only if it gains more than 0.3
+    board points on the merged mean in 8 of 10 seeds, helps the shape group overall and on the test-like tasks, hurts
+    no other group, beats its controls on shape, and never refuses; at most two candidate files follow, by a rule in
+    the row. The reviewer asked for one correction before the row is committed (the test that decides which axes are
+    safely separated); a writer is making it. Row E49 is placed on that branch before the run; the count goes from 76
+    to 83, or to 81 if the target-free first step drops F1.
+  - **J7 for E49.** E48's gate reran the floor and the exact-position control at 9cd4b6e against row E47's committed
+    scores: worst ten-seed mean difference 0.0000, worst seed difference 0.0000 on all nine tasks (gate files
+    committed with this entry).

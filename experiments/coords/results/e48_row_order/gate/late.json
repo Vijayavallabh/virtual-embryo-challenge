@@ -1,0 +1,21 @@
+{
+ "task": "late",
+ "key": "T2e/E7.5+E8.25_late->E8.0",
+ "e47": {
+  "commit": "9967cf1",
+  "where": "PrakashDGX_H2, campaign checkout ~/v/vec-campaign",
+  "dir": "experiments/harness/results/e47_floor_exact/tasks"
+ },
+ "tolerance": {
+  "mean": 0.1,
+  "seed": 0.5
+ },
+ "worst": {
+  "mean": 0.0,
+  "seed": 0.0
+ },
+ "why": [],
+ "pass": true,
+ "commit": "9cd4b6e7d1d343e996e91591bd0d92dcdcfae284",
+ "tree_clean": true
+}
