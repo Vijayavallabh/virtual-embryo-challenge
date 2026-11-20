@@ -2,6 +2,16 @@
 
 ## Current State
 
+- **2026-11-20, 20:33 UTC.** Files are still with the captain on all four boards; no new score reported. Since the
+  last entry: Task 3's follow-up practice read K23 named one file (the best base's factor times the square of the
+  two-study outside-knockout table; about +0.7 to +0.9 on practice in three of four cells, ahead of its shuffled
+  control and its size twin); that file and the two-knockout files C1 and C2 are built for every possible base and
+  wait for the two Task 3 scores that fix the base. A third outside study (a Kmt2d pair) was cleared by two readers
+  and processed. The bulk whole-embryo intake (73 knockout lines of one public programme, plus single studies) is
+  being built by agents after a reviewed design. The Task 1 extra-atlas line is parked on a cold check's verdict.
+  Running: E49 (embryo shape), T64 (Task 1 candidate D's practice row). Tries: T1 413, embryo 76, heart 80, T3 66.
+  What waits: `session-handoff.md`, first bullet.
+
 - **2026-11-20, 19:23 UTC.** Files are still with the captain on all four boards; no new score reported. Read since
   16:42: K21 (T3 regularised forms: no file), E48 (embryo row order: no effect on practice, and no row-order file can
   be built for the test board), K22 (T3, the barred factor times the first two-study outside-knockout table: no file;
