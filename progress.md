@@ -2,6 +2,13 @@
 
 ## Current State
 
+- **2026-11-20, 16:42 UTC.** Files are with the captain on all four boards (T1 A and B, heart K1 and K2, the embryo
+  positions file, T3 at exponent 1.5); no new score reported yet. His reply to the open questions: "go ahead with
+  whatever will improve our score [my reply]" (read in decision log (t)). Two practice reads run on the DGX: E48
+  (embryo row order) and K21 (T3 regularised factor forms). T3's two-knockout files wait for both T3 scores. The
+  outside-knockout pipeline is in its fourth fix; nothing fetched. Tries: T1 413, embryo 76 (E48 running), heart
+  80, T3 51 (K21 adds up to six).
+
 - **2026-11-20, 15:05 UTC.** The four last files were uploaded and scored (heart and T3 rose; T1 and the embryo did
   not beat their first uploads). New regime on the captain's word: up to two uploads per board a day, candidates
   fixed in the decision log before their scores. Ready and handed over: T3 at exponent 1.5 (then 2.0 or the barred

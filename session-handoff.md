@@ -2,7 +2,42 @@
 
 ## Current Objective
 
-- **State at 2026-11-20, 15:05 UTC (newest; it supersedes the next bullet where they differ).** Decision log
+- **State at 2026-11-20, 16:42 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+  2026-11-20 (m) to (v); `docs/S2_RULES.md`, the notes and amendments of 2026-11-20.
+  - **Handed to the captain, no score reported yet** (uploads are his acts; paths under the repository):
+    T1 `runs/manual_upload/T1_s2rcA.h5ad` (76865826f5a3741c7585f81c4241048ca1a95b5791ebb3c8feb1f2b536678ce4) then
+    `T1_s2rcB.h5ad` (c7240cb6a7f7ee93d037f437832efbaad004f1fbe608d80072f8efd5d20a0062); `T1_s2rcC.h5ad`
+    (31477ef7df5d5374a74a8249c570217020c593916ab4d3780049b7b3f87b0620) only if A and B each beat R13's file (entry (n)).
+    Heart K1 `runs/manual_upload/T2heart_s2trimcopy_half.h5ad`
+    (47bb3fe2a082e5b221ee4ae8c003d47df77259867563a11f6c805e9bb82d91d5) then K2 `T2heart_s2iso_half.h5ad`
+    (dc436d9225bb28e7997d2ec51e95254cd125e569d44c059596298d0a7b6af5c2); the heart list ends after them.
+    Embryo `runs/manual_upload/T2embryo_s2x.h5ad`. T3 `runs/manual_upload/T3_barred_x1.5.h5ad`, then
+    `T3_barred_x2.0.h5ad` if it beats the s1 file, else the barred s2.
+  - **His reply after a dismissed four-question dialog, verbatim:** "go ahead with whatever will improve our score
+    [my reply]". Read (entry (t), labelled as the AI assistant's reading): T3's two Gata4 files C1 and C2: yes
+    (row R17); T1's hedge file: not covered, stays out; T1's advance draw: stays declined (closed levers need his
+    specific word); the embryo's row-order answer: not withdrawn. No more multi-question dialogs: one short
+    question with a default, only when the answer changes what is built.
+  - **When T3 scores come back:** record them; after BOTH of entry (k)'s uploads have headlines, fix the base B
+    (entry (q)) and build C1 and C2 on `~/v/vec-campaign-c` with `experiments/t3_decomp/build_two_knockout.sh
+    <commit> <base>` (identity gates first), then hand over. K21's files, if any qualify, go after C1 and C2.
+  - **Running on the DGX:** E48 (embryo row-order practice read; chain in `~/v/scratch/e48`, worktree
+    `~/v/scratch/e48-wt` at 9cd4b6e; the run step started 16:24 UTC, embryo count 75 to 76). When it ends: copy
+    `experiments/coords/results/e48_row_order/reading.txt` and `.json` from the worktree, commit them with the
+    outcome in E48's row quoting only the fixed reading, treat any `files_identical_across_builds` false as void;
+    unless reading (i) voids the construction, build the row-order file in `~/v/vec-campaign` itself by the
+    commands in the stage-2 hand-back (default must reproduce a03611a3..., then `--row-order copy_parity
+    --row-order-test-ok` twice), then hand over. K21 (T3 regularised forms; `~/v/vec-campaign-c` at 0a3152e,
+    scratch `~/v/scratch/k21_0a3152e`; six tries, T3 51 to 57): when it ends, copy and commit
+    `experiments/t3_decomp/results/k21_factor_forms/reading.*`, fill row K21, apply the reviewer's two lesser
+    points before any K21 file is built.
+  - **With agents:** wf_3c058119-fff, the outside-knockout pipeline's fourth fix and its verification under a
+    stated threat model (entry (u)); nothing has been fetched. If it verifies: merge, sync `~/v/vec-campaign-c`,
+    plan run (metadata only), two readers read the plan tables, pin samples and series, then fetch.
+  - **Scratch hand-backs** (JSON, in the session scratchpad's `lift8/`): embryo_occ2, t1_candidates, t1_further,
+    t3_two_ko, t3_forms, t3x_fix3, heart_candidates.
+
+- **State at 2026-11-20, mid-afternoon (superseded above where they differ).** Decision log
   2026-11-20 (g) to (m); `docs/S2_RULES.md`, the note and the heart amendment of 2026-11-20.
   - **Scores.** The captain uploaded all four files of the next bullet on 20 November and reported their scores
     (`results/manual_uploads.csv`; per-term values in decision log (h), (i)). Heart and T3 rose; T1 and the embryo
