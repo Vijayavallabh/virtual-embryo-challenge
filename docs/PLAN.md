@@ -8172,3 +8172,30 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     pinned and not read by any row. It will be read together with the further whole-embryo studies the extension
     brings, in one later row with its own listing, so that the fold is not read once per added study. This is the AI
     assistant's choice, made before any score of either table at any exponent beyond K22's.
+- 2026-11-20 (rr), T1 outside atlases: the third verification, and two rule decisions made before any atlas record or
+  data is read (state at 19:54 UTC, 2026-11-20). Written by the AI assistant; both decisions are the AI assistant's.
+  - **Third round verified: not ready, one blocker.** With pinned samples as the first line (branch
+    `campaign/t1-multi-atlas-3`, 6bdf01a) the verifier could not get a sample fetched or loaded without a valid pin,
+    and a record changed by one character was refused. The blocker: a reduction written earlier is read by the tables
+    step without any check against the current pins, so a sample whose pin was withdrawn could still enter a table. A
+    fourth round closes it (workflow `t1-multi-atlas-fix4`).
+  - **Decision 1, the unstated plug-day convention.** The second round's rule widened every stage by a day when a
+    record states no convention, which refuses every sample labelled E9.5 or E14.5, the atlas in use included (its
+    public series record, read today, states none). A cold adversarial check of the claim "read a silent record at its
+    label" returned: 20% that it is a mistake; the rule is keyed to the wrong thing; silence says nothing, the label's
+    form does; a half-day label is the mark of the standard convention, a whole-day label is not. The AI assistant
+    then counted the eight embryo series whose records are on disk (about 2,750 sample records): none states a
+    convention. Decision: in a record that states no convention a half-day label is read at its label; a whole-day
+    label keeps the widening; a stated convention shifts as before. A second cold check of this rule is running; if it
+    says stop, the rule reverts before any atlas data is fetched.
+  - **Decision 2, shared protocol sentences.** Real series copy one protocol to every sample, and it often lists every
+    stage of the series; the third round's parser then refuses every sample. Decision: such a sentence keeps a sample
+    refused unless the two readers clear that exact sentence for that atlas in the configuration (verbatim, hashed,
+    two names, a reason); a cleared sentence is left out of the parser's reading of protocol text only, never of a
+    title, a characteristic, a source name or a description. The readers clear a sentence only when it describes the
+    series as a whole and says nothing of pooling. The same second cold check covers this rule.
+  - **What neither decision touches:** the organisers' window itself; the pins; the refusal of ranged, pooled or
+    conflicting stage wording; the rule that a reader who doubts does not pin. **Said plainly:** both decisions make
+    the loader usable on real records and so serve the team's interest; that is why each goes to a cold check before
+    any data, and why the register row of the atlas in use will say that its record states no convention and that its
+    half-day labels are read as labelled.
