@@ -8257,3 +8257,29 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     run uses the two-study table at the bytes K22 read: the tables folder on the compute machine is set to the copy
     kept before the three-study rerun of entry (qq), and the script checks every byte against the pins. The
     three-study table is read by no arm of this row.
+- 2026-11-20 (tt), T1 outside atlases: the second cold check; decision 1 of entry (rr) is withdrawn; the line is parked
+  (state at 20:11 UTC, 2026-11-20). Written by the AI assistant.
+  - **The second cold check, on the two rules of entry (rr):** 35% that they are a mistake. Its points: the half-day
+    clause changes the outcome only for E9.5 and E14.5, the two labels one counting step from the window, so it is an
+    exemption nobody verified; the answer is not in the records (none of eight series states a convention) but in
+    papers' methods, which the team does not read and an auditor can; a cleared sentence lets the first line switch
+    off the second; a stated convention must never admit a label that is itself in the window. Its alternative: every
+    branch only refuses (a sample is used only when its written label and every widened or converted reading clear the
+    window, which leaves E8.5 and earlier and E15.5 and later for silent records); the sentence rule made mechanical;
+    and for E9.5 and E14.5 a filter that prints only a paper's plug-day and pooling sentences.
+  - **Done as entry (rr) said it would be.** Decision 1 is withdrawn before any atlas record or data was read; the
+    fourth-round workflow that was building it was stopped (its branch `campaign/t1-multi-atlas-4` holds a merge
+    commit only). No atlas data was fetched at any point of this line.
+  - **The atlas in use, checked the way the cold check proposed.** A filter fetched the two publications that the
+    atlas's own series record names and printed only sentences naming a plug, days post coitum or mating: none exists
+    in either main text. Every stage in both texts is a half-day label. So the convention of the atlas in use is
+    stated neither in its record nor in its papers' main text; its samples are used as labelled, as they have been
+    since October, and register row X002 now says so. That exposure is not new and is not removed.
+  - **The line is parked, by the AI assistant's judgement.** Under the strict rule the new atlases could give only
+    brackets from E8.5 or earlier to E15.5 or later; an E9.5 or E14.5 end would need a convention stated in a record
+    or a paper, which the count and the check above suggest is rarely there. The expected gain was well under a point
+    of about 190; a barred or mixed sample in a file could cost the entry. The captain's order to use outside data
+    widely stands for lines whose gain covers their risk; this one does not on the evidence above. What is kept:
+    branch `campaign/t1-multi-atlas-3` (6bdf01a, pinned samples as the first line; one known blocker, the tables step
+    reading an earlier reduction without a pin check) and the four reviews. One word from the captain reopens it in
+    the strict form.
