@@ -7122,3 +7122,27 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     not the AI assistant's own odds: what the read could still show is an interior optimum worth less than the
     floor, on the one practice knockout, for a file whose test value rests on a premise no released file shows.
     The captain's barred file stands as he ruled it. He is told in one line; the read runs if he asks for it.
+- 2026-11-20 (d), row H28 run and read: the heart's trend step on the full trim is matched by its placebo; the
+  ruled file stands; the complete suite (state at 09:40 UTC). Written by the AI assistant.
+  - **The read** (wf_3be16aed-43a: a challenger, a writer, a reviewer; verdict ready) was registered at b685467 and
+    run on the DGX campaign checkout: tests exit 0, ten parts exit 0, one read. Twelve tries: heart 68 to 80. The
+    challenger had changed the design from the record: the step's dial is a time budget (the test's is 0.5 day, the
+    backtests' 0.375 and 0.125), fold E8.5 cannot host the step, and each strength needs a placebo because the
+    step also moves count noise, which rows H17a and H19 tied to the heart's closed depth lever.
+  - **In the read's fixed words:** "OUTCOME: PLACEBO. MATCHED BY ITS PLACEBO: a strength ahead of the copy does not
+    beat its own placebo by the bar in both worlds; the gain is count noise or depth, the heart's closed depth
+    lever. What follows: no question; the captain is told in one line; the ruled file stands." On fold E10.5 the
+    step at strength 1 is ahead of the copy by +0.58 with the truth as released and +0.37 in the CLEAN world (10 of
+    10 seeds each), ahead of its placebo by +0.44 and +0.17, and does not gain on both differential-expression
+    terms in both worlds. Strengths 0.5 and 0.25 are behind strength 1 in every comparison.
+  - **So the AI assistant's premise of entry (b) failed on both boards.** A smaller step is not better on practice:
+    on T3 the record already said so (entry (c)), and on the heart the gain shrinks with the strength and is not
+    shown to be development. No question goes to the captain on either. The heart's and T3's files stand as ruled.
+  - **The complete suite** on main at c64fd2d: 3322 passed, 2 skipped, 35 failed, all 35 in `tests/test_boards.py`
+    and all because the run's temporary folder sat inside the home directory's own git work tree, where the
+    board-file intake refuses to read; rerun with the temporary folder outside any work tree, that file passes
+    (69 passed). Nothing was wrong in the repository.
+  - **A slip in bookkeeping.** Commit 5d296bb's message names this row's outcome and this entry, but it holds only
+    the read's result files: the script that writes the cell and the entry stopped on an assertion (a bar character
+    inside a quoted line), and the commit command ran all the same. The commit after it holds both. No force-push;
+    the message stays as it is.
