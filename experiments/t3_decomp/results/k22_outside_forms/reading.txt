@@ -1,0 +1,76 @@
+Try K22: no file: nothing qualifies; T3's list is unchanged.
+arms run: barred_form, x_all, x_all_perm, rep_all; tries counted: 3
+tables: listing 884b294bb8ea15b4e97b8f9f3d72869c6f9a375c55a5ca11a6daf3c70b8d94ea, all 9490f524e40e146480c775f85ae8829ec9c005607104ad8ace129c5c46ed6228
+pre-gate (the tables and phi_M alone; no score): 500 genes; phi_M genes_changed 0, genes_ne_1 500, genes_at_clip 30, sd_ln 0.696398, gene_mean_ln -0.0367342, min 0.25, max 4, n_up 238, n_down 262, den_total 0.982962, den_total_phi_m 0.982962
+  table all: genes_ne_1 447, genes_at_clip 0, sd_ln 0.0247471, gene_mean_ln -0.00612174, min 0.900557, max 1.11371, n_up 88, n_down 359, den_total 1.00181, den_total_phi_m 1, corr_ln_phi_m 0.0373522, ols_slope_ln_t_on_ln_phi_m 0.00140155, studies ['GSE204908', 'GSE277839'], tiers ['unrelated'], sign_rule applied, sha256 9490f524e40e146480c775f85ae8829ec9c005607104ad8ace129c5c46ed6228
+  product all: genes_changed 447, genes_ne_1 500, genes_at_clip 15, sd_ln 0.697706, gene_mean_ln -0.0428559, min 0.228822, max 3.94053, n_up 237, n_down 263, den_total 0.990562, den_total_phi_m 0.982962
+  control all: genes_changed 447, genes_ne_1 500, genes_at_clip 15, sd_ln 0.695033, gene_mean_ln -0.0428559, min 0.228822, max 4.1753, n_up 237, n_down 263, den_total 0.976734, den_total_phi_m 0.982962
+  corr(ln T_all, ln T_unrel) over genes != 1 in either: None
+  dropped: unrelated (not listed in TABLES.sha256)
+commit 363170234fc3de3fd14803d2ce0036833b85581c, machine p01r10srv05.
+  x_all: qualified no ((a) False, (b) True, (c) True, (d) False); ahead in ['plain g1', 'plain g2']; behind in none; mean of the four paired means +0.29; gated (arm, base) {'plain g1': [0, 0], 'plain g2': [0, 0], 'dm g1': [4, 4], 'dm g2': [0, 0]}
+  x_unrel: not run (dropped by the pre-gate)
+  ranked: none; file-2 rule {'corr_ln_all_ln_unrelated': None, 'below': 0.9, 'applies': False, 'named': False}; named: none
+  doubt statement (report only): the doubt is not shown on this fold; rep_all - barred_form plain g1 -4.89, plain g2 -12.04, dm g1 +0.42, dm g2 -10.25
+guard (barred_form against K18's committed barred_form): plain g1 mean +0.0000, largest seed 0.0000, seeds differing none; plain g2 mean +0.0000, largest seed 0.0000, seeds differing none; dm g1 mean +0.0000, largest seed 0.0000, seeds differing none; dm g2 mean +0.0000, largest seed 0.0000, seeds differing none
+U3d's check arm in the dm world, reported only: g1 mean -0.0000, largest seed 0.0000, seeds differing none; g2 mean +0.0000, largest seed 0.0000, seeds differing none
+task files: pregate.json 8fa6d658544a, plain_g1/seed_0.json 17b576bb39c5, plain_g1/seed_1.json 0e258835c9b1, plain_g1/seed_2.json b21a03f71c5a, plain_g1/seed_3.json 3e6092a4e36f, plain_g1/seed_4.json d261b5f81df0, plain_g1/seed_5.json 953925051934, plain_g1/seed_6.json e42df223b290, plain_g1/seed_7.json 0f2db906a791, plain_g1/seed_8.json 906a572c25b0, plain_g1/seed_9.json 1574283ce7bd, plain_g2/seed_0.json 330366be72cb, plain_g2/seed_1.json 0e8864f2cfdc, plain_g2/seed_2.json 974d143df0dc, plain_g2/seed_3.json b3c9e1c62533, plain_g2/seed_4.json d7572723bbdd, plain_g2/seed_5.json 4a822ab3e6ce, plain_g2/seed_6.json 4bdf042fa66e, plain_g2/seed_7.json 1a033d5f74c5, plain_g2/seed_8.json 6b75ad2e3c19, plain_g2/seed_9.json 15a4be596a9e, dm/g1_seed_0.json 2cfb7062de54, dm/g1_seed_1.json bbdaab227fe3, dm/g1_seed_2.json 60f0da857d53, dm/g1_seed_3.json bbb6bc93cc2a, dm/g1_seed_4.json 9ff2c34c23ff, dm/g1_seed_5.json 6eb6074925f7, dm/g1_seed_6.json 11adf9599305, dm/g1_seed_7.json dc0aaeff92c5, dm/g1_seed_8.json 56d835418c8f, dm/g1_seed_9.json badd5f1becf2, dm/g2_seed_0.json 9ca866126c23, dm/g2_seed_1.json 4dd088404d3e, dm/g2_seed_2.json 93532663d4a5, dm/g2_seed_3.json be8c175bdd15, dm/g2_seed_4.json eb75ee086712, dm/g2_seed_5.json ec466f99b1c0, dm/g2_seed_6.json fc043f911b14, dm/g2_seed_7.json 988458e17062, dm/g2_seed_8.json deabd096800e, dm/g2_seed_9.json 41723f569ea0
+g1 and g2 are two replicates of one knockout run; the controls and rep_all never qualify.
+
+WORLD plain (K8's: the harness, the reference as released):
+plain g1 T3w/WT->Gata4rep1:
+    floor        50.00 (sd 0.00); severity scored 0, gated 10 {'no_response': 10}, median beta n/a, r2 n/a; skills de_score 0.500, de_direction 0.500, severity_slope 0.500, mmd_u 0.500, variogram 0.500
+    barred_form  59.43 (sd 0.46); severity scored 10, gated 0 {'scored': 10}, median beta 0.437, r2 0.167; skills de_score 0.486, de_direction 0.527, severity_slope 0.897, mmd_u 0.493, variogram 0.418
+    x_all        59.82 (sd 0.49); severity scored 10, gated 0 {'scored': 10}, median beta 0.451, r2 0.173; skills de_score 0.492, de_direction 0.528, severity_slope 0.901, mmd_u 0.497, variogram 0.421
+    x_all_perm   59.35 (sd 0.40); severity scored 10, gated 0 {'scored': 10}, median beta 0.436, r2 0.165; skills de_score 0.485, de_direction 0.526, severity_slope 0.897, mmd_u 0.490, variogram 0.419
+    rep_all      54.54 (sd 3.82); severity scored 7, gated 3 {'r2_gate': 3, 'scored': 7}, median beta 0.054, r2 0.063; skills de_score 0.468, de_direction 0.545, severity_slope 0.652, mmd_u 0.529, variogram 0.531
+    x_all - barred_form: +0.39 (sd 0.26, ahead 10 of 10)
+    x_all_perm - barred_form: -0.08 (sd 0.20, ahead 3 of 10)
+    rep_all - barred_form: -4.89 (sd 3.77, ahead 0 of 10)
+    x_all - x_all_perm: +0.47 (sd 0.27, ahead 10 of 10)
+    barred_form - floor: +9.43 (sd 0.46, ahead 10 of 10)
+    per-term skill, x_all - barred_form: de_score +0.006, de_direction +0.002, severity_slope +0.003, mmd_u +0.005, variogram +0.003
+    per-term skill, x_all_perm - barred_form: de_score -0.001, de_direction -0.000, severity_slope -0.001, mmd_u -0.002, variogram +0.001
+    per-term skill, rep_all - barred_form: de_score -0.018, de_direction +0.018, severity_slope -0.245, mmd_u +0.036, variogram +0.113
+plain g2 T3w/WT->Gata4rep2:
+    floor        50.00 (sd 0.00); severity scored 0, gated 10 {'no_response': 10}, median beta n/a, r2 n/a; skills de_score 0.500, de_direction 0.500, severity_slope 0.500, mmd_u 0.500, variogram 0.500
+    barred_form  62.04 (sd 0.50); severity scored 10, gated 0 {'scored': 10}, median beta 0.433, r2 0.265; skills de_score 0.499, de_direction 0.559, severity_slope 0.893, mmd_u 0.564, variogram 0.500
+    x_all        62.53 (sd 0.52); severity scored 10, gated 0 {'scored': 10}, median beta 0.447, r2 0.283; skills de_score 0.505, de_direction 0.563, severity_slope 0.897, mmd_u 0.571, variogram 0.505
+    x_all_perm   61.93 (sd 0.53); severity scored 10, gated 0 {'scored': 10}, median beta 0.432, r2 0.262; skills de_score 0.496, de_direction 0.559, severity_slope 0.892, mmd_u 0.562, variogram 0.501
+    rep_all      50.00 (sd 2.17); severity scored 2, gated 8 {'r2_gate': 8, 'scored': 2}, median beta 0.033, r2 -0.111; skills de_score 0.441, de_direction 0.521, severity_slope 0.536, mmd_u 0.514, variogram 0.524
+    x_all - barred_form: +0.49 (sd 0.14, ahead 10 of 10)
+    x_all_perm - barred_form: -0.12 (sd 0.18, ahead 3 of 10)
+    rep_all - barred_form: -12.04 (sd 2.03, ahead 0 of 10)
+    x_all - x_all_perm: +0.60 (sd 0.18, ahead 10 of 10)
+    barred_form - floor: +12.04 (sd 0.50, ahead 10 of 10)
+    per-term skill, x_all - barred_form: de_score +0.006, de_direction +0.004, severity_slope +0.004, mmd_u +0.007, variogram +0.005
+    per-term skill, x_all_perm - barred_form: de_score -0.003, de_direction -0.000, severity_slope -0.001, mmd_u -0.002, variogram +0.001
+    per-term skill, rep_all - barred_form: de_score -0.058, de_direction -0.039, severity_slope -0.357, mmd_u -0.051, variogram +0.024
+
+WORLD dm (U3d's: the frozen script, the reference and the pool at each replicate's per-label depth):
+dm g1 T3w/WT->Gata4rep1:
+    barred_form  55.64 (sd 5.17); severity scored 6, gated 4 {'r2_gate': 4, 'scored': 6}, median beta 0.415, r2 0.017; skills de_score 0.550, de_direction 0.560, severity_slope 0.735, mmd_u 0.356, variogram 0.314
+    x_all        55.66 (sd 5.18); severity scored 6, gated 4 {'r2_gate': 4, 'scored': 6}, median beta 0.424, r2 0.021; skills de_score 0.548, de_direction 0.562, severity_slope 0.736, mmd_u 0.354, variogram 0.315
+    x_all_perm   54.61 (sd 5.16); severity scored 5, gated 5 {'r2_gate': 5, 'scored': 5}, median beta 0.410, r2 0.006; skills de_score 0.551, de_direction 0.560, severity_slope 0.694, mmd_u 0.351, variogram 0.313
+    rep_all      56.06 (sd 3.65); severity scored 6, gated 4 {'r2_gate': 4, 'scored': 6}, median beta 0.049, r2 0.078; skills de_score 0.537, de_direction 0.565, severity_slope 0.620, mmd_u 0.518, variogram 0.514
+    x_all - barred_form: +0.02 (sd 0.21, ahead 7 of 10)
+    x_all_perm - barred_form: -1.03 (sd 3.01, ahead 3 of 10)
+    rep_all - barred_form: +0.42 (sd 5.56, ahead 5 of 10)
+    x_all - x_all_perm: +1.05 (sd 3.12, ahead 6 of 10)
+    per-term skill, x_all - barred_form: de_score -0.002, de_direction +0.002, severity_slope +0.001, mmd_u -0.001, variogram +0.000
+    per-term skill, x_all_perm - barred_form: de_score +0.002, de_direction -0.000, severity_slope -0.040, mmd_u -0.004, variogram -0.002
+    per-term skill, rep_all - barred_form: de_score -0.013, de_direction +0.005, severity_slope -0.115, mmd_u +0.163, variogram +0.199
+dm g2 T3w/WT->Gata4rep2:
+    barred_form  63.84 (sd 0.60); severity scored 10, gated 0 {'scored': 10}, median beta 0.513, r2 0.222; skills de_score 0.580, de_direction 0.591, severity_slope 0.914, mmd_u 0.455, variogram 0.420
+    x_all        64.12 (sd 0.53); severity scored 10, gated 0 {'scored': 10}, median beta 0.528, r2 0.236; skills de_score 0.581, de_direction 0.594, severity_slope 0.918, mmd_u 0.457, variogram 0.424
+    x_all_perm   63.72 (sd 0.61); severity scored 10, gated 0 {'scored': 10}, median beta 0.506, r2 0.212; skills de_score 0.579, de_direction 0.591, severity_slope 0.913, mmd_u 0.449, variogram 0.421
+    rep_all      53.59 (sd 3.83); severity scored 4, gated 6 {'beta_gate': 1, 'r2_gate': 5, 'scored': 4}, median beta 0.024, r2 -0.050; skills de_score 0.523, de_direction 0.541, severity_slope 0.576, mmd_u 0.498, variogram 0.500
+    x_all - barred_form: +0.28 (sd 0.34, ahead 9 of 10)
+    x_all_perm - barred_form: -0.12 (sd 0.16, ahead 2 of 10)
+    rep_all - barred_form: -10.25 (sd 3.77, ahead 0 of 10)
+    x_all - x_all_perm: +0.41 (sd 0.28, ahead 9 of 10)
+    per-term skill, x_all - barred_form: de_score +0.001, de_direction +0.004, severity_slope +0.005, mmd_u +0.002, variogram +0.004
+    per-term skill, x_all_perm - barred_form: de_score -0.001, de_direction +0.000, severity_slope -0.001, mmd_u -0.006, variogram +0.001
+    per-term skill, rep_all - barred_form: de_score -0.057, de_direction -0.050, severity_slope -0.338, mmd_u +0.043, variogram +0.079
+
+read by experiments/t3_decomp/k22_outside_forms.py 6482585242ad (outside_forms 4837687d47f1) at commit 363170234fc3de3fd14803d2ce0036833b85581c, clean True, machine p01r10srv05

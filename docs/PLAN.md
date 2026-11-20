@@ -8057,3 +8057,24 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     down in both studies may be what knockout embryos share, or what two laboratories' knockout libraries share for
     technical reasons; the permuted control and the read on the released Gata4 knockout are what tell a gain from a
     table of this size apart from this table's genes.
+- 2026-11-20 (ll), T3: practice read K22's outcome (state at 19:09 UTC, 2026-11-20). Written by the AI assistant.
+  - **Outcome, as the row fixed it: "no file: nothing qualifies; T3's list is unchanged".** Valid run (the barred form
+    reproduces K18's committed scores exactly in both worlds); three tries, T3 57 to 60. Row K22 holds the fixed
+    statements; the result files are committed with it. Register rows X013 and X014 say no file uses the datasets.
+  - **The fixed statements.** The product of the barred factor with the two-study table is ahead of the barred form in
+    the plain world on both Gata4 replicates (plain g1 +0.39 (10 of 10 seeds), against its permuted control +0.47 (10
+    of 10); plain g2 +0.49 (10 of 10 seeds), against its permuted control +0.60 (10 of 10)) and level in the
+    depth-matched world; mean of the four paired means +0.29. The rule asks for both worlds, so it does not qualify.
+    The table alone in place of the barred factor loses by 5 to 12 points on three of four cells, as the planner's
+    doubt said it would.
+  - **The AI assistant's reading after the result, labelled as that and naming no file.** The table is very small: its
+    log values have a standard deviation of 0.025 against the barred factor's 0.70, because the pipeline's shrinkage
+    (few libraries per arm, weaker designs halved) leaves little. That so small a table gains in the plain world on
+    every seed, and beats its own shuffle on every seed, says its genes carry something the Gata4 knockout shares;
+    that it gains nothing in the depth-matched world says the gain may be about depth. A table from more studies and
+    more libraries would be larger by the pipeline's own rule and would need its own read, with its own row.
+  - **What follows.** By the captain's order of entry (y) the line goes on: more whole-embryo studies are needed,
+    which means two pieces of pipeline work (reading per-sample unfiltered matrices with a fixed cell-calling rule,
+    for the nine-embryo Cmtr2 study both readers found clean; and the three fixes the reviewers asked of the
+    series-archive and sister-series extension, for the knockout panel), then a new read under a new row. No guard and
+    no qualification rule is changed.
