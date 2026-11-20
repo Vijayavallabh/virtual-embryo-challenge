@@ -7830,3 +7830,18 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Next:** fetch, process and combine for the two Tbx1 accessions on the DGX (the first run of the pipeline on real
     expression data; the lineage step has never run on real cells), then the committed table hashes, row K22 and its
     read.
+- 2026-11-20 (aa), T3 outside knockouts: the pipeline's first run on real expression data (state at 18:01 UTC).
+  Written by the AI assistant.
+  - **The run** (`experiments/t3_ext/run_dgx.sh ... all "GSE168768 GSE186934"` on `~/v/vec-campaign-c` at eda0232;
+    outputs under `~/v/vec-ext/t3`). The pinned gate passed, each accession's fresh plan verified the six pins against
+    the live records, the eighteen pinned files were fetched (417 MB), and both datasets were processed; the code ran
+    end to end. **No table came out of it.** GSE168768: about three quarters of the cells get a confident lineage
+    call, but most are called one group (paraxial mesoderm) whose control profile fails the pipeline's match guard
+    against the reference group, and every other group has too few confident cells in an arm or call shares that
+    differ more than twofold between arms. GSE186934: the confident share is 0.39 and 0.37, under the floor of one
+    half. Combine had nothing to combine. The register rows say that nothing of either dataset enters a model.
+  - **What it shows.** The lineage step works on real cells, and the guards fail closed as designed. Cells sorted from
+    one lineage do not spread over the imaging reference's lineage groups; whole-embryo knockout data should. That is
+    what the panel study (GSE137337) and the DNA-methylation nulls (GSE204906) are, and why the pipeline's extension
+    for series-level archives and a sister-series control, and a rule to read GSE204906's stage, are the next steps of
+    this line. No guard is loosened to make the sorted data pass.
