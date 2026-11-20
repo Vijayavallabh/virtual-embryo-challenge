@@ -7687,3 +7687,43 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     regularised form can be read fairly: the Mab21l2 factor in any form scored on the two released Gata4 replicates,
     as row K18 did for the built files. Its row is placed before the run; the rule that maps its outcome to at most
     two candidate files is fixed in that row before the run.
+- 2026-11-20 (v), T3: practice read K21 on regularised forms of the barred factor; its rule and its place, fixed
+  before the run (state at 16:40 UTC). Written by the AI assistant.
+  - **Who.** wf_6e1610b7-d1a: a designer, a cold challenger ("stands with changes"), a writer and a reviewer ("ready",
+    no blocker). Merged at a908c99: `experiments/t3_decomp/k21_factor_forms.py`, `run_k21.sh`, the shared module
+    `factor_forms.py` (one implementation for the practice arms and for the builder's forms) and the thin builder
+    `build_factor_form.py`. The three frozen T3 files, K18's script and the two earlier thin builders are untouched.
+  - **What the designer found in the formulas and the record before any run.** On the Gata4 replicates the barred
+    factor's gain over no factor sits almost wholly on the severity term; the which-genes term stays at or under the
+    floor there too. The fitted slope at exponent 1 is about 0.43 on practice, so the factor is too small there, and
+    every shrinking form pays on severity; that is the side the exponent files of entry (k) already take. The
+    cell-state losses sit on the largest factors, which a top-K form keeps and a cap acts on. An evidence shrinkage
+    cannot be built from the tables and was found a no-op earlier (row N19), so it is not an arm. The designer's odds
+    that any form qualifies: about 0.2. The read runs because it is cheap and fair, not because the odds are good.
+  - **The read.** Three tries with one control each, all on the barred s1's own cells, in K18's two worlds on the two
+    Gata4 replicates, ten seeds: top100 (the 100 genes of largest absolute log factor kept, the rest at 1) against a
+    uniform shrink of the same size; cap90 (the factor clipped at the 90th percentile of the absolute log factor among
+    genes off the clip) against a uniform shrink of the same size; wtprod (the factor times the wild-type-only factor
+    per lineage group at exponent 0.5) against the same with the wild-type factor permuted. The barred form must
+    reproduce K18's committed scores or the run is void. Counted: six tries, T3 51 to 57, fewer if the pre-gate drops
+    a form; the count stands if the run is void. Row K21 holds the readings in full.
+  - **The rule that maps the outcome to files, in the challenger's final words:** Fixed before the run, in this row
+    and in a new decision-log entry committed with it. A result maps to files from the reading's fixed statements
+    only. - Rank the QUALIFIED arms (top100, cap90, wtprod) by the number of cells in which each is AHEAD, then by the
+    mean of its four paired means against barred_form. Ties go in the order top100, cap90, wtprod. - File 1 is the
+    first-ranked form on base B. File 2 is the second-ranked form on B. That is at most two files and at most one per
+    form. - If nothing qualifies, or the run is VOID, no file follows and T3's list is unchanged. - A form the builder
+    refuses on B is not built, and nothing replaces it. - B is entry 2026-11-20 (q)'s B: the highest returned headline
+    among barred s1 (3712c3f9988d), the x1.5 file (c060fcaa6c7f), the x2.0 file (7393810fbe3b) and barred s2
+    (1b69521e3c28). It is fixed once both of entry (k)'s uploads are back; ties go to s1, then to the lower exponent.
+    B is never a C file and is never re-fixed after this read. - Each file is T(phi_M) ** x, with x the base's
+    exponent. wtprod is (phi_M ** x) * per_g ** 0.5, with fallback (phi_M ** x) * phi_pooled ** 0.5. - K21's files go
+    after the C list and before any outside-knockout candidate. Placing them ahead of C1 or C2 would change (q), which
+    is the captain's call. If the allowance is smaller than planned, (q)'s lapse clause holds first. - Each upload
+    still needs the R14/R17 conditions: a docs/S2_RULES.md amendment with the captain's words (for wtprod it must say
+    that it extends the wild-type-only factor to a barred file), a build in the reference checkout, a new reference
+    list and pointer, and his go-ahead per upload. - A test score only chooses among the files named here (Section
+    10). No constant, form or base set is changed or re-seeded after any practice or test score.
+  - **Not applied before the run** (the reviewer's lesser points, which touch the build launcher and the read's
+    provenance, not the read itself): a distinct exit code for a form's own refusal in the build launcher; a record of
+    which code made the reading. They are applied before any K21 file is built.
