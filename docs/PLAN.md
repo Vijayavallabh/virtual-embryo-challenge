@@ -7463,3 +7463,67 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - The first design run for further T1 candidates (wf_fb892175-99c) returned nothing on T1: its agents took a
     forwarded side note on T3's fallback for their task. It was started again with the note named as settled
     (wf_cd20c34c-054). The wide local test run on the merged tree: 2622 passed, 1 skipped.
+- 2026-11-20 (q), T3: a second candidate list from released data only, fixed before any of its scores; the
+  outside-knockout screen fails its second review and is redesigned (state at 15:27 UTC). Written by the AI assistant.
+  - **Who.** wf_42122fd0-924: a designer, a cold challenger ("stands with changes"), a writer and a reviewer ("ready",
+    no blocker); branch `campaign/t3-two-knockout`, afc4734; a thin builder
+    `experiments/t3_decomp/build_two_knockout.py` in the manner of the exponent builder, the three frozen T3 files
+    untouched and their hashes pinned. The reviewer's lesser points are with one more writer; the merge follows.
+  - **Why a list at all.** The two scored T3 files differ in three things at once (the factor's source, the depth
+    step, the composition), so the record cannot say why the first upload scored lowest; the designer and the
+    challenger both say so. The record on the Gata4 factor is weak: on the one cross-knockout fold (rows K2a, K2b) it
+    beat its permuted control by 0.18, under the 0.3 bar. No fair practice read exists for a combination of the two
+    released knockouts (each target would hold its own knockout's factor), so these files are unpriced and a returned
+    headline chooses.
+  - **The list, in the challenger's final words:** Before these files: entry 2026-11-20 (k) stands unchanged. First
+    barred s1 at exponent 1.5 (c060fcaa6c7f). Then the exponent-2.0 file (7393810fbe3b) if 1.5 returns a headline
+    above 61.8, otherwise barred s2 (1b69521e3c28). barred_s2 carries the Mab21l2 factor at exponent 1.0
+    (barred_table; D7m m = 0.71781 > 0; decision log (m)).  B is the file with the highest returned T3 headline among
+    barred s1 (3712c3f9988d, x = 1), the 1.5 file, the 2.0 file and barred s2 (x = 1). It is fixed once both uploads
+    of entry (k) have returned. Ties go to barred s1, then to the lower exponent. phi_M =
+    <run>/factors/transfer_mab21l2_all.csv (sha 64b1e0b8572c...), phi_G = <run>/factors/gata4_pooled.csv (sha
+    36f2d65a36d2...). Both are loaded through bs.load_factor, used as loaded (already clipped to [0.25, 4]), and
+    refused unless they cover the same 500 genes in order.  1. C1, built only when B is barred s1 or barred s2 (x =
+    1): factor = np.power(phi_M, 1.0) * np.power(phi_G, 1.0). No re-rescale and no re-clip. Passed to
+    t3_decompose.build with w = 1.0. Composition, drawn cells, RNG streams (submission:barred:s1 or :s2, and
+    :assemble) and seed 1000001 are B's. No depth, stage or coverage step. The sidecar records the gene mean of ln
+    phi, cos^2(ln phi, 1), and the den-weighted mean where available, for B and for C1.  2. C2, built for every B:
+    factor = np.power(phi_M, x*c) * np.power(phi_G, c), with c = SD(x ln phi_M) / SD(x ln phi_M + ln phi_G). SD is the
+    population SD (ddof 0) over the 500 genes, computed by the builder from the tables as loaded. About 0.82 at x = 1,
+    0.89 at 1.5 and 0.93 at 2.0 (estimates). Everything else as C1.  Dropped: C3 (expected at or below B; its
+    condition picks its weakest world). G, M, S and per-lineage forms, for the designer's reasons (agreed). P is C1.
+    Identity gates on the DGX: g = 0, c = 1 reproduces each base's sha byte for byte, and each candidate is built
+    twice with identical bytes. R14's conditions apply: an amendment with the captain's words, a build in the
+    reference checkout, a new reference list and pointer, and his go-ahead per upload.
+  - **The search rule, in the challenger's final words (points 1 to 6):** Fixed in the decision log before any C file
+    has a score: (1) Entry 2026-11-20 (k) goes first, unchanged. (2) B is set as above, only after both (k) uploads
+    have returned headlines. Only team uploads' headline T3 scores choose. No per-term score of any T3 file is
+    compared with another's or read for anything. (3) If B is barred s1 or barred s2: C1 is uploaded, then C2 whatever
+    C1 returned. If B is the 1.5 or 2.0 file: only C2 is uploaded. (4) If only one T3 slot remains before 2026-11-26
+    11:59 UTC, the first file under (3) goes and the other does not. The log entry states this list's place relative
+    to any outside-knockout T3 candidates before either has a score. If the team's allowance turns out smaller than
+    two per board per day, the list lapses. (5) After (3) the list is spent. No Gata4 weight, exponent, composition,
+    rescale or other value is added, changed or re-seeded because of any score. A new candidate needs its own log
+    entry before its own score exists. (6) The board keeps the best. Under any organiser restriction or bar on the
+    Gata4 files, no C file is marked, and the Gata4-free barred file stays the mark (S2_RULES ruling switches).
+  - **Point 7, the captain's question, not yet put.** Nothing is built for upload before he answers it. Its text as
+    the challenger wrote it: "Task 3: our best file (61.8) uses only the released Mab21l2 knockout. Two more files
+    would multiply its per-gene change by the released Gata4 validation knockout's change, the same table our first
+    upload (47.8) carried. Practice cannot price them: on the one fold that tests the Gata4 change on a different
+    knockout, it beat a shuffled control by 0.18, under our 0.3 bar. The gain there rested on 10 genes, and it lowered
+    the cell-state terms. Gain if it carries: unknown, perhaps a few points. Loss: the board keeps our best, so the
+    cost is up to two T3 upload slots that outside-knockout files could use. And if the organisers later restrict the
+    Gata4 files, these cannot be marked final; the Mab21l2-only file stays our mark. May these two files use the Gata4
+    validation files?" Options: "Yes, both (C1 then C2)"; "Only C2 (held at the best file's size)"; "No, Mab21l2
+    only". It goes to him with the T1 questions that the T1 design is preparing, so that he is asked once.
+  - **Place among T3's candidates, fixed now.** Entry (k)'s two uploads go first. This list comes next, when the base
+    is fixed and he has said yes. Candidates from outside knockouts, if that work yields any, come after this list and
+    are fixed in their own entry before their own scores; they do not displace C1 or C2.
+  - **The outside-knockout screen, second review** (wf_e988fff9-6e1: an engineer and two reviewers who tried to break
+    it). Both: not ready. A text screen built from lists of prefixes and suffixes still let held-out labels through
+    (short forms glued to allele words, misspelt symbols, a range of GATA numbers, a second name of a held-out
+    compound), and a held dataset became fetchable through an edited copy of the dataset file. Nothing was fetched.
+    Decision of mine: a text blacklist can never be shown complete, so it stops being the first line. The first line
+    becomes a pinned sample list: only samples whose verbatim labels two readers have read and pinned, with a hash of
+    the text read, can ever be fetched or processed; the text screen stays as the second line and over-refuses freely;
+    held series are refused by a constant no flag can change. A third pass is running (wf_582ec820-15a).
