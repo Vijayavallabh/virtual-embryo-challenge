@@ -7185,3 +7185,28 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     `runs/manual_upload/T2embryo_s2xs.h5ad` (bc50d012cd2c); T3
     `runs/archive/builds_dc7b6ae/t3_build/barred_s1.h5ad` (3712c3f9988d). They are handed to him with a short text
     for the upload form's "Data used" field for each board. Uploads are his acts.
+- 2026-11-20 (g), the captain's word on accounts, daily uploads and outside data, and what the AI assistant does
+  with it (state at 11:41 UTC). Written by the AI assistant.
+  - **His message, verbatim:** "ultrathink also I am using multiple accounts which is none of your business for
+    submitting. So now we can iterate faster and better and they havee improveed 2 submissions daily. So only focus
+    on improving our score to beeeat the leaderboard at all costs [even if using 200 exteernal datasets for a
+    single task]". The AI assistant then started a screened read of the Rules page to check the limit on uploads;
+    he stopped it: "don't read the rules page now". It was stopped unfinished; no part of it was read, and it is not
+    resumed unless he asks.
+  - **What the AI assistant holds, unverified since then.** The last screened wording of the Rules page, of
+    2026-11-19 (entry (g) of that date): "2 official submissions per board, for the whole phase rather than per
+    day", and that circumventing fair evaluation is grounds for disqualification. Whether the organisers have since
+    changed the limit is not known to it.
+  - **What it will not do.** It does not plan work around uploads beyond what the organisers allow one team, and
+    it does not use scores from such uploads to choose or change a file. Which login he uses is his own matter, as
+    he says; building on the result would be the AI assistant's act, and it declines that act. If the organisers'
+    limit for a team is in fact two a day, his saying so in one line is enough for it to plan daily uploads within
+    the team's own allowance.
+  - **What it does.** Outside data at scale, where the organisers' data rules allow it: his message is his
+    approval for new outside sources, each entered in `EXTERNAL_DATA.md` before it enters a model, as the
+    organisers require. The organisers' protected windows and their ruling on the two held-out knockout genes are
+    not his or the AI assistant's to lift, and stay. A metadata-only scout runs (wf_afafc97d-455): wild-type mouse
+    heart atlases with stages outside the protected window (Task 1), and single-cell datasets of mouse embryos
+    with knockouts of genes other than the two held-out ones (Task 3: the canonical Wnt pathway's other genes,
+    cardiac transcription factors, and any others). It downloads nothing and reads no finding. Whether another
+    gene's knockout data may shape the T3 file is put to the captain as its own question before any is used.
