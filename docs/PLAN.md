@@ -7893,3 +7893,27 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     neural crest and pharyngeal mesoderm: the groups the held-out knockout's own lineage (cardiac and other mesoderm)
     is not in. The pooled form weights groups by their reference shares, so those four or five groups stand for the
     embryo. That limits what this line can add to the which-genes terms even if K22 names a form.
+- 2026-11-20 (ee), T1 outside atlases, stage 1 reviewed; the embryo's shape interpolation started (state at 18:39 UTC,
+  2026-11-20). Written by the AI assistant.
+  - **T1, several outside atlases** (wf_bca8447e-edf: a planner with repository metadata access, a cold challenger
+    with fourteen attacks, an engineer, two reviewers; branch `campaign/t1-multi-atlas`, 735c7b1,
+    `experiments/t1_ext`; nothing downloaded). The design: wave one is two studies beside the atlas in use, GSE230531
+    (whole embryo at E8.5 to whole heart at E14.5) and GSE176063 with GSE153562 (whole embryo at E9.5 to fetal heart
+    at E14.5), each contributing the cardiomyocyte group; GSE244783 (nuclei, heart at E8.5 and E16.5) is wave two;
+    GSE216970 is held. Only samples of permitted stages are fetched, one by one; cell groups are recomputed with the
+    team's frozen labeller; the consensus direction keeps a gene where most atlases agree in sign and is rescaled to
+    the ruled direction's size, so that its practice row reads direction and not size; the composition table forecasts
+    one quantity, the cardiomyocyte share of heart cells, from each atlas's own change over time.
+  - **Both reviewers: not ready, on the organisers' rule itself.** A stage written in a field the code does not read,
+    or in a form it does not parse, could leave a window sample marked as usable; one plug-day convention shifts a
+    sample into the window unseen; joint processing with window samples is screened by a negative pattern only;
+    annotation rows in dense tables load as genes. A fix and a verifier are running (wf_41879c56-f88): the stage is to
+    be read from the whole of a sample's own record and to fail closed, and an atlas's processing text is to be
+    cleared positively, by a hash of the text the main session has read.
+  - **The planner's own doubts, on record:** dissection and protocol can move the cardiomyocyte share by more than two
+    days of development; brackets that start at E8.5 carry heart-tube maturation that E10.5 cells have already done;
+    both scored T1 files already carry one atlas's direction, so a consensus mostly changes magnitudes.
+  - **Embryo, shape interpolation** (wf_145ccf29-b54; analysts other than the AI assistant, which is recused on the
+    occupancy term): a target-free interpolation of the embryo's shape between the two released bracket stages, with a
+    counted practice read before any file. The reason: a cloud on one bracket's exact positions can do no better than
+    about the baseline on the shape terms, and the morphology group is the embryo board's largest gap.
