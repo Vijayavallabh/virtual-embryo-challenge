@@ -7439,3 +7439,15 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Started:** T1's builds on `~/v/vec-campaign-d` at 1420c70 (default first, which must reproduce ad8f24c7...).
     Three agent groups: the embryo's stage 2 (wf_666d097c-21a), the T3 screen fix (wf_e988fff9-6e1), T3
     candidates from the two released knockouts (wf_42122fd0-924).
+- 2026-11-20 (o), the heart's two candidates are built and handed over (state at 15:09 UTC). Written by the AI
+  assistant, which is recused on the heart's scope and size and states no preference.
+  - Record: `experiments/builds/results/heartcand_1ba7c67.txt`. On `~/v/vec-campaign` at 1ba7c67 the analysts'
+    launcher first rebuilt the full trim, whose half reproduced the uploaded file (04cde636...). K1, the half trim:
+    `runs/manual_upload/T2heart_s2trimcopy_half.h5ad`, sha256
+    47bb3fe2a082e5b221ee4ae8c003d47df77259867563a11f6c805e9bb82d91d5, built twice with the same bytes. K2, the
+    full-scope copy: `runs/manual_upload/T2heart_s2iso_half.h5ad`, sha256
+    dc436d9225bb28e7997d2ec51e95254cd125e569d44c059596298d0a7b6af5c2, built twice with the same bytes and equal to
+    set heart2's file of 2026-11-18. Every stamp: commit 1ba7c67, clean. The local format check passes on both.
+  - Order, by the analysts' rule in the amendment: K1 first, K2 in the next slot whatever K1 scores. Each upload
+    is the captain's own act. When he reports a headline it goes into `results/manual_uploads.csv` and this log,
+    and the heart's standing file is the highest headline of the full trim, K1 and K2. The heart list ends there.
