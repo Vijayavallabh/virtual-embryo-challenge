@@ -381,7 +381,9 @@ def test_the_committed_dataset_list_loads_and_holds_back_what_the_plan_holds_bac
     ds = cm.load_datasets()
     cleared = {a for a, d in ds.items() if d["status"] == "cleared"}
     # GSE277839 and GSE270969 joined the cleared list on 2026-11-20 (docs/PLAN.md decision log 2026-11-20 (gg))
-    assert cleared == {"GSE205117", "GSE168768", "GSE186934", "GSE137337", "GSE204906", "GSE277839", "GSE270969"}
+    # GSE299068 joined it the same day for its metadata step (decision log 2026-11-20 (oo))
+    assert cleared == {"GSE205117", "GSE168768", "GSE186934", "GSE137337", "GSE204906", "GSE277839", "GSE270969",
+                       "GSE299068"}
     assert {a for a, d in ds.items() if d["status"] == "held_phenocopy"} == {"GSE165300", "GSE126128", "GSE280543"}
     assert {a for a, d in ds.items() if d["status"] == "excluded_design"} == {"GSE259342", "E-MTAB-7325"}
     assert ds["GSE205117"]["d"] == 0.5 and ds["GSE137337"]["d"] == 0.5 and ds["GSE168768"]["d"] == 0.5

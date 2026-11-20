@@ -2,6 +2,15 @@
 
 ## Current State
 
+- **2026-11-20, 19:23 UTC.** Files are still with the captain on all four boards; no new score reported. Read since
+  16:42: K21 (T3 regularised forms: no file), E48 (embryo row order: no effect on practice, and no row-order file can
+  be built for the test board), K22 (T3, the barred factor times the first two-study outside-knockout table: no file;
+  ahead on every seed in the plain world, 0.02 under the bar in one depth-matched cell). Running: E49 (the embryo's
+  shape interpolation) on the DGX; three agent rounds (a planned and challenged follow-up row K23; more sources for
+  the outside table, bulk whole-embryo sets included; the Task 1 atlas loader's third round, now with pinned samples).
+  The captain's order of the evening: resume outside knockouts and external datasets widely. Tries: T1 413, embryo 76
+  (E49 adds up to seven), heart 80, T3 60. What waits: `session-handoff.md`, first bullet.
+
 - **2026-11-20, 16:42 UTC.** Files are with the captain on all four boards (T1 A and B, heart K1 and K2, the embryo
   positions file, T3 at exponent 1.5); no new score reported yet. His reply to the open questions: "go ahead with
   whatever will improve our score [my reply]" (read in decision log (t)). Two practice reads run on the DGX: E48

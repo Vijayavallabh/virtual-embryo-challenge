@@ -8078,3 +8078,81 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     for the nine-embryo Cmtr2 study both readers found clean; and the three fixes the reviewers asked of the
     series-archive and sister-series extension, for the knockout panel), then a new read under a new row. No guard and
     no qualification rule is changed.
+- 2026-11-20 (mm), what follows K22, and the Task 1 atlas loader's third round (state at 19:22 UTC, 2026-11-20). Written by
+  the AI assistant; every choice here is the AI assistant's, made after K22's outcome was known, under the captain's
+  order to widen the outside lines (entry (y)).
+  - **How K22 missed, from its fixed statements.** The rule asks for AHEAD (a mean above 0.3 with eight of ten seeds)
+    in a plain cell and in a depth-matched cell. The product was AHEAD in both plain cells and stood at +0.28 with
+    nine of ten seeds in the depth-matched g2 cell: 0.02 under the bar. No constant is changed and K22's outcome
+    stands: no file.
+  - **A follow-up row, K23, is being planned and challenged by agents before anything runs** (workflow
+    `t3-outside-table-exponents`): the same table, same bytes and pins, at a larger exponent (the AI assistant's
+    proposal: 2 and 4), each with its own shuffled control, under a rule fixed in the row before the run. Said
+    plainly: this follows a near miss on a fold many rows have read. The challenger is asked to attack exactly that,
+    and to say what qualification must ask beyond K22's. The row, its tries and its rule will be placed in one commit
+    before the run.
+  - **More sources for the table** (workflow `t3-outside-knockouts-more-sources`): an engineer closes the three review
+    blockers of the series-archive and sister-series extension (for the zygotic knockout panel of entry (x)) and adds
+    an intake for per-sample unfiltered matrices with one fixed cell call (for the nine-embryo Cmtr2 study); two
+    reviewers attack it. Two searchers look, in repository metadata only, for bulk RNA sequencing of whole knockout
+    embryos (multi-line programmes and single studies); a designer and a challenger then say how the pipeline would
+    take such data. Nothing is downloaded by the agents. Two candidates of the earlier hunt are held on the first
+    reader's doubt and not planned: the Grhl3 study (GSE246181) and the Pax6 study (GSE317197), because the AI
+    assistant recalls, without having opened any paper, that each gene is tied in the literature to canonical Wnt
+    signalling in the tissue the study dissects; the genotype clause decides doubts against use.
+  - **Task 1 outside atlases, verifier's verdict on the second round: not ready** (three more ways a real record words
+    a stage that the parser read as permitted). The AI assistant changed the design the way the Task 3 pipeline was
+    changed: a pinned list of samples (the hash of each sample's full verbatim record, read by two readers) becomes
+    the first line, and the parser a second line that can only refuse (workflow `t1-multi-atlas-fix3`, branch
+    `campaign/t1-multi-atlas-3`). The verifier also noted that the atlas in use (X002) was never read under the
+    stricter plug-day rule the new pipeline applies; that point is open and will be read from X002's own series record
+    at the plan run.
+- 2026-11-20 (nn), T3: the two-knockout files are built for every possible base, ahead of the scores that fix the base
+  (state at 19:34 UTC, 2026-11-20). Written by the AI assistant.
+  - **A departure from what the question said, stated plainly.** The question put to the captain on these files said
+    they would be built only after both of the day's Task 3 scores were back, because the base B is the best-scoring
+    of four files. The AI assistant built them now instead, once for each base B can be (s1, the 1.5 file, the 2.0
+    file, the barred s2), so that no time passes between his two scores and the hand-over. Nothing else changed: the
+    list and its rule are entry (q)'s; the returned headlines fix B; only B's files are handed over; the files of the
+    other bases are never uploaded.
+  - **The builds** (`~/v/vec-campaign-c` at fb01487, clean; record `experiments/builds/results/t3two_fb01487.txt`):
+    every exit 0; the builder reproduced the barred s1 and each base byte for byte; each candidate was built twice
+    with the same bytes; stamps name the commit and a clean tree. Six files: C1 and C2 on s1 (b233384dc826,
+    047506dbab19), C2 on the 1.5 file (12a0dffbfc4f), C2 on the 2.0 file (9559c9cd785b), C1 and C2 on the barred s2
+    (8718330866429, 47111ac1d07e). Copies under `runs/manual_upload/` (hashes checked; the local format check passes,
+    exit codes only). A first launch stopped at the clean-tree step because K22's reading folder was untracked at the
+    checkout's commit; the checkout was synced to main and the launch repeated.
+  - **Data used, for the hand-over:** released challenge data only: the wild-type E8.75 cells and the two released
+    knockouts (the Mab21l2 knockout and the Gata4 validation knockout), whose per-gene changes are multiplied. No
+    outside data.
+- 2026-11-20 (oo), T3 outside knockouts: the Kmt2d study joins the dataset list for its metadata step (state at 19:36 UTC,
+  2026-11-20). Written by the AI assistant.
+  - GSE299068 (a conditional Kmt2d knockout against its conditional heterozygote at E9.5, pharyngeal region and heart,
+    sorted cells, two libraries per arm; all three searchers of entry (dd)'s hunt listed it as taking the pipeline as
+    it stands) is added to `experiments/t3_ext/datasets.yaml` as cleared with no pins, with the dataset-file hash and
+    the test's cleared set updated in the same commit (1234 tests pass). Only the metadata plan runs now. Nothing is
+    pinned or fetched until two readers have read every line of its plan table and a register row exists. The AI
+    assistant's odds that it yields a table are low: the two Tbx1 studies with sorted cells of the same region gave
+    none, because the guards fail closed on a sorted lineage. No guard is loosened for it.
+- 2026-11-20 (pp), T3 outside knockouts: one pair of the Kmt2d study pinned by two readers who agree (state at 19:42 UTC,
+  2026-11-20). Written by the AI assistant.
+  - **The readings.** The AI assistant read every line of the series' plan table and wrote its reading down before the
+    second reader returned (scratch `lift8/kmt2d_first_reading.txt`); a second reader agent, which was not told that
+    reading, read all 273 lines. Both: no held-out or pathway label (the second reader's scan found only the letters
+    of one listed name inside the word "indicate"); each library is a pool of embryos of one genotype, genotyped
+    before pooling, then sorted for the lineage reporter; stage E9.5 in every record and no other stage; the non-ASCII
+    characters are units and typography, none inside a label. Both saw that the series holds two experiments (two
+    submission dates, two library kits, three and four embryos per pool) and that check 4 asks for a control of the
+    knockout's own experiment; both pin the later pair only (knockout GSM9473666, control GSM9473667), chosen before
+    any count was read because its kit is the one the pipeline parses and its pools are larger. The second reader made
+    its pins conditional on the main session's ruling on the records' word "demultiplexing".
+  - **The AI assistant's ruling,** the same as for the Usb1 study (entry (ii)): the records say demultiplexing,
+    barcode processing and gene counting were done "for each sample" with the vendor's pipeline; that is the
+    pipeline's own per-sample step, not a design that mixes genotypes in one capture. The pair and the series are
+    pinned with the hashes both readers read; the entry's expected count is set to one library per arm; register row
+    X015 is placed before any table exists; the dataset-file hash is updated in the same commit.
+  - **Not known from the records:** whether the deposited matrices are the vendor pipeline's filtered output or counts
+    adjusted by an ambient-RNA tool; the pipeline's own checks on the counts apply as for every dataset. The cells are
+    a sorted lineage of one region, so the guards may refuse every group, as they did for the two Tbx1 studies. **The
+    two-study tables that K22 read are kept aside before the rerun** (`~/v/vec-ext/t3/tables_two_study`), because the
+    planned row K23 reads that table at its pinned hash.
