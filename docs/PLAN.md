@@ -8438,3 +8438,20 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     bytes. Four files (on s1 7d712052f28f, on the 1.5 file 079f717e2702, on the 2.0 file b146fca4b934, on the barred
     s2 e470aaeeab28), copies under `runs/manual_upload/T3_ck_<base>.h5ad`, hashes checked, the local format check
     passed (exit codes only). No score of C2, of row K23's file or of CK existed when this was written.
+- 2026-11-20 (yy), T3 outside knockouts: the 73-line set's line names, read by two readers before any count (state at
+  21:07 UTC, 2026-11-20). Written by the AI assistant.
+  - **The two readings, from recall only (no paper, no data).** The AI assistant wrote its reading down before the
+    second reader returned (scratch `lift8/dmdd_lines_first_reading.txt`): one held name (Trps1, a GATA-type factor)
+    and ten doubts (eight ciliary genes, one of them also recalled as a partner of Apc; Mad2l2; Tmem98). A second
+    reader agent, not told that reading, judged the same 73 names: the same held name; the same eight ciliary genes;
+    eleven further doubts of its own (Nek9, Mtor, Map2k7, Traf6, Traf2, Rala, the GPI-anchor genes Pigf, Pigl and
+    Pgap2, Hira, Smc3), most of them marked vague; no doubt on Mad2l2 (it recalls the partner as another factor of the
+    same name, not a Tcf/Lef factor) or on Tmem98; and seven names it could not judge (two unnamed clones it did not
+    recognise and five it knew by family only).
+  - **The rule and its result.** A line is used only if neither reader doubts it, and a name a reader could not judge
+    is withheld too. Withheld: 29 of 73 names (1700007K13Rik, 4933434E20Rik, Anks6, Atxn10, B9d2, Cc2d2a, Dhx35,
+    Gpr107, Hira, Hmgxb3, Ift140, Kif3b, Kifap3, Mad2l2, Map2k7, Mtor, Nek9, Pgap2, Pigf, Pigl, Rala, Rpgrip1l, Smc3,
+    Tmem98, Traf2, Traf6, Trps1, Zkscan14, Zkscan17). Of the 50 lines with at least two homozygous and two wild-type
+    embryos at embryonic day 9.5 in the public annotation table, 27 remain. This list goes into the dataset entry's
+    withheld lines before any plan table is made; no count of any line has been read. The cost of the caution is about
+    a fifth of the usable lines; the AI assistant judges that worth it.
