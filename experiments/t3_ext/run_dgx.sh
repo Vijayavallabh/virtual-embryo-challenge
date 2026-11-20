@@ -6,12 +6,19 @@
 #   run_dgx.sh CHECKOUT [MODE] [ACCESSIONS]
 #   CHECKOUT: the campaign checkout ~/v/vec-campaign-c after the main session's usual sync of main into it. The DGX's
 #        reference checkout ~/v/virtual-embryo-challenge is refused (nothing is fetched into it, nothing runs in it).
-#   MODE plan (the default): only `fetch.py plan` per accession (GEO family SOFT metadata, the screen, the plan
-#        tables). Nothing else is downloaded and no count is read. Two readers read every plan table and pin samples.
+#   MODE plan (the default): only `fetch.py plan` per accession (GEO family SOFT metadata of every screened series
+#        and of a named control series, the screen, the plan tables). Nothing else is downloaded and no count is
+#        read. Two readers read every plan table and pin samples, series files and the control series' samples.
 #   MODE all: first the PINNED gate (`fetch.py check-pins`): refused (ALL.exit 6) unless every accession is cleared,
 #        has a non-empty pinned block, and datasets.yaml hashes to t3x_common.DATASETS_SHA256. Then, per accession, a
 #        fresh plan that checks each pinned sample's live metadata against its pinned hash (replan_<ACC>), and only if
 #        it passes: fetch (pinned files only), process; then the reference statistics first and combine last.
+#   Stage 6: a dataset with a named control series (control_series in datasets.yaml) plans, screens, shows and pins
+#        that control series with its own; its re-plan checks the control series' live text too. fetch also
+#        downloads the pinned series files (pinned_series_files, a series' own archives or loose matrices) into
+#        raw/<ACC>/<GSE>/, never unpacked; process reads them member by member in memory and splits them by their
+#        pinned rule. The --max-gb 30 cap covers series files too: a dataset over it refuses (raise it only in a
+#        reviewed commit).
 #   ACCESSIONS: a quoted, space-separated subset (default: the five cleared datasets).
 #   WT (environment, optional): the WT E8.75 file, read only; default CHECKOUT/data/raw/T2/E8.75.h5ad.
 #

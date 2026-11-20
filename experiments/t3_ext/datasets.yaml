@@ -293,6 +293,30 @@ datasets:
     why: "one lab, one pipeline, many genes: what knockouts share; one study weight in the all-knockouts table"
     risks: "F0 mosaicism (d = 0.5); WT may not be littermates; chemistry read from free text"
     verified: false
+    # Stage 6 (2026-11-20, campaign/t3-ext-archives; README "Series-level files" and "A control from a sister
+    # series"). The metadata step (docs/PLAN.md decision log 2026-11-20 (x)) found this series' matrices only as
+    # series-level files named by gene (archives such as GSE137337_RNF2_E8.5_1ab.tar.gz, and three genes as loose
+    # barcodes / features / matrix files) and no wild-type single-cell sample in the series. series_files OFFERS such
+    # files of this series' own folder in the plan table; nothing is fetched until the readers pin each file under
+    # pinned_series_files with its samples and split rule. The loose files' exact names were not seen by the engineer:
+    # a name the second pattern misses is listed as never fetched, and only a reviewed commit changes the pattern.
+    series_files:
+      - series: GSE137337
+        patterns:
+          - '^GSE137337_(?!.*(bisulf|wgbs|rrbs|methyl|scbs|atac))[A-Za-z0-9+-]+_E8\.5[A-Za-z0-9_.+-]*\.(tar\.gz|tgz|tar)$'
+          - '^GSE137337_(?!.*(bisulf|wgbs|rrbs|methyl|scbs|atac))[A-Za-z0-9_.+-]*(matrix\.mtx|barcodes\.tsv|features\.tsv|genes\.tsv)\.gz$'
+    # The study's wild-type embryos are in another series of the same lab. A placeholder until the hunt names that
+    # series: accession null screens and pins nothing. The main session fills accession, screen_series (its own
+    # accession first, then any superseries), the three relation statements and the reader note, in a reviewed commit
+    # with the new t3x_common.DATASETS_SHA256; a unit with such a control takes d = 0.5.
+    control_series:
+      accession: null
+      screen_series: []
+      relation:
+        same_lab: "TO FILL"
+        same_protocol: "TO FILL"
+        same_publication: "TO FILL"
+      reader_note: "TO FILL"
     pinned: []
 
   - accession: GSE204906

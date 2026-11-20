@@ -47,6 +47,18 @@ the list says.
                        STORED plan: run it only through run_dgx.sh MODE all, whose replan checks the live metadata
                        first. raw/ and MANIFEST.json are written by fetch only.
 
+Stage 6 (README "Series-level files", "A control from a sister series"):
+  series-file-template ACC --dest D --series GSE --file F [--file ...] --gsm GSM [...]
+      --split none|barcode_suffix|folder [--key K=GSM ...]
+                       prints one ready-to-paste `pinned_series_files` entry: a file of the series' OWN supplementary
+                       list (own_series_file; offered by series_files patterns), the samples it holds, the split rule.
+  pin-template ... --from-series-file
+                       prints sample entries with files: [] (their cells come from a pinned series file).
+  plan, fetch          a named control_series is planned, screened, shown, hashed and pinned like screen_series; its
+                       samples are pinned as controls only. fetch also downloads the pinned series files into
+                       D/raw/<ACC>/<GSE>/, their links derived again from the hashed series fields
+                       (verify_series_units), each record bound to the series' text hash, url and pins.
+
 Stage 5 parsing: a SOFT text is split on "\\n" only; a line holding another line or paragraph separator, a field name
 that is not a plain GEO key, or a block accession that is not GSM/GSE digits refuses the dataset, its text withheld.
 Field names are screened like values, and the series' contact fields are screened too.
@@ -386,6 +398,67 @@ def sample_files(ds: dict, rec: dict, gsm: str) -> tuple[list[dict], list[dict]]
     return ok, other
 
 
+def series_stub(gse: str) -> str:
+    """GEO's folder stub of a series accession: GSE137337 -> GSE137nnn, GSE123 -> GSEnnn."""
+    if not re.fullmatch(r"GSE\d+", gse):
+        raise Refused(f"{gse}: not a GEO series accession")
+    return "GSE" + gse[3:-3] + "nnn"
+
+
+def own_series_file(gse: str, url: str) -> tuple[str | None, str]:
+    """(the https url, '') if the link is a file in the series' OWN GEO folder, exactly
+    https://ftp.ncbi.nlm.nih.gov/geo/series/<stub>/<gse>/suppl/<gse>_<name> (no port, user, query or fragment, a
+    plain file name), as own_file is for a sample; else (None, the reason). Stage 6."""
+    if not re.fullmatch(r"GSE\d+", gse):
+        return None, "the record is not a GEO series accession"
+    try:
+        u = https_url(url)
+    except Refused:
+        return None, "not an https or ftp link on the repository host"
+    p = urllib.parse.urlparse(u)
+    if p.netloc != HOSTS[0] or p.params or p.query or p.fragment:
+        return None, "not a plain link on the repository host"
+    name = p.path.rsplit("/", 1)[-1]
+    if p.path != f"/geo/series/{series_stub(gse)}/{gse}/suppl/{name}":
+        return None, "url not under the series' own GEO folder"
+    if not _FILE_NAME.fullmatch(name) or ".." in name:
+        return None, "file name holds a character outside letters, digits and . _ + -"
+    if not name.startswith(f"{gse}_"):
+        return None, "file name does not start with the series' accession"
+    return u, ""
+
+
+def series_files(ds: dict, gse: str, fields: dict) -> tuple[list[dict], list[dict]]:
+    """(the series-level files the dataset's series_files patterns allow for this series, as {name, url}, in the
+    record's order; every other supplementary link of the series as {name, reason}, never fetched). Stage 6: a file is
+    offered only when its link is in the series' OWN GEO folder with a name that starts with the series' accession
+    (own_series_file), names no held accession, is not a denied type (the series' _RAW.tar included) and matches a
+    pattern series_files declares for THIS series. Derived from the series' hashed fields; verify_series_units derives
+    it again and never trusts a stored list."""
+    pats = [re.compile(p, re.IGNORECASE) for e in ds.get("series_files") or [] if e.get("series") == gse
+            for p in e.get("patterns") or []]
+    ok, other = [], []
+    for f in [v for k in fields if k.startswith("supplementary_file") for v in fields[k]]:
+        if f.upper() == "NONE":
+            continue
+        name = Path(urllib.parse.urlparse(f).path).name
+        named = _named_held(ds, f)
+        u, why = own_series_file(gse, f)
+        if named:
+            why = f"url names a held or excluded accession {sorted(named)}"
+        elif u and DENY.search(name):
+            why = "a denied file type"
+        elif u and not pats:
+            why = "series_files declares no pattern for this series"
+        elif u and not any(p.search(name) for p in pats):
+            why = "not matched by the dataset's series_files patterns"
+        if why:
+            other.append({"name": name, "reason": why})
+        else:
+            ok.append({"name": name, "url": u})
+    return ok, other
+
+
 def duplicate_names(files: list[dict]) -> list[str]:
     names = [f["name"] for f in files]
     return sorted({n for n in names if names.count(n) > 1})
@@ -445,9 +518,10 @@ def series_membership(ds: dict, rec: dict) -> str | None:
     held = sorted(set(sid) & held_set(ds))
     if held:
         return f"its record lists the held or excluded series {held}"
-    extra = [s for s in sid if s not in (ds.get("screen_series") or [])]
+    screened = cm.all_screened(ds)
+    extra = [s for s in sid if s not in screened]
     if extra:
-        return f"its record lists series {extra} outside this dataset's screened series {ds.get('screen_series')}"
+        return f"its record lists series {extra} outside this dataset's screened series {screened}"
     return None
 
 
@@ -495,9 +569,9 @@ def plan_from_meta(ds: dict, metas: dict[str, dict]) -> dict:
     acc = ds["accession"]
     if acc not in metas:
         raise Refused(f"{acc}: its own series' metadata is missing")
-    if set(metas) != set(ds["screen_series"]):
-        raise Refused(f"{acc}: the metadata holds series {sorted(metas)}, not exactly screen_series "
-                      f"{ds['screen_series']}")
+    if set(metas) != set(cm.all_screened(ds)):
+        raise Refused(f"{acc}: the metadata holds series {sorted(metas)}, not exactly the screened series "
+                      f"{cm.all_screened(ds)} (screen_series and a named control series')")
     scr = screen_all(ds, metas)
     by_id = {(r["series"], r["sample"]): r for r in scr["records"]}
     where: dict[str, list[str]] = {}
@@ -519,9 +593,16 @@ def plan_from_meta(ds: dict, metas: dict[str, dict]) -> dict:
         return _withheld(out, metas, by_id, f"series membership: {len(in_held)} sample(s) of the screened series "
                                             "also belong to a held or excluded series (text withheld)")
     out["withheld"] = False
-    out["series"] = {s: {"accession": s, "fields": meta["series"],
-                         "series_metadata_sha256": cm.series_metadata_sha256(s, meta["series"])}
-                     for s, meta in metas.items()}
+    out["series"] = {}
+    for s, meta in metas.items():
+        sfiles, sother = series_files(ds, s, meta["series"])
+        out["series"][s] = {"accession": s, "fields": meta["series"],
+                            "series_metadata_sha256": cm.series_metadata_sha256(s, meta["series"]),
+                            "files": sfiles, "other_files": sother,
+                            "role": ("control series" if s in cm.sister_series(ds) else "screened series")}
+    c = cm.control_series(ds)
+    if c:
+        out["control_series"] = c
     out["tables"] = {s: [_row(ds, s, g, rec, by_id[(s, g)], where[g]) for g, rec in meta["samples"].items()]
                      for s, meta in metas.items()}
     out["screen"]["refusals"] = scr["refusals"]
@@ -569,9 +650,13 @@ def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
     what = "live" if live else "stored"
     sp = cm.check_series_pins(acc, ds, True)
     blocks = pl.get("series") or {}
-    if set(blocks) != set(ds["screen_series"]):
-        raise Refused(f"{acc}: the plan's series blocks {sorted(blocks)} are not exactly screen_series "
-                      f"{ds['screen_series']}")
+    screened = cm.all_screened(ds)
+    if set(blocks) != set(screened):
+        raise Refused(f"{acc}: the plan's series blocks {sorted(blocks)} are not exactly the screened series "
+                      f"{screened}")
+    c = cm.control_series(ds)
+    if (pl.get("control_series") or None) != (c or None):
+        raise Refused(f"{acc}: the plan was made under another control_series declaration: plan again")
     for e in sp:
         b = blocks[e["accession"]]
         if not all(plain_key(k) for k in b["fields"]):
@@ -582,15 +667,28 @@ def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
                           f"{e['series_metadata_sha256']}: the series text the readers read has changed; read and "
                           "pin again")
     own = {r["accession"]: r for r in pl["tables"][acc]}
+    # stage 6: a control may come from the named control series' own table (its first screened series) and is then
+    # a control only
+    sister = {}
+    if c:
+        if c["accession"] not in pl["tables"]:
+            raise Refused(f"{acc}: the plan holds no table for the control series {c['accession']}")
+        sister = {r["accession"]: r for r in pl["tables"][c["accession"]]}
     elsewhere = {r["accession"]: s for s, rows in pl["tables"].items() if s != acc for r in rows}
     per: dict[str, dict] = {}
     for p in pins:
         g = p["accession"]
-        if g not in own:
+        if g not in own and g in sister:
+            if p["arm"] != "control":
+                raise Refused(f"{g} belongs to the control series {c['accession']}: it is pinned as a control only, "
+                              f"not as {p['arm']}")
+            row = sister[g]
+        elif g not in own:
             if g in elsewhere:
                 raise Refused(f"{g} belongs to another series ({elsewhere[g]}), not to {acc}")
             raise Refused(f"{g} is not in the plan table of {acc}")
-        row = own[g]
+        else:
+            row = own[g]
         if not all(plain_key(k) for k in row["fields"]):
             raise Refused(f"{g}: a field name that is not a plain GEO key: refused")
         why = pin_blocker(ds, row["fields"])
@@ -622,7 +720,8 @@ def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
             if re.search(pat, sample_text(row["fields"]), re.IGNORECASE):
                 raise Refused(f"{g}: design_refuse {pat!r} matches a pinned sample")
         s = per.setdefault(g, {"accession": g, "arm": p["arm"], "genes": [], "stage": e,
-                               "files": [allowed[f] for f in p["files"]], "metadata_sha256": h, "row": row})
+                               "files": [allowed[f] for f in p["files"]], "metadata_sha256": h, "row": row,
+                               "sister": g not in own})
         s["genes"].append(p["gene"])
     if ds.get("chemistry"):
         for u in cm.pinned_units(pins):
@@ -635,7 +734,42 @@ def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
                     if not ck or ck != cc:
                         raise Refused(f"{u['gene']}: {k} chemistry {ck} and its control {c} chemistry {cc} differ "
                                       "or are unreadable")
+    verify_series_units(ds, pl, live=live)
     return list(per.values())
+
+
+def verify_series_units(ds: dict, pl: dict, live: bool = False) -> list[dict]:
+    """Stage 6: each pinned series file entry checked against the plan. Its series is screened and its text pinned
+    (verify_pins checks the hash); the files offered for that series are derived AGAIN from the series' hashed fields
+    (series_files), a stored list that differs is refused, two derived files of one name are refused, and every file of
+    the entry must be one of them; every sample of the entry must be in that series' plan table. Returns [{series,
+    files: [{name, url}], samples, split, series_metadata_sha256}] built from the derived list only."""
+    units = ds.get("pinned_series_files") or []
+    what = "live" if live else "stored"
+    out = []
+    for u in units:
+        s = u["series"]
+        b = (pl.get("series") or {}).get(s)
+        if b is None or s not in (pl.get("tables") or {}):
+            raise Refused(f"{s}: a pinned series file's series has no block or table in the plan: plan again")
+        derived, _ = series_files(ds, s, b["fields"])
+        if b.get("files") != derived:
+            raise Refused(f"{s}: the {what} plan's series file list differs from the one its pinned fields give: plan "
+                          "again")
+        dup = duplicate_names(derived)
+        if dup:
+            raise Refused(f"{s}: two supplementary links share the file name(s) {dup}: refused")
+        allowed = {f["name"]: f for f in derived}
+        bad = [f for f in u["files"] if f not in allowed or DENY.search(f)]
+        if bad:
+            raise Refused(f"{s}: pinned series files {bad} are not files its own supplementary list offers")
+        in_table = {r["accession"] for r in pl["tables"][s]}
+        missing = [g for g in u["samples"] if g not in in_table]
+        if missing:
+            raise Refused(f"{s}: {missing} are not samples of the series whose file they are pinned to")
+        out.append({"series": s, "files": [allowed[f] for f in u["files"]], "samples": list(u["samples"]),
+                    "split": u["split"], "series_metadata_sha256": cm.series_metadata_sha256(s, b["fields"])})
+    return out
 
 
 def plain(v: str) -> bool:
@@ -658,11 +792,28 @@ def field_lines(fields: dict, indent: str = "  ") -> list[str]:
 
 def series_block(b: dict) -> list[str]:
     n_other = len(b["fields"].get(OTHER, []))
-    return ["", f"==== SERIES {b['accession']}  series_metadata_sha256 {b['series_metadata_sha256']}",
-            "  # every field of the series' family SOFT record verbatim, in file order (a key's values together),"
-            " contact fields included (shown, hashed and, since stage 5, screened); field names screened too; "
-            f"{n_other} other line(s) of the series block kept under {OTHER}",
-            *field_lines(b["fields"])]
+    lines = ["", f"==== SERIES {b['accession']}  series_metadata_sha256 {b['series_metadata_sha256']}"
+             + (f"  ({b['role']})" if b.get("role") else ""),
+             "  # every field of the series' family SOFT record verbatim, in file order (a key's values together),"
+             " contact fields included (shown, hashed and, since stage 5, screened); field names screened too; "
+             f"{n_other} other line(s) of the series block kept under {OTHER}"]
+    if "files" in b:
+        never = "; ".join(f"{o['name']} ({o['reason']})" for o in b.get("other_files") or [])
+        lines += [f"  series files allowed (this series' own folder, series_files patterns): "
+                  f"{[f['name'] for f in b['files']] or 'none'}",
+                  f"  other series files (never fetched, with the reason): {never or 'none'}"]
+    return lines + field_lines(b["fields"])
+
+
+def control_series_lines(c: dict | None) -> list[str]:
+    """The control_series declaration as the readers check it (stage 6)."""
+    if not c:
+        return []
+    return ["# CONTROL SERIES (datasets.yaml control_series): its samples may be pinned as CONTROLS only; a unit with "
+            f"such a control takes d = {cm.SISTER_D}",
+            f"#   accession {c['accession']}; screened with {c['screen_series']}",
+            *[f"#   relation {k}: {c['relation'][k]}" for k in cm.RELATION_KEYS],
+            f"#   reader note: {c['reader_note']}"]
 
 
 def write_tables(pl: dict, mdir: Path) -> list[str]:
@@ -684,6 +835,11 @@ def write_tables(pl: dict, mdir: Path) -> list[str]:
             for r in rows:
                 lines.append(f"{r['accession']}  verdict {r['verdict']}  fields hit {r['fields_hit']}")
         else:
+            lines += control_series_lines(pl.get("control_series"))
+            sister = (pl.get("control_series") or {}).get("accession")
+            if series == sister:
+                lines.append(f"# THIS IS THE CONTROL SERIES of {pl['accession']}: a sample here is pinned as a control "
+                             "only")
             lines.append("# SERIES BLOCKS: read every one; the series are pinned together with the samples.")
             for s in pl["series"]:
                 lines += series_block(pl["series"][s])
@@ -692,7 +848,7 @@ def write_tables(pl: dict, mdir: Path) -> list[str]:
                 lines.append("")
                 lines.append(f"==== {r['accession']}  verdict {r['verdict']}  metadata_sha256 {r['metadata_sha256']}")
                 lines.append(f"  in series (screened tables): {', '.join(r['in_series'])}")
-                if series == pl["own_series"]:
+                if series in (pl["own_series"], sister):
                     why = r["not_pinnable"]
                     lines.append(f"  series membership: {'NOT PINNABLE: ' + why if why else 'ok'}")
                 stage = "none" if r["stage"] is None else f"E{r['stage']:g}"
@@ -752,7 +908,7 @@ def plan(acc: str, dest: Path, datasets: Path | None = None, metas: dict | None 
     try:
         if metas is None:
             metas = {}
-            for series in ds["screen_series"]:
+            for series in cm.all_screened(ds):
                 p = mdir / f"{series}_family.soft.gz"
                 size, digest = _get(soft_url(series), p, 2 * 1024 ** 3)
                 soft_files[series] = {"url": soft_url(series), "file": str(p), "size": size, "sha256": digest}
@@ -792,9 +948,11 @@ def fetch(acc: str, dest: Path, datasets: Path | None = None, max_bytes: int = M
     dest = cm.outside_repo(dest)
     pl = _load_plan(acc, dest, datasets)
     pinned = verify_pins(ds, pl)
+    sunits = verify_series_units(ds, pl)
     pp = dest / "meta" / acc / "plan.json"
     rdir = dest / "raw" / acc
-    for d in (dest / "raw", rdir, *(rdir / s["accession"] for s in pinned)):
+    sfolders = sorted({u["series"] for u in sunits})
+    for d in (dest / "raw", rdir, *(rdir / s["accession"] for s in pinned), *(rdir / s for s in sfolders)):
         if d.is_symlink():
             raise Refused(f"{d}: a symlinked folder: remove it by hand (fetch writes only into plain folders)")
     mf = rdir / "MANIFEST.json"
@@ -802,7 +960,8 @@ def fetch(acc: str, dest: Path, datasets: Path | None = None, max_bytes: int = M
         raise Refused(f"{mf}: a symlinked manifest: remove it by hand")
     man = json.loads(mf.read_text()) if mf.is_file() else {"accession": acc, "files": {}}
     cur = cm.pins_sha256(ds)
-    man["files"] = {k: v for k, v in man["files"].items() if k.split("/")[0] in {s["accession"] for s in pinned}}
+    keep = {s["accession"] for s in pinned} | set(sfolders)
+    man["files"] = {k: v for k, v in man["files"].items() if k.split("/")[0] in keep}
     total = 0
     for s in pinned:
         gsm = s["accession"]
@@ -840,8 +999,46 @@ def fetch(acc: str, dest: Path, datasets: Path | None = None, max_bytes: int = M
                                  "metadata_sha256": s["metadata_sha256"], "pins_sha256": cur,
                                  "fetched": time.strftime("%Y-%m-%d %H:%M:%S %Z")}
             cm.dump_json(man, mf)
+    # stage 6: the pinned series files only, into raw/<ACC>/<series>/, each bound to its series' pinned text hash, its
+    # url and the pins; any other file in such a folder goes. Nothing is unpacked: process reads archives in memory.
+    for s in sfolders:
+        sdir = cm.outside_repo(rdir / s)
+        files = [f for u in sunits if u["series"] == s for f in u["files"]]
+        shash = next(u["series_metadata_sha256"] for u in sunits if u["series"] == s)
+        names = {f["name"] for f in files}
+        if sdir.is_dir():
+            for q in sorted(sdir.iterdir()):
+                if q.name in names:
+                    continue
+                if not q.is_file() or q.is_symlink():
+                    raise Refused(f"{q}: not a plain file in a pinned series folder: remove it by hand")
+                q.unlink()
+                man["files"].pop(f"{s}/{q.name}", None)
+        for f in files:
+            if DENY.search(f["name"]):
+                raise Refused(f"{f['name']}: a denied file type")
+            key = f"{s}/{f['name']}"
+            p = sdir / f["name"]
+            rec = man["files"].get(key)
+            if (rec and p.is_file() and not p.is_symlink() and rec.get("series_metadata_sha256") == shash
+                    and rec.get("url") == f["url"] and rec.get("pins_sha256") == cur
+                    and cm.sha256_file(p) == rec["sha256"]):
+                total += rec["size"]
+                continue
+            man["files"].pop(key, None)
+            if p.is_symlink() or p.exists():
+                if not p.is_file() and not p.is_symlink():
+                    raise Refused(f"{p}: not a plain file: remove it by hand")
+                p.unlink()
+            size, digest = _get(f["url"], p, max_bytes - total)
+            total += size
+            man["files"][key] = {"url": f["url"], "size": size, "sha256": digest, "series": s,
+                                 "series_metadata_sha256": shash, "pins_sha256": cur,
+                                 "fetched": time.strftime("%Y-%m-%d %H:%M:%S %Z")}
+            cm.dump_json(man, mf)
     man.update(plan_sha256=cm.sha256_file(pp), d=ds["d"], total_bytes=total, pinned=ds["pinned"],
-               pinned_series=ds["pinned_series"], pins_sha256=cur)
+               pinned_series=ds["pinned_series"], pinned_series_files=ds.get("pinned_series_files") or [],
+               pins_sha256=cur)
     cm.dump_json(man, mf)
     return man
 
@@ -869,11 +1066,26 @@ def _stored_plan(acc: str, dest: Path, datasets: Path | None) -> tuple[Path, dic
 
 
 def pin_template(acc: str, dest: Path, arm: str, gene: str, gsms: list[str], datasets: Path | None = None) -> str:
+    """The sample pin entries of NAMED samples with their own per-sample files (_pin_template)."""
+    return _pin_template(acc, dest, arm, gene, gsms, datasets, False)
+
+
+def pin_template_from_series_file(acc: str, dest: Path, arm: str, gene: str, gsms: list[str],
+                                  datasets: Path | None = None) -> str:
+    """Stage 6: the sample pin entries of NAMED samples whose cells come from a pinned series file: files: []
+    (_pin_template); the series file's own entry comes from series_file_template."""
+    return _pin_template(acc, dest, arm, gene, gsms, datasets, True)
+
+
+def _pin_template(acc: str, dest: Path, arm: str, gene: str, gsms: list[str], datasets: Path | None,
+                  from_series_file: bool) -> str:
     """A ready-to-paste YAML entry for each sample NAMED in gsms (one arm and one gene per call; there is no bulk
     selector, so a reader names every sample pinned), from the stored plan, each preceded by every field of the
     sample as a comment. Refused for a withheld plan, an unnamed or unknown sample, a held-out sample, a sample that is
     not pinnable (its series_id), a sample whose stage does not parse or that has no allowed per-sample file, and when
-    the stored fields no longer hash to the table's value."""
+    the stored fields no longer hash to the table's value. Stage 6: a sample of the named control series is offered for
+    arm control only; with from_series_file the entries carry files: [] (the cells come from a pinned series file,
+    whose entry series-file-template prints) and no per-sample file is needed."""
     if arm not in cm.PIN_ARMS:
         raise Refused(f"arm must be exactly one of {cm.PIN_ARMS}")
     if not gsms or not all(isinstance(g, str) and re.fullmatch(r"GSM\d+", g) for g in gsms):
@@ -883,9 +1095,14 @@ def pin_template(acc: str, dest: Path, arm: str, gene: str, gsms: list[str], dat
     pp, pl = _stored_plan(acc, dest, datasets)
     ds = cm.dataset(acc, datasets)
     rows = {r["accession"]: r for r in pl["tables"][acc]}
+    c = cm.control_series(ds)
+    if c and arm == "control" and c["accession"] in pl["tables"]:
+        for r in pl["tables"][c["accession"]]:
+            rows.setdefault(r["accession"], r)
     missing = [g for g in gsms if g not in rows]
     if missing:
-        raise Refused(f"{missing} are not in the plan table of {acc}")
+        raise Refused(f"{missing} are not in the plan table of {acc}"
+                      + (f" (nor, for a control, of its control series {c['accession']})" if c else ""))
     out = [f"# pin-template {acc}: arm {arm}, gene {gene}; {len(gsms)} sample(s) named; from {pp}",
            "# READ each sample's entry in its plan table before pasting. The arm and gene are what you asserted.",
            "# A control names the knockout gene it controls; pin it once per gene it serves.",
@@ -915,12 +1132,17 @@ def pin_template(acc: str, dest: Path, arm: str, gene: str, gsms: list[str], dat
             raise Refused(f"{g}: the stored file list differs from the one its fields give: plan again")
         if duplicate_names(derived):
             raise Refused(f"{g}: two supplementary links share the file name(s) {duplicate_names(derived)}")
-        if not r["files"]:
-            raise Refused(f"{g}: no per-sample file in the sample's own GEO folder that the dataset's patterns allow")
+        if not r["files"] and not from_series_file:
+            raise Refused(f"{g}: no per-sample file in the sample's own GEO folder that the dataset's patterns allow "
+                          "(if its cells are in a series file, use --from-series-file)")
         if r["verdict"] == "review":
             out.append(f"# {g} has review terms {sorted({x[2] for x in r['hits'] if x[1] == 'review'})}"
                        ": pin it only with review_cleared entries the readers agree")
-        files = ", ".join(json.dumps(f["name"]) for f in r["files"])
+        if g not in {x["accession"] for x in pl["tables"][acc]}:
+            out.append(f"# {g} is a sample of the CONTROL SERIES {c['accession']}: its unit takes d = {cm.SISTER_D}")
+        files = "" if from_series_file else ", ".join(json.dumps(f["name"]) for f in r["files"])
+        if from_series_file:
+            out.append(f"# {g}: files [] because its cells come from a pinned series file (series-file-template)")
         out += [f"      # ---- {g}: its fields as read in the plan table", *_comment_lines(r["fields"], "      "),
                 f"      - accession: {g}",
                 f"        arm: {arm}",
@@ -937,10 +1159,14 @@ def series_pin_template(acc: str, dest: Path, datasets: Path | None = None) -> s
     comment; the readers read the full series block in the plan table."""
     pp, pl = _stored_plan(acc, dest, datasets)
     ds = cm.dataset(acc, datasets)
-    out = [f"# pin-template {acc} --series: {len(ds['screen_series'])} screened series; from {pp}",
+    screened = cm.all_screened(ds)
+    out = [f"# pin-template {acc} --series: {len(screened)} screened series; from {pp}",
            "# READ every SERIES block at the top of the plan tables before pasting. Paste under the dataset's",
            "# `pinned_series:` key (beside `pinned:`)."]
-    for s in ds["screen_series"]:
+    if cm.control_series(ds):
+        out.append(f"# The control series {cm.control_series(ds)['accession']} and its screened series are pinned "
+                   "here too, like the dataset's own.")
+    for s in screened:
         b = pl["series"].get(s)
         if b is None:
             raise Refused(f"{s}: no series block in the stored plan: plan again")
@@ -950,6 +1176,73 @@ def series_pin_template(acc: str, dest: Path, datasets: Path | None = None) -> s
         out += [*_comment_lines({"title": b["fields"].get("title", [])}, "      "),
                 f"      - accession: {s}",
                 f'        series_metadata_sha256: "{h}"']
+    return "\n".join(out) + "\n"
+
+
+def series_file_template(acc: str, dest: Path, series: str, files: list[str], gsms: list[str], split: str,
+                         keys: list[str] | None = None, datasets: Path | None = None) -> str:
+    """Stage 6: a ready-to-paste `pinned_series_files` entry: one series file (one archive, or the three files of a
+    loose 10x triple) of `series`' own supplementary list, the samples NAMED (no bulk selector) whose cells it holds,
+    and the split rule the readers state (none; barcode_suffix or folder with KEY=GSM pairs). From the stored plan:
+    the series' offered files are derived again from its hashed fields, every file must be one of them, every sample
+    must be in that series' plan table and pinnable. The form (one arm, gene and stage for split none; the map naming
+    every sample) is checked when the pasted block loads. Never writes datasets.yaml."""
+    pp, pl = _stored_plan(acc, dest, datasets)
+    ds = cm.dataset(acc, datasets)
+    if not gsms or not all(isinstance(g, str) and re.fullmatch(r"GSM\d+", g) for g in gsms) or len(set(gsms)) != len(
+            gsms):
+        raise Refused("name every sample the file holds with --gsm GSMnnn, each once")
+    if split not in cm.SPLITS:
+        raise Refused(f"--split must be one of {cm.SPLITS}")
+    b = (pl.get("series") or {}).get(series)
+    if b is None or series not in pl["tables"]:
+        raise Refused(f"{series}: not a screened series of {acc} in the stored plan")
+    if cm.series_metadata_sha256(series, b["fields"]) != b["series_metadata_sha256"]:
+        raise Refused(f"{series}: the stored series fields no longer hash to the table's value: plan again")
+    derived, _ = series_files(ds, series, b["fields"])
+    if b.get("files") != derived:
+        raise Refused(f"{series}: the stored series file list differs from the one its fields give: plan again")
+    if duplicate_names(derived):
+        raise Refused(f"{series}: two supplementary links share the file name(s) {duplicate_names(derived)}")
+    offered = {f["name"] for f in derived}
+    bad = [f for f in files or [] if f not in offered]
+    if not files or bad:
+        raise Refused(f"{series}: {bad or 'no file named'}: name files its own supplementary list offers "
+                      f"({sorted(offered)})")
+    form = cm.series_file_form(list(files))
+    rows = {r["accession"]: r for r in pl["tables"][series]}
+    for g in gsms:
+        if g not in rows:
+            raise Refused(f"{g} is not in the plan table of {series}")
+        if rows[g]["verdict"] == "held_out":
+            raise Refused(f"{g}: held out: never pinned")
+        why = rows[g].get("not_pinnable") if "not_pinnable" in rows[g] else pin_blocker(ds, rows[g]["fields"])
+        if why:
+            raise Refused(f"{g}: not pinnable: {why}")
+    mp = {}
+    if split == "none":
+        if keys:
+            raise Refused("--split none takes no --key")
+    else:
+        for kv in keys or []:
+            k, eq, g = kv.partition("=")
+            if not eq or g not in gsms or k in mp:
+                raise Refused(f"--key {kv!r}: KEY=GSM with a named sample, each key once")
+            mp[k] = g
+        if set(mp.values()) != set(gsms):
+            raise Refused("--key must map every named sample")
+    out = [f"# series-file-template {acc}: series {series}, {form} {list(files)}; from {pp}",
+           "# READ the series block (its file list) and every named sample's entry before pasting. The samples and",
+           "# the split rule are what you asserted; process refuses the file if its contents do not fit the rule.",
+           "# Paste under the dataset's `pinned_series_files:` key; each named sample is pinned with files: [].",
+           f"      - series: {series}",
+           f"        files: [{', '.join(json.dumps(f) for f in files)}]",
+           f"        samples: [{', '.join(gsms)}]"]
+    if split == "none":
+        out.append("        split: {by: none}")
+    else:
+        pairs = ", ".join(f"{json.dumps(k)}: {g}" for k, g in mp.items())
+        out.append(f"        split: {{by: {split}, map: {{{pairs}}}}}")
     return "\n".join(out) + "\n"
 
 
@@ -986,6 +1279,16 @@ def main(argv: list[str] | None = None) -> int:
     t.add_argument("--gene")
     t.add_argument("--gsm", action="append")
     t.add_argument("--series", action="store_true", help="print the pinned_series block instead")
+    t.add_argument("--from-series-file", action="store_true",
+                   help="the samples' cells come from a pinned series file: files: [] (stage 6)")
+    f = sub.add_parser("series-file-template")
+    f.add_argument("accession")
+    f.add_argument("--dest", required=True, type=Path)
+    f.add_argument("--series", required=True)
+    f.add_argument("--file", action="append")
+    f.add_argument("--gsm", action="append")
+    f.add_argument("--split", required=True)
+    f.add_argument("--key", action="append", help="KEY=GSM: a barcode suffix or folder name and its sample")
     g = sub.add_parser("check-pins")
     g.add_argument("accessions", nargs="+")
     sub.add_parser("datasets-sha")
@@ -1011,13 +1314,17 @@ def main(argv: list[str] | None = None) -> int:
                   "bytes")
         elif a.step == "pin-template":
             if a.series:
-                if a.arm or a.gene or a.gsm:
-                    raise Refused("--series takes no --arm, --gene or --gsm")
+                if a.arm or a.gene or a.gsm or a.from_series_file:
+                    raise Refused("--series takes no --arm, --gene, --gsm or --from-series-file")
                 print(series_pin_template(a.accession, a.dest), end="")
             else:
                 if not a.arm or not a.gene:
                     raise Refused("--arm and --gene are required (one arm per command)")
-                print(pin_template(a.accession, a.dest, a.arm, a.gene, a.gsm), end="")
+                f = pin_template_from_series_file if a.from_series_file else pin_template
+                print(f(a.accession, a.dest, a.arm, a.gene, a.gsm), end="")
+        elif a.step == "series-file-template":
+            print(series_file_template(a.accession, a.dest, a.series, a.file or [], a.gsm or [], a.split, a.key),
+                  end="")
         elif a.step == "check-pins":
             bad = check_gate(a.accessions)
             for b in bad:

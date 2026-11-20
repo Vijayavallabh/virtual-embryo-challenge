@@ -22,6 +22,10 @@
       symlinked raw, dataset or sample folder, manifest or file; it takes each pinned file's url only from the list
       verify_pins derives from the hashed fields; QC.json records plan_sha256 (the sha256 of the plan it ran under,
       checked by combine), the manifest's sha256 and each count file's sha256.
+      Stage 6: a sample pinned with files [] takes its cells from its pinned series file (read_series_unit: an archive
+      read member by member in memory after archive_members has checked every member, or a loose triple), split by
+      the pin's rule; a unit with a control from the named control series takes d = t3x_common.SISTER_D, and QC.json
+      says so (series_file_units, sister_series_controls, per unit d and control_source).
 
 The rules (constants in t3x_common.py, fixed 2026-11-20, none from a score):
   * Cells: stage capped at E9.5 (the T1 window applied to every cell); fewer than 200 detected genes is not a cell;
@@ -51,6 +55,7 @@ from __future__ import annotations
 import gzip
 import io
 import json
+import re
 import shutil
 import sys
 import tarfile
@@ -68,6 +73,7 @@ if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 import fetch as fe  # noqa: E402  (experiments/t3_ext/fetch.py: the plan loader and the pin check)
 import t3x_common as cm  # noqa: E402
+import t3x_screen as sc  # noqa: E402
 import t3x_tables as tb  # noqa: E402
 
 Refused = cm.Refused
@@ -153,6 +159,158 @@ def read_sample(paths: list[Path]):
     bc = _pick(names, "barcodes.tsv")
     return _from_parts(Path(mtx).read_bytes(), mtx, _read_text(Path(feat[0]).read_bytes(), feat[0]),
                        _read_text(Path(bc).read_bytes(), bc))
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Stage 6: a pinned series file (one archive or a loose 10x triple), read only inside itself and split by its pin's rule
+
+MEMBER_MAX_BYTES = 8 * 1024 ** 3   # one archive member read into memory: at most 8 GiB (fixed 2026-11-20, no score)
+_MEMBER_PART = re.compile(r"[A-Za-z0-9._+-]+")
+
+
+def archive_members(t: tarfile.TarFile, label: str) -> list[tuple[list[str], str, tarfile.TarInfo]]:
+    """The archive's file members as (path parts, triple kind, member), every member checked first: refused for an
+    absolute path, a '..' component, an empty component, a backslash, a name part outside letters, digits and
+    . _ + -, a symlink, a hard link, a device or FIFO, a duplicate name, a name the held-out screen hits (held out or
+    review), a member larger than MEMBER_MAX_BYTES, and a file member that is not part of a 10x triple (a member it has
+    no rule for). Directory members are allowed and read nothing. Nothing is extracted to disk."""
+    out, seen = [], set()
+    for m in t.getmembers():
+        raw = m.name
+        if raw.startswith(("/", "~")) or "\\" in raw or re.match(r"[A-Za-z]:", raw):
+            raise Refused(f"{label}: member {raw!r}: an absolute path (or a backslash or drive letter): refused")
+        parts = raw.split("/")
+        if ".." in parts:
+            raise Refused(f"{label}: member {raw!r}: a '..' component (path traversal): refused")
+        if m.isdir() and len(parts) > 1 and parts[-1] == "":
+            parts = parts[:-1]
+        if parts[:1] == ["."]:
+            parts = parts[1:]
+        if any(p in ("", ".") for p in parts):
+            raise Refused(f"{label}: member {raw!r}: an empty or '.' path component: refused")
+        if m.issym() or m.islnk():
+            raise Refused(f"{label}: member {raw!r}: a symlink or hard link: refused")
+        if not (m.isfile() or m.isdir()):
+            raise Refused(f"{label}: member {raw!r}: not a regular file or folder: refused")
+        if not all(_MEMBER_PART.fullmatch(p) for p in parts):
+            raise Refused(f"{label}: a member name holds a character outside letters, digits and . _ + -: refused")
+        key = "/".join(parts)
+        if key in seen:
+            raise Refused(f"{label}: member {key!r} appears twice: refused")
+        seen.add(key)
+        if parts and sc.hits(key):
+            raise Refused(f"{label}: a member name hits the held-out screen: refused (name withheld)")
+        if parts and fe.DENY.search(key):
+            raise Refused(f"{label}: member {key!r} is a denied type (unfiltered, fragments, peaks ...): refused")
+        if m.isdir():
+            continue
+        if not parts:
+            raise Refused(f"{label}: a file member without a name: refused")
+        kind = cm.triple_kind(parts[-1])
+        if kind is None:
+            raise Refused(f"{label}: member {key!r} is not part of a 10x triple: refused (a member with no rule)")
+        if m.size > MEMBER_MAX_BYTES:
+            raise Refused(f"{label}: member {key!r} is larger than {MEMBER_MAX_BYTES} bytes: refused")
+        out.append((parts, kind, m))
+    return out
+
+
+def _one_triple(items: list, label: str) -> dict:
+    by = {}
+    for it in items:
+        if it[1] in by:
+            raise Refused(f"{label}: two '{it[1]}' members in one library: refused")
+        by[it[1]] = it
+    if sorted(by) != ["barcodes", "features", "matrix"]:
+        raise Refused(f"{label}: a library needs exactly one matrix, barcodes and features (or genes) member, found "
+                      f"{sorted(by)}")
+    return by
+
+
+def _triple_from(by: dict, read) -> tuple:
+    def name(k):
+        return "/".join(by[k][0]) if isinstance(by[k][0], list) else by[k][0]
+
+    return _from_parts(read(by["matrix"]), name("matrix"), _read_text(read(by["features"]), name("features")),
+                       _read_text(read(by["barcodes"]), name("barcodes")))
+
+
+def read_series_unit(paths: list[Path], unit: dict) -> list[tuple[str, str, list[str], tuple]]:
+    """The libraries of one pinned series file, split by its pin's rule: [(GSM, folder or '', barcodes kept, (M,
+    symbols, types, barcodes))]. An archive is read member by member in memory (never extracted; archive_members
+    checks every member first); a loose triple is read from its three files. split none: the file is one unit (its
+    samples are one arm, gene and stage, checked when the pins load); each folder of an archive (a member's parent
+    path) must hold exactly one triple, and every library is returned under the entry's first sample.
+    barcode_suffix: every barcode must end with exactly one key of the map (with something before it); a barcode no
+    key fits refuses the file, and so does a key whose sample gets no barcode. folder: every file member lies in a
+    top-level folder that the map names; each folder holds exactly one triple. A matrix of more barcodes than
+    MAX_BARCODES per library is refused."""
+    split = unit["split"]
+    label = f"{unit['series']}/{'+'.join(unit['files'])}"
+    libs = []
+    if len(paths) == 1 and cm.series_file_form(unit["files"]) == "archive":
+        with tarfile.open(paths[0], "r:*") as t:
+            items = archive_members(t, label)
+
+            def read(it):
+                f = t.extractfile(it[2])
+                if f is None:
+                    raise Refused(f"{label}: member {'/'.join(it[0])!r} cannot be read")
+                return f.read()
+
+            if split["by"] == "folder":
+                groups: dict[str, list] = {}
+                for it in items:
+                    if len(it[0]) < 2 or it[0][0] not in split["map"]:
+                        raise Refused(f"{label}: member {'/'.join(it[0])!r} lies in no folder the split map names: "
+                                      "refused")
+                    groups.setdefault(it[0][0], []).append(it)
+                if set(groups) != set(split["map"]):
+                    raise Refused(f"{label}: folders {sorted(set(split['map']) - set(groups))} of the split map hold "
+                                  "no library: refused")
+                for folder in sorted(groups):
+                    libs.append((split["map"][folder], folder, _triple_from(_one_triple(groups[folder], label), read)))
+            elif split["by"] == "none":
+                # used as one unit: each folder (a member's parent path) holds one library, all pooled under one label
+                groups = {}
+                for it in items:
+                    groups.setdefault("/".join(it[0][:-1]), []).append(it)
+                for folder in sorted(groups):
+                    libs.append((None, folder, _triple_from(_one_triple(groups[folder], label), read)))
+            else:
+                libs.append((None, "", _triple_from(_one_triple(items, label), read)))
+    else:
+        items = [(p.name, cm.triple_kind(p.name), p) for p in paths]
+        libs.append((None, "", _triple_from(_one_triple(items, label), lambda it: Path(it[2]).read_bytes())))
+    out = []
+    for gsm, folder, (M, symbols, types, bcs) in libs:
+        if split["by"] == "barcode_suffix":
+            keys = list(split["map"])
+            key_of = []
+            for b in bcs:
+                fit = [k for k in keys if b.endswith(k) and len(b) > len(k)]
+                if len(fit) != 1:
+                    raise Refused(f"{label}: a barcode that no split key (or more than one) fits: refused")
+                key_of.append(fit[0])
+            key_of = np.array(key_of, dtype=object)
+            for k in keys:
+                n_k = int((key_of == k).sum())
+                if n_k > cm.MAX_BARCODES:
+                    raise Refused(f"{label}: {n_k} barcodes under {k}: an unfiltered matrix, refused")
+            owner = np.array([split["map"][k] for k in key_of], dtype=object)
+            for g in unit["samples"]:
+                rows = np.flatnonzero(owner == g)
+                if not len(rows):
+                    raise Refused(f"{label}: no barcode carries a split key of {g}: the file does not fit its rule, "
+                                  "refused")
+                kept = [bcs[i] for i in rows]
+                out.append((g, folder, kept, (M[rows], symbols, types, kept)))
+        else:
+            cap = cm.MAX_BARCODES * (len(unit["samples"]) if split["by"] == "none" else 1)
+            if M.shape[0] > cap:
+                raise Refused(f"{label}: {M.shape[0]} barcodes: an unfiltered matrix, refused")
+            out.append((gsm or unit["samples"][0], folder, bcs, (M, symbols, types, bcs)))
+    return out
 
 
 def to_panel(M, symbols: list[str], types: list[str], genes: list[str]) -> tuple[sparse.csr_matrix, np.ndarray, dict]:
@@ -395,12 +553,34 @@ def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Pat
         raise Refused(f"{acc}: the manifest was not fetched from this plan")
     cur = cm.pins_sha256(ds)
     if (man.get("pins_sha256") != cur or man.get("pinned") != ds["pinned"]
-            or man.get("pinned_series") != ds["pinned_series"]):
-        raise Refused(f"{acc}: the samples, arms, genes, stages or series are not exactly as pinned when the files "
-                      "were fetched: fetch again")
+            or man.get("pinned_series") != ds["pinned_series"]
+            or (man.get("pinned_series_files") or []) != (ds.get("pinned_series_files") or [])):
+        raise Refused(f"{acc}: the samples, arms, genes, stages, series or series files are not exactly as pinned when "
+                      "the files were fetched: fetch again")
     # 1. the pins against the stored metadata (samples and series), the series membership of every pinned sample, and
-    #    the screen again on every pinned sample, before any count is read
+    #    the screen again on every pinned sample, before any count is read; stage 6: the pinned series files, their
+    #    links derived again from the hashed series fields
     pinned = fe.verify_pins(ds, pl)
+    sunits = fe.verify_series_units(ds, pl)
+    for su in sunits:
+        sdir = rdir / su["series"]
+        if sdir.is_symlink():
+            raise Refused(f"{su['series']}: a symlinked series folder: refused")
+        names = {f["name"] for u in sunits if u["series"] == su["series"] for f in u["files"]}
+        for q in (sorted(sdir.iterdir()) if sdir.is_dir() else []):
+            if q.is_symlink():
+                raise Refused(f"{su['series']}/{q.name}: a symlink in a pinned series folder: refused")
+            if q.name not in names or f"{su['series']}/{q.name}" not in man["files"]:
+                raise Refused(f"{su['series']}/{q.name}: a file in a pinned series folder that is not a pinned series "
+                              "file with a manifest record: refused (fetch again)")
+        for f in su["files"]:
+            rec = man["files"].get(f"{su['series']}/{f['name']}")
+            if rec is None:
+                raise Refused(f"{su['series']}/{f['name']}: no manifest record: refused (fetch again)")
+            if (rec.get("series_metadata_sha256") != su["series_metadata_sha256"] or rec.get("url") != f["url"]
+                    or rec.get("pins_sha256") != cur):
+                raise Refused(f"{su['series']}/{f['name']}: fetched under another series text, url or pins: refused "
+                              "(fetch again)")
     # 1b. every file of a pinned sample is bound to the pin it was fetched under (stage 4): a manifest record per file
     #     with this pin's metadata_sha256, this url and these pins; no other file in a pinned sample's folder
     for s in pinned:
@@ -436,31 +616,58 @@ def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Pat
     genes = ref["genes"]
     # 2. verify the pinned files, then read counts on the panel (no other sample's file is opened)
     blocks, obs_parts, presence, panel_rec, dropped, count_sha = [], [], [], {}, {}, {}
-    for s in pinned:
-        gsm = s["accession"]
-        files = []
-        for f in s["files"]:
-            key = f"{gsm}/{f['name']}"
-            p = dest / "raw" / acc / gsm / f["name"]
-            if p.is_symlink():
-                raise Refused(f"{key}: a symlink: refused")
-            digest = cm.sha256_file(p) if p.is_file() else None
-            if key not in man["files"] or digest is None or digest != man["files"][key]["sha256"]:
-                raise Refused(f"{key}: missing or its sha256 differs from the manifest")
-            count_sha[key] = digest
-            files.append(p)
-        M, symbols, types, bcs = read_sample(files)
-        if M.shape[0] > cm.MAX_BARCODES:
-            raise Refused(f"{gsm}: {M.shape[0]} barcodes: an unfiltered matrix, refused")
+    by_gsm = {s["accession"]: s for s in pinned}
+    # the library label each pinned sample's cells carry (m and the confidence floor count labels): its own accession,
+    # or for a series file used as one unit (split none) with several samples, one label for the whole file
+    label_of = {g: g for g in by_gsm}
+    unit_recs = []
+
+    def checked(key: str, p: Path) -> Path:
+        if p.is_symlink():
+            raise Refused(f"{key}: a symlink: refused")
+        digest = cm.sha256_file(p) if p.is_file() else None
+        if key not in man["files"] or digest is None or digest != man["files"][key]["sha256"]:
+            raise Refused(f"{key}: missing or its sha256 differs from the manifest")
+        count_sha[key] = digest
+        return p
+
+    def add(label: str, pin: str, M, symbols, types, bcs, folder: str = "") -> None:
+        s = by_gsm[pin]
+        prefix = f"{folder}/" if folder else ""
         keep = cell_filter(M, types)
-        dropped[gsm] = int((~keep).sum())
+        dropped[label] = dropped.get(label, 0) + int((~keep).sum())
         Cp, pres, prec = to_panel(M[np.flatnonzero(keep)], symbols, types, genes)
-        panel_rec[gsm] = prec
+        panel_rec[label + (f"/{folder}" if folder else "")] = prec
         presence.append(pres)
         blocks.append(Cp)
         obs_parts.append(pd.DataFrame({"arm": s["arm"], "gene": ";".join(s["genes"]), "stage": s["stage"],
-                                       "sample": gsm},
-                                      index=[f"{gsm}:{b}" for b, k in zip(bcs, keep, strict=True) if k]))
+                                       "sample": label, "pin": pin},
+                                      index=[f"{label}:{prefix}{b}" for b, k in zip(bcs, keep, strict=True) if k]))
+
+    for s in pinned:
+        gsm = s["accession"]
+        if not s["files"]:
+            continue   # stage 6: its cells come from a pinned series file (check_pins, check_series_file_pins)
+        files = [checked(f"{gsm}/{f['name']}", dest / "raw" / acc / gsm / f["name"]) for f in s["files"]]
+        M, symbols, types, bcs = read_sample(files)
+        if M.shape[0] > cm.MAX_BARCODES:
+            raise Refused(f"{gsm}: {M.shape[0]} barcodes: an unfiltered matrix, refused")
+        add(gsm, gsm, M, symbols, types, bcs)
+    for su in sunits:
+        paths = [checked(f"{su['series']}/{f['name']}", rdir / su["series"] / f["name"]) for f in su["files"]]
+        one = su["split"]["by"] == "none" and len(su["samples"]) > 1
+        label = f"series:{su['series']}/{su['files'][0]['name']}" if one else None
+        libs = read_series_unit(paths, {**su, "files": [f["name"] for f in su["files"]]})
+        rec = {"series": su["series"], "files": [f["name"] for f in su["files"]], "samples": su["samples"],
+               "split": su["split"], "libraries": []}
+        for gsm, folder, kept, (M, symbols, types, bcs) in libs:
+            lab = label or gsm
+            for g in su["samples"]:
+                if one:
+                    label_of[g] = lab
+            add(lab, gsm, M, symbols, types, bcs, folder=folder)
+            rec["libraries"].append({"label": lab, "folder": folder, "barcodes": len(kept)})
+        unit_recs.append(rec)
     present = np.logical_and.reduce(presence)
     C = sparse.vstack(blocks).tocsr()
     obs = pd.concat(obs_parts)
@@ -470,6 +677,12 @@ def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Pat
           "screen_record": pl["screen"], "cells_dropped_low_genes": dropped, "panel_match": panel_rec,
           "panel_genes_present": int(present.sum()), "panel_genes": len(genes),
           "created": time.strftime("%Y-%m-%d %H:%M:%S %Z"), "git": _git_head()}
+    if sunits:
+        qc["series_file_units"] = unit_recs
+        qc["pinned_series_files"] = ds["pinned_series_files"]
+    if cm.control_series(ds):
+        qc["control_series"] = cm.control_series(ds)
+        qc["sister_series_controls"] = sorted(g for g, s in by_gsm.items() if s.get("sister"))
     if present.mean() < cm.MIN_PANEL_MATCH:
         qc.update(status="failed", reason=f"only {present.sum()} of {len(genes)} panel genes matched")
         cm.dump_json(qc, adir / "QC.json")
@@ -489,19 +702,28 @@ def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Pat
     # 4. one table per knockout gene
     qc["units"] = {}
     for u in units:
-        low = sorted(g for g in u["ko"] + u["control"] if by_sample.get(g, {}).get("confident_share", 0.0) < floor)
+        low = sorted(g for g in u["ko"] + u["control"]
+                     if by_sample.get(label_of[g], {}).get("confident_share", 0.0) < floor)
         if low:
             qc["units"][u["gene"]] = {"status": "refused_low_confidence", "samples_under_floor": low,
                                       "reason": f"confident share under {floor} in {low}: no table written"}
             continue
-        rows = obs["sample"].isin(u["ko"] + u["control"]).to_numpy()
+        rows = obs["pin"].isin(u["ko"] + u["control"]).to_numpy()
         sub = obs[rows].copy()
-        sub["arm"] = np.where(sub["sample"].isin(u["ko"]), "ko", "control")
-        Lg, uqc = unit_log_ratios(C[np.flatnonzero(rows)], present, sub, ref, ds["d"])
+        sub["arm"] = np.where(sub["pin"].isin(u["ko"]), "ko", "control")
+        # stage 6: a control from the sister series fixes d at the weaker value (t3x_common.unit_design_factor)
+        sister = sorted(g for g in u["control"] if by_gsm[g].get("sister"))
+        d_u = cm.unit_design_factor(ds, bool(sister))
+        Lg, uqc = unit_log_ratios(C[np.flatnonzero(rows)], present, sub, ref, d_u)
         cells = sub.groupby(["stage", "arm"]).size()
         uqc["cells_per_stage_and_arm"] = {f"E{s:g}:{a}": int(v) for (s, a), v in cells.items()}
-        meta = {"tier": ds["tier"], "study": ds["study"], "d": ds["d"], "ko_samples": u["ko"],
+        meta = {"tier": ds["tier"], "study": ds["study"], "d": d_u, "ko_samples": u["ko"],
                 "control_samples": u["control"], "present": present.tolist(), "git": qc["git"]}
+        if cm.control_series(ds):
+            uqc["d"] = meta["d"]
+            uqc["control_source"] = meta["control_source"] = (
+                f"sister series {cm.control_series(ds)['accession']} (control_series): {sister}" if sister
+                else "the dataset's own series")
         uqc.update(write_unit(adir, acc, u["gene"], Lg, uqc, ref, meta))
         qc["units"][u["gene"]] = uqc
     qc["status"] = "ok" if any(v["status"] == "ok" for v in qc["units"].values()) else "left_out"
