@@ -8629,3 +8629,33 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     another gene in the reference would not be counted; and whether the ids are present in the matrix is seen only at
     the read. Merged at d51640a. Next: fetch, process and combine for the set; the AI assistant reads the verdicts in
     the QC file only.
+- 2026-11-20 (hhh), T3 outside knockouts: the many-line set's first run; one guard is put to analysts before any table is
+  read (state at 23:32 UTC, 2026-11-20). Written by the AI assistant.
+  - **The run** (compute machine, 71bef8c): the count matrix was fetched (397,506,411 bytes; sha256 907ed566...), 417
+    run columns read, all 500 panel genes present in every library. Twelve of the 25 lines pass every guard (Adamts3,
+    Camsap3, Ccdc6, Fryl, H13, Morc2a, Nadk2, Pdzk1, Sh3pxd2a, Smg9, Ssr2, Tial1), with 57 knockout and 37 wild-type
+    libraries. Six lines are refused by the somite guard (the two arms' ranges do not overlap), one by the sex guard,
+    and six are left out because fewer than two control libraries were left. The combine step then refused, correctly:
+    the other datasets' stored plans predate today's changes of the dataset file, so the whole chain is running again
+    for every pinned dataset. The AI assistant read the QC file's verdicts and guard-level figures only: no table
+    value and no gene-level value.
+  - **What the whole-embryo guard did.** The guard drops a control library unless its rank correlation with the
+    reference's whole-embryo profile exceeds its best correlation with any single lineage group by 0.05, a number
+    fixed before any count; the README says its behaviour on real whole embryos was unknown. On this set, which its
+    record describes as single whole embryos, that margin lies between 0.038 and 0.069 for every one of 111 control
+    libraries (median 0.051) and between 0.030 and 0.072 for 102 knockout libraries (median 0.051). The number 0.05
+    therefore cuts one tight cluster in two: 46 of 111 control libraries are dropped, none would be at 0.03, and the
+    share dropped follows the embryo's somite number (lowest at 19 to 24 somites, highest for the youngest and oldest
+    embryos). Every control arm mean passes, none by more than 0.02. The six lines left out lost their controls to
+    this guard, and the twelve kept lines lost 26 of 63 controls to it.
+  - **What is done about it, and in what order.** Nothing is read first. The present table meets the drafted row K24's
+    blind thresholds at the edge (twelve lines; 57 and 37 libraries against 12 and 36) and could be read as it is. But
+    a guard that removes four in ten genuine whole-embryo controls at random costs the table accuracy for no
+    protection, so the question whether its number does what the guard is for, and what replaces it for the bulk route
+    only, is with an independent analyst and a challenger (workflow `t3-ext-whole-embryo-guard`), who see the figures
+    of this entry and nothing else: no table value, no practice score. Their decision, an implementation and its
+    review come before the table is rebuilt; the single-cell route, whose tables are pinned and read, shares the
+    constant and must not change by a byte. If they say keep, the table stands as it is. This entry is written before
+    their answer so that what was seen is on record first. Said plainly: this is a change considered after the guard's
+    first real run; what was seen is the guard's own correlations and counts, and the practice fold has not been read
+    with any bulk table.
