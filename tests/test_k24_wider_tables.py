@@ -367,6 +367,23 @@ def test_a_one_study_bulk_table_that_fails_its_conditions_drops_with_the_joint(c
     assert _arms_left(pre) == SC3_ONLY and k24.try_count(_arms_left(pre)) == 3
 
 
+@pytest.mark.parametrize("sign", ["applied", "two_study", "two_thirds", "single study"])
+def test_a_bulk_table_of_two_or_more_studies_is_dropped(sign):
+    """(b1): row K24 reads the one-study MGP-DMDD bulk table only; a bulk table of two or more studies is dropped with
+    the joint, whatever its sign rule, and sc3 is kept."""
+    s0 = _synth()
+    rec = _bulk_rec(s0.n, s0.shares, studies=["MGP-DMDD", "OTHER"], sign_rule=sign)
+    rec["genes_by_study"]["OTHER"] = [f"M{i}" for i in range(25)]
+    why, _ = k24.bulk_drops(s0.bulk, rec)
+    assert [w for w in why if w.startswith("(b1)")] and "two or more studies is dropped" in why[0]
+    pre = _drops(bulk_rec=rec)
+    assert "(b1)" in pre["dropped"]["bulk"] and "joint" in pre["dropped"] and "sc3" not in pre["dropped"]
+    assert _arms_left(pre) == SC3_ONLY
+    # the well-formed one-study table passes (b1)
+    why, _ = k24.bulk_drops(s0.bulk, _bulk_rec(s0.n, s0.shares))
+    assert not [w for w in why if w.startswith("(b1)")]
+
+
 def test_b4_by_hand_skips_none_shares_and_counts_lines_not_units():
     n = 300
     s = _synth()
@@ -802,6 +819,43 @@ def test_check_world_compares_the_run_s_controls_with_the_pregate_s():
         k24.check_world(pre, "dm", F, k24.ARMS)
 
 
+@pytest.mark.parametrize("flat", ["bulk", "sc3"])
+def test_a_table_with_no_exponent_drops_with_the_joint_and_the_other_table_s_arms_are_still_made(fold, flat):
+    """An all-ones table has zero log SD and no exponent: the pre-gate drops it and the joint and keeps the other
+    table; fold_factors still makes the other table's scaled table and its permutation, so its try, control and twin
+    build (review blocker of 7304c05: one missing exponent used to stop every kind)."""
+    other = "sc3" if flat == "bulk" else "bulk"
+    s0 = _synth()
+    pre = _drops(**{flat: np.ones(s0.n)})
+    assert pre["e"][flat] is None and pre["e"][other] is not None
+    assert "no exponent" in pre["dropped"][flat] and "joint" in pre["dropped"] and other not in pre["dropped"]
+    arms = k24.active_arms(pre)
+    assert arms == (SC3_ONLY if other == "sc3" else BULK_ONLY) and k24.try_count(arms) == 3
+    consts = k24.constants_of(pre)
+    assert consts[f"e_{flat}"] is None and consts["c"] is None and set(consts["twins"]) == {f"x_{other}"}
+    tabs = dict(fold.tabs)
+    tabs[flat] = np.ones(G + 1)
+    k24._K24.update(T=tabs, consts=consts)
+    with k24.k18_arms(arms):
+        k18._build_plain(fold.ctx("g1", 0), k24.BASE)
+        F = k18._FOLD["F"]
+        assert set(F["scaled"]) == {other} and set(F["scaled_perm"]) == {other}
+        pb = fold.phi_barred
+        scaled = fold.T[other] ** consts[f"e_{other}"]
+        perm = harness.t3_decile_permutation(scaled, fold.basis, 20261113, 10)
+        tw = consts["twins"][f"x_{other}"]
+        want = {f"x_{other}": pb * scaled, f"x_{other}_perm": pb * perm, f"x_{other}_size": tw["k"] * pb ** tw["a"]}
+        for arm, v in want.items():
+            assert np.allclose(k24.arm_factor(arm, F), v, rtol=1e-14, atol=0), arm
+            fold.log["construct"].clear()
+            k18._build_plain(fold.ctx("g1", 0), arm)
+            (cc,) = fold.log["construct"]
+            assert np.allclose(cc["phi"], v, rtol=1e-14, atol=0), arm
+        for arm in (f"x_{flat}", f"x_{flat}_perm", "x_joint", "x_joint_perm"):
+            with pytest.raises(RuntimeError, match="not made"):
+                k24.arm_factor(arm, F)
+
+
 # ------------------------------------------------------------------------------------------------ (6) the rule
 
 
@@ -1041,6 +1095,26 @@ def test_k23s_per_seed_rows_are_read_at_their_sha256(tmp_path):
     with pytest.raises(k24.Refused, match="missing"):
         k24.k23_seed_rows({"files_sha256": files}, runs)
     assert k24.k23_runs_default({"commit": "abcdef0123"}) == REPO / "runs" / "k23_abcdef0"
+
+
+def test_k23s_run_folder_is_this_checkout_s_and_no_option_overrides_it(monkeypatch, capsys):
+    import inspect
+
+    assert "k23_runs" not in inspect.signature(k24.guard_refs).parameters
+    assert "no option overrides it" in k24.__doc__
+    for argv in (["pregate", "--out", "x", "--k23-runs", "y"],
+                 ["run", "--part", "guard", "--world", "dm", "--out", "x", "--k23-runs", "y"],
+                 ["guard", "--runs", "x", "--k23-runs", "y"]):
+        with pytest.raises(SystemExit) as e:
+            k24.main(argv)
+        assert e.value.code == 2 and "unrecognized arguments: --k23-runs" in capsys.readouterr().err
+    cells = {w: {n: {"arms": {"x_e2": {"mean": 57.0, "severity_gated": 0}}} for n in k24.TASKS} for w in k24.WORLDS}
+    monkeypatch.setattr(k24, "k23_committed", lambda d=None: ({}, {"commit": "0123456789ab", "worlds": cells}))
+    monkeypatch.setattr(k21, "k18_rows", lambda refs: ({}, []))
+    seen = []
+    monkeypatch.setattr(k24, "k23_seed_rows", lambda read, runs: seen.append(runs) or {})
+    k24.guard_refs()
+    assert seen == [REPO / "runs" / "k23_0123456"]
 
 
 # ------------------------------------------------------------------------------------------------ (8) the reading
@@ -1579,3 +1653,54 @@ def test_the_launcher_s_refusal_paths_run_in_a_temporary_repository(tmp_path):
     head = _git(L.repo, "rev-parse", "HEAD")
     code, _ = _launch(L, head)
     assert code == 10
+
+
+UV_STUB = """#!/bin/sh
+# uv run --frozen --no-sync python -I -B ARGS: the tests pass, a -c one-liner runs in python -I -B, and every call of
+# the script is logged ($HOME/script_calls) and exits 1 (read: 0)
+shift 6
+case "$1" in
+  -m) exit 0 ;;
+  -c) exec "{py}" -I -B "$@" ;;
+esac
+echo "$*" >> "$HOME/script_calls"
+[ "$2" = read ] && exit 0
+exit 1
+"""
+
+
+def test_a_rerun_after_a_guard_failure_finishes_26_again_and_starts_no_scoring_part(tmp_path):
+    L = _launcher_repo(tmp_path)
+    (L.bin / "uv").write_text(UV_STUB.replace("{py}", sys.executable))
+    R = L.repo / "runs" / f"k24_{L.head[:7]}"
+    R.mkdir(parents=True)
+    (R / "pregate.json").write_text("{}")
+    calls = L.home / "script_calls"
+    script = "experiments/t3_decomp/k24_wider_tables.py"
+    out = "experiments/t3_decomp/results/k24_wider_tables"
+    called = lambda: calls.read_text().splitlines() if calls.exists() else []  # noqa: E731
+    # guard.json says the guard part failed and OUT holds no reading: the VOID read once, then 26
+    (R / "guard.json").write_text(json.dumps({"passes": False, "failed": ["x_e2"]}))
+    code, err = _launch(L, L.head)
+    assert code == 26 and _all_exit(L, L.head) == "26", err
+    assert called() == [f"{script} read --runs runs/k24_{L.head[:7]} --out {out}"]
+    # the reading is there (as the first finish 26 left it): 26 again, no call of the script at all
+    (L.repo / out).mkdir(parents=True)
+    (L.repo / out / "reading.json").write_text("{}")
+    calls.unlink()
+    for body in ({"passes": False, "failed": ["x_e2"]}, {"passes": "true"}, {"failed": []}):
+        (R / "guard.json").write_text(json.dumps(body))
+        code, err = _launch(L, L.head)
+        assert code == 26 and _all_exit(L, L.head) == "26", (body, err)
+        assert called() == [] and not (R / "exit" / "plain_g1_0-4").exists()
+    # an unreadable guard.json finishes 20, no scoring part
+    for raw in ("not json", "[]"):
+        (R / "guard.json").write_text(raw)
+        code, err = _launch(L, L.head)
+        assert code == 20 and _all_exit(L, L.head) == "20", (raw, err)
+        assert called() == []
+    # a passing guard.json goes on to the scoring parts (the stub fails them: 30)
+    (R / "guard.json").write_text(json.dumps({"passes": True, "failed": []}))
+    code, err = _launch(L, L.head)
+    assert code == 30 and _all_exit(L, L.head) == "30", err
+    assert sorted(c.split()[1] for c in called()) == ["run"] * 5

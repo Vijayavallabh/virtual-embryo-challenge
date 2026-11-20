@@ -51,6 +51,8 @@ or off its pin, K23's committed files untracked, a folder variable unset or refu
 missing or unpinned table, the frozen T3 files off their pins, `two`'s figures off K23's, a scoring part without a
 passing guard.json); 3 INCOMPLETE (a file missing; nothing written); 4 read: the reading files exist already; 5
 pregate: both tables dropped, nothing runs; 6 guard: the guard part failed (VOID; the failed guard arms counted).
+
+K23's run folder is runs/k23_<first 7 of K23's committed reading's commit> in this checkout; no option overrides it.
 """
 
 from __future__ import annotations
@@ -482,12 +484,10 @@ def bulk_drops(T, rec: dict) -> tuple[list[str], dict]:
     if rec.get("modality") != BULK_MODALITY or list(rec.get("tiers") or []) != [BULK_TIER]:
         why.append(f"(b1) modality {rec.get('modality')!r}, tiers {rec.get('tiers')}, not {BULK_MODALITY!r} and "
                    f"[{BULK_TIER!r}]")
-    if len(studies) >= MIN_STUDIES:
-        if rec.get("sign_rule") in (None, BULK_SIGN_RULE):
-            why.append(f"(b1) {len(studies)} studies without a sign rule applied")
-    elif studies != [BULK_STUDY] or rec.get("sign_rule") != BULK_SIGN_RULE:
+    # a bulk table of two or more studies is dropped: row K24 reads the one-study MGP-DMDD table only
+    if len(studies) != 1 or studies != [BULK_STUDY] or rec.get("sign_rule") != BULK_SIGN_RULE:
         why.append(f"(b1) studies {studies}, sign rule {rec.get('sign_rule')!r}, not exactly [{BULK_STUDY!r}] with "
-                   f"{BULK_SIGN_RULE!r}")
+                   f"{BULK_SIGN_RULE!r} (a bulk table of two or more studies is dropped)")
     gbs = rec.get("genes_by_study") or {}
     lines = gbs.get(BULK_STUDY) if isinstance(gbs, dict) else None
     U = len(lines) if isinstance(lines, list) else 0
@@ -716,7 +716,9 @@ def fold_factors(bs, ref, per: dict, phi: np.ndarray, group: np.ndarray, basis: 
                  spec: dict) -> dict:
     """K22's body over this try's loaded tables: K18's fold_factors (the original, called unchanged) plus each table in
     the reference's gene order and its permutation within deciles of `basis`; then the scaled tables of the kinds the
-    pre-gate kept and their permutations (one per world: perm of the scaled vector)."""
+    pre-gate kept and their permutations (one per world: perm of the scaled vector). Each kind needs only its own
+    constants (sc3: e_sc3; bulk: e_bulk; joint: e_sc3, e_bulk and c), so a table with no exponent leaves the other
+    table's arms whole."""
     if not _K24.get("T"):
         raise RuntimeError("the K24 tables are not loaded (k24_wider_tables.py loads them before any arm)")
     F = k22._K18_ORIGINAL["fold_factors"](bs, ref, per, phi, group, basis, phi_barred, spec)
@@ -726,9 +728,8 @@ def fold_factors(bs, ref, per: dict, phi: np.ndarray, group: np.ndarray, basis: 
     F["scaled"], F["scaled_perm"] = {}, {}
     if consts is not None:
         for kind in ("sc3", "bulk", "joint"):
-            if kind == "joint" and consts.get("c") is None:
-                continue
-            if consts.get("e_sc3") is None or consts.get("e_bulk") is None:
+            need = ("e_sc3", "e_bulk", "c") if kind == "joint" else (f"e_{kind}",)
+            if any(consts.get(k) is None for k in need):
                 continue
             F["scaled"][kind] = k24_table(kind, F["ext"], consts)
             F["scaled_perm"][kind] = ext.permuted(F["scaled"][kind], basis)
@@ -881,9 +882,10 @@ def k23_seed_rows(k23_read: dict, runs: Path) -> dict:
     return out
 
 
-def guard_refs(k23_dir: Path | None = None, k23_runs: Path | None = None, refs: Path = K18_TASKS) -> dict:
+def guard_refs(k23_dir: Path | None = None, refs: Path = K18_TASKS) -> dict:
     """What the guards compare with: K18's committed barred_form rows (at their pins), K23's committed x_e2 cells and
-    its per-seed x_e2 rows. Refused when any is missing or off its sha256."""
+    its per-seed x_e2 rows from K23's run folder in this checkout (k23_runs_default; no option overrides it). Refused
+    when any is missing or off its sha256."""
     _, k23_read = k23_committed(k23_dir)
     saved = dict(k21.K18_SHA256)
     k21.K18_SHA256.clear()
@@ -902,8 +904,7 @@ def guard_refs(k23_dir: Path | None = None, k23_runs: Path | None = None, refs: 
             if not c:
                 raise Refused(f"K23's committed reading.json holds no x_e2 in {w} {n}: refused")
             cells[(w, n)] = {"mean": float(c["mean"]), "severity_gated": int(c["severity_gated"])}
-    runs = k23_runs_default(k23_read) if k23_runs is None else Path(k23_runs)
-    return {"k18": k18r, "k23_cells": cells, "k23_rows": k23_seed_rows(k23_read, runs)}
+    return {"k18": k18r, "k23_cells": cells, "k23_rows": k23_seed_rows(k23_read, k23_runs_default(k23_read))}
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -1121,7 +1122,7 @@ def cmd_run(a) -> None:
     out = Path(a.out)
     if a.part == "guard":
         try:
-            guard_refs(k23_runs=a.k23_runs)
+            guard_refs()
         except Refused as e:
             refuse(str(e))
     else:
@@ -1180,7 +1181,7 @@ def cmd_pregate(a) -> None:
     if path.exists():
         refuse(f"{path} exists")
     try:
-        guard_refs(k23_runs=a.k23_runs)
+        guard_refs()
         k23_pre, _ = k23_committed()
     except Refused as e:
         refuse(str(e))
@@ -1302,7 +1303,7 @@ def cmd_guard(a) -> None:
         print(f"INCOMPLETE: {len(missing)} guard file(s) missing, e.g. {missing[:4]}", flush=True)
         sys.exit(EXIT_INCOMPLETE)
     try:
-        refs = guard_refs(k23_runs=a.k23_runs)
+        refs = guard_refs()
     except Refused as e:
         refuse(str(e))
     try:
@@ -1704,8 +1705,6 @@ def main(argv=None) -> None:
         q.add_argument("--decision", default=str(k18.DECISION))
     gd = sub.add_parser("guard")
     gd.add_argument("--runs", required=True)
-    for q in (p, r, gd):
-        q.add_argument("--k23-runs", default=None, help="K23's run folder (default runs/k23_<first 7 of its commit>)")
     d = sub.add_parser("read")
     d.add_argument("--runs", required=True)
     d.add_argument("--out", required=True)

@@ -25,7 +25,10 @@
 #      R/guard/; exit 30 if a part did not exit 0), then the guard check (R/guard.json): its exit 6 (a guard failed)
 #      reads the run into OUT (a VOID reading that counts the failed guard arms only) and finishes 26; its exit 2
 #      finishes 22, 3 finishes 30, anything else 20;
-#   5. (none: the scoring parts refuse without a passing guard.json of this commit and machine);
+#   5. guard.json's key "passes", read by a python -I -B one-liner: not true finishes 26 again with no scoring part
+#      started (a rerun after a guard failure; the VOID read is made only when OUT holds no reading.json, so nothing is
+#      counted twice), unreadable finishes 20; the scoring parts also refuse without a passing guard.json of this
+#      commit and machine;
 #   6. the five scoring parts in parallel: plain g1 and g2, each as seeds 0-4 and 5-9 (8 BLAS threads a process), and
 #      the depth-matched world (8 workers by 2 threads, 16 BLAS threads in its set-up, as rows U3d, K18 and K21 to
 #      K23); each part's exit code in R/exit/<part>, its log in R/logs/<part>.log (never printed); the log lines other
@@ -93,6 +96,17 @@ if [ ! -e "$R/pregate.json" ]; then
   if [ $rc != 0 ]; then finish 20; fi
 fi
 
+# a failed guard part: the VOID reading (counts the failed guard arms only), then finish 26
+void_read() {
+  rc=0
+  $PY "$SCRIPT" read --runs "$R" --out "$OUT" > /dev/null 2>&1 || rc=$?
+  echo $rc > "$S/read.exit"
+  if [ $rc = 3 ]; then finish 43; fi
+  if [ $rc = 4 ]; then finish 44; fi
+  if [ $rc != 0 ]; then finish 41; fi
+  finish 26
+}
+
 # the guard part: barred_form and x_e2, both worlds, ten seeds, before any try arm
 if [ ! -e "$R/guard.json" ]; then
   GSET=("plain_g1_0-4" "plain_g2_0-4" "plain_g1_5-9" "plain_g2_5-9" "dm")
@@ -126,19 +140,19 @@ if [ ! -e "$R/guard.json" ]; then
   threads 8
   $PY "$SCRIPT" guard --runs "$R" > "$S/guard.log" 2>&1 || rc=$?
   echo $rc > "$S/guard.exit"
-  if [ $rc = 6 ]; then
-    rc=0
-    $PY "$SCRIPT" read --runs "$R" --out "$OUT" > /dev/null 2>&1 || rc=$?
-    echo $rc > "$S/read.exit"
-    if [ $rc = 3 ]; then finish 43; fi
-    if [ $rc = 4 ]; then finish 44; fi
-    if [ $rc != 0 ]; then finish 41; fi
-    finish 26
-  fi
+  if [ $rc = 6 ]; then void_read; fi
   if [ $rc = 2 ]; then finish 22; fi
   if [ $rc = 3 ]; then finish 30; fi
   if [ $rc != 0 ]; then finish 20; fi
 fi
+# step 5: a guard.json that does not pass (a rerun after a guard failure) finishes 26 again; no scoring part starts
+gpass=$($PY -c 'import json, sys; g = json.load(open(sys.argv[1])); print("pass" if g.get("passes") is True else "fail")' \
+  "$R/guard.json" 2> /dev/null) || gpass=unreadable
+if [ "$gpass" = fail ]; then
+  if [ -e "$OUT/reading.json" ]; then finish 26; fi
+  void_read
+fi
+if [ "$gpass" != pass ]; then finish 20; fi
 
 PARTS=("plain_g1_0-4" "plain_g2_0-4" "plain_g1_5-9" "plain_g2_5-9" "dm")
 pids=()
