@@ -1,0 +1,30 @@
+T1 candidates of row R15 (docs/PLAN.md decision log 2026-11-20 (i), (n)): A, B and C on the recomputed-groups file
+===============================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-20 in the campaign checkout ~/v/vec-campaign-d at commit 1420c70 (main; it
+holds the builder options merged at 38bf1e0, the rules note of 2026-11-20 and row R15; clean tree; the relabelling's
+output data/derived/feng_relabel_c present). 16 BLAS threads for the builds, seed 1000001, board T1:test. The launcher
+is the writer's, with the reviewer's fixes (the format check in build_all.sh's form; each stamp's commit and clean
+fields checked; the builds run as set t1rc ran them, `uv run python experiments/builds/build_test.py ...`).
+
+Steps and exit codes (the launcher stops at the first failure):
+  targeted tests, 8 BLAS threads ("444 passed, 1 deselected": tests/test_feng_relabel.py::test_the_dry_runs_refusals
+    is deselected, a known failure of that checkout only, which reads the checkout's own data folder)        exit 0
+  docs/S2_RULES.sha256                                                                                       exit 0
+  default, `t1 --g-mom --base lib3 --feng-groups recomputed`, once:                                          exit 0
+    ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f  T1_s2rc.h5ad
+    the uploaded file of set t1rc (row R13): the identity check passed
+  A, `... --g-mom-damping 1.0`, twice (A1, A2): exit 0, the same bytes
+    76865826f5a3741c7585f81c4241048ca1a95b5791ebb3c8feb1f2b536678ce4  T1_s2rcA.h5ad
+  B, `... --feng-fraction-mult 1.5`, twice (B1, B2): exit 0, the same bytes
+    c7240cb6a7f7ee93d037f437832efbaad004f1fbe608d80072f8efd5d20a0062  T1_s2rcB.h5ad
+  C, `... --g-mom-damping 1.0 --feng-fraction-mult 1.5`, twice (C1, C2): exit 0, the same bytes
+    31477ef7df5d5374a74a8249c570217020c593916ab4d3780049b7b3f87b0620  T1_s2rcC.h5ad
+  `vec check` for T1:test on all seven files                                                                 exit 0
+  each candidate differs from the default, and the three differ from one another                             exit 0
+Each stamp says commit 1420c70b04fe0c69ed44b8f23d4ae6b4feee69e5, clean True.
+
+Kept: ~/v/vec-campaign-d/runs/archive/t1cand_1420c70/ on the DGX (SHA256SUMS checked there) and
+runs/archive/t1cand_1420c70/ on the local machine (the three candidates and the hash list). Copies for upload:
+runs/manual_upload/T1_s2rcA.h5ad, T1_s2rcB.h5ad and T1_s2rcC.h5ad (sha256 checked; the local format check passes on
+each, exit codes only). No log, size or count of a build was read.
