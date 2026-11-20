@@ -63,6 +63,11 @@ def test_the_frozen_files_equal_616984b_apart_from_docstrings_here(e48):
     """At this branch the frozen files differ from 616984b in docstrings only (the reviewer's sentences)."""
     if e48._git("cat-file", "-e", f"{e48.FROZEN_AT}^{{commit}}").returncode != 0:
         pytest.skip("616984b is not in this repository")
+    if (REPO / "src" / "vec" / "shape_interp.py").exists():
+        # a branch that carries row E49's shape option (campaign/embryo-shape-interp) changes the code of t2_build.py
+        # and harness.py, so E48's run refuses there by design: E48 runs at its own commit (9cd4b6e)
+        assert e48.frozen_changes() == ["src/vec/t2_build.py", "src/vec/harness.py"]
+        return
     assert e48.frozen_changes() == []
 
 
