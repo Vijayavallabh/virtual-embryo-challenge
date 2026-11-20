@@ -8016,3 +8016,44 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the function that looks for the row bound the ledger's path when it was defined, so the test's substitute ledger
     was never read. The function now looks the path up at call time (one line; 107 tests of the script and the forms
     pass with the row present). The run commit is the commit of that fix, as row E49's last cell says.
+- 2026-11-20 (kk), T3 outside knockouts: the first two-study table, and practice read K22 with its rule fixed before the
+  run (state at 19:02 UTC, 2026-11-20). Written by the AI assistant.
+  - **The run with the second study** (`~/v/vec-campaign-c` at 91f065b; every step exit 0). GSE277839: 28,196 cells in
+    its two libraries, all 500 panel genes matched, confident lineage calls for 0.65 and 0.73 of the cells; Usb1 gives
+    factors in three lineage groups (ectoderm, neural, paraxial mesoderm); the cardiac, endothelial, extra-embryonic
+    and neural-crest groups fail the control-profile guard and six small groups have too few cells. Combine wrote the
+    two-study tables `all` and `unrelated` (GSE204908 with Dnmt3a and Dnmt3b; GSE277839 with Usb1; the sign rule
+    across the two studies applied) and their leave-one-study-out forms. The two tables have the same bytes. The
+    manifest's summary of the pooled table: 88 genes up, 359 down, none at the clip.
+  - **The committed listing.** `experiments/t3_ext/TABLES.sha256` holds the tables' hashes as combine recorded them,
+    with the `unrelated` line left out: it duplicates `all`, and two identical tries would be counted twice. The pins
+    in `experiments/t3_decomp/outside_forms.py` equal the listing (71 tests of the forms and the read pass). So K22
+    runs one product arm (the barred factor times the `all` table at exponent 1), its permuted control, and the
+    replacement arm as the labelled control of the planner's doubt: three tries, T3 57 to 60, fewer if the pre-gate
+    drops an arm.
+  - **The rule that maps the outcome to files, in the challenger's final words:** Fixed before the run, in row K22 and
+    in a new decision-log entry committed with it. A result maps to files from the reading's fixed statements only. -
+    Candidates: x_all and x_unrel, only when QUALIFIED. Controls (x_all_perm, x_unrel_perm) and rep_all are never
+    named or built. The doubt statement changes no file. - Rank the qualified tries by the number of AHEAD cells, then
+    by the mean of their four paired means against barred_form. Ties go to x_all, then x_unrel. - File 1 is the
+    first-ranked try on base B. File 2 is the second-ranked try on B, named only if the pre-gate's corr(ln T_all, ln
+    T_unrel) over the genes != 1 in either table is below 0.9. Otherwise only file 1. At most two files, at most one
+    per table. - Nothing qualifies, the run is VOID, or the pre-gate dropped both tries: no file, and T3's list is
+    unchanged. - File factor: phi_M ** x * T ** 1.0. x is B's exponent. T is the named table's pooled csv at the
+    sha256 pinned in K22_TABLE_SHA256, which equals TABLES.sha256's line at the row's commit. No rescale or clip after
+    the product. Priced at x = 1 on the central composition only, so on B with x != 1 the file is unpriced. - A form
+    the builder refuses on B is not built, and nothing replaces it. - B is entry 2026-11-20 (q)'s B: the highest
+    returned headline among barred s1 (3712c3f9988d), x1.5 (c060fcaa6c7f), x2.0 (7393810fbe3b) and barred s2
+    (1b69521e3c28), fixed once both of entry (k)'s uploads are back. Ties go to s1, then to the lower exponent. B is
+    never a C file and never re-fixed after this read. - Place: after (q)'s C list and after any K21 file (K21 named
+    none). Ranking ahead of C1 or C2 would change (q), which is the captain's call. (q)'s lapse clause holds first. -
+    Before any upload: a docs/S2_RULES.md amendment with the captain's words saying it brings outside-knockout data
+    into a barred file; the datasets' EXTERNAL_DATA.md rows and the tables' sha256 committed; a build in the reference
+    checkout; a new reference list and pointer; his go-ahead per upload. A test score only chooses among the files
+    named here (Rules s.10). No constant, form, table or base is changed after any practice or test score.
+  - **What the table can and cannot be, on record before the run:** two studies, three knockout genes (two
+    DNA-methyltransferases and an RNA-processing enzyme), factors only in ectoderm, endoderm, neural, neural-crest,
+    pharyngeal and paraxial-mesoderm groups; nothing from the cardiac lineage. That three quarters of its genes move
+    down in both studies may be what knockout embryos share, or what two laboratories' knockout libraries share for
+    technical reasons; the permuted control and the read on the released Gata4 knockout are what tell a gain from a
+    table of this size apart from this table's genes.

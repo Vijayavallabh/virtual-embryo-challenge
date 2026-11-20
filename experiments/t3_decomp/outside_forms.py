@@ -69,8 +69,8 @@ FROZEN_SHA256 = {
 # Filled in the commit that places row K22, from the committed listing (`outside_forms.py pins` prints both lines).
 # None: the listing's pin is not set, and every run, pre-gate and outside build refuses. A table pin of None means the
 # table is not listed (its try is dropped by the pre-gate); a listed table must have its pin, and the pin its line.
-K22_LISTING_SHA256: str | None = None
-K22_TABLE_SHA256: dict[str, str | None] = {"all": None, "unrelated": None}
+K22_LISTING_SHA256: str | None = "884b294bb8ea15b4e97b8f9f3d72869c6f9a375c55a5ca11a6daf3c70b8d94ea"
+K22_TABLE_SHA256: dict[str, str | None] = {"all": "9490f524e40e146480c775f85ae8829ec9c005607104ad8ace129c5c46ed6228", "unrelated": None}
 
 _LINE = re.compile(r"([0-9a-f]{64})  ([A-Za-z0-9_]+)")
 _NAME = re.compile(r"[A-Za-z0-9_]+")
