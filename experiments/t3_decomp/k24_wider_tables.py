@@ -341,16 +341,19 @@ def pinned_ext() -> dict:
 
 
 def exponent(T) -> float | None:
-    """e_T = S* / SD(ln T), population SD over all genes in file order (genes exactly 1 included); None when SD is 0."""
-    sd = float(np.std(np.log(np.asarray(T, dtype=np.float64))))
-    return S_STAR / sd if sd > 0 else None
+    """e_T = S* / SD(ln T), population SD over all genes in file order (genes exactly 1 included); None when SD is 0.
+    A table of one constant value has SD exactly 0 by the rule, whatever rounding np.std returns for it (the second
+    review's blocker: all 4.0 gave 2.2e-16 and an exponent near 1e15), so a zero range of ln T also gives None."""
+    lt = np.log(np.asarray(T, dtype=np.float64))
+    sd = float(np.std(lt))
+    return S_STAR / sd if sd > 0 and float(np.ptp(lt)) > 0 else None
 
 
 def joint_c(sc3, bulk, e_sc3: float, e_bulk: float) -> float | None:
     """c = S* / SD(e_sc3 ln sc3 + e_bulk ln bulk); None when that SD is 0."""
     v = e_sc3 * np.log(np.asarray(sc3, dtype=np.float64)) + e_bulk * np.log(np.asarray(bulk, dtype=np.float64))
     sd = float(np.std(v))
-    return S_STAR / sd if sd > 0 else None
+    return S_STAR / sd if sd > 0 and float(np.ptp(v)) > 0 else None   # a constant sum has SD exactly 0, as exponent()
 
 
 def k24_table(kind: str, tables: dict, consts: dict) -> np.ndarray:

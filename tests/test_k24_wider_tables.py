@@ -856,6 +856,39 @@ def test_a_table_with_no_exponent_drops_with_the_joint_and_the_other_table_s_arm
                 k24.arm_factor(arm, F)
 
 
+@pytest.mark.parametrize("flat", ["bulk", "sc3"])
+@pytest.mark.parametrize("value", [1.2, 0.25, 4.0, 0.7])
+def test_a_table_of_one_constant_value_has_no_exponent_and_the_other_table_is_still_read(flat, value):
+    """A table holding one value that is not 1 has log SD exactly 0 by the rule, while np.std may return rounding
+    noise for it (the second review's blocker: the exponent then came out near 1e15, the scaled table overflowed and
+    the pre-gate raised, so nothing ran). It has no exponent: it drops with the joint, the other table keeps its
+    three tries, and nothing raises."""
+    other = "sc3" if flat == "bulk" else "bulk"
+    s0 = _synth()
+    const = np.full(s0.n, value)
+    assert k24.exponent(const) is None and k24.exponent(np.full(300, value)) is None
+    assert k24.joint_c(const, const, 1.0, 1.0) is None
+    pre = _drops(**{flat: const})
+    assert pre["e"][flat] is None and pre["e"][other] is not None
+    assert "no exponent" in pre["dropped"][flat] and "joint" in pre["dropped"] and other not in pre["dropped"]
+    arms = k24.active_arms(pre)
+    assert arms == (SC3_ONLY if other == "sc3" else BULK_ONLY) and k24.try_count(arms) == 3
+    consts = k24.constants_of(pre)
+    assert consts[f"e_{flat}"] is None and consts["c"] is None and set(consts["twins"]) == {f"x_{other}"}
+
+
+def test_the_exponent_of_a_table_that_is_not_constant_is_unchanged_by_the_constant_guard():
+    rng = np.random.default_rng(7)
+    for sd in (1e-9, 1e-6, 1e-3, 0.02, 0.3):
+        T = np.exp(rng.normal(0.0, sd, 500))
+        e = k24.exponent(T)
+        assert e == k24.S_STAR / float(np.std(np.log(T)))
+        assert math.isclose(float(np.std(np.log(T ** e))), k24.S_STAR, rel_tol=1e-12)
+    two = np.exp(rng.normal(0.0, 0.02, 500))
+    assert k24.joint_c(two, two[::-1].copy(), 1.5, 2.5) == k24.S_STAR / float(
+        np.std(1.5 * np.log(two) + 2.5 * np.log(two[::-1])))
+
+
 # ------------------------------------------------------------------------------------------------ (6) the rule
 
 
