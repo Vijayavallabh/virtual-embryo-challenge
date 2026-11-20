@@ -2,7 +2,47 @@
 
 ## Current Objective
 
-- **State at 2026-11-20, 16:42 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+- **State at 2026-11-20, 19:23 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+  2026-11-20 (w) to (mm). Local main = origin/main (76a5601 or later).
+  - **With the captain, no score reported yet** (uploads are his acts): the files of the next bullet, unchanged: T1 A
+    then B (C on its condition), heart K1 then K2, embryo `T2embryo_s2x.h5ad`, T3 `T3_barred_x1.5.h5ad` then x2.0 or
+    the barred s2 by rule. When a score line comes: add it to `results/manual_uploads.csv` and the decision log, apply
+    that board's pre-set rule, and for T3 build C1 and C2 only after BOTH of entry (k)'s headlines
+    (`build_two_knockout.sh <commit> <base>` on `~/v/vec-campaign-c`).
+  - **No embryo row-order file exists or can exist** (entries (ff), (hh)): E48 ran (valid; the construction is not
+    voided; no effect on practice), and the build for the test board stops because the option needs a count the board
+    does not give. Nothing replaces it.
+  - **Running on the DGX: E49, the embryo's shape-interpolation read** (row E49, run commit d76ccd5; chain script
+    `~/v/scratch/e49_chain.sh`, exit and times in `~/v/scratch/e49/`, detached worktree `~/v/scratch/e49-wt`; steps
+    tests, describe, gate, run, read; embryo count 76 to 83, or 81 if the target-free step drops F1). When
+    `chain.exit` is 0: copy `experiments/coords/results/e49_shape_interp/` from the worktree, commit it with the
+    outcome in E49's row quoting only the fixed reading, then apply the row's outcome-to-file rule (at most two files;
+    a test-board build needs `--shape-form X --shape-form-test-ok` after the default reproduces a03611a3...). The main
+    session is recused on the occupancy term: the analysts' rule decides, the main session states no preference.
+  - **T3 outside knockouts.** The pipeline ran end to end on the DGX (`~/v/vec-campaign-c`, data under
+    `~/v/vec-ext/t3`): register rows X011 to X014; the two-study table (Dnmt3a, Dnmt3b, Usb1) is listed in
+    `experiments/t3_ext/TABLES.sha256` and pinned in `experiments/t3_decomp/outside_forms.py`. Practice read K22
+    (entry (ll)): valid, three tries (T3 60), outcome "no file: nothing qualifies"; it missed the bar by 0.02 in one
+    cell. Two workflows follow (entry (mm)): `t3-outside-table-exponents` (task wb840flet: plan, challenge, build and
+    review row K23, the same table at larger exponents with shuffled controls; branch `campaign/t3-k23`) and
+    `t3-outside-knockouts-more-sources` (task wpuefr322: archive blockers and an unfiltered-matrix intake on branch
+    `campaign/t3-ext-3`, plus a hunt and a reviewed design for bulk whole-embryo knockout data). After a ready review:
+    merge, add the datasets (two readers read every pinned record; register row first), rerun `run_dgx.sh "$PWD" all
+    "<every pinned accession>"`, write the new listing and pins, place the next row before its run. Held on the first
+    reader's doubt: GSE246181 and GSE317197. GSE299068 (Kmt2d) is a low-odds candidate left for the next batch.
+  - **T1 outside atlases.** The second fix round was verified NOT READY (the stage parser again). Third round in
+    flight (task wmbo8t1ua, branch `campaign/t1-multi-atlas-3`): pinned samples by the hash of the full verbatim
+    record as the first line, the parser as a second line. When ready: merge, sync, plan run (metadata only,
+    destination `~/v/vec-ext/t1`), two readers, pins and clearances, derive and freeze, register rows, fetch, load,
+    tables; then builder options and practice rows. A file that carries the composition table needs one short question
+    to the captain (closed lever). Open point: the atlas in use (X002) was never read under the stricter plug-day
+    rule; read its series record at the plan run and amend the register row.
+  - **Queued, not started:** T1's practice row D (needs its arm written; low committed odds; it runs rather than being
+    pruned); the hedge file F and the advance file E only at the captain's specific word.
+  - **Tries:** T1 413, embryo 76 (E49 running), heart 80, T3 60. **Scratch hand-backs** (session scratchpad `lift8/`):
+    t3x_widen, t3x_stage2, t1_atlas_fix, embryo_shape, k22_row, e49_row.
+
+- **State at 2026-11-20, 16:42 UTC (superseded above where they differ).** Decision log
   2026-11-20 (m) to (v); `docs/S2_RULES.md`, the notes and amendments of 2026-11-20.
   - **Handed to the captain, no score reported yet** (uploads are his acts; paths under the repository):
     T1 `runs/manual_upload/T1_s2rcA.h5ad` (76865826f5a3741c7585f81c4241048ca1a95b5791ebb3c8feb1f2b536678ce4) then
