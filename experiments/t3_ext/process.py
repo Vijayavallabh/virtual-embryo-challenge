@@ -30,6 +30,10 @@
       two streamed passes (read_raw_sample), the ONE fixed cell call of t3x_common.raw_cell_call keeps its cells, and
       the ordinary per-cell rule and barcode cap then apply to them; QC.json holds raw_cell_call (the rule and each
       raw sample's record) and each unit's QC raw_called and raw_called_samples. Nothing else downstream differs.
+      Stage 8: a unit whose samples are not all raw-called or all filtered is refused (a second guard behind
+      fetch.check_unit_forms); a raw-called unit's QC holds raw_call_arms, the per-arm medians of the cutoff, the cells
+      called and the UMI share in called cells and their knockout-to-control ratios (a record only); a matrix line
+      that is not three fields, and more than 1,000 comment lines before the size line, are refused.
 
 The rules (constants in t3x_common.py, fixed 2026-11-20, none from a score):
   * Cells: stage capped at E9.5 (the T1 window applied to every cell); fewer than 200 detected genes is not a cell;
@@ -368,6 +372,7 @@ def _none_count(label: str, n_libs: int, unit: dict) -> None:
 
 RAW_CHUNK_BYTES = 64 * 1024 ** 2   # decompressed matrix bytes parsed per block
 RAW_MAX_LINE = 1024 ** 2           # a matrix line longer than this refuses the file
+RAW_MAX_COMMENT_LINES = 1000       # stage 8: more comment or empty lines before the size line refuse the file
 
 
 def _decompressed(fh, name: str):
@@ -392,11 +397,17 @@ def _mtx_header(fh, label: str) -> tuple[int, int, int]:
     if (len(head) != 5 or head[0] != "%%matrixmarket" or head[1:3] != ["matrix", "coordinate"]
             or head[3] not in ("integer", "real") or head[4] != "general"):
         raise Refused(f"{label}: the matrix is not a MatrixMarket coordinate integer or real general file: refused")
+    skipped = 0
     while True:
         line = fh.readline(RAW_MAX_LINE)
         if not line:
             raise Refused(f"{label}: the matrix has no size line: refused")
         if line.startswith(b"%") or not line.strip():
+            # stage 8 (the first reviewer of ec86a1b, lesser point 5): a bounded comment block
+            skipped += 1
+            if skipped > RAW_MAX_COMMENT_LINES:
+                raise Refused(f"{label}: more than {RAW_MAX_COMMENT_LINES} comment or empty lines before the size "
+                              "line: refused")
             continue
         parts = line.split()
         if len(parts) != 3 or not all(p.isdigit() for p in parts):
@@ -409,11 +420,20 @@ def _parse_entries(block: bytes, label: str, shape: tuple[int, int]) -> tuple[np
     range or a negative or non-finite value."""
     if not block.strip():
         return np.zeros(0, np.int64), np.zeros(0, np.int64), np.zeros(0)
+    # stage 8 (the first reviewer of ec86a1b, lesser point 1): read with no column names, so a line of four fields is
+    # refused rather than its first field taken as an index; ragged rows already raise ParserError
     try:
-        df = pd.read_csv(io.BytesIO(block), sep=r"\s+", header=None, names=["r", "c", "v"],
-                         dtype={"r": np.int64, "c": np.int64, "v": np.float64}, engine="c")
+        df = pd.read_csv(io.BytesIO(block), sep=r"\s+", header=None, engine="c")
     except (ValueError, pd.errors.ParserError):
         raise Refused(f"{label}: a matrix line is not 'feature barcode value': refused") from None
+    if df.shape[1] != 3:
+        raise Refused(f"{label}: a matrix line is not 'feature barcode value': refused")
+    df.columns = ["r", "c", "v"]
+    # the two indices must parse as integers (a '1.5' or a missing field is refused, never truncated or filled)
+    if df.isna().any().any() or not (pd.api.types.is_integer_dtype(df["r"]) and pd.api.types.is_integer_dtype(df["c"])
+            and (pd.api.types.is_integer_dtype(df["v"]) or pd.api.types.is_float_dtype(df["v"]))):
+        raise Refused(f"{label}: a matrix line is not 'feature barcode value': refused")
+    df = df.astype({"r": np.int64, "c": np.int64, "v": np.float64})
     r, c, v = df["r"].to_numpy() - 1, df["c"].to_numpy() - 1, df["v"].to_numpy()
     if df.isna().any().any() or (r < 0).any() or (r >= shape[0]).any() or (c < 0).any() or (c >= shape[1]).any() \
             or (v < 0).any() or not np.isfinite(v).all():
@@ -485,9 +505,13 @@ def _raw_from(stream, label: str):
         fh.close()
     called, rec = cm.raw_cell_call(totals)
     n = rec["cells_called"]
+    ct = totals[called]
     rec = {"barcodes_in_file": n_b, "barcodes_with_any_count": int(anyc.sum()), **rec,
            "umi_share_called": float(totals[called].sum() / totals.sum()) if totals.sum() > 0 else 0.0,
-           "features": n_f, "entries": nnz}
+           "features": n_f, "entries": nnz,
+           # stage 8 (the second reviewer of ec86a1b, lesser point 1): records only, read by no guard
+           **{f"called_total_p{q}": (float(np.percentile(ct, q)) if len(ct) else None) for q in (5, 25, 50)},
+           "called_under_twice_cutoff": int((ct < 2 * rec["cutoff"]).sum())}
     if n < cm.RAW_MIN_CELLS:
         raise Refused(f"{label}: the fixed cell call keeps {n} cells, fewer than {cm.RAW_MIN_CELLS}: refused")
     if n > cm.MAX_BARCODES:
@@ -917,6 +941,13 @@ def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Pat
             add(lab, gsm, M, symbols, types, bcs, folder=folder)
             rec["libraries"].append({"label": lab, "folder": folder, "barcodes": len(kept)})
         unit_recs.append(rec)
+    # stage 8 (the first reviewer of ec86a1b, blocker 2; the second reviewer's lesser point 2): the second guard
+    # behind fetch.check_unit_forms. Both arms of a unit are read the same way, before any group call is made
+    for u in units:
+        members = u["ko"] + u["control"]
+        n_raw = sum(g in raw_rec for g in members)
+        if 0 < n_raw < len(members):
+            raise Refused(f"{u['gene']}: an unfiltered and a filtered library in one unit: refused")
     present = np.logical_and.reduce(presence)
     C = sparse.vstack(blocks).tocsr()
     obs = pd.concat(obs_parts)
@@ -976,6 +1007,8 @@ def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Pat
             # stage 7: the one flag downstream that says a library was called from an unfiltered matrix
             uqc["raw_called_samples"] = sorted(g for g in u["ko"] + u["control"] if g in raw_rec)
             uqc["raw_called"] = bool(uqc["raw_called_samples"])
+            if uqc["raw_called"]:
+                uqc["raw_call_arms"] = raw_call_arms(raw_rec, u["ko"], u["control"])
         if cm.control_series(ds):
             uqc["d"] = meta["d"]
             uqc["control_source"] = meta["control_source"] = (
@@ -986,6 +1019,21 @@ def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Pat
     qc["status"] = "ok" if any(v["status"] == "ok" for v in qc["units"].values()) else "left_out"
     cm.dump_json(qc, adir / "QC.json")
     return qc
+
+
+RAW_ARM_KEYS = ("cutoff", "cells_called", "umi_share_called")
+
+
+def raw_call_arms(raw_rec: dict[str, dict], ko: list[str], control: list[str]) -> dict:
+    """Stage 8 (the second reviewer of ec86a1b, lesser point 1): for a unit read through the fixed cell call, the
+    per-arm medians over its samples of the cutoff, the cells called and the share of gene-expression UMIs in called
+    cells, and their knockout-to-control ratios (None where the control median is 0). A record only: no guard and no
+    threshold reads it."""
+    med = {arm: {k: float(np.median([raw_rec[g][k] for g in gs])) for k in RAW_ARM_KEYS}
+           for arm, gs in (("ko", ko), ("control", control))}
+    ratio = {k: (med["ko"][k] / med["control"][k] if med["control"][k] else None) for k in RAW_ARM_KEYS}
+    return {"median_ko": med["ko"], "median_control": med["control"], "ko_to_control": ratio,
+            "note": "a record only: no guard or threshold reads it"}
 
 
 def _git_head() -> dict:

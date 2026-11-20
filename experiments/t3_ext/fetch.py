@@ -61,8 +61,13 @@ Stage 6 (README "Series-level files", "A control from a sister series"):
 
 Stage 7 (README "Unfiltered per-sample matrices"): a dataset's raw_matrices declaration names, by pattern, the samples'
 OWN unfiltered matrix files; for such a file alone the unfiltered-matrix deny term is lifted (denied), every other term
-stays, and a sample that also lists a filtered file of its own uses that one. A named control series is accepted only
-when its record and the own series' share an institute and a contact or publication value (sister_match).
+stays. A named control series is accepted only when its record and the own series' share an institute and a contact
+or publication value (sister_match).
+
+Stage 8 (campaign/t3-ext-4, the blockers of the first review of ec86a1b): a raw file is offered only when it is the
+sample's ONLY file of its own folder (sample_files); verify_pins refuses a unit whose knockout and control samples are
+not all read the same way (check_unit_forms); a sister series is accepted only when the two records do not cite
+different publications and share a publication or are linked as super- or sub-series (sister_match).
 
 Stage 5 parsing: a SOFT text is split on "\\n" only; a line holding another line or paragraph separator, a field name
 that is not a plain GEO key, or a block accession that is not GSM/GSE digits refuses the dataset, its text withheld.
@@ -396,10 +401,13 @@ def sample_files(ds: dict, rec: dict, gsm: str) -> tuple[list[dict], list[dict]]
     pats = [re.compile(p, re.IGNORECASE) for p in ds.get("sample_file_patterns") or []]
     raw_pats = cm.raw_patterns(ds)
     ok, other = [], []
+    own_names: list[str] = []   # stage 8: every link into the sample's own folder, whatever its reason
     for f in [v for k in sorted(rec) if k.startswith("supplementary_file") for v in rec[k]]:
         if f.upper() == "NONE":
             continue
         name = Path(urllib.parse.urlparse(f).path).name
+        if in_own_folder(gsm, f):
+            own_names.append(name)
         named = _named_held(ds, f)
         u, why = own_file(gsm, f)
         # stage 7: a file of the sample's own folder that a raw_matrices pattern names is an unfiltered matrix read
@@ -415,12 +423,30 @@ def sample_files(ds: dict, rec: dict, gsm: str) -> tuple[list[dict], list[dict]]
             other.append({"name": name, "reason": why})
         else:
             ok.append({"name": name, "url": u, **({"raw": True} if raw else {})})
-    # stage 7: a sample that also lists a filtered (not raw) file of its own uses that one; its raw files are refused
-    if any(f.get("raw") for f in ok) and any(not f.get("raw") for f in ok):
-        other += [{"name": f["name"], "reason": "an unfiltered matrix of a sample that lists a filtered file of its "
-                   "own: the filtered one is used"} for f in ok if f.get("raw")]
-        ok = [f for f in ok if not f.get("raw")]
-    return ok, other
+    # stage 8 (the first reviewer of ec86a1b, blocker 1): an unfiltered matrix is offered only when it is the sample's
+    # ONLY supplementary file of its own folder. When the sample lists any other file of its own, whatever that file's
+    # reason (offered, denied, unmatched, an h5 ...), each raw file is never fetched. A sample whose filtered form
+    # cannot be read is then not pinnable: the safe outcome.
+    kept = []
+    for f in ok:
+        rest = list(own_names)
+        if f.get("raw"):
+            rest.remove(f["name"])
+        if f.get("raw") and rest:
+            other.append({"name": f["name"], "reason": f"an unfiltered matrix of a sample that lists other files of "
+                          f"its own ({', '.join(rest)}): taken only when it is the sample's only file"})
+        else:
+            kept.append(f)
+    return kept, other
+
+
+def in_own_folder(gsm: str, url: str) -> bool:
+    """True if the link's path lies in the sample's own GEO folder (/geo/samples/<stub>/<gsm>/suppl/), on any host
+    and whatever its file name: the files 'of its own' that blocker 1 of ec86a1b counts."""
+    if not re.fullmatch(r"GSM\d+", gsm):
+        return False
+    path = urllib.parse.urlparse(url.strip()).path
+    return path.startswith(f"/geo/samples/{sample_stub(gsm)}/{gsm}/suppl/")
 
 
 def series_stub(gse: str) -> str:
@@ -526,12 +552,13 @@ def screen_all(ds: dict, metas: dict[str, dict]) -> dict:
 
 
 def held_set(ds: dict) -> set[str]:
-    """The held series for this dataset's checks: what load_datasets derived (t3x_common.held_series) and
-    NEVER_FETCH. A record without the derived list is refused (every record comes through t3x_common.dataset)."""
+    """The held series for this dataset's checks: what load_datasets derived (t3x_common.held_series), NEVER_FETCH
+    and HELD_EXTRA (stage 8). A record without the derived list is refused (every record comes through
+    t3x_common.dataset)."""
     if not isinstance(ds.get("held_series"), list):
         raise Refused(f"{ds.get('accession')}: the record carries no derived held set: load it through "
                       "t3x_common.dataset")
-    return set(ds["held_series"]) | set(cm.NEVER_FETCH)
+    return set(ds["held_series"]) | set(cm.NEVER_FETCH) | set(cm.HELD_EXTRA)
 
 
 def series_membership(ds: dict, rec: dict) -> str | None:
@@ -562,18 +589,48 @@ def pin_blocker(ds: dict, rec: dict) -> str | None:
 
 # stage 7 (the first reviewer of 853b214, blocker 2, part 2): a sister series is accepted only when the two series'
 # own family SOFT records share a contact_institute value AND at least one value of these fields. Values are compared
-# exactly as parse_soft gives them (stripped, case kept): the stricter reading of "share".
+# exactly as parse_soft gives them (stripped, case kept): the stricter reading of "share". Stage 8 adds the
+# publication and repository-link rule (sister_match).
 SISTER_INSTITUTE = "contact_institute"
 SISTER_ALSO = ("contact_name", "contact_laboratory", "pubmed_id")
 
 
-def sister_match(own: dict, sister: dict) -> dict[str, list[str]]:
-    """The values the dataset's own series record and the sister series' record share: {field: [values]} with
-    contact_institute and at least one of contact_name, contact_laboratory or pubmed_id; else Refused. `own` and
-    `sister` are the two series' fields (the 'Series_' prefix removed)."""
-    def shared(k: str) -> list[str]:
-        return sorted({v for v in own.get(k, []) if v.strip()} & {v for v in sister.get(k, []) if v.strip()})
+_RELATION = re.compile(r"(SuperSeries|SubSeries) of: (GSE\d+)")
+SISTER_LINK = "link"
 
+
+def _relations(fields: dict) -> list[tuple[str, str]]:
+    """(kind, series) of every relation value of a series record of the exact GEO form 'SuperSeries of: GSEnnn' or
+    'SubSeries of: GSEnnn' (case kept); other relation values are ignored."""
+    out = []
+    for v in fields.get("relation", []):
+        m = _RELATION.fullmatch(v.strip())
+        if m:
+            out.append((m.group(1), m.group(2)))
+    return out
+
+
+def sister_match(own: dict, sister: dict, own_acc: str, sister_acc: str) -> dict[str, list[str]]:
+    """The values the dataset's own series record and the sister series' record share, and the link between them:
+    {field: [values], 'link': [how the two series are tied]}; else Refused. `own` and `sister` are the two series'
+    fields (the 'Series_' prefix removed), own_acc and sister_acc their accessions.
+
+    Stage 7 floor: a shared contact_institute value and at least one shared value of contact_name,
+    contact_laboratory or pubmed_id. Stage 8 (the first reviewer of ec86a1b, blocker 3): (a) refused when both records
+    carry pubmed_id values and share none (two publications: not one study); (b) otherwise a shared pubmed_id OR a
+    repository link is required: one record's relation names the other series as its SuperSeries or SubSeries, or
+    both name the same SuperSeries (both 'SubSeries of' one series). A shared institute and contact alone no longer
+    suffice. Values are compared exactly (stripped, case kept)."""
+    def vals(f: dict, k: str) -> set[str]:
+        return {v for v in f.get(k, []) if v.strip()}
+
+    def shared(k: str) -> list[str]:
+        return sorted(vals(own, k) & vals(sister, k))
+
+    pm_own, pm_sis = vals(own, "pubmed_id"), vals(sister, "pubmed_id")
+    if pm_own and pm_sis and not pm_own & pm_sis:
+        raise Refused(f"the two series cite different publications (pubmed_id {sorted(pm_own)} and {sorted(pm_sis)}): "
+                      "not one study")
     inst = shared(SISTER_INSTITUTE)
     also = {k: shared(k) for k in SISTER_ALSO if shared(k)}
     if not inst or not also:
@@ -581,7 +638,19 @@ def sister_match(own: dict, sister: dict) -> dict[str, list[str]]:
                       f"{SISTER_INSTITUTE} value and at least one value of {', '.join(SISTER_ALSO)} (shared: "
                       f"{SISTER_INSTITUTE} {inst or 'none'}; {also or 'nothing else'}): a sister series is not "
                       "accepted on typed text alone")
-    return {SISTER_INSTITUTE: inst, **also}
+    links = [f"shared pubmed_id {p}" for p in shared("pubmed_id")]
+    own_rel, sis_rel = _relations(own), _relations(sister)
+    for who, rel, other in (("own", own_rel, sister_acc), ("control", sis_rel, own_acc)):
+        for kind, s in rel:
+            if s == other:
+                links.append(f"the {who} series record's relation '{kind} of: {s}' names the other series")
+    supers = sorted({s for k, s in own_rel if k == "SubSeries"} & {s for k, s in sis_rel if k == "SubSeries"})
+    links += [f"both are 'SubSeries of: {s}'" for s in supers]
+    if not links:
+        raise Refused("the control series' record and the dataset's own series record share no pubmed_id and no "
+                      "repository link (neither names the other as its SuperSeries or SubSeries, and they name no "
+                      "common SuperSeries): a shared institute and contact alone are not one study")
+    return {SISTER_INSTITUTE: inst, **also, SISTER_LINK: links}
 
 
 def sister_superseries_clash(ds: dict, metas: dict[str, dict]) -> list[str]:
@@ -668,7 +737,8 @@ def plan_from_meta(ds: dict, metas: dict[str, dict]) -> dict:
         out["control_series"] = c
         # stage 7: the code matches the two records before any reader is asked to (blocker 2 of 853b214)
         try:
-            out["control_series_match"] = sister_match(metas[acc]["series"], metas[c["accession"]]["series"])
+            out["control_series_match"] = sister_match(metas[acc]["series"], metas[c["accession"]]["series"], acc,
+                                                       c["accession"])
         except Refused as e:
             sister_refusal = f"control series {c['accession']}: {e}"
         clash = sister_superseries_clash(ds, metas)
@@ -736,7 +806,7 @@ def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
     if c:
         # stage 7: the two series' records must still share the institute and one more contact or publication value,
         # derived again from the stored (or live) series fields, and equal to what the plan table printed
-        got = sister_match(blocks[acc]["fields"], blocks[c["accession"]]["fields"])
+        got = sister_match(blocks[acc]["fields"], blocks[c["accession"]]["fields"], acc, c["accession"])
         if pl.get("control_series_match") != got:
             raise Refused(f"{acc}: the plan's control series match differs from the one the series fields give: plan "
                           "again")
@@ -808,6 +878,7 @@ def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
                                "files": [allowed[f] for f in p["files"]], "metadata_sha256": h, "row": row,
                                "sister": g not in own})
         s["genes"].append(p["gene"])
+    check_unit_forms(pins, per)
     if ds.get("chemistry"):
         for u in cm.pinned_units(pins):
             for k in u["ko"]:
@@ -821,6 +892,23 @@ def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
                                       "or are unreadable")
     verify_series_units(ds, pl, live=live)
     return list(per.values())
+
+
+def read_raw(s: dict) -> bool:
+    """True if a verified pinned sample is read through the fixed cell call (its files are a declared unfiltered
+    matrix); a sample with files [] takes its cells from a pinned series file, which is always filtered."""
+    return bool(s["files"]) and bool(s["files"][0].get("raw"))
+
+
+def check_unit_forms(pins: list[dict], per: dict[str, dict]) -> None:
+    """Stage 8 (the first reviewer of ec86a1b, blocker 2): both arms of a unit are read the same way. A unit whose
+    knockout and control samples are not all unfiltered matrices through the fixed cell call, or all filtered
+    matrices, is refused. A sample of a pinned series file counts as filtered (stricter than the reviewer's line,
+    which left such a sample out)."""
+    for u in cm.pinned_units(pins):
+        if len({read_raw(per[g]) for g in u["ko"] + u["control"]}) > 1:
+            raise Refused(f"{u['gene']}: its knockout and control samples are not all read the same way (unfiltered "
+                          "matrices through the fixed cell call vs filtered matrices): refused")
 
 
 def verify_series_units(ds: dict, pl: dict, live: bool = False) -> list[dict]:

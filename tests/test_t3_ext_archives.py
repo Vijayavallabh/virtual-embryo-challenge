@@ -40,6 +40,8 @@ def _load(name):
 fe, pr, co = _load("fetch"), _load("process"), _load("combine")
 
 ACC, SIS = "GSE910001", "GSE910002"
+SUPER = "GSE910099"   # a SuperSeries both synthetic series name (never screened: no sample lists it)
+LINK = f"both are 'SubSeries of: {SUPER}'"
 HOST = "ftp://ftp.ncbi.nlm.nih.gov/geo"
 PIN = "    pinned: []  # GSE910001\n"
 PLACEHOLDER_CS = """    control_series:
@@ -106,7 +108,9 @@ def _soft(acc, samples, files) -> str:
     lines = [f"^SERIES = {acc}", f"!Series_title = A synthetic series {acc}", "!Series_summary = embryos",
              "!Series_overall_design = one embryo pool per sample", "!Series_contact_name = A,,Person",
              # stage 7: a sister series is accepted only when both records share the institute and a contact
-             "!Series_contact_institute = A Synthetic Institute"]
+             "!Series_contact_institute = A Synthetic Institute",
+             # stage 8: and a publication or a repository link; here both name one SuperSeries
+             f"!Series_relation = SubSeries of: {SUPER}"]
     lines += [f"!Series_supplementary_file = {HOST}/series/{stub}/{acc}/suppl/{f}" for f in files]
     for gsm, rec in samples.items():
         lines.append(f"^SAMPLE = {gsm}")
@@ -846,14 +850,16 @@ def test_blocker_2_a_sister_series_needs_a_shared_institute_and_a_shared_contact
                       drop=("contact_institute", "contact_name"))
     pl = fe.plan(ACC, tmp_path / "d", y, metas=m)
     assert pl["status"] == "ok"
-    assert pl["control_series_match"] == {"contact_institute": ["A Synthetic Institute"], "pubmed_id": ["123"]}
+    assert pl["control_series_match"] == {"contact_institute": ["A Synthetic Institute"], "pubmed_id": ["123"],
+                                          "link": ["shared pubmed_id 123", LINK]}
     for s in (ACC, SIS):
         text = (tmp_path / "d" / "meta" / ACC / f"plan_table_{s}.txt").read_text()
         assert ("the code matched (shared by the own series' and the control series' records): contact_institute = "
                 "A Synthetic Institute") in text and "pubmed_id = 123" in text
-    # the shared institute and contact name of the fixtures: passes
+        assert f"link = shared pubmed_id 123, {LINK}" in text      # stage 8: which link matched
+    # the shared institute and contact name of the fixtures, with their common SuperSeries: passes
     assert _plan(y, tmp_path / "e", named=True)["control_series_match"] == {
-        "contact_institute": ["A Synthetic Institute"], "contact_name": ["A,,Person"]}
+        "contact_institute": ["A Synthetic Institute"], "contact_name": ["A,,Person"], "link": [LINK]}
 
 
 def test_blocker_2_the_match_is_derived_again_when_pins_are_verified(tmp_path):
@@ -882,6 +888,65 @@ def test_a_superseries_of_the_own_series_listed_under_the_sister_is_refused(tmp_
                       extra_series={"GSE910003": fe.parse_soft(_soft("GSE910003", sup, []))})
     pl = fe.plan(ACC, tmp_path / "d", y, metas=m)
     assert pl["status"] == "refused" and "['GSE910003'] hold samples of the dataset's own series" in pl["reason"]
+
+
+def test_stage8_blocker_3_a_sister_of_another_study_of_the_same_lab_is_refused(tmp_path):
+    """The first reviewer of ec86a1b: own record with contact_institute 'Inst A', contact_name 'X,,Y', pubmed_id 111;
+    sister record with the same institute and contact_name but pubmed_id 222. sister_match accepted it and returned
+    {contact_institute: ['Inst A'], contact_name: ['X,,Y']}. Now two different PubMed ids refuse; a shared contact with
+    no PubMed or relation link refuses; a shared SuperSeries, a relation naming the other series, or a shared PubMed id
+    passes, and the match says which link it found."""
+    own = {"contact_institute": ["Inst A"], "contact_name": ["X,,Y"], "pubmed_id": ["111"]}
+    sis = {"contact_institute": ["Inst A"], "contact_name": ["X,,Y"], "pubmed_id": ["222"]}
+    with pytest.raises(cm.Refused, match="cite different publications"):
+        fe.sister_match(own, sis, "GSE1", "GSE2")
+    # a SuperSeries link does not rescue two different publications
+    rel = {"relation": ["SubSeries of: GSE9"]}
+    with pytest.raises(cm.Refused, match="cite different publications"):
+        fe.sister_match({**own, **rel}, {**sis, **rel}, "GSE1", "GSE2")
+    # a shared contact with no PubMed id on either side and no relation link: refused
+    bare_own = {k: v for k, v in own.items() if k != "pubmed_id"}
+    bare_sis = {k: v for k, v in sis.items() if k != "pubmed_id"}
+    with pytest.raises(cm.Refused, match="share no pubmed_id and no repository link"):
+        fe.sister_match(bare_own, bare_sis, "GSE1", "GSE2")
+    # one side with a PubMed id, the other without, and no relation link: refused too
+    with pytest.raises(cm.Refused, match="share no pubmed_id and no repository link"):
+        fe.sister_match(own, bare_sis, "GSE1", "GSE2")
+    # relation values that are not GEO's exact form give no link
+    for v in ("subseries of: GSE9", "SubSeries of GSE9", "SubSeries of: GSE9 and GSE8"):
+        with pytest.raises(cm.Refused, match="no repository link"):
+            fe.sister_match({**bare_own, "relation": [v]}, {**bare_sis, "relation": [v]}, "GSE1", "GSE2")
+    # the links that pass, each named
+    assert fe.sister_match({**bare_own, **rel}, {**bare_sis, **rel}, "GSE1", "GSE2")["link"] == [
+        "both are 'SubSeries of: GSE9'"]
+    got = fe.sister_match({**bare_own, "relation": ["SuperSeries of: GSE2"]}, bare_sis, "GSE1", "GSE2")
+    assert got == {"contact_institute": ["Inst A"], "contact_name": ["X,,Y"],
+                   "link": ["the own series record's relation 'SuperSeries of: GSE2' names the other series"]}
+    got = fe.sister_match(bare_own, {**bare_sis, "relation": ["SubSeries of: GSE1"]}, "GSE1", "GSE2")
+    assert got["link"] == ["the control series record's relation 'SubSeries of: GSE1' names the other series"]
+    # a relation naming a third series is no link between these two
+    with pytest.raises(cm.Refused, match="no repository link"):
+        fe.sister_match({**bare_own, "relation": ["SuperSeries of: GSE7"]}, bare_sis, "GSE1", "GSE2")
+    assert fe.sister_match(own, {**sis, "pubmed_id": ["111"]}, "GSE1", "GSE2")["link"] == ["shared pubmed_id 111"]
+    # the plan replays it: the fixtures' records with two PubMed ids refuse, the reason stated; without their common
+    # SuperSeries and with no PubMed id they refuse too
+    y = _yaml(tmp_path, named=True)
+    m = _sister_metas(own_extra=["!Series_pubmed_id = 111\n"],
+                      sister_extra=["!Series_contact_institute = A Synthetic Institute\n", "!Series_pubmed_id = 222\n"])
+    pl = fe.plan(ACC, tmp_path / "a", y, metas=m)
+    assert pl["status"] == "refused" and "cite different publications" in pl["reason"]
+    m = _sister_metas(sister_extra=["!Series_contact_institute = A Synthetic Institute\n"],
+                      drop=("contact_institute", "relation"))
+    pl = fe.plan(ACC, tmp_path / "b", y, metas=m)
+    assert pl["status"] == "refused" and "no repository link" in pl["reason"]
+    # a stored plan whose sister block loses its link is refused when the pins are verified
+    (tmp_path / "c").mkdir()
+    y2, dest = _pinned_yaml(tmp_path / "c", named=True)
+    assert _plan(y2, dest, named=True)["status"] == "ok"
+    bad = json.loads((dest / "meta" / ACC / "plan.json").read_text())
+    bad["series"][SIS]["fields"].pop("relation")
+    with pytest.raises(cm.Refused, match="no repository link"):
+        fe.verify_pins(cm.dataset(ACC, y2), bad)
 
 
 SIS_ARCH = "GSE910002_WT_E8.5_3.tar.gz"

@@ -25,7 +25,8 @@
 #        per-sample matrices"), streamed in two passes, never unpacked. A raw archive may be several GiB: the
 #        --max-gb 30 cap covers it too (raise it only in a reviewed commit). Name GSE270969 explicitly, e.g.
 #        run_dgx.sh "$PWD" plan "GSE270969", while it is not in the default list below.
-#   ACCESSIONS: a quoted, space-separated subset (default: the five cleared datasets).
+#   ACCESSIONS: a quoted, space-separated subset (default: four cleared datasets; GSE205117 left the list in stage 8:
+#        it is held now and on the team's held list, t3x_common.HELD_EXTRA).
 #   WT (environment, optional): the WT E8.75 file, read only; default CHECKOUT/data/raw/T2/E8.75.h5ad.
 #
 # Start it detached and wait with a background poller for ~/v/vec-ext/t3/logs/ALL.exit:
@@ -33,7 +34,7 @@
 set -u
 CHECKOUT=${1:?usage: run_dgx.sh CHECKOUT [plan|all] [ACCESSIONS]}
 MODE=${2:-plan}
-ACCS=${3:-"GSE168768 GSE186934 GSE205117 GSE204906 GSE137337"}
+ACCS=${3:-"GSE168768 GSE186934 GSE204906 GSE137337"}
 D=$HOME/v/vec-ext/t3
 TMP=$HOME/v/scratch/t3ext-tmp
 mkdir -p "$D/logs" "$TMP"

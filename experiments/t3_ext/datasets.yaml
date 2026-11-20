@@ -7,7 +7,8 @@
 #         held_phenocopy     not fetched: DATA_POLICY's genotype clause ("a perturbation that phenocopies them counts as
 #                            held out") was not quoted to the captain; it waits for one priced question to him (Wls) or
 #                            the stricter reading of the Gata4 validation genotype (Hand2, Mef2c). Flip to cleared only
-#                            by a commit that cites his ruling.
+#                            by a commit that cites his ruling. It is also the status of a registered dataset on the
+#                            team's held list (t3x_common.HELD_EXTRA, stage 8): GSE205117.
 #         excluded_design    not fetched: a chimera with no wild-type-chimera second difference (the challenger's change
 #                            3: strain cis-eQTLs of ESC-derived cells against host cells would read as knockout effects).
 #
@@ -52,7 +53,8 @@ datasets:
 
   # ------------------------------------------------------------------------------------------------- (a) canonical Wnt
   - accession: GSE205117
-    status: cleared
+    status: held_phenocopy
+    status_reason: "the two readers did not clear its review term (decision log 2026-11-20)"
     tier: wnt
     study: GSE205117
     kind: "T (Brachyury) F0 CRISPR knockout, whole embryo, 10x Multiome (RNA part only)"

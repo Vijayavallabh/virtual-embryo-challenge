@@ -9,6 +9,7 @@ import importlib.util
 import inspect
 import io
 import json
+import re
 import shutil
 import sys
 import tarfile
@@ -91,10 +92,10 @@ SAMPLES = {"GSM9301": _sample("GSM9301", "Zzz KO E8.5 1", "Zzz -/-", [raw_name("
                                "GSM9304_features.tsv.gz"])}
 
 
-def _soft() -> str:
+def _soft(samples=None) -> str:
     lines = [f"^SERIES = {ACC}", f"!Series_title = A synthetic series {ACC}", "!Series_summary = embryos",
              "!Series_overall_design = one embryo per library", "!Series_contact_name = A,,Person"]
-    for gsm, rec in SAMPLES.items():
+    for gsm, rec in (samples or SAMPLES).items():
         lines.append(f"^SAMPLE = {gsm}")
         for k, vals in rec.items():
             for v in (vals if isinstance(vals, list) else [vals]):
@@ -102,8 +103,8 @@ def _soft() -> str:
     return "\n".join(lines) + "\n"
 
 
-def _plan(y, dest):
-    return fe.plan(ACC, dest, y, metas={ACC: fe.parse_soft(_soft())})
+def _plan(y, dest, samples=None):
+    return fe.plan(ACC, dest, y, metas={ACC: fe.parse_soft(_soft(samples))})
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -219,7 +220,12 @@ def test_the_cell_call_equals_a_hand_computation_on_a_library_with_an_empty_drop
     assert r == {"barcodes_in_file": len(names), "barcodes_with_any_count": any_count, "m": pytest.approx(m_hand),
                  "cutoff": pytest.approx(cutoff_hand), "cells_called": 640,
                  "umi_share_called": pytest.approx(gex_tot[keep].sum() / gex_tot.sum()),
-                 "features": len(PANEL) + EXTRA + 1, "entries": int((X > 0).sum())}
+                 "features": len(PANEL) + EXTRA + 1, "entries": int((X > 0).sum()),
+                 # stage 8 records, by hand: the called totals are 40 at 1170 and the 600 cells at 6000 + 10 i;
+                 # positions 0.05, 0.25, 0.5 x 639 fall at 1170, cell 119.75 and cell 279.5; the 40 border barcodes
+                 # are under twice the cutoff (2338.02)
+                 "called_total_p5": 1170.0, "called_total_p25": pytest.approx(7197.5),
+                 "called_total_p50": pytest.approx(8795.0), "called_under_twice_cutoff": 40}
     # a loose raw triple reads the same
     for k, v in _triple_bytes(X, names).items():
         (tmp_path / f"GSM2_raw_feature_bc_matrix_{k}").write_bytes(v)
@@ -359,8 +365,9 @@ def test_a_sample_with_both_forms_uses_the_filtered_one(tmp_path):
     ok, other = fe.sample_files(ds, SAMPLES["GSM9304"], "GSM9304")
     assert [f["name"] for f in ok] == ["GSM9304_matrix.mtx.gz", "GSM9304_barcodes.tsv.gz", "GSM9304_features.tsv.gz"]
     assert not any(f.get("raw") for f in ok)
-    assert other == [{"name": raw_name("GSM9304"), "reason": "an unfiltered matrix of a sample that lists a filtered "
-                      "file of its own: the filtered one is used"}]
+    assert other == [{"name": raw_name("GSM9304"), "reason": "an unfiltered matrix of a sample that lists other files "
+                      "of its own (GSM9304_matrix.mtx.gz, GSM9304_barcodes.tsv.gz, GSM9304_features.tsv.gz): taken "
+                      "only when it is the sample's only file"}]
     pl = _plan(y, tmp_path / "d")
     text = (tmp_path / "d" / "meta" / ACC / f"plan_table_{ACC}.txt").read_text()
     assert "# RAW MATRICES (datasets.yaml raw_matrices)" in text and "the one fixed cell call" in text
@@ -460,9 +467,22 @@ def test_the_same_cell_call_is_applied_to_both_arms_and_recorded(tmp_path, monke
         assert rec["m"] == pytest.approx(m) and rec["cutoff"] == pytest.approx(cutoff)
         assert rec["cells_called"] == sum(called) == 640
         assert set(rec) == {"barcodes_in_file", "barcodes_with_any_count", "m", "cutoff", "cells_called",
-                            "umi_share_called", "features", "entries"}
+                            "umi_share_called", "features", "entries", "called_total_p5", "called_total_p25",
+                            "called_total_p50", "called_under_twice_cutoff"}
+        # stage 8 records (the second reviewer of ec86a1b, lesser point 1), by hand
+        ct = np.array([t for t, c in zip(totals[gsm], called, strict=True) if c], float)
+        for q in (5, 25, 50):
+            assert rec[f"called_total_p{q}"] == pytest.approx(float(np.percentile(ct, q)))
+        assert rec["called_under_twice_cutoff"] == int((ct < 2 * cutoff).sum())
     u = qc["units"]["Zzz"]
     assert u["status"] == "ok" and u["raw_called"] is True and u["raw_called_samples"] == ["GSM9301", "GSM9302"]
+    # stage 8: the per-arm medians of the call and their knockout-to-control ratios, a record only
+    arms = u["raw_call_arms"]
+    for k in ("cutoff", "cells_called", "umi_share_called"):
+        assert arms["median_ko"][k] == pytest.approx(rc["samples"]["GSM9301"][k])
+        assert arms["median_control"][k] == pytest.approx(rc["samples"]["GSM9302"][k])
+        assert arms["ko_to_control"][k] == pytest.approx(rc["samples"]["GSM9301"][k] / rc["samples"]["GSM9302"][k])
+    assert "record only" in arms["note"]
     # downstream the called library is an ordinary one: the per-cell rule ran on the called cells only, the unit
     # file has no raw field, and the pins hash binds the declaration
     assert set(qc["cells_dropped_low_genes"]) == {"GSM9301", "GSM9302"}
@@ -515,3 +535,174 @@ def test_the_readme_and_launcher_describe_the_unfiltered_intake():
               "barcodes with any count"):
         assert s in text, s
     assert "raw_matrices" in (EXT / "run_dgx.sh").read_text()
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# stage 8 (campaign/t3-ext-4): the blockers of the first review of ec86a1b, each replaying the reviewer's reproduction,
+# and the lesser points of both reviews
+
+
+FILTERED_NAMES = ("GSM9301_E8_5_lib_filtered_feature_bc_matrix.h5",
+                  "GSM9301_E8_5_lib_filtered_feature_bc_matrix.tar.gz", "GSM9301_filtered_matrix.tar.gz")
+
+
+@pytest.mark.parametrize("filtered", FILTERED_NAMES)
+def test_stage8_blocker_1_a_raw_file_beside_any_other_file_of_its_own_is_never_fetched(tmp_path, filtered):
+    """The reviewer's reproduction: with GSE270969's own two patterns and its raw declaration, a sample listing its raw
+    archive together with a filtered h5, a filtered archive or 'GSM9301_filtered_matrix.tar.gz' came back with ok =
+    [the raw archive]: the filtered file, which the patterns do not offer, was put under 'other' first. Now the raw
+    file is offered only when it is the sample's only file of its own."""
+    rec = _sample("GSM9301", "Zzz KO E8.5 1", "Zzz -/-", [raw_name("GSM9301"), filtered])
+    ds = cm.load_datasets()["GSE270969"]          # the committed record: its own patterns and declaration
+    ok, other = fe.sample_files(ds, rec, "GSM9301")
+    assert ok == []
+    assert {o["name"]: o["reason"] for o in other}[raw_name("GSM9301")] == (
+        f"an unfiltered matrix of a sample that lists other files of its own ({filtered}): taken only when it is the "
+        "sample's only file")
+    # the plan table lists the raw file as never fetched, with that reason, and nothing of the sample can be pinned
+    y = _yaml(tmp_path)
+    pl = _plan(y, tmp_path / "d", samples={**SAMPLES, "GSM9301": rec})
+    assert pl["status"] == "ok"
+    row = {r["accession"]: r for r in pl["tables"][ACC]}["GSM9301"]
+    assert row["files"] == [] and raw_name("GSM9301") in {o["name"] for o in row["other_files"]}
+    text = (tmp_path / "d" / "meta" / ACC / f"plan_table_{ACC}.txt").read_text()
+    assert f"{raw_name('GSM9301')} (an unfiltered matrix of a sample that lists other files of its own" in text
+    with pytest.raises(cm.Refused, match="no per-sample file"):
+        fe.pin_template(ACC, tmp_path / "d", "ko", "Zzz", ["GSM9301"], datasets=y)
+
+
+def test_stage8_blocker_1_two_raw_files_or_any_link_of_its_own_refuse_and_a_lone_raw_file_is_offered():
+    ds = cm.load_datasets()["GSE270969"]
+    two = _sample("GSM9301", "x", "y", [raw_name("GSM9301"), "GSM9301_second_raw_feature_bc_matrix.tar.gz"])
+    ok, other = fe.sample_files(ds, two, "GSM9301")
+    assert ok == [] and len(other) == 2 and all("other files of its own" in o["reason"] for o in other)
+    # a file of its own whose name breaks the plain-name rule still counts as a file of its own
+    odd = _sample("GSM9301", "x", "y", [raw_name("GSM9301"), "GSM9301_notes file.txt"])
+    ok, other = fe.sample_files(ds, odd, "GSM9301")
+    assert ok == [] and any("other files of its own" in o["reason"] for o in other)
+    # a link into another folder is not a file of its own: the raw file stays offered (that link is never fetched)
+    elsewhere = _sample("GSM9301", "x", "y", [raw_name("GSM9301")])
+    elsewhere["supplementary_file_2"] = [f"{HOST}/series/GSE920nnn/{ACC}/suppl/{ACC}_RAW.tar"]
+    ok, other = fe.sample_files(ds, elsewhere, "GSM9301")
+    assert [f["name"] for f in ok] == [raw_name("GSM9301")] and ok[0]["raw"] is True
+    assert other == [{"name": f"{ACC}_RAW.tar", "reason": "url not under the sample's own GEO folder"}]
+    alone = _sample("GSM9301", "x", "y", [raw_name("GSM9301")])
+    assert [f.get("raw") for f in fe.sample_files(ds, alone, "GSM9301")[0]] == [True]
+
+
+def _mixed_setup(tmp_path, monkeypatch):
+    """The reviewer's synthetic study: knockout GSM9301 pinned to its raw archive, control GSM9304 (which lists both
+    forms) on its filtered triple."""
+    rng = np.random.default_rng(17)
+    mu = _mu(rng)
+    wt = tmp_path / "wt.h5ad"
+    wt.write_bytes(b"stand-in for the WT reference")
+    refp = tmp_path / "ref" / "refstats.npz"
+    tb.save_ref_stats({"genes": PANEL, "groups": GROUPS, "shares": {"CM": 0.2, "Endoderm": 0.3, "Neural": 0.5},
+                       "mu": mu, "count": {"CM": 20, "Endoderm": 30, "Neural": 50}}, refp, cm.sha256_file(wt))
+    y = _yaml(tmp_path)
+    dest = tmp_path / "dest"
+    assert _plan(y, dest)["status"] == "ok"
+    before = json.loads((dest / "meta" / ACC / "plan.json").read_text())
+    block = (fe.pin_template(ACC, dest, "ko", "Zzz", ["GSM9301"], datasets=y)
+             + fe.pin_template(ACC, dest, "control", "Zzz", ["GSM9304"], datasets=y))
+    y.write_text(y.read_text().replace(PIN, "    pinned_series:\n" + fe.series_pin_template(ACC, dest, datasets=y)
+                                       + "    pinned:\n" + block))
+    staging = tmp_path / "staging"
+    fold = np.ones(len(PANEL))
+    fold[:4] = 3.0
+    X, names, _ = _library(rng, mu, fold=fold, n_empty=3000, n_ab=5)
+    _raw_archive(staging / raw_name("GSM9301"), X, names)
+    X, names, _ = _library(rng, mu, n_empty=0, n_ab=0, border=0)
+    for k, v in _triple_bytes(X, names).items():
+        (staging / f"GSM9304_{k}").write_bytes(v)
+    calls: list = []
+    monkeypatch.setattr(fe, "_get", _fake_get(staging, calls))
+    return y, dest, wt, refp, calls, before
+
+
+def test_stage8_blocker_2_a_unit_whose_arms_are_read_differently_is_refused(tmp_path, monkeypatch):
+    """The reviewer's reproduction: knockout GSM9301 pinned to its raw archive, control GSM9304 moved to its filtered
+    triple. The YAML loaded, the plan was ok, fetch fetched, and process returned unit Zzz ok with raw_called_samples
+    ['GSM9301']. Now verify_pins (so plan with pins, fetch, process and combine) refuses the unit, and process
+    refuses it again as a second guard."""
+    y, dest, wt, refp, calls, before = _mixed_setup(tmp_path, monkeypatch)
+    ds = cm.dataset(ACC, y)                          # the YAML still loads: the check needs the plan's file lists
+    assert [p["accession"] for p in ds["pinned"]] == ["GSM9301", "GSM9304"]
+    msg = ("Zzz: its knockout and control samples are not all read the same way (unfiltered matrices through the fixed "
+           "cell call vs filtered matrices): refused")
+    with pytest.raises(cm.Refused, match=re.escape(msg)):
+        fe.verify_pins(ds, before)
+    pl = _plan(y, dest)
+    assert pl["status"] == "refused" and msg in pl["reason"]
+    with pytest.raises(cm.Refused, match="did not pass"):
+        fe.fetch(ACC, dest, y)
+    assert calls == []
+    # the second guard: with the first switched off in both module copies, the plan passes and fetch fetches, and
+    # process refuses before any group call, writing nothing
+    monkeypatch.setattr(fe, "check_unit_forms", lambda pins, per: None)
+    monkeypatch.setattr(pr.fe, "check_unit_forms", lambda pins, per: None)
+    assert _plan(y, dest)["status"] == "ok"
+    fe.fetch(ACC, dest, y)
+    assert sorted(Path(u).name for u in calls) == sorted([raw_name("GSM9301"), "GSM9304_matrix.mtx.gz",
+                                                         "GSM9304_barcodes.tsv.gz", "GSM9304_features.tsv.gz"])
+    with pytest.raises(cm.Refused, match="Zzz: an unfiltered and a filtered library in one unit: refused"):
+        pr.run(ACC, dest, wt, refp, tmp_path / "processed", y,
+               classifier=lambda *a: pytest.fail("a group call was made"))
+    assert not (tmp_path / "processed" / ACC).exists()
+
+
+def test_stage8_a_series_file_sample_counts_as_filtered_in_a_unit():
+    """Stricter than the reviewer's line: a sample pinned with files [] (its cells in a pinned series file, always a
+    filtered route) set against a raw-called sample of the same unit refuses too."""
+    pins = [{"accession": "GSM1", "arm": "ko", "gene": "G", "stage": "E8.5"},
+            {"accession": "GSM2", "arm": "control", "gene": "G", "stage": "E8.5"}]
+    per = {"GSM1": {"files": [{"name": "a", "raw": True}]}, "GSM2": {"files": []}}
+    with pytest.raises(cm.Refused, match="not all read the same way"):
+        fe.check_unit_forms(pins, per)
+    fe.check_unit_forms(pins, {"GSM1": {"files": [{"name": "a"}]}, "GSM2": {"files": []}})
+    fe.check_unit_forms(pins, {"GSM1": {"files": [{"name": "a", "raw": True}]},
+                               "GSM2": {"files": [{"name": "b", "raw": True}]}})
+
+
+def test_stage8_a_matrix_line_that_is_not_three_fields_is_refused():
+    """The first reviewer's lesser point 1: '1 2 3 9' was read with its first field as the index (r = [1, 2], c = [2,
+    3], v = [9, 9]). Now a line of four fields, two fields or a fractional index is refused."""
+    for block in (b"1 2 3 9\n2 3 4 9\n", b"1 2\n2 3\n", b"1.5 2 3\n", b"1 2 3\n2 3\n", b"1 2 x\n"):
+        with pytest.raises(cm.Refused, match="not 'feature barcode value'"):
+            pr._parse_entries(block, "L", (10, 10))
+    r, c, v = pr._parse_entries(b"1 2 3\n2 3 4.5\n", "L", (10, 10))
+    assert r.tolist() == [0, 1] and c.tolist() == [1, 2] and v.tolist() == [3.0, 4.5]
+
+
+def test_stage8_a_long_comment_block_before_the_size_line_is_refused():
+    head = b"%%MatrixMarket matrix coordinate integer general\n"
+    ok = io.BytesIO(head + b"%c\n" * pr.RAW_MAX_COMMENT_LINES + b"3 4 0\n")
+    assert pr._mtx_header(ok, "L") == (3, 4, 0)
+    bad = io.BytesIO(head + b"%c\n" * (pr.RAW_MAX_COMMENT_LINES + 1) + b"3 4 0\n")
+    with pytest.raises(cm.Refused, match="more than 1000 comment or empty lines"):
+        pr._mtx_header(bad, "L")
+
+
+def test_stage8_raw_call_arms_records_medians_and_ratios_only():
+    rec = {"K1": {"cutoff": 1000.0, "cells_called": 3000, "umi_share_called": 0.8},
+           "K2": {"cutoff": 1400.0, "cells_called": 5000, "umi_share_called": 0.6},
+           "K3": {"cutoff": 1200.0, "cells_called": 4000, "umi_share_called": 0.7},
+           "C1": {"cutoff": 600.0, "cells_called": 2000, "umi_share_called": 0.0}}
+    got = pr.raw_call_arms(rec, ["K1", "K2", "K3"], ["C1"])
+    assert got["median_ko"] == {"cutoff": 1200.0, "cells_called": 4000.0, "umi_share_called": pytest.approx(0.7)}
+    assert got["ko_to_control"] == {"cutoff": 2.0, "cells_called": 2.0, "umi_share_called": None}
+    # no guard reads it: the source holds no threshold on these keys
+    src = (EXT / "process.py").read_text()
+    assert "refused_call_mismatch" not in src
+
+
+def test_stage8_the_readme_states_the_new_rules():
+    text = (EXT / "README.md").read_text()
+    for s in ("A raw file is taken only when it is the sample's only file of its", "never has its raw file fetched",
+              "(the code refuses a unit whose arms are read differently)", "## Stage 8 (campaign/t3-ext-4)",
+              "the barcode cap (60,000 per library) is the", 'plan it with `run_dgx.sh "$PWD" plan "GSE270969"`',
+              "`raw_call_arms`", "HELD_EXTRA"):
+        assert s in " ".join(text.split()) or s in text, s
+    assert "a raw-called arm against a filtered arm is allowed by the code" not in text
+    assert "must use the filtered one" not in text

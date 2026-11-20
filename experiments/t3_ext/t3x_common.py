@@ -27,6 +27,8 @@ Stage 6 (2026-11-20, campaign/t3-ext-archives) adds two declarations, checked he
 
 Stage 7 (2026-11-21, campaign/t3-ext-3): a control series belongs to no other entry (check_sister_unregistered), and
 a file used as one unit (split none) holds one arm and one stage, each sample pinned for the same genes.
+
+Stage 8 (2026-11-21, campaign/t3-ext-4): HELD_EXTRA, the team's held list, joins the derived held set.
 """
 
 from __future__ import annotations
@@ -71,8 +73,26 @@ TIERS = ("wnt", "cardiac", "unrelated")
 STATUSES = ("cleared", "held_phenocopy", "excluded_design")
 # Held and excluded datasets: never fetched by any flag or YAML (the main session's decision of 2026-11-20).
 NEVER_FETCH = frozenset({"GSE165300", "GSE126128", "GSE280543", "GSE280587", "GSE259342", "E-MTAB-7325"})
+# stage 8 (2026-11-21, campaign/t3-ext-4; the first reviewer of ec86a1b, lesser point 2): the team's held list,
+# exactly the accessions of its held-accession file (82 accessions, sha256 of the sorted list with newlines
+# 5df13a82927231c28227232e061452651099050ad02d6a6b6ca1adcc21852048; pinned by tests/test_t3_ext_held.py). Every one
+# joins the derived held set (held_series): it is refused as a dataset, a screened series or a control series, and a
+# sample whose record lists one is not pinnable. NEVER_FETCH is a subset of it. Changed only in a reviewed commit.
+HELD_EXTRA = frozenset({
+    "E-MTAB-13409", "E-MTAB-7325", "E-MTAB-8811", "E-MTAB-9785", "GSE103789", "GSE111172", "GSE114186", "GSE125321",
+    "GSE125322", "GSE125323", "GSE126128", "GSE137274", "GSE137285", "GSE137786", "GSE141175", "GSE143806",
+    "GSE144384", "GSE147088", "GSE157720", "GSE158887", "GSE160136", "GSE160137", "GSE165300", "GSE167576",
+    "GSE171337", "GSE181251", "GSE183343", "GSE184921", "GSE189224", "GSE193356", "GSE194018", "GSE195589",
+    "GSE197353", "GSE198025", "GSE199308", "GSE203116", "GSE205117", "GSE208162", "GSE210521", "GSE213336",
+    "GSE214389", "GSE215977", "GSE223271", "GSE245105", "GSE259342", "GSE272479", "GSE272483", "GSE274603",
+    "GSE275548", "GSE278123", "GSE278124", "GSE278883", "GSE278884", "GSE280538", "GSE280543", "GSE280587",
+    "GSE280804", "GSE293888", "GSE293955", "GSE293961", "GSE295521", "GSE296732", "GSE299253", "GSE299536",
+    "GSE299682", "GSE302657", "GSE308175", "GSE309624", "GSE315754", "GSE318090", "GSE318465", "GSE331509",
+    "GSE337739", "GSE347882", "GSE42389", "GSE5424", "GSE60066", "GSE72539", "GSE72720", "GSE74994", "GSE84899",
+    "GSE93524"
+})
 # sha256 of the committed datasets.yaml; the pin-and-commit step updates it in the same commit as the YAML.
-DATASETS_SHA256 = "22111548a2e20680deab732d3037e71aefa37c4a299173ad0c7150953d5c5f8e"
+DATASETS_SHA256 = "6f473054d4434f941befd22d0920b125cb6139ab1b25b029bbe1b67faaedafed"
 PIN_KEYS = ("accession", "arm", "gene", "stage", "files", "metadata_sha256")
 SERIES_PIN_KEYS = ("accession", "series_metadata_sha256")
 PIN_ARMS = ("ko", "control")
@@ -691,10 +711,10 @@ def check_sister_unregistered(allds: dict[str, dict], where: str = "datasets.yam
 
 
 def held_series(allds: dict[str, dict]) -> set[str]:
-    """The held set: NEVER_FETCH plus the accession and every screened series of every dataset that is not cleared.
-    A pinned sample whose record lists any of them is refused (fetch.verify_pins), and a plan whose screened series
-    hold such a sample is refused with its text withheld."""
-    held = set(NEVER_FETCH)
+    """The held set: NEVER_FETCH and HELD_EXTRA (stage 8: the team's held list) plus the accession and every screened
+    series of every dataset that is not cleared. A pinned sample whose record lists any of them is refused
+    (fetch.verify_pins), and a plan whose screened series hold such a sample is refused with its text withheld."""
+    held = set(NEVER_FETCH) | set(HELD_EXTRA)
     for acc, ds in allds.items():
         if ds.get("status") != "cleared":
             held.add(acc)
@@ -723,6 +743,8 @@ def dataset(acc: str, path: Path | None = None, need_cleared: bool = True) -> di
     it is not cleared (when need_cleared)."""
     if acc in NEVER_FETCH:
         raise Refused(f"{acc} is in t3x_common.NEVER_FETCH (held or excluded): refused whatever a YAML says")
+    if acc in HELD_EXTRA:
+        raise Refused(f"{acc} is in t3x_common.HELD_EXTRA (the team's held list): refused whatever a YAML says")
     allds = load_datasets(path)
     if acc not in allds:
         raise Refused(f"{acc} is not in datasets.yaml: refused")
