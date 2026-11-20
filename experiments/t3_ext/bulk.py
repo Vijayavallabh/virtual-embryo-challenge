@@ -1098,14 +1098,17 @@ def control_grouping(Y_ko: np.ndarray, Y_ctl: np.ndarray) -> tuple[bool, dict]:
 
 
 def whole_embryo_guard(profile: np.ndarray, ref: dict, present) -> tuple[bool, dict]:
-    """G5: the profile's Spearman with the reference's whole-embryo pseudo-bulk pb (tb.whole_den) must exceed its best
-    Spearman with any single reference group by at least SPEARMAN_MARGIN (present genes only)."""
+    """G5: the profile's Spearman with pb must exceed its Spearman with every single reference group (margin >
+    BULK_WHOLE_MARGIN, strict; present genes). A check against single- or few-lineage samples, not proof of a whole
+    embryo. pb is the reference's whole-embryo pseudo-bulk (tb.whole_den)."""
     pr_ = np.asarray(present, bool)
     p = np.asarray(profile, float)[pr_]
     rho_pb = _spearman(p, tb.whole_den(ref)[pr_])
     best = max((_spearman(p, np.asarray(ref["mu"][g])[pr_]), g) for g in ref["groups"])
-    ok = bool(np.isfinite(rho_pb) and np.isfinite(best[0]) and rho_pb - best[0] >= cm.SPEARMAN_MARGIN)
-    return ok, {"rho_whole": rho_pb, "rho_best_group": best[0], "best_group": best[1]}
+    margin = rho_pb - best[0]
+    ok = bool(np.isfinite(rho_pb) and np.isfinite(best[0]) and margin > cm.BULK_WHOLE_MARGIN)
+    return ok, {"rho_whole": rho_pb, "rho_best_group": best[0], "best_group": best[1], "margin": float(margin),
+                "threshold": cm.BULK_WHOLE_MARGIN, "rule": "margin > threshold"}
 
 
 def composition_shares(profile: np.ndarray, ref: dict, present) -> dict[str, float]:
@@ -1432,7 +1435,8 @@ def bulk_unit(ds, u, by, ref, present, always, chrx, chrom_known, idm) -> dict:
     genes = ref["genes"]
     gene = u["gene"]
     own = np.array([g == gene or cm.ALIASES.get(g) == gene for g in genes])
-    uqc = {"gene": gene, "stages": {}, "k_by_stage": {}, "m_by_stage": {}}
+    uqc = {"gene": gene, "g5_rule": "bulk margin > 0 (BULK_WHOLE_MARGIN), decision 2026-11-21", "stages": {},
+           "k_by_stage": {}, "m_by_stage": {}}
     Ls = []
     for e in u["stages"]:
         st = {"dropped": {}}
@@ -1479,7 +1483,7 @@ def bulk_unit(ds, u, by, ref, present, always, chrx, chrom_known, idm) -> dict:
             v = np.where(present, lb["xp"], 0.0)
             return v / v.sum() if v.sum() > 0 else v
 
-        # G5 whole embryo: a control that fails is dropped; knockouts are recorded only
+        # G5 single-lineage check: a control that fails is dropped; knockouts are recorded only
         st["whole_embryo"] = {}
         for a in arms:
             kept = []
@@ -1487,7 +1491,7 @@ def bulk_unit(ds, u, by, ref, present, always, chrx, chrom_known, idm) -> dict:
                 ok, rec = whole_embryo_guard(prop(lb), ref, present)
                 st["whole_embryo"][lb["label"]] = {**rec, "passed": ok, "arm": a}
                 if a == "control" and not ok:
-                    st["dropped"][lb["label"]] = "G5 not a whole embryo of the reference's kind"
+                    st["dropped"][lb["label"]] = "G5 dominated by one lineage (not more like pb than any one group)"
                 else:
                     kept.append(lb)
             arms[a] = kept
@@ -1507,7 +1511,8 @@ def bulk_unit(ds, u, by, ref, present, always, chrx, chrom_known, idm) -> dict:
         st["whole_embryo_control_mean"] = rec
         if not ok:
             return {**uqc, "status": "refused_whole_embryo",
-                    "reason": f"E{e:g}: the control arm's mean is not a whole embryo of the reference's kind (G5)"}
+                    "reason": f"E{e:g}: the control arm's mean is dominated by one lineage (not more like pb than any "
+                              "one group) (G5)"}
         ok, rec = somite_record([lb["somites"] for lb in arms["ko"]], [lb["somites"] for lb in arms["control"]])
         st["somites"] = rec
         if not ok:
