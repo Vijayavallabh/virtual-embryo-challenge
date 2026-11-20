@@ -49,7 +49,14 @@ machine, and an official upload needs the captain's go-ahead.
           labeller's record is committed at HEAD with the route recomputed; then refused unless the recomputed file
           passes feng_dirs.check_recomputed. R1's hold and g_mom's mask follow the groups with a recomputed direction
           after the fallback: a group without one moves no cell and g_mom leaves it alone. The record's feng_groups
-          field names the file, its sha256, the yaml's sha256, the route, the fallbacks and the gate
+          field names the file, its sha256, the yaml's sha256, the route, the fallbacks and the gate.
+          The candidates fixed in docs/PLAN.md decision log 2026-11-20 (i) (off by default; no ruling; only the
+          captain's ruling puts one in an upload), each a single change to that one file and refused on any other
+          command or seed and on a dry run: --g-mom-damping 1.0 (candidate A: g_mom's factors finished at damping 1.0
+          in place of B0_DAMPING 0.5, as practice arm gmom_s1 of experiments/t1_m1/bets_read.py finishes them) and
+          --feng-fraction-mult 1.5 (candidate B: the direction step at 1.5 times the calendar fraction 2/5, as
+          experiments/t1_m1/double_step_read.py multiplies it); both together are candidate C. Their defaults (0.5,
+          1.0) build today's bytes; given at all, the record's t1_candidate field names both values
   heart   B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
           procedure: --entry s1 = scope hypothesis H1; s2_trim = the s2 of docs/S2_RULES.md (H2 as a trim to half
           E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`). --trend
@@ -481,6 +488,38 @@ def _bet_refusals(a) -> None:
                  f"\"rules `{arm}` in\"")
 
 
+# The T1 candidates of docs/PLAN.md decision log 2026-11-20 (i), each a single change to the recomputed last file
+# (FENG_NONE_COMMAND with --feng-groups recomputed). Off by default (None: the option not given, today's path and record
+# exactly). The first value of each tuple is the default and today's behaviour; the second is the candidate's.
+G_MOM_DAMPINGS = (harness.B0_DAMPING, 1.0)  # A: g_mom's factors finished at 1.0 (practice arm gmom_s1, rows T49, T61)
+FENG_FRACTION_MULTS = (1.0, 1.5)  # B: the direction at 1.5 x the calendar fraction (rows T50, T58, T63)
+T1_CANDIDATE_COMMAND = f"{FENG_NONE_COMMAND} --feng-groups recomputed"
+
+
+def _t1_candidate(a) -> dict | None:
+    """--g-mom-damping and --feng-fraction-mult: refused before anything is read with a value outside their two, on any
+    command but T1_CANDIDATE_COMMAND (--feng-groups recomputed, whose own refusals then hold every other option to the
+    first upload's), with a seed other than the default and on a dry run. Returns None when neither is given (today's
+    file and record), else the two values as the record names them."""
+    damping, mult = getattr(a, "g_mom_damping", None), getattr(a, "feng_fraction_mult", None)
+    if damping is None and mult is None:
+        return None
+    if damping is not None and damping not in G_MOM_DAMPINGS:
+        sys.exit(f"--g-mom-damping takes {G_MOM_DAMPINGS[0]:g} (the default) or {G_MOM_DAMPINGS[1]:g} only")
+    if mult is not None and mult not in FENG_FRACTION_MULTS:
+        sys.exit(f"--feng-fraction-mult takes {FENG_FRACTION_MULTS[0]:g} (the default) or {FENG_FRACTION_MULTS[1]:g} "
+                 "only")
+    if (getattr(a, "feng_groups", FENG_GROUPS_DEFAULT) != "recomputed" or a.seed != harness.BUILD_SEED_OFFSET + 1
+            or a.board is not None):
+        sys.exit("--g-mom-damping and --feng-fraction-mult change T1's recomputed last file only: they need the "
+                 f"command {T1_CANDIDATE_COMMAND} at the default seed on the test board (docs/PLAN.md decision log "
+                 "2026-11-20 (i))")
+    return {"g_mom_damping": G_MOM_DAMPINGS[0] if damping is None else float(damping),
+            "feng_fraction_mult": FENG_FRACTION_MULTS[0] if mult is None else float(mult),
+            "order": "docs/PLAN.md decision log 2026-11-20 (i): A = damping 1.0, B = 1.5 x the calendar fraction, C = "
+                     "both; no ruling"}
+
+
 def _feng_group_names(feng_groups: str = FENG_GROUPS_DEFAULT) -> list[str]:
     """The names of Feng's direction groups from Feng's statistics alone, before any T1 file is read. The groups
     feng_dirs.feng_directions returns do not depend on the gene list it is given, so it is called on one placeholder
@@ -547,7 +586,7 @@ def _t1_held(union: dict | None, direction_groups, build_genes) -> tuple[list[st
 
 
 def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str], feng_direction: bool = True,
-              with_direction=None):
+              with_direction=None, damping: float | None = None):
     """The test build's g_mom step (--g-mom, default off; T1 try T11 of experiments/harness/TRIES.md; only the captain's
     ruling puts it in an upload): E9.5 is loaded here and nowhere else, and the factors are fitted exactly as the
     candidate's (`vec.harness.g_mom_pair_factors`: start E9.5, reference E10.5, the chamber categories of E10.5's own
@@ -572,11 +611,16 @@ def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str], f
     check is a self-check. with_direction (--feng-groups recomputed: the groups with a recomputed direction after
     feng_relabel.yaml's fallback): the same fit, stream and edit; the held labels are `_labels_without_direction`'s,
     the labels whose group has no recomputed direction, so g_mom's mask and R1's hold in the build follow the same
-    groups and R1_FENG_GROUPS (fixed under the authors' labels) is not read; the record says so."""
+    groups and R1_FENG_GROUPS (fixed under the authors' labels) is not read; the record says so. damping (candidate A,
+    --g-mom-damping; None: today's factors and record): the same raw fit finished by
+    `vec.t1_state_transport.finish_momentum` at that damping, as practice arm gmom_s1 (experiments/t1_m1/bets_read.py
+    gmom_fits) finishes it; at B0_DAMPING that is the call g_mom_pair_factors makes itself."""
     from vec import t1_state_transport as ts
 
     start = load_stage(DATA / "T1/E9.5_RNA.h5ad", lineage=False)
-    factors, _ = harness.g_mom_pair_factors(ref, "E10.5_RNA", start, "E9.5_RNA", categories=categories)
+    factors, raw = harness.g_mom_pair_factors(ref, "E10.5_RNA", start, "E9.5_RNA", categories=categories)
+    if damping is not None and damping != harness.B0_DAMPING:  # candidate A: the same fit, finished at `damping`
+        factors = ts.finish_momentum(raw, damping)
     missing = sorted(set(G_MOM_EDIT_CATEGORIES) - set(factors.categories))
     if missing:
         raise ValueError(f"--g-mom has no factors for a category R3b edits: {missing}")
@@ -605,6 +649,12 @@ def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str], f
                                                 "labels of groups without a recomputed direction unedited")
         record["mask"] = ("the cells of edit_categories whose label's group has a recomputed direction after the "
                           f"fallback ({sorted(with_direction)}); R1_FENG_GROUPS is not read")
+    if damping is not None:  # written only with --g-mom-damping, so every other file's record is as before
+        record["damping"] = float(damping)
+        if damping != harness.B0_DAMPING:
+            record["rule"] = record["rule"].replace("damped by B0_DAMPING",
+                                                    f"damped by {float(damping):g} in place of B0_DAMPING (candidate "
+                                                    "A, docs/PLAN.md decision log 2026-11-20 (i))")
 
     def hook(pop):
         labels = pop.obs[t1_scope.LABEL_KEY].astype(str).to_numpy()
@@ -709,6 +759,7 @@ def _bet_median_library(pool, base_shares: dict, bet_pop, n: int, seed: int) -> 
 
 def build_t1(a) -> dict:
     feng_groups = getattr(a, "feng_groups", FENG_GROUPS_DEFAULT)
+    candidate = _t1_candidate(a)  # None unless --g-mom-damping or --feng-fraction-mult is given; refusals read nothing
     _bet_refusals(a)  # nothing at all unless --released-bet (or one of its two companions) is given
     if feng_groups == "none":
         _feng_none_refusals(a)
@@ -771,14 +822,18 @@ def build_t1(a) -> dict:
     directions, ext = _feng_directions(list(ref.var_names), feng_groups)
     held, feng_hygiene = _t1_held(union, directions, ref.var_names)
     groups = feng_dirs.label_groups(ref.obs["celltype"].astype(str).unique())
-    fraction = feng_dirs.bracket_fraction(10.5, 12.5)
+    calendar = feng_dirs.bracket_fraction(10.5, 12.5)
+    # candidate B (--feng-fraction-mult): the multiplier times the calendar fraction, as double_step_read.py forms its
+    # doubled arm (MULTIPLIER x fraction); without the option the calendar fraction itself, today's value
+    fraction = calendar if candidate is None else candidate["feng_fraction_mult"] * calendar
     n = harness.count_for(board, ref.n_obs)
     extra = {} if prior is None else {"down_prior": prior}
     within_type, g_mom_record = ({}, None)
     if a.g_mom:
         covered = _g_mom_covered(groups, directions, feng_groups)  # the build's Feng-covered labels (none: self-check)
         if feng_groups == "recomputed":  # g_mom's mask follows the groups with a recomputed direction
-            hook, g_mom_record = _t1_g_mom(ref, fit_categories, a.seed, covered, with_direction=sorted(directions))
+            hook, g_mom_record = _t1_g_mom(ref, fit_categories, a.seed, covered, with_direction=sorted(directions),
+                                           damping=None if candidate is None else candidate["g_mom_damping"])
         else:
             hook, g_mom_record = _t1_g_mom(ref, fit_categories, a.seed, covered,
                                            feng_direction=feng_groups != "none")
@@ -832,6 +887,9 @@ def build_t1(a) -> dict:
                               "relabel_gate": ext["relabel_gate"],
                               "groups_without_direction": "no cell of theirs moves: R1 holds them at their E10.5 "
                                                           "counts and g_mom's mask holds them back"}
+    if candidate is not None:  # written only with --g-mom-damping or --feng-fraction-mult ("fraction" is the applied)
+        rec["t1_candidate"] = {**candidate, "calendar_fraction": calendar, "applied_fraction": fraction,
+                               "command": T1_CANDIDATE_COMMAND}
     if mid_record is not None:  # likewise: shares only, no cell number
         rec["mid_base"] = {"stream": [int(a.seed), T1_MID_STREAM], "categories": mid_record}
     if a.g_mom:
@@ -1079,6 +1137,16 @@ def build_parser() -> argparse.ArgumentParser:
                                 "record routes to recomputed: a later docs/PLAN.md decision-log entry of the captain "
                                 "(naming N54 and containing \"sets the N54 route aside\"; not the run's own "
                                 "ruling; added after the record's commit) that sets the route aside")
+            p.add_argument("--g-mom-damping", type=float, default=None,
+                           help="candidate A of docs/PLAN.md decision log 2026-11-20 (i) (off by default, no ruling): "
+                                f"g_mom's factors finished at 1.0 in place of {harness.B0_DAMPING:g} (practice arm "
+                                "gmom_s1, rows T49 and T61). Takes 0.5 (the default, today's file) or 1.0; only with "
+                                f"{T1_CANDIDATE_COMMAND} at the default seed on the test board")
+            p.add_argument("--feng-fraction-mult", type=float, default=None,
+                           help="candidate B of docs/PLAN.md decision log 2026-11-20 (i) (off by default, no ruling): "
+                                "the outside atlas's direction at this multiple of the calendar fraction (2/5). Takes "
+                                "1.0 (the default, today's file) or 1.5; only with the command "
+                                f"{T1_CANDIDATE_COMMAND} at the default seed on the test board")
             p.add_argument("--released-bet", choices=tuple(RELEASED_BETS), default=None,
                            help="try T61 of experiments/harness/TRIES.md (off by default): a variant of T1's last file "
                                 "(--feng-groups none only) that changes which cells are drawn: share_trend (the "
