@@ -125,7 +125,43 @@ datasets:
     why: "cardiopharyngeal TF loss at the two stages around E8.75"
     risks: "n = 1 per arm; heterozygous control (d = 0.5); GFP-sorted lineage, so only some groups are present"
     verified: true
-    pinned: []
+    # Pinned 2026-11-20 by two readers who each read the plan tables of this series and of its parent series in full
+    # (the main session, and an independent second reader agent that had not seen the first reading); they agree on
+    # every sample, arm, gene and stage below (docs/PLAN.md decision log 2026-11-20 (z)).
+    pinned:
+      # GSM5169142: title "Tbx1 Ctrl E8.5", genotype Tbx1Cre/+;Rosa26-GFPflox/+
+      - accession: GSM5169142
+        arm: control
+        gene: "Tbx1"
+        stage: E8.5
+        files: ["GSM5169142_Tbx1-wt-E85_barcodes.tsv.gz", "GSM5169142_Tbx1-wt-E85_features.tsv.gz", "GSM5169142_Tbx1-wt-E85_matrix.mtx.gz"]
+        metadata_sha256: "c0eda1d5f241502afc13971fdf3fd5f5bc560fb1e88c8649fcc474a4969c7439"
+      # GSM5169144: title "Tbx1 Ctrl E9.5", genotype Tbx1Cre/+;Rosa26-GFPflox/+
+      - accession: GSM5169144
+        arm: control
+        gene: "Tbx1"
+        stage: E9.5
+        files: ["GSM5169144_Tbx1-wt-E95_barcodes.tsv.gz", "GSM5169144_Tbx1-wt-E95_genes.tsv.gz", "GSM5169144_Tbx1-wt-E95_matrix.mtx.gz"]
+        metadata_sha256: "6a5b754a319ba925bb1efe68907c36819e0957ec9661caee957e6701867ee7dd"
+      # GSM5169143: title "Tbx1 cKO E8.5", genotype Tbx1Cre/flox;Rosa26-GFPflox/+
+      - accession: GSM5169143
+        arm: ko
+        gene: "Tbx1"
+        stage: E8.5
+        files: ["GSM5169143_Tbx1-KO-E85_barcodes.tsv.gz", "GSM5169143_Tbx1-KO-E85_features.tsv.gz", "GSM5169143_Tbx1-KO-E85_matrix.mtx.gz"]
+        metadata_sha256: "99272bb886c4b66eb69e673308c9b8e6ea6d185f37a2c9bbb9a383b9d73064a6"
+      # GSM5169145: title "Tbx1 cKO E9.5", genotype Tbx1Cre/flox;Rosa26-GFPflox/+
+      - accession: GSM5169145
+        arm: ko
+        gene: "Tbx1"
+        stage: E9.5
+        files: ["GSM5169145_Tbx1-KO-E95_barcodes.tsv.gz", "GSM5169145_Tbx1-KO-E95_genes.tsv.gz", "GSM5169145_Tbx1-KO-E95_matrix.mtx.gz"]
+        metadata_sha256: "318dccc167f52cf00ba6b0f0ae464321d169ea2a57ba6b167d68b0f8c9872558"
+    pinned_series:
+      - accession: GSE168768
+        series_metadata_sha256: "79e7144155b9f09697b5919a911766d0cdf7112e1b5e92dcef05bcf31ebb07d8"
+      - accession: GSE167493
+        series_metadata_sha256: "fc0c74aaba471b266dc2d34f7b0f5b15d84743c663589063ec981d5920981061"
 
   - accession: GSE186934
     status: cleared
@@ -153,7 +189,29 @@ datasets:
     why: "the same Cre as the test and the Gata4 validation"
     risks: "not verified; probably n = 1 per arm; one study unit with GSE168768 (Tbx1 counted once)"
     verified: false
-    pinned: []
+    # Pinned 2026-11-20 by two readers who each read the plan tables of this series and of its parent series in full
+    # (the main session, and an independent second reader agent that had not seen the first reading); they agree on
+    # every sample, arm, gene and stage below (docs/PLAN.md decision log 2026-11-20 (z)).
+    pinned:
+      # GSM5663883: title "MespCre E9.5 (WT95)", genotype Mesp1Cre;Rosa26-GFPflox/+
+      - accession: GSM5663883
+        arm: control
+        gene: "Tbx1"
+        stage: E9.5
+        files: ["GSM5663883_Mesp1-wt-2nd-barcodes.tsv.gz", "GSM5663883_Mesp1-wt-2nd-features.tsv.gz", "GSM5663883_Mesp1-wt-2nd-matrix.mtx.gz"]
+        metadata_sha256: "09056156fc735f172ebe4aad7d14454bf42d2a1c8ba3183efb66d110ce43c70c"
+      # GSM5663884: title "Mesp1Cre-Tbx1cKO E9.5 (MKO)", genotype Mesp1Cre;Rosa26-GFPflox/+;Tbx1flox/flox
+      - accession: GSM5663884
+        arm: ko
+        gene: "Tbx1"
+        stage: E9.5
+        files: ["GSM5663884_Mesp1-cKO-2nd-barcodes.tsv.gz", "GSM5663884_Mesp1-cKO-2nd-features.tsv.gz", "GSM5663884_Mesp1-cKO-2nd-matrix.mtx.gz"]
+        metadata_sha256: "665abbfa5e4832c4a8d5283eb2a0a04fc76b2a7d0a85e39b426fb1f23f51a170"
+    pinned_series:
+      - accession: GSE186934
+        series_metadata_sha256: "f3f9a05fcb1215374cde902b548bcab879b08bcf20df3af19496a1c1e3b2f763"
+      - accession: GSE167493
+        series_metadata_sha256: "fc0c74aaba471b266dc2d34f7b0f5b15d84743c663589063ec981d5920981061"
 
   - accession: GSE126128
     status: held_phenocopy

@@ -7806,3 +7806,27 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     read on practice first, with its row. Composition is in the block closed after an exposure: a file that carries it
     goes to the captain as one short question with a default before it is handed over; his message names external
     datasets, not that lever.
+- 2026-11-20 (z), T3 outside knockouts: two readers agree on the Tbx1 samples, which are pinned and registered; the T
+  study stays out; the DNA-methylation study needs a small fix first (state at 17:56 UTC). Written by the AI assistant.
+  - **The second reader** (an agent that had not seen the first reading; it read the two Tbx1 series' tables and the
+    parent series' tables in full, the refused T study's table, the DNA-methylation study's own table, and its parent
+    table of 2,617 sample records through every distinct field value and a pattern view of every sample line). Its
+    verdicts: GSE168768, pin four samples; GSE186934, pin two; GSE204906, eighteen samples qualify on content but the
+    pipeline parses no stage for them (the stage stands only in the source and description fields), so they cannot be
+    pinned as the tool stands; GSE205117, pin nothing: it would not sign a clearance of the review term, judging a
+    knockout of that gene a partial stand-in for the held-out one by the dataset's own intended use, with one library
+    per arm and embryos pooled with unstated editing status.
+  - **Agreement.** On the two Tbx1 series both readers name the same six samples, arms, gene and stages (GSM5169142
+    and GSM5169144 controls, GSM5169143 and GSM5169145 knockouts; GSM5663883 control, GSM5663884 knockout), and
+    neither found a held-out or pathway label or a pooled design. They are pinned with their metadata hashes and the
+    hashes of the three series' texts in `experiments/t3_ext/datasets.yaml`; the file's own pinned hash is updated in
+    the same commit; the pipeline's 1,212 tests pass. Register rows X011 and X012 are placed before any table exists.
+    The second reader's notes are kept in the rows where they bear on use (a different sequencing instrument for the
+    E9.5 pair of the first series; the second series' design text describing the earlier time course).
+  - **The T study (GSE205117) stays out.** A clearance needs both readers, and neither gives one. **The
+    DNA-methylation study (GSE204906)** is not pinned yet: the first reader has not read its table, and the pipeline
+    needs a rule to read its stage from the fields that state it; that goes to the engineer who is extending the
+    pipeline.
+  - **Next:** fetch, process and combine for the two Tbx1 accessions on the DGX (the first run of the pipeline on real
+    expression data; the lineage step has never run on real cells), then the committed table hashes, row K22 and its
+    read.
