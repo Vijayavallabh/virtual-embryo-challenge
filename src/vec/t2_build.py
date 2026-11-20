@@ -1245,6 +1245,78 @@ def cloud_guard(pred_coords, source_coords, seed: int = 0, expected_rms_ratio: f
 
 
 # ---------------------------------------------------------------------------------------------------------------------
+# Row order (branch campaign/embryo-occupancy; off by default; no try, no ruling). Under the pre-fix scorer build
+# (vec.evaluate, "prefix") a coordinate file's occupancy is compared with the truth half as it is when the file's PCA
+# basis on the rows `_match_n` hands over has the same parity as the truth's, and with its mirror image otherwise. The
+# floor copy of the stage before the target has its own parity. When the copy and the file are handed the same truth
+# rows in the same order (`truth_rows_shared`), the file falls in the copy's mode, whatever the truth's parity, exactly
+# when the two parities agree. "copy_parity" re-orders the file's rows (expression and position together, so every
+# cell keeps its expression and its position) by the first permutation of a fixed stream whose parity is the copy's.
+# The parity matched is the floor copy's, computed from released data; no score, test anchor or target enters it.
+ROW_ORDERS = ("as_built", "copy_parity")
+COPY_PARITY_STREAM = 48  # default_rng([seed, 48]): a stream no other build step uses
+COPY_PARITY_MAX_TRIES = 200  # permutations tried before refusing (each matches with chance about 1/2)
+COPY_PARITY_METRIC_SEED = 0  # the server's metric seed as the emulator assumes it (vec.evaluate.prefix_parity)
+COPY_PARITY_COPY_SEED = 0  # the bake protocol's floor copy: vec.evaluate.subsample(stage as released, 0.1, 0)
+
+
+def _as_read(coords) -> np.ndarray:
+    """Coordinates as the scorer reads them: the first three columns, float32, then float64 for the metric."""
+    C = np.asarray(coords)[:, :3].astype(np.float32)
+    if C.ndim != 2 or C.shape[1] != 3 or not np.isfinite(C).all():
+        raise ValueError("coordinates must be (n, 3) and finite as float32")
+    return C.astype(np.float64)
+
+
+def truth_rows_shared(n_a: int, n_b: int, n_true: int, metric_seed: int = COPY_PARITY_METRIC_SEED) -> bool:
+    """Whether the scorer's `_match_n` (vec.evaluate.match_rows) hands the same truth rows, in the same order, to a
+    prediction of n_a rows and to one of n_b rows, against a truth of n_true rows at this metric seed. The prediction
+    is drawn first from the same generator, so this depends on the two counts (numpy's choice takes different routes
+    for different sizes), never on any coordinate."""
+    from vec.evaluate import match_rows
+
+    T = np.repeat(np.arange(_whole(n_true, "n_true", 3), dtype=np.float64)[:, None], 3, axis=1)
+    _, Ba = match_rows(np.zeros((_whole(n_a, "n_a", 3), 3)), T, metric_seed)
+    _, Bb = match_rows(np.zeros((_whole(n_b, "n_b", 3), 3)), T, metric_seed)
+    return bool(Ba.shape == Bb.shape and np.array_equal(Ba, Bb))
+
+
+def copy_parity_order(coords, copy_coords, n_true: int, seed: int, metric_seed: int = COPY_PARITY_METRIC_SEED,
+                      max_tries: int = COPY_PARITY_MAX_TRIES) -> tuple[np.ndarray, dict]:
+    """The row order of `--row-order copy_parity`: a permutation of the file's rows under which the pre-fix parity of
+    the rows `_match_n` takes from the file (vec.evaluate.prefix_parity at n_true and metric_seed) is the floor copy's.
+
+    The first of the permutations default_rng([seed, COPY_PARITY_STREAM]).permutation(n) that matches is returned;
+    the identity is never tried, so the result says nothing about the parity of the file as built. Refused (values not
+    shown) when the copy and the file are not handed the same truth rows (`truth_rows_shared`), when a parity is
+    undefined, or when no permutation matches. The record holds no count, no parity and no number of tries.
+
+    Preconditions no local check shows: the server's metric seed is 0, its LAPACK picks SVD signs as numpy/OpenBLAS
+    do, its floor copy is the bake copy at seed 0, and the server scores the prediction's rows as the file holds them
+    (file order, full count, no subsample or sort); score_h5ad's `_prediction` does this in the pinned copy, but the
+    live server's handling is not shown. The as-built uploaded files' pre-fix parities are never computed, by any
+    script, and the returned occupancy of a copy_parity upload is never compared with an earlier upload's to infer a
+    mode (limit 2)."""
+    from vec.evaluate import prefix_parity
+
+    C, Q = _as_read(coords), _as_read(copy_coords)
+    n_true = _whole(n_true, "n_true", 3)
+    if not truth_rows_shared(len(C), len(Q), n_true, metric_seed):
+        raise ValueError("copy_parity: the scorer would hand the copy and the file different truth rows, so matching "
+                         "their parities fixes nothing (values not shown)")
+    want = prefix_parity(Q, n_true, metric_seed)
+    if want == 0:
+        raise ValueError("copy_parity: the copy's pre-fix parity is undefined (a degenerate cloud)")
+    rng = np.random.default_rng([_whole(seed, "seed", 0), COPY_PARITY_STREAM])
+    for _ in range(_whole(max_tries, "max_tries", 1)):
+        order = rng.permutation(len(C))
+        if prefix_parity(C[order], n_true, metric_seed) == want:
+            return order, {"row_order": ROW_ORDERS[1], "row_order_stream": COPY_PARITY_STREAM,
+                           "row_order_metric_seed": int(metric_seed), "row_order_matched": True}
+    raise ValueError("copy_parity: no permutation of the stream matched the copy's parity (values not shown)")
+
+
+# ---------------------------------------------------------------------------------------------------------------------
 # Builder
 def _panel_matrix(board: Board, cells, genes: list[str] | None) -> tuple[np.ndarray, list[str]]:
     """cells x board genes, float32, from an AnnData (columns by var_names) or a matrix / vec.evaluate.Stage whose
