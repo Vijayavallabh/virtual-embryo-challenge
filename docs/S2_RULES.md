@@ -1409,3 +1409,39 @@ to the captain in one question that ended "I state no preference. Which heart fi
 full). His answer, verbatim: "Full trim (as ruled)". So the heart's last upload is the file of the heart section above,
 `T2heart_s2core_half.h5ad` of set heart3 (sha256 04cde6361c04840ee47fff32eb9a20f4781bd649387cc540ed9fdea71e65fa35,
 `experiments/builds/results/heart3_3d52b83.txt`). Nothing else in that section changes.
+
+## Note of 2026-11-20: uploads go on after the second files; candidate sets (the captain's order)
+
+Written by the AI assistant. The sections above each name one file as a board's second and last upload. All four of
+those files were uploaded by the captain on 2026-11-20 (`results/manual_uploads.csv`). His later messages, verbatim:
+"they havee improveed 2 submissions daily" and "let's upload all the 4 filees after full optimization to beat the
+leadeerboard scores [2 times a day]". The AI assistant has not read the site's rules since 2026-11-19, at his word, and
+takes "[2 times a day]" as his statement of the team's allowance; it plans on at most two uploads per board per day and
+uses no score beyond that (`docs/PLAN.md` decision log 2026-11-20 (g), (h), (j)).
+
+What stays of these rules for every further file:
+
+- A board's candidates are fixed in the decision log before any of their scores exists. A returned score chooses among
+  them. It never sets a number, a file's form or an estimate, and no property of a hidden target is worked out from it
+  (Official Rules Section 10; decision log 2026-11-18 (k)).
+- Each file is built twice from one clean, stamped commit with identical bytes, passes the format check, and has its
+  sha256 in `experiments/builds/results/`. A builder option is off by default, and the default command must still
+  build the bytes it built before.
+- Uploads are the captain's, by hand. `builds/T1_s2.h5ad` is never uploaded, and no T1 upload carries the 0.60.
+- The data rules of `docs/DATA_POLICY.md` stand as they are.
+- The AI assistant is recused on the heart's scope and size and on the embryo's occupancy term (decision log
+  2026-11-19 (bb), 2026-11-20 (i)). Analysts who have not seen its conversation fix those candidates.
+
+The candidate sets as they stand at this note:
+
+- **T1** (decision log 2026-11-20 (i); `experiments/harness/TRIES.md` row R15): the recomputed-groups file of the
+  section above with one change each: A, g_mom finished at damping 1.0 (`--g-mom-damping 1.0`); B, the atlas direction
+  at 1.5 times the calendar fraction (`--feng-fraction-mult 1.5`); C, both.
+- **T3** (decision log 2026-11-20 (h), (k); row R14): the barred branch's s1 at factor exponent 1.5, then at 2.0 if
+  1.5 beats the s1 file's score, otherwise the barred branch's s2.
+- **Embryo** (decision log 2026-11-20 (h), (l), (m)): `T2embryo_s2x.h5ad`, the first upload's cells and expression on
+  E7.5's exact positions. And, by the captain's ruling of 2026-11-20 ("Use it, after a practice read"), that form with
+  its rows re-ordered by `--row-order copy_parity`, after practice row E48 has run. His ruling sets aside, for this one
+  construction, his decision of 2026-11-02 that no parity hedge is used without the organisers' approval.
+- **Heart**: a list fixed by analysts other than the AI assistant (decision log 2026-11-20 (m)). Scope is a closed
+  lever, so nothing on it is built before the captain's own named exception.
