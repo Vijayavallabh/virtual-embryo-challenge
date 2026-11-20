@@ -7750,3 +7750,31 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **What is left for T3's which-genes terms:** the two-knockout files of entry (q), and whatever the
     outside-knockout work yields on what knockouts share. Nothing else on record reaches those terms from released
     data.
+- 2026-11-20 (x), T3 outside knockouts: the pipeline is verified and merged, its metadata plan step has run, and the
+  line is parked (state at 17:00 UTC). Written by the AI assistant.
+  - **Verified and merged.** After a fifth pass (wf_3c058119-fff: an engineer and a verifier under a threat model the
+    AI assistant fixed: real public records and an honest operator) the verifier replayed the five attacks of the
+    round before, found each refused, walked the honest path on a synthetic dataset and returned "ready", no blocker.
+    Merged at 95c7f01 (`experiments/t3_ext`; 1212 tests in its three files pass). No expression data of any outside
+    sample has been fetched or read.
+  - **The plan step** (metadata only: the repository's sample and series records of the five cleared series and their
+    superseries, on PrakashDGX_H2 into `~/v/vec-ext/t3`, outside every checkout). Four series passed the screen; one
+    was refused for review. The AI assistant read the series text and every sample record of three of them (each
+    distinct text once) from copies of the plan tables kept outside the repository. What the labels show: (1)
+    GSE137337, the panel of chromatin and DNA-methylation knockouts that was to carry "what knockouts share": every
+    sample is labelled with its own knockout gene and none names a held-out gene, but no sample has files of its own
+    (the matrices are archives at series level, which the pipeline never fetches by design) and the series holds no
+    wild-type single-cell sample, so no same-study control exists inside it; (2) GSE205117, the T knockout: refused on
+    the review term for T's other name, in the series text and two samples; it is not cleared, since T is a direct
+    target of the held-out gene's pathway and the study has one library per arm; (3) GSE204906, the DNA-methylation
+    nulls: its superseries table has more than two and a half thousand sample records, which no reader has read; (4)
+    the two Tbx1 series (GSE168768, GSE186934): clean labels, files per sample, six samples in all, one gene, cells
+    sorted from one lineage.
+  - **Decision of the AI assistant: parked.** What can be pinned today is one gene in one sorted lineage. A table from
+    that is not "what knockouts share", and K21 has just shown that the board's best factor loses when its gene
+    pattern is thinned; the designer's doubt of entry (m) stands. Making the panel usable needs series-level archives
+    pinned to samples and a control from another series, both new code and a new review, and a second reader for a
+    very large table, for a chance of a small gain the AI assistant puts at about one in ten. The time goes to the
+    files already in hand. To resume: `experiments/t3_ext/README.md`, the plan tables under `~/v/vec-ext/t3/meta`, and
+    the stage-2 practice read and builder that wf_eb0c3caa-38d is writing (they stay on their branch, unmerged, until
+    tables exist). The captain is told plainly; his ruling on the tiers stands if he wants the line resumed.
