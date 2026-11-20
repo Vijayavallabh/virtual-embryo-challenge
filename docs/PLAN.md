@@ -8469,3 +8469,49 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the same momentum on the same truth, and the library tasks' gains are bounds from in-sample diagnostics. The rule
     was written to be decided by the chamber cut, and it decided. T1's list after A, B and C is now the hedge file F
     and the advance file E, each only at the captain's specific word.
+- 2026-11-20 (aaa), T3 outside knockouts: the extension is merged; the bulk build's review; what the real metadata showed
+  (state at 21:40 UTC, 2026-11-20). Written by the AI assistant.
+  - **The extension is verified and merged** (branch `campaign/t3-ext-4`, 9edee21; merged at 47d54f6; 1,537 tests
+    pass): the three blockers of entry (vv) are closed (an unfiltered matrix is offered only when it is a sample's
+    only file; both arms of a unit are read the same way; a sister series must share a publication or a repository
+    link with the study), and the team's held list is part of the code's held set. One consequence, by design: the
+    zygotic knockout panel of entry (x) and the wild-type series the hunt paired it with cite different publications
+    and neither record links the other, so that pairing is refused by the stricter rule and the panel stays out.
+  - **The bulk build is reviewed: not ready, six blockers** (branch `campaign/t3-ext-bulk`, 120af2f): a run of a
+    withheld line reused by a kept row; per-sample count columns neither screened nor tied; a count table named as
+    normalised accepted when its values are whole numbers; heterozygous wording unrefused on the GEO path; and the
+    committed line set ignoring which runs the count table actually holds. A fix round is running (workflow
+    `t3-ext-bulk-fix`, branch `campaign/t3-ext-bulk-2`).
+  - **What the 73-line set's real metadata showed** (the AI assistant ran the branch's planner, in a scratch copy, on
+    the set's own description and sample tables; metadata only, no count read). Two mismatches would have refused or
+    emptied the plan and are for a reviewed change after the fix round: the description file holds the key "MAGE-TAB
+    Version", whose hyphen the key grammar refuses; and the allele column writes alleles as line, caret, allele name,
+    where the code expects another separator, which made 569 of 680 records fail the name comparison. A fact the AI
+    assistant had given the engineers was wrong and is corrected here: sample names carry a numeric prefix before the
+    line and genotype token. With those three points set right in the scratch copy, the planner's own comparisons
+    leave 25 lines with 103 knockout and 114 wild-type embryos at embryonic day 9.5, before the count table's header
+    is read. Two of the 27 lines of entry (yy) fall out because their sample names spell the line differently from the
+    line column.
+  - **Single GEO bulk studies, the first reader's doubts before any plan.** Of the design's first candidates the AI
+    assistant withholds two on recall alone (no paper opened): the Sox7 study (a factor of the same family as Sox17,
+    which check 2 lists, and recalled as acting on beta-catenin-dependent transcription) and the Cables2 study
+    (recalled with a tie to Wnt signalling in early embryos). The Zmym2, Uhrf1 and Rreb1 studies go to the plan step
+    once the bulk intake is merged.
+- 2026-11-20 (bbb), T3 outside knockouts: the nine Cmtr2 samples pinned by two readers (state at 21:42 UTC, 2026-11-20). Written
+  by the AI assistant.
+  - **The readings.** After the unfiltered-matrix intake was merged, the plan step offered each sample's one file. The
+    AI assistant read every line of the plan table and wrote its reading down first (scratch
+    `lift8/cmtr2_first_reading.txt`): five knockout and four wild-type embryos, one embryo per library, stage E9.5 in
+    every record and no other stage, no held-out or pathway label, each file the only file of its own sample's folder.
+    A second reader agent, not told that reading, read all 511 lines and the same nine hashes and found the same on
+    every check but one: the entry's control definition said "the same series and litters", and no record states
+    littermates. It also saw what the AI assistant had not weighed: the library codes in the file names split cleanly
+    by genotype (three code groups hold the knockouts, two the wild types), so genotype may be confounded with litter
+    or capture group; eight embryos are male and the one female is a knockout.
+  - **The AI assistant's ruling.** The control definition is rewritten to say what the records say (same series; five
+    litters; no littermate relation; library codes that do not overlap between the arms); the relation stays
+    same_series, so the pipeline's design factor halves the ratio. On that wording the second reader agrees to pin all
+    nine, and they are pinned with the hashes both readers read; register row X016 is placed before any table exists.
+    A study whose arms may differ by litter is a weaker design than littermates and no weaker than the
+    one-library-per-arm studies already pinned; the shuffled control of a practice read is what tells a table's genes
+    from its noise. No guard is changed for it.
