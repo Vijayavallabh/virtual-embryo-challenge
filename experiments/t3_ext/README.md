@@ -37,8 +37,17 @@ is an explicit list of the samples two people have read.
    since stage 5 every field NAME is screened too), the sha256 of those fields, the screen's verdict and hits, its
    **series membership** (`NOT PINNABLE` when its own `series_id` lists a series outside `screen_series` or none, or
    when a supplementary link names a held accession), the per-sample files allowed and every other supplementary link
-   with the reason it is never fetched, the parsed stage and chemistry, and the selectors' suggested arm, which
-   chooses nothing. **A file is allowed only when its link is the sample's own GEO folder**, exactly
+   with the reason it is never fetched, the parsed stage (with the field(s) it was read from, or why it is `none`)
+   and chemistry, and the selectors' suggested arm, which chooses nothing. **Stage parsing:** by default the stage
+   is read from the characteristics (keys naming stage, age, time or day), else the title, as before. A dataset may
+   list `stage_fields`, an ordered list of SAMPLE field names (plain keys: ASCII letters, digits, underscores; only
+   GSE204906 has one, `[characteristics_ch1, source_name_ch1, description]`, because its samples state the stage only
+   in the source name and the description). Then each listed field is read by the same parser (the characteristics
+   through their stage keys, any other field through every value; the title only if listed); a field the record lacks
+   states no stage; every field that states one must give the same single value; no field stating one, a range, or
+   two values give `parsed stage none` with the reason, and such a sample is not pinnable. The E9.5 cap applies to
+   the agreed value. plan, pin-template and verify_pins (so fetch and process) all use this one rule
+   (`fetch.sample_stage` under `t3x_common.stage_fields`); the screen does not depend on `stage_fields`. **A file is allowed only when its link is the sample's own GEO folder**, exactly
    `ftp.ncbi.nlm.nih.gov/geo/samples/<stub>/<GSM>/suppl/<GSM>_<name>` (GEO's stub: GSM1234567 -> GSM1234nnn; no port,
    query or fragment; a plain file name), names no held accession, is not a denied type and matches the dataset's
    `sample_file_patterns`. A link into a series folder, another sample's folder or another host is listed as never
@@ -64,7 +73,8 @@ is an explicit list of the samples two people have read.
    `{accession: GSEnnn, series_metadata_sha256: "..."}`; it is pasted beside `pinned`, and is required whenever
    `pinned` is not empty. A control names the knockout gene it controls; a control that serves several knockouts is
    pinned once per gene. pin-template never writes `datasets.yaml` and refuses a held-out sample, a NOT PINNABLE
-   sample, a sample whose stage does not parse to one value, and a sample with no allowed per-sample file; it marks a
+   sample, a sample whose stage does not parse to one value (or whose stored stage differs from the one its fields
+   give under the committed `stage_fields`), and a sample with no allowed per-sample file; it marks a
    sample with review terms (pin it only together with the `review_cleared` entries both readers agree).
 3. **Commit.** Every edit of `datasets.yaml` changes its sha256. The same commit puts the new value
    (`fetch.py datasets-sha`) into `t3x_common.DATASETS_SHA256`; otherwise every step refuses the committed file, and

@@ -61,7 +61,7 @@ STATUSES = ("cleared", "held_phenocopy", "excluded_design")
 # Held and excluded datasets: never fetched by any flag or YAML (the main session's decision of 2026-11-20).
 NEVER_FETCH = frozenset({"GSE165300", "GSE126128", "GSE280543", "GSE280587", "GSE259342", "E-MTAB-7325"})
 # sha256 of the committed datasets.yaml; the pin-and-commit step updates it in the same commit as the YAML.
-DATASETS_SHA256 = "61a5c5ee7bb79f26b87b53e3217f964d96efa1d338596c4d875a5bd188285877"
+DATASETS_SHA256 = "6b9d65fbf02aea9f777e46fdfe647d98f7c045932eeb1d1557dc58258df2ff5c"
 PIN_KEYS = ("accession", "arm", "gene", "stage", "files", "metadata_sha256")
 SERIES_PIN_KEYS = ("accession", "series_metadata_sha256")
 PIN_ARMS = ("ko", "control")
@@ -153,10 +153,32 @@ _KEYS = {"accession", "status", "status_reason", "tier", "study", "kind", "desig
          "exclude_match_on",
          "design_refuse", "chemistry", "expect", "sample_file_patterns", "files_note", "licence", "why", "risks",
          "verified", "screen_extra_refuse", "review_cleared", "cell_labels", "citation", "pinned",
-         "pinned_series"}
+         "pinned_series", "stage_fields"}
 _SHA = re.compile(r"[0-9a-f]{64}")
 _GSM = re.compile(r"GSM\d+")
 _GSE = re.compile(r"GSE\d+")
+_FIELD = re.compile(r"[A-Za-z0-9_]+")
+# the sample fields a stage is read from when a dataset lists no stage_fields: the characteristics alone (with the
+# title fallback of fetch.sample_stage's default rule), exactly the rule from before stage_fields existed
+DEFAULT_STAGE_FIELDS = ("characteristics_ch1",)
+
+
+def check_stage_fields(acc, ds: dict, where: str = "datasets.yaml") -> tuple[str, ...]:
+    """A dataset's stage_fields, checked: absent means DEFAULT_STAGE_FIELDS; else a non-empty list of distinct SAMPLE
+    field names, each a plain repository key (ASCII letters, digits, underscores). fetch.sample_stage reads them."""
+    sf = ds.get("stage_fields")
+    if sf is None:
+        return DEFAULT_STAGE_FIELDS
+    if (not isinstance(sf, list) or not sf or not all(isinstance(f, str) and _FIELD.fullmatch(f) for f in sf)
+            or len(set(sf)) != len(sf)):
+        raise Refused(f"{where}: {acc}: stage_fields must be a non-empty list of distinct plain field names "
+                      "(ASCII letters, digits, underscores)")
+    return tuple(sf)
+
+
+def stage_fields(ds: dict) -> tuple[str, ...]:
+    """The sample fields one dataset's stage is read from (check_stage_fields)."""
+    return check_stage_fields(ds.get("accession"), ds)
 
 
 def design_factor(ds: dict) -> float:
@@ -318,6 +340,7 @@ def load_datasets(path: Path | None = None) -> dict[str, dict]:
             raise Refused(f"{path}: {acc}: a chimera without a wild-type-chimera second difference is not cleared")
         for s in ds.get("stages_used") or []:
             stage_ok(s)
+        check_stage_fields(acc, ds, str(path))
         if acc in out:
             raise Refused(f"{path}: {acc} listed twice")
         if not isinstance(ds.get("screen_series"), list) or acc not in ds["screen_series"]:

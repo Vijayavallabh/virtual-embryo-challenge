@@ -83,6 +83,7 @@ DENY = re.compile(r"fastq|\.bam$|\.bai$|fragments|atac|peaks?[._]|\.bw$|bigwig|\
                   r"cloupe|\.sra$|_raw\.tar$|\.h5seurat$", re.IGNORECASE)
 _STAGE_KEY = re.compile(r"stage|age|time|day", re.IGNORECASE)
 _STAGE_VAL = re.compile(r"(?<![a-z0-9])(?:e\s?|embryonic day\s*)(\d+(?:\.\d+)?)", re.IGNORECASE)
+_STAGE_RANGE = re.compile(r"\d\s*(?:-|–|to)\s*e?\s*\d", re.IGNORECASE)
 _CHEM = re.compile(r"(?<![a-z0-9])v\s?([23])(?![0-9])", re.IGNORECASE)
 MAX_BYTES_DEFAULT = 40 * 1024 ** 3
 WITHHELD = "<withheld: held-out hit in this dataset>"
@@ -207,9 +208,59 @@ def sample_text(rec: dict) -> str:
     return " | ".join(f"{k}: " + "; ".join(rec.get(k, [])) for k in keys).lower()
 
 
-def sample_stage(rec: dict) -> tuple[float | None, str]:
-    """(E-day, how) from the characteristics (keys naming stage, age, time or day), else the title. Two different
-    values or a range give None (fail closed); so does a value after E9.5."""
+def sample_stage(rec: dict, fields=None) -> tuple[float | None, str]:
+    """(E-day, how) of one sample under a dataset's stage_fields (t3x_common.stage_fields; None is the default).
+
+    Default (stage_fields absent or exactly [characteristics_ch1]): the rule from before stage_fields, unchanged: the
+    characteristics (keys naming stage, age, time or day), else the title. Two different values or a range give None
+    (fail closed); so does a value after E9.5.
+
+    A listed stage_fields: each listed SAMPLE field is read by the same parser (characteristics_ch1 through its keys
+    naming stage, age, time or day; any other field through every one of its values; no title fallback unless title
+    is listed). A field absent from the record states no stage. Every field that states a stage must give one and the
+    same value; none stating one, a range in any, or two different values (within a field or across fields) give None
+    with the reason, and the cap applies to the agreed value. `how` names the field(s) the stage was read from."""
+    fields = tuple(fields) if fields is not None else cm.DEFAULT_STAGE_FIELDS
+    if fields == cm.DEFAULT_STAGE_FIELDS:
+        return _default_stage(rec)
+    stated: dict[str, set[float]] = {}
+    for fld in fields:
+        for f in _stage_texts(rec, fld):
+            if _STAGE_RANGE.search(f):
+                return None, f"range in {fld} {f!r}"
+            vals = {float(x) for x in _STAGE_VAL.findall(f)}
+            if vals:
+                stated.setdefault(fld, set()).update(vals)
+    if not stated:
+        return None, f"no listed stage field states a stage ({', '.join(fields)})"
+    every = set().union(*stated.values())
+    if len(every) != 1:
+        return None, "listed stage fields disagree: " + "; ".join(
+            f"{k} gives {', '.join(f'E{v:g}' for v in sorted(vs))}" for k, vs in stated.items())
+    e = every.pop()
+    how = "read from " + ", ".join(stated)
+    try:
+        cm.stage_ok(f"E{e:g}")
+    except Refused as err:
+        return None, f"{err} ({how})"
+    return e, how
+
+
+def _stage_texts(rec: dict, field: str) -> list[str]:
+    """The texts of one listed field the stage parser reads: characteristics_ch1 through its keys naming stage, age,
+    time or day (as in the default rule), any other field every value verbatim."""
+    if field == "characteristics_ch1":
+        out = []
+        for ch in rec.get(field, []):
+            k, _, v = ch.partition(":")
+            if _STAGE_KEY.search(k):
+                out.append(v.strip())
+        return out
+    return list(rec.get(field, []))
+
+
+def _default_stage(rec: dict) -> tuple[float | None, str]:
+    """The default rule (no stage_fields), kept as it was: the characteristics, else the title."""
     found = []
     for ch in rec.get("characteristics_ch1", []):
         k, _, v = ch.partition(":")
@@ -219,7 +270,7 @@ def sample_stage(rec: dict) -> tuple[float | None, str]:
         found = [t for t in rec.get("title", [])]
     vals = set()
     for f in found:
-        if re.search(r"\d\s*(?:-|–|to)\s*e?\s*\d", f, re.IGNORECASE):
+        if _STAGE_RANGE.search(f):
             return None, f"range in {f!r}"
         vals |= {float(x) for x in _STAGE_VAL.findall(f)}
     if len(vals) != 1:
@@ -413,7 +464,7 @@ def pin_blocker(ds: dict, rec: dict) -> str | None:
 def _row(ds: dict, series: str, gsm: str, rec: dict, scr: dict, in_series: list[str]) -> dict:
     files, other = sample_files(ds, rec, gsm)
     arm, gene = resolve_arm(ds, rec)
-    e, how = sample_stage(rec)
+    e, how = sample_stage(rec, cm.stage_fields(ds))
     return {"accession": gsm, "series": series, "in_series": in_series, "fields": rec,
             "metadata_sha256": cm.metadata_sha256(gsm, rec), "verdict": scr["verdict"],
             "hits": [list(h) for h in scr["hits"]], "clearance_void": scr["clearance_void"],
@@ -552,7 +603,7 @@ def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
         r = sc.screen_record(g, row["fields"], ds.get("screen_extra_refuse"), ds.get("review_cleared"))
         if r["verdict"] != "pass":
             raise Refused(f"{g}: screen verdict {r['verdict']} on the pinned sample: refused")
-        e, how = sample_stage(row["fields"])
+        e, how = sample_stage(row["fields"], cm.stage_fields(ds))
         if e is None or e != cm.stage_ok(p["stage"]):
             raise Refused(f"{g}: pinned stage {p['stage']} but the record gives {how if e is None else f'E{e:g}'}")
         # stage 5: the file list (names and urls) is derived again from the HASHED fields; the stored list is only
@@ -851,6 +902,12 @@ def pin_template(acc: str, dest: Path, arm: str, gene: str, gsms: list[str], dat
         h = cm.metadata_sha256(g, r["fields"])
         if h != r["metadata_sha256"]:
             raise Refused(f"{g}: the stored fields hash to {h}, not to the table's value: plan again")
+        # the same stage rule as plan and verify_pins, under the committed stage_fields: a stored stage made under
+        # another rule refuses
+        e, how = sample_stage(r["fields"], cm.stage_fields(ds))
+        if e != r["stage"] or how != r["stage_from"]:
+            raise Refused(f"{g}: the stored stage ({r['stage_from']}) differs from the one its fields give under the "
+                          f"dataset's stage_fields ({how}): plan again")
         if r["stage"] is None:
             raise Refused(f"{g}: no single stage parses ({r['stage_from']}): it cannot be pinned")
         derived, _ = sample_files(ds, r["fields"], g)
