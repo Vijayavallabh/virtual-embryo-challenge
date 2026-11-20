@@ -1531,3 +1531,44 @@ check `file_axes` is in, with E48 still running; withdraw his answer and keep hi
 withdraws, this candidate is removed from the embryo's set. E48 itself, a practice read on released stages that builds
 no upload file, may run. The second construction the reading names (the file takes the baseline copy's own rows and
 count) is not written; it would need its own ruling and its own practice row.
+
+## Amendment of 2026-11-20: T3's two-knockout files C1 and C2 may use the released Gata4 validation files (the captain's reply; row R17)
+
+Written by the AI assistant. The list was fixed by a designer and a cold challenger before any of its scores
+(`docs/PLAN.md` decision log 2026-11-20 (q)); the thin builder is `experiments/t3_decomp/build_two_knockout.py` (merged
+at c5865d5; the three frozen T3 files untouched). The challenger required one question to the captain before any C file
+is built for upload.
+
+**The question as put, in full:** "Task 3: our best file (61.8) uses only the released Mab21l2 knockout. Two more files
+would multiply its per-gene change by the released Gata4 validation knockout's change. That is the same table our first
+upload (47.8) carried, but that upload also had a depth step and a different cell mix, so the record cannot say why it
+scored low. Practice cannot price the new files: on the one fold that tests the Gata4 change on a different knockout,
+it beat a shuffled control by 0.18, under our 0.3 bar, and it lowered the cell-state terms. Gain if it carries:
+unknown, perhaps a few points. Loss: the board keeps our best, so the cost is up to two of about ten remaining Task 3
+slots. If the organisers later restrict the Gata4 files, these cannot be marked final and the Mab21l2-only file stays
+our mark. They are built only after both of today's Task 3 scores are back. May these two files use the Gata4
+validation files?" The options: "Yes, both (Recommended)" ("C1 (the plain product) then C2 (the same, held at the best
+file's size). My reason: slots are not short and a lower score costs nothing else."), "Only C2" and "No, Mab21l2 only".
+
+**His answer.** He dismissed the dialog that held this question and three others, then wrote, verbatim: "go ahead with
+whatever will improve our score [my reply]". The AI assistant reads that as yes to the recommended option, "Yes, both"
+(decision log 2026-11-20 (t) gives the reading and its precedent). It is the AI assistant's reading of a general reply,
+not his own choice of an option, and it is recorded as that.
+
+**The files and the rule** are entry (q)'s, unchanged: the base B is the highest returned headline among the barred s1,
+its exponent-1.5 and exponent-2.0 files and the barred s2, fixed only after both uploads of entry (k) are back; C1
+(`--form c1-s1` or `c1-s2`) is built only when B is the barred s1 or s2; C2 (`--form c2-<base>`) for every B; no depth
+step; seed 1000001; each built twice with the same bytes after the identity forms reproduce the base's bytes. Only
+headlines of the team's own uploads choose. Under any organiser restriction on the Gata4 files no C file is marked, and
+the Gata4-free barred file stays the mark. Every upload is the captain's own act.
+
+## Note of 2026-11-20: the hold on the embryo's row-order rebuild, after the supplementary check
+
+Written by the AI assistant, which is recused on the embryo's occupancy term and states no preference. The
+supplementary check named in the amendment above read S1, by the reading fixed before its output: the turn that reading
+A.2 fired on is the stage's own draw-to-draw noise (32 of 50 plain copies of E7.5 turn as far or further), the second
+construction is not written, and the row-order path is unchanged (`docs/PLAN.md` decision log 2026-11-20 (t)). The
+captain was told of A.2 before his reply "go ahead with whatever will improve our score [my reply]"; the AI assistant
+reads that reply as not withdrawing his answer "Use it, after a practice read", the first of the three options, and
+tells him so. The rebuild therefore follows practice row E48, unless E48's first reading voids the construction. If he
+objects, the candidate is removed. The upload stays his own act.

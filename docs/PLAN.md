@@ -7633,3 +7633,36 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     scores before any arm starts. The reviewer's points 2 to 4 are not applied, because they would move the fixed run
     commit; the main session reads `files_identical_across_builds` in the result and treats any false as void (point
     2), fixed here before the run.
+- 2026-11-20 (t), the captain's reply after the dismissed dialog, how the AI assistant reads it question by question;
+  the embryo's supplementary check; E48 started (state at 15:52 UTC). Written by the AI assistant.
+  - **His reply, verbatim:** "go ahead with whatever will improve our score [my reply]". It followed the dialog of
+    entry (s), which he had seen and dismissed, and the AI assistant's message of this afternoon. Everything below is
+    the AI assistant's reading of that reply, labelled as such; he can overrule any line of it.
+  - **T3's two Gata4 files (C1, C2): read as yes to the recommended option, "Yes, both".** The question was specific
+    and priced, the option was marked as recommended, and his reply leaves the choice to the AI assistant by the test
+    "whatever will improve our score"; a lower score costs slots only. The precedent is 2026-11-18, when "go ahead
+    with whatever is best for us" was read as yes to the priced questions then before him. The files are built only
+    after both headlines of entry (k)'s uploads are back and the base is fixed, as entry (q) says. Rules amendment and
+    row R17 with this entry.
+  - **T1's no-outside-data file (the hedge): not covered.** The question itself said no score gain is expected from
+    it, and his test is the score. It stays where it is unless he asks for it.
+  - **T1's advance draw: stays declined.** Composition and depth were closed after an exposure. The team's standing
+    rule (2026-11-13) is that a general go-ahead is not his say-so for a closed lever, and that the AI assistant then
+    applies the pre-set outcome on released data alone and adds no lean. The pre-set outcome is decline. He can open
+    both levers for that one file with a specific word.
+  - **The embryo's supplementary check** (`occupancy_frame_check.py file_axes` at 9cd4b6e on `T2embryo_s2x.h5ad`;
+    released E7.5 and the file only). Output: file_rank23 32 of 50 (32 of 50 plain copies of E7.5 turn their second
+    and third axes as far as the file or further); only 14 of 50 copies pass the 0.95 test that A.2 fired on; the
+    stage's second and third singular values are nearly equal (ratio 0.98); turn_cost 0.046, inside the copies'
+    2nd-to-98th percentile band (0.008 to 0.123); overlap 0.878, not below the copies' 2nd percentile (0.794); reading
+    S1; option_a_eligible false. S1, as fixed before the output: stage noise; A.2 fired on an uncalibrated threshold;
+    the second construction is not written; the row-order path is unchanged.
+  - **The hold of entry (s).** He was told of A.2 this afternoon, before his reply; the report is now completed with
+    reading S1, and he is told that in the next message. The AI assistant, recused and stating no preference, reads
+    his reply as not withdrawing his answer of this date ("Use it, after a practice read"): the first of the analysts'
+    three options. So the row-order file is built after E48, unless E48's reading (i) voids the construction, and it
+    goes to him like every file: the upload is his own act, and he can still withdraw. If he objects to this reading
+    the candidate is removed.
+  - **E48 started** at 15:50 UTC on PrakashDGX_H2 from the detached worktree `~/v/scratch/e48-wt` at the fixed run
+    commit 9cd4b6e (the campaign checkout's HEAD did not move): tests, then the gate, then the run, then the reading,
+    each only if the one before exits 0. The embryo's count goes from 75 to 76 when the run step starts.
