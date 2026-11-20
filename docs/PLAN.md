@@ -8156,3 +8156,19 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     a sorted lineage of one region, so the guards may refuse every group, as they did for the two Tbx1 studies. **The
     two-study tables that K22 read are kept aside before the rerun** (`~/v/vec-ext/t3/tables_two_study`), because the
     planned row K23 reads that table at its pinned hash.
+- 2026-11-20 (qq), T3 outside knockouts: the run with the Kmt2d pair; a three-study table exists and is not read yet (state at
+  19:49 UTC, 2026-11-20). Written by the AI assistant.
+  - **The run** (`~/v/vec-campaign-c` at d79ee75; every step exit 0). GSE299068: 9,301 and 37,090 cells in its two
+    libraries, all 500 panel genes matched, confident calls for 0.74 and 0.53 of the cells; the Kmt2d unit gives
+    factors in two lineage groups (ectoderm, endothelium); eight groups have too few confident cells in an arm, two
+    (neural crest, pharyngeal mesoderm) fail the share guard and two (neural, paraxial mesoderm) fail the
+    control-profile guard. No guard was loosened. Combine wrote three-study tables (`all`: GSE204908, GSE277839,
+    GSE299068; the manifest's summary: 137 genes up, 315 down, none at the clip; sha256 14aa9ad68369...) and their
+    leave-one-study-out forms. With three studies the pipeline's sign rule keeps a value when two studies share its
+    sign, so the table is not simply the two-study table plus genes.
+  - **What is read, and when.** The planned row K23 stays on the two-study table that K22 read (sha256
+    9490f524e40e..., the committed listing and pins; a copy is kept at `~/v/vec-ext/t3/tables_two_study` and is put in
+    place for that run, where the script checks every byte against the pins). The three-study table is not listed, not
+    pinned and not read by any row. It will be read together with the further whole-embryo studies the extension
+    brings, in one later row with its own listing, so that the fold is not read once per added study. This is the AI
+    assistant's choice, made before any score of either table at any exponent beyond K22's.
