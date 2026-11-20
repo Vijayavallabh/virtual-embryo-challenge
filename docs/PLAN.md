@@ -7164,3 +7164,24 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     truth's depth.
   - **Next:** the outcome is placed in the T1 texts (the rules file's sha256 changes), then the set t1rc is built
     twice on `~/v/vec-campaign-d`; an independent recomputation of the read runs beside the build.
+- 2026-11-20 (f), T1's last upload is built; row T63 recomputed independently; all four last files exist (state at
+  10:10 UTC). Written by the AI assistant.
+  - **Row T63's independent recomputation** (wf_efea8677-f03; one analyst from the five task files, without the read
+    script): every figure and statement matches; both gate arms equal row T62's on every task and seed; no void
+    condition fires; the row's table gives "build". From its table, as a reading after the result and not a pre-set
+    statement: the scrambled directions are ahead of the no-outside-data analogue on the two cuts (+0.44 to +0.78)
+    and behind it on library 3 (-0.34 to -0.56), where the real direction is ahead by +4.29.
+  - **The build.** `bash experiments/builds/build_all.sh t1rc` twice on `~/v/vec-campaign-d` at 5028cab (clean tree):
+    exit 0 both times, the same bytes, sha256 ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f, equal to the check builds of 19 November; stamps commit 5028cab
+    and clean True; the record's named fields say fraction 0.4, groups recomputed, no fallback fired. Archived on
+    both machines; local copy `runs/manual_upload/T1_s2rc.h5ad`; the local format check passes. Record:
+    `experiments/builds/results/t1rc_5028cab.txt`. One unit test failed in that checkout before the builds
+    (`test_the_dry_runs_refusals`): it reads the checkout's own data folder and finds the start record of row
+    N55's dry run there; it passes elsewhere and does not touch the builder.
+  - **The rules file** has the T63 outcome and the build record in place of its two placeholders; its sha256 is in
+    `docs/S2_RULES.sha256`.
+  - **The four last files, as the captain named them:** T1 `runs/manual_upload/T1_s2rc.h5ad` (ad8f24c71c90);
+    heart `runs/manual_upload/T2heart_s2core_half.h5ad` (04cde6361c04); embryo
+    `runs/manual_upload/T2embryo_s2xs.h5ad` (bc50d012cd2c); T3
+    `runs/archive/builds_dc7b6ae/t3_build/barred_s1.h5ad` (3712c3f9988d). They are handed to him with a short text
+    for the upload form's "Data used" field for each board. Uploads are his acts.

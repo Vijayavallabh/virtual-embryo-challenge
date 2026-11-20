@@ -1,0 +1,43 @@
+T1's last upload since the later T1 amendment of 2026-11-19 (docs/S2_RULES.md, "T1's last upload is the recomputed-groups
+file (the captain's own say-so)"): the set t1rc
+=================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-20 in the campaign checkout ~/v/vec-campaign-d, the one that holds the
+relabelling's output (data/derived/feng_relabel_c/), at commit 5028cab (clean tree; docs/S2_RULES.sha256 checked by the
+script and by the set), twice, one after the other, by `bash experiments/builds/build_all.sh t1rc`, both at the
+script's default 16 BLAS threads:
+  a: BUILD_OUT=runs/t1rc_a   exit 0
+  b: BUILD_OUT=runs/t1rc_b   exit 0
+It was built after row T63's read, as the amendment requires (decision log 2026-11-20 (e)): by that row's fixed line
+the ruled file is built as ruled.
+
+The targeted tests ran first there (tests/test_s2_rules.py, test_t1_feng_groups_none.py, test_feng_relabel.py,
+test_hidden_counts.py): exit 1, 213 passed and 1 failed. The failure is
+tests/test_feng_relabel.py::test_the_dry_runs_refusals: it expects the dry run's refusal check to pass on a fresh
+configuration, and that check reads the checkout's own data folder, where row N55's dry run of 2026-11-19 left its
+start record (data/derived/feng_relabel_n55/STARTED.json), so it reports "N55 was started before". The test fails only
+in the one checkout where that dry run was made; it passes on the local machine. It does not touch the builder, and the
+builds did not wait on the tests.
+
+Command the set runs:
+  build_test.py t1 --g-mom --base lib3 --feng-groups recomputed --out <O>/builds/T1_s2rc.h5ad
+then `vec check` on the file for board T1:test (exit 0 in both builds).
+
+Both builds give the same bytes (cmp, and one sha256):
+  ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f  builds/T1_s2rc.h5ad
+It equals the check builds of 2026-11-19 at 8138fa2 (experiments/builds/results/t1rc_check_8138fa2.txt). The stamp
+says commit 5028cab, clean True, in both builds. Named fields of the build record, read by name only: fraction 0.4;
+feng_groups recomputed, from data/derived/feng_relabel_c/cd1_stats_relabel.npz (sha256 36d1f7edcbbf...) under the
+frozen settings (sha256 883e74c2c1ef...); route recomputed; the four groups CM, Endocardium, Endothelium and Epicardium
+each with its own direction and no fallback fired.
+
+Kept: ~/v/vec-campaign-d/runs/archive/t1rc_5028cab/ on the DGX and runs/archive/t1rc_5028cab/ on the local machine
+(SHA256SUMS checked on both); the file for upload is copied to runs/manual_upload/T1_s2rc.h5ad here (sha256 checked).
+The local format check (`vec check runs/manual_upload/T1_s2rc.h5ad --board T1:test`) passes (exit 0; its output was
+not read).
+
+The file it replaces as T1's last upload, runs/manual_upload/T1_s2none.h5ad (set t1none, 55eaee547ff1), stays built
+and is not uploaded.
+
+Built in a campaign checkout, not the reference checkout that docs/COMPUTE.md names as the source of uploads; the
+reference checkout stays untouched at dc7b6ae. Logs of the builds are kept on the DGX and were not read.

@@ -1369,7 +1369,7 @@ after its read.
 the command above and runs the local format check for `T1:test`. It runs on the DGX checkout that holds the
 relabelling's output, at a clean tree. It is built twice, both at 16 BLAS threads (T1 files move with the thread
 count), and the two sha256 are compared, and compared with the check builds' ad8f24c71c90. Any difference stops the
-hand-over until the captain has the explanation. The build record: [MAIN SESSION: the build record]. The sets s1, s2,
+hand-over until the captain has the explanation. The build record: `experiments/builds/results/t1rc_5028cab.txt`: built twice on the DGX at 5028cab with the same bytes, sha256 ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f, equal to the check builds'; clean stamps; local copy `runs/manual_upload/T1_s2rc.h5ad`, local format check passed. The sets s1, s2,
 t3alt, heart2, t1none, embryo2, heart3 and embryo3 are unchanged in the script. This file is in no reference list yet;
 its own list is committed under `experiments/builds/results/` before line 1 of the captain's checklist
 (`docs/P3_RUNBOOK.md` section 5) can be ticked.

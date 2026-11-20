@@ -1342,8 +1342,7 @@ R13 of `experiments/harness/TRIES.md` and the amendment of `docs/S2_RULES.md` fo
 written for that file (`T1_s2rc.h5ad`). The section "Notes before Task 1's and the embryo's second uploads" above is
 left as drafted: its Task 1 note names `T1_s2none.h5ad`, which is no longer the last upload. This note has not had the
 accuracy, strategy and tone review the earlier notes had. It goes into the captain's drafts only at his word, after
-that review, and he sends it after the disclosure email. [HASH] is filled from the t1rc build record ([MAIN SESSION:
-the build record]); the file is built only after row T63's read (Row T63 ran on 2026-11-20 and was read once (decision log 2026-11-20 (e)): the doubled step is AHEAD of the no-outside-data analogue (+3.73 and +3.30 on the cuts, +4.78, +2.00 and +4.29 on the libraries, each in 10 of 10 seeds); the epicardium step at the test's size PAYS (+0.80 on library 3); the placebo statement reads "a placebo gains as well; the direction more", so a part of the gain comes with any direction of this size profile. By the row's fixed line the ruled file is built as ruled.). [TO CONFIRM:
+that review, and he sends it after the disclosure email. The hash below was filled on 2026-11-20 from the build record `experiments/builds/results/t1rc_5028cab.txt`; the file is built only after row T63's read (Row T63 ran on 2026-11-20 and was read once (decision log 2026-11-20 (e)): the doubled step is AHEAD of the no-outside-data analogue (+3.73 and +3.30 on the cuts, +4.78, +2.00 and +4.29 on the libraries, each in 10 of 10 seeds); the epicardium step at the test's size PAYS (+0.80 on library 3); the placebo statement reads "a placebo gains as well; the direction more", so a part of the gain comes with any direction of this size profile. By the row's fixed line the ruled file is built as ruled.). [TO CONFIRM:
 whether the captain sent the disclosure of the X002 labels or the sources note.] Answers: none can exist yet.
 
 **Subject:** Human Team (Mithril): second Task 1 upload, file hash and sources
@@ -1354,7 +1353,7 @@ Hello organisers,
 
 As our email on sources and file hashes for the uploads of 18 November said we would, here are the file hash and sources of our second Task 1 upload, before we make it. As it describes our method, please keep it private.
 
-T1:test, second upload. File T1_s2rc.h5ad, SHA-256 [HASH]. It is our first Task 1 upload's method with one change: the step that uses the external heart atlas (Feng et al. 2022, GEO GSE193346) is computed on cell groups we recomputed ourselves from the atlas's permitted cells, in place of the authors' cell-type labels. The cells, the cell number and the composition are those of our first Task 1 upload.
+T1:test, second upload. File T1_s2rc.h5ad, SHA-256 ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f. It is our first Task 1 upload's method with one change: the step that uses the external heart atlas (Feng et al. 2022, GEO GSE193346) is computed on cell groups we recomputed ourselves from the atlas's permitted cells, in place of the authors' cell-type labels. The cells, the cell number and the composition are those of our first Task 1 upload.
 
 [TO CONFIRM: whether the earlier Task 1 note, which named T1_s2none.h5ad, was sent. If it was: "It replaces the file our earlier note described (T1_s2none.h5ad, SHA-256 55eaee547ff18d7477da5b730c34e7de9ab74f85cc12fd01a9eff6450367611c), which used no external data." If it was not, drop this sentence.]
 

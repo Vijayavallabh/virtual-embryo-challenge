@@ -418,7 +418,7 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
      for the recomputed-groups file; decision log 2026-11-19 (ii)): set t1rc, `bash experiments/builds/build_all.sh
      t1rc` (`builds/T1_s2rc.h5ad`), built twice at 16 BLAS threads on the DGX checkout that holds the relabelling's
      output, the two sha256 equal to each other and to the check builds' ad8f24c71c90; its list:
-     [MAIN SESSION: the build record, and the t1rc list's path under `experiments/builds/results/`]. That list is
+     `experiments/builds/results/t1rc_5028cab.SHA256SUMS` (record `t1rc_5028cab.txt`). That list is
      outside the pointer and is built in a campaign checkout (the reference checkout does not hold
      `data/derived/feng_relabel_c/`, so the builder refuses the option there): its line is ticked only once the
      captain has accepted that provenance. Nothing is built before row T63's read; if its outcome sends a question to
