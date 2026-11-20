@@ -7935,3 +7935,22 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     no stake, and the option moved nothing. Practice therefore gives no reason to expect a change from this file at
     the test; what the live board does is not shown by practice. The branch is merged at fbd7fb4 (205 targeted tests
     pass).
+- 2026-11-20 (gg), T3 outside knockouts, widened: what the hunt and the extension returned, and two studies added
+  (state at 18:45 UTC, 2026-11-20). Written by the AI assistant.
+  - **The hunt** (wf_15a91d8d-eb8: three searchers over repository metadata, a synthesiser; no expression data
+    opened). Most embryo knockout datasets with single-cell data are sorted lineages, dissected regions, placenta or
+    yolk sac, or have their matrices only as series-level archives. Whole-embryo studies with a control in their own
+    series and per-sample files, as the pipeline takes them: GSE270969 (Cmtr2, nuclei, E9.5, five knockout and four
+    wild-type embryos) and GSE277839 (Usb1, E9.5, one library per arm), beside GSE204906 already in use. About eighty
+    accessions were set aside by the searchers as touching the held-out genes or their pathway; they are listed in the
+    scratch hand-back and none is opened. The panel study GSE137337's wild-type sister is GSE122187 (same
+    contributors, cross and pipeline; an inference, since neither record links to the other); only its four knockouts
+    on the older chemistry have a same-chemistry control there.
+  - **The extension** for series-level archives and a sister-series control (branch `campaign/t3-ext-archives`,
+    853b214): both reviewers not ready, three blockers (an archive read whole may hold more libraries than the pin
+    names; a control series could be any registered dataset on typed text alone; one wild-type archive cannot serve
+    several genes). It is not merged. It goes back for a fix only after the two-study table from per-sample data has
+    been read on practice, since that is the quicker test of whether this line carries at all.
+  - **Added to the dataset file with empty pins:** GSE277839 and GSE270969, tier unrelated. Nothing of them is fetched
+    before two readers have read their plan tables and pinned samples. With GSE204906 they would give the `unrelated`
+    and `all` tables the two or three independent studies that practice read K22 requires.

@@ -538,3 +538,55 @@ datasets:
     stages_used: [E8.5]
     licence: "EMBL-EBI ArrayExpress terms of use"
     verified: false
+
+  # Added 2026-11-20 from the widened hunt (docs/PLAN.md decision log 2026-11-20 (gg)): two whole-embryo knockouts of
+  # unrelated genes with a control in their own series. Nothing is pinned until two readers have read the plan tables.
+  - accession: GSE277839
+    status: cleared
+    tier: unrelated
+    study: GSE277839
+    kind: "Usb1 knockout (germline not stated in the record), whole embryo, 10x 3' v3.1"
+    design: germline
+    control_relation: same_series
+    repository: geo
+    screen_series: [GSE277839]
+    stages_used: [E9.5]
+    control_definition: "the WT E9.5 sample of the same series (littermate relation not stated, so d = 0.5)"
+    arms:
+      control: {on: text, all: ['(?<![a-z])(wt|wild[ -]?type)(?![a-z])'], none: ['(?<![a-z])(ko|null|knock-?out)(?![a-z])']}
+      ko:
+        - {gene: Usb1, on: text, all: ['(?<![a-z])(ko|null|knock-?out)(?![a-z])']}
+    expect: {E9.5: {ko: 1, control: 1}}
+    sample_file_patterns: ['(matrix\.mtx|barcodes\.tsv|features\.tsv|genes\.tsv)(\.gz)?$']
+    files_note: "per-sample mtx triples of the two samples (per the searchers; not checked against a plan table)"
+    licence: "GEO: NCBI places no restriction on use; submitter rights may apply (not checked per study)"
+    citation: "none read (no paper was opened)"
+    why: "a whole-embryo E9.5 knockout of an RNA-processing gene with a same-series control"
+    risks: "m = 1 per arm (k at most 1/4 before d); allele and littermate relation not stated; if no characteristic names the stage, the title fallback may read 'U_E9_5' as E9 (wrong stage) and readers must refuse it"
+    verified: false
+    pinned: []
+
+  - accession: GSE270969
+    status: cleared
+    tier: unrelated
+    study: GSE270969
+    kind: "Cmtr2 knockout against wild type, whole embryo, 10x single-nucleus 3' v3.1 (per the searchers; not checked against a plan table)"
+    design: germline
+    control_relation: same_series
+    repository: geo
+    screen_series: [GSE270969]
+    stages_used: [E9.5]
+    control_definition: "the wild-type E9.5 embryos of the same series and litters (as the searchers read the record; d = 0.5 unless the plan table states littermates)"
+    arms:
+      control: {on: text, all: ['(?<![a-z])(wt|wild[ -]?type)(?![a-z])'], none: ['(?<![a-z])(ko|null|knock-?out)(?![a-z])']}
+      ko:
+        - {gene: Cmtr2, on: text, all: ['(?<![a-z])(ko|null|knock-?out)(?![a-z])']}
+    expect: {E9.5: {ko: 5, control: 4}}
+    sample_file_patterns: ['raw_feature_bc_matrix\.tar\.gz$', '(matrix\.mtx|barcodes\.tsv|features\.tsv|genes\.tsv)(\.gz)?$']
+    files_note: "one per-sample archive of the unfiltered matrix each (per the searchers; not checked against a plan table)"
+    licence: "GEO: NCBI places no restriction on use; submitter rights may apply (not checked per study)"
+    citation: "none read (no paper was opened)"
+    why: "a whole-embryo E9.5 knockout of an RNA cap methyltransferase with several embryos per arm and a same-series control"
+    risks: "nuclei, not cells; unfiltered matrices, so the cell floor does the cell calling and the library cap may refuse; stage and genotype fields not yet read"
+    verified: false
+    pinned: []
