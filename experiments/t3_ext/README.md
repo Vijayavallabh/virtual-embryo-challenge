@@ -735,9 +735,9 @@ holds the current pins and the file's sha256; a loose features file or a per-sam
 reference symbol in the reference's order (symbol, ensembl_gene_id or NA, chromosome, reason), NA where the source
 gives the symbol no id or several, or the id names two panel symbols; header lines with the source file's name and
 sha256, the reference list's sha256, and one `# extra` line per sex gene and per `--extra` symbol (the knocked-out
-genes G9 reads). `t3x_common.PANEL_IDS_SHA256` pins the file; it is None until the main session commits the file in a
-reviewed commit, and every dataset with `id_type: ensembl` is refused (the pinned gate, fetch, process) while it is
-None or the file does not hash to it. A 10x features file states no chromosome, so the chromosome column is NA: the
+genes G9 reads). `t3x_common.PANEL_IDS_SHA256` pins the file; it was None until the main session committed the file in
+a reviewed commit (set 2026-11-20: 'The committed map' below); while it is None or the file does not hash to it, every
+dataset with `id_type: ensembl` is refused (the pinned gate, fetch, process). A 10x features file states no chromosome, so the chromosome column is NA: the
 chrY rule then covers Xist, Tsix and the four Y genes only, and a unit whose sex check finds an imbalance (or cannot
 run) is REFUSED (`refused_sex_chromosomes`) rather than read with unknown chrX genes.
 
@@ -746,10 +746,14 @@ features file of GSM8532456 (the pinned wild-type sample of GSE277839, fetched u
 pinned lines of E-MTAB-7322 as extras. The source was chosen on coverage alone, before any count was read: maps were
 made from the features files of three pinned wild-type samples (GSM5169142 of GSE168768, GSM6202159 of GSE204906,
 GSM8532456 of GSE277839); they give 494, 498 and 500 of the 500 panel genes one id, agree on every id that two of them
-give, and give the same ids for the extras. In all three, 23 of the 25 lines get an id, equal to the id the resource's
+give, and give the same ids for the extras. Ccn5 and Cemip2 get an id from GSM8532456 alone (the two older features files
+lack these symbols), so their ids have no second source. E-MTAB-7322 has no symbol column, so a symbol mismatch between
+the reference and the map would not be counted as a disagreement; all three sources are 10x references. In all three, 23 of the 25 lines get an id, equal to the id the resource's
 own sample table states for that line; Mir96 (a microRNA) and Zfyve20 (a symbol the 10x annotations no longer use) get
 none, so the genotype guard (G9) refuses those two units. The pin is `t3x_common.PANEL_IDS_SHA256`;
-`tests/test_t3_ext_panel_ids.py` holds the file to it.
+`tests/test_t3_ext_panel_ids.py` holds the file to it and holds the extras to the ids the resource states. An
+independent reviewer re-derived every figure of this paragraph and found the commit ready (decision log 2026-11-20
+(ggg)).
 
 ### The guards (fail closed; design numbers fixed before any count; verdicts to QC.json; no gene-level print)
 

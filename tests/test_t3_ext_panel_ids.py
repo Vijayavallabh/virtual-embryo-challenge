@@ -15,6 +15,18 @@ if str(EXT) not in sys.path:
 import t3x_common as cm  # noqa: E402
 
 ENS = re.compile(r"ENSMUSG\d{11}")
+# The ids the resource's own sample table states for its pinned lines (metadata, column "Term Accession Number";
+# the reviewer's point L1): an independent source for the extras of the committed map.
+RESOURCE_IDS = {"Adamts3": "ENSMUSG00000043635", "Bap1": "ENSMUSG00000021901", "Brd2": "ENSMUSG00000024335",
+                "Camsap3": "ENSMUSG00000044433", "Ccdc6": "ENSMUSG00000048701", "Cnot4": "ENSMUSG00000038784",
+                "Col4a3bp": "ENSMUSG00000021669", "Cyp11a1": "ENSMUSG00000032323", "Dennd4c": "ENSMUSG00000038024",
+                "Edc4": "ENSMUSG00000036270", "Ehmt1": "ENSMUSG00000036893", "Fcho2": "ENSMUSG00000041685",
+                "Fryl": "ENSMUSG00000070733", "H13": "ENSMUSG00000019188", "Morc2a": "ENSMUSG00000034543",
+                "Nadk2": "ENSMUSG00000022253", "Otud7b": "ENSMUSG00000038495", "Pdzk1": "ENSMUSG00000038298",
+                "Psph": "ENSMUSG00000029446", "Sh3pxd2a": "ENSMUSG00000053617", "Smg9": "ENSMUSG00000002210",
+                "Ssr2": "ENSMUSG00000041355", "Tial1": "ENSMUSG00000030846"}
+SEX_IDS = {"Xist": "ENSMUSG00000086503", "Ddx3y": "ENSMUSG00000069045", "Eif2s3y": "ENSMUSG00000069049",
+           "Kdm5d": "ENSMUSG00000056673", "Uty": "ENSMUSG00000068457"}
 
 
 def test_the_committed_map_hashes_to_its_pin_and_loads():
@@ -59,3 +71,11 @@ def test_a_changed_map_or_an_unset_pin_is_refused(tmp_path, monkeypatch):
     monkeypatch.setattr(cm, "PANEL_IDS_SHA256", None)
     with pytest.raises(cm.Refused, match="PANEL_IDS_SHA256 is None"):
         cm.load_panel_ids()
+
+
+def test_the_extras_equal_the_ids_the_resource_states_for_its_lines():
+    m = cm.load_panel_ids()
+    assert {k: m["extra"][k] for k in RESOURCE_IDS} == RESOURCE_IDS
+    assert {k: m["extra"][k] for k in SEX_IDS} == SEX_IDS and set(SEX_IDS) == set(cm.SEX_GENES)
+    # no extra's id is a panel id
+    assert not (set(RESOURCE_IDS.values()) | set(SEX_IDS.values())) & set(m["ids"])
