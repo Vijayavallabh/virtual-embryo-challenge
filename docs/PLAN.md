@@ -8338,3 +8338,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     matrix, each verified or reviewed. The gene-id map comes from the features file of a sample already pinned and
     fetched; no annotation file is downloaded. Nothing is fetched before a ready review, register rows and two
     readers.
+- 2026-11-20 (ww), T3: the file row K23 names is built for every possible base (state at 20:28 UTC, 2026-11-20). Written by
+  the AI assistant.
+  - **The builds** (`~/v/vec-campaign-c` at 49f3fd5, clean; record `experiments/builds/results/t3k23_49f3fd5.txt`):
+    every exit 0, no form refused; the builder reproduced the barred s1 and each base byte for byte; the form was
+    built twice with the same bytes on each base; stamps name the commit and a clean tree. Four files: on s1
+    f3af008c12e6, on the 1.5 file 0b31c03e301f, on the 2.0 file 7e2815bd6f1d, on the barred s2 77ff0b947f7f. Copies
+    under `runs/manual_upload/` (`T3_k23_<base>.h5ad`; hashes checked; the local format check passes, exit codes
+    only). As with the two-knockout files they were built ahead of the scores that fix the base; the rule picks; the
+    other bases' files are never uploaded.
+  - **Conditions of the row before any upload, and where they stand:** the rules-note amendment with the captain's
+    words is committed (3eac9ff); register rows X013 and X014 now say that these candidate files use the datasets; the
+    build record and its hash list are committed with this entry; each upload is the captain's own act. **Task 3's
+    list as it stands:** the 1.5 file, then the 2.0 file or the barred s2 by entry (k)'s rule; then, on the base B
+    those two scores fix, C1 and C2 of entry (q) (only C2 when B is the 1.5 or 2.0 file), then row K23's file.
