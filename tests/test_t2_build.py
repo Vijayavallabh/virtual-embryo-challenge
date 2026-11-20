@@ -1391,7 +1391,10 @@ RULE_LITERALS = {"COUNT_RULE_SEEDS": {10.0}, "COUNT_RULE_MIN_GAIN": {0.3}, "COUN
                  "SERIES_MIN_CELLS": {100.0}, "SERIES_EPS": {1e-5},
                  # 2026-11-18, tries E47a and E47b (the floor-exact positions): a random-stream id, not a value of a
                  # stage
-                 "FLOOR_EXACT_STREAM": {47.0}}
+                 "FLOOR_EXACT_STREAM": {47.0},
+                 # 2026-11-20, branch campaign/embryo-occupancy (the off-by-default row order copy_parity, no try):
+                 # a random-stream id and a retry budget, not values of a stage
+                 "COPY_PARITY_STREAM": {48.0}, "COPY_PARITY_MAX_TRIES": {200.0}}
 
 
 def _stray_literals(src: str) -> tuple[list[tuple[int, str]], set[str]]:
