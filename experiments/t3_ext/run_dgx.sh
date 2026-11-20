@@ -25,6 +25,14 @@
 #        per-sample matrices"), streamed in two passes, never unpacked. A raw archive may be several GiB: the
 #        --max-gb 30 cap covers it too (raise it only in a reviewed commit). Name GSE270969 explicitly, e.g.
 #        run_dgx.sh "$PWD" plan "GSE270969", while it is not in the default list below.
+#   Stage 9 (bulk whole-embryo units, README "Bulk whole-embryo units"): MODE header runs only the header step
+#        (`fetch.py header`) of a bulk count table after its plan passed: the first line of the table, streamed and
+#        closed at the first newline, screened and tied; nothing else is downloaded. Name each item as
+#        ACC:SERIES:FILE for a GEO series table, or ACC alone for the ArrayExpress resource (E-MTAB-7322), e.g.
+#        run_dgx.sh "$PWD" header "GSE214161:GSE214161:GSE214161_counts.txt.gz E-MTAB-7322". Bulk datasets go
+#        through the same plan, pinned gate, re-plan, fetch, process and combine as any other in MODE all; an
+#        E-MTAB accession is accepted there besides GSE ones. A bulk dataset with id_type ensembl is refused at the
+#        gate while t3x_common.PANEL_IDS_SHA256 is None.
 #   ACCESSIONS: a quoted, space-separated subset (default: four cleared datasets; GSE205117 left the list in stage 8:
 #        it is held now and on the team's held list, t3x_common.HELD_EXTRA).
 #   WT (environment, optional): the WT E8.75 file, read only; default CHECKOUT/data/raw/T2/E8.75.h5ad.
@@ -40,7 +48,7 @@ TMP=$HOME/v/scratch/t3ext-tmp
 mkdir -p "$D/logs" "$TMP"
 rm -f "$D/logs/ALL.exit"
 trap 'echo 99 > "$D/logs/ALL.exit"; exit 99' TERM INT HUP
-case "$MODE" in plan|all) ;; *) echo "MODE must be plan or all" > "$D/logs/start_$MODE.txt"; echo 3 > "$D/logs/ALL.exit"; exit 3;; esac
+case "$MODE" in plan|all|header) ;; *) echo "MODE must be plan, header or all" > "$D/logs/start_$MODE.txt"; echo 3 > "$D/logs/ALL.exit"; exit 3;; esac
 # never the reference checkout
 REFCO=$(cd "$HOME/v/virtual-embryo-challenge" 2>/dev/null && pwd -P || echo /nonexistent)
 CO=$(cd "$CHECKOUT" 2>/dev/null && pwd -P) || { echo 3 > "$D/logs/ALL.exit"; exit 3; }
@@ -77,6 +85,23 @@ if [ "$MODE" = plan ]; then
   exit 0
 fi
 
+if [ "$MODE" = header ]; then
+  # stage 9: the header step only (one first line per bulk count table); no count is read
+  rc=0
+  for ITEM in $ACCS; do
+    IFS=: read -r A S F <<< "$ITEM"
+    if [[ "$A" =~ ^E-MTAB-[0-9]+$ ]] && [ -z "$S" ]; then
+      step "header_$A" "${PY[@]}" experiments/t3_ext/fetch.py header "$A" --dest "$D" || rc=2
+    elif [[ "$A" =~ ^GSE[0-9]+$ ]] && [[ "$S" =~ ^GSE[0-9]+$ ]] && [[ "$F" =~ ^[A-Za-z0-9._+-]+$ ]]; then
+      step "header_$A" "${PY[@]}" experiments/t3_ext/fetch.py header "$A" --dest "$D" --series "$S" --name "$F" || rc=2
+    else
+      echo "refused: $ITEM is not ACC:SERIES:FILE or an E-MTAB accession" >> "$D/logs/header_bad.log"; rc=2
+    fi
+  done
+  echo "$rc" > "$D/logs/ALL.exit"
+  exit 0
+fi
+
 # the pinned gate: every accession pinned, and datasets.yaml exactly the committed, hash-pinned file
 # shellcheck disable=SC2086
 step pinned_gate "${PY[@]}" experiments/t3_ext/fetch.py check-pins $ACCS || { echo 6 > "$D/logs/ALL.exit"; exit 6; }
@@ -86,7 +111,7 @@ step reference "${PY[@]}" experiments/t3_ext/process.py reference --wt "$WT" --o
 for A in $ACCS; do
   # no stale output: an accession's processed outputs go before its re-plan, so a refused re-plan, fetch or process
   # leaves nothing for combine to read (stage 5)
-  if ! [[ "$A" =~ ^GSE[0-9]+$ ]]; then echo "refused: not a GEO series accession" >> "$D/logs/replan_bad.log"; continue; fi
+  if ! [[ "$A" =~ ^GSE[0-9]+$ || "$A" =~ ^E-MTAB-[0-9]+$ ]]; then echo "refused: not a GEO series or E-MTAB accession" >> "$D/logs/replan_bad.log"; continue; fi
   rm -rf "${D:?}/processed/$A"
   step "replan_$A" "${PY[@]}" experiments/t3_ext/fetch.py plan "$A" --dest "$D" || {
     echo "skipped: the plan with pins did not pass for $A" > "$D/logs/fetch_$A.log"; echo 2 > "$D/logs/fetch_$A.exit"; continue; }

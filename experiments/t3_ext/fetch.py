@@ -69,6 +69,17 @@ sample's ONLY file of its own folder (sample_files); verify_pins refuses a unit 
 not all read the same way (check_unit_forms); a sister series is accepted only when the two records do not cite
 different publications and share a publication or are linked as super- or sub-series (sister_match).
 
+Stage 9 (campaign/t3-ext-bulk, README "Bulk whole-embryo units"): a dataset with modality bulk takes its file rules,
+pins, fetch and processing from bulk.py (and, for the ArrayExpress resource, ae.py); the single-cell path is not
+changed.
+  header ACC --dest D [--series GSE --name FILE]
+                       the header step of a bulk count table: its first line only, streamed and closed at the first
+                       newline, screened and tied (bulk.header, ae.header).
+  table-template ACC --dest D
+                       prints the pinned_series_files entry {series, name, header_sha256} of the passing header.
+  pin-template ...     for a bulk dataset also --gsm-file, --column (series_table), --source / --source-file
+                       (arrayexpress).
+
 Stage 5 parsing: a SOFT text is split on "\\n" only; a line holding another line or paragraph separator, a field name
 that is not a plain GEO key, or a block accession that is not GSM/GSE digits refuses the dataset, its text withheld.
 Field names are screened like values, and the series' contact fields are screened too.
@@ -398,6 +409,10 @@ def sample_files(ds: dict, rec: dict, gsm: str) -> tuple[list[dict], list[dict]]
     sample's own GEO folder with a name that starts with the sample's accession (own_file), names no held accession,
     is not a denied type and matches a sample_file_patterns entry. The list is derived from the record's (hashed)
     fields: verify_pins derives it again and never trusts a stored list."""
+    if cm.is_bulk(ds):   # stage 9: a bulk dataset's own rule (bulk.sample_files)
+        import bulk
+
+        return bulk.sample_files(ds, rec, gsm)
     pats = [re.compile(p, re.IGNORECASE) for p in ds.get("sample_file_patterns") or []]
     raw_pats = cm.raw_patterns(ds)
     ok, other = [], []
@@ -486,6 +501,10 @@ def series_files(ds: dict, gse: str, fields: dict) -> tuple[list[dict], list[dic
     (own_series_file), names no held accession, is not a denied type (the series' _RAW.tar included) and matches a
     pattern series_files declares for THIS series. Derived from the series' hashed fields; verify_series_units derives
     it again and never trusts a stored list."""
+    if cm.is_bulk(ds):   # stage 9: a bulk dataset's own rule (bulk.series_files)
+        import bulk
+
+        return bulk.series_files(ds, gse, fields)
     pats = [re.compile(p, re.IGNORECASE) for e in ds.get("series_files") or [] if e.get("series") == gse
             for p in e.get("patterns") or []]
     ok, other = [], []
@@ -691,10 +710,11 @@ def _withheld(out: dict, metas: dict, by_id: dict, reason: str) -> dict:
     return {**out, "status": "refused", "reason": reason}
 
 
-def plan_from_meta(ds: dict, metas: dict[str, dict]) -> dict:
+def plan_from_meta(ds: dict, metas: dict[str, dict], headers: dict | None = None) -> dict:
     """The plan for one dataset from parsed SOFT metadata (no network): the screen, the series membership of every
     sample, the series blocks (every screened series' fields and series_metadata_sha256), one table per series, and,
-    when the dataset has pins, their check against this (live) metadata."""
+    when the dataset has pins, their check against this (live) metadata. Stage 9: for a bulk dataset the plan also
+    carries its declaration, the samples' stages under its stage rule and the stored header records (headers)."""
     acc = ds["accession"]
     if acc not in metas:
         raise Refused(f"{acc}: its own series' metadata is missing")
@@ -747,6 +767,16 @@ def plan_from_meta(ds: dict, metas: dict[str, dict]) -> dict:
                               "the dataset's own series is listed in its screen_series, never under control_series")
     out["tables"] = {s: [_row(ds, s, g, rec, by_id[(s, g)], where[g]) for g, rec in meta["samples"].items()]
                      for s, meta in metas.items()}
+    if cm.is_bulk(ds):   # stage 9
+        import bulk
+
+        bulk.adjust_plan(ds, out, metas)
+        out["count_table_headers"] = headers or {}
+        held_rel = sorted({h for s in metas for h in bulk.held_relations(ds, metas[s]["series"])})
+        if held_rel:
+            out["screen"]["refusals"] = scr["refusals"]
+            return {**out, "status": "refused", "reason": f"a screened series' relation names the held series "
+                                                          f"{held_rel}: the dataset is not taken"}
     out["screen"]["refusals"] = scr["refusals"]
     out["selector_notes"] = _selector_notes(ds, out["tables"][acc])
     if scr["refusals"]:
@@ -784,6 +814,10 @@ def verify_pins(ds: dict, pl: dict, live: bool = False) -> list[dict]:
     stored list refused when it differs, two derived files of one name refused, and only the derived entries
     returned. Returns [{accession, arm, genes, stage, files: [{name, url}],
     metadata_sha256, row}]. Refused on any failure, with the reason."""
+    if cm.is_bulk(ds):   # stage 9: the bulk pins (bulk.verify_pins, ae.verify_pins)
+        import bulk
+
+        return bulk.verify_pins(ds, pl, live)
     acc = ds["accession"]
     pins = ds.get("pinned") or []
     if not pins:
@@ -1026,6 +1060,10 @@ def write_tables(pl: dict, mdir: Path) -> list[str]:
                 lines.append(f"{r['accession']}  verdict {r['verdict']}  fields hit {r['fields_hit']}")
         else:
             lines += control_series_lines(pl.get("control_series"), pl.get("control_series_match"))
+            if pl.get("bulk"):   # stage 9
+                import bulk
+
+                lines += bulk.plan_lines(pl)
             lines += raw_matrices_lines(pl.get("raw_matrices"))
             sister = (pl.get("control_series") or {}).get("accession")
             if series == sister:
@@ -1089,8 +1127,57 @@ def _get(url: str, dst: Path, max_bytes: int) -> tuple[int, str]:
     return n, h.hexdigest()
 
 
+# stage 9: the ArrayExpress resource's files come from one more host only (ae.py derives every url from the accession)
+AE_HOSTS = ("ftp.ebi.ac.uk",)
+
+
+def ae_url(url: str) -> str:
+    """An ArrayExpress or Expression Atlas url on its one allowed host over https, with no port, user, query or
+    fragment; else Refused."""
+    p = urllib.parse.urlparse(url)
+    if (p.scheme != "https" or p.netloc not in AE_HOSTS or p.params or p.query or p.fragment
+            or "@" in p.netloc or ":" in p.netloc):
+        raise Refused(f"{url}: not an allowed ArrayExpress url")
+    return url
+
+
+def _open(url: str):
+    """A streamed response of a GEO or ArrayExpress url (the header step reads its first line and closes it)."""
+    u = ae_url(url) if urllib.parse.urlparse(url).netloc in AE_HOSTS else https_url(url)
+    req = urllib.request.Request(u, headers={"User-Agent": USER_AGENT})
+    return urllib.request.urlopen(req, timeout=120)
+
+
+def _get_ae(url: str, dst: Path, max_bytes: int) -> tuple[int, str]:
+    """_get for the ArrayExpress host (ae_url): streamed to a .part file, refused past max_bytes."""
+    url = ae_url(url)
+    dst = cm.outside_repo(dst)
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    part = dst.with_name(dst.name + ".part")
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    n = 0
+    import hashlib
+
+    h = hashlib.sha256()
+    with urllib.request.urlopen(req, timeout=120) as r, open(part, "wb") as f:
+        while block := r.read(1 << 20):
+            n += len(block)
+            if n > max_bytes:
+                f.close()
+                part.unlink(missing_ok=True)
+                raise Refused(f"{url}: over the byte limit ({max_bytes}); nothing kept")
+            h.update(block)
+            f.write(block)
+    part.replace(dst)
+    return n, h.hexdigest()
+
+
 def plan(acc: str, dest: Path, datasets: Path | None = None, metas: dict | None = None) -> dict:
     ds = cm.dataset(acc, datasets)
+    if cm.is_bulk(ds) and ds.get("count_form") == "arrayexpress":   # stage 9, phase 2
+        import ae
+
+        return ae.plan(acc, dest, datasets, texts=metas)
     if ds.get("repository") != "geo":
         raise Refused(f"{acc}: only GEO is fetched")
     dest = cm.outside_repo(dest)
@@ -1099,15 +1186,26 @@ def plan(acc: str, dest: Path, datasets: Path | None = None, metas: dict | None 
     cm.dump_json({"accession": acc, "status": "in_progress", "reason": "a plan run started and did not finish"},
                  mdir / "plan.json")
     soft_files = {}
+    bulk_ds = cm.is_bulk(ds)
     try:
         if metas is None:
             metas = {}
-            for series in cm.all_screened(ds):
+            order = cm.all_screened(ds)
+            if bulk_ds:   # stage 9: the own series first, so a held relation refuses before any other SOFT is fetched
+                order = [acc] + [s for s in order if s != acc]
+            for series in order:
                 p = mdir / f"{series}_family.soft.gz"
                 size, digest = _get(soft_url(series), p, 2 * 1024 ** 3)
                 soft_files[series] = {"url": soft_url(series), "file": str(p), "size": size, "sha256": digest}
                 with gzip.open(p, "rb") as f:
                     metas[series] = parse_soft(decode_soft(f.read(), series))
+                if bulk_ds:
+                    import bulk
+
+                    bad = bulk.held_relations(ds, metas[series]["series"])
+                    if bad:
+                        raise Refused(f"{series}: its relation names the held series {bad}: refused before any "
+                                      "further SOFT is fetched")
     except Refused as e:
         pl = {"accession": acc, "own_series": acc, "status": "refused", "reason": str(e), "withheld": True,
               "tables": {}, "screen": {"n_samples": 0, "refusals": [str(e)]}, "soft_files": soft_files,
@@ -1115,7 +1213,12 @@ def plan(acc: str, dest: Path, datasets: Path | None = None, metas: dict | None 
         pl["table_files"] = []
         cm.dump_json(pl, mdir / "plan.json")
         return pl
-    pl = plan_from_meta(ds, metas)
+    if bulk_ds:   # stage 9: the stored header records travel with the plan (verify_pins checks them)
+        import bulk
+
+        pl = plan_from_meta(ds, metas, bulk.stored_headers(dest, acc))
+    else:
+        pl = plan_from_meta(ds, metas)
     pl.update(datasets_sha256=cm.datasets_sha256(datasets), soft_files=soft_files,
               created=time.strftime("%Y-%m-%d %H:%M:%S %Z"), d=ds["d"], tier=ds["tier"], study=ds["study"])
     pl["table_files"] = write_tables(pl, mdir)
@@ -1137,6 +1240,10 @@ def _load_plan(acc: str, dest: Path, datasets: Path | None) -> dict:
 
 def fetch(acc: str, dest: Path, datasets: Path | None = None, max_bytes: int = MAX_BYTES_DEFAULT) -> dict:
     ds = cm.dataset(acc, datasets)
+    if cm.is_bulk(ds):   # stage 9: the bulk count files only (bulk.fetch)
+        import bulk
+
+        return bulk.fetch(acc, dest, datasets, max_bytes)
     if not ds.get("pinned"):
         raise Refused(f"{acc}: the pinned block is empty: nothing is fetched")
     dest = cm.outside_repo(dest)
@@ -1453,9 +1560,48 @@ def check_gate(accs: list[str], datasets: Path | None = None) -> list[str]:
             ds = cm.dataset(a, datasets)
             if not ds.get("pinned"):
                 bad.append(f"{a}: the pinned block is empty")
+            elif ds.get("id_type") == "ensembl":
+                cm.load_panel_ids()   # stage 9: refused while the gene-id map is not pinned
         except Refused as e:
             bad.append(f"{a}: {e}")
     return bad
+
+
+def _names_from(items: list[str] | None, path: Path | None) -> list[str]:
+    """The names given with a repeatable flag and (stage 9) a file of one name a line (blank lines skipped)."""
+    out = list(items or [])
+    if path is not None:
+        out += [ln.strip() for ln in Path(path).read_text(encoding="utf-8").splitlines() if ln.strip()]
+    return out
+
+
+def _bulk_pin_cli(a) -> str:
+    """pin-template for a bulk dataset (stage 9): --series prints pinned_series; per_sample and series_table take
+    --gsm / --gsm-file (series_table also --column for one sample); arrayexpress takes --source / --source-file."""
+    import bulk
+
+    ds = cm.dataset(a.accession)
+    if a.from_series_file:
+        raise Refused("--from-series-file is for a single-cell dataset")
+    if a.series:
+        if a.arm or a.gene or a.gsm or a.gsm_file or a.source or a.source_file or a.column:
+            raise Refused("--series takes no other option")
+        if ds.get("count_form") == "arrayexpress":
+            import ae
+
+            return ae.series_pin_template(a.accession, a.dest)
+        return series_pin_template(a.accession, a.dest)
+    if not a.arm or not a.gene:
+        raise Refused("--arm and --gene are required (one arm per command)")
+    if ds.get("count_form") == "arrayexpress":
+        import ae
+
+        if a.gsm or a.gsm_file or a.column:
+            raise Refused("an arrayexpress dataset is pinned by Source Name (--source or --source-file)")
+        return ae.pin_template(a.accession, a.dest, a.arm, a.gene, _names_from(a.source, a.source_file))
+    if a.source or a.source_file:
+        raise Refused("--source and --source-file are for an arrayexpress dataset")
+    return bulk.pin_template(a.accession, a.dest, a.arm, a.gene, _names_from(a.gsm, a.gsm_file), column=a.column)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -1479,6 +1625,18 @@ def main(argv: list[str] | None = None) -> int:
     t.add_argument("--series", action="store_true", help="print the pinned_series block instead")
     t.add_argument("--from-series-file", action="store_true",
                    help="the samples' cells come from a pinned series file: files: [] (stage 6)")
+    t.add_argument("--gsm-file", type=Path, help="stage 9: a file naming the samples to pin, one accession a line")
+    t.add_argument("--column", help="stage 9, series_table: the header of the ONE named sample (checked at pin time)")
+    t.add_argument("--source", action="append", help="stage 9, arrayexpress: a Source Name to pin")
+    t.add_argument("--source-file", type=Path, help="stage 9, arrayexpress: a file of Source Names, one a line")
+    h = sub.add_parser("header", help="stage 9: the first line of a bulk count table, screened and tied")
+    h.add_argument("accession")
+    h.add_argument("--dest", required=True, type=Path)
+    h.add_argument("--series")
+    h.add_argument("--name")
+    tt = sub.add_parser("table-template", help="stage 9: the pinned_series_files entry of a bulk count table")
+    tt.add_argument("accession")
+    tt.add_argument("--dest", required=True, type=Path)
     f = sub.add_parser("series-file-template")
     f.add_argument("accession")
     f.add_argument("--dest", required=True, type=Path)
@@ -1510,7 +1668,22 @@ def main(argv: list[str] | None = None) -> int:
             man = fetch(a.accession, a.dest, max_bytes=int(a.max_gb * 1024 ** 3))
             print(f"fetched: {a.accession}: {len(man['files'])} files of the pinned samples, {man['total_bytes']} "
                   "bytes")
+        elif a.step == "header":
+            import bulk
+
+            rec = bulk.header(a.accession, a.dest, a.series, a.name)
+            print("\n".join(bulk.header_lines(rec)))
+            if rec["status"] != "ok":
+                return 2
+        elif a.step == "table-template":
+            import bulk
+
+            print(bulk.table_template(a.accession, a.dest), end="")
+        elif a.step == "pin-template" and cm.is_bulk(cm.dataset(a.accession)):   # stage 9
+            print(_bulk_pin_cli(a), end="")
         elif a.step == "pin-template":
+            if a.gsm_file or a.column or a.source or a.source_file:
+                raise Refused("--gsm-file, --column, --source and --source-file are for a bulk dataset")
             if a.series:
                 if a.arm or a.gene or a.gsm or a.from_series_file:
                     raise Refused("--series takes no --arm, --gene, --gsm or --from-series-file")

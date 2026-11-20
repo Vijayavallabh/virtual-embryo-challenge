@@ -788,6 +788,10 @@ def write_unit(out_dir: Path, acc: str, gene: str, Lg: dict, qc: dict, ref: dict
 def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Path | None = None,
         threads: int = 8, classifier=None) -> dict:
     ds = cm.dataset(acc, datasets)
+    if cm.is_bulk(ds):   # stage 9: a bulk dataset goes through bulk.run_bulk; the single-cell path below is unchanged
+        import bulk
+
+        return bulk.run_bulk(acc, dest, wt, refstats, out, datasets)
     floor = cm.qc_floors(datasets)["min_confident_share_per_sample"]
     if ds.get("cell_labels"):
         raise Refused(f"{acc}: per-cell genotype designs (cell-level labels inside one sample) are excluded in this "
