@@ -8125,3 +8125,12 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Data used, for the hand-over:** released challenge data only: the wild-type E8.75 cells and the two released
     knockouts (the Mab21l2 knockout and the Gata4 validation knockout), whose per-gene changes are multiplied. No
     outside data.
+- 2026-11-20 (oo), T3 outside knockouts: the Kmt2d study joins the dataset list for its metadata step (state at 19:36 UTC,
+  2026-11-20). Written by the AI assistant.
+  - GSE299068 (a conditional Kmt2d knockout against its conditional heterozygote at E9.5, pharyngeal region and heart,
+    sorted cells, two libraries per arm; all three searchers of entry (dd)'s hunt listed it as taking the pipeline as
+    it stands) is added to `experiments/t3_ext/datasets.yaml` as cleared with no pins, with the dataset-file hash and
+    the test's cleared set updated in the same commit (1234 tests pass). Only the metadata plan runs now. Nothing is
+    pinned or fetched until two readers have read every line of its plan table and a register row exists. The AI
+    assistant's odds that it yields a table are low: the two Tbx1 studies with sorted cells of the same region gave
+    none, because the guards fail closed on a sorted lineage. No guard is loosened for it.

@@ -613,3 +613,30 @@ datasets:
     risks: "nuclei, not cells; unfiltered matrices, so the cell floor does the cell calling and the library cap may refuse; stage and genotype fields not yet read"
     verified: false
     pinned: []
+
+  # GSE299068 joined the cleared list on 2026-11-20 for its metadata step only (docs/PLAN.md decision log 2026-11-20
+  # (oo)); nothing is pinned until two readers have read every line of its plan table.
+  - accession: GSE299068
+    status: cleared
+    tier: unrelated
+    study: GSE299068
+    kind: "Kmt2d conditional knockout (Tbx1Cre/+; Kmt2d F/F; GFP F/+), microdissected pharyngeal region and heart, FACS-sorted, 10x 3' (per the searchers; not checked against a plan table)"
+    design: conditional
+    control_relation: heterozygous
+    repository: geo
+    screen_series: [GSE299068]
+    stages_used: [E9.5]
+    control_definition: "Tbx1Cre/+; Kmt2d F/+; GFP F/+ (conditional heterozygote) at E9.5, same series and dissection day; both arms carry Tbx1Cre/+ (Tbx1 heterozygous)"
+    arms:
+      control: {on: text, all: ['kmt2d\s*-?\s*f\s*/\s*\+|control\d*-kmt2d']}
+      ko:
+        - {gene: Kmt2d, on: text, all: ['kmt2d\s*-?\s*f\s*/\s*f|kmt2d-cko']}
+    expect: {E9.5: {ko: 2, control: 2}}
+    sample_file_patterns: ['(matrix\.mtx|barcodes\.tsv|features\.tsv|genes\.tsv)(\.gz)?$']
+    files_note: "per-sample mtx triples of the four samples (per the searchers; not checked against a plan table)"
+    licence: "GEO: NCBI places no restriction on use; submitter rights may apply (not checked per study)"
+    citation: "none read (no paper was opened)"
+    why: "a chromatin-regulator loss at E9.5 with same-day controls; a further study for the all-knockouts table"
+    risks: "heterozygous control (d = 0.5); sorted cells (gate not read), pharynx and heart only, so few reference groups; both arms Tbx1Cre/+; two samples may state the stage only under another key or in a title the parser refuses"
+    verified: false
+    pinned: []
