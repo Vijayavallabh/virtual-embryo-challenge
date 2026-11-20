@@ -2,7 +2,52 @@
 
 ## Current Objective
 
-- **State at 2026-11-20, 19:23 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+- **State at 2026-11-20, 20:33 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+  2026-11-20 (nn) to (xx). Local main = origin/main (4fb01c5 or later).
+  - **With the captain, no score reported yet** (uploads are his acts): T1 A then B (C on its condition); heart K1
+    then K2; embryo `T2embryo_s2x.h5ad`; T3 `T3_barred_x1.5.h5ad`, then x2.0 or the barred s2 by entry (k)'s rule.
+    When a score line comes: add it to `results/manual_uploads.csv` and the decision log and apply that board's
+    pre-set rule.
+  - **T3 files built ahead for every possible base B** (entry (q) fixes B from the returned headlines; only B's files
+    go up; records `experiments/builds/results/t3two_fb01487.txt` and `t3k23_49f3fd5.txt`; copies under
+    `runs/manual_upload/`). Order on B: C1 (`T3_c1_<B>`, only when B is s1 or s2), C2 (`T3_c2_<B>`), then row K23's
+    file (`T3_k23_<B>`: the base's factor times the square of the two-study outside-knockout table; rules-note
+    amendment committed at 3eac9ff; data used: released data plus GEO GSE204906 and GSE277839). Hashes are in the two
+    records.
+  - **K23 is read** (entries (ss), (uu)): valid, six tries (T3 66); it names the exponent-2 file; exponent 4 was ahead
+    in three cells and behind in one, so it is not named, and no further exponent of this table is read on the fold. A
+    combination candidate (C2 times the square of the table; upload only if C2 and the K23 file each beat B) is with
+    agents: workflow `t3-combination-candidate` (task wn9uem8gt, branch `campaign/t3-combination`); its row, log entry
+    and rules-note amendment must be placed before any score of C2 or of the K23 file exists.
+  - **T3 outside knockouts, more data.** Register rows X011 to X015. The DGX tables folder `~/v/vec-ext/t3/tables`
+    holds the TWO-study tables (what K22, K23 and the built files read); the three-study tables (with the Kmt2d pair,
+    entry (qq)) are at `~/v/vec-ext/t3/tables_three_study` and are read by no row. Workflow `t3-ext-fix-and-bulk`
+    (task wihmjv0k1; branches `campaign/t3-ext-4`, `campaign/t3-ext-bulk`) closes three review blockers and builds the
+    reviewed bulk whole-embryo intake (entry (vv)), including the 73-line Mouse Genetics Project set (ArrayExpress
+    E-MTAB-7322) through its public accession-keyed count matrix; metadata copies are in the session scratchpad
+    `dmdd_meta/`. After a ready review: merge; write the gene-id map from a pinned sample's features file; add dataset
+    entries (withheld lines: Trps1; B9d2, Cc2d2a, Ift140, Kif3b, Rpgrip1l, Anks6, Atxn10; and on the first reader's
+    doubt Kifap3, Mad2l2, Tmem98); plan; two readers; register rows; pins; fetch, process, combine; a new listing;
+    then ONE new practice row for the wider tables, placed before its run.
+  - **Running on the DGX:** E49 (embryo shape interpolation; row E49, run commit d76ccd5; `~/v/scratch/e49`, worktree
+    `~/v/scratch/e49-wt`; the run step started 19:30 UTC; when `chain.exit` is 0 copy
+    `experiments/coords/results/e49_shape_interp/` back, commit with the outcome quoting only the fixed reading, apply
+    the row's outcome-to-file rule; the main session is recused and states no preference). T64 (T1 candidate D's
+    practice row; run commit 4fb01c5 on `~/v/vec-campaign-d`; chain `~/v/scratch/t64_chain.sh`, exits in
+    `~/v/scratch/t64/`): after the five run steps exit 0, copy the five task files under
+    `experiments/t1_m1/results/t64_heldmom/tasks/` back UNOPENED, commit them, sync the checkout, run `bash
+    experiments/t1_m1/t64_heldmom.sh read 4fb01c5...` detached, copy `t64.json` and `t64.txt` back, commit with the
+    outcome in the read's fixed words. AHEAD allows one question to the captain (reverse R1 for that file; default
+    keep R1; no advice); anything else ends candidate D.
+  - **T1 outside atlases: parked** (entries (rr), (tt)): the second cold check put a 35% chance of a mistake on the
+    relaxed stage rules; under the strict rule the new atlases give little; the expected gain does not cover the risk
+    of a barred sample. Branch `campaign/t1-multi-atlas-3` (6bdf01a) is kept with one known blocker. One word from the
+    captain reopens it in the strict form. The atlas in use (X002) states no plug-day convention in its record or its
+    papers' main text; its half-day labels are used as labelled (register row updated).
+  - **Tries:** T1 413 (T64 adds five), embryo 76 (E49 running), heart 80, T3 66. **Scratch hand-backs** (session
+    scratchpad `lift8/`): k23_package, t64_package, t3x_more, t3x_bulk_design, t1_atlas_fix3, kmt2d_first_reading.
+
+- **State at 2026-11-20, 19:23 UTC (superseded above where they differ).** Decision log
   2026-11-20 (w) to (mm). Local main = origin/main (76a5601 or later).
   - **With the captain, no score reported yet** (uploads are his acts): the files of the next bullet, unchanged: T1 A
     then B (C on its condition), heart K1 then K2, embryo `T2embryo_s2x.h5ad`, T3 `T3_barred_x1.5.h5ad` then x2.0 or

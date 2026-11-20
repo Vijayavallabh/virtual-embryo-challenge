@@ -1,0 +1,25 @@
+try T64, a labelled in-sample diagnostic, never an adoption result: candidate D of decision log 2026-11-20 (r), R13's file with the team's released per-category momentum on the cells ruling R1 holds, by its practice analogue m1rc_gmom_heldmom against m1rc_gmom (row T62's) on T62's five tasks; every task scores one truth (E10.5) over one day, the test spans two; on practice the held cells drawn are Blood alone
+Outcome: D is NOT AHEAD (the chamber cut's mean is not above +0.3)
+The arm reverses R1 (the captain's ruling of 2026-11-05) for the held cells: only his ruling naming R1 puts it in a file.
+On practice the arm moved Blood cells alone; Macrophage and Early VIC, which D also moves at the test, are unpriced.
+What follows: candidate D ends. No question goes to the captain, nothing is built, and nothing is rerun under another row.
+d = m1rc_gmom_heldmom - m1rc_gmom, paired per seed on the same draw:
+  chamber: +0.12 points, sd 0.04, ahead 10 behind 0 of 10, per seed +0.04 to +0.18; by group: de_recovery +0.06, direction +0.02, distribution +0.02, covariance +0.02; mean scores m1rc_gmom 52.00, m1rc_gmom_heldmom 52.12
+  whole: +0.09 points, sd 0.03, ahead 10 behind 0 of 10, per seed +0.06 to +0.15; by group: de_recovery +0.05, direction +0.02, distribution +0.01, covariance +0.01; mean scores m1rc_gmom 46.16, m1rc_gmom_heldmom 46.25
+  1: +1.97 points, sd 0.25, ahead 10 behind 0 of 10, per seed +1.68 to +2.35; by group: de_recovery +0.73, direction +0.13, distribution +0.98, covariance +0.13; mean scores m1rc_gmom 74.81, m1rc_gmom_heldmom 76.79
+  2: +1.70 points, sd 0.42, ahead 10 behind 0 of 10, per seed +1.00 to +2.20; by group: de_recovery +0.33, direction +0.07, distribution +1.07, covariance +0.24; mean scores m1rc_gmom 89.37, m1rc_gmom_heldmom 91.07
+  3: +0.62 points, sd 0.17, ahead 10 behind 0 of 10, per seed +0.41 to +0.90; by group: de_recovery +0.22, direction +0.07, distribution +0.25, covariance +0.08; mean scores m1rc_gmom 73.95, m1rc_gmom_heldmom 74.57
+  chamber: held labels drawn over the ten seeds {'Blood': 1330}; held cells changed per seed [133, 133, 133, 133, 133, 133, 133, 133, 133, 133]
+    momentum blood: shifted; own cells 266 at the start, 213 at the reference (own, own); mean |log f| 0.019
+  whole: held labels drawn over the ten seeds {'Blood': 1330}; held cells changed per seed [133, 133, 133, 133, 133, 133, 133, 133, 133, 133]
+    momentum blood: shifted; own cells 266 at the start, 213 at the reference (own, own); mean |log f| 0.019
+  1: held labels drawn over the ten seeds {'Blood': 15940}; held cells changed per seed [1594, 1594, 1594, 1594, 1594, 1594, 1594, 1594, 1594, 1594]
+    momentum blood: shifted; own cells 266 at the start, 213 at the reference (own, own); mean |log f| 0.019
+  2: held labels drawn over the ten seeds {'Blood': 20610}; held cells changed per seed [2061, 2061, 2061, 2061, 2061, 2061, 2061, 2061, 2061, 2061]
+    momentum blood: shifted; own cells 266 at the start, 213 at the reference (own, own); mean |log f| 0.019
+  3: held labels drawn over the ten seeds {'Blood': 9070}; held cells changed per seed [907, 907, 907, 907, 907, 907, 907, 907, 907, 907]
+    momentum blood: shifted; own cells 266 at the start, 213 at the reference (own, own); mean |log f| 0.019
+Valid libraries: 1, 2, 3; tasks where the arm moved no cell: none
+J6 range (0 to the chamber cut's mean; a negative mean is reported as [mean, 0]): +0.00 to +0.12
+Tries counted: 5 (T1 413 to 418)
+Commit cd60dce4570ebebc7dde17f3a373f96be8138d03, tree clean True, UTC 2026-11-20T21:14:12Z

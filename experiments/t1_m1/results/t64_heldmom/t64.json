@@ -1,0 +1,324 @@
+{
+ "label": "try T64, a labelled in-sample diagnostic, never an adoption result: candidate D of decision log 2026-11-20 (r), R13's file with the team's released per-category momentum on the cells ruling R1 holds, by its practice analogue m1rc_gmom_heldmom against m1rc_gmom (row T62's) on T62's five tasks; every task scores one truth (E10.5) over one day, the test spans two; on practice the held cells drawn are Blood alone",
+ "row": "T64",
+ "reading": {
+  "outcome": "D is NOT AHEAD",
+  "ahead": false,
+  "failed": [
+   "the chamber cut's mean is not above +0.3"
+  ],
+  "valid_libraries": [
+   "1",
+   "2",
+   "3"
+  ],
+  "tasks": {
+   "chamber": {
+    "change": "m1rc_gmom_heldmom",
+    "base": "m1rc_gmom",
+    "mean": 0.11850940722550476,
+    "sd": 0.039735492119707366,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.04300647603123764,
+     0.1775903512544943
+    ],
+    "groups": {
+     "de_recovery": 0.059799170821154,
+     "direction": 0.024068518183213428,
+     "distribution": 0.01949682482890963,
+     "covariance": 0.015144893392227576
+    },
+    "behind": 0,
+    "mean_scores": {
+     "m1rc_gmom": 52.00367447661053,
+     "m1rc_gmom_heldmom": 52.12218388383603
+    }
+   },
+   "whole": {
+    "change": "m1rc_gmom_heldmom",
+    "base": "m1rc_gmom",
+    "mean": 0.0898042959815207,
+    "sd": 0.030320671880740408,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.06175681480213058,
+     0.14655529185483118
+    ],
+    "groups": {
+     "de_recovery": 0.045824697950979654,
+     "direction": 0.019881745839560594,
+     "distribution": 0.01137060930805156,
+     "covariance": 0.01272724288292948
+    },
+    "behind": 0,
+    "mean_scores": {
+     "m1rc_gmom": 46.160269003437136,
+     "m1rc_gmom_heldmom": 46.25007329941866
+    }
+   },
+   "1": {
+    "change": "m1rc_gmom_heldmom",
+    "base": "m1rc_gmom",
+    "mean": 1.9740990775045504,
+    "sd": 0.24913515147674542,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     1.6754702678683628,
+     2.3469129370652695
+    ],
+    "groups": {
+     "de_recovery": 0.7328445058000643,
+     "direction": 0.12587177829771562,
+     "distribution": 0.9812251142749774,
+     "covariance": 0.13415767913179155
+    },
+    "behind": 0,
+    "mean_scores": {
+     "m1rc_gmom": 74.8118600238186,
+     "m1rc_gmom_heldmom": 76.78595910132314
+    }
+   },
+   "2": {
+    "change": "m1rc_gmom_heldmom",
+    "base": "m1rc_gmom",
+    "mean": 1.7045074007902428,
+    "sd": 0.4236390518780529,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.9968184343649114,
+     2.20180542464864
+    ],
+    "groups": {
+     "de_recovery": 0.3268172312714468,
+     "direction": 0.06536378443257995,
+     "distribution": 1.0746815167805157,
+     "covariance": 0.23764486830570308
+    },
+    "behind": 0,
+    "mean_scores": {
+     "m1rc_gmom": 89.36654892652898,
+     "m1rc_gmom_heldmom": 91.07105632731924
+    }
+   },
+   "3": {
+    "change": "m1rc_gmom_heldmom",
+    "base": "m1rc_gmom",
+    "mean": 0.6246287055111168,
+    "sd": 0.17300149483886273,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.409463407296883,
+     0.8993914722980634
+    ],
+    "groups": {
+     "de_recovery": 0.22151403916372434,
+     "direction": 0.06868256864076827,
+     "distribution": 0.25080434190999323,
+     "covariance": 0.08362775579663628
+    },
+    "behind": 0,
+    "mean_scores": {
+     "m1rc_gmom": 73.94635890676676,
+     "m1rc_gmom_heldmom": 74.57098761227789
+    }
+   }
+  },
+  "held": {
+   "chamber": {
+    "held_labels_drawn": {
+     "Blood": 1330
+    },
+    "held_cells_changed": [
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133
+    ],
+    "momentum_rows": [
+     {
+      "type": "blood",
+      "n_target": 133,
+      "n_start": 266,
+      "n_ref": 213,
+      "start_cells": "own",
+      "ref_cells": "own",
+      "status": "shifted",
+      "n_up": 874,
+      "n_down": 773,
+      "mean_abs_log_f": 0.01926005168964476,
+      "max_abs_log_f": 0.7167087408425572,
+      "median_depth_scale": 0.98391321193467
+     }
+    ]
+   },
+   "whole": {
+    "held_labels_drawn": {
+     "Blood": 1330
+    },
+    "held_cells_changed": [
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133
+    ],
+    "momentum_rows": [
+     {
+      "type": "blood",
+      "n_target": 133,
+      "n_start": 266,
+      "n_ref": 213,
+      "start_cells": "own",
+      "ref_cells": "own",
+      "status": "shifted",
+      "n_up": 874,
+      "n_down": 773,
+      "mean_abs_log_f": 0.01926005168964476,
+      "max_abs_log_f": 0.7167087408425572,
+      "median_depth_scale": 0.98391321193467
+     }
+    ]
+   },
+   "1": {
+    "held_labels_drawn": {
+     "Blood": 15940
+    },
+    "held_cells_changed": [
+     1594,
+     1594,
+     1594,
+     1594,
+     1594,
+     1594,
+     1594,
+     1594,
+     1594,
+     1594
+    ],
+    "momentum_rows": [
+     {
+      "type": "blood",
+      "n_target": 1594,
+      "n_start": 266,
+      "n_ref": 213,
+      "start_cells": "own",
+      "ref_cells": "own",
+      "status": "shifted",
+      "n_up": 874,
+      "n_down": 773,
+      "mean_abs_log_f": 0.01926005168964476,
+      "max_abs_log_f": 0.7167087408425572,
+      "median_depth_scale": 0.9839781100748356
+     }
+    ]
+   },
+   "2": {
+    "held_labels_drawn": {
+     "Blood": 20610
+    },
+    "held_cells_changed": [
+     2061,
+     2061,
+     2061,
+     2061,
+     2061,
+     2061,
+     2061,
+     2061,
+     2061,
+     2061
+    ],
+    "momentum_rows": [
+     {
+      "type": "blood",
+      "n_target": 2061,
+      "n_start": 266,
+      "n_ref": 213,
+      "start_cells": "own",
+      "ref_cells": "own",
+      "status": "shifted",
+      "n_up": 874,
+      "n_down": 773,
+      "mean_abs_log_f": 0.01926005168964476,
+      "max_abs_log_f": 0.7167087408425572,
+      "median_depth_scale": 0.9840143819340658
+     }
+    ]
+   },
+   "3": {
+    "held_labels_drawn": {
+     "Blood": 9070
+    },
+    "held_cells_changed": [
+     907,
+     907,
+     907,
+     907,
+     907,
+     907,
+     907,
+     907,
+     907,
+     907
+    ],
+    "momentum_rows": [
+     {
+      "type": "blood",
+      "n_target": 907,
+      "n_start": 266,
+      "n_ref": 213,
+      "start_cells": "own",
+      "ref_cells": "own",
+      "status": "shifted",
+      "n_up": 874,
+      "n_down": 773,
+      "mean_abs_log_f": 0.01926005168964476,
+      "max_abs_log_f": 0.7167087408425572,
+      "median_depth_scale": 0.9839229942215059
+     }
+    ]
+   }
+  },
+  "idle_tasks": [],
+  "other_held_labels": {},
+  "j6_range": [
+   0.0,
+   0.11850940722550476
+  ],
+  "beside": [
+   "The arm reverses R1 (the captain's ruling of 2026-11-05) for the held cells: only his ruling naming R1 puts it in a file.",
+   "On practice the arm moved Blood cells alone; Macrophage and Early VIC, which D also moves at the test, are unpriced."
+  ],
+  "follows": "What follows: candidate D ends. No question goes to the captain, nothing is built, and nothing is rerun under another row."
+ },
+ "tries": 5,
+ "stamp": {
+  "commit": "cd60dce4570ebebc7dde17f3a373f96be8138d03",
+  "tree_clean": true,
+  "utc": "2026-11-20T21:14:12Z",
+  "inputs": {
+   "experiments/t1_m1/results/t64_heldmom/tasks/T1_E9.5_E10.5_chamber.json": "12e9a37c44ea60b90b8fafa535465b4db12379f16ab375525ae5112047305434",
+   "experiments/t1_m1/results/t64_heldmom/tasks/T1_E9.5_E10.5.json": "cd187131ed0a29fa9b52708a91ff1aee0db10d746a33de4e68c21be516114e26",
+   "experiments/t1_m1/results/t64_heldmom/tasks/lib1.json": "ff225d736b38b3be017fd803d91a99b71f1a97c15f5fbc2dcbc4f2c9a54920f5",
+   "experiments/t1_m1/results/t64_heldmom/tasks/lib2.json": "8f4607c2114ad80ba55e4b1a3f4ad8a28a3ecf95e0908eeaea96aa5d93c92c78",
+   "experiments/t1_m1/results/t64_heldmom/tasks/lib3.json": "f5b5fd72c4d9d83ad9c42a344c57d517d72f3fe064f8fac52382b46ef1b73b14"
+  }
+ }
+}

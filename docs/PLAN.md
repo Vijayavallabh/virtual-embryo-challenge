@@ -8283,3 +8283,189 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     branch `campaign/t1-multi-atlas-3` (6bdf01a, pinned samples as the first line; one known blocker, the tables step
     reading an earlier reduction without a pin check) and the four reviews. One word from the captain reopens it in
     the strict form.
+- 2026-11-20 (uu), T3: practice read K23's outcome: it names one file (state at 20:17 UTC, 2026-11-20). Written by the AI
+  assistant.
+  - **Outcome, as the row fixed it: "names x_e2: phi_M ** x * T ** 2 on base B (build_outside_form.py --form xall-<B>
+    --table-exponent 2.0), after (q)'s C list and after any K21 or K22 file, under the R14/R17 conditions".** Valid run
+    (both guards hold); six tries, T3 60 to 66. Row K23 holds the fixed statements; the result files are committed
+    with it.
+  - **The fixed statements.** The barred factor times the two-study outside-knockout table at exponent 2 is ahead of
+    the barred form in three of four cells and behind in none: +0.70 and +0.93 in the plain world, +0.19 and +0.69 in
+    the depth-matched world (ten, ten, eight and ten of ten seeds). It beats the same table with its genes shuffled by
+    +0.76 to +2.33 in every cell, beats a twin of the same size without the table's genes in the three cells where it
+    is ahead, and beats the exponent-1 product in every cell. At exponent 4 the gain is larger in three cells (+1.33,
+    +1.70, +1.22) and the arm is behind in the fourth (-0.64, with one more gated seed than the base), so it does not
+    qualify. One file is named: exponent 2.
+  - **What the file is.** The best Task 3 base B of entry (q), with its per-gene factor multiplied by the square of
+    the outside table (two DNA-methyltransferase nulls and a Usb1 knockout, register rows X013 and X014). It is priced
+    on practice at the base's exponent 1 only. It stands in Task 3's list after C1 and C2. No further exponent of this
+    table is read on this fold.
+  - **The AI assistant's reading after the result, labelled as that.** The gain grows with the exponent in the three
+    cells that have no gated seeds, the shuffled table loses at every exponent, and the size twin loses in the plain
+    world: on this fold the table's genes, not its size, carry the gain. The fold is one knockout in two replicates
+    and has been read by many rows, and the test knockout is another gene; the test board decides. A better-estimated
+    table is the obvious next step, which is what the bulk whole-embryo intake of entry (vv) is for.
+- 2026-11-20 (vv), T3 outside knockouts: the extension's review, the bulk whole-embryo design, and what is being built
+  (state at 20:19 UTC, 2026-11-20). Written by the AI assistant.
+  - **The extension of entry (mm)** (branch `campaign/t3-ext-3`, ec86a1b: archive blockers closed; an intake for
+    per-sample unfiltered matrices with one fixed cell call): one reviewer ready, one not ready with three blockers
+    (an unfiltered matrix offered beside a filtered file the patterns do not match; the two arms of a unit read in
+    different ways; a sister series of another study of the same laboratory accepted). A fix round closes them and
+    makes the team's held list part of the code's held set.
+  - **The hunt, metadata only.** One searcher found the Mouse Genetics Project's whole-embryo set (ArrayExpress
+    E-MTAB-7322: 73 mutant lines, each embryo its own library, wild-type embryos of each line); the other found about
+    two dozen single GEO studies with bulk RNA sequencing of whole knockout embryos at E7.5 to E9.5 with processed
+    counts. The AI assistant then read public listings only (no count value): the 73-line set has a processed per-run
+    gene count matrix and a per-embryo annotation table on the same host's expression-atlas path, with genotype, line,
+    sex, somite number and stage for 2,660 runs of 1,086 embryos; 985 of every 1,005 embryo groups are at embryonic
+    day 9.5; 50 lines have at least two homozygous and two wild-type embryos at that stage, four per arm at the
+    median.
+  - **The design** (a designer, then a challenger: build as amended). Bulk is its own table family, never pooled with
+    the single-cell tables; a unit is one line's homozygous embryos against the same line's wild-type embryos; means
+    of logs, the pipeline's pseudocount and clip; shrinkage by the pipeline's own rule from the number of embryos;
+    guards that fail closed (library size, counts only, sex, outliers, a whole-embryo profile check, duplicates); a
+    study is one vote however many lines it holds; a count table's columns tie to pinned samples by exact equality
+    only, its header is screened, and nothing but its first line is read before the pins exist; lines are withheld by
+    exact name before anything is shown; heterozygotes, point alleles, normalised tables and the raw-reads route are
+    refused in this round.
+  - **Withheld lines of the 73-line set, before any count is read.** The design withholds the GATA-type factor Trps1
+    (held) and seven cilia lines pending a phenocopy reading (B9d2, Cc2d2a, Ift140, Kif3b, Rpgrip1l, Anks6, Atxn10).
+    The AI assistant, as first reader of the line names and from recall only (no paper opened), adds three on doubt:
+    Kifap3 (its product is recalled as a partner of Apc), Mad2l2 (recalled as a partner of a Tcf factor) and Tmem98
+    (recalled as a regulator of Wnt signalling). A second reader reads the names independently before any pin.
+  - **Being built** (workflow `t3-ext-fix-and-bulk`: branches `campaign/t3-ext-4` and `campaign/t3-ext-bulk`): the
+    fix, then the bulk intake for GEO count files and tables and for the 73-line set through its accession-keyed
+    matrix, each verified or reviewed. The gene-id map comes from the features file of a sample already pinned and
+    fetched; no annotation file is downloaded. Nothing is fetched before a ready review, register rows and two
+    readers.
+- 2026-11-20 (ww), T3: the file row K23 names is built for every possible base (state at 20:28 UTC, 2026-11-20). Written by
+  the AI assistant.
+  - **The builds** (`~/v/vec-campaign-c` at 49f3fd5, clean; record `experiments/builds/results/t3k23_49f3fd5.txt`):
+    every exit 0, no form refused; the builder reproduced the barred s1 and each base byte for byte; the form was
+    built twice with the same bytes on each base; stamps name the commit and a clean tree. Four files: on s1
+    f3af008c12e6, on the 1.5 file 0b31c03e301f, on the 2.0 file 7e2815bd6f1d, on the barred s2 77ff0b947f7f. Copies
+    under `runs/manual_upload/` (`T3_k23_<base>.h5ad`; hashes checked; the local format check passes, exit codes
+    only). As with the two-knockout files they were built ahead of the scores that fix the base; the rule picks; the
+    other bases' files are never uploaded.
+  - **Conditions of the row before any upload, and where they stand:** the rules-note amendment with the captain's
+    words is committed (3eac9ff); register rows X013 and X014 now say that these candidate files use the datasets; the
+    build record and its hash list are committed with this entry; each upload is the captain's own act. **Task 3's
+    list as it stands:** the 1.5 file, then the 2.0 file or the barred s2 by entry (k)'s rule; then, on the base B
+    those two scores fix, C1 and C2 of entry (q) (only C2 when B is the 1.5 or 2.0 file), then row K23's file.
+- 2026-11-20 (xx), T1: row T64, candidate D's counted practice row, fixed before any score of D (state at 20:28 UTC,
+  2026-11-20; no D score exists; the read runs on `~/v/vec-campaign-d` after the row's commit). Written by the AI
+  assistant from the challenger's final text (verdict: run as amended; the code review: ready, no blocker; merged at
+  20889cd).
+  - **What it is.** Decision log 2026-11-20 (r) put D (R13's file with the team's released per-category momentum on
+    the cells R1 holds) behind a counted practice row, and row T64 is that row. The arm `m1rc_gmom_heldmom` runs
+    against `m1rc_gmom`, taken unchanged from T62's code, on row T62's five tasks: ten seeds, T62's scoring, the
+    direction at 1/5. The arm gives the drawn cells whose label has no recomputed direction B0's momentum at damping
+    0.5. The momentum is fitted on each task's start-to-reference pair (E8.5 -> E9.5; E10.5 is in no fit) and runs on
+    `build_submission`'s stream [seed, 1]. Every other cell keeps `m1rc_gmom`'s scored bytes, and each seed checks
+    this. Five tries, T1 413 to 418.
+  - **What it can and cannot price.** Every practice pool is E9.5, which has no Macrophage or Early VIC label, so the
+    arm moves the drawn Blood cells alone. Their momentum is not idle: the committed library report has blood shifted
+    from its own cells (266 at E8.5, 213 at E9.5). D's Macrophage and Early VIC part is unpriced, and so is the test's
+    mixing of appearing states into the blood and endocardium category factors. R1's readout already read this
+    momentum against E10.5 on Blood (sign agreement 0.50 / 0.55), so the row is not independent of R1's evidence.
+  - **Gate and statement, fixed now.** The gate: `m1rc_gmom` within 0.02 of T62's committed scores on every seed of
+    every task; any failure voids the read. The statement is T61's rule unchanged: a chamber mean above +0.3 with at
+    least 8 of 10 seeds above 0, a whole-cut mean above 0, at least two valid libraries, and none below -0.3. One
+    wording note: rows T62 and T63 wrote the whole-cut clause as "at least -0.3" while naming it T61's bar; T61's own
+    text and code say "above 0", and this row follows T61 as entry (r) quotes it.
+  - **What follows, fixed now.** AHEAD: one question to the captain, QD: reverse R1 for this one file, or keep it. The
+    default is keep R1, with no advice added. It is priced both ways, with the Blood-only coverage, T63's placebo gain
+    and the reviewer's corrected wording about row T26. Anything else ends D with no question. No outcome builds a
+    file; the builder option is written only after AHEAD and his answer naming R1.
+  - **Odds, committed before the run:** the designer 0.25, the challenger of entry (r) 0.1. This row's challenger
+    gives 0.07 and the planner 0.12; neither adds to the committed estimates. Void about 0.05.
+  - **Who.** A planning agent of the AI assistant drafted the row from entry (r)'s package, rows T61, T62, T63, R1 and
+    R13 and the scripts of T61 to T63. A challenger agent amended it before the code: practice prices Blood only; the
+    base is taken from T62's committed functions; the byte check is on the scored rows; J5's noise figures were
+    corrected; the 'advice' was removed from QD. <the reviewer's verdict on the row and the script, when there is
+    one>.
+  - Later the same hour: the first launch at 0f7b580 ran nothing. The launcher's usage message for a missing commit
+    held an apostrophe inside a shell parameter expansion, so the shell read the next thirty lines as part of that
+    message and the tests step stopped on an unset variable before any test, task or score, with no exit file. One
+    message reworded (one line of the launcher; nothing of the arm, the gate, the statement or the read script). The
+    run commit is the commit of that fix, as row T64's last cell says. No other launcher holds the same construct
+    outside double quotes.
+- 2026-11-21 (a), T3: the label that row K23's builder writes into its files (written at 20:55 UTC on 2026-11-20). Written
+  by the AI assistant.
+  - The builder of row K23's file (`experiments/t3_decomp/build_outside_form.py`, byte-frozen since its review)
+    records "decision log 2026-11-21 (a)" as the list entry in each built file's sidecar, the label its planner
+    expected. The AI assistant placed K23's rule and outcome under 2026-11-20 (ss), (uu) and (ww) instead. This entry
+    exists so that the label in those four sidecars (`experiments/builds/results/t3k23_49f3fd5.txt`) points at
+    something true: row K23's rule is entry 2026-11-20 (ss), its outcome (uu), its builds (ww). Nothing else is
+    decided here.
+- 2026-11-21 (b), T3: one more candidate, CK, the product of C2 and row K23's table, fixed before any score of C2 or of
+  the K23 file (written at 20:55 UTC on 2026-11-20; the label is the one its builder records; no headline of C2 on B
+  or of the K23 file on B has been reported to the AI assistant: the last score line received is the 61.8 of the
+  barred s1). Written by the AI assistant from the challenger's final text (verdict: fix as amended); the code review:
+  ready, no blocker; merged with this entry's commit.
+  - **Why.** Two kinds of T3 candidate are built for every base. C2 of entry (q) adds the released Gata4 knockout's
+    factor, held at the base's size. Row K23's file adds the square of the outside table of other genes' knockouts.
+    They differ in kind, so their gains may add. No practice read can price the combination: the practice fold is the
+    Gata4 knockout itself. So two returned headlines choose, as for (q)'s C list.
+  - **The form.** CK = phi_M ** (x c) * phi_G ** c * T ** 2 on B. It is C2's factor exactly, times T ** 2.0 at the
+    pinned bytes (9490f524e40e...). c is C2's, unchanged. T is not scaled by c. There is no rescale and no clip. B's
+    composition, drawn cells, streams, seed 1000001 and board are kept. Built by
+    `experiments/t3_decomp/build_combination.py --form ck-<B>` for every base, ahead of the scores. The challenger's
+    estimate, from committed summaries and not measured: CK's log SD is about 1% above B's at x = 1. Refusals that
+    cannot depend on any score (exit 4; nothing replaces CK): |corr(ln phi_G, ln T)| at 0.5 or more; fewer than 10
+    genes changed against C2; log SD more than 5% above B's. C1 x T ** 2 is never built.
+  - **The rule, in the challenger's final words:** <final_upload_rule (0) to (6), verbatim>.
+  - **Place.** Last in T3's list. B = barred s1 or s2: C1, C2, the K23 file, CK. B = the 1.5 or 2.0 file: C2, the K23
+    file, CK. At most one slot, the last, and only when both parts beat B. Entry (q), row R17, row K23 and entries
+    (ss), (uu), (ww) are unchanged.
+  - **Row K23's list entry.** build_outside_form.py names its list entry as 'decision log 2026-11-21 (b)'. For K23
+    that pointer reads: the file and its place are as (ss), (uu) and (ww) fixed them, after C1 and C2. This entry
+    changes nothing of them.
+  - **Gates before a CK build counts** (DGX, ~/v/vec-campaign-c, two-study tables folder):
+    - identity-s1 = 3712c3f9988d...;
+    - identity-B = B's hash;
+    - gate-c2-B = C2 on B in t3two_fb01487.SHA256SUMS;
+    - gate-k23-B = the K23 file on B in t3k23_49f3fd5.SHA256SUMS;
+    - each CK built twice with the same bytes.
+  - **Not checked:** corr(ln phi_G, ln T) and CK's at-clip count (the builder measures them on the DGX); the
+    den-weighted total (the factor files carry no den). No odds are given for both parts beating B.
+  - **Conditions before the upload:** the docs/S2_RULES.md amendment of this date, row R18, the build record with its
+    hash list, copies under runs/manual_upload/T3_ck_<B>.h5ad with hashes checked, and the captain's go-ahead for the
+    upload, which is his own act.
+  - Later, at 21:04 UTC on 2026-11-20: CK is built for every possible base at 20a0e1a (record
+    `experiments/builds/results/t3ck_20a0e1a.txt`): every exit 0, no form refused by its own rules; on each base the
+    builder reproduced the barred s1, the base, C2 and row K23's file byte for byte, and built CK twice with the same
+    bytes. Four files (on s1 7d712052f28f, on the 1.5 file 079f717e2702, on the 2.0 file b146fca4b934, on the barred
+    s2 e470aaeeab28), copies under `runs/manual_upload/T3_ck_<base>.h5ad`, hashes checked, the local format check
+    passed (exit codes only). No score of C2, of row K23's file or of CK existed when this was written.
+- 2026-11-20 (yy), T3 outside knockouts: the 73-line set's line names, read by two readers before any count (state at
+  21:07 UTC, 2026-11-20). Written by the AI assistant.
+  - **The two readings, from recall only (no paper, no data).** The AI assistant wrote its reading down before the
+    second reader returned (scratch `lift8/dmdd_lines_first_reading.txt`): one held name (Trps1, a GATA-type factor)
+    and ten doubts (eight ciliary genes, one of them also recalled as a partner of Apc; Mad2l2; Tmem98). A second
+    reader agent, not told that reading, judged the same 73 names: the same held name; the same eight ciliary genes;
+    eleven further doubts of its own (Nek9, Mtor, Map2k7, Traf6, Traf2, Rala, the GPI-anchor genes Pigf, Pigl and
+    Pgap2, Hira, Smc3), most of them marked vague; no doubt on Mad2l2 (it recalls the partner as another factor of the
+    same name, not a Tcf/Lef factor) or on Tmem98; and seven names it could not judge (two unnamed clones it did not
+    recognise and five it knew by family only).
+  - **The rule and its result.** A line is used only if neither reader doubts it, and a name a reader could not judge
+    is withheld too. Withheld: 29 of 73 names (1700007K13Rik, 4933434E20Rik, Anks6, Atxn10, B9d2, Cc2d2a, Dhx35,
+    Gpr107, Hira, Hmgxb3, Ift140, Kif3b, Kifap3, Mad2l2, Map2k7, Mtor, Nek9, Pgap2, Pigf, Pigl, Rala, Rpgrip1l, Smc3,
+    Tmem98, Traf2, Traf6, Trps1, Zkscan14, Zkscan17). Of the 50 lines with at least two homozygous and two wild-type
+    embryos at embryonic day 9.5 in the public annotation table, 27 remain. This list goes into the dataset entry's
+    withheld lines before any plan table is made; no count of any line has been read. The cost of the caution is about
+    a fifth of the usable lines; the AI assistant judges that worth it.
+- 2026-11-20 (zz), T1: row T64's outcome; candidate D ends (state at 21:15 UTC, 2026-11-20). Written by the AI assistant.
+  - **Outcome, in the read's fixed words: "D is NOT AHEAD (the chamber cut's mean is not above +0.3)". "What follows:
+    candidate D ends. No question goes to the captain, nothing is built, and nothing is rerun under another row."**
+    Five tries, T1 413 to 418; row T64 holds the fixed statements and the result files are committed.
+  - **The fixed statements.** The arm (the released per-category momentum on the cells ruling R1 holds, here Blood
+    cells alone) against the practice analogue of the file in force, paired per seed: chamber cut +0.12, whole cut
+    +0.09, the three library tasks +1.97, +1.70 and +0.62, ten of ten seeds ahead on every task. The statement asks
+    for a chamber mean above +0.3; it is +0.12. By the rule fixed before the run, candidate D ends and R1 stands.
+  - **The AI assistant's reading after the result, labelled as that, changing nothing.** The sign is the same on all
+    fifty seed-and-task pairs, and the size follows the share of Blood cells in the draw (2.7% of the cuts' cells,
+    about a third of library 1's). The row's own caveats hold: the practice arm prices Blood alone, R1's readout read
+    the same momentum on the same truth, and the library tasks' gains are bounds from in-sample diagnostics. The rule
+    was written to be decided by the chamber cut, and it decided. T1's list after A, B and C is now the hedge file F
+    and the advance file E, each only at the captain's specific word.

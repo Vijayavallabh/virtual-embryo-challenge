@@ -1,0 +1,40 @@
+T3 candidate of row K23 (docs/PLAN.md decision log 2026-11-20 (ss), (uu)): the barred factor times the square of the outside-knockout table, on every possible base
+====================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-20 in the campaign checkout ~/v/vec-campaign-c at commit 49f3fd5 (main; it
+holds row K23's committed reading; clean tree, untracked files included) with `experiments/t3_decomp/build_outside_form.sh
+--table-exponent 2.0 49f3fd58d11695aa6c720b79a2ddd1df09c97174 <base> xall` for each of the four bases the list allows
+(s1, s1x1.5, s1x2.0, s2), one after another. The thin builder `experiments/t3_decomp/build_outside_form.py` imports the
+frozen builder and script unchanged and refuses unless row K23's committed reading names this exponent. The table is
+`all` at sha256 9490f524e40e146480c775f85ae8829ec9c005607104ad8ace129c5c46ed6228 (the committed listing and pins; the
+tables folder held the two-study tables, each byte checked by the builder). 16 BLAS threads, seed 1000001, the run folder
+gata4_20261028T122425Z of the reference checkout (read only), board T3:bcatenin.
+
+Built BEFORE the two scores that fix the base B, for every base B can be, as the two-knockout files were (decision log
+2026-11-20 (nn)). Nothing here chooses a base: decision log (q)'s rule does. The files of the other bases are never
+uploaded.
+
+Steps and exit codes, per base (the launcher stops at the first failure; every all.exit is 0, no form refused):
+  targeted tests (synthetic data only)                                                                       exit 0
+  identity of the barred s1 through the builder: 3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2: passed
+  identity of the base through the builder: s1x1.5 c060fcaa6c7f..., s1x2.0 7393810fbe3b..., s2 1b69521e3c28...: each
+    equals its reference hash
+  the form twice (folders a, b): exit 0, the same bytes; `vec check` for T3:bcatenin inside each build: exit 0
+    base s1:      f3af008c12e6a3f29e20a3fc770a43671012923d8dc25fbfada29138f1d8854f  xall-s1.h5ad
+    base s1x1.5:  0b31c03e301fca601957f06cbe1d31a204e425a287a70394e56b4a6ad9ee7934  xall-s1x1.5.h5ad
+    base s1x2.0:  7e2815bd6f1d7c43b116e22e9976d0629823b15718dda5e1b3a9cde5b5ef82f5  xall-s1x2.0.h5ad
+    base s2:      77ff0b947f7f409c9ce171bdc59a44de3d3c2ef2f3e5a7332011a459ce9ee9c3  xall-s2.h5ad
+Each stamp says commit 49f3fd58d11695aa6c720b79a2ddd1df09c97174, clean True. The four files differ from one another.
+
+Kept: ~/v/vec-campaign-c/runs/archive/t3k23_49f3fd5/ on the DGX and runs/archive/t3k23_49f3fd5/ on the local machine
+(SHA256SUMS checked on both); copies for upload at runs/manual_upload/T3_k23_s1.h5ad, T3_k23_s1x1.5.h5ad,
+T3_k23_s1x2.0.h5ad and T3_k23_s2.h5ad (sha256 checked; the local format check passes on each, exit codes only). The
+reference checkout was not touched. No log, size or count of a build was read.
+
+Which file is handed over, by decision log (q) and row K23: the one on B, after C1 and C2. B = s1: T3_k23_s1. B = the 1.5
+file: T3_k23_s1x1.5. B = the 2.0 file: T3_k23_s1x2.0. B = the barred s2: T3_k23_s2. It is priced on practice at the
+base's exponent 1 only (bases s1 and s2).
+
+Data used: released challenge data (the wild-type E8.75 cells and the released Mab21l2 knockout) and two public
+single-cell knockout studies of other genes, GEO GSE204906 (Dnmt3a and Dnmt3b nulls, E8.5; register row X013) and GEO
+GSE277839 (a Usb1 knockout, E9.5; register row X014).

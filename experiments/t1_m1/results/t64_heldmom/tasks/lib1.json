@@ -1,0 +1,1175 @@
+{
+ "label": "try T64, a labelled in-sample diagnostic, never an adoption result: candidate D of decision log 2026-11-20 (r), R13's file with the team's released per-category momentum on the cells ruling R1 holds, by its practice analogue m1rc_gmom_heldmom against m1rc_gmom (row T62's) on T62's five tasks; every task scores one truth (E10.5) over one day, the test spans two; on practice the held cells drawn are Blood alone",
+ "row": "T64",
+ "library": "1",
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "rows": [
+  {
+   "seed": 0,
+   "arms": {
+    "copy_last": {
+     "score": 45.715896856503896,
+     "groups": {
+      "de_recovery": 0.29850460122699385,
+      "direction": 0.5352732607898276,
+      "distribution": 0.4970134395221504,
+      "covariance": 0.49805235602094244
+     },
+     "skills": {
+      "de_score": 0.29850460122699385,
+      "de_direction": 0.5352732607898276,
+      "mmd_u": 0.4970134395221504,
+      "variogram": 0.49805235602094244
+     },
+     "metrics": {
+      "de_score": -0.6306,
+      "de_direction": 0.0577,
+      "mmd_u": 0.16491,
+      "variogram": 0.013913
+     }
+    },
+    "m1rc_gmom": {
+     "score": 74.53426085913787,
+     "groups": {
+      "de_recovery": 0.607728337236534,
+      "direction": 0.7946995825013614,
+      "distribution": 0.9128099645754771,
+      "covariance": 0.6044631964213094
+     },
+     "skills": {
+      "de_score": 0.607728337236534,
+      "de_direction": 0.7946995825013614,
+      "mmd_u": 0.9128099645754771,
+      "variogram": 0.6044631964213094
+     },
+     "metrics": {
+      "de_score": 0.1656,
+      "de_direction": 0.3247,
+      "mmd_u": 0.0917,
+      "variogram": 0.00971
+     }
+    },
+    "m1rc_gmom_heldmom": {
+     "score": 76.37515045146641,
+     "groups": {
+      "de_recovery": 0.6214741883980841,
+      "direction": 0.8021253206302674,
+      "distribution": 0.9519723513288048,
+      "covariance": 0.6112996092946741
+     },
+     "skills": {
+      "de_score": 0.6214741883980841,
+      "de_direction": 0.8021253206302674,
+      "mmd_u": 0.9519723513288048,
+      "variogram": 0.6112996092946741
+     },
+     "metrics": {
+      "de_score": 0.1826,
+      "de_direction": 0.3298,
+      "mmd_u": 0.0881,
+      "variogram": 0.00949
+     }
+    }
+   },
+   "inverted_anchors": [],
+   "sha256": {
+    "copy_last": "6728a931018e02f7e4358d5ee344f02c6fe7023a6c376c9ea7f8f924ff5eda9f",
+    "m1rc_gmom": "0b81ff08728e6b7d727ca7b21b55eab1341c357770070f7c4c8d60ac7a5c4193",
+    "m1rc_gmom_heldmom": "140858e96f51601f2c9ced499957bc3dcb6cc962b0d12c11a0d4452988771b6b"
+   },
+   "held": {
+    "held_set": [
+     "Blood"
+    ],
+    "uncovered_set": [
+     "Blood"
+    ],
+    "held_labels_drawn": {
+     "Blood": 1594
+    },
+    "held_cells": 1594,
+    "held_cells_changed": 1594,
+    "non_held_equal": true,
+    "shift": [
+     {
+      "type": "blood",
+      "n_target": 1594,
+      "n_start": 266,
+      "n_ref": 213,
+      "start_cells": "own",
+      "ref_cells": "own",
+      "status": "shifted",
+      "n_up": 874,
+      "n_down": 773,
+      "mean_abs_log_f": 0.01926005168964476,
+      "max_abs_log_f": 0.7167087408425572,
+      "median_depth_scale": 0.9839781100748356
+     }
+    ]
+   },
+   "seconds": 84.0
+  },
+  {
+   "seed": 1,
+   "arms": {
+    "copy_last": {
+     "score": 44.07342732840694,
+     "groups": {
+      "de_recovery": 0.22117591666176212,
+      "direction": 0.5465807730426164,
+      "distribution": 0.49637714390534715,
+      "covariance": 0.4994097884318533
+     },
+     "skills": {
+      "de_score": 0.22117591666176212,
+      "de_direction": 0.5465807730426164,
+      "mmd_u": 0.49637714390534715,
+      "variogram": 0.4994097884318533
+     },
+     "metrics": {
+      "de_score": -0.9475,
+      "de_direction": 0.0752,
+      "mmd_u": 0.19933,
+      "variogram": 0.01838
+     }
+    },
+    "m1rc_gmom": {
+     "score": 71.82280666670006,
+     "groups": {
+      "de_recovery": 0.5722552154712959,
+      "direction": 0.811626195732156,
+      "distribution": 0.8425969173283513,
+      "covariance": 0.5973931933381608
+     },
+     "skills": {
+      "de_score": 0.5722552154712959,
+      "de_direction": 0.811626195732156,
+      "mmd_u": 0.8425969173283513,
+      "variogram": 0.5973931933381608
+     },
+     "metrics": {
+      "de_score": 0.0949,
+      "de_direction": 0.3388,
+      "mmd_u": 0.10973,
+      "variogram": 0.012961
+     }
+    },
+    "m1rc_gmom_heldmom": {
+     "score": 73.78690617353573,
+     "groups": {
+      "de_recovery": 0.6038887996143338,
+      "direction": 0.8165833796039237,
+      "distribution": 0.87381932671349,
+      "covariance": 0.6030260945837292
+     },
+     "skills": {
+      "de_score": 0.6038887996143338,
+      "de_direction": 0.8165833796039237,
+      "mmd_u": 0.87381932671349,
+      "variogram": 0.6030260945837292
+     },
+     "metrics": {
+      "de_score": 0.1293,
+      "de_direction": 0.3421,
+      "mmd_u": 0.10514,
+      "variogram": 0.012703
+     }
+    }
+   },
+   "inverted_anchors": [],
+   "sha256": {
+    "copy_last": "229c06b1f9acc21edc673e55ace0b9cfdde54bd6c9d0b91fc5dc3d1ca133ad4b",
+    "m1rc_gmom": "751fea2c1ad965c53b81e4d1532aef3155468d7cfcb4a8c4a47816804ae6413d",
+    "m1rc_gmom_heldmom": "ca9dea3c302fa0ce05f7edb220a7b8f2becfcce454b368a8ea95c88a5c529a34"
+   },
+   "held": {
+    "held_set": [
+     "Blood"
+    ],
+    "uncovered_set": [
+     "Blood"
+    ],
+    "held_labels_drawn": {
+     "Blood": 1594
+    },
+    "held_cells": 1594,
+    "held_cells_changed": 1594,
+    "non_held_equal": true,
+    "shift": [
+     {
+      "type": "blood",
+      "n_target": 1594,
+      "n_start": 266,
+      "n_ref": 213,
+      "start_cells": "own",
+      "ref_cells": "own",
+      "status": "shifted",
+      "n_up": 874,
+      "n_down": 773,
+      "mean_abs_log_f": 0.01926005168964476,
+      "max_abs_log_f": 0.7167087408425572,
+      "median_depth_scale": 0.9839781100748356
+     }
+    ]
+   },
+   "seconds": 85.6
+  },
+  {
+   "seed": 2,
+   "arms": {
+    "copy_last": {
+     "score": 48.60006628029118,
+     "groups": {
+      "de_recovery": 0.3324121315192744,
+      "direction": 0.5944233206590621,
+      "distribution": 0.5072358146798542,
+      "covariance": 0.5106052767718572
+     },
+     "skills": {
+      "de_score": 0.3324121315192744,
+      "de_direction": 0.5944233206590621,
+      "mmd_u": 0.5072358146798542,
+      "variogram": 0.5106052767718572
+     },
+     "metrics": {
+      "de_score": -0.473,
+      "de_direction": 0.149,
+      "mmd_u": 0.1832,
+      "variogram": 0.015966
+     }
+    },
+    "m1rc_gmom": {
+     "score": 72.12558306926235,
+     "groups": {
+      "de_recovery": 0.5785643808584114,
+      "direction": 0.7692307692307693,
+      "distribution": 0.8726491133799033,
+      "covariance": 0.6125615457817866
+     },
+     "skills": {
+      "de_score": 0.5785643808584114,
+      "de_direction": 0.7692307692307693,
+      "mmd_u": 0.8726491133799033,
+      "variogram": 0.6125615457817866
+     },
+     "metrics": {
+      "de_score": 0.1274,
+      "de_direction": 0.3283,
+      "mmd_u": 0.10276,
+      "variogram": 0.01114
+     }
+    },
+    "m1rc_gmom_heldmom": {
+     "score": 73.92822561703336,
+     "groups": {
+      "de_recovery": 0.6014873701756636,
+      "direction": 0.7737997030193038,
+      "distribution": 0.9055762081784386,
+      "covariance": 0.618938127090301
+     },
+     "skills": {
+      "de_score": 0.6014873701756636,
+      "de_direction": 0.7737997030193038,
+      "mmd_u": 0.9055762081784386,
+      "variogram": 0.618938127090301
+     },
+     "metrics": {
+      "de_score": 0.1583,
+      "de_direction": 0.3319,
+      "mmd_u": 0.0987,
+      "variogram": 0.010891
+     }
+    }
+   },
+   "inverted_anchors": [],
+   "sha256": {
+    "copy_last": "880b341302fe55a6278fcd89a3ce23d7aa62fb005e7fd466dc60f1b48af77a93",
+    "m1rc_gmom": "6bbd8c44be6c43ae432dcbe64c9d1f3ba38af086de17e23a014cb31d66cf83f0",
+    "m1rc_gmom_heldmom": "418fcbb00b2ed132724749ebe1dafa8938b4c7c013c394390ab0fc83b28fd27e"
+   },
+   "held": {
+    "held_set": [
+     "Blood"
+    ],
+    "uncovered_set": [
+     "Blood"
+    ],
+    "held_labels_drawn": {
+     "Blood": 1594
+    },
+    "held_cells": 1594,
+    "held_cells_changed": 1594,
+    "non_held_equal": true,
+    "shift": [
+     {
+      "type": "blood",
+      "n_target": 1594,
+      "n_start": 266,
+      "n_ref": 213,
+      "start_cells": "own",
+      "ref_cells": "own",
+      "status": "shifted",
+      "n_up": 874,
+      "n_down": 773,
+      "mean_abs_log_f": 0.01926005168964476,
+      "max_abs_log_f": 0.7167087408425572,
+      "median_depth_scale": 0.9839781100748356
+     }
+    ]
+   },
+   "seconds": 85.9
+  },
+  {
+   "seed": 3,
+   "arms": {
+    "copy_last": {
+     "score": 43.35766327379708,
+     "groups": {
+      "de_recovery": 0.22696374622356494,
+      "direction": 0.5185898889140784,
+      "distribution": 0.49242313501924667,
+      "covariance": 0.49730641723892977
+     },
+     "skills": {
+      "de_score": 0.22696374622356494,
+      "de_direction": 0.5185898889140784,
+      "mmd_u": 0.49242313501924667,
+      "variogram": 0.49730641723892977
+     },
+     "metrics": {
+      "de_score": -1.0122,
+      "de_direction": 0.0328,
+      "mmd_u": 0.19667,
+      "variogram": 0.018874
+     }
+    },
+    "m1rc_gmom": {
+     "score": 71.28100985733977,
+     "groups": {
+      "de_recovery": 0.5461508503180579,
+      "direction": 0.780716723549488,
+      "distribution": 0.8622866894197952,
+      "covariance": 0.6120359914028632
+     },
+     "skills": {
+      "de_score": 0.5461508503180579,
+      "de_direction": 0.780716723549488,
+      "mmd_u": 0.8622866894197952,
+      "variogram": 0.6120359914028632
+     },
+     "metrics": {
+      "de_score": 0.0711,
+      "de_direction": 0.329,
+      "mmd_u": 0.10864,
+      "variogram": 0.012541
+     }
+    },
+    "m1rc_gmom_heldmom": {
+     "score": 73.19676049170312,
+     "groups": {
+      "de_recovery": 0.5718363463368221,
+      "direction": 0.7850034317089911,
+      "distribution": 0.896796521430473,
+      "covariance": 0.6185935198821797
+     },
+     "skills": {
+      "de_score": 0.5718363463368221,
+      "de_direction": 0.7850034317089911,
+      "mmd_u": 0.896796521430473,
+      "variogram": 0.6185935198821797
+     },
+     "metrics": {
+      "de_score": 0.1057,
+      "de_direction": 0.3322,
+      "mmd_u": 0.10413,
+      "variogram": 0.01225
+     }
+    }
+   },
+   "inverted_anchors": [],
+   "sha256": {
+    "copy_last": "d1fb95fb358bc595fd62a701e97cb032facc8d390ff4c0037827b390877f111f",
+    "m1rc_gmom": "74afa69840eee85e8b2204da14fedecd09a8f51bc404fdd14b1dee9943054b9e",
+    "m1rc_gmom_heldmom": "36e1df19730a3a6a1f74402694ef624976541a8cb986bac19e9046a9641cab00"
+   },
+   "held": {
+    "held_set": [
+     "Blood"
+    ],
+    "uncovered_set": [
+     "Blood"
+    ],
+    "held_labels_drawn": {
+     "Blood": 1594
+    },
+    "held_cells": 1594,
+    "held_cells_changed": 1594,
+    "non_held_equal": true,
+    "shift": [
+     {
+      "type": "blood",
+      "n_target": 1594,
+      "n_start": 266,
+      "n_ref": 213,
+      "start_cells": "own",
+      "ref_cells": "own",
+      "status": "shifted",
+      "n_up": 874,
+      "n_down": 773,
+      "mean_abs_log_f": 0.01926005168964476,
+      "max_abs_log_f": 0.7167087408425572,
+      "median_depth_scale": 0.9839962460044507
+     }
+    ]
+   },
+   "seconds": 85.3
+  },
+  {
+   "seed": 4,
+   "arms": {
+    "copy_last": {
+     "score": 43.51079211153668,
+     "groups": {
+      "de_recovery": 0.25751205638679364,
+      "direction": 0.49939884140343205,
+      "distribution": 0.4920832469058978,
+      "covariance": 0.49127611298020496
+     },
+     "skills": {
+      "de_score": 0.25751205638679364,
+      "de_direction": 0.49939884140343205,
+      "mmd_u": 0.4920832469058978,
+      "variogram": 0.49127611298020496
+     },
+     "metrics": {
+      "de_score": -0.7844,
+      "de_direction": -0.0011,
+      "mmd_u": 0.16003,
+      "variogram": 0.014877
+     }
+    },
+    "m1rc_gmom": {
+     "score": 70.79539202335717,
+     "groups": {
+      "de_recovery": 0.5726660250240616,
+      "direction": 0.7302221511906665,
+      "distribution": 0.8768017740544535,
+      "covariance": 0.5959567198177677
+     },
+     "skills": {
+      "de_score": 0.5726660250240616,
+      "de_direction": 0.7302221511906665,
+      "mmd_u": 0.8768017740544535,
+      "variogram": 0.5959567198177677
+     },
+     "metrics": {
+      "de_score": 0.1057,
+      "de_direction": 0.2881,
+      "mmd_u": 0.09657,
+      "variogram": 0.010387
+     }
+    },
+    "m1rc_gmom_heldmom": {
+     "score": 72.62088860802997,
+     "groups": {
+      "de_recovery": 0.5916193181818182,
+      "direction": 0.7351568785197105,
+      "distribution": 0.9138418079096045,
+      "covariance": 0.6018114726601811
+     },
+     "skills": {
+      "de_score": 0.5916193181818182,
+      "de_direction": 0.7351568785197105,
+      "mmd_u": 0.9138418079096045,
+      "variogram": 0.6018114726601811
+     },
+     "metrics": {
+      "de_score": 0.129,
+      "de_direction": 0.2923,
+      "mmd_u": 0.09328,
+      "variogram": 0.010182
+     }
+    }
+   },
+   "inverted_anchors": [],
+   "sha256": {
+    "copy_last": "e758419afbaf090e113ba7c591397a314dd291187e095e56c66fb322f5b0cb7f",
+    "m1rc_gmom": "ae61896b0e85ef10fd59b633369a7350a6292cedf7195ea46132cf51d655c500",
+    "m1rc_gmom_heldmom": "c12e2d5b7a1d74e6e7d1fa9627c3c4830a6408b89e9926c68bf078470d2ff468"
+   },
+   "held": {
+    "held_set": [
+     "Blood"
+    ],
+    "uncovered_set": [
+     "Blood"
+    ],
+    "held_labels_drawn": {
+     "Blood": 1594
+    },
+    "held_cells": 1594,
+    "held_cells_changed": 1594,
+    "non_held_equal": true,
+    "shift": [
+     {
+      "type": "blood",
+      "n_target": 1594,
+      "n_start": 266,
+      "n_ref": 213,
+      "start_cells": "own",
+      "ref_cells": "own",
+      "status": "shifted",
+      "n_up": 874,
+      "n_down": 773,
+      "mean_abs_log_f": 0.01926005168964476,
+      "max_abs_log_f": 0.7167087408425572,
+      "median_depth_scale": 0.9839781100748356
+     }
+    ]
+   },
+   "seconds": 83.8
+  },
+  {
+   "seed": 5,
+   "arms": {
+    "copy_last": {
+     "score": 47.71339414930094,
+     "groups": {
+      "de_recovery": 0.3103078024337867,
+      "direction": 0.5866953332490199,
+      "distribution": 0.5052134566201063,
+      "covariance": 0.5065956029313791
+     },
+     "skills": {
+      "de_score": 0.3103078024337867,
+      "de_direction": 0.5866953332490199,
+      "mmd_u": 0.5052134566201063,
+      "variogram": 0.5065956029313791
+     },
+     "metrics": {
+      "de_score": -0.53,
+      "de_direction": 0.1371,
+      "mmd_u": 0.16546,
+      "variogram": 0.013264
+     }
+    },
+    "m1rc_gmom": {
+     "score": 73.37331374514389,
+     "groups": {
+      "de_recovery": 0.5804767005891804,
+      "direction": 0.7674110835401157,
+      "distribution": 0.9194414607948443,
+      "covariance": 0.6046437659033079
+     },
+     "skills": {
+      "de_score": 0.5804767005891804,
+      "de_direction": 0.7674110835401157,
+      "mmd_u": 0.9194414607948443,
+      "variogram": 0.6046437659033079
+     },
+     "metrics": {
+      "de_score": 0.1202,
+      "de_direction": 0.3233,
+      "mmd_u": 0.09676,
+      "variogram": 0.009613
+     }
+    },
+    "m1rc_gmom_heldmom": {
+     "score": 75.70033678695054,
+     "groups": {
+      "de_recovery": 0.6158545247904532,
+      "direction": 0.7725228975853454,
+      "distribution": 0.9586859133897463,
+      "covariance": 0.6115161912931589
+     },
+     "skills": {
+      "de_score": 0.6158545247904532,
+      "de_direction": 0.7725228975853454,
+      "mmd_u": 0.9586859133897463,
+      "variogram": 0.6115161912931589
+     },
+     "metrics": {
+      "de_score": 0.1631,
+      "de_direction": 0.3273,
+      "mmd_u": 0.09333,
+      "variogram": 0.009401
+     }
+    }
+   },
+   "inverted_anchors": [],
+   "sha256": {
+    "copy_last": "d9b63a0f7cfb07a13bc8251206a048b22b4e0bcef434c0d9548535688f453b3d",
+    "m1rc_gmom": "d70481a6ddb5f1185c2b2e0de185fcc63fc3bd1cc1d728c67fdd0d079ac476a0",
+    "m1rc_gmom_heldmom": "5b26a9c12cbfb60a33d2bf8a72293d159411615d670a469edeedc99a41c768fb"
+   },
+   "held": {
+    "held_set": [
+     "Blood"
+    ],
+    "uncovered_set": [
+     "Blood"
+    ],
+    "held_labels_drawn": {
+     "Blood": 1594
+    },
+    "held_cells": 1594,
+    "held_cells_changed": 1594,
+    "non_held_equal": true,
+    "shift": [
+     {
+      "type": "blood",
+      "n_target": 1594,
+      "n_start": 266,
+      "n_ref": 213,
+      "start_cells": "own",
+      "ref_cells": "own",
+      "status": "shifted",
+      "n_up": 874,
+      "n_down": 773,
+      "mean_abs_log_f": 0.01926005168964476,
+      "max_abs_log_f": 0.7167087408425572,
+      "median_depth_scale": 0.9840143819340658
+     }
+    ]
+   },
+   "seconds": 84.2
+  },
+  {
+   "seed": 6,
+   "arms": {
+    "copy_last": {
+     "score": 45.874669986498844,
+     "groups": {
+      "de_recovery": 0.27475353621945986,
+      "direction": 0.545813953488372,
+      "distribution": 0.5105473364459695,
+      "covariance": 0.5022031325211982
+     },
+     "skills": {
+      "de_score": 0.27475353621945986,
+      "de_direction": 0.545813953488372,
+      "mmd_u": 0.5105473364459695,
+      "variogram": 0.5022031325211982
+     },
+     "metrics": {
+      "de_score": -0.7357,
+      "de_direction": 0.0788,
+      "mmd_u": 0.17624,
+      "variogram": 0.015411
+     }
+    },
+    "m1rc_gmom": {
+     "score": 78.25962484567597,
+     "groups": {
+      "de_recovery": 0.6378109452736318,
+      "direction": 0.8459181834564787,
+      "distribution": 0.9555695935986523,
+      "covariance": 0.6249654409731823
+     },
+     "skills": {
+      "de_score": 0.6378109452736318,
+      "de_direction": 0.8459181834564787,
+      "mmd_u": 0.9555695935986523,
+      "variogram": 0.6249654409731823
+     },
+     "metrics": {
+      "de_score": 0.1939,
+      "de_direction": 0.3839,
+      "mmd_u": 0.09345,
+      "variogram": 0.010106
+     }
+    },
+    "m1rc_gmom_heldmom": {
+     "score": 80.60653778274124,
+     "groups": {
+      "de_recovery": 0.6666171445550437,
+      "direction": 0.8517510433678099,
+      "distribution": 1.0,
+      "covariance": 0.6323666542334949
+     },
+     "skills": {
+      "de_score": 0.6666171445550437,
+      "de_direction": 0.8517510433678099,
+      "mmd_u": 1.0,
+      "variogram": 0.6323666542334949
+     },
+     "metrics": {
+      "de_score": 0.2243,
+      "de_direction": 0.3877,
+      "mmd_u": 0.08913,
+      "variogram": 0.009852
+     }
+    }
+   },
+   "inverted_anchors": [],
+   "sha256": {
+    "copy_last": "7d366ee51de7bc5ff2c52a6236d6930fb598d760b93e5d904a10295e088dc4a0",
+    "m1rc_gmom": "7d5a2eb8936b656ca241f18b1df980a232a8f16a4751c4b05b8e9e0ec31c6622",
+    "m1rc_gmom_heldmom": "5c5eec148de696e2384ce106053de3d49f8aef591116ac31e0ff7694e1b95292"
+   },
+   "held": {
+    "held_set": [
+     "Blood"
+    ],
+    "uncovered_set": [
+     "Blood"
+    ],
+    "held_labels_drawn": {
+     "Blood": 1594
+    },
+    "held_cells": 1594,
+    "held_cells_changed": 1594,
+    "non_held_equal": true,
+    "shift": [
+     {
+      "type": "blood",
+      "n_target": 1594,
+      "n_start": 266,
+      "n_ref": 213,
+      "start_cells": "own",
+      "ref_cells": "own",
+      "status": "shifted",
+      "n_up": 874,
+      "n_down": 773,
+      "mean_abs_log_f": 0.01926005168964476,
+      "max_abs_log_f": 0.7167087408425572,
+      "median_depth_scale": 0.9839781100748356
+     }
+    ]
+   },
+   "seconds": 86.3
+  },
+  {
+   "seed": 7,
+   "arms": {
+    "copy_last": {
+     "score": 44.64491569486482,
+     "groups": {
+      "de_recovery": 0.24786223277909739,
+      "direction": 0.5376818507035536,
+      "distribution": 0.49991761410446534,
+      "covariance": 0.5004392592332291
+     },
+     "skills": {
+      "de_score": 0.24786223277909739,
+      "de_direction": 0.5376818507035536,
+      "mmd_u": 0.49991761410446534,
+      "variogram": 0.5004392592332291
+     },
+     "metrics": {
+      "de_score": -0.8492,
+      "de_direction": 0.0632,
+      "mmd_u": 0.18531,
+      "variogram": 0.016178
+     }
+    },
+    "m1rc_gmom": {
+     "score": 79.00243105571421,
+     "groups": {
+      "de_recovery": 0.6474329145338916,
+      "direction": 0.8429613011777902,
+      "distribution": 0.967371665426719,
+      "covariance": 0.6360712850060297
+     },
+     "skills": {
+      "de_score": 0.6474329145338916,
+      "de_direction": 0.8429613011777902,
+      "mmd_u": 0.967371665426719,
+      "variogram": 0.6360712850060297
+     },
+     "metrics": {
+      "de_score": 0.1901,
+      "de_direction": 0.3669,
+      "mmd_u": 0.09733,
+      "variogram": 0.01011
+     }
+    },
+    "m1rc_gmom_heldmom": {
+     "score": 80.67790132358257,
+     "groups": {
+      "de_recovery": 0.6666666666666666,
+      "direction": 0.8461249765434415,
+      "distribution": 1.0,
+      "covariance": 0.6429055121664936
+     },
+     "skills": {
+      "de_score": 0.6666666666666666,
+      "de_direction": 0.8461249765434415,
+      "mmd_u": 1.0,
+      "variogram": 0.6429055121664936
+     },
+     "metrics": {
+      "de_score": 0.2087,
+      "de_direction": 0.3689,
+      "mmd_u": 0.09317,
+      "variogram": 0.009872
+     }
+    }
+   },
+   "inverted_anchors": [],
+   "sha256": {
+    "copy_last": "5d7927bc3f2d7534155eec5a259f9851a0fc796b53cd112591d3d41c72ab0598",
+    "m1rc_gmom": "3d8d55f568e8f081c15c4195c44282240384f619571bc7a18c406e650738a7b5",
+    "m1rc_gmom_heldmom": "077300a6f2835b3e97652eab63a916cce348522bab091219c1c1a95030e1be41"
+   },
+   "held": {
+    "held_set": [
+     "Blood"
+    ],
+    "uncovered_set": [
+     "Blood"
+    ],
+    "held_labels_drawn": {
+     "Blood": 1594
+    },
+    "held_cells": 1594,
+    "held_cells_changed": 1594,
+    "non_held_equal": true,
+    "shift": [
+     {
+      "type": "blood",
+      "n_target": 1594,
+      "n_start": 266,
+      "n_ref": 213,
+      "start_cells": "own",
+      "ref_cells": "own",
+      "status": "shifted",
+      "n_up": 874,
+      "n_down": 773,
+      "mean_abs_log_f": 0.01926005168964476,
+      "max_abs_log_f": 0.7167087408425572,
+      "median_depth_scale": 0.9839781100748356
+     }
+    ]
+   },
+   "seconds": 82.7
+  },
+  {
+   "seed": 8,
+   "arms": {
+    "copy_last": {
+     "score": 41.77466378133812,
+     "groups": {
+      "de_recovery": 0.17318665803870817,
+      "direction": 0.498730378578024,
+      "distribution": 0.4975947934352009,
+      "covariance": 0.5024447031431897
+     },
+     "skills": {
+      "de_score": 0.17318665803870817,
+      "de_direction": 0.498730378578024,
+      "mmd_u": 0.4975947934352009,
+      "variogram": 0.5024447031431897
+     },
+     "metrics": {
+      "de_score": -1.1111,
+      "de_direction": -0.0022,
+      "mmd_u": 0.21863,
+      "variogram": 0.020202
+     }
+    },
+    "m1rc_gmom": {
+     "score": 78.33078338833513,
+     "groups": {
+      "de_recovery": 0.6068851783137498,
+      "direction": 0.8673223604977921,
+      "distribution": 0.9640899122807018,
+      "covariance": 0.6276448774812767
+     },
+     "skills": {
+      "de_score": 0.6068851783137498,
+      "de_direction": 0.8673223604977921,
+      "mmd_u": 0.9640899122807018,
+      "variogram": 0.6276448774812767
+     },
+     "metrics": {
+      "de_score": 0.1037,
+      "de_direction": 0.366,
+      "mmd_u": 0.11603,
+      "variogram": 0.013348
+     }
+    },
+    "m1rc_gmom_heldmom": {
+     "score": 80.60580438147967,
+     "groups": {
+      "de_recovery": 0.6437787010715067,
+      "direction": 0.8725767366720517,
+      "distribution": 1.0,
+      "covariance": 0.6348459218945355
+     },
+     "skills": {
+      "de_score": 0.6437787010715067,
+      "de_direction": 0.8725767366720517,
+      "mmd_u": 1.0,
+      "variogram": 0.6348459218945355
+     },
+     "metrics": {
+      "de_score": 0.1315,
+      "de_direction": 0.369,
+      "mmd_u": 0.11101,
+      "variogram": 0.013036
+     }
+    }
+   },
+   "inverted_anchors": [],
+   "sha256": {
+    "copy_last": "fae3e59eee9e67f84a43729d0a7aa6455de2029d07bc8d00f1a015c90f614254",
+    "m1rc_gmom": "25d6a2010fbf5cdecadc139cb7a5a266ab36f135b4e10bc936b5e80882935148",
+    "m1rc_gmom_heldmom": "c453a57052b80f073e8bea188cf3a809674c95ad74ad0b27a07ac443986b3ff1"
+   },
+   "held": {
+    "held_set": [
+     "Blood"
+    ],
+    "uncovered_set": [
+     "Blood"
+    ],
+    "held_labels_drawn": {
+     "Blood": 1594
+    },
+    "held_cells": 1594,
+    "held_cells_changed": 1594,
+    "non_held_equal": true,
+    "shift": [
+     {
+      "type": "blood",
+      "n_target": 1594,
+      "n_start": 266,
+      "n_ref": 213,
+      "start_cells": "own",
+      "ref_cells": "own",
+      "status": "shifted",
+      "n_up": 874,
+      "n_down": 773,
+      "mean_abs_log_f": 0.01926005168964476,
+      "max_abs_log_f": 0.7167087408425572,
+      "median_depth_scale": 0.9839781100748356
+     }
+    ]
+   },
+   "seconds": 81.1
+  },
+  {
+   "seed": 9,
+   "arms": {
+    "copy_last": {
+     "score": 41.364779621230625,
+     "groups": {
+      "de_recovery": 0.1738066095471236,
+      "direction": 0.4982876712328767,
+      "distribution": 0.49186180189992135,
+      "covariance": 0.4903284272366488
+     },
+     "skills": {
+      "de_score": 0.1738066095471236,
+      "de_direction": 0.4982876712328767,
+      "mmd_u": 0.49186180189992135,
+      "variogram": 0.4903284272366488
+     },
+     "metrics": {
+      "de_score": -1.066,
+      "de_direction": -0.003,
+      "mmd_u": 0.19128,
+      "variogram": 0.01888
+     }
+    },
+    "m1rc_gmom": {
+     "score": 78.59339472751961,
+     "groups": {
+      "de_recovery": 0.6228070175438597,
+      "direction": 0.8207972922151184,
+      "distribution": 1.0,
+      "covariance": 0.6251643491772579
+     },
+     "skills": {
+      "de_score": 0.6228070175438597,
+      "de_direction": 0.8207972922151184,
+      "mmd_u": 1.0,
+      "variogram": 0.6251643491772579
+     },
+     "metrics": {
+      "de_score": 0.112,
+      "de_direction": 0.3412,
+      "mmd_u": 0.10464,
+      "variogram": 0.011978
+     }
+    },
+    "m1rc_gmom_heldmom": {
+     "score": 80.36107939670892,
+     "groups": {
+      "de_recovery": 0.6826923076923077,
+      "direction": 0.8256099867599774,
+      "distribution": 1.0,
+      "covariance": 0.6326761017700899
+     },
+     "skills": {
+      "de_score": 0.6826923076923077,
+      "de_direction": 0.8256099867599774,
+      "mmd_u": 1.0,
+      "variogram": 0.6326761017700899
+     },
+     "metrics": {
+      "de_score": 0.152,
+      "de_direction": 0.3443,
+      "mmd_u": 0.10011,
+      "variogram": 0.01168
+     }
+    }
+   },
+   "inverted_anchors": [],
+   "sha256": {
+    "copy_last": "1539884e01bf81a164bfcb77af833b2a9b1bde9b812def47419dbae6218ee99a",
+    "m1rc_gmom": "3820c5f3ee940caca64c27596348b151e166919bcb69497816f593c02ddad730",
+    "m1rc_gmom_heldmom": "ad65fbb9ed148a03245e9375ff576b4bcc20be2c9290c9e7a7c94b606dc17c89"
+   },
+   "held": {
+    "held_set": [
+     "Blood"
+    ],
+    "uncovered_set": [
+     "Blood"
+    ],
+    "held_labels_drawn": {
+     "Blood": 1594
+    },
+    "held_cells": 1594,
+    "held_cells_changed": 1594,
+    "non_held_equal": true,
+    "shift": [
+     {
+      "type": "blood",
+      "n_target": 1594,
+      "n_start": 266,
+      "n_ref": 213,
+      "start_cells": "own",
+      "ref_cells": "own",
+      "status": "shifted",
+      "n_up": 874,
+      "n_down": 773,
+      "mean_abs_log_f": 0.01926005168964476,
+      "max_abs_log_f": 0.7167087408425572,
+      "median_depth_scale": 0.9840143819340658
+     }
+    ]
+   },
+   "seconds": 85.4
+  }
+ ],
+ "fraction": 0.2,
+ "damping": 0.5,
+ "momentum_stream": 1,
+ "relabel": {
+  "file": "data/derived/feng_relabel_c/cd1_stats_relabel.npz",
+  "sha256": "36d1f7edcbbf3d7a80c68b51d5624a94bb753668079fe3d69aed720c71baa7e9",
+  "stats_sha256_hashed": "36d1f7edcbbf3d7a80c68b51d5624a94bb753668079fe3d69aed720c71baa7e9",
+  "yaml_sha256": "883e74c2c1ef5f01d5244555f8b3dcae24255568c731a6d53ee2788b7b677b49",
+  "route": "recomputed",
+  "record_route": "recomputed",
+  "authors_labels_read": false,
+  "with_direction": [
+   "CM",
+   "Endocardium",
+   "Endothelium",
+   "Epicardium"
+  ],
+  "fallbacks": {
+   "CM": {
+    "own": true,
+    "fired": false,
+    "takes": "CM"
+   },
+   "Endocardium": {
+    "own": true,
+    "fired": false,
+    "takes": "Endocardium"
+   },
+   "Endothelium": {
+    "own": true,
+    "fired": false,
+    "takes": "Endothelium"
+   },
+   "Epicardium": {
+    "own": true,
+    "fired": false,
+    "takes": "Epicardium"
+   }
+  },
+  "relabel_gate": {
+   "row": "N54",
+   "ruling": "2026-11-19 (u)",
+   "commit": "7efef2826bb165aff729fd4ecd8f90c94eda7ffc",
+   "clean": true,
+   "config_at_head": true,
+   "n55": {
+    "outcome": "changed",
+    "setting": {
+     "min_score": 0.3,
+     "min_margin": 0.25
+    },
+    "commit": "cae44f793d1a134b219471df6f9bc941d913c82a",
+    "ruling": "2026-11-19 (w)"
+   }
+  },
+  "epicardium_directed": true,
+  "with_direction_epi_held": [
+   "CM",
+   "Endocardium",
+   "Endothelium"
+  ]
+ },
+ "shift_rows": [
+  {
+   "type": "blood",
+   "n_target": 1594,
+   "n_start": 266,
+   "n_ref": 213,
+   "start_cells": "own",
+   "ref_cells": "own",
+   "status": "shifted",
+   "n_up": 874,
+   "n_down": 773,
+   "mean_abs_log_f": 0.01926005168964476,
+   "max_abs_log_f": 0.7167087408425572,
+   "median_depth_scale": 0.9839781100748356
+  }
+ ],
+ "constants": {
+  "split_seed": 20261112,
+  "n_cells": 5000,
+  "board": "T1:val",
+  "edit_categories": [
+   "cm",
+   "endocardium"
+  ],
+  "held_m1_genes": 63,
+  "momentum_eps": 0.5,
+  "momentum_min_cells": 20
+ },
+ "stamp": {
+  "commit": "4fb01c5434c00b26b213318290e31cb3e7b08b58",
+  "tree_clean": true,
+  "utc": "2026-11-20T20:59:18Z",
+  "inputs": {
+   "/home/prachh/v/vec-campaign-d/data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+   "/home/prachh/v/vec-campaign-d/data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+   "/home/prachh/v/vec-campaign-d/data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+   "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c",
+   "configs/t1_chamber_classes.yaml": "fa627bb9d6f29f4b6ac9eac8f7897cfb2de66b39b4967df0c7465c7ed6664970",
+   "data/derived/feng_relabel_c/cd1_stats_relabel.npz": "36d1f7edcbbf3d7a80c68b51d5624a94bb753668079fe3d69aed720c71baa7e9",
+   "experiments/external/feng_relabel.yaml": "883e74c2c1ef5f01d5244555f8b3dcae24255568c731a6d53ee2788b7b677b49",
+   "experiments/external/results/feng_relabel/MANIFEST.json": "2a3e7200299bf2da05223a60bb910bbda8fcd1785375548e28aafdd006c93cad",
+   "experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv": "c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841"
+  }
+ }
+}

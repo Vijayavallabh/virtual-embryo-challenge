@@ -1572,3 +1572,53 @@ captain was told of A.2 before his reply "go ahead with whatever will improve ou
 reads that reply as not withdrawing his answer "Use it, after a practice read", the first of the three options, and
 tells him so. The rebuild therefore follows practice row E48, unless E48's first reading voids the construction. If he
 objects, the candidate is removed. The upload stays his own act.
+
+## Amendment of 2026-11-20: T3's outside-knockout file (the form row K23 names) joins T3's list after C1 and C2 (the captain's ruling and order; rows K22 and K23)
+
+Written by the AI assistant. **The captain's words.** On outside knockout data of genes other than the two held-out
+ones he chose "All three tiers (Recommended)" (`docs/PLAN.md` decision log 2026-11-20 (j)). On 20 November he wrote,
+verbatim: "deeply internalize that the current time we have is more than sufficient for us to optimize our solution to
+place at the Top of the leaderboard and resume outside knockouts and external datasets wildly" (decision log (y)). No
+separate question was put for this file. It follows that ruling and that order, it is a score item whose only cost is
+an upload slot, and the AI assistant records this as its own reading of his words, not as his choice of this file.
+
+**The file and the rule** are row K23's, fixed before its run (decision log 2026-11-20 (ss), outcome in (uu)): the
+base B of decision log (q), with its per-gene factor multiplied by the square of the two-study outside-knockout table
+(`all`, sha256 9490f524e40e..., from register rows X013 and X014; `build_outside_form.py --form xall-<B>
+--table-exponent 2.0`), no rescale or clip after the product, seed 1000001, built twice with the same bytes after the
+identity forms reproduce the base's bytes. It is priced on practice at the base's exponent 1 only. It stands after C1
+and C2 in T3's list; placing it ahead of them would change entry (q), which is his call. No further exponent of this
+table is read on the practice fold, and no file of the row's controls is ever built.
+
+**Data used, for the hand-over:** released challenge data (the wild-type E8.75 cells and the released Mab21l2
+knockout) and two public single-cell knockout studies of other genes, GEO GSE204906 (Dnmt3a and Dnmt3b nulls, E8.5)
+and GEO GSE277839 (a Usb1 knockout, E9.5), each as knockout-over-its-own-control changes on the panel genes. No data
+on a perturbation of beta-catenin or Gata4 from outside the release. Every upload is the captain's own act.
+
+## Amendment of 2026-11-20: T3's combination file CK (C2 times the square of row K23's table) joins the end of T3's list (the captain's reply and his ruling and order; rows R17, K23 and R18)
+
+Written by the AI assistant. **The captain's words.** For the C files: after the dialog that held the question 'T3
+Gata4', he wrote, verbatim, "go ahead with whatever will improve our score [my reply]" (decision log 2026-11-20 (t)).
+For outside knockout data of genes other than the two held-out ones: he chose "All three tiers (Recommended)"
+(decision log 2026-11-20 (j)). On 20 November he wrote, verbatim: "deeply internalize that the current time we have is
+more than sufficient for us to optimize our solution to place at the Top of the leaderboard and resume outside
+knockouts and external datasets wildly" (decision log (y)). No separate question was put for this file. It combines
+the two files those words cover, and it is a score item whose only cost is the last T3 upload slot. The AI assistant
+records this as its own reading of his words, not as his choice of this file.
+
+**The file and the rule** are decision log 2026-11-21 (b)'s, fixed before any score of C2 or of row K23's file. The
+file is CK = C2's factor on the base B of decision log 2026-11-20 (q) (phi_M ** (x c) * phi_G ** c, c unchanged),
+times the square of the two-study outside table (`all`, sha256 9490f524e40e..., register rows X013 and X014). It is
+built by `build_combination.py --form ck-<B>`, with no rescale or clip after the product and seed 1000001. It counts
+only after the builder reproduces the barred s1, the base, C2 on B and row K23's file on B byte for byte, and builds
+CK twice with the same bytes. It is uploaded only after C2 on B and row K23's file on B have both been uploaded and
+each returned a T3 headline strictly above B's; otherwise never. It stands last, after C1, C2 and row K23's file. Only
+headlines of the team's own uploads choose, and no difference among them is read as evidence of anything. Under any
+organiser restriction on the Gata4 validation files, or on the outside datasets X013 and X014, CK is not marked, and
+the mark is chosen as if CK had not been uploaded. Entry (q) and row K23 are unchanged.
+
+**Data used, for the hand-over:** released challenge data (the wild-type E8.75 cells, the released Mab21l2 knockout
+and the released Gata4 validation knockout files our team unlocked on 2026-10-28) and two public single-cell knockout
+studies of other genes, GEO GSE204906 (Dnmt3a and Dnmt3b nulls, E8.5) and GEO GSE277839 (a Usb1 knockout, E9.5), each
+as knockout-over-its-own-control changes on the panel genes. No data on a perturbation of beta-catenin or Gata4 from
+outside the release. Every upload is the captain's own act.
