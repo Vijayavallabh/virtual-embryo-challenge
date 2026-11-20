@@ -7146,3 +7146,21 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the read's result files: the script that writes the cell and the entry stopped on an assertion (a bar character
     inside a quoted line), and the commit command ran all the same. The commit after it holds both. No force-push;
     the message stays as it is.
+- 2026-11-20 (e), row T63 run and read: by its fixed line T1's ruled file is built as ruled (state at 09:58 UTC).
+  Written by the AI assistant.
+  - **The run.** On `~/v/vec-campaign-d` at b84e462, the row's commit (clean tree; tests exit 0; five tasks exit 0).
+    The five task files were committed unopened at e0b90c1 with their sha256 checked against the DGX's, and read
+    there once. Forty-five tries: T1 368 to 413.
+  - **By the reading fixed in the row.** S1: "the doubled step is AHEAD of the no-outside-data analogue" (+3.73 and
+    +3.30 on the cuts; +4.78, +2.00, +4.29 on the libraries; each 10 of 10 seeds; the library check passed). S2,
+    which decides nothing: the doubled step GAINS over the single step (+1.76 on the chamber cut). S3: the
+    epicardium step at 2/5 PAYS (+0.80 on library 3; +0.38, +0.38, +1.23 and +0.30 on the other tasks; the shrunk
+    epicardium arm is slightly behind the full one). S4 at 2/5: "a placebo gains as well; the direction more", over
+    five permutations. What follows, in the row's words: "the ruled recomputed file (`t1 --g-mom --base lib3
+    --feng-groups recomputed`) is built as ruled; the result goes to the captain beside it; his ruling stands
+    unless he changes it. The message says that a part of the gain comes with any direction of this size profile."
+  - **What it does not show**, as the row says: the doubled fraction on a one-day truth is the test's absolute step,
+    not its step per day, so the pass was expected and is no check of the two-day horizon or of the hidden
+    truth's depth.
+  - **Next:** the outcome is placed in the T1 texts (the rules file's sha256 changes), then the set t1rc is built
+    twice on `~/v/vec-campaign-d`; an independent recomputation of the read runs beside the build.

@@ -1,0 +1,137 @@
+try T63, a labelled in-sample diagnostic, never an adoption result: T1's ruled recomputed-groups file at the test's fraction of the atlas bracket (2/5) against its single step and the no-outside-data analogue, with a placebo direction (five within-bin permutations at 2/5, one at 1/5) and the epicardium step at 2/5, on row T62's five tasks; every task scores one truth (E10.5) over one day, so 2/5 is twice the test's step per day
+S1: "the doubled step is AHEAD of the no-outside-data analogue" (the test's absolute step on one-day truths at the released depth ratio; not a check of the two-day horizon and nothing about the hidden truth's depth; the record predicted a pass; cuts: AHEAD; library check: passed)
+S2 (m1rc_gmom_x2 - m1rc_gmom on the chamber cut): GAINS (decides nothing and is never evidence for any fraction or step size; the record predicted GAINS)
+S3 (the epicardium step at 2/5, m1rc_gmom_x2 - m1rc_gmom_x2_epi_held on library 3; a valid library: yes): PAYS
+S4 at 2/5: "a placebo gains as well; the direction more" (decided over 5 within-bin permutations, offsets 0 to 4; the worst for the direction: placebo_x2_q4); at 1/5, reported only, one permutation: "a placebo gains as well; the direction more"
+What follows: the ruled recomputed file (`t1 --g-mom --base lib3 --feng-groups recomputed`) is built as ruled; the result goes to the captain beside it; his ruling stands unless he changes it. The message says that a part of the gain comes with any direction of this size profile.
+S1: m1rc_gmom_x2 - none_gmom
+  chamber: +3.73 points, sd 0.11, ahead 10 behind 0 of 10, per seed +3.56 to +3.91; by group: de_recovery +1.70, direction +0.69, distribution +0.71, covariance +0.63
+  whole: +3.30 points, sd 0.23, ahead 10 behind 0 of 10, per seed +2.95 to +3.72; by group: de_recovery +1.53, direction +0.63, distribution +0.59, covariance +0.55
+  1: +4.78 points, sd 0.69, ahead 10 behind 0 of 10, per seed +3.95 to +6.16; by group: de_recovery +3.06, direction +0.69, distribution +0.56, covariance +0.47
+  2: +2.00 points, sd 1.09, ahead 10 behind 0 of 10, per seed +0.28 to +3.45; by group: de_recovery +1.40, direction +0.38, distribution -0.40, covariance +0.62
+  3: +4.29 points, sd 0.50, ahead 10 behind 0 of 10, per seed +3.57 to +5.11; by group: de_recovery +1.38, direction +0.86, distribution +1.05, covariance +1.01
+S2: m1rc_gmom_x2 - m1rc_gmom
+  chamber: +1.76 points, sd 0.11, ahead 10 behind 0 of 10, per seed +1.55 to +1.91; by group: de_recovery +0.80, direction +0.32, distribution +0.32, covariance +0.33
+  whole: +1.63 points, sd 0.15, ahead 10 behind 0 of 10, per seed +1.48 to +2.00; by group: de_recovery +0.78, direction +0.30, distribution +0.26, covariance +0.28
+  1: +2.29 points, sd 0.54, ahead 10 behind 0 of 10, per seed +1.79 to +3.48; by group: de_recovery +1.49, direction +0.29, distribution +0.25, covariance +0.25
+  2: +0.77 points, sd 0.46, ahead 10 behind 0 of 10, per seed +0.08 to +1.45; by group: de_recovery +0.53, direction +0.16, distribution -0.24, covariance +0.32
+  3: +1.78 points, sd 0.31, ahead 10 behind 0 of 10, per seed +1.37 to +2.35; by group: de_recovery +0.54, direction +0.38, distribution +0.42, covariance +0.45
+S3: m1rc_gmom_x2 - m1rc_gmom_x2_epi_held
+  chamber: +0.38 points, sd 0.08, ahead 10 behind 0 of 10, per seed +0.28 to +0.48; by group: de_recovery +0.11, direction +0.07, distribution +0.11, covariance +0.09
+  whole: +0.38 points, sd 0.07, ahead 10 behind 0 of 10, per seed +0.24 to +0.47; by group: de_recovery +0.13, direction +0.07, distribution +0.10, covariance +0.08
+  1: +1.23 points, sd 0.42, ahead 10 behind 0 of 10, per seed +0.51 to +1.97; by group: de_recovery +0.87, direction +0.17, distribution +0.07, covariance +0.12
+  2: +0.30 points, sd 0.30, ahead 8 behind 2 of 10, per seed -0.08 to +0.82; by group: de_recovery +0.21, direction +0.08, distribution -0.09, covariance +0.10
+  3: +0.80 points, sd 0.18, ahead 10 behind 0 of 10, per seed +0.35 to +1.00; by group: de_recovery +0.21, direction +0.20, distribution +0.13, covariance +0.26
+reported: m1rc_gmom - none_gmom (T62's pair, rebuilt)
+  chamber: +1.97 points, sd 0.10, ahead 10 behind 0 of 10, per seed +1.83 to +2.13; by group: de_recovery +0.90, direction +0.37, distribution +0.39, covariance +0.31
+  whole: +1.67 points, sd 0.16, ahead 10 behind 0 of 10, per seed +1.47 to +1.98; by group: de_recovery +0.75, direction +0.34, distribution +0.32, covariance +0.26
+  1: +2.50 points, sd 0.28, ahead 10 behind 0 of 10, per seed +2.12 to +3.03; by group: de_recovery +1.56, direction +0.40, distribution +0.32, covariance +0.22
+  2: +1.23 points, sd 0.75, ahead 10 behind 0 of 10, per seed +0.19 to +2.14; by group: de_recovery +0.87, direction +0.22, distribution -0.15, covariance +0.30
+  3: +2.51 points, sd 0.27, ahead 10 behind 0 of 10, per seed +2.11 to +2.98; by group: de_recovery +0.84, direction +0.48, distribution +0.63, covariance +0.56
+reported beside S3: m1rc_gmom_x2_epi_eb - m1rc_gmom_x2 (the shrunk epicardium step against the full one)
+  chamber: -0.06 points, sd 0.03, ahead 1 behind 9 of 10, per seed -0.11 to +0.01; by group: de_recovery -0.01, direction -0.01, distribution -0.01, covariance -0.02
+  whole: -0.04 points, sd 0.03, ahead 0 behind 10 of 10, per seed -0.09 to -0.01; by group: de_recovery -0.00, direction -0.01, distribution -0.01, covariance -0.02
+  1: -0.20 points, sd 0.08, ahead 0 behind 10 of 10, per seed -0.32 to -0.09; by group: de_recovery -0.13, direction -0.04, distribution -0.01, covariance -0.02
+  2: -0.05 points, sd 0.13, ahead 1 behind 9 of 10, per seed -0.25 to +0.24; by group: de_recovery -0.03, direction -0.02, distribution +0.01, covariance -0.02
+  3: -0.14 points, sd 0.04, ahead 0 behind 10 of 10, per seed -0.19 to -0.07; by group: de_recovery -0.03, direction -0.05, distribution -0.01, covariance -0.05
+reported beside S3: m1rc_gmom_x2_epi_eb - m1rc_gmom_x2_epi_held
+  chamber: +0.32 points, sd 0.08, ahead 10 behind 0 of 10, per seed +0.19 to +0.42; by group: de_recovery +0.10, direction +0.06, distribution +0.10, covariance +0.07
+  whole: +0.33 points, sd 0.06, ahead 10 behind 0 of 10, per seed +0.23 to +0.41; by group: de_recovery +0.13, direction +0.05, distribution +0.09, covariance +0.06
+  1: +1.03 points, sd 0.42, ahead 10 behind 0 of 10, per seed +0.32 to +1.74; by group: de_recovery +0.75, direction +0.12, distribution +0.06, covariance +0.10
+  2: +0.24 points, sd 0.30, ahead 8 behind 2 of 10, per seed -0.29 to +0.71; by group: de_recovery +0.18, direction +0.06, distribution -0.08, covariance +0.08
+  3: +0.67 points, sd 0.17, ahead 10 behind 0 of 10, per seed +0.25 to +0.83; by group: de_recovery +0.18, direction +0.16, distribution +0.12, covariance +0.21
+reported beside S4: (m1rc_gmom_x2 - m1rc_gmom) - (placebo_x2 - placebo_x1), offset 0 (row T45's increments)
+  chamber: +1.40 points, sd 0.10, ahead 10 behind 0 of 10, per seed +1.25 to +1.56; by group: de_recovery +0.63, direction +0.33, distribution +0.25, covariance +0.19
+  whole: +1.25 points, sd 0.18, ahead 10 behind 0 of 10, per seed +1.05 to +1.68; by group: de_recovery +0.66, direction +0.28, distribution +0.15, covariance +0.15
+  1: +2.22 points, sd 0.55, ahead 10 behind 0 of 10, per seed +1.74 to +3.54; by group: de_recovery +1.40, direction +0.32, distribution +0.40, covariance +0.10
+  2: +0.98 points, sd 0.61, ahead 10 behind 0 of 10, per seed +0.15 to +1.87; by group: de_recovery +0.55, direction +0.24, distribution +0.03, covariance +0.16
+  3: +2.10 points, sd 0.40, ahead 10 behind 0 of 10, per seed +1.63 to +2.84; by group: de_recovery +0.66, direction +0.43, distribution +0.57, covariance +0.45
+S4: candidate - placebo_x1 (offset 0)
+  chamber: +1.66 points, sd 0.09, ahead 10 behind 0 of 10, per seed +1.59 to +1.84; by group: de_recovery +0.83, direction +0.35, distribution +0.31, covariance +0.17
+  whole: +1.37 points, sd 0.14, ahead 10 behind 0 of 10, per seed +1.21 to +1.62; by group: de_recovery +0.72, direction +0.30, distribution +0.22, covariance +0.13
+  1: +2.30 points, sd 0.26, ahead 10 behind 0 of 10, per seed +1.88 to +2.70; by group: de_recovery +1.38, direction +0.40, distribution +0.43, covariance +0.09
+  2: +1.13 points, sd 0.66, ahead 10 behind 0 of 10, per seed +0.14 to +1.98; by group: de_recovery +0.70, direction +0.22, distribution +0.05, covariance +0.15
+  3: +2.59 points, sd 0.19, ahead 10 behind 0 of 10, per seed +2.33 to +2.95; by group: de_recovery +0.92, direction +0.50, distribution +0.71, covariance +0.47
+S4: placebo_x1 - none_gmom
+  chamber: +0.30 points, sd 0.06, ahead 10 behind 0 of 10, per seed +0.24 to +0.44; by group: de_recovery +0.07, direction +0.02, distribution +0.08, covariance +0.14
+  whole: +0.30 points, sd 0.07, ahead 10 behind 0 of 10, per seed +0.20 to +0.41; by group: de_recovery +0.02, direction +0.04, distribution +0.10, covariance +0.13
+  1: +0.20 points, sd 0.19, ahead 9 behind 1 of 10, per seed -0.23 to +0.45; by group: de_recovery +0.19, direction -0.00, distribution -0.11, covariance +0.13
+  2: +0.11 points, sd 0.26, ahead 7 behind 3 of 10, per seed -0.33 to +0.60; by group: de_recovery +0.17, direction +0.00, distribution -0.21, covariance +0.15
+  3: -0.09 points, sd 0.11, ahead 2 behind 8 of 10, per seed -0.24 to +0.08; by group: de_recovery -0.08, direction -0.02, distribution -0.08, covariance +0.09
+S4: candidate - placebo_x2 (offset 0)
+  chamber: +3.07 points, sd 0.10, ahead 10 behind 0 of 10, per seed +2.94 to +3.28; by group: de_recovery +1.46, direction +0.68, distribution +0.56, covariance +0.36
+  whole: +2.62 points, sd 0.24, ahead 10 behind 0 of 10, per seed +2.26 to +3.05; by group: de_recovery +1.38, direction +0.59, distribution +0.37, covariance +0.28
+  1: +4.51 points, sd 0.65, ahead 10 behind 0 of 10, per seed +3.79 to +5.93; by group: de_recovery +2.78, direction +0.71, distribution +0.83, covariance +0.20
+  2: +2.10 points, sd 1.16, ahead 10 behind 0 of 10, per seed +0.29 to +3.63; by group: de_recovery +1.25, direction +0.46, distribution +0.08, covariance +0.31
+  3: +4.69 points, sd 0.47, ahead 10 behind 0 of 10, per seed +3.96 to +5.46; by group: de_recovery +1.57, direction +0.93, distribution +1.27, covariance +0.92
+S4: placebo_x2 - none_gmom
+  chamber: +0.66 points, sd 0.07, ahead 10 behind 0 of 10, per seed +0.49 to +0.73; by group: de_recovery +0.24, direction +0.00, distribution +0.15, covariance +0.27
+  whole: +0.68 points, sd 0.10, ahead 10 behind 0 of 10, per seed +0.52 to +0.78; by group: de_recovery +0.14, direction +0.05, distribution +0.21, covariance +0.27
+  1: +0.27 points, sd 0.30, ahead 8 behind 2 of 10, per seed -0.26 to +0.65; by group: de_recovery +0.28, direction -0.02, distribution -0.27, covariance +0.28
+  2: -0.10 points, sd 0.20, ahead 5 behind 5 of 10, per seed -0.38 to +0.12; by group: de_recovery +0.15, direction -0.08, distribution -0.48, covariance +0.31
+  3: -0.40 points, sd 0.25, ahead 1 behind 9 of 10, per seed -0.84 to +0.01; by group: de_recovery -0.19, direction -0.07, distribution -0.23, covariance +0.09
+S4: candidate - placebo_x2_q1 (offset 1)
+  chamber: +3.18 points, sd 0.13, ahead 10 behind 0 of 10, per seed +2.92 to +3.41; by group: de_recovery +1.53, direction +0.68, distribution +0.58, covariance +0.38
+  whole: +2.67 points, sd 0.22, ahead 10 behind 0 of 10, per seed +2.38 to +2.98; by group: de_recovery +1.36, direction +0.60, distribution +0.41, covariance +0.30
+  1: +4.69 points, sd 0.68, ahead 10 behind 0 of 10, per seed +3.82 to +6.09; by group: de_recovery +2.99, direction +0.70, distribution +0.77, covariance +0.23
+  2: +2.52 points, sd 1.40, ahead 10 behind 0 of 10, per seed +0.29 to +4.41; by group: de_recovery +1.68, direction +0.52, distribution -0.02, covariance +0.35
+  3: +4.85 points, sd 0.48, ahead 10 behind 0 of 10, per seed +4.07 to +5.62; by group: de_recovery +1.71, direction +0.97, distribution +1.22, covariance +0.95
+S4: placebo_x2_q1 - none_gmom
+  chamber: +0.55 points, sd 0.11, ahead 10 behind 0 of 10, per seed +0.30 to +0.68; by group: de_recovery +0.16, direction +0.00, distribution +0.13, covariance +0.25
+  whole: +0.63 points, sd 0.09, ahead 10 behind 0 of 10, per seed +0.54 to +0.75; by group: de_recovery +0.17, direction +0.03, distribution +0.18, covariance +0.25
+  1: +0.09 points, sd 0.23, ahead 7 behind 3 of 10, per seed -0.25 to +0.40; by group: de_recovery +0.07, direction -0.01, distribution -0.21, covariance +0.24
+  2: -0.52 points, sd 0.59, ahead 2 behind 8 of 10, per seed -1.71 to +0.34; by group: de_recovery -0.28, direction -0.13, distribution -0.37, covariance +0.27
+  3: -0.56 points, sd 0.16, ahead 0 behind 10 of 10, per seed -0.84 to -0.34; by group: de_recovery -0.33, direction -0.12, distribution -0.17, covariance +0.05
+S4: candidate - placebo_x2_q2 (offset 2)
+  chamber: +3.24 points, sd 0.15, ahead 10 behind 0 of 10, per seed +3.05 to +3.56; by group: de_recovery +1.62, direction +0.67, distribution +0.56, covariance +0.39
+  whole: +2.66 points, sd 0.22, ahead 10 behind 0 of 10, per seed +2.34 to +3.01; by group: de_recovery +1.35, direction +0.59, distribution +0.40, covariance +0.31
+  1: +4.36 points, sd 0.58, ahead 10 behind 0 of 10, per seed +3.67 to +5.36; by group: de_recovery +2.78, direction +0.66, distribution +0.74, covariance +0.18
+  2: +2.32 points, sd 1.27, ahead 10 behind 0 of 10, per seed +0.24 to +3.60; by group: de_recovery +1.59, direction +0.46, distribution -0.03, covariance +0.31
+  3: +4.67 points, sd 0.44, ahead 10 behind 0 of 10, per seed +3.91 to +5.40; by group: de_recovery +1.62, direction +0.98, distribution +1.19, covariance +0.89
+S4: placebo_x2_q2 - none_gmom
+  chamber: +0.49 points, sd 0.08, ahead 10 behind 0 of 10, per seed +0.35 to +0.60; by group: de_recovery +0.08, direction +0.02, distribution +0.15, covariance +0.24
+  whole: +0.64 points, sd 0.10, ahead 10 behind 0 of 10, per seed +0.46 to +0.79; by group: de_recovery +0.18, direction +0.04, distribution +0.19, covariance +0.23
+  1: +0.42 points, sd 0.19, ahead 10 behind 0 of 10, per seed +0.16 to +0.80; by group: de_recovery +0.27, direction +0.03, distribution -0.18, covariance +0.30
+  2: -0.32 points, sd 0.36, ahead 2 behind 8 of 10, per seed -0.97 to +0.17; by group: de_recovery -0.19, direction -0.07, distribution -0.37, covariance +0.31
+  3: -0.38 points, sd 0.23, ahead 0 behind 10 of 10, per seed -0.75 to -0.05; by group: de_recovery -0.24, direction -0.12, distribution -0.14, covariance +0.12
+S4: candidate - placebo_x2_q3 (offset 3)
+  chamber: +3.29 points, sd 0.15, ahead 10 behind 0 of 10, per seed +3.00 to +3.57; by group: de_recovery +1.71, direction +0.65, distribution +0.56, covariance +0.38
+  whole: +2.71 points, sd 0.24, ahead 10 behind 0 of 10, per seed +2.39 to +3.14; by group: de_recovery +1.47, direction +0.56, distribution +0.39, covariance +0.30
+  1: +4.55 points, sd 0.67, ahead 10 behind 0 of 10, per seed +3.77 to +5.91; by group: de_recovery +2.84, direction +0.75, distribution +0.76, covariance +0.21
+  2: +2.25 points, sd 1.28, ahead 10 behind 0 of 10, per seed +0.24 to +3.77; by group: de_recovery +1.45, direction +0.46, distribution +0.02, covariance +0.31
+  3: +4.80 points, sd 0.45, ahead 10 behind 0 of 10, per seed +4.02 to +5.45; by group: de_recovery +1.72, direction +0.97, distribution +1.20, covariance +0.90
+S4: placebo_x2_q3 - none_gmom
+  chamber: +0.44 points, sd 0.08, ahead 10 behind 0 of 10, per seed +0.33 to +0.60; by group: de_recovery -0.01, direction +0.04, distribution +0.16, covariance +0.25
+  whole: +0.59 points, sd 0.12, ahead 10 behind 0 of 10, per seed +0.36 to +0.71; by group: de_recovery +0.06, direction +0.08, distribution +0.20, covariance +0.25
+  1: +0.23 points, sd 0.26, ahead 9 behind 1 of 10, per seed -0.25 to +0.72; by group: de_recovery +0.22, direction -0.06, distribution -0.19, covariance +0.27
+  2: -0.25 points, sd 0.39, ahead 3 behind 7 of 10, per seed -0.98 to +0.19; by group: de_recovery -0.05, direction -0.08, distribution -0.42, covariance +0.31
+  3: -0.51 points, sd 0.22, ahead 0 behind 10 of 10, per seed -0.89 to -0.24; by group: de_recovery -0.35, direction -0.11, distribution -0.16, covariance +0.11
+S4: candidate - placebo_x2_q4 (offset 4)
+  chamber: +2.96 points, sd 0.08, ahead 10 behind 0 of 10, per seed +2.81 to +3.09; by group: de_recovery +1.42, direction +0.63, distribution +0.53, covariance +0.37
+  whole: +2.50 points, sd 0.22, ahead 10 behind 0 of 10, per seed +2.19 to +2.91; by group: de_recovery +1.26, direction +0.55, distribution +0.38, covariance +0.30
+  1: +4.67 points, sd 0.77, ahead 10 behind 0 of 10, per seed +3.70 to +6.29; by group: de_recovery +3.01, direction +0.72, distribution +0.72, covariance +0.22
+  2: +2.39 points, sd 1.53, ahead 10 behind 0 of 10, per seed +0.27 to +4.68; by group: de_recovery +1.60, direction +0.46, distribution -0.01, covariance +0.34
+  3: +4.63 points, sd 0.58, ahead 10 behind 0 of 10, per seed +3.73 to +5.63; by group: de_recovery +1.72, direction +0.91, distribution +1.12, covariance +0.89
+S4: placebo_x2_q4 - none_gmom
+  chamber: +0.78 points, sd 0.07, ahead 10 behind 0 of 10, per seed +0.66 to +0.86; by group: de_recovery +0.28, direction +0.05, distribution +0.18, covariance +0.26
+  whole: +0.80 points, sd 0.11, ahead 10 behind 0 of 10, per seed +0.62 to +1.00; by group: de_recovery +0.27, direction +0.08, distribution +0.21, covariance +0.25
+  1: +0.11 points, sd 0.20, ahead 7 behind 3 of 10, per seed -0.14 to +0.41; by group: de_recovery +0.05, direction -0.03, distribution -0.16, covariance +0.25
+  2: -0.39 points, sd 0.79, ahead 2 behind 8 of 10, per seed -1.98 to +0.86; by group: de_recovery -0.20, direction -0.08, distribution -0.38, covariance +0.28
+  3: -0.34 points, sd 0.21, ahead 1 behind 9 of 10, per seed -0.59 to +0.07; by group: de_recovery -0.34, direction -0.05, distribution -0.07, covariance +0.12
+Mean scores: chamber: none_gmom 50.04, m1rc_gmom 52.00, m1rc_gmom_x2 53.77, m1rc_gmom_x2_epi_held 53.39, m1rc_gmom_x2_epi_eb 53.71, placebo_x1 50.34, placebo_x2 50.70, placebo_x2_q1 50.59, placebo_x2_q2 50.52, placebo_x2_q3 50.47, placebo_x2_q4 50.81; whole: none_gmom 44.49, m1rc_gmom 46.16, m1rc_gmom_x2 47.79, m1rc_gmom_x2_epi_held 47.41, m1rc_gmom_x2_epi_eb 47.74, placebo_x1 44.79, placebo_x2 45.16, placebo_x2_q1 45.12, placebo_x2_q2 45.13, placebo_x2_q3 45.08, placebo_x2_q4 45.29; 1: copy_last 44.66, none_gmom 72.32, m1rc_gmom 74.81, m1rc_gmom_x2 77.10, m1rc_gmom_x2_epi_held 75.87, m1rc_gmom_x2_epi_eb 76.90, placebo_x1 72.51, placebo_x2 72.58, placebo_x2_q1 72.41, placebo_x2_q2 72.74, placebo_x2_q3 72.54, placebo_x2_q4 72.43; 2: copy_last 46.72, none_gmom 88.13, m1rc_gmom 89.37, m1rc_gmom_x2 90.14, m1rc_gmom_x2_epi_held 89.84, m1rc_gmom_x2_epi_eb 90.08, placebo_x1 88.24, placebo_x2 88.03, placebo_x2_q1 87.61, placebo_x2_q2 87.81, placebo_x2_q3 87.89, placebo_x2_q4 87.74; 3: copy_last 49.56, none_gmom 71.44, m1rc_gmom 73.95, m1rc_gmom_x2 75.73, m1rc_gmom_x2_epi_held 74.93, m1rc_gmom_x2_epi_eb 75.59, placebo_x1 71.35, placebo_x2 71.04, placebo_x2_q1 70.88, placebo_x2_q2 71.06, placebo_x2_q3 70.93, placebo_x2_q4 71.10
+chamber: placebo applied size over the candidate's (mean |log f|, RMS; non-held genes): placebo_x1 CM 1.005/1.006, Endocardium 1.002/1.003, Endothelium 1.003/1.003, Epicardium 1.005/1.007; placebo_x2 CM 1.005/1.006, Endocardium 1.002/1.003, Endothelium 1.003/1.003, Epicardium 1.005/1.007; placebo_x2_q1 CM 1.004/1.002, Endocardium 1.001/1.000, Endothelium 1.005/1.006, Epicardium 1.003/1.004; placebo_x2_q2 CM 1.004/1.002, Endocardium 1.002/1.003, Endothelium 1.004/1.006, Epicardium 1.003/1.003; placebo_x2_q3 CM 1.004/1.005, Endocardium 1.003/1.004, Endothelium 1.005/1.006, Epicardium 1.004/1.005; placebo_x2_q4 CM 1.003/1.004, Endocardium 1.003/1.004, Endothelium 1.003/1.004, Epicardium 1.005/1.007
+chamber: between-bin share of each direction's variance (kept by the placebo): CM 0.028, Endocardium 0.015, Endothelium 0.016, Epicardium 0.010; Epicardium eb_shrink factor mean 0.745355692275517
+whole: placebo applied size over the candidate's (mean |log f|, RMS; non-held genes): placebo_x1 CM 1.005/1.006, Endocardium 1.002/1.003, Endothelium 1.003/1.003, Epicardium 1.005/1.007; placebo_x2 CM 1.005/1.006, Endocardium 1.002/1.003, Endothelium 1.003/1.003, Epicardium 1.005/1.007; placebo_x2_q1 CM 1.004/1.002, Endocardium 1.001/1.000, Endothelium 1.005/1.006, Epicardium 1.003/1.004; placebo_x2_q2 CM 1.004/1.002, Endocardium 1.002/1.003, Endothelium 1.004/1.006, Epicardium 1.003/1.003; placebo_x2_q3 CM 1.004/1.005, Endocardium 1.003/1.004, Endothelium 1.005/1.006, Epicardium 1.004/1.005; placebo_x2_q4 CM 1.003/1.004, Endocardium 1.003/1.004, Endothelium 1.003/1.004, Epicardium 1.005/1.007
+whole: between-bin share of each direction's variance (kept by the placebo): CM 0.028, Endocardium 0.015, Endothelium 0.016, Epicardium 0.010; Epicardium eb_shrink factor mean 0.745355692275517
+1: placebo applied size over the candidate's (mean |log f|, RMS; non-held genes): placebo_x1 CM 1.005/1.006, Endocardium 1.002/1.003, Endothelium 1.003/1.003, Epicardium 1.005/1.007; placebo_x2 CM 1.005/1.006, Endocardium 1.002/1.003, Endothelium 1.003/1.003, Epicardium 1.005/1.007; placebo_x2_q1 CM 1.004/1.002, Endocardium 1.001/1.000, Endothelium 1.005/1.006, Epicardium 1.003/1.004; placebo_x2_q2 CM 1.004/1.002, Endocardium 1.002/1.003, Endothelium 1.004/1.006, Epicardium 1.003/1.003; placebo_x2_q3 CM 1.004/1.005, Endocardium 1.003/1.004, Endothelium 1.005/1.006, Epicardium 1.004/1.005; placebo_x2_q4 CM 1.003/1.004, Endocardium 1.003/1.004, Endothelium 1.003/1.004, Epicardium 1.005/1.007
+1: between-bin share of each direction's variance (kept by the placebo): CM 0.028, Endocardium 0.015, Endothelium 0.016, Epicardium 0.010; Epicardium eb_shrink factor mean 0.745355692275517
+2: placebo applied size over the candidate's (mean |log f|, RMS; non-held genes): placebo_x1 CM 1.005/1.006, Endocardium 1.002/1.003, Endothelium 1.003/1.003, Epicardium 1.005/1.007; placebo_x2 CM 1.005/1.006, Endocardium 1.002/1.003, Endothelium 1.003/1.003, Epicardium 1.005/1.007; placebo_x2_q1 CM 1.004/1.002, Endocardium 1.001/1.000, Endothelium 1.005/1.006, Epicardium 1.003/1.004; placebo_x2_q2 CM 1.004/1.002, Endocardium 1.002/1.003, Endothelium 1.004/1.006, Epicardium 1.003/1.003; placebo_x2_q3 CM 1.004/1.005, Endocardium 1.003/1.004, Endothelium 1.005/1.006, Epicardium 1.004/1.005; placebo_x2_q4 CM 1.003/1.004, Endocardium 1.003/1.004, Endothelium 1.003/1.004, Epicardium 1.005/1.007
+2: between-bin share of each direction's variance (kept by the placebo): CM 0.028, Endocardium 0.015, Endothelium 0.016, Epicardium 0.010; Epicardium eb_shrink factor mean 0.745355692275517
+3: placebo applied size over the candidate's (mean |log f|, RMS; non-held genes): placebo_x1 CM 1.005/1.006, Endocardium 1.002/1.003, Endothelium 1.003/1.003, Epicardium 1.005/1.007; placebo_x2 CM 1.005/1.006, Endocardium 1.002/1.003, Endothelium 1.003/1.003, Epicardium 1.005/1.007; placebo_x2_q1 CM 1.004/1.002, Endocardium 1.001/1.000, Endothelium 1.005/1.006, Epicardium 1.003/1.004; placebo_x2_q2 CM 1.004/1.002, Endocardium 1.002/1.003, Endothelium 1.004/1.006, Epicardium 1.003/1.003; placebo_x2_q3 CM 1.004/1.005, Endocardium 1.003/1.004, Endothelium 1.005/1.006, Epicardium 1.004/1.005; placebo_x2_q4 CM 1.003/1.004, Endocardium 1.003/1.004, Endothelium 1.003/1.004, Epicardium 1.005/1.007
+3: between-bin share of each direction's variance (kept by the placebo): CM 0.028, Endocardium 0.015, Endothelium 0.016, Epicardium 0.010; Epicardium eb_shrink factor mean 0.745355692275517
+Placebo sizes more than 10% from the candidate's: none
+Beside S3, row T62's committed reliability listing (target-free) for Epicardium: {'own_direction': True, 'cells': {'E9.5': {'A': 6, 'B': 5}, 'E14.5': {'A': 17, 'B': 15}}, 'spearman_all': 0.35049338797312085, 'eb_factor_mean': 0.745355692275517, 'decile_spearman': [nan, nan, nan, nan, nan, 0.0030707563166701988, 0.15060761467640674, 0.2935745655267933, 0.4437725122426182, 0.7162785945264666]}
+Valid libraries: 1, 2, 3; S1's libraries below -0.3: none
+J6 range (0 to the chamber cut's m1rc_gmom_x2 - none_gmom; the ratio of the test's gap to every task's is 2, so the gain counts zero at the centre): +0.00 to +3.73
+Tries counted: 45 (T1 368 to 413)
+Commit e0b90c158c4d0a68975e0f2112c3bea55b5e4a40, tree clean True, UTC 2026-11-20T09:57:32Z

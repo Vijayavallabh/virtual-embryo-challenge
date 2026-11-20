@@ -1363,7 +1363,7 @@ after its read.
 - If its outcome sends a question to the captain (the epicardium step costs at the doubled size; the doubled step is
   not ahead; or the gain is not shown to need the direction's own genes), nothing is built until he answers.
 - Otherwise the set t1rc is built (below).
-- Row T63's outcome: [MAIN SESSION: row T63's outcome]
+- Row T63's outcome: Row T63 ran on 2026-11-20 and was read once (decision log 2026-11-20 (e)): the doubled step is AHEAD of the no-outside-data analogue (+3.73 and +3.30 on the cuts, +4.78, +2.00 and +4.29 on the libraries, each in 10 of 10 seeds); the epicardium step at the test's size PAYS (+0.80 on library 3); the placebo statement reads "a placebo gains as well; the direction more", so a part of the gain comes with any direction of this size profile. By the row's fixed line the ruled file is built as ruled.
 
 **Builds.** `bash experiments/builds/build_all.sh t1rc` checks this file's hash, builds `runs/builds/T1_s2rc.h5ad` by
 the command above and runs the local format check for `T1:test`. It runs on the DGX checkout that holds the

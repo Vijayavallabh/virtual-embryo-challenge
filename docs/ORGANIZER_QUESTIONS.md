@@ -1343,7 +1343,7 @@ written for that file (`T1_s2rc.h5ad`). The section "Notes before Task 1's and t
 left as drafted: its Task 1 note names `T1_s2none.h5ad`, which is no longer the last upload. This note has not had the
 accuracy, strategy and tone review the earlier notes had. It goes into the captain's drafts only at his word, after
 that review, and he sends it after the disclosure email. [HASH] is filled from the t1rc build record ([MAIN SESSION:
-the build record]); the file is built only after row T63's read ([MAIN SESSION: row T63's outcome]). [TO CONFIRM:
+the build record]); the file is built only after row T63's read (Row T63 ran on 2026-11-20 and was read once (decision log 2026-11-20 (e)): the doubled step is AHEAD of the no-outside-data analogue (+3.73 and +3.30 on the cuts, +4.78, +2.00 and +4.29 on the libraries, each in 10 of 10 seeds); the epicardium step at the test's size PAYS (+0.80 on library 3); the placebo statement reads "a placebo gains as well; the direction more", so a part of the gain comes with any direction of this size profile. By the row's fixed line the ruled file is built as ruled.). [TO CONFIRM:
 whether the captain sent the disclosure of the X002 labels or the sources note.] Answers: none can exist yet.
 
 **Subject:** Human Team (Mithril): second Task 1 upload, file hash and sources

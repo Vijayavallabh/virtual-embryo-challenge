@@ -422,7 +422,7 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
      outside the pointer and is built in a campaign checkout (the reference checkout does not hold
      `data/derived/feng_relabel_c/`, so the builder refuses the option there): its line is ticked only once the
      captain has accepted that provenance. Nothing is built before row T63's read; if its outcome sends a question to
-     the captain, nothing is built until he answers ([MAIN SESSION: row T63's outcome]). The t1none list's
+     the captain, nothing is built until he answers (Row T63 ran on 2026-11-20 and was read once (decision log 2026-11-20 (e)): the doubled step is AHEAD of the no-outside-data analogue (+3.73 and +3.30 on the cuts, +4.78, +2.00 and +4.29 on the libraries, each in 10 of 10 seeds); the epicardium step at the test's size PAYS (+0.80 on library 3); the placebo statement reads "a placebo gains as well; the direction more", so a part of the gain comes with any direction of this size profile. By the row's fixed line the ruled file is built as ruled.). The t1none list's
      `T1_s2none.h5ad` is no longer T1's last upload.
      For the embryo's last upload (row R9; `docs/S2_RULES.md`, the amendment of 2026-11-19 for the embryo; decision
      log 2026-11-19 (j)): `experiments/builds/results/embryo2_2dccfee.SHA256SUMS`
@@ -555,7 +555,7 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
      -2.8, +1.8, -9.6, -0.2); the overrides of row K18's fixed reading and of the cold challenge of decision log
      2026-11-19 (s).
      T1 (row R13): the gain over row R8's file counts zero at the centre for the test's 2/5 step (J6; range 0 to
-     +1.97); the 2/5 step read on the recomputed groups only by row T63 ([MAIN SESSION: row T63's outcome]); the
+     +1.97); the 2/5 step read on the recomputed groups only by row T63 (Row T63 ran on 2026-11-20 and was read once (decision log 2026-11-20 (e)): the doubled step is AHEAD of the no-outside-data analogue (+3.73 and +3.30 on the cuts, +4.78, +2.00 and +4.29 on the libraries, each in 10 of 10 seeds); the epicardium step at the test's size PAYS (+0.80 on library 3); the placebo statement reads "a placebo gains as well; the direction more", so a part of the gain comes with any direction of this size profile. By the row's fixed line the ruled file is built as ruled.); the
      epicardium direction on 11 early cells (half-agreement 0.350, deciding nothing); the compliance price (if the
      organisers discounted the first upload and rejected this file, Task 1 would have no counted upload; break-even
      rejection chance about 1.5 to 4 percent, the AI assistant's arithmetic after the result); the residues the cold

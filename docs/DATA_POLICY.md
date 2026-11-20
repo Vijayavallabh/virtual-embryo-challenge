@@ -1482,4 +1482,4 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   - **Still true:** no in-window cell, count or expression value entered any model; no quarantined material opened;
     row N54's listing, which compares the recomputed direction with the authors', stays unopened and is used nowhere;
     nothing in the file is computed from a test score. The file is built only after row T63's read:
-    [MAIN SESSION: row T63's outcome].
+    Row T63 ran on 2026-11-20 and was read once (decision log 2026-11-20 (e)): the doubled step is AHEAD of the no-outside-data analogue (+3.73 and +3.30 on the cuts, +4.78, +2.00 and +4.29 on the libraries, each in 10 of 10 seeds); the epicardium step at the test's size PAYS (+0.80 on library 3); the placebo statement reads "a placebo gains as well; the direction more", so a part of the gain comes with any direction of this size profile. By the row's fixed line the ruled file is built as ruled..
