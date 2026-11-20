@@ -307,6 +307,16 @@ combine refuses any processed output of them. No CLI takes a
 `--datasets` path: every step reads the committed file, checked against `DATASETS_SHA256`. Tests reach other YAML
 content through a function argument only.
 
+**macOS companion members (2026-11-20).** The real archives of the pinned study were made on macOS and hold, beside
+each real member, a 176-byte AppleDouble companion (`._name`) and a Finder `.DS_Store`. `process.archive_members` never
+reads such a member and never classes it as part of a triple (so `._matrix.mtx.gz` is not a matrix). It skips a `._X`
+member only when it is at most 4,096 bytes and the member `X` (a file or a folder) it names is in the archive beside
+it, and a `.DS_Store` member only when it is at most 65,536 bytes; all skipped members of one archive together hold at
+most 1 MiB; anything else without a rule still refuses the archive. Every skipped member first passes the path, link,
+character, screen and deny checks like any other. On the unfiltered route (`read_raw_sample`) the number skipped is in
+the sample's cell-call record (`mac_companions_skipped`); the per-sample and series archive routes skip the same
+members without a record.
+
 ## What the two readers check in a plan table before pinning a sample
 
 Each reader reads the whole plan table of the dataset's own series and of every other screened series (the
