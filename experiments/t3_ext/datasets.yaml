@@ -1,0 +1,262 @@
+# Outside single-cell knockouts of OTHER genes for the Task 3 factor tables (docs/PLAN.md decision log 2026-11-20 (j):
+# the captain's ruling "All three tiers (Recommended)"). Fixed 2026-11-20 before any download, from GEO and ArrayExpress
+# metadata the scouts read; no count, paper result or score was read. Each dataset needs its own EXTERNAL_DATA.md row
+# BEFORE its table enters a model or a check.
+#
+# status: cleared            fetch.py and process.py accept it.
+#         held_phenocopy     not fetched: DATA_POLICY's genotype clause ("a perturbation that phenocopies them counts as
+#                            held out") was not quoted to the captain; it waits for one priced question to him (Wls) or
+#                            the stricter reading of the Gata4 validation genotype (Hand2, Mef2c). Flip to cleared only
+#                            by a commit that cites his ruling.
+#         excluded_design    not fetched: a chimera with no wild-type-chimera second difference (the challenger's change
+#                            3: strain cis-eQTLs of ESC-derived cells against host cells would read as knockout effects).
+#
+# Sample selection (fetch.py plan): every GSM of every series in screen_series is screened by t3x_screen before any
+# file is chosen; a held-out hit anywhere refuses the whole dataset. Then each sample's joined text (title, source,
+# characteristics, description; lower-cased) is matched: `control` first (a control that also matches a knockout's
+# gene regex is that knockout's own control), then the `ko` list in order, first match wins (double knockouts are
+# listed first). `all`: every regex must match; `none`: no regex may match; `on`: title or text. Samples matching
+# exclude_match are never selected; a match of design_refuse anywhere refuses the dataset. Stages come from the
+# characteristics (one value; a range or two values refuse the sample) and must be in stages_used. `expect` counts are
+# checked when given. The selectors are written from the scouts' records; the GSM titles were NOT all read by me, so a
+# refusal at plan time on a count or an unmatched arm is the expected way a wrong selector shows up.
+#
+# d (the shrinkage's design factor) is derived in code (t3x_common.design_factor) from design and control_relation.
+
+version: 1
+fixed: "2026-11-20, the AI assistant (engineer of the outside-knockout campaign), before any download"
+datasets:
+
+  # ------------------------------------------------------------------------------------------------- (a) canonical Wnt
+  - accession: GSE205117
+    status: cleared
+    tier: wnt
+    study: GSE205117
+    kind: "T (Brachyury) F0 CRISPR knockout, whole embryo, 10x Multiome (RNA part only)"
+    design: f0_crispr
+    control_relation: same_series
+    repository: geo
+    screen_series: [GSE205117]
+    stages_used: [E8.5]
+    control_definition: "E8.5_CRISPR_T_WT (GSM6205422), the same CRISPR experiment; the WT time course is not used"
+    arms:
+      control: {on: title, all: ['^\s*e8\.5_crispr_t_wt\b']}
+      ko:
+        - {gene: T, on: title, all: ['^\s*e8\.5_crispr_t_ko\b']}
+    exclude_match: ['atac']
+    design_refuse: ['chimer', 'tdtom', '(?<![a-z])host(?![a-z])']
+    expect: {E8.5: {ko: 1, control: 1}}
+    sample_file_patterns: ['(matrix\.mtx|barcodes\.tsv|features\.tsv|genes\.tsv)(\.gz)?$', 'filtered_feature_bc_matrix\.h5$']
+    files_note: "per-sample GEX matrices of the two screened samples only; no fragments, peaks or other samples"
+    licence: "GEO: NCBI places no restriction on use; submitter rights may apply (not checked per study)"
+    citation: "Argelaguet et al. (per the scout; the series lists no PMID)"
+    why: "an in-embryo loss of a direct Wnt target at E8.5 with a same-experiment control"
+    risks: "n = 1 library per arm; F0 mosaicism; germline and posterior-centred unlike a Mesp1-lineage cKO; nuclei on both
+      arms; whether the arms are chimeras is checked by design_refuse at plan time. Biology only: no released truth
+      can check the Wnt tier"
+    verified: false
+
+  - accession: GSE165300
+    status: held_phenocopy
+    status_reason: "Wls in the Mesp1 lineage is the closest to a phenocopy of the test genotype (Mesp1-Cre; Ctnnb1 F/F);
+      the phenocopy clause needs the captain's word first. Its loader (series-level matrix with a MULTI-seq per-cell
+      phenotype table, screened by t3x_screen.screen_cells) is not built in stage 1"
+    tier: wnt
+    study: GSE165300
+    kind: "Wls conditional knockout (Mesp1-Cre; Ai9; Wls fl/fl), sorted Mesp1-lineage cells, MULTI-seq pooled"
+    design: conditional
+    control_relation: same_capture
+    repository: geo
+    screen_series: [GSE165300]
+    stages_used: [E8.0, E8.5, E9.5]
+    control_definition: "Wls fl/+ (Mesp1-Cre; Ai9; Wls fl/+) cells in the same captures"
+    cell_labels: {genotype_columns: [genotype], hash_columns: [hashing]}
+    licence: "GEO: NCBI places no restriction on use; submitter rights may apply"
+    verified: false
+
+  # ---------------------------------------------------------------------------------------------- (b) cardiac TFs
+  - accession: GSE168768
+    status: cleared
+    tier: cardiac
+    study: GSE167493
+    kind: "Tbx1 conditional (Tbx1Cre/flox; Rosa26-GFPflox/+), GFP lineage, 10x 3'"
+    design: conditional
+    control_relation: heterozygous
+    repository: geo
+    screen_series: [GSE168768, GSE167493]
+    stages_used: [E8.5, E9.5]
+    control_definition: "Tbx1Cre/+; Rosa26-GFPflox/+ at the same stage (Cre-only, Tbx1 heterozygous)"
+    arms:
+      control: {on: text, all: ['tbx1\s*-?\s*cre\s*/\s*\+']}
+      ko:
+        - {gene: Tbx1, on: text, all: ['tbx1\s*-?\s*cre\s*/\s*fl']}
+    expect: {E8.5: {ko: 1, control: 1}, E9.5: {ko: 1, control: 1}}
+    sample_file_patterns: ['(matrix\.mtx|barcodes\.tsv|features\.tsv|genes\.tsv)(\.gz)?$']
+    files_note: "per-sample mtx, 4 samples; E9.5 files use genes.tsv, E8.5 features.tsv"
+    licence: "GEO: NCBI places no restriction on use; submitter rights may apply"
+    citation: "Nomaru et al., Nat Commun 2021, doi:10.1038/s41467-021-26966-6 (per the scout)"
+    why: "cardiopharyngeal TF loss at the two stages around E8.75"
+    risks: "n = 1 per arm; heterozygous control (d = 0.5); GFP-sorted lineage, so only some groups are present"
+    verified: true
+
+  - accession: GSE186934
+    status: cleared
+    tier: cardiac
+    study: GSE167493
+    kind: "Mesp1Cre; Tbx1 flox/flox conditional knockout (per the scout; not verified)"
+    design: conditional
+    control_relation: same_series
+    repository: geo
+    screen_series: [GSE186934, GSE167493]
+    stages_used: [E9.5]
+    control_definition: "Mesp1Cre at E9.5 (per the scout); enters only if plan finds exactly one sample per arm"
+    arms:
+      control: {on: text, all: ['mesp1\s*-?\s*cre'], none: ['tbx1\s*-?\s*f']}
+      ko:
+        - {gene: Tbx1, on: text, all: ['mesp1\s*-?\s*cre', 'tbx1\s*-?\s*f']}
+    expect: {E9.5: {ko: 1, control: 1}}
+    sample_file_patterns: ['(matrix\.mtx|barcodes\.tsv|features\.tsv|genes\.tsv)(\.gz)?$']
+    files_note: "per-sample mtx (per the scout)"
+    licence: "GEO: NCBI places no restriction on use; submitter rights may apply"
+    citation: "Nomaru et al., Nat Commun 2021 (same superseries GSE167493)"
+    why: "the same Cre as the test and the Gata4 validation"
+    risks: "not verified; probably n = 1 per arm; one study unit with GSE168768 (Tbx1 counted once)"
+    verified: false
+
+  - accession: GSE126128
+    status: held_phenocopy
+    status_reason: "Hand2-null shares RV and SHF phenotype features with the Gata4 validation genotype, whose outside data
+      stays barred; held until a ruling. Its loader (series CSV with a gem.group -> sample map) is not built in stage 1"
+    tier: cardiac
+    study: GSE126128
+    kind: "Hand2-null (germline), microdissected cardiogenic region"
+    design: germline
+    control_relation: littermate
+    repository: geo
+    screen_series: [GSE126128]
+    stages_used: [E8.25, E9.25]
+    control_definition: "WT littermates at the same stage in the same CSV"
+    licence: "GEO: NCBI places no restriction on use; submitter rights may apply"
+    verified: false
+
+  - accession: GSE280543
+    status: held_phenocopy
+    status_reason: "Mef2c loss: possible Gata4-phenocopy reading (SHF, RV); held until a ruling"
+    tier: cardiac
+    study: GSE280587
+    kind: "Mef2c knockout (germline), whole embryo, 10x Multiome (RNA part)"
+    design: germline
+    control_relation: same_series
+    repository: geo
+    screen_series: [GSE280543, GSE280587]
+    stages_used: [E8.5, E9.0]
+    control_definition: "WT, 2 replicates per stage, same series and protocol"
+    arms:
+      control: {on: text, all: ['(?<![a-z])(wt|wild[ -]?type)(?![a-z])'], none: ['mef2c\s*-?\s*(ko|null|knock)']}
+      ko:
+        - {gene: Mef2c, on: text, all: ['mef2c\s*-?\s*(ko|null|knock)']}
+    exclude_match: ['atac']
+    sample_file_patterns: ['(matrix\.mtx|barcodes\.tsv|features\.tsv|genes\.tsv)(\.gz)?$', 'filtered_feature_bc_matrix\.h5$']
+    licence: "GEO: NCBI places no restriction on use; submitter rights may apply"
+    verified: false
+
+  # ------------------------------------------------------------------------------------------------- (c) unrelated
+  - accession: GSE137337
+    status: cleared
+    tier: unrelated
+    study: GSE137337
+    kind: "zygotic F0 CRISPR knockouts of epigenetic regulators, whole embryo, 10x 3' v2/v3"
+    design: f0_crispr
+    control_relation: same_series
+    repository: geo
+    screen_series: [GSE137337]
+    stages_used: [E8.5]
+    control_definition: "WT E8.5 samples of the same series with the same 10x chemistry (v2 or v3, read from the GSM
+      text); a knockout with no same-chemistry WT E8.5 is refused; a WT sample whose title names a knockout's gene is
+      that knockout's own control"
+    arms:
+      control: {on: title, all: ['(?<![a-z])(wt|wild[ -]?type|control)(?![a-z])']}
+      ko:
+        - {gene: Dnmt3a+Dnmt3b, on: title, all: ['dnmt3a[\s_+/-]*(dnmt)?3b|dnmt3ab']}
+        - {gene: Eed+Cdkn2a, on: title, all: ['eed[\s_+/-]*cdkn2a|cdkn2a[\s_+/-]*eed']}
+        - {gene: Eed, on: title, all: ['(?<![a-z])eed(?![a-z])']}
+        - {gene: Rnf2, on: title, all: ['rnf2']}
+        - {gene: Kdm2b, on: title, all: ['kdm2b']}
+        - {gene: L3mbtl2, on: title, all: ['l3mbtl2']}
+        - {gene: Dnmt1, on: title, all: ['dnmt1(?![0-9])']}
+        - {gene: Dnmt3a, on: title, all: ['dnmt3a']}
+        - {gene: Dnmt3b, on: title, all: ['dnmt3b']}
+        - {gene: Ehmt2, on: title, all: ['ehmt2|(?<![a-z])g9a']}
+        - {gene: Kmt2a, on: title, all: ['kmt2a']}
+        - {gene: Kmt2b, on: title, all: ['kmt2b']}
+        - {gene: Cdkn2a, on: title, all: ['cdkn2a']}
+    exclude_match: ['bisulfite', 'wgbs', 'rrbs', 'methyl', 'scbs']
+    chemistry: true
+    sample_file_patterns: ['(matrix\.mtx|barcodes\.tsv|features\.tsv|genes\.tsv)(\.gz)?$', '\.tar\.gz$']
+    files_note: "per-KO 10x mtx (some as per-sample tar.gz, read member by member in memory, never unpacked);
+      bisulfite samples are never fetched. If the matrices exist only as series-level files, plan refuses the arms
+      (series-level files are not taken in stage 1)"
+    licence: "GEO: NCBI places no restriction on use; submitter rights may apply"
+    citation: "Grosswendt et al., Nature 2020, doi:10.1038/s41586-020-2552-x (per the scout)"
+    why: "one lab, one pipeline, many genes: what knockouts share; one study weight in the all-knockouts table"
+    risks: "F0 mosaicism (d = 0.5); WT may not be littermates; chemistry read from free text"
+    verified: false
+
+  - accession: GSE204906
+    status: cleared
+    tier: unrelated
+    study: GSE204908
+    kind: "Dnmt1, Dnmt3a, Dnmt3b null (germline), whole embryo, 10x"
+    design: germline
+    control_relation: same_series
+    repository: geo
+    screen_series: [GSE204906, GSE204908]
+    stages_used: [E8.5]
+    control_definition: "WT E8.5 embryos of the same series (littermate relation not verified, so d = 0.5)"
+    arms:
+      control: {on: text, all: ['(?<![a-z])(wt|wild[ -]?type)(?![a-z])'],
+                none: ['(?<![a-z])(ko|null|mutant|knock-?out)(?![a-z])', '-/-']}
+      ko:
+        - {gene: Dnmt1, on: text, all: ['dnmt1(?![0-9])', '(?<![a-z])(ko|null|mutant|knock-?out)(?![a-z])|-/-']}
+        - {gene: Dnmt3a, on: text, all: ['dnmt3a', '(?<![a-z])(ko|null|mutant|knock-?out)(?![a-z])|-/-']}
+        - {gene: Dnmt3b, on: text, all: ['dnmt3b', '(?<![a-z])(ko|null|mutant|knock-?out)(?![a-z])|-/-']}
+    exclude_match: ['chimer', 'tdtom', 'scnmt', 'bisulfite']
+    sample_file_patterns: ['(matrix\.mtx|barcodes\.tsv|features\.tsv|genes\.tsv)(\.gz)?$']
+    files_note: "per-sample mtx of the Dnmt subseries; the Tet chimera subseries GSE204907 is screened, never fetched"
+    licence: "GEO: NCBI places no restriction on use; submitter rights may apply"
+    citation: "PMID 36163261 on the record (per the scout)"
+    why: "a second lab on three of GSE137337's genes: the cross-lab consistency guard"
+    risks: "129S4 background, unlike GSE137337's hybrid"
+    verified: false
+
+  - accession: GSE259342
+    status: excluded_design
+    status_reason: "Stat3-null ESC chimera per two of three records; no WT-ESC chimera control in the record, so no second
+      difference (the challenger's change 3). Re-enters only if its GSM records settle a germline design"
+    tier: unrelated
+    study: GSE260590
+    kind: "Stat3 null (chimera or germline: records disagree)"
+    design: chimera
+    control_relation: same_capture
+    chimera: {second_difference: false}
+    repository: geo
+    screen_series: [GSE259342]
+    stages_used: [E8.5, E9.5]
+    licence: "GEO: NCBI places no restriction on use; submitter rights may apply"
+    verified: false
+
+  - accession: E-MTAB-7325
+    status: excluded_design
+    status_reason: "Tal1-/- ESC chimera; E-MTAB-7324's WT chimeras have no confirmed processed counts, so no second
+      difference. ArrayExpress fetching is not built in stage 1"
+    tier: unrelated
+    study: E-MTAB-7325
+    kind: "Tal1-/- ESC chimera"
+    design: chimera
+    control_relation: same_capture
+    chimera: {second_difference: false}
+    repository: arrayexpress
+    screen_series: [E-MTAB-7325]
+    stages_used: [E8.5]
+    licence: "EMBL-EBI ArrayExpress terms of use"
+    verified: false
