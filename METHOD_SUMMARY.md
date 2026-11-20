@@ -191,8 +191,7 @@ same day, row R7: s2 draws them from the base half-way between the pooled base a
 s2 was held and the last upload became s1's command without Feng's direction (row R8; Departures, item 13); later
 that day, by the captain's ruling on the AI assistant's pre-set advice (row R13; Departures, item 17), it became s1's
 command with Feng's direction formed on cell groups recomputed from the atlas's permitted cells only: the same cells
-as s1, the same R1, R2 and R3b, and the authors' labels not read. Row R8's file stays built and is not uploaded. The
-last file is built only after a practice check at the test's step size (row T63): [MAIN SESSION: row T63's outcome].
+as s1, the same R1, R2 and R3b, and the authors' labels not read. Row R8's file stays built and is not uploaded. The compliance price and what an organiser could still object to are in Departures, item 17. The last file is built only after a practice check at the test's step size (row T63): [MAIN SESSION: row T63's outcome].
 
 | Facet | Change beyond the baseline | Held-out evidence |
 |---|---|---|
@@ -1102,7 +1101,7 @@ captain released the DGX's GPUs 2 to 7 to this work and lifted `docs/COMPUTE.md`
   first upload stands, and it favours neither T1 file.
 - Evidence, both ways (row T62; labelled in-sample diagnostics on one truth, one day ahead, the step at 1/5 of the
   bracket). For it: against item 13's file +1.97 and +1.67 on the two cuts, +2.50, +1.23 and +2.51 on the three
-  library tasks, each ahead in 10 of 10 seeds; the epicardium step alone +0.68 on library 3. Against it: by rule 9,
+  library tasks, each ahead in 10 of 10 seeds; the epicardium step alone +0.68 on library 3 (10 of 10 seeds). Against it: by rule 9,
   J6, the gain counts zero at the centre for the test's 2/5 step (range 0 to +1.97); the epicardium direction rests on
   11 early cells. The compliance price, which the advice rule left out: if the organisers discounted the first upload
   and also rejected this file, Task 1 would have no counted upload. The AI assistant's arithmetic, made after the
@@ -1290,11 +1289,11 @@ captain released the DGX's GPUs 2 to 7 to this work and lifted `docs/COMPUTE.md`
     and outside g_mom's edit.
   - The evidence: against row R8's file, on row T62's five tasks (labelled in-sample diagnostics on one truth, one day
     ahead, the step at 1/5): +1.97 and +1.67 on the two cuts, +2.50, +1.23 and +2.51 on the three library tasks, each
-    ahead in 10 of 10 seeds; the epicardium step alone +0.68 on library 3. By rule 9, J6, zero at the centre for the
+    ahead in 10 of 10 seeds; the epicardium step alone +0.68 on library 3 (10 of 10 seeds). By rule 9, J6, zero at the centre for the
     test's 2/5 step (range 0 to +1.97). No practice run applies this path end to end (J1), so the file is unpriced.
   - Against it: the epicardium direction rests on 11 early cells; if the organisers discounted the first upload and
     also rejected this file, Task 1 would have no counted upload. The AI assistant's arithmetic after the result put
-    the break-even rejection chance at about 1.5 to 4 percent; the question to the captain said "roughly 2 to 4%".
+    the break-even rejection chance at about 1.5 to 4 percent; the question to the captain said "roughly 2 to 4%". What an organiser could still object to (the cold check, decision log 2026-11-19 (hh)): the authors' quality filter, made on all stages pooled, chose which permitted cells exist; the zone column comes from their demultiplexing; the atlas, the bracket and R2's held genes were chosen by readouts that read the authors' groups.
   - Built only after row T63's read (the candidate at 2/5, with a placebo direction and the epicardium-held arm):
     [MAIN SESSION: row T63's outcome]. Build record: [MAIN SESSION: the build record].
 - **What the T1 scorer rewards.** On the released E9.5 -> E10.5 transition the changed genes are mostly highly

@@ -7047,3 +7047,32 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **A slip in housekeeping.** This entry's first write failed: the machine's system disk, which holds the
     session's temporary folder, was full. Nothing was half-written. The AI assistant removed its own pytest
     temporary folders there (about 10 GB of test trees from this session) and told the captain.
+- 2026-11-20 (a), the package for T1's ruling is merged; row T63 is registered and running; a note in the rules
+  file ends the heart hold; an old reminder (state at 2026-11-20 08:40 UTC). Written by the AI assistant.
+  - **T1's package** (wf_d0b288ec-143; a rules writer, a texts writer and a checker, none the main session;
+    verdict ready, no blocker). `docs/S2_RULES.md` gains the section "T1's last upload is the recomputed-groups
+    file (the captain's own say-so)" with the question, the options and his answer verbatim from entry
+    2026-11-19 (ii), and the condition "Built after row T63's read". `experiments/builds/build_all.sh` gains the
+    set t1rc. Row R13, the method summary's lines, the register's lines on X002 and X010, a data-policy note and a
+    draft note for the organisers are placed; placeholders wait for row T63's outcome and the build record.
+    Nothing is built for upload and nothing is sent. The main session added what the checker asked: the residues
+    an organiser could object to in two more places of the method summary, and two wordings.
+  - **A note of 2026-11-20 in the rules file** records that the heart hold ended by the captain's answer of entry
+    2026-11-19 (kk). The rules file's sha256 is now
+    88ca2a4be48a99feb41078aeb198791fe2e82a91726c642035ae01e46bc191a6. One test assumed T1's section was the last of
+    the file; it now reads that section up to the next heading.
+  - **Row T63** (wf_81156c91-e7c: a challenger, a writer and a reviewer; verdict ready, no blocker) was registered
+    at b84e462 before its run and started on `~/v/vec-campaign-d` at 08:31 UTC. Forty-five tries when read: T1 368
+    to 413. The challenger's changes that the writer took: the doubled step matches the test's absolute step, not
+    its step per day, so a pass is expected and says little; five placebo permutations instead of one, read by
+    rows T45 and T58's four categories; the epicardium statement on all five tasks with a shrunk arm beside it;
+    one fixed line of what follows for each of the 33 combinations of outcomes.
+  - **A reminder set on 2026-11-17 fired today.** It assumed a methods freeze on 21 November and a first round of
+    uploads still to come. The captain's uploads of 18 November and the rulings since overtook it: there is no
+    freeze morning to run, the DGX reference checkout stays untouched at dc7b6ae, the second screened read stays
+    on 23 November unless the captain moves it, and uploads are possible (one left per board, by his hand, by
+    2026-11-26 11:59 UTC). Nothing in the reminder is acted on.
+  - **Housekeeping.** The machine's system disk was full for about eleven hours (an agent's leftover test export
+    of 12 GB in the session's scratch folder, among others); the session wrote nothing in that time. The AI
+    assistant removed its own and its agents' test folders there. Briefs for agents that run tests now have to say
+    that their scratch test folders are deleted before they hand back.

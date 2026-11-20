@@ -112,7 +112,7 @@ def test_the_t1none_set_checks_the_rules_hash_and_builds_one_file():
 def test_the_t1rc_set_checks_the_rules_hash_and_builds_the_recomputed_groups_file():
     """The set t1rc checks docs/S2_RULES.sha256 before it builds, builds one file, T1_s2rc.h5ad, by the first upload's
     command plus --feng-groups recomputed (the later amendment of 2026-11-19 for T1; the captain's own say-so), and
-    checks it locally for T1:test. The rules' section for it, the last of the file, gives the same command with runs/
+    checks it locally for T1:test. The rules' section for it gives the same command with runs/
     as its output folder, the captain's answer, the three sha256 it rests on and the condition on row T63's read."""
     text = (ROOT / "experiments" / "builds" / "build_all.sh").read_text()
     block = text[text.index("\n  t1rc)\n"):]
@@ -130,7 +130,8 @@ def test_the_t1rc_set_checks_the_rules_hash_and_builds_the_recomputed_groups_fil
                "say-so)")
     assert rules.count(heading) == 1
     section = rules[rules.index(heading):]
-    assert " ## " not in section  # the last section of the file
+    nxt = section.find(" ## ", len(heading))
+    section = section if nxt == -1 else section[:nxt]  # up to the next section (the note of 2026-11-20 follows it)
     assert ("uv run python experiments/builds/build_test.py t1 --g-mom --base lib3 --feng-groups recomputed "
             "--out runs/builds/T1_s2rc.h5ad") in section
     assert '"proceed with your recommendation"' in section  # the captain's answer, decision log 2026-11-19 (ii)

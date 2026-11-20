@@ -1397,3 +1397,15 @@ page's Data used field and the note that precedes the upload), as the organisers
 **What stays.** The first upload, the count rule, the seed, the other boards' files, the order (the first upload went
 first) and the rule for final marks. `runs/builds/T1_s2.h5ad` (the mid base) and `runs/builds/T1_s2none.h5ad` stay on
 disk as the record and are not uploaded.
+
+## Note of 2026-11-20: the hold on the heart's last file has ended (the captain's answer)
+
+Written by the AI assistant, which is recused on the heart's scope and size and stated no preference. The heart section
+of 2026-11-19 above held its file until a practice read at forecast sizes was with the captain. That read is row H27 of
+`experiments/harness/TRIES.md`, designed, attacked, settled, written and reviewed by analysts who had not seen the AI
+assistant's conversation, and recomputed independently (`docs/PLAN.md` decision log 2026-11-19 (jj)). Its figures went
+to the captain in one question that ended "I state no preference. Which heart file goes?", with the options "Full trim
+(as ruled)", "Half trim" and "Full-scope file" (decision log 2026-11-19 (kk) gives the question and the options in
+full). His answer, verbatim: "Full trim (as ruled)". So the heart's last upload is the file of the heart section above,
+`T2heart_s2core_half.h5ad` of set heart3 (sha256 04cde6361c04840ee47fff32eb9a20f4781bd649387cc540ed9fdea71e65fa35,
+`experiments/builds/results/heart3_3d52b83.txt`). Nothing else in that section changes.
