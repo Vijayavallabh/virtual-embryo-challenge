@@ -8078,3 +8078,32 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     for the nine-embryo Cmtr2 study both readers found clean; and the three fixes the reviewers asked of the
     series-archive and sister-series extension, for the knockout panel), then a new read under a new row. No guard and
     no qualification rule is changed.
+- 2026-11-20 (mm), what follows K22, and the Task 1 atlas loader's third round (state at 19:22 UTC, 2026-11-20). Written by
+  the AI assistant; every choice here is the AI assistant's, made after K22's outcome was known, under the captain's
+  order to widen the outside lines (entry (y)).
+  - **How K22 missed, from its fixed statements.** The rule asks for AHEAD (a mean above 0.3 with eight of ten seeds)
+    in a plain cell and in a depth-matched cell. The product was AHEAD in both plain cells and stood at +0.28 with
+    nine of ten seeds in the depth-matched g2 cell: 0.02 under the bar. No constant is changed and K22's outcome
+    stands: no file.
+  - **A follow-up row, K23, is being planned and challenged by agents before anything runs** (workflow
+    `t3-outside-table-exponents`): the same table, same bytes and pins, at a larger exponent (the AI assistant's
+    proposal: 2 and 4), each with its own shuffled control, under a rule fixed in the row before the run. Said
+    plainly: this follows a near miss on a fold many rows have read. The challenger is asked to attack exactly that,
+    and to say what qualification must ask beyond K22's. The row, its tries and its rule will be placed in one commit
+    before the run.
+  - **More sources for the table** (workflow `t3-outside-knockouts-more-sources`): an engineer closes the three review
+    blockers of the series-archive and sister-series extension (for the zygotic knockout panel of entry (x)) and adds
+    an intake for per-sample unfiltered matrices with one fixed cell call (for the nine-embryo Cmtr2 study); two
+    reviewers attack it. Two searchers look, in repository metadata only, for bulk RNA sequencing of whole knockout
+    embryos (multi-line programmes and single studies); a designer and a challenger then say how the pipeline would
+    take such data. Nothing is downloaded by the agents. Two candidates of the earlier hunt are held on the first
+    reader's doubt and not planned: the Grhl3 study (GSE246181) and the Pax6 study (GSE317197), because the AI
+    assistant recalls, without having opened any paper, that each gene is tied in the literature to canonical Wnt
+    signalling in the tissue the study dissects; the genotype clause decides doubts against use.
+  - **Task 1 outside atlases, verifier's verdict on the second round: not ready** (three more ways a real record words
+    a stage that the parser read as permitted). The AI assistant changed the design the way the Task 3 pipeline was
+    changed: a pinned list of samples (the hash of each sample's full verbatim record, read by two readers) becomes
+    the first line, and the parser a second line that can only refuse (workflow `t1-multi-atlas-fix3`, branch
+    `campaign/t1-multi-atlas-3`). The verifier also noted that the atlas in use (X002) was never read under the
+    stricter plug-day rule the new pipeline applies; that point is open and will be read from X002's own series record
+    at the plan run.
