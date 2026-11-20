@@ -1,8 +1,18 @@
 """Shared pieces of the outside-knockout factor tables (experiments/t3_ext): the fixed constants, the dataset list's
-loader and checks, the stage cap, sha256, and the guard that keeps every output outside the repository.
+loader and checks, the pinned sample list, the stage cap, sha256, and the guard that keeps every output outside the
+repository.
 
 Every constant below was fixed on 2026-11-20, before any outside count was read, from design numbers only (the plan
 of the T3 outside-knockout campaign and the challenger's required changes). None comes from a score.
+
+Two pins live here (stage 3, 2026-11-20):
+  NEVER_FETCH       the held and excluded accessions. dataset() refuses them whatever a YAML says, and
+                    load_datasets() refuses a YAML that gives any of them a status other than held_phenocopy or
+                    excluded_design. Moving one out needs a reviewed commit that cites the captain's ruling.
+  DATASETS_SHA256   the sha256 of the committed datasets.yaml. Reading the committed file refuses when its bytes no
+                    longer hash to this value, so the pin-and-commit step (README, "The pinned sample list") updates
+                    both in the same commit. Tests reach other YAML content only through a function argument; no CLI
+                    takes another path.
 """
 
 from __future__ import annotations
@@ -45,6 +55,12 @@ DESIGNS = ("germline", "conditional", "f0_crispr", "chimera")
 RELATIONS = ("littermate", "same_capture", "same_series", "heterozygous")
 TIERS = ("wnt", "cardiac", "unrelated")
 STATUSES = ("cleared", "held_phenocopy", "excluded_design")
+# Held and excluded datasets: never fetched by any flag or YAML (the main session's decision of 2026-11-20).
+NEVER_FETCH = frozenset({"GSE165300", "GSE126128", "GSE280543", "GSE259342", "E-MTAB-7325"})
+# sha256 of the committed datasets.yaml; the pin-and-commit step updates it in the same commit as the YAML.
+DATASETS_SHA256 = "a14a4bb51486f94b82a64f5c48e36dc0a791b1f6791a374be3568ff99ab70f5a"
+PIN_KEYS = ("accession", "arm", "gene", "stage", "files", "metadata_sha256")
+PIN_ARMS = ("ko", "control")
 # Aliases matched only after an exact symbol fails (both directions); nothing else is renamed.
 ALIASES = {"T": "Tbxt", "Tbxt": "T", "Hbb-y": "Hbb-bh0", "Hbb-bh0": "Hbb-y"}
 
@@ -61,16 +77,22 @@ def sha256_file(path, chunk: int = 1 << 23) -> str:
     return h.hexdigest()
 
 
+# the DGX's reference checkout stays exactly as it was rehearsed: nothing of this folder writes into it
+REFERENCE_CHECKOUT = Path.home() / "v" / "virtual-embryo-challenge"
+
+
 def outside_repo(path, repo: Path | None = None) -> Path:
-    """The resolved path, refused if it lies inside the repository (this checkout or the main checkout)."""
+    """The resolved path, refused if it lies inside the repository (this checkout or the main checkout) or inside the
+    DGX's reference checkout (~/v/virtual-embryo-challenge)."""
     p = Path(path).expanduser().resolve()
-    roots = {(repo or REPO).resolve()}
+    roots = {(repo or REPO).resolve(), REFERENCE_CHECKOUT.expanduser().resolve()}
     main = (repo or REPO).resolve()
     if ".claude" in main.parts:  # a worktree under <main>/.claude/worktrees/<name>
         roots.add(Path(*main.parts[:main.parts.index(".claude")]))
     for r in roots:
         if p == r or r in p.parents:
-            raise Refused(f"{p} lies inside the repository ({r}): outputs and downloads go outside it")
+            raise Refused(f"{p} lies inside the repository or the reference checkout ({r}): outputs and downloads "
+                          "go outside it")
     return p
 
 
@@ -126,7 +148,9 @@ _KEYS = {"accession", "status", "status_reason", "tier", "study", "kind", "desig
          "repository", "screen_series", "stages_used", "control_definition", "arms", "exclude_match",
          "exclude_match_on",
          "design_refuse", "chemistry", "expect", "sample_file_patterns", "files_note", "licence", "why", "risks",
-         "verified", "screen_extra_refuse", "review_cleared", "cell_labels", "citation"}
+         "verified", "screen_extra_refuse", "review_cleared", "cell_labels", "citation", "pinned"}
+_SHA = re.compile(r"[0-9a-f]{64}")
+_GSM = re.compile(r"GSM\d+")
 
 
 def design_factor(ds: dict) -> float:
@@ -140,14 +164,103 @@ def design_factor(ds: dict) -> float:
     return 0.5
 
 
+def read_datasets_bytes(path: Path | None = None) -> tuple[Path, bytes]:
+    """The YAML's path and bytes. The committed file (path None, or a path that resolves to it) is refused unless its
+    sha256 is DATASETS_SHA256; another path is read as given (tests only: no CLI passes one)."""
+    p = Path(path) if path is not None else DATASETS
+    raw = p.read_bytes()
+    if p.resolve() == DATASETS.resolve():
+        got = hashlib.sha256(raw).hexdigest()
+        if got != DATASETS_SHA256:
+            raise Refused(f"{p}: sha256 {got} differs from t3x_common.DATASETS_SHA256 {DATASETS_SHA256}: the "
+                          "pin-and-commit step must update both in the same commit (README, 'The pinned sample "
+                          "list')")
+    return p, raw
+
+
+def datasets_sha256(path: Path | None = None) -> str:
+    """sha256 of the dataset list that is read (the committed one is checked against its pin first)."""
+    return hashlib.sha256(read_datasets_bytes(path)[1]).hexdigest()
+
+
+def check_pins(acc: str, ds: dict, where: str = "datasets.yaml") -> list[dict]:
+    """The pinned block of one dataset, checked for form only (its hashes are checked against the plan's stored
+    metadata by fetch.py and process.py): a list of {accession, arm, gene, stage, files, metadata_sha256}, exact keys,
+    arm exactly 'ko' or 'control', a GSM accession, a stage in stages_used, a non-empty list of distinct file names,
+    a 64-hex sha256. One sample has one arm, one stage, one file list and one hash however many genes it is pinned
+    for, and a (sample, gene) pair is pinned once. Pins on a dataset that is not cleared, or that needs per-cell
+    labels, are refused."""
+    pins = ds.get("pinned")
+    if pins is None:
+        pins = []
+    if not isinstance(pins, list):
+        raise Refused(f"{where}: {acc}: pinned must be a list")
+    if pins and (ds.get("status") != "cleared" or acc in NEVER_FETCH):
+        raise Refused(f"{where}: {acc}: only a cleared dataset may hold pins")
+    if pins and ds.get("cell_labels"):
+        raise Refused(f"{where}: {acc}: per-cell genotype designs are excluded in this stage: no pins")
+    used = {stage_ok(s) for s in ds.get("stages_used") or []}
+    seen, per_sample = set(), {}
+    for p in pins:
+        if not isinstance(p, dict) or sorted(p) != sorted(PIN_KEYS):
+            raise Refused(f"{where}: {acc}: pin {p!r} must have exactly the keys {PIN_KEYS}")
+        a = p["accession"]
+        if not isinstance(a, str) or not _GSM.fullmatch(a):
+            raise Refused(f"{where}: {acc}: pinned accession {a!r} is not a GSM accession")
+        if p["arm"] not in PIN_ARMS:
+            raise Refused(f"{where}: {acc}: {a}: arm {p['arm']!r} is not exactly one of {PIN_ARMS}")
+        if not isinstance(p["gene"], str) or not p["gene"].strip():
+            raise Refused(f"{where}: {acc}: {a}: gene must be named (a control names the knockout gene it controls)")
+        if stage_ok(p["stage"]) not in used:
+            raise Refused(f"{where}: {acc}: {a}: stage {p['stage']!r} is not in stages_used")
+        if (not isinstance(p["files"], list) or not p["files"]
+                or not all(isinstance(f, str) and f and "/" not in f for f in p["files"])
+                or len(set(p["files"])) != len(p["files"])):
+            raise Refused(f"{where}: {acc}: {a}: files must be a non-empty list of distinct file names")
+        if not isinstance(p["metadata_sha256"], str) or not _SHA.fullmatch(p["metadata_sha256"]):
+            raise Refused(f"{where}: {acc}: {a}: metadata_sha256 must be 64 lower-case hex digits")
+        if (a, p["gene"]) in seen:
+            raise Refused(f"{where}: {acc}: {a} is pinned twice for gene {p['gene']}")
+        seen.add((a, p["gene"]))
+        same = (p["arm"], stage_ok(p["stage"]), tuple(p["files"]), p["metadata_sha256"])
+        if per_sample.setdefault(a, same) != same:
+            raise Refused(f"{where}: {acc}: {a} is pinned with two different arms, stages, file lists or hashes")
+    return pins
+
+
+def pinned_units(pins: list[dict]) -> list[dict]:
+    """The knockout units the pins define, in pin order: {gene, ko: [GSM], control: [GSM], stages: [E-day]}. A
+    knockout gene needs, at each stage of its knockout pins, a control pinned for that gene at that stage, and every
+    control pin needs a knockout pin of its gene at its stage; otherwise refused."""
+    units: dict[str, dict] = {}
+    for p in pins:
+        u = units.setdefault(p["gene"], {"gene": p["gene"], "ko": [], "control": [], "_st": {"ko": set(),
+                                                                                             "control": set()}})
+        u[p["arm"]].append(p["accession"])
+        u["_st"][p["arm"]].add(stage_ok(p["stage"]))
+    out = []
+    for g, u in units.items():
+        st = u.pop("_st")
+        if not u["ko"]:
+            raise Refused(f"gene {g}: control pins without a knockout pin")
+        if st["ko"] != st["control"]:
+            raise Refused(f"gene {g}: knockout stages {sorted(st['ko'])} and control stages {sorted(st['control'])} "
+                          "differ: every stage needs both arms")
+        out.append({**u, "stages": sorted(st["ko"])})
+    return out
+
+
 def load_datasets(path: Path | None = None) -> dict[str, dict]:
     """datasets.yaml, checked: known keys only (nothing can switch the screen off), known statuses, tiers, designs
-    and relations, stages that pass the cap. Returns {accession: record} with 'd' added."""
-    path = Path(path or DATASETS)
-    doc = yaml.safe_load(path.read_text())
+    and relations, stages that pass the cap, the NEVER_FETCH accessions held or excluded, the pinned blocks' form, no
+    sample pinned under two datasets. The committed file must hash to DATASETS_SHA256. Returns {accession: record}
+    with 'd' added."""
+    path, raw = read_datasets_bytes(path)
+    doc = yaml.safe_load(raw.decode("utf-8"))
     if not isinstance(doc, dict) or set(doc) - _TOP:
         raise Refused(f"{path}: unknown top-level keys {sorted(set(doc or {}) - _TOP)}")
     out = {}
+    pinned_in: dict[str, str] = {}
     for ds in doc.get("datasets") or []:
         acc = ds.get("accession")
         bad = set(ds) - _KEYS
@@ -155,6 +268,9 @@ def load_datasets(path: Path | None = None) -> dict[str, dict]:
             raise Refused(f"{path}: {acc}: unknown keys {sorted(bad)} (the screen has no switch)")
         if ds.get("status") not in STATUSES:
             raise Refused(f"{path}: {acc}: status {ds.get('status')!r} not in {STATUSES}")
+        if acc in NEVER_FETCH and ds.get("status") not in ("held_phenocopy", "excluded_design"):
+            raise Refused(f"{path}: {acc} is in t3x_common.NEVER_FETCH: its status must stay held_phenocopy or "
+                          f"excluded_design, not {ds.get('status')!r}")
         if ds.get("tier") not in TIERS:
             raise Refused(f"{path}: {acc}: tier {ds.get('tier')!r} not in {TIERS}")
         if ds.get("design") not in DESIGNS or ds.get("control_relation") not in RELATIONS:
@@ -171,14 +287,22 @@ def load_datasets(path: Path | None = None) -> dict[str, dict]:
         from t3x_screen import check_review_cleared
 
         check_review_cleared(ds.get("review_cleared") or [])
-        out[acc] = {**ds, "d": design_factor(ds)}
+        pins = check_pins(acc, ds, str(path))
+        if pins:
+            pinned_units(pins)
+        for p in pins:
+            other = pinned_in.setdefault(p["accession"], acc)
+            if other != acc:
+                raise Refused(f"{path}: {p['accession']} is pinned under {other} and {acc}: a sample belongs to one "
+                              "series")
+        out[acc] = {**ds, "pinned": list(pins), "d": design_factor(ds)}
     return out
 
 
 def qc_floors(path: Path | None = None) -> dict:
     """datasets.yaml's qc_floors, checked; refused when missing (a table is never built without its floor)."""
-    path = Path(path or DATASETS)
-    doc = yaml.safe_load(path.read_text()) or {}
+    path, raw = read_datasets_bytes(path)
+    doc = yaml.safe_load(raw.decode("utf-8")) or {}
     fl = doc.get("qc_floors")
     if not isinstance(fl, dict) or set(fl) != {"min_confident_share_per_sample"}:
         raise Refused(f"{path}: qc_floors must hold exactly min_confident_share_per_sample")
@@ -189,7 +313,10 @@ def qc_floors(path: Path | None = None) -> dict:
 
 
 def dataset(acc: str, path: Path | None = None, need_cleared: bool = True) -> dict:
-    """One record; refused if the accession is not listed (or not cleared when need_cleared)."""
+    """One record; refused for a NEVER_FETCH accession whatever the YAML says, if the accession is not listed, or if
+    it is not cleared (when need_cleared)."""
+    if acc in NEVER_FETCH:
+        raise Refused(f"{acc} is in t3x_common.NEVER_FETCH (held or excluded): refused whatever a YAML says")
     allds = load_datasets(path)
     if acc not in allds:
         raise Refused(f"{acc} is not in datasets.yaml: refused")
@@ -197,6 +324,34 @@ def dataset(acc: str, path: Path | None = None, need_cleared: bool = True) -> di
     if need_cleared and ds["status"] != "cleared":
         raise Refused(f"{acc} has status {ds['status']} ({ds.get('status_reason', '')}): refused")
     return ds
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# The canonical serialisation of one sample's screened metadata (README, "The pinned sample list")
+
+
+def canonical_metadata(gsm: str, fields: dict) -> bytes:
+    """The bytes whose sha256 is a pin's metadata_sha256: the UTF-8 encoding of
+        json.dumps({"accession": gsm, "fields": F}, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+    where F maps every field name of the sample's GEO family SOFT record (the 'Sample_' prefix removed) to the list of
+    its values, each a string exactly as fetch.parse_soft gives it (surrounding whitespace stripped, nothing else
+    changed), in the order of the SOFT file. Every field is included because the screen reads every field."""
+    if not isinstance(fields, dict) or not all(
+            isinstance(k, str) and isinstance(v, list) and all(isinstance(x, str) for x in v)
+            for k, v in fields.items()):
+        raise Refused(f"{gsm}: metadata fields must map names to lists of strings")
+    return json.dumps({"accession": gsm, "fields": fields}, sort_keys=True, ensure_ascii=False,
+                      separators=(",", ":")).encode("utf-8")
+
+
+def metadata_sha256(gsm: str, fields: dict) -> str:
+    return hashlib.sha256(canonical_metadata(gsm, fields)).hexdigest()
+
+
+def pins_sha256(pins: list[dict]) -> str:
+    """sha256 of a pinned block, canonically serialised (the fetch manifest records it; process refuses on change)."""
+    return hashlib.sha256(json.dumps(pins, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+                          .encode("utf-8")).hexdigest()
 
 
 def shrink_k(n_arms, m: int, d: float) -> float:

@@ -5,9 +5,13 @@
       the WT E8.75 reference's panel genes (its gene order), lineage groups (obs['group'] of vec.prep.load_stage,
       'Unknown' left out), their shares and their mean within-cell proportions. Read by run and by combine.
   run ACC --dest D --wt WT_E8.75.h5ad --refstats D/reference/refstats.npz --out D/processed
-      reads D/meta/ACC/plan.json and D/raw/ACC/MANIFEST.json (every file's sha256 checked), screens each chosen
-      sample's record again with t3x_screen BEFORE any count is read (a sample that does not pass refuses the run),
-      reads each sample's counts restricted to the panel genes, labels every cell with a lineage group by transfer
+      reads D/meta/ACC/plan.json and D/raw/ACC/MANIFEST.json (every file's sha256 checked). It touches ONLY the
+      samples in datasets.yaml's pinned block: it refuses a dataset with no pins, a manifest fetched under other pins,
+      a pinned accession absent from its own series' plan table, a pinned sample whose stored metadata no longer
+      hashes to its pin, and screens each pinned sample's record again with t3x_screen BEFORE any count is read (a
+      sample that does not pass refuses the run). Arms, genes and stages come from the pins only; no file of an
+      unpinned sample is opened. It reads each pinned sample's counts restricted to the panel genes, labels every
+      cell with a lineage group by transfer
       from the WT reference, and computes one log-ratio table per knockout gene with the fixed guards, minimum-cells
       rule and shrinkage below. It writes per gene <out>/<ACC>/<ACC>__<gene>.unit.json (log space, for combine) and
       its finished tables (pooled and per group), and <out>/<ACC>/QC.json. It prints no gene-level value.
@@ -54,8 +58,8 @@ from scipy.stats import rankdata
 HERE = Path(__file__).resolve().parent
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
+import fetch as fe  # noqa: E402  (experiments/t3_ext/fetch.py: the plan loader and the pin check)
 import t3x_common as cm  # noqa: E402
-import t3x_screen as sc  # noqa: E402
 import t3x_tables as tb  # noqa: E402
 
 Refused = cm.Refused
@@ -356,52 +360,59 @@ def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Pat
     ds = cm.dataset(acc, datasets)
     floor = cm.qc_floors(datasets)["min_confident_share_per_sample"]
     if ds.get("cell_labels"):
-        raise Refused(f"{acc}: a per-cell label table is needed (t3x_screen.screen_cells); its loader is not built "
-                      "in stage 1")
+        raise Refused(f"{acc}: per-cell genotype designs (cell-level labels inside one sample) are excluded in this "
+                      "stage")
+    if not ds.get("pinned"):
+        raise Refused(f"{acc}: the pinned block is empty: nothing is processed")
     dest, out = cm.outside_repo(dest), cm.outside_repo(out)
-    pl = json.loads((dest / "meta" / acc / "plan.json").read_text())
-    man = json.loads((dest / "raw" / acc / "MANIFEST.json").read_text())
-    if pl.get("status") != "ok":
-        raise Refused(f"{acc}: plan did not pass")
+    pl = fe._load_plan(acc, dest, datasets)
+    mp = dest / "raw" / acc / "MANIFEST.json"
+    if not mp.is_file():
+        raise Refused(f"{mp}: no manifest; fetch first")
+    man = json.loads(mp.read_text())
     if man.get("plan_sha256") != cm.sha256_file(dest / "meta" / acc / "plan.json"):
         raise Refused(f"{acc}: the manifest was not fetched from this plan")
+    if man.get("pins_sha256") != cm.pins_sha256(ds["pinned"]) or man.get("pinned") != ds["pinned"]:
+        raise Refused(f"{acc}: the samples, arms, genes or stages are not exactly as pinned when the files were "
+                      "fetched: fetch again")
+    # 1. the pins against the stored metadata, and the screen again on every pinned sample, before any count is read
+    pinned = fe.verify_pins(ds, pl)
+    units = cm.pinned_units(ds["pinned"])
+    for s in pinned:
+        cm.stage_ok(f"E{s['stage']:g}")
+    screen = [s["accession"] for s in pinned]
     ref = tb.load_ref_stats(refstats)
     if ref["wt_sha256"] != cm.sha256_file(wt):
         raise Refused("the WT file is not the one the reference statistics were computed from")
     genes = ref["genes"]
-    # 1. screen every chosen sample's record again, before any count is read
-    screen = []
-    for s in pl["samples"]:
-        r = sc.screen_record(s["gsm"], s["record"], ds.get("screen_extra_refuse"), ds.get("review_cleared"))
-        if r["verdict"] != "pass":
-            raise Refused(f"{s['gsm']}: screen verdict {r['verdict']}: refused before reading counts")
-        cm.stage_ok(f"E{s['stage']:g}")
-        screen.append(s["gsm"])
-    # 2. verify files, then read counts on the panel
+    # 2. verify the pinned files, then read counts on the panel (no other sample's file is opened)
     blocks, obs_parts, presence, panel_rec, dropped = [], [], [], {}, {}
-    for s in pl["samples"]:
+    for s in pinned:
+        gsm = s["accession"]
         files = []
         for f in s["files"]:
-            key = f"{s['gsm']}/{f['name']}"
-            p = dest / "raw" / acc / s["gsm"] / f["name"]
-            if key not in man["files"] or cm.sha256_file(p) != man["files"][key]["sha256"]:
+            key = f"{gsm}/{f['name']}"
+            p = dest / "raw" / acc / gsm / f["name"]
+            if key not in man["files"] or not p.is_file() or cm.sha256_file(p) != man["files"][key]["sha256"]:
                 raise Refused(f"{key}: missing or its sha256 differs from the manifest")
             files.append(p)
         M, symbols, types, bcs = read_sample(files)
         if M.shape[0] > cm.MAX_BARCODES:
-            raise Refused(f"{s['gsm']}: {M.shape[0]} barcodes: an unfiltered matrix, refused")
+            raise Refused(f"{gsm}: {M.shape[0]} barcodes: an unfiltered matrix, refused")
         keep = cell_filter(M, types)
-        dropped[s["gsm"]] = int((~keep).sum())
+        dropped[gsm] = int((~keep).sum())
         Cp, pres, prec = to_panel(M[np.flatnonzero(keep)], symbols, types, genes)
-        panel_rec[s["gsm"]] = prec
+        panel_rec[gsm] = prec
         presence.append(pres)
         blocks.append(Cp)
-        obs_parts.append(pd.DataFrame({"arm": s["arm"], "gene": s["gene"], "stage": s["stage"], "sample": s["gsm"]},
-                                      index=[f"{s['gsm']}:{b}" for b, k in zip(bcs, keep, strict=True) if k]))
+        obs_parts.append(pd.DataFrame({"arm": s["arm"], "gene": ";".join(s["genes"]), "stage": s["stage"],
+                                       "sample": gsm},
+                                      index=[f"{gsm}:{b}" for b, k in zip(bcs, keep, strict=True) if k]))
     present = np.logical_and.reduce(presence)
     C = sparse.vstack(blocks).tocsr()
     obs = pd.concat(obs_parts)
     qc = {"accession": acc, "tier": ds["tier"], "study": ds["study"], "d": ds["d"], "screened_samples": screen,
+          "pinned": ds["pinned"], "pins_sha256": cm.pins_sha256(ds["pinned"]),
           "screen_record": pl["screen"], "cells_dropped_low_genes": dropped, "panel_match": panel_rec,
           "panel_genes_present": int(present.sum()), "panel_genes": len(genes),
           "created": time.strftime("%Y-%m-%d %H:%M:%S %Z"), "git": _git_head()}
@@ -424,7 +435,7 @@ def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Pat
     qc["min_confident_share_per_sample"] = floor
     # 4. one table per knockout gene
     qc["units"] = {}
-    for u in pl["units"]:
+    for u in units:
         low = sorted(g for g in u["ko"] + u["control"] if by_sample.get(g, {}).get("confident_share", 0.0) < floor)
         if low:
             qc["units"][u["gene"]] = {"status": "refused_low_confidence", "samples_under_floor": low,
@@ -482,7 +493,6 @@ def main(argv: list[str] | None = None) -> int:
     u.add_argument("--wt", type=Path, required=True)
     u.add_argument("--refstats", type=Path, required=True)
     u.add_argument("--out", type=Path, required=True)
-    u.add_argument("--datasets", type=Path, default=None)
     u.add_argument("--threads", type=int, default=8)
     a = ap.parse_args(argv)
     try:
@@ -490,7 +500,7 @@ def main(argv: list[str] | None = None) -> int:
             st = reference(a.wt, a.out)
             print(f"reference: {len(st['genes'])} genes, {len(st['groups'])} groups -> {a.out}")
             return 0
-        qc = run(a.accession, a.dest, a.wt, a.refstats, a.out, a.datasets, a.threads)
+        qc = run(a.accession, a.dest, a.wt, a.refstats, a.out, threads=a.threads)
     except Refused as e:
         print(f"refused: {e}")
         return 2

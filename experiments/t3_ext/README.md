@@ -1,6 +1,6 @@
-# T3 outside-knockout factor tables (stage 1)
+# T3 outside-knockout factor tables (stage 3: the pinned sample list)
 
-Campaign branch `campaign/t3-outside-knockouts`. Under the captain's ruling of 2026-11-20 (`docs/PLAN.md` decision log
+Campaign branches `campaign/t3-outside-knockouts` (stage 1), `-2` (stage 2) and `-3` (stage 3, this text). Under the captain's ruling of 2026-11-20 (`docs/PLAN.md` decision log
 2026-11-20 (j), "All three tiers"), outside single-cell data on knockouts of OTHER genes may shape the Task 3 file.
 This folder turns such data into per-gene factor tables in the frozen factor's form, so that a later thin builder can
 take one in place of the Mab21l2 factor. Stage 1 builds the tables only. Nothing here enters a model, a check or an
@@ -11,18 +11,96 @@ scored, and (3) the captain rules on any change to an upload, with a `docs/S2_RU
 
 | File | What it does |
 |---|---|
-| `datasets.yaml` | The datasets, their tier, study unit, design, control, stages, sample selectors and status. Only `cleared` ones are fetched. |
-| `t3x_screen.py` | The held-out-gene screen (Ctnnb1 / beta-catenin, Gata4, their drugs; review terms such as Gata6, Apc, Axin, Gsk3). It has no switch. |
-| `t3x_common.py` | Fixed constants, the dataset loader, the stage cap (E9.5 inclusive for every cell), shrinkage, the outside-the-repository guard. |
+| `datasets.yaml` | The datasets, their tier, study unit, design, control, stages, sample selectors (suggestions only), status, and per cleared dataset the `pinned` block. Its sha256 is pinned in `t3x_common.DATASETS_SHA256`. |
+| `t3x_screen.py` | The held-out-gene screen, the second line (Ctnnb1 / beta-catenin, Gata4, their drugs; review terms such as Gata6, Apc, Axin, Gsk3). It has no switch. |
+| `t3x_common.py` | Fixed constants, `NEVER_FETCH`, `DATASETS_SHA256`, the dataset loader and the pinned-block check, the canonical metadata serialisation, the stage cap (E9.5 inclusive for every cell), shrinkage, the outside-the-repository guard. |
 | `t3x_tables.py` | Finishing a log table into factors (rescale, clip, absent = 1), writing the pooled and per-group forms, the reference statistics. |
-| `fetch.py` | `plan` screens every GSM of the series (and superseries) from GEO's family SOFT and picks the samples and per-sample files. `fetch` downloads exactly those files with sha256 and size in a manifest. |
-| `process.py` | `reference` writes the WT E8.75 statistics. `run` turns one fetched dataset into one table per knockout gene plus `QC.json`. |
+| `fetch.py` | `plan` writes a plan table of every sample of every screened series from GEO's family SOFT; `pin-template` prints a pinned block to paste; `check-pins` is the gate; `datasets-sha` prints the hash; `fetch` downloads exactly the pinned files of the pinned samples. |
+| `process.py` | `reference` writes the WT E8.75 statistics. `run` turns the pinned samples of one fetched dataset into one table per knockout gene plus `QC.json`. |
 | `combine.py` | Tier tables (wnt, cardiac, unrelated), the all-knockouts table, one table per study, and leave-one-study-out tables. |
-| `run_dgx.sh` | The detached DGX launcher, with exit files: mode `plan` (the default) or `all`. |
+| `run_dgx.sh` | The detached DGX launcher, with exit files: mode `plan` (the default) or `all` (behind the pinned gate). |
+
+## The pinned sample list (the first line)
+
+A text blacklist can never be shown complete, so it is not the first line of defence. The data in scope are five
+cleared series (GSE205117, GSE168768, GSE186934, GSE137337, GSE204906), a few dozen samples in all, and the first line
+is an explicit list of the samples two people have read.
+
+1. **Plan** (metadata only). `fetch.py plan ACC` writes `meta/<ACC>/plan.json` and one table per screened series,
+   `meta/<ACC>/plan_table_<SERIES>.txt`: every sample of the series, its accession, the verbatim text of every field
+   of its GEO record (all are screened), the sha256 of those fields, the screen's verdict and hits, the per-sample
+   files the dataset's patterns allow (and the other file names, never fetched), the parsed stage and chemistry, and
+   the selectors' suggested arm, which chooses nothing. A dataset with a held-out hit anywhere is refused and none of
+   its text is written: the table holds accessions, verdicts and the names of the fields hit, and nothing can be
+   pinned from it.
+2. **Read and pin.** The main session and a second, independent reader each read the plan tables (what they check is
+   below). For each sample both agree on, `fetch.py pin-template` prints the entry, and the block is pasted into the
+   dataset's `pinned` list in `datasets.yaml`:
+   `{accession: GSMnnn, arm: ko|control, gene: <knockout gene>, stage: E8.5, files: [...], metadata_sha256: "..."}`.
+   A control names the knockout gene it controls; a control that serves several knockouts is pinned once per gene.
+   pin-template never writes `datasets.yaml` and refuses a held-out sample, a sample whose stage does not parse to one
+   value, and a sample with no allowed per-sample file; it marks a sample with review terms (pin it only together with
+   the `review_cleared` entries both readers agree).
+3. **Commit.** Every edit of `datasets.yaml` changes its sha256. The same commit puts the new value
+   (`fetch.py datasets-sha`) into `t3x_common.DATASETS_SHA256`; otherwise every step refuses the committed file, and
+   `tests/test_t3_ext_screen.py::test_the_committed_dataset_list_hashes_to_its_pin_in_t3x_common` fails with the
+   reason.
+4. **Fetch and process** touch only pinned accessions. They refuse a dataset whose pinned block is empty; a plan that
+   did not pass or was made from another `datasets.yaml`; a pinned accession that is not in its own series' plan table
+   or belongs to another series; a pinned sample whose live metadata (when plan runs again) or stored metadata (fetch,
+   process) no longer hashes to the pinned value; a pinned sample that no longer passes the screen; a pinned stage
+   that differs from the record's; a pinned file not in the sample's plan entry; knockouts and controls whose stages
+   do not pair, or whose chemistry differs where the dataset reads chemistry; a manifest fetched under other pins;
+   a processed QC made under other pins (combine). Arms, genes and stages come from the pins only. No count file of
+   an unpinned sample is opened (a test holds one beside the pinned ones and fails on any open of it).
+5. **Per-cell genotype designs** (cell-level labels inside one sample: MULTI-seq, gem.group, chimera sorts) are
+   excluded in this stage: a dataset with `cell_labels` cannot hold pins, and `process.py` refuses it.
+
+**The canonical serialisation.** A pin's `metadata_sha256` is the sha256 of the UTF-8 bytes of
+
+```python
+json.dumps({"accession": GSM, "fields": F}, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+```
+
+where `F` maps every field name of the sample's GEO family SOFT record (the `!Sample_` prefix removed, so `title`,
+`characteristics_ch1`, `supplementary_file_1` ...) to the list of its values, each a string exactly as
+`fetch.parse_soft` gives it (surrounding whitespace stripped, nothing else changed), in the order of the SOFT file
+(`t3x_common.canonical_metadata`; `tests/test_t3_ext_pipeline.py` pins the exact bytes for one example). The hash is
+taken from the sample's record in its own series' SOFT file.
+
+**Held datasets.** `t3x_common.NEVER_FETCH` holds GSE165300, GSE126128, GSE280543, GSE259342 and E-MTAB-7325.
+`dataset()` refuses them whatever a YAML says, `load_datasets()` refuses a YAML that gives any of them a status other
+than `held_phenocopy` or `excluded_design`, and combine refuses any processed output of them. No CLI takes a
+`--datasets` path: every step reads the committed file, checked against `DATASETS_SHA256`. Tests reach other YAML
+content through a function argument only.
+
+## What the two readers check in a plan table before pinning a sample
+
+Each reader reads the whole plan table of the dataset's own series and of every other screened series (the
+superseries), not only the rows the selectors suggest, and pins a sample only if both agree on all of these:
+
+1. **Genotype and arm.** The sample's own text (title, source, characteristics, description, protocols, file names)
+   states its genotype, and it is the arm being pinned: a knockout of the named gene, or that knockout's control as
+   `control_definition` describes it. A label that names no gene (a bare 'F/F', 'cKO', 'mutant') is not pinned unless
+   another field of the same record names the gene.
+2. **No held-out or phenocopy label anywhere in the series.** No sample, series title, summary or design of any
+   screened series mentions beta-catenin, Ctnnb1, Gata4, another allele of either, a drug or construct acting on
+   them, or a perturbation of their pathway that could phenocopy them (Wnt, Wls, Apc, Axin, Gsk3, Tcf/Lef, Hand2,
+   Mef2c, any GATA factor), in any spelling. The screen's verdicts help; they do not decide. If in doubt, nothing in
+   the dataset is pinned and the question goes to the main session.
+3. **No pooled design.** The sample is one embryo pool of one genotype: no MULTI-seq, cell hashing, CRISPR guide
+   pool, chimera, mixed-genotype capture or per-cell genotype label (those are excluded in this stage).
+4. **Same-study control.** The control comes from the same series and experiment, at the same stage, with the same
+   chemistry where the dataset reads chemistry (GSE137337), and the relation is the one `control_relation` records.
+5. **Stage.** The parsed stage in the table matches what the text says, is a single stage at or before E9.5, and is
+   in `stages_used`.
+6. **Assay.** Single-cell or single-nucleus RNA (the GEX part of a multiome), not ATAC, bisulfite, methylation, bulk
+   or spatial; the pinned files are that sample's own per-sample matrices (no series-level files, no fragments).
+7. **The hash** in the pinned entry equals the one printed for that sample in the table the reader read.
 
 ## The rules each step keeps
 
-- **Held-out genes.** Before any file is chosen, `fetch.py plan` screens every sample of every listed series, plus
+- **Held-out genes (the second line).** Before any file is chosen, `fetch.py plan` screens every sample of every listed series, plus
   every series-level field (title, summary, overall_design, type, file names and the rest; contact fields are
   skipped). A held-out hit anywhere, a review term not cleared for that sample (or, for a series-level field, that
   series accession), or a record with no text refuses the whole dataset. Clearing one review term never passes a
@@ -30,11 +108,13 @@ scored, and (3) the captain rules on any change to an upload, with a `docs/S2_RU
   and the known over-refusals are listed in `t3x_screen.py`'s docstring; each has a test string, and a property
   test inserts every held-out spelling into every field of a clean record. A Gata4 reporter knock-in counts as
   held out. A label that names neither gene nor drug (for example 'Mesp1-Cre; F/F' alone) cannot be caught by any
-  text screen: that is why a person reads every plan before any fetch. `process.py run` screens each chosen record again
-  before it reads a count. Per-cell label tables (MULTI-seq, gem.group, chimera sorts) go through
-  `t3x_screen.screen_cells`. That function drops held-out, unassigned, negative and doublet cells. It refuses a
-  table with no genotype column, a review term, or guides without a gene map. No stage-1 loader uses it yet, and a
-  dataset that needs it is refused. Series-level files are never fetched in stage 1.
+  text screen: that is why two people read every plan table and pin samples before any fetch. `fetch.py fetch` and
+  `process.py run` screen each pinned record again before a file is requested or a count is read. Since stage 3 the
+  screen over-refuses by design: no allowlist on either side of the beta short names, catalogue wording and the like
+  as review terms, typo forms as review terms, and an EXTENDED form (a Ctnnb1 or Gata4 typo, beta + 'cat',
+  'catenine') voids every review clearance of the sample it appears in. Per-cell label tables go through
+  `t3x_screen.screen_cells`, but no loader uses it and a dataset that needs it is refused. Series-level files are
+  never fetched.
 - **Phenocopy clause.** Wls (GSE165300), Hand2 (GSE126128) and Mef2c (GSE280543) have status `held_phenocopy`, and
   nothing fetches them. Each waits for one priced question to the captain. Tbx1 (GSE168768, GSE186934) is cleared
   on the engineer's reading that a Tbx1 loss is not a phenocopy of Gata4 loss; that reading goes into the same
@@ -88,8 +168,9 @@ scored, and (3) the captain rules on any change to an upload, with a `docs/S2_RU
 ```
 reference/refstats.npz                     WT E8.75 panel genes, groups, shares, mean proportions, WT sha256
 meta/<ACC>/<series>_family.soft.gz         GEO metadata, sha256 in plan.json
-meta/<ACC>/plan.json                       screen record, chosen samples and files, units (knockout gene -> samples)
-raw/<ACC>/<GSM>/<file>, raw/<ACC>/MANIFEST.json   downloads with url, size, sha256
+meta/<ACC>/plan.json                       screen record, every sample's table row, pins verified (if any), units
+meta/<ACC>/plan_table_<SERIES>.txt         the plan table the two readers read (verbatim fields, hash, verdict)
+raw/<ACC>/<GSM>/<file>, raw/<ACC>/MANIFEST.json   pinned downloads with url, size, sha256; the pins and their sha256
 processed/<ACC>/QC.json                    cells per stage and arm, call shares, guards, panel genes, status
 processed/<ACC>/<ACC>__<gene>.unit.json    log-space table for combine
 processed/<ACC>/tables/<ACC>__<gene>/      finished per-dataset tables
@@ -104,21 +185,45 @@ logs/<step>.log, logs/<step>.exit, logs/ALL.exit
 
 ## Running on the DGX
 
-The branch is never pushed, so its commit does not exist on the DGX. It goes over as a git bundle into a scratch
-clone under `~/v/scratch`, so no shared checkout's HEAD moves and nothing is synced in a checkout where a build may
-run. The clone gets its own environment (`uv sync --frozen`), and the launcher refuses unless `vec` is imported from
-the clone. The WT E8.75 file is read in place from a checkout that holds `data/` (environment variable `WT`). Check
-`df -h /home` first; the plan's download estimate is under 40 GB, but nobody has checked it.
+Nothing of this folder writes into the DGX's reference checkout `~/v/virtual-embryo-challenge`: no fetch into its
+object store, no worktree of it, no output under it (`t3x_common.outside_repo` and `run_dgx.sh` both refuse it). The
+code reaches the DGX through the main session's usual sync of `main` into the campaign checkout `~/v/vec-campaign-c`
+(`docs/COMPUTE.md`, "The campaign checkout on the DGX"), after this branch is merged into `main`. The launcher refuses
+unless `vec` is imported from that checkout. The WT E8.75 file is read, never written, through the checkout's
+`data/` links (environment variable `WT` to point elsewhere). The bundle route of stage 2 is dropped.
 
-Two runs, each detached, each ending with `logs/ALL.exit` (99 if the launcher was killed):
+The steps for the main session, in order (none was run by the engineer):
 
-1. `run_dgx.sh <clone> plan` (the default mode): only the GEO family SOFT metadata, the screen and the sample
-   tables. A `plan_<ACC>.exit` of 2 is a refusal: its log names the reason (a screen hit, a selector that found the
-   wrong number of samples, a stage).
-2. A person reads every `plan_<ACC>.log` and `meta/<ACC>/plan.json`. Then `run_dgx.sh <clone> all "<accessions>"`
-   fetches and processes only accessions whose plan passed, without re-planning, and combines.
+1. **Merge.** On this machine, merge `campaign/t3-outside-knockouts-3` into `main` after its review.
+2. **Sync.** Only when nothing runs in `~/v/vec-campaign-c`: the `docs/COMPUTE.md` rsync line with the target
+   `PrakashDGX_H2:v/vec-campaign-c/`, then on the DGX `git -C ~/v/vec-campaign-c checkout --detach <main's commit>`
+   and `git -C ~/v/vec-campaign-c status --porcelain --untracked-files=no` (empty). Check `df -h /home`.
+3. **Plan run** (metadata only), detached:
+   `cd ~/v/vec-campaign-c && mkdir -p ~/v/vec-ext/t3 && setsid nohup bash experiments/t3_ext/run_dgx.sh "$PWD" plan > ~/v/vec-ext/t3/launcher_plan.log 2>&1 < /dev/null &`
+   and wait for `~/v/vec-ext/t3/logs/ALL.exit` with a background poller. `plan_<ACC>.exit` 0 means the screen passed;
+   2 is a refusal whose log names it (a review term, or a held-out hit with the text withheld).
+4. **Read.** Copy `~/v/vec-ext/t3/meta/` (metadata only, no counts) to this machine if wanted. The main session and a
+   second, independent reader each read every `plan_table_<SERIES>.txt` of each dataset and apply the checks above.
+   A review refusal is resolved only by `review_cleared` entries both readers agree (sample, term, reason); a
+   held-out refusal is never resolved, and that dataset is dropped.
+5. **Pin.** For each agreed sample, `fetch.py pin-template ACC --dest ~/v/vec-ext/t3 --arm ko|control --gene G
+   --gsm GSM...` (no network; it reads the stored plan) and paste its output under the dataset's `pinned:`.
+6. **Commit.** `fetch.py datasets-sha`, put the printed value into `t3x_common.DATASETS_SHA256`, run the three test
+   files, and commit `datasets.yaml` and `t3x_common.py` together on `main` (or on a branch merged into it), with the
+   two readers named in the message. The `EXTERNAL_DATA.md` rows for the datasets that will be fetched go in before
+   any table enters a model or a check.
+7. **Sync again** as in step 2, so the DGX checkout holds the pinned `datasets.yaml`.
+8. **Fetch, process, combine**, detached:
+   `cd ~/v/vec-campaign-c && setsid nohup bash experiments/t3_ext/run_dgx.sh "$PWD" all "<pinned accessions>" > ~/v/vec-ext/t3/launcher_all.log 2>&1 < /dev/null &`.
+   The launcher first runs the pinned gate (`fetch.py check-pins`; ALL.exit 6 if any accession has no pins or the
+   YAML hash is not the pinned one), then the reference statistics, then per accession a fresh plan that checks each
+   pinned sample's LIVE metadata against its pinned hash (`replan_<ACC>`), and only if it passes the fetch of the
+   pinned files and the processing of the pinned samples; combine last. Wait on `logs/ALL.exit` in the background.
+9. **Afterwards**: read `processed/<ACC>/QC.json` (status, confidence_by_sample, the guard records; no gene-level
+   value is printed anywhere) and `tables/COMBINE.json`. `raw/` stays until the main session decides to delete it.
 
-Fix a selector only in a reviewed commit, then plan again before any fetch of that dataset. Never relax the screen.
+Fix a selector, a pin or a clearance only in a reviewed commit, then plan again before any fetch of that dataset.
+Never relax the screen.
 
 ## What stage 2 needs
 
@@ -145,3 +250,13 @@ GSM titles beyond the scouts' records, so the selectors may refuse at plan time.
 GSE205117 arms are chimeras (`design_refuse` checks this). Whether GSE137337's matrices are per sample (if they are
 series-level only, its arms refuse). Whether the transfer from 10x cells on the panel genes to the MERFISH groups
 holds up (the guards are there to drop groups where it does not). Per-study licences beyond GEO's default.
+
+## What stage 3 could not check
+
+Nothing ran against GEO: the plan tables, the hashes of real records and the launcher's `all` mode were tested on
+synthetic SOFT text and a stub download only. Whether real GEO records parse to one stage per sample (pin-template
+refuses a sample whose stage does not parse, so a sample may need a reviewed selector or parser change before it can
+be pinned). Whether GEO edits a record between the reading and the fetch (the live hash check refuses then, by
+design). How many review round trips the over-refusing screen costs on the five series (catalogue wording, 'Chi',
+'2i', APC fluorochromes and G4 ES cells are all review terms). Cyrillic look-alikes are folded; other scripts'
+look-alikes are not.

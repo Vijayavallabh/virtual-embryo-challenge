@@ -63,6 +63,18 @@ HELD = [
     "WNT974",
     # the fly orthologue
     "armadillo", "arm (armadillo) RNAi",
+    # stage 3: every string the two reviewers of 1172f53 found passing (or reaching review only) that is held out
+    "bcatGOF", "bcatLOF", "bcatCA", "bcatf/f", "bcatiKO", "bcatiCKO", "bcatKI", "bcatcre", "β-catGOF", "βcatCA",
+    "βcatLOF", "Mesp1Cre;bcatGOF", "CAbcat", "CAβcat", "deltaNbcat", "ΔNbcat", "iBcat", "shRNAbcat", "sgRNAbcat",
+    "GATA binding 4", "GATA-binding 4", "Gata1-4", "Gata 2-6 TKO", "Gata four KO", "CT99021", "CT-99021",
+    "b-catenine", "beta-catenine", "beta catenine", "bet-catenin", "G4 KD", "G4 siRNA", "G4 MO", "G4 deficient",
+    "G4 mutant", "plate B cat", "CTNNB1;GATA4;SOX17 library", "guides: Sox2,Ctnnb1,T", "targets=Gata4",
+    "lib_Gata4_g1", "βcatf/f", "bcatF/F", "bcatfx/fx", "bcatfloxed", "β-catfloxed", "bcatknockout", "bcatmutant",
+    "bcatdeficient", "bcatlof", "bcatexon3", "bcatcKOs", "caBcat", "oeBcat", "lentiBcat", "batface", "Batface allele",
+    "G4f/f", "G4fx", "GATA binding protein four", "Gata-four", "βcateninfloxed", "sgG4", "shG4", "Gata 1 to 4",
+    "G4 morphant", "ibeta-catenin", "TGFbeta-catenin",
+    # homoglyphs: a Cyrillic 'а' and 'С'
+    "Gаta4", "Сtnnb1 KO",
 ]
 REVIEW = ["Gata6 F/+", "GATA-6 het", "Gata5 KO", "GATA VI", "G4 ESC chimera", "Apc min", "ApcMin/+", "Apc fl",
           "adenomatous polyposis coli", "Axin2 KO", "Axin1/2", "conductin", "Gsk3b inhibitor", "Gsk-3",
@@ -75,12 +87,26 @@ REVIEW = ["Gata6 F/+", "GATA-6 het", "Gata5 KO", "GATA VI", "G4 ESC chimera", "A
           "Sfrp1", "Lrp5", "Lrp6 KO", "Lrp5/6", "Tcf7 KO", "Tcf7l1", "Tcf7l2 null", "Tcf1/Lef1 dKO", "Lef1",
           "TCF/LEF", "Tcf3", "Wls fl/fl", "Gpr177", "Wntless", "phenocopy", "phenocopies the mutant",
           "lox(ex3)", "delta ex3", "Δex3", "ex3 flox", "exon 3 del", "ΔN", "deltaN", "pannier",
-          "alpha-catenin KO"]
+          "alpha-catenin KO",
+          # stage 3: the reviewers' review-level strings, and the over-refusals that must stay clearable
+          "Ctnb1 KO", "Cttnb1 KO", "Ctnbb1 fl/fl", "Cnntb1", "Ctnnnb1", "Gat4 KO", "Gtaa4", "Chiron 3 µM", "2i/LIF",
+          "2i medium", "3i", "Chi pulse", "3 uM Chi", "dnTCF", "dnTcf4", "dnLef1", "dnTCF7L2", "ΔNTcf3", "caTcf",
+          "dominant negative Tcf", "pyrvinium", "NSC668036", "niclosamide", "Wnt-off", "Wnt low", "pangolin RNAi",
+          "arm RNAi", "arm mutant", "pangolin", "dTCF", "sFRP", "CP21R7", "IM-12", "Chip B, Cat# 1000073",
+          "Buffer B (Cat. No. 123)", "Kit B cat no 1000", "LB catalogue", "subcategory", "bobcat",
+          "TGFbeta (Cat# 1)", "APC-conjugated anti-CD45", "APC-Cy7", "Wnt1-Cre", "ICG staining", "catenin alpha",
+          "delta-catenin", "Gata6", "GATA binding protein 6", "Atg4 KO", "G4 ES cells"]
 CLEAN = ["Tbx1Cre/flox; Rosa26-GFPflox/+", "wild type", "E8.5_CRISPR_T_WT", "E8.5_CRISPR_T_KO", "Hand2 null",
-         "Mef2c KO", "subcategory", "Dnmt3a+3b", "Eed+Cdkn2a", "Gata1 chimera", "whole embryo", "C57BL/6",
+         "Mef2c KO", "Dnmt3a+3b", "Eed+Cdkn2a", "Gata1 chimera", "whole embryo", "C57BL/6",
          "bio replicate 1", "biological replicate 2", "conducting", "ΔNp63", "abcam", "Chromium Single Cell 3' v2",
          "Mesp1Cre; Tbx1 flox/flox", "Dnmt1 KO E8.5 rep2", "armadillo repeat protein Armc5", "category",
-         "embryonic day 8.5", "10x Genomics", "L3mbtl2 KO", "Kmt2b null", "Rnf2", "G9a / Ehmt2"]
+         "embryonic day 8.5", "10x Genomics", "L3mbtl2 KO", "Kmt2b null", "Rnf2", "G9a / Ehmt2",
+         # stage 3: the reviewers' clean strings that stay clean
+         "Gata1 KO", "Gata2", "Gata3", "Gata2/3 DKO", "Gata1, Gata2", "Gata 1-3", "Ctnna1", "Ctnnd1", "Mesp1-Cre",
+         "Isl1 KO", "Tbx1 KO", "Hand1", "Nkx2-5 KO", "chirality", "E8.5 wild type", "centrifuged at 500 g at 4 C"]
+# glued affixes (no separator) for the second property test (the second reviewer's list)
+AFFIXES = ["f/f", "fx", "floxed", "mutant", "knockout", "lof", "deficient", "i", "ca", "oe", "lenti", "deltaN", "ΔN",
+           "shRNA", "sgRNA"]
 # the separators an insertion uses in the property test (glued to letters, a short name cannot be told from a word)
 JOINS = [" ", "_", "; ", ", ", "-", "/", " | ", "\t", "(", ")"]
 CLEAN_RECORD = {"title": ["E8.5_embryo_3"], "source_name_ch1": ["whole embryo"],
@@ -130,6 +156,55 @@ def test_property_a_held_out_spelling_in_any_field_is_caught(i):
             obs.loc["a", col] = text
             keep, _ = sc.screen_cells(obs, ["genotype"])
             assert keep.tolist() == [False, True], (col, text)
+
+
+# G4 forms glued to letters are REVIEW, not held out: a letter before G4 is as often a gene that ends in g4 (Atg4,
+# Gng4) and letters after a short allele word are ordinary text ('G4 mouse'); a held-out verdict there could never be
+# cleared. They must still refuse.
+GLUE_REVIEW_ONLY = {s for s in HELD if s.lower().startswith(("g4", "sgg4", "shg4"))}
+
+
+@pytest.mark.parametrize("i", range(len(HELD)))
+def test_property_a_held_out_spelling_glued_to_any_affix_is_held_out(i):
+    """The second reviewer's extension: each held spelling glued with no separator to a rotating affix (f/f, fx,
+    floxed, mutant, knockout, lof, deficient, i, ca, oe, lenti, deltaN, ΔN, shRNA, sgRNA), before and after, is held
+    out (the G4 forms: refused, at least for review)."""
+    spelling, n = HELD[i], len(AFFIXES)
+    for a in (AFFIXES[i % n], AFFIXES[(i + 4) % n]):
+        for text in (a + spelling, spelling + a):
+            m = sc.match(text)
+            if spelling in GLUE_REVIEW_ONLY:
+                assert m is not None, text
+            else:
+                assert m is not None and m[0] == "held_out", (text, m)
+            r = sc.screen_record("GSM1", {**CLEAN_RECORD, "title": [text]})
+            assert r["verdict"] != "pass", text
+
+
+def test_catalogue_wording_is_review_and_clearable_but_a_glued_short_name_is_not():
+    for text, term in (("Chip B, Cat# 1000073", "b, cat#"), ("Buffer B (Cat. No. 123)", "b (cat."),
+                       ("Kit B cat no 1000", "b cat no"), ("subcategory", "subcat"), ("bobcat", "bobcat")):
+        rec = {"extract_protocol_ch1": [text]}
+        assert sc.screen_record("GSM1", rec)["verdict"] == "review", text
+        ok = [{"sample": "GSM1", "term": term, "reason": "catalogue wording in a kit name"}]
+        assert sc.screen_record("GSM1", rec, review_cleared=ok)["verdict"] == "pass", text
+    with pytest.raises(cm.Refused):
+        sc.check_review_cleared([{"sample": "GSM1", "term": "bcat", "reason": "x"}])
+
+
+def test_an_extended_form_voids_every_review_clearance_of_its_sample():
+    ok = [{"sample": "GSM1", "term": "gata6", "reason": "a neighbour only"}]
+    assert sc.screen_record("GSM1", {"title": ["Gata6 F/+"]}, review_cleared=ok)["verdict"] == "pass"
+    for other in ("Ctnb1 KO", "Gtaa4 null", "deltaNbeta-catenin control", "b-catenine"):
+        r = sc.screen_record("GSM1", {"title": ["Gata6 F/+"], "description": [other]}, review_cleared=ok)
+        assert r["verdict"] != "pass" and r["clearance_void"], other
+    for term in ("ctnb1", "gtaa4", "catenine", "ctnnnb1"):
+        with pytest.raises(cm.Refused):
+            sc.check_review_cleared([{"sample": "GSM1", "term": term, "reason": "a typo of something else"}])
+    with pytest.raises(cm.Refused):
+        sc.check_review_cleared([{"sample": "", "term": "gata6", "reason": "x"}])
+    with pytest.raises(cm.Refused):
+        sc.check_review_cleared([{"sample": "GSM1", "term": "gata6"}])
 
 
 def test_record_screens_every_field_and_refuses_an_empty_record():
@@ -256,3 +331,29 @@ def test_the_committed_dataset_list_loads_and_holds_back_what_the_plan_holds_bac
         cm.dataset("GSE165300")
     with pytest.raises(cm.Refused):
         cm.dataset("GSE000001")
+    # the held and excluded accessions are exactly NEVER_FETCH; every cleared dataset has a pinned block (empty until
+    # the two readers fill it)
+    assert {a for a, d in ds.items() if d["status"] != "cleared"} == cm.NEVER_FETCH
+    for a in cleared:
+        assert ds[a]["pinned"] == [] or all(p["arm"] in cm.PIN_ARMS for p in ds[a]["pinned"])
+    assert "Nomaru et al. (per the scout)" in ds["GSE186934"]["citation"]
+
+
+def test_the_committed_dataset_list_hashes_to_its_pin_in_t3x_common():
+    """Every edit of datasets.yaml (a pin, a clearance, a selector) must update t3x_common.DATASETS_SHA256 in the SAME
+    commit: fetch, process and combine refuse the committed file otherwise. `fetch.py datasets-sha` prints both."""
+    import hashlib
+
+    got = hashlib.sha256(cm.DATASETS.read_bytes()).hexdigest()
+    assert got == cm.DATASETS_SHA256, (
+        f"experiments/t3_ext/datasets.yaml hashes to {got} but t3x_common.DATASETS_SHA256 is {cm.DATASETS_SHA256}: "
+        "the pin-and-commit step must put the new value into t3x_common.DATASETS_SHA256 in the same commit")
+
+
+def test_a_wrong_hash_pin_refuses_the_committed_file(monkeypatch):
+    monkeypatch.setattr(cm, "DATASETS_SHA256", "0" * 64)
+    for f in (cm.load_datasets, cm.qc_floors, cm.datasets_sha256):
+        with pytest.raises(cm.Refused, match="same commit"):
+            f()
+    with pytest.raises(cm.Refused, match="same commit"):
+        cm.load_datasets(cm.DATASETS)   # the committed file by its path is checked too

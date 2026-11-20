@@ -20,10 +20,21 @@
 # of design_refuse anywhere refuses the dataset. review_cleared entries name a GSM, or a series accession for a
 # series-level field (title, summary, overall_design ...), with the review term and the reason. Stages come from the
 # characteristics (one value; a range or two values refuse the sample) and must be in stages_used. `expect` counts are
-# checked when given. The selectors are written from the scouts' records; the GSM titles were NOT all read by me, so a
-# refusal at plan time on a count or an unmatched arm is the expected way a wrong selector shows up.
+# compared with the suggestion and noted in the plan table. The selectors are written from the scouts' records; the
+# GSM titles were NOT all read by me. Since stage 3 a selector only suggests: a wrong one costs a reader's correction,
+# not a wrong fetch (see THE PINNED SAMPLE LIST below).
 #
 # d (the shrinkage's design factor) is derived in code (t3x_common.design_factor) from design and control_relation.
+#
+# THE PINNED SAMPLE LIST (stage 3, 2026-11-20; README "The pinned sample list"). The selectors above only SUGGEST arms
+# in the plan table; they choose nothing. What fetch.py and process.py use is each cleared dataset's `pinned` block,
+# empty until the main session and a second, independent reader have read the plan table and pinned, per sample:
+#   - {accession: GSMnnn, arm: ko|control, gene: <knockout gene; a control names the gene it controls>,
+#      stage: E8.5, files: [<per-sample file names from the plan table>], metadata_sha256: <from the plan table>}
+# Paste the block `fetch.py pin-template` prints; never type a hash by hand. A dataset with an empty block is never
+# fetched or processed. Every edit of this file changes its sha256: update t3x_common.DATASETS_SHA256 in the SAME
+# commit (`fetch.py datasets-sha` prints the value), or every step refuses. The five accessions in
+# t3x_common.NEVER_FETCH stay held or excluded whatever this file says.
 
 version: 1
 fixed: "2026-11-20, the AI assistant (engineer of the outside-knockout campaign), before any download"
@@ -64,6 +75,7 @@ datasets:
       arms; whether the arms are chimeras is checked by design_refuse at plan time. Biology only: no released truth
       can check the Wnt tier"
     verified: false
+    pinned: []
 
   - accession: GSE165300
     status: held_phenocopy
@@ -110,6 +122,7 @@ datasets:
     why: "cardiopharyngeal TF loss at the two stages around E8.75"
     risks: "n = 1 per arm; heterozygous control (d = 0.5); GFP-sorted lineage, so only some groups are present"
     verified: true
+    pinned: []
 
   - accession: GSE186934
     status: cleared
@@ -133,10 +146,11 @@ datasets:
     sample_file_patterns: ['(matrix\.mtx|barcodes\.tsv|features\.tsv|genes\.tsv)(\.gz)?$']
     files_note: "per-sample mtx (per the scout)"
     licence: "GEO: NCBI places no restriction on use; submitter rights may apply"
-    citation: "Nomaru et al., Nat Commun 2021 (same superseries GSE167493)"
+    citation: "Nomaru et al. (per the scout), Nat Commun 2021 (superseries GSE167493)"
     why: "the same Cre as the test and the Gata4 validation"
     risks: "not verified; probably n = 1 per arm; one study unit with GSE168768 (Tbx1 counted once)"
     verified: false
+    pinned: []
 
   - accession: GSE126128
     status: held_phenocopy
@@ -217,6 +231,7 @@ datasets:
     why: "one lab, one pipeline, many genes: what knockouts share; one study weight in the all-knockouts table"
     risks: "F0 mosaicism (d = 0.5); WT may not be littermates; chemistry read from free text"
     verified: false
+    pinned: []
 
   - accession: GSE204906
     status: cleared
@@ -244,6 +259,7 @@ datasets:
     why: "a second lab on three of GSE137337's genes: the cross-lab consistency guard"
     risks: "129S4 background, unlike GSE137337's hybrid"
     verified: false
+    pinned: []
 
   - accession: GSE259342
     status: excluded_design

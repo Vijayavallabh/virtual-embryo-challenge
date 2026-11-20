@@ -4,8 +4,10 @@
   combine --processed D/processed --refstats D/reference/refstats.npz --out D/tables
 
 Inputs: every <ACC>/QC.json under --processed whose accession is in datasets.yaml with status cleared. A QC that
-failed, a unit file whose sha256 differs from its QC record, or a unit computed against other reference statistics
-refuses the run. A dataset or unit with status 'left_out' (no group passed its guards) is left out and recorded.
+failed, a unit file whose sha256 differs from its QC record, a unit computed against other reference statistics, a
+QC made under other pins than the committed datasets.yaml holds, or any output of a NEVER_FETCH accession refuses the
+run. Only the committed datasets.yaml is read (no flag takes another). A dataset or unit with status 'left_out' (no
+group passed its guards) is left out and recorded.
 
 Weights, fixed 2026-11-20 (none from a score), all in log space before each table's finish (t3x_tables.finish):
   * inside a study: a knockout gene's value per (group, gene) is the mean over every (dataset, stage) entry of that
@@ -63,11 +65,15 @@ def load_units(processed: Path, datasets: Path | None, ref: dict) -> tuple[list[
     for qcp in sorted(Path(processed).glob("*/QC.json")):
         qc = json.loads(qcp.read_text())
         acc = qc["accession"]
+        if acc in cm.NEVER_FETCH:
+            raise Refused(f"{acc} is in t3x_common.NEVER_FETCH: a processed output of it must not exist: refused")
         if acc not in allds or allds[acc]["status"] != "cleared":
             record["not_cleared"].append(acc)
             continue
         if qc.get("status") == "failed":
             raise Refused(f"{acc}: its QC failed ({qc.get('reason')}): refused")
+        if not allds[acc]["pinned"] or qc.get("pins_sha256") != cm.pins_sha256(allds[acc]["pinned"]):
+            raise Refused(f"{acc}: processed under other pins than datasets.yaml holds now: refused")
         record["inputs"][acc] = {"qc": str(qcp), "qc_sha256": cm.sha256_file(qcp)}
         for gene, u in (qc.get("units") or {}).items():
             if u.get("status") == "failed":
@@ -188,10 +194,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--processed", type=Path, required=True)
     ap.add_argument("--refstats", type=Path, required=True)
     ap.add_argument("--out", type=Path, required=True)
-    ap.add_argument("--datasets", type=Path, default=None)
     a = ap.parse_args(argv)
     try:
-        r = combine(a.processed, a.refstats, a.out, a.datasets)
+        r = combine(a.processed, a.refstats, a.out)
     except Refused as e:
         print(f"refused: {e}")
         return 2
