@@ -161,6 +161,20 @@ def test_file_mode_reads_a_file_and_its_stage_and_prints_main_facts_only(chk, tm
     assert not _shows(out, 1700, 5000, 500, 170)
 
 
+def test_the_nine_task_set_is_the_harness_ones_and_fgw_shape0x_applies_to_each(chk):
+    """--nine reads experiments/harness/nine_tasks.py's task list (configs only, no data)."""
+    from vec import harness
+
+    a = chk.build_parser().parse_args(["practice", "--nine", "--task", "e75"])
+    assert a.nine and a.task == ["e75"] and a.seeds == [0, 1, 2]
+    sys.path.insert(0, str(REPO / "experiments" / "harness"))
+    import nine_tasks
+
+    tasks = nine_tasks.all_tasks()
+    assert sorted(tasks) == sorted(["half", "late", "new1", "new2", "e75", "e725", "x1", "x2", "x3"])
+    assert all(harness.CANDIDATES["fgw_shape0x"].applies(t) for t in tasks.values())
+
+
 def test_practice_mode_loops_tasks_and_seeds_with_both_row_orders(chk, tmp_path, capsys, monkeypatch):
     """The practice loop on stand-ins for the harness (its task list, board, inputs and candidate): one row per task,
     seed and row order, the bake copy of the reference at the seed, the pre-fix facts at the task's truth count."""

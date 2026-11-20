@@ -18,9 +18,10 @@ count, a size or a score.
             pre-fix parity of a test file is never computed here: printed beside that file's returned score it is the
             route to the hidden truth half's parity that docs/PLAN.md decision log 2026-11-18 (k) bars.
   practice  the builder's practice path on released stages: for each embryo pseudo-task of configs/pseudo_tasks.yaml
-            and seed, the harness's fgw_shape0x (the second upload's position form, vec.harness) at its build seed,
-            against the bake copy of the task's reference stage at that seed. Prints the main-build facts and the
-            pre-fix facts (each cloud's parity on the rows `_match_n` would take against the task's truth half, read
+            (or, with --nine, of the nine practice tasks of experiments/harness/nine_tasks.py) and seed, the
+            harness's fgw_shape0x (the second upload's position form; its series twin has the same rows and
+            positions) at its build seed, against the bake copy of the task's reference stage at that seed. Prints
+            the main-build facts and the pre-fix facts (each cloud's parity on the rows `_match_n` would take against the task's truth half, read
             from the target file's cell count only; whether the two are handed the same truth rows), for the file as
             built and with `--row-order copy_parity` applied (vec.t2_build.copy_parity_order).
 
@@ -41,7 +42,7 @@ pre-fix occupancy_dice(file, copy): overlap or overlap_mirror by the two clouds'
 
 Usage (DGX campaign checkout, repo root; BLAS threads capped; heavy only through the practice builds):
   uv run --frozen --no-sync python -I -B experiments/coords/occupancy_frame_check.py file --file <built.h5ad>
-  uv run --frozen --no-sync python -I -B experiments/coords/occupancy_frame_check.py practice --seeds 0 1 2
+  uv run --frozen --no-sync python -I -B experiments/coords/occupancy_frame_check.py practice --nine --seeds 0 1 2
 """
 
 from __future__ import annotations
@@ -190,8 +191,16 @@ def run_practice(a) -> None:
 
     data = Path(a.data_dir)
     boards = load_boards()
-    tasks = {t.key: t for ts in harness.load_tasks().values() for t in ts}
-    keys = a.task or [k for k, t in tasks.items() if t.task == "T2" and t.setting == "embryo" and t.kind == "interp"]
+    if a.nine:  # the nine embryo practice tasks of tries E28 and E47 (experiments/harness/nine_tasks.py), by short name
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "harness"))
+        import nine_tasks
+
+        tasks = dict(nine_tasks.all_tasks())
+        keys = a.task or list(tasks)
+    else:
+        tasks = {t.key: t for ts in harness.load_tasks().values() for t in ts}
+        keys = a.task or [k for k, t in tasks.items()
+                          if t.task == "T2" and t.setting == "embryo" and t.kind == "interp"]
     cand = harness.CANDIDATES["fgw_shape0x"]
     for key in keys:
         t = tasks[key]
@@ -235,7 +244,11 @@ def build_parser() -> argparse.ArgumentParser:
     f.add_argument("--stage", default=COPY_STAGE, help="the released stage whose positions the file carries")
     f.add_argument("--copy-seed", type=int, default=0)
     p = sub.add_parser("practice", help="the builder's practice path on released stages")
-    p.add_argument("--task", action="append", help="a pseudo-task key (default: every embryo interpolation task)")
+    p.add_argument("--task", action="append",
+                   help="a pseudo-task key, or with --nine a short name (default: every task of the set)")
+    p.add_argument("--nine", action="store_true",
+                   help="the nine embryo practice tasks of experiments/harness/nine_tasks.py (half, late, new1, new2, "
+                        "e75, e725, x1, x2, x3) in place of configs/pseudo_tasks.yaml's embryo tasks")
     p.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2])
     for q in (f, p):
         q.add_argument("--data-dir", default=str(DATA_DIR))
