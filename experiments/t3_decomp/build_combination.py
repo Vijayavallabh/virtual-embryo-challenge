@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """The barred branch's T3 file with the C2 factor of row R17 times the square of row K23's outside table: the
-combination file CK of ledger row R18 (decision log 2026-11-21 (a)), fixed before any score of C2 or of the K23 file.
+combination file CK of ledger row R18 (decision log 2026-11-21 (b)), fixed before any score of C2 or of the K23 file.
 
 A thin builder, in the manner of build_two_knockout.py and build_outside_form.py, which it imports unchanged with the
 frozen builder (build_submission.py) and outside_forms.py. It builds a barred-branch file exactly as
@@ -97,7 +97,7 @@ WHERE = ("the frozen loader's phi_M and phi_G (each already rescaled and clipped
          "clipped, exactly 1 at absent genes) enters as T ** e after it; t3_decompose.build receives the product at "
          "w = 1 and applies it through apply_gene_factor after the cells are drawn; nothing is rescaled or clipped "
          "after the product")
-LIST_ENTRY = "docs/PLAN.md decision log 2026-11-21 (a); experiments/harness/TRIES.md row R18"
+LIST_ENTRY = "docs/PLAN.md decision log 2026-11-21 (b); experiments/harness/TRIES.md row R18"
 LIST_SEED, LIST_N_CELLS = 1_000_001, "max"
 LIST_INPUTS_REFUSAL = "the list fixes seed 1000001 and max_cells"
 FACTOR_NOTE = "the frozen loader's record of phi_M only; the factor applied is combination_build's"

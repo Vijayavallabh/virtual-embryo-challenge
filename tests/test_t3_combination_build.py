@@ -195,7 +195,7 @@ def test_the_existing_builders_are_imported_unchanged_and_share_the_frozen_build
                         "ck": ("c2", 2.0)}
     assert bc.FORMS == tuple(f"{k}-{b}" for k in ("identity", "gate-c2", "gate-k23", "ck")
                              for b in ("s1", "s1x1.5", "s1x2.0", "s2"))
-    assert bc.LIST_ENTRY == "docs/PLAN.md decision log 2026-11-21 (a); experiments/harness/TRIES.md row R18"
+    assert bc.LIST_ENTRY == "docs/PLAN.md decision log 2026-11-21 (b); experiments/harness/TRIES.md row R18"
     assert bc.TRIES_PATH == ROOT / "experiments" / "harness" / "TRIES.md"
 
 

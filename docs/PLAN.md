@@ -8390,3 +8390,45 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     message reworded (one line of the launcher; nothing of the arm, the gate, the statement or the read script). The
     run commit is the commit of that fix, as row T64's last cell says. No other launcher holds the same construct
     outside double quotes.
+- 2026-11-21 (a), T3: the label that row K23's builder writes into its files (written at 20:55 UTC on 2026-11-20). Written
+  by the AI assistant.
+  - The builder of row K23's file (`experiments/t3_decomp/build_outside_form.py`, byte-frozen since its review)
+    records "decision log 2026-11-21 (a)" as the list entry in each built file's sidecar, the label its planner
+    expected. The AI assistant placed K23's rule and outcome under 2026-11-20 (ss), (uu) and (ww) instead. This entry
+    exists so that the label in those four sidecars (`experiments/builds/results/t3k23_49f3fd5.txt`) points at
+    something true: row K23's rule is entry 2026-11-20 (ss), its outcome (uu), its builds (ww). Nothing else is
+    decided here.
+- 2026-11-21 (b), T3: one more candidate, CK, the product of C2 and row K23's table, fixed before any score of C2 or of
+  the K23 file (written at 20:55 UTC on 2026-11-20; the label is the one its builder records; no headline of C2 on B
+  or of the K23 file on B has been reported to the AI assistant: the last score line received is the 61.8 of the
+  barred s1). Written by the AI assistant from the challenger's final text (verdict: fix as amended); the code review:
+  ready, no blocker; merged with this entry's commit.
+  - **Why.** Two kinds of T3 candidate are built for every base. C2 of entry (q) adds the released Gata4 knockout's
+    factor, held at the base's size. Row K23's file adds the square of the outside table of other genes' knockouts.
+    They differ in kind, so their gains may add. No practice read can price the combination: the practice fold is the
+    Gata4 knockout itself. So two returned headlines choose, as for (q)'s C list.
+  - **The form.** CK = phi_M ** (x c) * phi_G ** c * T ** 2 on B. It is C2's factor exactly, times T ** 2.0 at the
+    pinned bytes (9490f524e40e...). c is C2's, unchanged. T is not scaled by c. There is no rescale and no clip. B's
+    composition, drawn cells, streams, seed 1000001 and board are kept. Built by
+    `experiments/t3_decomp/build_combination.py --form ck-<B>` for every base, ahead of the scores. The challenger's
+    estimate, from committed summaries and not measured: CK's log SD is about 1% above B's at x = 1. Refusals that
+    cannot depend on any score (exit 4; nothing replaces CK): |corr(ln phi_G, ln T)| at 0.5 or more; fewer than 10
+    genes changed against C2; log SD more than 5% above B's. C1 x T ** 2 is never built.
+  - **The rule, in the challenger's final words:** <final_upload_rule (0) to (6), verbatim>.
+  - **Place.** Last in T3's list. B = barred s1 or s2: C1, C2, the K23 file, CK. B = the 1.5 or 2.0 file: C2, the K23
+    file, CK. At most one slot, the last, and only when both parts beat B. Entry (q), row R17, row K23 and entries
+    (ss), (uu), (ww) are unchanged.
+  - **Row K23's list entry.** build_outside_form.py names its list entry as 'decision log 2026-11-21 (b)'. For K23
+    that pointer reads: the file and its place are as (ss), (uu) and (ww) fixed them, after C1 and C2. This entry
+    changes nothing of them.
+  - **Gates before a CK build counts** (DGX, ~/v/vec-campaign-c, two-study tables folder):
+    - identity-s1 = 3712c3f9988d...;
+    - identity-B = B's hash;
+    - gate-c2-B = C2 on B in t3two_fb01487.SHA256SUMS;
+    - gate-k23-B = the K23 file on B in t3k23_49f3fd5.SHA256SUMS;
+    - each CK built twice with the same bytes.
+  - **Not checked:** corr(ln phi_G, ln T) and CK's at-clip count (the builder measures them on the DGX); the
+    den-weighted total (the factor files carry no den). No odds are given for both parts beating B.
+  - **Conditions before the upload:** the docs/S2_RULES.md amendment of this date, row R18, the build record with its
+    hash list, copies under runs/manual_upload/T3_ck_<B>.h5ad with hashes checked, and the captain's go-ahead for the
+    upload, which is his own act.
