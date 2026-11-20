@@ -53,6 +53,7 @@ case "$STEP" in
       tests/test_t62_recomputed_read.py tests/test_h27_heart_forecast_size.py \
       tests/test_t63_double_step_read.py tests/test_h28_heart_trend_strength.py tests/test_heart_candidates.py \
       tests/test_t1_candidates_build.py tests/test_occupancy_frame.py tests/test_shape_interp_build.py \
+      tests/test_t64_heldmom_read.py \
       tests/test_git_helpers.py experiments/external/test_filters.py
     finish $? ;;
   identity)
