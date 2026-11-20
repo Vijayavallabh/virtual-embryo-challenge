@@ -7076,3 +7076,31 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     of 12 GB in the session's scratch folder, among others); the session wrote nothing in that time. The AI
     assistant removed its own and its agents' test folders there. Briefs for agents that run tests now have to say
     that their scratch test folders are deleted before they hand back.
+- 2026-11-20 (b), the captain's word on the login question and on disclosure, and what the AI assistant does with
+  it (state at 08:54 UTC). Written by the AI assistant.
+  - **His message, verbatim:** "don't worry about which login. and disclosure. Focus only on improving our score".
+    It answered the AI assistant's three requests of the same hour (whether the disclosure email and the notes of
+    18 November were sent; which login made the uploads of 18 November; his word for putting reviewed notes into
+    his mail drafts).
+  - **The AI assistant's reading.** Both matters are his, and he has taken them: it does not raise the login
+    question again and withdraws its own advice of 19 November that no upload be made before that question is
+    settled (uploads are his acts, by hand); it stops work on the notes and on the disclosure email (the review
+    wf_c102e716-aab was stopped unfinished; the drafts stay in `docs/ORGANIZER_QUESTIONS.md`, marked unreviewed),
+    and asks him nothing further about either. What it keeps doing because a score depends on it: each file is
+    handed over with its path, sha256 and board and with a short text for the upload form's "Data used" field,
+    since the organisers' reply of 2026-11-16 ties an outside dataset's acceptance to that field; and the
+    repository's own records (the register, the method summary, the ledger) stay accurate. No rule of the
+    challenge and no data rule is set aside by his message, and the AI assistant reads none as set aside.
+  - **Where score can still come from.** The four last files are named. Row T63 runs for T1's. Two reads are being
+    prepared on a pattern in the first uploads that the Official Rules allow a team to act on ("Trying a parameter
+    value, seeing how it scores, and trying another is ordinary leaderboard work"): on the heart and on T3 the
+    first files' full-size expression steps scored above the floor on direction and below it on the distribution
+    terms. So (1) T3: the barred file's factor at exponents below 1 on the practice knockout that shares the test's
+    reference (the cold check of entry 2026-11-19 (s) found that knockout's lean at about a quarter to a third of
+    the step the factor carries, and the scorer's severity term rewards a slope near 1); (2) the heart: the trend
+    step that the ledger adopted on 13 November and the ruling of 18 November dropped, at reduced strengths on the
+    full trim. Each gets its row before any run, a challenger before it is written, and a priced question to the
+    captain only if its pre-set bar is met; no constant is computed from a test score, and the candidate strengths
+    are fixed before the practice runs. Two ideas were checked against the ledger and dropped without a run: an
+    outside-atlas direction on the heart panel (its target-free concordance check was null) and undoing the heart
+    file's halving (row H25: halving costs nothing).
