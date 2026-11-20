@@ -8659,3 +8659,47 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     their answer so that what was seen is on record first. Said plainly: this is a change considered after the guard's
     first real run; what was seen is the guard's own correlations and counts, and the practice fold has not been read
     with any bulk table.
+- 2026-11-20 (iii), T3: row K24 is designed and built but not placed; two of its clauses are restated on a cold check; the
+  GEO bulk forms are parked (state at 23:55 UTC, 2026-11-20). Written by the AI assistant.
+  - **The row as designed** (a planner, a challenger, an engineer and a reviewer; nothing run on real tables). One
+    read, the tenth of the released Gata4 fold: the barred factor times the three-study single-cell table, times the
+    bulk table of the many-line set, and times their equal-weight joint, each brought by an exponent to the log size
+    of the table in the form K23 named, each with its shuffled control and its size twin; at most nine tries; a guard
+    part first. An arm is named only if it qualifies against the barred form as in K23 AND beats K23's named form head
+    to head by the same bar; at most one file, placed after every T3 file already fixed. The challenger's own odds
+    that the row names a file: about one in ten. The bulk table is read once and never again on this fold, whatever
+    the outcome.
+  - **Two code blockers, both of one kind, both closed.** The first review found that a table with no exponent stopped
+    the other table's arms from being made; the fix round's review then found that a table of one constant value got
+    an absurd exponent from rounding and made the pre-gate stop instead of dropping that table. The AI assistant
+    applied the second reviewer's own fix with tests (branch `campaign/t3-wider-tables-3`); an independent review of
+    that change is running.
+  - **Two clauses restated before anything was read.** The rule was written believing the bulk table would hold about
+    25 lines; the guards left 12 (entry (hhh)). Reading the drafted rule against that, the AI assistant found two
+    points and gave them to a fresh challenger who saw the rule's text only: no table value, no agreement count, no
+    score, and none exists yet. (1) The gate that asks whether the lines agree in sign demanded 'twice the chance
+    count' of genes with two thirds of the lines agreeing. That demand jumps with the number of lines: 22% of genes at
+    25 lines, but 78% at 12, 53% at 13, 36% at 14 and 60% at 15, and it cannot be met at all at 9; it also counted a
+    gene measured in three lines against the chance level of all lines. Restated: the count must exceed its chance
+    expectation, computed gene by gene from the number of lines that hold the gene, by 11% of the genes (the authors'
+    own margin at their assumed 25 lines), over genes held in at least 12 lines; the floor of 50 genes stays. The
+    challenger's probability that this is a mistake: about 0.15; it is laxer than the old text at 12 lines against
+    noise shared across genes, and naming a table is still barred by the shuffled control and the head-to-head. (2)
+    The joint was dropped whenever the three-study table repeats the named table (correlation 0.9 or more), which the
+    first challenger expected four times in ten. In that case the three-study arm is rightly dropped as a rerun of the
+    named form, but the joint's question (does half the size from the bulk table beat the single-cell form at the same
+    total size) is at its sharpest. Restated: the repeat clause drops the three-study arm only; the joint is still
+    read (six tries then), built from the three-study table as before; nothing is read twice. Probability of a
+    mistake: about 0.10. Every other clause is kept. So that the first restatement uses a recorded figure, the bulk
+    table's manifest will also record how many lines hold each gene. An engineer and a reviewer are on it (workflow
+    `t3-k24-amend`, branch `campaign/t3-wider-tables-4`). Said plainly: these are changes to a rule that was not yet
+    placed, made on arithmetic alone.
+  - **The GEO bulk forms are parked.** The second verification of the two GEO count-table forms found two further
+    breaches of the kind it found before (more ways a record can word a heterozygote; more ways a count column can
+    name another sample). Free-text variants are open-ended, the three single-gene studies behind the flag would add
+    at most three lines to a table of twelve, and a table that included them could not be read on the fold without a
+    further row. The forms stay closed in code (`t3x_common.GEO_BULK_OPEN = False`); branch `campaign/t3-ext-geo-bulk`
+    is not merged. One word from the captain reopens the line.
+  - **Order from here.** The whole-embryo guard's decision (entry (hhh)) and, if it changes, one rebuild of the bulk
+    table; the reviewed K24 code merged; the tables' listing and pins written from the final tables; row K24 and entry
+    2026-11-21 (c) placed in one commit; then the run. No bulk table value is read before the row is placed.
