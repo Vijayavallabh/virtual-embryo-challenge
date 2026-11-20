@@ -27,13 +27,15 @@
     outcome in E48's row quoting only the fixed reading, treat any `files_identical_across_builds` false as void;
     unless reading (i) voids the construction, build the row-order file in `~/v/vec-campaign` itself by the
     commands in the stage-2 hand-back (default must reproduce a03611a3..., then `--row-order copy_parity
-    --row-order-test-ok` twice), then hand over. K21 (T3 regularised forms; `~/v/vec-campaign-c` at 0a3152e,
-    scratch `~/v/scratch/k21_0a3152e`; six tries, T3 51 to 57): when it ends, copy and commit
-    `experiments/t3_decomp/results/k21_factor_forms/reading.*`, fill row K21, apply the reviewer's two lesser
-    points before any K21 file is built.
-  - **With agents:** wf_3c058119-fff, the outside-knockout pipeline's fourth fix and its verification under a
-    stated threat model (entry (u)); nothing has been fetched. If it verifies: merge, sync `~/v/vec-campaign-c`,
-    plan run (metadata only), two readers read the plan tables, pin samples and series, then fetch.
+    --row-order-test-ok` twice), then hand over. K21 has ended and is recorded (next item).
+  - **K21 is read** (decision log (w)): valid, six tries (T3 57), outcome "no file: nothing qualifies"; nothing to
+    build from it. The reviewer's two lesser points on its build launcher stay unapplied (no K21 file exists).
+  - **The outside-knockout line is parked** (decision log (x)): pipeline merged at 95c7f01 and verified; the
+    metadata plan step ran (tables under `~/v/vec-ext/t3/meta` on the DGX, copies of three under
+    `~/.cache/vec-ext/t3/meta` locally); nothing fetched. The knockout panel has no per-sample files and no
+    in-series control; only six Tbx1 samples could be pinned today. Stage 2 (practice read K22 and its builder)
+    is reviewed ready on branch `campaign/t3-outside-stage2` (1c5d964), unmerged. Resume only at the captain's
+    word.
   - **Scratch hand-backs** (JSON, in the session scratchpad's `lift8/`): embryo_occ2, t1_candidates, t1_further,
     t3_two_ko, t3_forms, t3x_fix3, heart_candidates.
 
