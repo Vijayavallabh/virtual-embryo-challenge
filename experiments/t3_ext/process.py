@@ -95,6 +95,8 @@ CHIMERA_ARMS = ("ko_mut", "ko_host", "wt_mut", "wt_host")
 
 
 MEMBER_MAX_BYTES = 8 * 1024 ** 3   # one archive member read into memory: at most 8 GiB (fixed 2026-11-20, no score)
+MAC_APPLEDOUBLE_MAX = 4096   # a macOS tar companion member ('._name'): never read; a larger one is refused (2026-11-20)
+MAC_DS_STORE_MAX = 65536     # a macOS Finder '.DS_Store' member: never read; a larger one is refused (2026-11-20)
 
 
 def _gunzip(raw: bytes, name: str) -> bytes:
@@ -181,15 +183,22 @@ def read_sample(paths: list[Path]):
 _MEMBER_PART = re.compile(r"[A-Za-z0-9._+-]+")
 
 
-def archive_members(t: tarfile.TarFile, label: str,
-                    raw_ok: bool = False) -> list[tuple[list[str], str, tarfile.TarInfo]]:
+def archive_members(t: tarfile.TarFile, label: str, raw_ok: bool = False,
+                    skipped: list[str] | None = None) -> list[tuple[list[str], str, tarfile.TarInfo]]:
     """The archive's file members as (path parts, triple kind, member), every member checked first: refused for an
     absolute path, a '..' component, an empty component, a backslash, a name part outside letters, digits and
     . _ + -, a symlink, a hard link, a device or FIFO, a duplicate name, a name the held-out screen hits (held out or
     review), a member larger than MEMBER_MAX_BYTES, and a file member that is not part of a 10x triple (a member it has
     no rule for). Directory members are allowed and read nothing. Nothing is extracted to disk. raw_ok (stage 7: a
-    declared raw file only, read_raw_sample) lifts the unfiltered-matrix deny term alone for the member names."""
-    out, seen = [], set()
+    declared raw file only, read_raw_sample) lifts the unfiltered-matrix deny term alone for the member names.
+
+    macOS companion members (2026-11-20, after a real archive held them): a file member named '._X' (the AppleDouble
+    companion macOS tar writes beside a member X) and a file member named '.DS_Store' are NEVER READ and never classed
+    as part of a triple; they pass every check above first, and are skipped only when a '._X' member is at most
+    MAC_APPLEDOUBLE_MAX bytes and the member X it names is in the archive beside it, and a '.DS_Store' member is at
+    most MAC_DS_STORE_MAX bytes; otherwise the archive is refused. Their names are appended to `skipped` when a list
+    is given."""
+    out, seen, companions, mac = [], set(), [], []
     for m in t.getmembers():
         raw = m.name
         if raw.startswith(("/", "~")) or "\\" in raw or re.match(r"[A-Za-z]:", raw):
@@ -221,12 +230,32 @@ def archive_members(t: tarfile.TarFile, label: str,
             continue
         if not parts:
             raise Refused(f"{label}: a file member without a name: refused")
-        kind = cm.triple_kind(parts[-1])
+        last = parts[-1]
+        if last.startswith("._") and len(last) > 2:
+            if m.size > MAC_APPLEDOUBLE_MAX:
+                raise Refused(f"{label}: member {key!r}: a '._' member larger than {MAC_APPLEDOUBLE_MAX} bytes: "
+                              "refused")
+            companions.append((key, "/".join([*parts[:-1], last[2:]])))
+            mac.append(key)
+            continue
+        if last == ".DS_Store":
+            if m.size > MAC_DS_STORE_MAX:
+                raise Refused(f"{label}: member {key!r}: a '.DS_Store' member larger than {MAC_DS_STORE_MAX} bytes: "
+                              "refused")
+            mac.append(key)
+            continue
+        kind = cm.triple_kind(last)
         if kind is None:
             raise Refused(f"{label}: member {key!r} is not part of a 10x triple: refused (a member with no rule)")
         if m.size > MEMBER_MAX_BYTES:
             raise Refused(f"{label}: member {key!r} is larger than {MEMBER_MAX_BYTES} bytes: refused")
         out.append((parts, kind, m))
+    for key, beside in companions:
+        if beside not in seen:
+            raise Refused(f"{label}: member {key!r} names no member beside it ({beside!r} is not in the archive): "
+                          "refused")
+    if skipped is not None:
+        skipped.extend(sorted(mac))
     return out
 
 
@@ -555,8 +584,9 @@ def read_raw_sample(paths: list[Path], label: str):
     if tars:
         if len(paths) != 1:
             raise Refused(f"{label}: an unfiltered archive comes alone, not with {len(paths) - 1} other files")
+        skipped: list[str] = []
         with tarfile.open(paths[0], "r:*") as t:
-            by = _one_folder_triple(archive_members(t, label, raw_ok=True), label)
+            by = _one_folder_triple(archive_members(t, label, raw_ok=True, skipped=skipped), label)
 
             def stream(kind):
                 f = t.extractfile(by[kind][2])
@@ -564,7 +594,10 @@ def read_raw_sample(paths: list[Path], label: str):
                     raise Refused(f"{label}: member {'/'.join(by[kind][0])!r} cannot be read")
                 return _decompressed(f, by[kind][0][-1])
 
-            return _raw_from(stream, label)
+            res = _raw_from(stream, label)
+        if skipped:   # recorded only when present, so a plain archive's record is unchanged
+            res[-1]["mac_companions_skipped"] = len(skipped)
+        return res
     items = [(p.name, cm.triple_kind(p.name), p) for p in paths]
     if any(it[1] is None for it in items):
         raise Refused(f"{label}: a file of the unfiltered triple is not a matrix, barcodes or features file: refused")
