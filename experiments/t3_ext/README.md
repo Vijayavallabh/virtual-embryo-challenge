@@ -669,7 +669,7 @@ multi-sample files are refused.
    `!Series_supplementary_file` value. A name matching `bulk.NORMALISED` (fpkm, rpkm, tpm, cpm, rsem, normalised,
    expected counts) is refused at the offer, again at the header step and again at the read (round 2), for this form
    and the ArrayExpress matrix alike.
-2. **The header step** (`fetch.py header ACC --dest D --series GSE --name FILE`, or `run_dgx.sh ... header
+2. **The header step** (refused while `t3x_common.GEO_BULK_OPEN` is False; `fetch.py header ACC --dest D --series GSE --name FILE`, or `run_dgx.sh ... header
    "ACC:GSE:FILE"`), after a passing plan and before any pin: the file is streamed (`fetch._open`), gzip is
    decompressed incrementally, reading stops at the first newline (at most `HEADER_MAX_BYTES` = 1 MiB of decompressed
    text, at most 16 MiB off the wire; a longer line refuses), the connection is closed, and only the line and its
@@ -950,13 +950,16 @@ value or a table value. Nothing is pinned or added after a practice read without
 
 ## Stage 9: the steps for the main session, in order (none was run by the engineer)
 
-1. **Merge** `campaign/t3-ext-bulk-2` (it holds `campaign/t3-ext-bulk` and `campaign/t3-ext-4`, stage 8, and main as
-   of de10b43) into `main` after its review. This branch changes nothing in `datasets.yaml`, so `DATASETS_SHA256`
-   stays main's; stored plans stay valid for single-cell datasets. Sync the DGX campaign checkout.
-2. **The gene-id map** (only for a dataset with `id_type: ensembl`, E-MTAB-7322 included): after a pinned single-cell
-   10x sample has been fetched, run `make_panel_ids.py --dest D --accession ACC --gsm GSM --file <its features file or
-   per-sample archive> --refstats D/reference/refstats.npz --extra <every knocked-out gene to be read, the MGP lines
-   included>`; commit `panel_ids.tsv` and its sha256 in `t3x_common.PANEL_IDS_SHA256` in one reviewed commit.
+1. **Merge** `campaign/t3-ext-bulk-3` (it holds `campaign/t3-ext-bulk-2`, the round 3 changes, and main) into `main`
+   after its review. The GEO bulk forms stay closed (`t3x_common.GEO_BULK_OPEN = False`); only the arrayexpress form
+   is usable. This branch changes nothing in `datasets.yaml`, so `DATASETS_SHA256` stays main's; stored plans stay
+   valid for single-cell datasets. Sync the DGX campaign checkout.
+2. **The gene-id map** (E-MTAB-7322 and any `id_type: ensembl` dataset) comes AFTER the pins (step 9) and before step
+   10, because its `--extra` list is the pinned lines: make the reference once (`process.py reference --wt WT --out
+   D/reference/refstats.npz`, as `run_dgx.sh all` does), then run `make_panel_ids.py --dest D --accession <a cleared
+   single-cell dataset already fetched> --gsm GSM --file <its pinned features file or per-sample archive> --refstats
+   D/reference/refstats.npz --extra-file <the pinned lines, one a line>`; commit `panel_ids.tsv` with its sha256 in
+   `t3x_common.PANEL_IDS_SHA256` in one reviewed commit. A pinned line missing from the extras is refused at G9.
 3. **Dataset entries**: one reviewed commit per batch, each entry with `modality: bulk` and its keys, the dataset-file
    hash updated in the same commit (`fetch.py datasets-sha`). For E-MTAB-7322 the example above, withheld lines
    first. Every stored plan is then made again (the dataset-file hash changed).
@@ -1018,11 +1021,21 @@ things, each with a test in `tests/test_t3_ext_bulk_ae.py`:
 
 Real forms the main session saw in the sample table: Source Names are `M<number>_<line>_<wt|het|hom><n>` for most
 embryos and `<line>_<wt|het|hom><n>` for some (the example entry's pattern takes both); a few lines spell the line
-differently in the Source Name and in the line column, which leaves them not pinnable; `Term Source REF` and some
-comment columns carry stray whitespace, which comparison (d) does not read. Two README sentences are corrected: before
+differently in the Source Name and in the line column, which leaves them not pinnable; `Term Source REF`, `Term
+Accession Number` and `Comment[technical replicate group]` carry stray whitespace, and no comparison reads them (they
+are hashed verbatim); `Comment[allele]` also carries some, and comparison (c) reads only its prefix. Two README sentences are corrected: before
 the pins the code reads at most one 4,096-byte block past the first newline, and the HTTP and TLS layers below it may
 buffer a few more kilobytes, none of it parsed or written; after the header step the plan carries the matrix header
 line verbatim for the re-derivation, withheld runs' accessions included, never printed or tied.
+
+After the verification of round 3 (two small blockers, both closed here): comparison (c) takes the allele prefix from
+every row of a Source Name (whitespace after the allele part differing between rows no longer fails it); a
+description key may hold a hyphen only between two parts (`MAGE-TAB Version` yes, `Key--` no); a row is withheld also
+when its Source Name's gene token or its allele prefix names a withheld line, whatever its line column says; the
+many-line tests run with the GEO forms closed; and the operator steps name this branch and put the gene-id map after
+the pins. **Expectation for the reader of the QC:** with no chromosome column in the gene-id map, a unit whose arms
+differ in sex mix by more than half, or whose sex cannot be called, is refused (`refused_sex_chromosomes`); with two
+to four embryos an arm this takes a noticeable share of units and is not a fault.
 
 ## Stage 9 round 2 (campaign/t3-ext-bulk-2): what changed after the two reviews of 120af2f
 

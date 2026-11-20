@@ -27,6 +27,7 @@
 #        run_dgx.sh "$PWD" plan "GSE270969", while it is not in the default list below.
 #   Stage 9 (bulk whole-embryo units, README "Bulk whole-embryo units"): MODE header runs only the header step
 #        (`fetch.py header`) of a bulk count table after its plan passed: the first line of the table, streamed and
+#        (for a GEO bulk form it is refused while t3x_common.GEO_BULK_OPEN is False)
 #        closed at the first newline, screened and tied; nothing else is downloaded. Name each item as
 #        ACC:SERIES:FILE for a GEO series table, or ACC alone for the ArrayExpress resource (E-MTAB-7322), e.g.
 #        run_dgx.sh "$PWD" header "GSE214161:GSE214161:GSE214161_counts.txt.gz E-MTAB-7322". Bulk datasets go

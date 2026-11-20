@@ -29,13 +29,6 @@ import process as pr  # noqa: E402
 import t3x_common as cm  # noqa: E402
 import t3x_tables as tb  # noqa: E402
 
-
-@pytest.fixture(autouse=True)
-def _geo_bulk_forms_open_for_these_tests(monkeypatch):
-    """The GEO bulk forms are closed in the committed code (t3x_common.GEO_BULK_OPEN is False); the synthetic tests
-    of those forms open them for their own run only."""
-    monkeypatch.setattr(cm, "GEO_BULK_OPEN", True)
-
 ACC = "E-MTAB-7322"
 LINES = ("Abcz1", "Defz2", "Ghiz3")
 PANEL = [f"g{i}" for i in range(38)] + ["Xist", "Tsix"]
@@ -620,7 +613,8 @@ def test_a_description_key_with_a_hyphen_is_read_and_other_punctuation_still_wit
     idf = IDF + b"MAGE-TAB Version\t1.1\n"
     pl = ae.plan_from_texts(cm.dataset(ACC, y), idf, sdrf_and_runs()[0], METHODS)
     assert pl["status"] == "ok" and pl["series"][ACC]["fields"]["idf|MAGE-TAB Version"] == ["1.1"]
-    for bad in (b"Bad;Key\tx\n", b"Key/Other\tx\n", b"-Leading\tx\n", b"Key(1)\tx\n"):
+    for bad in (b"Bad;Key\tx\n", b"Key/Other\tx\n", b"-Leading\tx\n", b"Key(1)\tx\n", b"Key--\tx\n", b"Key-\tx\n",
+                b"A - B\tx\n"):
         got = ae.plan_from_texts(cm.dataset(ACC, y), IDF + bad, sdrf_and_runs()[0], METHODS)
         assert got["status"] == "refused" and "closed grammar" in got["reason"] and "text withheld" in got["reason"]
 
@@ -666,3 +660,45 @@ def test_the_geo_bulk_forms_are_closed_in_the_committed_code(tmp_path, monkeypat
     q = tmp_path / "ae.yaml"
     q.write_text(YAML)
     assert cm.dataset(ACC, q)["count_form"] == "arrayexpress"
+
+
+def test_trailing_whitespace_after_the_allele_part_is_not_compared_but_two_prefixes_fail(y):
+    sdrf = sdrf_and_runs()[0].decode().replace("<tm1a(EUCOMM)Wtsi>", "^tm1a(EUCOMM)Wtsi")
+    base = ae.plan_from_texts(cm.dataset(ACC, y), IDF, sdrf.encode(), METHODS)
+    lines = sdrf.split("\n")
+    line = sorted(base["line_set"])[0]
+    sn = base["line_set"][line]["ko"][0]                         # an eligible knockout embryo of the committed set
+    rows_of = [i for i, ln in enumerate(lines) if ln.startswith(sn + "\t")]
+    assert len(rows_of) >= 2 and sn not in base["comparisons"]["c"]
+    k = rows_of[0]
+    spaced = lines.copy()
+    # a trailing space on one row of the embryo only
+    spaced[k] = spaced[k].replace(f"{line}^tm1a(EUCOMM)Wtsi", f"{line}^tm1a(EUCOMM)Wtsi ", 1)
+    assert spaced[k] != lines[k]
+    got = ae.plan_from_texts(cm.dataset(ACC, y), IDF, "\n".join(spaced).encode(), METHODS)
+    assert got["line_set"] == base["line_set"] and got["comparisons"]["c"] == base["comparisons"]["c"]
+    two = lines.copy()
+    two[k] = two[k].replace(f"{line}^tm1a(EUCOMM)Wtsi", f"{line}x^tm1a(EUCOMM)Wtsi", 1)
+    bad = ae.plan_from_texts(cm.dataset(ACC, y), IDF, "\n".join(two).encode(), METHODS)
+    assert sn in bad["comparisons"]["c"]
+
+
+def test_a_row_naming_a_withheld_line_in_its_source_name_or_allele_is_withheld_too(y):
+    sdrf, _, _ = sdrf_and_runs()
+    lines = sdrf.decode().split("\n")
+    k = next(i for i, ln in enumerate(lines) if ln.startswith("Abcz1_wt1\t"))
+    row = lines[k].split("\t")
+    by_name = row.copy()
+    by_name[0] = "Trps1_hom9"                                   # its line column still says Abcz1
+    by_allele = row.copy()
+    by_allele[0], by_allele[H.index("Comment[allele]")] = "Abcz1_wt9", "Trps1<x>"
+    for extra in (by_name, by_allele):
+        e = extra.copy()
+        e[H.index("Comment[ENA_RUN]")] = "ERR7777777"
+        e[H.index("Comment[ENA_SAMPLE]")] = "ERS7777777"
+        e[H.index("Characteristics[individual]")] = "new-individual"
+        text = ("\n".join([*lines[:-1], "\t".join(e)]) + "\n").encode()
+        pl = ae.plan_from_texts(cm.dataset(ACC, y), IDF, text, METHODS)
+        assert pl["status"] == "ok" and e[0] not in {r["source_name"] for r in pl["tables"][ACC]}
+        assert "ERR7777777" not in json.dumps(pl)
+

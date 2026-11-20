@@ -25,7 +25,8 @@ The mechanical comparisons, each printing its number of disagreements (a disagre
   (a) all rows of a Source Name agree on every Characteristics and Factor Value column;
   (b) the Source Name's genotype token (source_name_pattern's group 'genotype') maps through
       t3x_common.GENOTYPE_MAP to Characteristics[genotype], which is one of the map's values;
-  (c) the Source Name's gene token equals the line equals the allele's prefix (Comment[allele] before its first '<');
+  (c) the Source Name's gene token equals the line equals the allele's prefix (Comment[allele] before its first
+      '<' or '^'; every row must give the same prefix; whitespace after the allele part is not compared);
   (d) the stage is 'embryonic day X' exactly, the somite value fullmatches '^(\\d+)-somite stage$', and no
       Characteristics or Factor Value has leading or trailing whitespace;
   (e) exactly one ENA sample per Source Name, one Source Name per individual and per ENA sample, and no Source Name
@@ -74,7 +75,7 @@ SDRF_HEADER = re.compile(
     r"Array Data File|Derived Array Data File|Normalization Name|"
     rf"Comment{_BR}|Characteristics{_BR}|Factor Value{_BR}|Unit{_BR}|Parameter Value{_BR})")
 # A hyphen is allowed inside a key: the real description file holds "MAGE-TAB Version" (seen 2026-11-20, metadata only).
-IDF_KEY = re.compile(rf"[A-Za-z][A-Za-z0-9 \-]*(?:{_BR})?")
+IDF_KEY = re.compile(rf"[A-Za-z][A-Za-z0-9 ]*(?:-[A-Za-z0-9][A-Za-z0-9 ]*)*(?:{_BR})?")
 STAGE_VALUE = re.compile(r"embryonic day (\d+(?:\.\d+)?)")
 SOMITE_VALUE = re.compile(r"^(\d+)-somite stage$")
 ERR_RX = re.compile(r"ERR\d{6,7}")
@@ -209,9 +210,25 @@ def withhold_rows(ds: dict, header: list[str], rows: list[list[str]]) -> tuple[l
     counts = {w: [0, wl[w]] for w in wl}
     linked_keys = set()
     keep = []
-    for r in rows:
+    # stage 9 round 3 (the verifier's point L3): a row is also withheld when its Source Name's gene token or its allele
+    # prefix names a withheld line (compared after _norm), whatever its line column says; counted under that line
+    pat = re.compile(ds["source_name_pattern"]) if ds.get("source_name_pattern") else None
+    by_norm = {_norm(w): w for w in wl}
+    si, ai = header.index(COL["source"]), header.index(COL["allele"])
+
+    def named(r: list[str]) -> str | None:
         if r[li] in wl:
-            counts[r[li]][0] += 1
+            return r[li]
+        m = pat.fullmatch(r[si]) if pat else None
+        for token in ((m.group("gene") if m else ""), re.split(r"[<^]", r[ai], maxsplit=1)[0]):
+            if token.strip() and _norm(token) in by_norm:
+                return by_norm[_norm(token)]
+        return None
+
+    for r in rows:
+        w = named(r)
+        if w is not None:
+            counts[w][0] += 1
             for c in LINK_KEYS:
                 if r[idx[c]].strip():   # the second reviewer's lesser point 5: an empty value links nothing
                     linked_keys.add((c, r[idx[c]]))
@@ -281,9 +298,10 @@ def comparisons(ds: dict, header: list[str], recs: dict[str, dict]) -> dict[str,
                 out[sn].setdefault("b", "the Source Name does not match source_name_pattern")
             elif cm.GENOTYPE_MAP.get(m.group("genotype")) != geno:
                 out[sn].setdefault("b", "its genotype token does not map to its genotype value")
-            allele = _one(_vals(f, header, COL["allele"]))
-            # the allele is written line<allele> or, in the real sample table, line^allele (seen 2026-11-20)
-            prefix = re.split(r"[<^]", allele, maxsplit=1)[0] if allele else None
+            # the allele is written line<allele> or, in the real sample table, line^allele (seen 2026-11-20); every
+            # row of the Source Name must give the same prefix; whitespace after the allele part is not compared
+            prefixes = {re.split(r"[<^]", al, maxsplit=1)[0] for al in _vals(f, header, COL["allele"])}
+            prefix = prefixes.pop() if len(prefixes) == 1 else None
             if m is None or line is None or not prefix or not (m.group("gene") == line == prefix):
                 out[sn].setdefault("c", "the Source Name's gene token, the line and the allele prefix differ")
         stage = _one(_vals(f, header, COL["stage"]))
