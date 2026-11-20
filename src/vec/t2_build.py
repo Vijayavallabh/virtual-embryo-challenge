@@ -1685,7 +1685,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
                        with_partners: bool = False, herd: bool = False, move_coupling: str = MOVE_COUPLINGS[0],
                        with_coupling: bool = False, draw: str = DRAWS[0],
                        log_depth: tuple[np.ndarray, np.ndarray] | None = None,
-                       t_mix: float | None = None, positions: str = POSITIONS[0]) -> Interpolation:
+                       t_mix: float | None = None, positions: str = POSITIONS[0],
+                       shape_form: str | None = None) -> Interpolation:
     """Displacement interpolation between two stages at time fraction t (0 = before, 1 = after).
 
     1. Each cloud is centred and divided by its RMS radius (no PCA axes, so no sign choice).
@@ -1740,6 +1741,12 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     pool_coords / pool_weights are the before stage's cells alone, uniform. Needs t_pos=0.0; not with herd or
     draw="midpoint", which choose the rows by the moved positions. Left at "moved", the result is bit-identical to a
     call without it.
+
+    shape_form (row E49 of experiments/harness/TRIES.md, as drafted; with positions="floor_exact" only): one of
+    `vec.shape_interp.ALL_FORMS`, applied to the exact-position cloud in the before stage's normalised frame before the
+    size rule, so the size rule's RMS is set after it (`vec.shape_interp.apply_form`; the guard's source cloud is mapped
+    alike). Rows, order, count and every random stream of the default are unchanged; stream 47's candidate draw still
+    runs. Left at None, the result is bit-identical to a call without it.
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -1766,6 +1773,13 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
             raise ValueError(f"positions={positions!r} places the cells in the before stage's geometry: pass t_pos=0.0")
         if herd or draw != DRAWS[0]:
             raise ValueError(f"positions={positions!r} is not defined with herd or draw={draw!r}")
+    if shape_form is not None:
+        from vec import shape_interp
+
+        if shape_form not in shape_interp.ALL_FORMS:
+            raise ValueError(f"shape_form must be one of {shape_interp.ALL_FORMS}, got {shape_form!r}")
+        if positions != POSITIONS[1]:
+            raise ValueError("shape_form acts on the exact-position cloud: pass positions='floor_exact'")
     if draw != DRAWS[0]:
         if herd:
             raise ValueError(f"draw={draw!r} and herd both choose the rows; use one of them")
@@ -1823,12 +1837,21 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     else:  # E47: the before rows where they are, the after rows on unused before positions (rows_a's order), permuted
         at_a, floor_exact = _floor_exact_positions(Zb, Eb, Ea, ib, ia, rows_b, rows_a, n_pc, seed)
         Z = np.vstack([Zb[rows_b], at_a])[perm]
+    shaped = None
+    if shape_form is not None:  # E49: the form on the exact-position cloud, before the size rule
+        shaped = shape_interp.apply_form(shape_form, Z=Z, Zb=Zb, Za=Za, t=float(t), R=R, seed=seed, rows_b=rows_b,
+                                         rows_a=rows_a, perm=perm, t_mix=tm)
+        Z = shaped.Z
     zc = Z.mean(0)
     scale = target_rms / rms_radius(Z)
     coords = cb + (Z - zc) * scale
     if floor_exact is None:
         pool = cb + (np.vstack([pos_b, pos_a]) - zc) * scale
         weights = np.r_[np.full(len(Zb), (1.0 - tm) / len(Zb)), np.full(len(Za), tm / len(Za))]
+    elif shaped is not None:  # the source the form maps (F1, F2: the before stage; F3: both brackets, registered)
+        pool = cb + (shaped.pool - zc) * scale
+        weights = (np.full(len(shaped.pool), 1.0 / len(shaped.pool)) if shaped.pool_weights is None
+                   else shaped.pool_weights)
     else:  # every cell sits on a before position: the source is the before stage alone, drawn uniformly
         pool = cb + (Zb - zc) * scale
         weights = np.full(len(Zb), 1.0 / len(Zb))
@@ -1862,6 +1885,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         record["positions"] = positions
         record["floor_exact"] = {"fallback": floor_exact["fallback"], "stream": FLOOR_EXACT_STREAM,
                                  "mean_cost": floor_exact["mean_cost"]}
+    if shaped is not None:  # flat values only, under shape_interp_*: no cell count
+        record.update({f"shape_interp_{k}" if k != "form" else "shape_interp": v for k, v in shaped.record.items()})
     partners = None
     if with_partners:
         prng = np.random.default_rng([seed, 5])
