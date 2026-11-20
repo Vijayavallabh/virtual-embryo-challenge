@@ -8134,3 +8134,25 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     pinned or fetched until two readers have read every line of its plan table and a register row exists. The AI
     assistant's odds that it yields a table are low: the two Tbx1 studies with sorted cells of the same region gave
     none, because the guards fail closed on a sorted lineage. No guard is loosened for it.
+- 2026-11-20 (pp), T3 outside knockouts: one pair of the Kmt2d study pinned by two readers who agree (state at 19:42 UTC,
+  2026-11-20). Written by the AI assistant.
+  - **The readings.** The AI assistant read every line of the series' plan table and wrote its reading down before the
+    second reader returned (scratch `lift8/kmt2d_first_reading.txt`); a second reader agent, which was not told that
+    reading, read all 273 lines. Both: no held-out or pathway label (the second reader's scan found only the letters
+    of one listed name inside the word "indicate"); each library is a pool of embryos of one genotype, genotyped
+    before pooling, then sorted for the lineage reporter; stage E9.5 in every record and no other stage; the non-ASCII
+    characters are units and typography, none inside a label. Both saw that the series holds two experiments (two
+    submission dates, two library kits, three and four embryos per pool) and that check 4 asks for a control of the
+    knockout's own experiment; both pin the later pair only (knockout GSM9473666, control GSM9473667), chosen before
+    any count was read because its kit is the one the pipeline parses and its pools are larger. The second reader made
+    its pins conditional on the main session's ruling on the records' word "demultiplexing".
+  - **The AI assistant's ruling,** the same as for the Usb1 study (entry (ii)): the records say demultiplexing,
+    barcode processing and gene counting were done "for each sample" with the vendor's pipeline; that is the
+    pipeline's own per-sample step, not a design that mixes genotypes in one capture. The pair and the series are
+    pinned with the hashes both readers read; the entry's expected count is set to one library per arm; register row
+    X015 is placed before any table exists; the dataset-file hash is updated in the same commit.
+  - **Not known from the records:** whether the deposited matrices are the vendor pipeline's filtered output or counts
+    adjusted by an ambient-RNA tool; the pipeline's own checks on the counts apply as for every dataset. The cells are
+    a sorted lineage of one region, so the guards may refuse every group, as they did for the two Tbx1 studies. **The
+    two-study tables that K22 read are kept aside before the rerun** (`~/v/vec-ext/t3/tables_two_study`), because the
+    planned row K23 reads that table at its pinned hash.

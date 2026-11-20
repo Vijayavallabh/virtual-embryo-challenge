@@ -631,7 +631,7 @@ datasets:
       control: {on: text, all: ['kmt2d\s*-?\s*f\s*/\s*\+|control\d*-kmt2d']}
       ko:
         - {gene: Kmt2d, on: text, all: ['kmt2d\s*-?\s*f\s*/\s*f|kmt2d-cko']}
-    expect: {E9.5: {ko: 2, control: 2}}
+    expect: {E9.5: {ko: 1, control: 1}}
     sample_file_patterns: ['(matrix\.mtx|barcodes\.tsv|features\.tsv|genes\.tsv)(\.gz)?$']
     files_note: "per-sample mtx triples of the four samples (per the searchers; not checked against a plan table)"
     licence: "GEO: NCBI places no restriction on use; submitter rights may apply (not checked per study)"
@@ -639,4 +639,28 @@ datasets:
     why: "a chromatin-regulator loss at E9.5 with same-day controls; a further study for the all-knockouts table"
     risks: "heterozygous control (d = 0.5); sorted cells (gate not read), pharynx and heart only, so few reference groups; both arms Tbx1Cre/+; two samples may state the stage only under another key or in a title the parser refuses"
     verified: false
-    pinned: []
+    # Pinned 2026-11-20 by two readers who each read every line of this series' plan table (the main session, and an
+    # independent second reader agent) and reached the same pins. ONE PAIR ONLY: the series holds two experiments (two
+    # submission dates, two library kits); a knockout is set against the control of its own experiment (check 4), so the
+    # earlier pair (GSM9032274, GSM9032275) is not pinned. The later pair was chosen by both readers before any count was
+    # read: its kit is the one the pipeline parses and its pools hold four embryos. The records' words "The
+    # deumltiplexing, barcode processing, and gene counting for each sample were done using ... Cell Ranger" are ruled
+    # the vendor pipeline's own per-sample step, as for GSE277839 (decision log 2026-11-20 (ii), (pp)).
+    pinned:
+      # GSM9473666: title "4 pooled E9.5 microdissected Tbx1Cre/+; Kmt2d F/F; GFP F/+ Embryos", treatment "Conditional Knockout"
+      - accession: GSM9473666
+        arm: ko
+        gene: "Kmt2d"
+        stage: E9.5
+        files: ["GSM9473666_Mutant-Kmt2d-cKO-E95_barcodes.tsv.gz", "GSM9473666_Mutant-Kmt2d-cKO-E95_features.tsv.gz", "GSM9473666_Mutant-Kmt2d-cKO-E95_matrix.mtx.gz"]
+        metadata_sha256: "71133dc9d898609aa021e3d4847a2c1cb68690202ab705933ac12c2b546116e0"
+      # GSM9473667: title "4 pooled E9.5 microdissected Tbx1Cre/+; Kmt2d F/+; GFP F/+ Embryos", treatment "Conditional Heterozygote"
+      - accession: GSM9473667
+        arm: control
+        gene: "Kmt2d"
+        stage: E9.5
+        files: ["GSM9473667_Control-Kmt2d-E95_barcodes.tsv.gz", "GSM9473667_Control-Kmt2d-E95_features.tsv.gz", "GSM9473667_Control-Kmt2d-E95_matrix.mtx.gz"]
+        metadata_sha256: "f65d8ffc66ef529a0c2275f4cd97b627012326cba5d7cfda8cca235d75f764c3"
+    pinned_series:
+      - accession: GSE299068
+        series_metadata_sha256: "8064dd8bc30bc2de3b031967e81ca61f0e64f70e211ba7704005b1b9744bdb68"
