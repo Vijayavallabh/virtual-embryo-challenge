@@ -8497,3 +8497,21 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     which check 2 lists, and recalled as acting on beta-catenin-dependent transcription) and the Cables2 study
     (recalled with a tie to Wnt signalling in early embryos). The Zmym2, Uhrf1 and Rreb1 studies go to the plan step
     once the bulk intake is merged.
+- 2026-11-20 (bbb), T3 outside knockouts: the nine Cmtr2 samples pinned by two readers (state at 21:42 UTC, 2026-11-20). Written
+  by the AI assistant.
+  - **The readings.** After the unfiltered-matrix intake was merged, the plan step offered each sample's one file. The
+    AI assistant read every line of the plan table and wrote its reading down first (scratch
+    `lift8/cmtr2_first_reading.txt`): five knockout and four wild-type embryos, one embryo per library, stage E9.5 in
+    every record and no other stage, no held-out or pathway label, each file the only file of its own sample's folder.
+    A second reader agent, not told that reading, read all 511 lines and the same nine hashes and found the same on
+    every check but one: the entry's control definition said "the same series and litters", and no record states
+    littermates. It also saw what the AI assistant had not weighed: the library codes in the file names split cleanly
+    by genotype (three code groups hold the knockouts, two the wild types), so genotype may be confounded with litter
+    or capture group; eight embryos are male and the one female is a knockout.
+  - **The AI assistant's ruling.** The control definition is rewritten to say what the records say (same series; five
+    litters; no littermate relation; library codes that do not overlap between the arms); the relation stays
+    same_series, so the pipeline's design factor halves the ratio. On that wording the second reader agrees to pin all
+    nine, and they are pinned with the hashes both readers read; register row X016 is placed before any table exists.
+    A study whose arms may differ by litter is a weaker design than littermates and no weaker than the
+    one-library-per-arm studies already pinned; the shuffled control of a practice read is what tells a table's genes
+    from its noise. No guard is changed for it.

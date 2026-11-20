@@ -515,10 +515,16 @@ def test_a_plan_made_under_another_raw_declaration_is_refused(tmp_path, monkeypa
 
 
 def test_the_committed_declaration_is_on_gse270969_only_with_no_pins():
+    # Since 2026-11-20 the nine samples are pinned by two readers (docs/PLAN.md decision log 2026-11-20 (bbb)); the
+    # declaration is still on this dataset alone, and every pinned file is an unfiltered matrix of its own sample.
     allds = cm.load_datasets()
     assert [a for a, d in allds.items() if d.get("raw_matrices")] == ["GSE270969"]
     ds = allds["GSE270969"]
-    assert ds["pinned"] == [] and ds["pinned_series"] == []
+    assert sorted(x["accession"] for x in ds["pinned"]) == [f"GSM83664{n}" for n in range(19, 28)]
+    assert [x["arm"] for x in ds["pinned"]].count("ko") == 5 and [x["arm"] for x in ds["pinned"]].count("control") == 4
+    assert all(len(x["files"]) == 1 and x["files"][0].startswith(x["accession"] + "_")
+               and x["files"][0].endswith("raw_feature_bc_matrix.tar.gz") for x in ds["pinned"])
+    assert [x["accession"] for x in ds["pinned_series"]] == ["GSE270969"]
     host = "ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM9999nnn/GSM9999001/suppl/"
     ok, _ = fe.sample_files(ds, {"supplementary_file_1": [host + "GSM9999001_KO_1_raw_feature_bc_matrix.tar.gz"]},
                             "GSM9999001")
