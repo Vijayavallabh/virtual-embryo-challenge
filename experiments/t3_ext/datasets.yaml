@@ -706,3 +706,59 @@ datasets:
     pinned_series:
       - accession: GSE299068
         series_metadata_sha256: "8064dd8bc30bc2de3b031967e81ca61f0e64f70e211ba7704005b1b9744bdb68"
+
+  # E-MTAB-7322 (the Mouse Genetics Project's whole-embryo set) joined the list on 2026-11-20 for its metadata steps
+  # (docs/PLAN.md decision log 2026-11-20 (vv), (yy), (aaa), (eee)). The 29 withheld lines are the two readers' result
+  # on the line names, read before any count: a line is used only if neither reader doubted it. Nothing is pinned
+  # until the plan, the header step, the second plan and both readers' reading of the views.
+  - accession: E-MTAB-7322
+    status: cleared
+    tier: unrelated
+    study: MGP-DMDD
+    kind: "whole-embryo bulk RNA sequencing of knockout lines and wild-type embryos of each line at embryonic day 9.5, one embryo a library (the Mouse Genetics Project's DMDD programme)"
+    design: germline
+    control_relation: same_series
+    repository: arrayexpress
+    modality: bulk
+    count_form: arrayexpress
+    id_type: ensembl
+    gene_columns: ["Gene ID"]
+    withheld_lines:
+      - {line: Trps1, reason: held}                 # held: a GATA-type zinc-finger factor (check 2: any GATA factor)
+      - {line: Anks6, reason: pending_phenocopy}    # both readers: a ciliary gene
+      - {line: Atxn10, reason: pending_phenocopy}   # both readers: a ciliary gene
+      - {line: B9d2, reason: pending_phenocopy}     # both readers: a ciliary gene
+      - {line: Cc2d2a, reason: pending_phenocopy}   # both readers: a ciliary gene
+      - {line: Ift140, reason: pending_phenocopy}   # both readers: a ciliary gene
+      - {line: Kif3b, reason: pending_phenocopy}    # both readers: a ciliary gene
+      - {line: Kifap3, reason: pending_phenocopy}   # both readers: a ciliary kinesin partner recalled as a partner of Apc
+      - {line: Rpgrip1l, reason: pending_phenocopy} # both readers: a ciliary gene
+      - {line: Mad2l2, reason: pending_phenocopy}   # the first reader's doubt (recalled as a partner of a Tcf factor); the second reader had none
+      - {line: Tmem98, reason: pending_phenocopy}   # the first reader's doubt (recalled as a regulator of Wnt signalling); the second reader had none
+      - {line: Nek9, reason: pending_phenocopy}     # the second reader's doubt, from recall
+      - {line: Mtor, reason: pending_phenocopy}     # the second reader's doubt, from recall
+      - {line: Map2k7, reason: pending_phenocopy}   # the second reader's doubt, from recall
+      - {line: Traf6, reason: pending_phenocopy}    # the second reader's doubt, from recall
+      - {line: Traf2, reason: pending_phenocopy}    # the second reader's doubt, from recall
+      - {line: Rala, reason: pending_phenocopy}     # the second reader's doubt, from recall
+      - {line: Pigf, reason: pending_phenocopy}     # the second reader's doubt, from recall
+      - {line: Pigl, reason: pending_phenocopy}     # the second reader's doubt, from recall
+      - {line: Pgap2, reason: pending_phenocopy}    # the second reader's doubt, from recall
+      - {line: Hira, reason: pending_phenocopy}     # the second reader's doubt, from recall
+      - {line: Smc3, reason: pending_phenocopy}     # the second reader's doubt, from recall
+      - {line: 1700007K13Rik, reason: pending_phenocopy}# the second reader could not judge it
+      - {line: 4933434E20Rik, reason: pending_phenocopy}# the second reader could not judge it
+      - {line: Hmgxb3, reason: pending_phenocopy}   # the second reader could not judge it
+      - {line: Zkscan14, reason: pending_phenocopy} # the second reader could not judge it
+      - {line: Zkscan17, reason: pending_phenocopy} # the second reader could not judge it
+      - {line: Dhx35, reason: pending_phenocopy}    # the second reader could not judge it
+      - {line: Gpr107, reason: pending_phenocopy}   # the second reader could not judge it
+    source_name_pattern: '(?:M\d+_)?(?P<gene>[A-Za-z0-9]+)_(?P<genotype>hom|het|wt)\d+'
+    screen_series: [E-MTAB-7322]
+    stages_used: [E9.5]
+    licence: "ArrayExpress/BioStudies and Expression Atlas (EMBL-EBI): data are freely available under EMBL-EBI's terms of use; the depositor is the Wellcome Sanger Institute (not checked beyond the repository's default)"
+    citation: "none read (the description file names a publication; it was not opened)"
+    why: "about 25 knockout lines of unrelated genes, each against its own line's wild-type embryos, two to nine single embryos an arm: the best-replicated estimate at hand of what a knockout embryo shares against its control"
+    risks: "the description file states no littermate relation (d = 0.5); embryos are staged by day, so delayed mutants are part of the ratio; one programme, one protocol; with no chromosome column in the gene-id map a unit whose arms differ in sex mix is refused"
+    verified: false
+    pinned: []

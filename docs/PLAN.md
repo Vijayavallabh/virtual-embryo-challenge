@@ -8548,3 +8548,25 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     No guard and no constant of the cell call is changed, and nothing was read against any practice target. The
     reviewer of the unfiltered intake had warned that unequal libraries between arms can by themselves make a ratio;
     the per-unit record of the arms' call levels is what showed it here. The tables stay the three-study ones.
+- 2026-11-20 (eee), T3 outside knockouts: the bulk intake is verified for the many-line set and merged; that set joins the
+  dataset list for its metadata steps (state at 22:37 UTC, 2026-11-20). Written by the AI assistant.
+  - **The bulk branch after three rounds.** The fix round's verifier found two blockers left, both on the two GEO
+    count-table forms, and the many-line form sound end to end. The AI assistant then made four changes on
+    `campaign/t3-ext-bulk-3` (the description file's real key and the sample table's real allele notation are read;
+    the named set must withhold its held line; the two GEO forms are closed in code until their blockers are
+    resolved), a verifier found two small blockers in that (uneven trailing spaces in the allele column; a wrong
+    branch name in the operator steps), the AI assistant applied its replacement texts and three of its further
+    points, and the same verifier's second pass returned: ready to use the many-line form on the real set with the GEO
+    forms closed. Merged at e0a58a1; 1,693 tests pass. Two of its points stay open and are covered by hand below.
+  - **The set's entry** (`experiments/t3_ext/datasets.yaml`, E-MTAB-7322, study key MGP-DMDD; no pins): the 29
+    withheld lines of entry (yy) with each reader's reason; the sample-name pattern as the real table writes it; the
+    control relation same_series, because the set's description file says embryos were staged by somite number,
+    genotyped and processed one embryo a library, and states no littermate relation, so the design factor halves every
+    ratio. The AI assistant read the description file in full as first reader: no held-out or pathway label; it names
+    a publication, not opened.
+  - **The order from here,** each step before the next: the plan (description and sample tables only); the header step
+    (the count matrix's first line only); the plan again, which fixes the line set; the two readers on the views; by
+    hand, the check the verifier asked for (that the rows withheld under each line equal the rows whose line column
+    names that line, so no embryo of a kept line was withheld through its name or allele without a reader seeing it);
+    register row X017; the pins of the whole line set; the gene-id map from a pinned single-cell sample's features
+    file; then fetch, process and combine. The two single GEO bulk studies of entry (aaa) wait for the GEO forms.

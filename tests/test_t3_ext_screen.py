@@ -383,7 +383,9 @@ def test_the_committed_dataset_list_loads_and_holds_back_what_the_plan_holds_bac
     # GSE277839 and GSE270969 joined the cleared list on 2026-11-20 (docs/PLAN.md decision log 2026-11-20 (gg))
     # GSE299068 joined it the same day for its metadata step (decision log 2026-11-20 (oo))
     # GSE205117 is held since stage 8: on the team's held list (t3x_common.HELD_EXTRA), its review term not cleared
-    assert cleared == {"GSE168768", "GSE186934", "GSE137337", "GSE204906", "GSE277839", "GSE270969", "GSE299068"}
+    # E-MTAB-7322 (the many-line bulk resource) joined it on 2026-11-20 (decision log 2026-11-20 (eee))
+    assert cleared == {"GSE168768", "GSE186934", "GSE137337", "GSE204906", "GSE277839", "GSE270969", "GSE299068",
+                       "E-MTAB-7322"}
     assert {a for a, d in ds.items() if d["status"] == "held_phenocopy"} == {"GSE165300", "GSE126128", "GSE280543",
                                                                              "GSE205117"}
     assert {a for a, d in ds.items() if d["status"] == "excluded_design"} == {"GSE259342", "E-MTAB-7325"}

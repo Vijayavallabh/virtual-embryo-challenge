@@ -967,8 +967,13 @@ def test_a_single_cell_dataset_holds_no_bulk_key_and_its_pins_hash_as_before(tmp
     want = hashlib.sha256(json.dumps({"samples": ds["pinned"], "series": ds["pinned_series"]}, sort_keys=True,
                                      ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
     assert cm.pins_sha256(ds) == want
-    for d in cm.load_datasets().values():   # the committed file: every dataset single-cell, as before
-        assert cm.modality(d) == "single_cell" and not cm.is_bulk(d)
+    # the committed file: every dataset single-cell, as before, but the one many-line bulk resource added on 2026-11-20
+    # (docs/PLAN.md decision log 2026-11-20 (eee)); no GEO bulk dataset (those forms are closed)
+    bulk = {acc for acc, d in cm.load_datasets().items() if cm.is_bulk(d)}
+    assert bulk == {"E-MTAB-7322"}
+    for acc, d in cm.load_datasets().items():
+        if acc not in bulk:
+            assert cm.modality(d) == "single_cell"
 
 
 def test_bulk_pins_need_two_libraries_per_arm_and_their_own_form(tmp_path, y):
