@@ -19,7 +19,8 @@
 # exclude_match (on the joined text, or on the title only when exclude_match_on: title) are never selected; a match
 # of design_refuse anywhere refuses the dataset. review_cleared entries name a GSM, or a series accession for a
 # series-level field (title, summary, overall_design ...), with the review term and the reason. Stages come from the
-# characteristics (one value; a range or two values refuse the sample) and must be in stages_used. `expect` counts are
+# characteristics (one value; a range or two values refuse the sample), or, where a dataset lists `stage_fields`, from
+# every listed sample field that states one (all must agree), and must be in stages_used. `expect` counts are
 # compared with the suggestion and noted in the plan table. The selectors are written from the scouts' records; the
 # GSM titles were NOT all read by me. Since stage 3 a selector only suggests: a wrong one costs a reader's correction,
 # not a wrong fetch (see THE PINNED SAMPLE LIST below).
@@ -304,6 +305,8 @@ datasets:
     repository: geo
     screen_series: [GSE204906, GSE204908]
     stages_used: [E8.5]
+    # its samples state the stage only in source_name_ch1 and description, not in the characteristics (second reader)
+    stage_fields: [characteristics_ch1, source_name_ch1, description]
     control_definition: "WT E8.5 embryos of the same series (littermate relation not verified, so d = 0.5)"
     arms:
       control: {on: text, all: ['(?<![a-z])(wt|wild[ -]?type)(?![a-z])'],
