@@ -7321,3 +7321,133 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     `experiments/builds/results/t3_exponent_3654966.txt`; ledger row R14.
   - With the barred s2 (the mild composition, built) these are T3's three candidates of entry (h). Order of
     upload, fixed now: exponent 1.5 first; then, if it beats 61.8, exponent 2.0, otherwise the barred s2.
+- 2026-11-20 (l), the embryo's occupancy term: what analysts other than the AI assistant found, and their proposal
+  (state at 12:40 UTC). Written by the AI assistant, which is recused on this lever (entry (i)) and states no
+  preference; it reports and runs what they fixed.
+  - **Who and how** (wf_409f1d09-957: an investigator, a cold challenger, a writer, a reviewer; none saw the main
+    session's conversation; verdicts "stands with changes" and "ready", no blocker). They read the pinned scorer's
+    code and the builder's and did no arithmetic on a test score.
+  - **Their finding.** The scorer puts each cloud in its own frame (centre, divide by the RMS radius, principal
+    axes), grids it, and compares occupancy over the four proper sign flips only. The fixed build forces a
+    right-handed frame. The earlier build, which section 3 ("Scorer build") says the live board behaves like, does
+    not: each cloud's handedness is then whatever the linear-algebra routine returns on the rows drawn, so a file
+    can be compared with the truth's mirror image, by a coin of its own that is separate from the baseline copy's.
+    By the code this is the only route by which a file on E7.5's own positions can differ from a copy of E7.5 on
+    this term by more than sampling. The rescale, the translation, the units and the z axis are ruled out by the
+    code. They do not say that this is what happened at the test: that would be reasoning backward from scores.
+  - **Their target-free check, run by the main session on the built positions file** (`T2embryo_s2x.h5ad` against
+    the released E7.5 copy, in the fixed build's frame; `experiments/coords/occupancy_frame_check.py` on branch
+    `campaign/embryo-occupancy`, 616984b): handedness agrees; grid overlap with the copy 0.878 against 0.868 (sd
+    0.029) between copies; the second and third principal axes are turned against the copy's (cosines 0.915 and
+    0.925), which their table reads as their third mechanism being active and not fixed by a row order. No
+    builder defect shows. The file's own handedness under the earlier build is deliberately not printed.
+  - **Their proposal:** an off-by-default builder option, `--row-order copy_parity`, that only re-orders the
+    file's rows so that its handedness under the earlier build equals the baseline copy's, computed from the
+    released stage and the public code, never from a score; cells, positions, distances and size are unchanged, and
+    under the fixed build it changes nothing. They require, before any use on the test board: the captain's
+    ruling, a counted practice read with its row first (their row E48), and a guard flag. Their challenger calls
+    it inside the rules by its wording and near the line.
+  - **What stands in the way, on record:** the captain's earlier decision, "no parity hedge without the
+    organisers' approval" (section 9's log, 2026-11-02), and the organisers' silence on the scorer-build question
+    sent on 2026-10-19. The proposal goes to him as its own question.
+- 2026-11-20 (m), the captain's ruling on the embryo's row order; an omission of the AI assistant in the question;
+  three packages returned; a side note checked; a slip disclosed (state at 14:59 UTC). Written by the AI assistant.
+  - **The embryo question and his answer.** The question put the analysts' finding and proposal of entry (l) to him,
+    said that a reviewer called the option inside our rules but near the line, recalled his decision of 2026-11-02
+    ("no parity hedge without the organisers' approval") and the organisers' silence, and ended: "I am recused on
+    this and state no preference. May the embryo file use the row-order option?" The options: "Use it, after a
+    practice read" ("The analysts' route: a counted practice read on released stages first (a few hours), then the
+    embryo file is rebuilt with the option. This sets your 2 November decision aside for this one construction. The
+    method report will say the row order was set this way and why.") and "Keep the 2 November decision". His
+    answer, verbatim: "Use it, after a practice read".
+  - **An omission of mine in that question.** It said the analysts "found no other route and no defect in our
+    builder". The check's output of entry (l) falls, by the analysts' own table fixed before any output (their
+    reading A.2), under a second route being active: the file's second and third principal axes are turned against
+    the copy's, which their table says costs occupancy under both scorer builds and which a row order does not fix.
+    Their table names one fix for it, a different construction (the file takes the baseline copy's own rows and
+    count), which changes the embryo's count rule and needs his ruling; "nothing is built until he rules". The
+    grid overlap itself sat at the level of copy against copy (0.878 against 0.868, sd 0.029). What that means
+    for A.2 is for analysts other than me to say: a second group (wf_666d097c-21a) has the output and decides. He
+    is told in the next message.
+  - **Row E48** (the row-order option's practice read) is in the ledger before its run script exists, as its text
+    requires. The earlier reviewer's eight points (among them a guard so that the option refuses a test board
+    without a named flag) and the run script are with that second group's writer and reviewer.
+  - **T1's candidates** (wf_729a761e-919: a writer and a reviewer; "ready", no blocker). Two builder options, off
+    by default, refused on any command but the recomputed-groups file's: `--g-mom-damping 1.0` (A),
+    `--feng-fraction-mult 1.5` (B), both (C). Merged at 38bf1e0 with the reviewer's docstring fix; 445 targeted
+    tests pass. Row R15 placed. Building on `~/v/vec-campaign-d` at 1420c70: the default command must first
+    reproduce ad8f24c7..., then each candidate is built twice.
+  - **The heart's list**, fixed by analysts other than the AI assistant before either file has a score
+    (wf_5fc02235-25b: a designer, a cold challenger, a writer, a reviewer; "stands with changes", then "ready", no
+    blocker; branch `campaign/heart-candidates`, 01b2e00; no new builder option). K1, the half trim (the scope
+    option `s2_trim` with the size field the builder ties to it; copy draw, raw mode, same count, seed and halving
+    as the full trim; never built). K2, the full-scope copy (set heart2's `T2heart_s2iso_half.h5ad`, dc436d92...,
+    built on 2026-11-18, never uploaded). Their rule, in their words: "K1 goes first. K2 goes in the next slot
+    whatever K1 scores, and neither result decides whether the other is uploaded"; only headlines of the team's
+    own uploads choose; "beats" is a strictly higher headline; no re-seed, no re-upload, no change after a score;
+    "After K1 and K2, the heart's best file is whichever of C, B and A has the highest headline. The list ends
+    there". The trend step is left off (row H28's pre-set outcome). Practice both ways, row H27 at forecast sizes:
+    with the stages as released the half trim is ahead of the full trim on all three transitions (6.23, 2.48,
+    1.87; mean of folds 3.26) and the full scope ahead of the full trim by 2.90; with the truth cut down towards
+    the core the full trim is ahead of the half trim (mean of folds 6.19; -0.29, +11.87, +1.30) and of the full
+    scope by 11.32. Scope is a closed lever: each file needs the captain's own named exception; the question goes
+    to him with these figures and no preference of mine.
+  - **T3, outside knockouts, stage 1** (wf_30b3fc93-527: planner, challenger, engineer, reviewer). Reviewer: not
+    ready, one blocker: the screen for the two held-out genes let through the full name of Gata4 and guide and
+    hairpin short names for beta-catenin, and raised no flag on pathway-level inhibitor labels. Nothing was
+    fetched. A fix and two reviewers who try to break the screen are running (wf_e988fff9-6e1). The planner also
+    held three datasets back under the organisers' genotype clause, which was not quoted to the captain when he
+    ruled on the tiers ("a perturbation that phenocopies them counts as held out", `docs/DATA_POLICY.md`): Wls in
+    the Mesp1 lineage (GSE165300), Hand2 (GSE126128), Mef2c (GSE280543). They stay held; the clause is the
+    organisers' and his ruling on tiers does not lift it. What is cleared: T (GSE205117), Tbx1 (GSE168768,
+    GSE186934), the panel of unrelated knockouts (GSE137337) and the Dnmt nulls (GSE204906). The planner's own
+    doubt is on record: an outside knockout-over-own-control ratio cancels the sample and stage offset that the
+    committed rows read as most of the Mab21l2 factor, so a straight replacement can lose points.
+  - **T3, a second line from released data only** (wf_42122fd0-924: designer, challenger, writer, reviewer; no
+    score of theirs exists). The two scored T3 files differ in three things at once (the factor's source, the
+    depth step, the composition). Candidates built from the two released knockouts' factors without the depth
+    step are being fixed and their thin builder written; the list is entered here before any is uploaded.
+  - **A forwarded side note, checked.** It said the fallback `barred_s2` might lack the per-gene change. Its build
+    record names the same factor table at exponent 1.0 as `barred_s1`, with half the composition shift (log2
+    magnitude 0.359 against 0.718), as `build_submission.barred_table` gives both files. On the files: per-gene
+    means of `barred_s2` differ from `barred_s1`'s by a median of 0.08 log2 units, where the exponent-1.5 file,
+    half a factor away, differs by 0.38. The fallback carries the factor.
+  - **A slip of mine in that check.** My first command printed the three T3 files' shapes, so I saw the row count
+    of our own T3 file, which follows a board count by code. The value is quoted nowhere and enters nothing. T3
+    builds are read like every other test build from here on: exit code, hash, the stamp's commit and clean
+    fields.
+- 2026-11-20 (n), the captain's answer on the heart list; T1's order and rule, fixed before any candidate has a
+  score; what was started (state at 15:06 UTC). Written by the AI assistant.
+  - **The heart.** The analysts' list of entry (m) went to him in one question with their practice figures both
+    ways, the cost of a miss, and "I am recused on the heart's scope and size and state no preference" (the
+    question and its three options are in full in `docs/S2_RULES.md`, the heart amendment of 2026-11-20). His
+    answer, verbatim: "Both, K1 then K2". That is his own named exception on scope for K1 and his word for K2. The
+    amendment names row R16 and carries the analysts' ten-point rule in their words (new S2_RULES sha256 in
+    `docs/S2_RULES.sha256`). The analysts' launcher was merged (b807050; 87 targeted tests pass) and started on
+    `~/v/vec-campaign` at 1ba7c67: the full trim must reproduce 04cde636... before K1 and K2 are built, each twice.
+  - **T1: the order and the rule, fixed now.** No candidate of row R15 has a score, and none is built yet. Round
+    one: A and B, the two single changes to R13's file. C (both changes) is uploaded only if A and B each return a
+    strictly higher headline than R13's file returned; otherwise C is not uploaded. Only headlines of the team's
+    own T1 uploads choose. T1's standing file is the highest headline among the first upload, R13's file, A, B and
+    C; a tie keeps the earlier file. No candidate is re-seeded, rebuilt or changed after its score, and no
+    damping, fraction or other number is set from a score. A further T1 line (more atlases for the direction) is
+    weighed only after B's score says whether the direction is worth anything at the test; that reading uses the
+    headline's sign against R13's file and nothing else.
+  - **A point for the captain when T1 files are marked.** The first T1 upload used the atlas authors' labels; the
+    team's own odds that the organisers discount it were put at about 0.6 on 2026-11-19. Which upload is marked as
+    final per board is his act on the site; he is told once, with the T1 hand-over.
+  - **Started:** T1's builds on `~/v/vec-campaign-d` at 1420c70 (default first, which must reproduce ad8f24c7...).
+    Three agent groups: the embryo's stage 2 (wf_666d097c-21a), the T3 screen fix (wf_e988fff9-6e1), T3
+    candidates from the two released knockouts (wf_42122fd0-924).
+- 2026-11-20 (o), the heart's two candidates are built and handed over (state at 15:09 UTC). Written by the AI
+  assistant, which is recused on the heart's scope and size and states no preference.
+  - Record: `experiments/builds/results/heartcand_1ba7c67.txt`. On `~/v/vec-campaign` at 1ba7c67 the analysts'
+    launcher first rebuilt the full trim, whose half reproduced the uploaded file (04cde636...). K1, the half trim:
+    `runs/manual_upload/T2heart_s2trimcopy_half.h5ad`, sha256
+    47bb3fe2a082e5b221ee4ae8c003d47df77259867563a11f6c805e9bb82d91d5, built twice with the same bytes. K2, the
+    full-scope copy: `runs/manual_upload/T2heart_s2iso_half.h5ad`, sha256
+    dc436d9225bb28e7997d2ec51e95254cd125e569d44c059596298d0a7b6af5c2, built twice with the same bytes and equal to
+    set heart2's file of 2026-11-18. Every stamp: commit 1ba7c67, clean. The local format check passes on both.
+  - Order, by the analysts' rule in the amendment: K1 first, K2 in the next slot whatever K1 scores. Each upload
+    is the captain's own act. When he reports a headline it goes into `results/manual_uploads.csv` and this log,
+    and the heart's standing file is the highest headline of the full trim, K1 and K2. The heart list ends there.

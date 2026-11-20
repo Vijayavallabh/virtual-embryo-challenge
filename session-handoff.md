@@ -2,7 +2,43 @@
 
 ## Current Objective
 
-- **State at 2026-11-20, 10:17 UTC (newest).** Decision log 2026-11-19 (jj), (kk) and 2026-11-20 (a) to (f). **All four
+- **State at 2026-11-20, 15:05 UTC (newest; it supersedes the next bullet where they differ).** Decision log
+  2026-11-20 (g) to (m); `docs/S2_RULES.md`, the note and the heart amendment of 2026-11-20.
+  - **Scores.** The captain uploaded all four files of the next bullet on 20 November and reported their scores
+    (`results/manual_uploads.csv`; per-term values in decision log (h), (i)). Heart and T3 rose; T1 and the embryo
+    did not beat their first uploads. The board showed our best score, not our latest.
+  - **Regime, in his words:** "let's upload all the 4 filees after full optimization to beat the leadeerboard scores
+    [2 times a day]". At most two uploads per board per day until 2026-11-26 11:59 UTC, on his word for the
+    allowance. A board's candidates are fixed in the decision log BEFORE their scores exist; a returned score chooses
+    among them and computes nothing. He also said: no questions on the login or disclosure; do not read the site's
+    pages; do not look for our position.
+  - **Handed over, no score reported yet:** T3 `runs/manual_upload/T3_barred_x1.5.h5ad`
+    (c060fcaa6c7fdc6d6b1a58c8f850a1895a8295abbc50f297de71a32c97f9c420), then by rule `T3_barred_x2.0.h5ad`
+    (7393810fbe3be2cde67cf23ed54f45d22da738d7d3c9e124780a8f6281075661) if 1.5 beats the s1 file, else
+    `runs/archive/builds_dc7b6ae/t3_build/barred_s2.h5ad` (1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f;
+    it carries the same factor as s1, checked, entry (m)); embryo `runs/manual_upload/T2embryo_s2x.h5ad`
+    (a03611a343faf1d37edf06ce0e2bccc86cce6f14d3580b823864e5faf3ba03f9).
+  - **Building on the DGX.** T1 candidates A, B, C (row R15) on `~/v/vec-campaign-d` at 1420c70, scratch
+    `~/v/scratch/t1cand_1420c70` (all.exit 0 means: default reproduced ad8f24c7, each candidate built twice,
+    pairs agree). Heart K1 and K2 (row R16; his answer "Both, K1 then K2") on `~/v/vec-campaign` at 1ba7c67,
+    scratch `~/v/scratch/heartcand` (done.exit 0 means: the full trim reproduced 04cde636, pairs agree, K2 equals
+    dc436d92). After each: copy the upload files to `runs/manual_upload/`, check hashes, local `vec check` by exit
+    code only, write `experiments/builds/results/` records, fill the rows, hand over path, sha256, board and a
+    short "Data used" text. A test file's shape and size are never printed.
+  - **With agents (read their hand-backs from the task output files, never their transcripts):**
+    wf_666d097c-21a, embryo stage 2: the run script for practice row E48 (the row-order option; his ruling "Use
+    it, after a practice read"), the earlier reviewer's points, and the analysts' call on the check's turned-axes
+    reading (the main session is recused on the embryo's occupancy term and on the heart's scope and size).
+    wf_e988fff9-6e1, the T3 outside-knockout screen fix; nothing is fetched before the screen passes its
+    adversarial review, the register rows exist and the plan tables are read. wf_42122fd0-924, T3 candidates from
+    the two released knockouts only (row R17 to come).
+  - **Held under the organisers' genotype clause** ("a perturbation that phenocopies them counts as held out"):
+    Wls (GSE165300), Hand2 (GSE126128), Mef2c (GSE280543). His ruling on the three tiers does not lift it.
+  - **When he reports a score:** a row in `results/manual_uploads.csv`, a decision-log entry, then the board's
+    pre-set rule (T3: entry (k); heart: the amendment's ten points; T1: the best of the first upload, R13's file,
+    A, B and C stands; embryo: the analysts decide).
+
+- **State at 2026-11-20, 10:17 UTC.** Decision log 2026-11-19 (jj), (kk) and 2026-11-20 (a) to (f). **All four
   last files exist, each as the captain named it, built twice with identical bytes (T3's was already on the
   reference list) and passing the local format check:** T1 `runs/manual_upload/T1_s2rc.h5ad`
   (ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f; record
