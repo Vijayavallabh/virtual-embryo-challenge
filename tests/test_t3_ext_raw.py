@@ -677,6 +677,23 @@ def test_stage8_a_matrix_line_that_is_not_three_fields_is_refused():
     assert r.tolist() == [0, 1] and c.tolist() == [1, 2] and v.tolist() == [3.0, 4.5]
 
 
+def test_stage9r2_a_matrix_line_that_is_not_three_fields_is_refused_on_the_filtered_route_too():
+    """The verification of 9edee21, lesser point 1, replayed: scipy's mmread read '1 2 3 9' by its first three fields on
+    the filtered route (process._from_parts). Now every non-comment line after the size line must have three fields."""
+    head = b"%%MatrixMarket matrix coordinate integer general\n%metadata\n3 4 2\n"
+    feats = [f"ENSG{i}\tG{i}\tGene Expression" for i in range(3)]
+    bcs = [f"BC{i}" for i in range(4)]
+    for body in (b"1 2 3 9\n2 3 4 9\n", b"1 2 3 9\n2 3 4\n", b"1 2 3\n2 3 4 9\n", b"1 2\n2 3 4\n",
+                 b"1 2 3\n2 3 4\t9\n"):
+        with pytest.raises(cm.Refused, match="not 'feature barcode value'"):
+            pr._from_parts(head + body, "matrix.mtx", feats, bcs)
+        with pytest.raises(cm.Refused, match="not 'feature barcode value'"):
+            pr._from_parts(gzip.compress(head + body), "matrix.mtx.gz", feats, bcs)
+    for body in (b"1 2 3\n2 3 4\n", b"1 2 3\r\n2 3 4\r\n", b"1 2 3 \n2 3 4\n"):
+        M, symbols, _, barcodes = pr._from_parts(head + body, "matrix.mtx", feats, bcs)
+        assert M.shape == (4, 3) and M[1, 0] == 3 and M[2, 1] == 4 and symbols == ["G0", "G1", "G2"]
+
+
 def test_stage8_a_long_comment_block_before_the_size_line_is_refused():
     head = b"%%MatrixMarket matrix coordinate integer general\n"
     ok = io.BytesIO(head + b"%c\n" * pr.RAW_MAX_COMMENT_LINES + b"3 4 0\n")

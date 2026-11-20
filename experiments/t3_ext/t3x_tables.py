@@ -63,9 +63,16 @@ def finish_per_group(Lg: dict[str, np.ndarray], ref: dict) -> dict[str, np.ndarr
     return {g: finish(L, ref["mu"][g]) for g, L in Lg.items() if np.isfinite(L).any()}
 
 
-def write_table(out_dir, name: str, genes: list[str], phi: np.ndarray, per_group: dict[str, np.ndarray],
+def whole_den(ref: dict) -> np.ndarray:
+    """The reference's whole-embryo pseudo-bulk: sum over all groups of shares[g] * mu[g] (stage 9: the denominator
+    of a bulk table, and G5's whole-embryo profile)."""
+    return sum(ref["shares"][g] * np.asarray(ref["mu"][g], dtype=np.float64) for g in ref["groups"])
+
+
+def write_table(out_dir, name: str, genes: list[str], phi: np.ndarray, per_group: dict[str, np.ndarray] | None,
                 manifest: dict) -> dict:
-    """Write both forms and the manifest outside the repository; returns the file records with sha256."""
+    """Write both forms and the manifest outside the repository; returns the file records with sha256. Stage 9: with
+    per_group None (a bulk table) no per-group file is written and the manifest says so."""
     out_dir = cm.outside_repo(out_dir)
     fdir = out_dir / "factors"
     fdir.mkdir(parents=True, exist_ok=True)
@@ -74,11 +81,15 @@ def write_table(out_dir, name: str, genes: list[str], phi: np.ndarray, per_group
         raise Refused(f"{name}: factor values must be finite, positive and one per reference gene")
     p = fdir / f"{name}.csv"
     pd.DataFrame({"gene": list(genes), "factor": phi}).to_csv(p, index=False)
-    rows = [(g, gene, float(v)) for g in sorted(per_group) for gene, v in zip(genes, per_group[g], strict=True)]
-    pg = out_dir / f"{name}_per_group.csv"
-    pd.DataFrame(rows, columns=["group", "gene", "factor"]).to_csv(pg, index=False)
-    files = {name: {"file": str(p), "sha256": cm.sha256_file(p)},
-             f"{name}_per_group": {"file": str(pg), "sha256": cm.sha256_file(pg)}}
+    files = {name: {"file": str(p), "sha256": cm.sha256_file(p)}}
+    if per_group is None:
+        manifest = {**manifest, "per_group": "none (bulk)"}
+        per_group = {}
+    else:
+        rows = [(g, gene, float(v)) for g in sorted(per_group) for gene, v in zip(genes, per_group[g], strict=True)]
+        pg = out_dir / f"{name}_per_group.csv"
+        pd.DataFrame(rows, columns=["group", "gene", "factor"]).to_csv(pg, index=False)
+        files[f"{name}_per_group"] = {"file": str(pg), "sha256": cm.sha256_file(pg)}
     fj = fdir / "factors.json"
     old = json.loads(fj.read_text()) if fj.is_file() else {"files": {}, "parameters": {}}
     old["files"].update({name: files[name]})

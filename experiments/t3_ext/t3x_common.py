@@ -29,6 +29,11 @@ Stage 7 (2026-11-21, campaign/t3-ext-3): a control series belongs to no other en
 a file used as one unit (split none) holds one arm and one stage, each sample pinned for the same genes.
 
 Stage 8 (2026-11-21, campaign/t3-ext-4): HELD_EXTRA, the team's held list, joins the derived held set.
+
+Stage 9 (2026-11-21, campaign/t3-ext-bulk; README "Bulk whole-embryo units"): a dataset may declare modality bulk with
+a count_form (per_sample, series_table, arrayexpress). Its keys are checked here (check_bulk); its pins take the form
+of its count_form (check_bulk_pins); the bulk constants below were fixed by the reviewed design before any count was
+read. A single-cell dataset (modality absent) is checked exactly as before, and its pins_sha256 is unchanged.
 """
 
 from __future__ import annotations
@@ -123,6 +128,47 @@ RAW_KEYS = ("patterns", "reason")
 # Aliases matched only after an exact symbol fails (both directions); nothing else is renamed.
 ALIASES = {"T": "Tbxt", "Tbxt": "T", "Hbb-y": "Hbb-bh0", "Hbb-bh0": "Hbb-y"}
 
+# ---------------------------------------------------------------------------------------------------------------------
+# Stage 9: bulk whole-embryo units (the reviewed design of 2026-11-21, as amended by its challenger). Every number is a
+# design number, fixed before any bulk count was read; none comes from a score.
+MODALITIES = ("single_cell", "bulk")
+COUNT_FORMS = ("per_sample", "series_table", "arrayexpress")
+# The two GEO bulk forms are CLOSED (2026-11-20): their verification left two blockers open (heterozygous wording in
+# notations the pattern misses; a per-sample count column that names another sample by a token). No dataset may use
+# them until a reviewed change closes both and sets this to True. The arrayexpress form passed its end-to-end check.
+GEO_BULK_OPEN = False
+# Lines a named resource must withhold as held (a slip when pasting an entry must not make one pinnable).
+REQUIRED_HELD_LINES = {"E-MTAB-7322": ("Trps1",)}
+ID_TYPES = ("ensembl", "symbol")
+BULK_MIN_LIBS = 2                # libraries per arm per stage, at pin time and again after the guards
+BULK_MIN_LIB_TOTAL = 1_000_000   # G1: a library's total over all gene rows
+BULK_MIN_PANEL_TOTAL = 10_000    # G1: a library's total over the present panel genes
+OUTLIER_Z = 3.5                  # G4: robust z of a library's Spearman with its leave-one-out arm mean
+OUTLIER_RHO_GAP = 0.05           # G4: ... and its Spearman under the arm's median by more than this
+SEX_GENES = ("Xist", "Ddx3y", "Eif2s3y", "Kdm5d", "Uty")
+SEX_Y_GENES = SEX_GENES[1:]
+SEX_CPM = 10.0                   # G3: the CPM threshold of the sex call
+SEX_SHARE_GAP = 0.5              # G3: a male share differing between arms by more than this sets chrX genes NaN
+ALWAYS_NAN_BULK = ("Xist", "Tsix")   # plus every chrY panel gene of panel_ids.tsv and the Y genes of SEX_GENES
+COMPOSITION_RATIO_MAX = SHARE_RATIO_MAX   # G12
+COMPOSITION_MIN_SHARE = 0.05              # G12: only groups with at least this control share are read
+TPM_SIGNATURE_TOL = 0.01         # a table whose columns all sum to within 1% of 1e6 is a CPM or TPM table: refused
+INTEGRAL_TOL = 1e-6
+HEADER_MAX_BYTES = 1 << 20       # the header step: a first line longer than this (decompressed) is refused
+GENOTYPE_MAP = {"hom": "homozygous knockout", "het": "heterozygous knockout", "wt": "wild type genotype"}
+WITHHELD_REASONS = ("held", "pending_phenocopy")
+BULK_TEXT = re.compile(r"\.(txt|tsv|csv|tab)(\.gz)?$", re.IGNORECASE)   # the one count-file form taken this round
+# the id map from the reference's panel symbols to Ensembl gene ids (README "The gene-id map"): written by
+# make_panel_ids.py from the features file of an already pinned and fetched 10x sample, committed in a reviewed
+# commit, and pinned here. None until then: every dataset that needs the Ensembl route is refused while it is None or
+# the file does not hash to it.
+PANEL_IDS = HERE / "panel_ids.tsv"
+PANEL_IDS_SHA256: str | None = None
+BULK_PIN_KEYS = {"per_sample": PIN_KEYS,
+                 "series_table": ("accession", "arm", "gene", "stage", "column", "metadata_sha256"),
+                 "arrayexpress": ("accession", "source_name", "arm", "gene", "stage", "runs", "metadata_sha256")}
+TABLE_PIN_KEYS = ("series", "name", "header_sha256")
+
 
 class Refused(Exception):
     """A rule of this folder refuses the input; the message says which."""
@@ -208,7 +254,13 @@ _KEYS = {"accession", "status", "status_reason", "tier", "study", "kind", "desig
          "exclude_match_on",
          "design_refuse", "chemistry", "expect", "sample_file_patterns", "files_note", "licence", "why", "risks",
          "verified", "screen_extra_refuse", "review_cleared", "cell_labels", "citation", "pinned",
-         "pinned_series", "stage_fields", "series_files", "pinned_series_files", "control_series", "raw_matrices"}
+         "pinned_series", "stage_fields", "series_files", "pinned_series_files", "control_series", "raw_matrices",
+         # stage 9: bulk whole-embryo units
+         "modality", "count_form", "id_type", "count_column", "gene_columns", "stage_from_series", "somite_field",
+         "sex_field", "withheld_lines", "source_name_pattern"}
+_BULK_ONLY = ("count_form", "id_type", "count_column", "gene_columns", "stage_from_series", "somite_field",
+              "sex_field", "withheld_lines", "source_name_pattern")
+_SC_ONLY = ("cell_labels", "series_files", "control_series", "raw_matrices", "chemistry")
 _SHA = re.compile(r"[0-9a-f]{64}")
 _GSM = re.compile(r"GSM\d+")
 _GSE = re.compile(r"GSE\d+")
@@ -282,6 +334,8 @@ def check_pins(acc: str, ds: dict, where: str = "datasets.yaml") -> list[dict]:
     a 64-hex sha256. One sample has one arm, one stage, one file list and one hash however many genes it is pinned
     for, and a (sample, gene) pair is pinned once. Pins on a dataset that is not cleared, or that needs per-cell
     labels, are refused."""
+    if is_bulk(ds):   # stage 9: the bulk pin forms (check_bulk_pins); the single-cell path below is unchanged
+        return check_bulk_pins(acc, ds, where)
     pins = ds.get("pinned")
     if pins is None:
         pins = []
@@ -662,6 +716,7 @@ def load_datasets(path: Path | None = None) -> dict[str, dict]:
         from t3x_screen import check_review_cleared
 
         check_review_cleared(ds.get("review_cleared") or [])
+        check_bulk(acc, ds, str(path))   # stage 9: modality and the bulk keys (a single-cell dataset holds none)
         check_control_series(acc, ds, str(path))
         check_series_file_patterns(acc, ds, str(path))
         check_raw_matrices(acc, ds, str(path))
@@ -813,3 +868,290 @@ def shrink_k(n_arms, m: int, d: float) -> float:
 
 
 LOG_CLIP = (math.log(CLIP[0]), math.log(CLIP[1]))
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Stage 9: bulk whole-embryo units (README "Bulk whole-embryo units")
+
+_ERS = re.compile(r"(?:ERS\d+|SAMEA\d+)")
+_ERR = re.compile(r"ERR\d{6,7}")
+_AE = re.compile(r"E-MTAB-\d+")
+
+
+def modality(ds: dict) -> str:
+    """'single_cell' (the key absent) or 'bulk'."""
+    return ds.get("modality") or "single_cell"
+
+
+def is_bulk(ds: dict) -> bool:
+    return modality(ds) == "bulk"
+
+
+def shrink_k_bulk(m: int, d: float) -> float:
+    """k of a bulk unit: (m/(m+1))^2 * d, m the smaller number of libraries left in an arm after the guards (0 for
+    m < 1). It equals shrink_k with unbounded cell numbers: a bulk library has no cell term."""
+    if m < 1:
+        return 0.0
+    u = m / (m + 1.0)
+    return u * u * float(d)
+
+
+def check_bulk(acc, ds: dict, where: str = "datasets.yaml") -> None:
+    """The stage 9 keys of one dataset, checked for form. A single-cell dataset (modality absent or single_cell) holds
+    none of the bulk keys. A bulk dataset: a known count_form and id_type; gene_columns a non-empty list of distinct
+    header names (the first is the id column of id_type; a second, if given, is a symbol column, recorded only);
+    count_column only for per_sample; stage_from_series only for series_table (a plain series field name); arrayexpress
+    only with repository arrayexpress, and only it takes withheld_lines ({line, reason in WITHHELD_REASONS}) and
+    source_name_pattern (a regular expression with the named groups gene and genotype); none of the single-cell
+    declarations (cell_labels, series_files, control_series, raw_matrices, chemistry)."""
+    m = ds.get("modality", "single_cell")
+    if m not in MODALITIES:
+        raise Refused(f"{where}: {acc}: modality {m!r} not in {MODALITIES}")
+    if m == "single_cell":
+        bad = [k for k in _BULK_ONLY if k in ds]
+        if bad:
+            raise Refused(f"{where}: {acc}: {bad} are bulk keys: a single-cell dataset holds none")
+        return
+    bad = [k for k in _SC_ONLY if ds.get(k)]
+    if bad:
+        raise Refused(f"{where}: {acc}: a bulk dataset takes none of the single-cell declarations {bad}")
+    cf = ds.get("count_form")
+    if cf not in COUNT_FORMS:
+        raise Refused(f"{where}: {acc}: count_form {cf!r} not in {COUNT_FORMS}")
+    if ds.get("id_type") not in ID_TYPES:
+        raise Refused(f"{where}: {acc}: id_type {ds.get('id_type')!r} not in {ID_TYPES}")
+    gc = ds.get("gene_columns")
+    if (not isinstance(gc, list) or not 1 <= len(gc) <= 2 or not all(isinstance(c, str) and c.strip() for c in gc)
+            or len(set(gc)) != len(gc)):
+        raise Refused(f"{where}: {acc}: gene_columns must be a list of one or two distinct header names (the id "
+                      "column first)")
+    if "count_column" in ds and (cf != "per_sample" or not isinstance(ds["count_column"], str)
+                                 or not ds["count_column"].strip()):
+        raise Refused(f"{where}: {acc}: count_column is a header name, for count_form per_sample only")
+    if "stage_from_series" in ds and (cf != "series_table" or not isinstance(ds["stage_from_series"], str)
+                                      or not _FIELD.fullmatch(ds["stage_from_series"])):
+        raise Refused(f"{where}: {acc}: stage_from_series is a plain series field name, for series_table only")
+    if "stage_from_series" in ds and "stage_fields" in ds:
+        raise Refused(f"{where}: {acc}: stage_from_series and stage_fields exclude each other")
+    for k in ("somite_field", "sex_field"):
+        if k in ds and (not isinstance(ds[k], str) or not ds[k].strip()):
+            raise Refused(f"{where}: {acc}: {k} must name one field")
+    if cf == "arrayexpress":
+        if ds.get("repository") != "arrayexpress" or not _AE.fullmatch(str(acc)):
+            raise Refused(f"{where}: {acc}: count_form arrayexpress needs repository arrayexpress and an E-MTAB "
+                          "accession")
+        pat = ds.get("source_name_pattern")
+        try:
+            rx = re.compile(pat) if isinstance(pat, str) else None
+        except re.error:
+            rx = None
+        if rx is None or not {"gene", "genotype"} <= set(rx.groupindex):
+            raise Refused(f"{where}: {acc}: source_name_pattern must be a regular expression with the named groups "
+                          "gene and genotype")
+        wl = ds.get("withheld_lines")
+        if not isinstance(wl, list):
+            raise Refused(f"{where}: {acc}: withheld_lines must be a list (it may be empty)")
+        seen = set()
+        for e in wl:
+            if (not isinstance(e, dict) or sorted(e) != ["line", "reason"] or not isinstance(e["line"], str)
+                    or not e["line"] or e["reason"] not in WITHHELD_REASONS or e["line"] in seen):
+                raise Refused(f"{where}: {acc}: withheld_lines entry {e!r} must be {{line, reason}} with a line "
+                              f"named once and a reason in {WITHHELD_REASONS}")
+            seen.add(e["line"])
+        for need in REQUIRED_HELD_LINES.get(str(acc), ()):
+            if {"line": need, "reason": "held"} not in wl:
+                raise Refused(f"{where}: {acc}: withheld_lines must hold {{line: {need}, reason: held}}")
+    else:
+        if not GEO_BULK_OPEN:
+            raise Refused(f"{where}: {acc}: count_form {cf}: the GEO bulk forms are closed until their two review "
+                          "blockers of 2026-11-20 are resolved (t3x_common.GEO_BULK_OPEN)")
+        if ds.get("repository") != "geo":
+            raise Refused(f"{where}: {acc}: count_form {cf} is taken from GEO only")
+        for k in ("withheld_lines", "source_name_pattern"):
+            if k in ds:
+                raise Refused(f"{where}: {acc}: {k} is for count_form arrayexpress only")
+
+
+def check_bulk_pins(acc: str, ds: dict, where: str = "datasets.yaml") -> list[dict]:
+    """The pinned block of a bulk dataset, checked for form. The keys depend on count_form (BULK_PIN_KEYS): per_sample
+    the single-cell keys with exactly one file; series_table a 'column' (the exact header the tie rule ties to the
+    sample) in place of files; arrayexpress an ERS or SAMEA accession, its source_name and its runs (ERR accessions) in
+    place of files. One sample has one arm, stage, column or file list or runs, and hash; every arm of every gene has at
+    least BULK_MIN_LIBS samples at each of its stages. The series pins (check_bulk_series_pins) and the one pinned
+    count table (pinned_series_files: {series, name, header_sha256}) are checked too."""
+    cf = ds.get("count_form")
+    keys = BULK_PIN_KEYS.get(cf)
+    if keys is None:
+        raise Refused(f"{where}: {acc}: count_form {cf!r} not in {COUNT_FORMS}")
+    pins = ds.get("pinned")
+    if pins is None:
+        pins = []
+    if not isinstance(pins, list):
+        raise Refused(f"{where}: {acc}: pinned must be a list")
+    if pins and (ds.get("status") != "cleared" or acc in NEVER_FETCH or acc in HELD_EXTRA):
+        raise Refused(f"{where}: {acc}: only a cleared dataset may hold pins")
+    used = {stage_ok(s) for s in ds.get("stages_used") or []}
+    seen, per_sample, cols, runs_seen, names = set(), {}, {}, {}, {}
+    for p in pins:
+        if not isinstance(p, dict) or sorted(p) != sorted(keys):
+            raise Refused(f"{where}: {acc}: pin {p!r} must have exactly the keys {keys} (count_form {cf})")
+        a = p["accession"]
+        ok_acc = _ERS.fullmatch(a) if (cf == "arrayexpress" and isinstance(a, str)) else (
+            isinstance(a, str) and _GSM.fullmatch(a))
+        if not ok_acc:
+            raise Refused(f"{where}: {acc}: pinned accession {a!r} is not a "
+                          f"{'ERS or SAMEA' if cf == 'arrayexpress' else 'GSM'} accession")
+        if p["arm"] not in PIN_ARMS:
+            raise Refused(f"{where}: {acc}: {a}: arm {p['arm']!r} is not exactly one of {PIN_ARMS}")
+        if not isinstance(p["gene"], str) or not p["gene"].strip():
+            raise Refused(f"{where}: {acc}: {a}: gene must be named (a control names the knockout gene it controls)")
+        if stage_ok(p["stage"]) not in used:
+            raise Refused(f"{where}: {acc}: {a}: stage {p['stage']!r} is not in stages_used")
+        if not isinstance(p["metadata_sha256"], str) or not _SHA.fullmatch(p["metadata_sha256"]):
+            raise Refused(f"{where}: {acc}: {a}: metadata_sha256 must be 64 lower-case hex digits")
+        if cf == "per_sample":
+            src = p["files"]
+            if (not isinstance(src, list) or len(src) != 1 or not isinstance(src[0], str)
+                    or not _PLAIN_NAME.fullmatch(src[0]) or not BULK_TEXT.search(src[0])):
+                raise Refused(f"{where}: {acc}: {a}: a bulk per-sample pin names exactly one plain text table "
+                              "(.txt, .tsv, .csv, .tab, optionally gzipped)")
+            src = tuple(src)
+        elif cf == "series_table":
+            src = p["column"]
+            if not isinstance(src, str) or not src:
+                raise Refused(f"{where}: {acc}: {a}: column must be the exact header the tie rule ties to it")
+            if cols.setdefault(src, a) != a:
+                raise Refused(f"{where}: {acc}: column {src!r} is pinned for {cols[src]} and {a}")
+        else:
+            src = p["runs"]
+            if (not isinstance(src, list) or not src or not all(isinstance(r, str) and _ERR.fullmatch(r) for r in src)
+                    or len(set(src)) != len(src)):
+                raise Refused(f"{where}: {acc}: {a}: runs must be a non-empty list of distinct ERR accessions")
+            for r in src:
+                if runs_seen.setdefault(r, a) != a:
+                    raise Refused(f"{where}: {acc}: run {r} is pinned under {runs_seen[r]} and {a}")
+            if not isinstance(p["source_name"], str) or not p["source_name"]:
+                raise Refused(f"{where}: {acc}: {a}: source_name must be named")
+            if names.setdefault(p["source_name"], a) != a:
+                raise Refused(f"{where}: {acc}: Source Name {p['source_name']!r} is pinned under two accessions")
+            src = (p["source_name"], tuple(src))
+        if (a, p["gene"]) in seen:
+            raise Refused(f"{where}: {acc}: {a} is pinned twice for gene {p['gene']}")
+        seen.add((a, p["gene"]))
+        same = (p["arm"], stage_ok(p["stage"]), src, p["metadata_sha256"])
+        if per_sample.setdefault(a, same) != same:
+            raise Refused(f"{where}: {acc}: {a} is pinned with two different arms, stages, sources or hashes")
+    if pins:
+        count: dict[tuple, int] = {}
+        for p in pins:
+            k = (p["gene"], p["arm"], stage_ok(p["stage"]))
+            count[k] = count.get(k, 0) + 1
+        for g in {p["gene"] for p in pins}:
+            for e in {stage_ok(p["stage"]) for p in pins if p["gene"] == g}:
+                for arm in PIN_ARMS:
+                    if count.get((g, arm, e), 0) < BULK_MIN_LIBS:
+                        raise Refused(f"{where}: {acc}: gene {g} at E{e:g}: {count.get((g, arm, e), 0)} {arm} "
+                                      f"libraries, fewer than {BULK_MIN_LIBS}: a bulk unit needs at least "
+                                      f"{BULK_MIN_LIBS} per arm")
+    check_bulk_series_pins(acc, ds, bool(pins), where)
+    check_table_pins(acc, ds, pins, where)
+    return pins
+
+
+def check_bulk_series_pins(acc: str, ds: dict, required: bool, where: str = "datasets.yaml") -> list[dict]:
+    """The pinned_series block of a bulk dataset: as check_series_pins, but an arrayexpress dataset pins its own
+    E-MTAB accession (its IDF, SDRF header row and analysis-methods text)."""
+    if ds.get("count_form") != "arrayexpress":
+        return check_series_pins(acc, ds, required, where)
+    sp = ds.get("pinned_series") or []
+    if not isinstance(sp, list):
+        raise Refused(f"{where}: {acc}: pinned_series must be a list")
+    if not required:
+        if sp:
+            raise Refused(f"{where}: {acc}: pinned_series without sample pins: the readers pin both together")
+        return sp
+    if (len(sp) != 1 or not isinstance(sp[0], dict) or sorted(sp[0]) != sorted(SERIES_PIN_KEYS)
+            or sp[0]["accession"] != acc or not isinstance(sp[0]["series_metadata_sha256"], str)
+            or not _SHA.fullmatch(sp[0]["series_metadata_sha256"])):
+        raise Refused(f"{where}: {acc}: pinned_series must hold exactly one entry {{accession: {acc}, "
+                      "series_metadata_sha256}")
+    return sp
+
+
+def check_table_pins(acc: str, ds: dict, pins: list, where: str = "datasets.yaml") -> list[dict]:
+    """The pinned count table of a bulk dataset (pinned_series_files, stage 9 form {series, name, header_sha256}):
+    none for per_sample; exactly one, with pins, for series_table (a series the dataset screens) and arrayexpress (its
+    own accession and the file <ACC>-raw-counts.tsv.undecorated); the name a plain file name, the hash 64 hex."""
+    t = ds.get("pinned_series_files") or []
+    if not isinstance(t, list):
+        raise Refused(f"{where}: {acc}: pinned_series_files must be a list")
+    cf = ds.get("count_form")
+    if cf == "per_sample" or not pins:
+        if t:
+            raise Refused(f"{where}: {acc}: a pinned count table needs count_form series_table or arrayexpress and "
+                          "sample pins")
+        return []
+    if len(t) != 1:
+        raise Refused(f"{where}: {acc}: exactly one pinned count table (pinned_series_files) for count_form {cf}")
+    e = t[0]
+    if not isinstance(e, dict) or sorted(e) != sorted(TABLE_PIN_KEYS):
+        raise Refused(f"{where}: {acc}: the pinned count table must have exactly the keys {TABLE_PIN_KEYS}")
+    if (not isinstance(e["name"], str) or not _PLAIN_NAME.fullmatch(e["name"]) or ".." in e["name"]
+            or not isinstance(e["header_sha256"], str) or not _SHA.fullmatch(e["header_sha256"])):
+        raise Refused(f"{where}: {acc}: the pinned count table needs a plain file name and a 64-hex header_sha256")
+    if cf == "series_table":
+        if e["series"] not in (ds.get("screen_series") or []) or not _GSE.fullmatch(str(e["series"])):
+            raise Refused(f"{where}: {acc}: the pinned count table's series {e['series']!r} is not a screened series")
+        if not e["name"].startswith(f"{e['series']}_") or not BULK_TEXT.search(e["name"]):
+            raise Refused(f"{where}: {acc}: a series count table is a plain text table of the series' own folder")
+    elif e["series"] != acc or e["name"] != f"{acc}-raw-counts.tsv.undecorated":
+        raise Refused(f"{where}: {acc}: the ArrayExpress count table is {acc}-raw-counts.tsv.undecorated of {acc}")
+    return t
+
+
+def load_panel_ids(genes: list[str] | None = None, path: Path | None = None, sha: str | None = None) -> dict:
+    """panel_ids.tsv, checked: refused while PANEL_IDS_SHA256 is None (the default pin) or when the file does not
+    hash to it, and (with genes) when its symbol column is not the reference's gene list in order. Returns {symbols,
+    ids (None for NA), chromosome (None for NA), reason, extra: {symbol: id or None}, header: {key: value}}. Tests pass
+    path and sha; no CLI does."""
+    p = Path(path) if path is not None else PANEL_IDS
+    want = sha if path is not None else PANEL_IDS_SHA256
+    if want is None:
+        raise Refused("t3x_common.PANEL_IDS_SHA256 is None: the gene-id map is not pinned yet, so a dataset that needs "
+                      "the Ensembl route is refused (README 'The gene-id map')")
+    if not p.is_file() or sha256_file(p) != want:
+        raise Refused(f"{p}: missing, or its sha256 is not the pinned PANEL_IDS_SHA256 {want}: refused")
+    head, rows, extra = {}, [], {}
+    lines = p.read_text(encoding="utf-8").split("\n")
+    if lines and lines[-1] == "":
+        lines = lines[:-1]
+    cols = None
+    for ln in lines:
+        f = ln.split("\t")
+        if ln.startswith("#"):
+            key = f[0][1:].strip()
+            if key == "extra":
+                if len(f) != 4:
+                    raise Refused(f"{p}: an extra line must be '# extra<TAB>symbol<TAB>id<TAB>reason'")
+                extra[f[1]] = None if f[2] == "NA" else f[2]
+            elif len(f) == 2:
+                head[key] = f[1]
+            continue
+        if cols is None:
+            cols = f
+            if cols != ["symbol", "ensembl_gene_id", "chromosome", "reason"]:
+                raise Refused(f"{p}: the column line must be symbol, ensembl_gene_id, chromosome, reason")
+            continue
+        if len(f) != 4:
+            raise Refused(f"{p}: a row of {len(f)} fields")
+        rows.append(f)
+    symbols = [r[0] for r in rows]
+    if genes is not None and symbols != list(genes):
+        raise Refused(f"{p}: its symbol column is not the reference's gene list in order: refused")
+    ids = [None if r[1] == "NA" else r[1] for r in rows]
+    seen: dict[str, str] = {}
+    for s, i in zip(symbols, ids, strict=True):
+        if i is not None and seen.setdefault(i, s) != s:
+            raise Refused(f"{p}: the id {i} maps to two panel symbols: refused")
+    return {"symbols": symbols, "ids": ids, "chromosome": [None if r[2] == "NA" else r[2] for r in rows],
+            "reason": [r[3] for r in rows], "extra": extra, "header": head}
