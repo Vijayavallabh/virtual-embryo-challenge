@@ -8570,3 +8570,62 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     names that line, so no embryo of a kept line was withheld through its name or allele without a reader seeing it);
     register row X017; the pins of the whole line set; the gene-id map from a pinned single-cell sample's features
     file; then fetch, process and combine. The two single GEO bulk studies of entry (aaa) wait for the GEO forms.
+- 2026-11-20 (fff), T3 outside knockouts: the many-line set is read by two readers and pinned; no count fetched yet
+  (state at 22:57 UTC, 2026-11-20). Written by the AI assistant.
+  - **The metadata steps ran on the compute machine at 936b196:** the plan (680 kept embryo records, all passing the
+    label screen; the 29 withheld lines' 2,274 rows dropped first), the header step (the count matrix's first line
+    only: 3,030 columns, every kept embryo's runs present, none tied twice), and the plan again, which fixed the line
+    set: 25 lines, 103 homozygous knockout and 114 wild-type embryos at embryonic day 9.5, the same as the scratch
+    probe of entry (aaa). One run of the second plan died on a dropped connection and was started again; nothing else
+    changed. The hand check the bulk verifier asked for passed on the real sample table: each withheld row is withheld
+    by its line column, none by its name or allele alone, and no kept row shares a sample, an individual or a run with
+    a withheld one.
+  - **The two readings.** The AI assistant read the series block, the views, the comparison counts, the line set and,
+    through a script, all 217 records; an independent second reader agent, who did not see that reading, did the same
+    and recomputed the line set and every record's hash. Both: every knockout record says homozygous knockout and
+    every control wild type; alleles are targeted or endonuclease alleles; one embryo per library; day 9.5 exactly; no
+    held-out or pathway word anywhere; no doubt, from recall, on any of the 25 line names; the control relation is not
+    stated as littermates, so the design factor stays one half. The per-line counts of the two readings are identical.
+    The second reader's written totals (98 and 119) do not match its own per-line table, which sums to 103 and 114
+    like the plan; the AI assistant takes the table and records the slip.
+  - **One ruling, by the AI assistant.** The checklist asks that yolk sac and placenta be 'not included or stated';
+    the record says single whole embryo and whole organism and is silent on yolk sac. The second reader left this to
+    the main session and said a strict reading would mean no pin. Ruled: a note, not a refusal. The reason: the record
+    says each embryo was staged, then genotyped, then processed, under one protocol, so whatever was collected was
+    collected alike for both arms of a line and before the genotype was known; a ratio within a line then compares
+    like with like, and the pipeline's whole-embryo guard still tests each control library against the reference. If
+    wrong, the cost is noise or an extra-embryonic share in the table, which the practice read sees; no rule of the
+    organisers is touched. The checklist's sentence now says this.
+  - **Pinned** in `experiments/t3_ext/datasets.yaml` (the whole line set, printed by the pipeline's own templates; the
+    series text's hash; the matrix by its first line's hash) with register row X017, before any count is fetched.
+    **What the metadata already says about the units,** noted by both readers and decided by the code, not by them: in
+    seven lines the knockouts' somite ranges lie wholly below their controls' (the knockouts are younger), and the
+    somite guard refuses a unit whose two ranges do not overlap; in four lines the arms differ in sex mix by more than
+    half, and with no chromosome column in the gene-id map the sex guard refuses those units. So about fifteen of
+    the 25 lines are expected to survive to a table. Next: the plan again with pins, the gene-id map from a pinned single-cell
+    sample's features file with the 25 lines as extras (reviewed before it is pinned in code), then fetch, process and
+    combine, reading verdicts only.
+- 2026-11-20 (ggg), T3 outside knockouts: the gene-id map of the bulk route is reviewed and pinned (state at 23:20 UTC,
+  2026-11-20). Written by the AI assistant.
+  - **What the map is for.** The many-line set's count matrix is keyed by Ensembl gene ids; the panel is keyed by
+    symbols. The map (`experiments/t3_ext/panel_ids.tsv`) gives each of the 500 panel symbols one id, and gives the
+    pipeline the ids of the five sex-call genes and of each pinned line's own gene. No annotation file is downloaded:
+    the tool reads the features file of a single-cell sample that is already pinned and fetched.
+  - **How the source was chosen,** on coverage alone and before any count of the set was fetched: the AI assistant
+    made maps from the features files of three pinned wild-type samples. They give 494, 498 and 500 of the 500 panel
+    genes one id, agree on every id that two of them give, and give the same ids for the extras; the one with all 500
+    (GSM8532456 of GSE277839) is committed. For 23 of the 25 lines the map's id equals the id the resource's own
+    sample table states for that line. Two lines get no id (a microRNA line, and a line whose symbol the single-cell
+    annotations no longer use); the genotype guard refuses their units, which is the fail-closed outcome and, for the
+    second, changes nothing, since the somite guard refuses it anyway.
+  - **The plan with pins passed** on the compute machine at 270fff8 (all 217 pins equal the live metadata). A trace of
+    the launcher's full mode at that commit, before the map was pinned, stopped at the gate with the map refusal and
+    wrote its exit file: the path is live and nothing was fetched.
+  - **The review** (an independent agent; branch `campaign/t3-panel-ids`): ready, no blocker. It re-derived every
+    figure above, found the committed file byte-identical to the chosen map, and confirmed that a missing id, a
+    missing sex gene or an id absent from the matrix each fail closed. Its three lesser points are applied (a test now
+    holds the extras to the ids the resource states; two README sentences). What it could not check, and what stays
+    open: two panel genes get their id from one source only; the set has no symbol column, so a symbol that named
+    another gene in the reference would not be counted; and whether the ids are present in the matrix is seen only at
+    the read. Merged at d51640a. Next: fetch, process and combine for the set; the AI assistant reads the verdicts in
+    the QC file only.

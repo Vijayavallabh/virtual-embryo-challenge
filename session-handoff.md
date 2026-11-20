@@ -2,9 +2,54 @@
 
 ## Current Objective
 
-- **State at 2026-11-20, 20:33 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+- **State at 2026-11-20, 22:51 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+  2026-11-20 (yy) to (eee) and 2026-11-21 (a), (b). Local main = origin/main (936b196 or later).
+  - **With the captain, no score reported yet** (uploads are the captain's acts): unchanged from the bullet below (T1
+    A then B, C on its condition; heart K1 then K2; embryo `T2embryo_s2x.h5ad`; T3 `T3_barred_x1.5.h5ad`, then x2.0 or
+    the barred s2 by entry (k)'s rule). When a score line comes: add it to `results/manual_uploads.csv` and the
+    decision log and apply that board's pre-set rule.
+  - **T3 files built ahead for every possible base B, now four per base:** C1 (s1 and s2 only), C2, the K23 file, and
+    the combination file CK (C2's factor times the square of the two-study table; row R18, decision log 2026-11-21
+    (b); uploaded only if C2 and the K23 file each beat B). Records `experiments/builds/results/t3two_fb01487.txt`,
+    `t3k23_49f3fd5.txt`, `t3ck_20a0e1a.txt`; copies under `runs/manual_upload/`.
+  - **T64 is read: candidate D is NOT AHEAD** (entry (zz)); the line ends; no question to the captain. Tries: T1 418.
+  - **T3 outside knockouts.** Cmtr2 (GSE270969, X016) was fetched and then withdrawn before any table: its wild-type
+    libraries are too shallow for the fixed cell call (entry (ddd)); no guard was changed. The macOS companion-file
+    rule is merged. The Kmt2d pair makes a three-study single-cell table (`~/v/vec-ext/t3/tables`,
+    `tables_three_study`), read by no row yet; `tables_two_study` is what K22, K23 and every built T3 file read.
+  - **The bulk whole-embryo intake is merged** (e0a58a1; verified ready for the many-line form; the two GEO bulk forms
+    stay closed in code, `t3x_common.GEO_BULK_OPEN = False`). **The many-line set E-MTAB-7322 is in the dataset list**
+    (936b196; 29 withheld lines; no pins yet). Done on the DGX checkout `~/v/vec-campaign-c` (at 936b196): plan,
+    header step, plan again: the line set is FINAL: 25 lines, 103 knockout and 114 wild-type embryos (plan table
+    sha256 b13278ab...; header sha256 483aac11...). The hand check the verifier asked for passed on the real sample
+    table: all 2,274 withheld rows are withheld by their line column, none by name or allele only, none linked. First
+    reading: session scratchpad `lift8/dmdd_first_reading.txt`; the second reader (an independent agent) is reading
+    the local metadata copies under `~/.cache/vec-ext/t3/meta/E-MTAB-7322/` on this machine. **Next, in order:**
+    compare the two readings (any doubt on a line drops that line; a doubt on the set stops it); register row X017 in
+    `EXTERNAL_DATA.md` BEFORE any count is fetched; pins with `fetch.py pin-template E-MTAB-7322 --dest D --series`
+    and `--source-file` per arm with exactly the final line set, then `fetch.py datasets-sha`, tests, commit naming
+    both readers; plan again with pins; the gene-id map (`make_panel_ids.py --dest ~/v/vec-ext/t3 --accession
+    GSE168768 --gsm GSM5169142 --file GSM5169142_Tbx1-wt-E85_features.tsv.gz --refstats
+    ~/v/vec-ext/t3/reference/refstats.npz --extra-file <the pinned lines>`; commit `panel_ids.tsv` and
+    `PANEL_IDS_SHA256` in one reviewed commit); `run_dgx.sh "$PWD" all "E-MTAB-7322"` (the count matrix is about 380
+    MB); read QC verdicts only. Expect units refused by the somite guard (the two arms' somite ranges do not overlap
+    for seven lines) and by the sex guard (the map has no chromosome column).
+  - **Row K24** (one practice read of the wider tables: the three-study single-cell table and the bulk table, each
+    brought to the size of the form K23 named, with shuffled controls and size twins) is being planned, challenged,
+    built and reviewed by workflow `t3-wider-tables-row` (task w3ofznofn; branch `campaign/t3-k24` when built). The
+    planner did not know that several lines' knockouts are much younger than their controls (target-free somite facts
+    in the first reading): give those facts to a fresh challenger before the row is placed. The row, its log entry and
+    the new tables listing and pins go in before any run; K22's and K23's pins stay as they are.
+  - **Running on the DGX:** E49 (embryo shape interpolation; `~/v/scratch/e49`, worktree `~/v/scratch/e49-wt`; 7 of 9
+    run tasks were done at 22:30 UTC; when `chain.exit` is 0 copy `experiments/coords/results/e49_shape_interp/` back,
+    commit with the outcome quoting only the fixed reading, apply the row's outcome-to-file rule; the main session is
+    recused and states no preference).
+  - **Tries:** T1 418, embryo 76 (E49 running), heart 80, T3 66. **Next labels:** decision log 2026-11-21 (c) (or
+    2026-11-20 (fff) for an event of the 20th); register row X017.
+
+- **State at 2026-11-20, 20:33 UTC (superseded above where they differ).** Decision log
   2026-11-20 (nn) to (xx). Local main = origin/main (4fb01c5 or later).
-  - **With the captain, no score reported yet** (uploads are his acts): T1 A then B (C on its condition); heart K1
+  - **With the captain, no score reported yet** (uploads are the captain's acts): T1 A then B (C on its condition); heart K1
     then K2; embryo `T2embryo_s2x.h5ad`; T3 `T3_barred_x1.5.h5ad`, then x2.0 or the barred s2 by entry (k)'s rule.
     When a score line comes: add it to `results/manual_uploads.csv` and the decision log and apply that board's
     pre-set rule.

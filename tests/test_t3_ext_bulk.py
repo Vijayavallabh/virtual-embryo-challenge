@@ -449,8 +449,9 @@ def test_the_exact_tie_rule():
 
 def test_a_series_table_dataset_from_header_to_tables_reads_only_pinned_columns(tmp_path, y, monkeypatch):
     dest, wt, refp, ref, data, R, got = run_series_table(tmp_path, y, monkeypatch)
-    # the Ensembl route is refused while the id map is not pinned (the committed default)
-    assert cm.PANEL_IDS_SHA256 is None
+    # the Ensembl route is refused while the id map is not pinned (the default until 2026-11-20; the committed pin is
+    # tested in test_t3_ext_panel_ids.py)
+    monkeypatch.setattr(cm, "PANEL_IDS_SHA256", None)
     with pytest.raises(cm.Refused, match="PANEL_IDS_SHA256 is None"):
         fe.fetch("GSE910002", dest, y)
     assert "PANEL_IDS_SHA256" in fe.check_gate(["GSE910002"], y)[0]
@@ -834,7 +835,7 @@ def test_g8_identical_vectors(tmp_path):
 # ids
 
 
-def test_the_id_routes(tmp_path):
+def test_the_id_routes(tmp_path, monkeypatch):
     _, _, ref = make_ref(tmp_path)
     pfile, psha = panel_file(tmp_path, ref)
     panel = cm.load_panel_ids(ref["genes"], pfile, psha)
@@ -850,8 +851,10 @@ def test_the_id_routes(tmp_path):
         cm.load_panel_ids(list(reversed(ref["genes"])), pfile, psha)
     with pytest.raises(cm.Refused, match="sha256"):
         cm.load_panel_ids(ref["genes"], pfile, "0" * 64)
-    with pytest.raises(cm.Refused, match="None"):
-        cm.load_panel_ids(ref["genes"])
+    with monkeypatch.context() as mp:   # the unpinned state (the committed pin: test_t3_ext_panel_ids.py)
+        mp.setattr(cm, "PANEL_IDS_SHA256", None)
+        with pytest.raises(cm.Refused, match="None"):
+            cm.load_panel_ids(ref["genes"])
     # an id naming two panel symbols: NA for both in make_panel_ids; a hand-made file with it refuses
     text = pfile.read_text().replace(f"g2\t{ID['g2']}", f"g2\t{ID['g1']}")
     bad = tmp_path / "bad.tsv"

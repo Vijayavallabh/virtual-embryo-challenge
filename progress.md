@@ -2,6 +2,16 @@
 
 ## Current State
 
+- **2026-11-20, 22:51 UTC.** Files are still with the captain on all four boards; no new score reported. Since the
+  last entry: Task 1's candidate D read NOT AHEAD on practice (T64) and ends. Task 3's combination file CK (the
+  two-knockout factor times the square of the outside table) is built for every base under a rule fixed before any
+  score. A fourth outside study (Cmtr2) was fetched and withdrawn before any table: its wild-type libraries are too
+  shallow. The bulk whole-embryo intake passed three review rounds and is merged; the 73-line public set has its final
+  line set (25 usable knockout lines, 103 knockout and 114 wild-type embryos, after 29 lines were withheld by two
+  readers on their names); its two readers are on the metadata now, and no count has been read. One practice row for
+  the wider tables (K24) is with agents. Running: E49 (embryo shape). Tries: T1 418, embryo 76, heart 80, T3 66. What
+  waits: `session-handoff.md`, first bullet.
+
 - **2026-11-20, 20:33 UTC.** Files are still with the captain on all four boards; no new score reported. Since the
   last entry: Task 3's follow-up practice read K23 named one file (the best base's factor times the square of the
   two-study outside-knockout table; about +0.7 to +0.9 on practice in three of four cells, ahead of its shuffled
