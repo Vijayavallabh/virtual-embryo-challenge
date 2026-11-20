@@ -941,8 +941,8 @@ value or a table value. Nothing is pinned or added after a practice read without
 ## Stage 9: the steps for the main session, in order (none was run by the engineer)
 
 1. **Merge** `campaign/t3-ext-bulk-2` (it holds `campaign/t3-ext-bulk` and `campaign/t3-ext-4`, stage 8, and main as
-   of 4b096ef) into `main` after its review. Nothing in `datasets.yaml` changes, so `DATASETS_SHA256` stays; stored
-   plans of stage 8 stay valid for single-cell datasets. Sync the DGX campaign checkout.
+   of de10b43) into `main` after its review. This branch changes nothing in `datasets.yaml`, so `DATASETS_SHA256`
+   stays main's; stored plans stay valid for single-cell datasets. Sync the DGX campaign checkout.
 2. **The gene-id map** (only for a dataset with `id_type: ensembl`, E-MTAB-7322 included): after a pinned single-cell
    10x sample has been fetched, run `make_panel_ids.py --dest D --accession ACC --gsm GSM --file <its features file or
    per-sample archive> --refstats D/reference/refstats.npz --extra <every knocked-out gene to be read, the MGP lines
