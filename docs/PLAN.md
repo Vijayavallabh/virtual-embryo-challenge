@@ -8011,3 +8011,8 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     detached worktree: tests, the target-free description, the gate against E47 within 0.01, the run on nine tasks and
     ten seeds under both scorer builds, the reading. A form passes only by the row's six conditions; at most two
     candidate files follow; each needs the test-board flag, which is the captain's yes, before it is built.
+  - Later the same hour: the first launch at 1dbdb9b stopped at the launcher's own tests step (exit 1) before anything
+    was described, gated or scored. One unit test of the script's refusal without its row failed once the row existed:
+    the function that looks for the row bound the ledger's path when it was defined, so the test's substitute ledger
+    was never read. The function now looks the path up at call time (one line; 107 tests of the script and the forms
+    pass with the row present). The run commit is the commit of that fix, as row E49's last cell says.

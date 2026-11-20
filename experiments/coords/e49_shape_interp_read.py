@@ -133,7 +133,8 @@ def _git(*args: str) -> subprocess.CompletedProcess:
                           env={**os.environ, "GIT_OPTIONAL_LOCKS": "0"})
 
 
-def has_row(path: Path = TRIES) -> bool:
+def has_row(path: Path | None = None) -> bool:
+    path = TRIES if path is None else path
     rows = n12.tries_rows(path)
     return any(r in rows for r in ROW_IDS)
 
