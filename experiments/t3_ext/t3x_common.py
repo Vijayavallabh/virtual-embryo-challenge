@@ -33,7 +33,7 @@ SHARE_RATIO_MAX = 2.0    # a (group, stage) drops if its share of an arm's cells
 SPEARMAN_MARGIN = 0.05   # the control group's best-matching reference group must be its own, ahead by 0.05
 AUTHOR_AGREE = 0.5       # where author labels exist: >= half of the group's control calls agree with the dictionary
 MIN_CELLS = 100          # confident cells of the group in EACH arm at a stage (the frozen transfer's minimum)
-MIN_UMI = 20             # a gene with fewer summed UMIs in any arm of (group, stage) gets log ratio 0
+MIN_UMI = 20             # a gene with fewer summed UMIs in any arm of (group, stage) is NaN there (not measured)
 PSEUDOCOUNT = 10.0       # per-gene count pseudocount on the summed UMIs (the challenger's change 3)
 N_HALF = 200             # the cell term n_h / (n_h + 200); 200 is K7's MIN_CELLS
 CLIP = (0.25, 4.0)       # the frozen clip of gene_factor
@@ -121,9 +121,10 @@ def stage_ok(label) -> float:
 # ---------------------------------------------------------------------------------------------------------------------
 # The dataset list
 
-_TOP = {"version", "fixed", "notes", "datasets"}
+_TOP = {"version", "fixed", "notes", "datasets", "qc_floors"}
 _KEYS = {"accession", "status", "status_reason", "tier", "study", "kind", "design", "control_relation", "chimera",
          "repository", "screen_series", "stages_used", "control_definition", "arms", "exclude_match",
+         "exclude_match_on",
          "design_refuse", "chemistry", "expect", "sample_file_patterns", "files_note", "licence", "why", "risks",
          "verified", "screen_extra_refuse", "review_cleared", "cell_labels", "citation"}
 
@@ -158,6 +159,8 @@ def load_datasets(path: Path | None = None) -> dict[str, dict]:
             raise Refused(f"{path}: {acc}: tier {ds.get('tier')!r} not in {TIERS}")
         if ds.get("design") not in DESIGNS or ds.get("control_relation") not in RELATIONS:
             raise Refused(f"{path}: {acc}: design/control_relation not in {DESIGNS}/{RELATIONS}")
+        if ds.get("exclude_match_on", "text") not in ("text", "title"):
+            raise Refused(f"{path}: {acc}: exclude_match_on must be text or title")
         if ds["design"] == "chimera" and ds["status"] == "cleared" and not ds.get("chimera", {}).get(
                 "second_difference"):
             raise Refused(f"{path}: {acc}: a chimera without a wild-type-chimera second difference is not cleared")
@@ -170,6 +173,19 @@ def load_datasets(path: Path | None = None) -> dict[str, dict]:
         check_review_cleared(ds.get("review_cleared") or [])
         out[acc] = {**ds, "d": design_factor(ds)}
     return out
+
+
+def qc_floors(path: Path | None = None) -> dict:
+    """datasets.yaml's qc_floors, checked; refused when missing (a table is never built without its floor)."""
+    path = Path(path or DATASETS)
+    doc = yaml.safe_load(path.read_text()) or {}
+    fl = doc.get("qc_floors")
+    if not isinstance(fl, dict) or set(fl) != {"min_confident_share_per_sample"}:
+        raise Refused(f"{path}: qc_floors must hold exactly min_confident_share_per_sample")
+    v = fl["min_confident_share_per_sample"]
+    if not isinstance(v, int | float) or not 0 < float(v) <= 1:
+        raise Refused(f"{path}: min_confident_share_per_sample must be in (0, 1]")
+    return {"min_confident_share_per_sample": float(v)}
 
 
 def dataset(acc: str, path: Path | None = None, need_cleared: bool = True) -> dict:

@@ -37,6 +37,8 @@ def _load(name):
 fe, pr, co = _load("fetch"), _load("process"), _load("combine")
 
 DS_YAML = """version: 1
+qc_floors:
+  min_confident_share_per_sample: 0.5
 datasets:
   - accession: GSE900001
     status: cleared
@@ -81,8 +83,9 @@ datasets:
 """
 
 
-def _soft(samples: dict[str, dict], title="A series") -> str:
-    lines = ["^SERIES = GSE900001", f"!Series_title = {title}", "!Series_overall_design = embryos"]
+def _soft(samples: dict[str, dict], title="A series", design="embryos", summary="a summary") -> str:
+    lines = ["^SERIES = GSE900001", f"!Series_title = {title}", f"!Series_overall_design = {design}",
+             f"!Series_summary = {summary}"]
     for gsm, f in samples.items():
         lines.append(f"^SAMPLE = {gsm}")
         for k, vals in f.items():
@@ -143,6 +146,36 @@ def test_plan_refuses_review_terms_and_held_out_series_titles(dsy, tmp_path):
     assert _plan(dsy, tmp_path / "d", s)["status"] == "refused"
     s = {"GSM1": _sample("GSM1", "Hoxz KO"), "GSM2": _sample("GSM2", "WT")}
     assert _plan(dsy, tmp_path / "d", s, title="Gata4 and Hoxz in the heart")["status"] == "refused"
+
+
+@pytest.mark.parametrize("key", ["title", "design", "summary"])
+@pytest.mark.parametrize("text,kind", [("Gata6 and Hoxz", "review"), ("Wnt signalling inhibition", "review"),
+                                       ("GATA binding protein 4", "held_out"), ("sgbcat embryos", "held_out")])
+def test_series_title_design_and_summary_refuse_alike(dsy, tmp_path, key, text, kind):
+    s = {"GSM1": _sample("GSM1", "Hoxz KO"), "GSM2": _sample("GSM2", "WT")}
+    pl = _plan(dsy, tmp_path / "d", s, **{key: text})
+    assert pl["status"] == "refused" and kind in pl["reason"]
+
+
+def test_a_series_review_term_is_cleared_only_by_a_named_series_entry(dsy, tmp_path):
+    s = {"GSM1": _sample("GSM1", "Hoxz KO"), "GSM2": _sample("GSM2", "WT")}
+    ok = DS_YAML.replace("    exclude_match: ['atac']\n", "    exclude_match: ['atac']\n    review_cleared:\n"
+                         "      - {sample: GSE900001, term: gata6, reason: names a neighbour only}\n", 1)
+    dsy.write_text(ok)
+    assert _plan(dsy, tmp_path / "d", s, summary="Gata6 is mentioned")["status"] == "ok"
+    assert _plan(dsy, tmp_path / "d", s, summary="Gata6 and Gata4 are mentioned")["status"] == "refused"
+    dsy.write_text(ok.replace("sample: GSE900001", "sample: GSM1"))
+    assert _plan(dsy, tmp_path / "d", s, summary="Gata6 is mentioned")["status"] == "refused"
+
+
+def test_exclude_match_on_title_ignores_the_other_fields(dsy):
+    ds = {"exclude_match": ["(?<![a-z])atac(?![a-z])"], "exclude_match_on": "title",
+          "arms": {"control": {"on": "text", "all": ["genotype: wt"]}, "ko": []}}
+    rna = {**_sample("E8.5_WT_rep1", "WT", extra=["library: multiome RNA (paired ATAC)"]), "title": ["E8.5_WT_rep1"]}
+    atac = {**_sample("E8.5_WT_rep1_ATAC", "WT"), "title": ["E8.5_WT_rep1_ATAC"]}
+    assert fe.resolve_arm(ds, rna)[0] == "control"
+    assert fe.resolve_arm(ds, atac)[0] is None
+    assert fe.resolve_arm({**ds, "exclude_match_on": "text"}, rna)[0] is None
 
 
 @pytest.mark.parametrize("stage", ["E10.5", "E9.5-E10.5", "unknown"])
@@ -310,6 +343,30 @@ def test_end_to_end_synthetic_run_writes_only_outside_and_combine_takes_it(tmp_p
         co.combine(out, refp, ROOT / "tables_here", dsy)
 
 
+def test_confident_shares_are_recorded_and_a_table_under_the_floor_is_refused(tmp_path, dsy):
+    dest, wt, refp, clf = _synthetic_run(tmp_path, dsy)
+
+    def low(wt_path, C, present, genes, names, threads):
+        calls, conf, rec = clf(wt_path, C, present, genes, names, threads)
+        conf = np.where([n.startswith("GSM1:") and i % 5 < 3 for i, n in enumerate(names)], 0.3, conf)
+        return calls, conf, rec
+
+    out = tmp_path / "processed"
+    qc = pr.run("GSE900001", dest, wt, refp, out, dsy, classifier=low)
+    cs = qc["confidence_by_sample"]
+    assert cs["GSM1"]["confident_share"] == pytest.approx(0.4) and cs["GSM2"]["confident_share"] == 1.0
+    assert cs["GSM1"]["unconfident_share"] == pytest.approx(0.6)
+    assert qc["units"]["Hoxz"]["status"] == "refused_low_confidence" and qc["status"] == "left_out"
+    assert not list((out / "GSE900001").glob("*.unit.json"))
+    saved = json.loads((out / "GSE900001" / "QC.json").read_text())
+    assert saved["confidence_by_sample"]["GSM1"]["cells"] == 320
+    with pytest.raises(cm.Refused, match="no unit passed"):
+        co.combine(out, refp, tmp_path / "t", dsy)
+    dsy.write_text(DS_YAML.replace("qc_floors:\n  min_confident_share_per_sample: 0.5\n", ""))
+    with pytest.raises(cm.Refused, match="qc_floors"):
+        pr.run("GSE900001", dest, wt, refp, tmp_path / "o2", dsy, classifier=clf)
+
+
 def test_process_refuses_changed_raw_files_and_a_sample_that_fails_the_screen(tmp_path, dsy):
     dest, wt, refp, clf = _synthetic_run(tmp_path, dsy)
     p = next((dest / "raw" / "GSE900001" / "GSM1").glob("*barcodes*"))
@@ -365,6 +422,19 @@ def test_combine_refuses_a_failed_qc_or_a_changed_unit(tmp_path, dsy):
     qcp.write_text(json.dumps(qc))
     with pytest.raises(cm.Refused, match="QC failed"):
         co.combine(out, refp, tmp_path / "t", dsy)
+
+
+def test_the_launcher_plans_by_default_and_writes_all_exit_on_a_kill():
+    import subprocess
+
+    sh = EXT / "run_dgx.sh"
+    assert subprocess.run(["bash", "-n", str(sh)], capture_output=True).returncode == 0
+    text = sh.read_text()
+    assert 'MODE=${2:-plan}' in text
+    assert """trap 'echo 99 > "$D/logs/ALL.exit"; exit 99' TERM INT HUP""" in text
+    plan_part, all_part = text.split('if [ "$MODE" = plan ]; then', 1)[1].split("\nfi\n", 1)
+    assert "fetch.py plan" in plan_part and "fetch.py fetch" not in plan_part and "process.py" not in plan_part
+    assert "fetch.py plan" not in all_part and 'plan_$A.exit' in all_part
 
 
 def test_outside_repo_guard(tmp_path):

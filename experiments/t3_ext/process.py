@@ -23,9 +23,13 @@ The rules (constants in t3x_common.py, fixed 2026-11-20, none from a score):
     that moves cells between calls is not read as expression change); the control arm's group profile does not have
     the reference group as its best Spearman match, ahead of the next by 0.05; or, where author labels and a committed
     dictionary exist, fewer than half the control cells' dictionary groups agree.
-  * Log ratio per gene on summed UMIs with a pseudocount of 10: log((x_ko+10)/N_ko) - log((x_ctl+10)/N_ctl); 0 for a
-    gene with fewer than 20 UMIs in any arm; clipped to log [0.25, 4]. Chimeras only with a wild-type-chimera second
-    difference: [mut vs host] in knockout chimeras minus [mut vs host] in wild-type chimeras.
+  * Each sample's confident and unconfident shares go into QC.json; a knockout gene's table is refused (status
+    refused_low_confidence, nothing written) if any of its samples has a confident share under datasets.yaml's
+    qc_floors.min_confident_share_per_sample.
+  * Log ratio per gene on summed UMIs with a pseudocount of 10: log((x_ko+10)/N_ko) - log((x_ctl+10)/N_ctl); NaN (not
+    measured) for a gene with fewer than 20 UMIs in any arm; clipped to log [0.25, 4]. Chimeras only with a
+    wild-type-chimera second difference: [mut vs host] in knockout chimeras minus [mut vs host] in wild-type
+    chimeras.
   * Shrinkage L = k * log ratio, k = min(n_h/(n_h+200), m/(m+1)) * m/(m+1) * d (t3x_common.shrink_k).
   * Per group, its passing stages are averaged with equal weight. No group passing = the dataset is left out
     (status 'left_out'), never given a pooled fallback.
@@ -186,26 +190,28 @@ def _sum(C, rows) -> np.ndarray:
 
 
 def log_ratio(x_a, x_b, present) -> np.ndarray:
-    """log((x_a+a)/N_a) - log((x_b+a)/N_b) on present genes, 0 where either arm has < MIN_UMI, clipped; NaN absent."""
+    """log((x_a+a)/N_a) - log((x_b+a)/N_b) on present genes, clipped; NaN for an absent gene and for a gene with
+    fewer than MIN_UMI in either arm (not measured: it holds no value in any mean and ends as factor 1 if no group
+    or study holds it)."""
     x_a, x_b = np.asarray(x_a, float), np.asarray(x_b, float)
     Na, Nb = x_a[present].sum(), x_b[present].sum()
     out = np.full(len(x_a), np.nan)
     if Na <= 0 or Nb <= 0:
         return out
     L = np.log((x_a + cm.PSEUDOCOUNT) / Na) - np.log((x_b + cm.PSEUDOCOUNT) / Nb)
-    L = np.where(np.minimum(x_a, x_b) < cm.MIN_UMI, 0.0, L)
-    out[present] = np.clip(L, *cm.LOG_CLIP)[present]
+    L = np.where(np.minimum(x_a, x_b) < cm.MIN_UMI, np.nan, np.clip(L, *cm.LOG_CLIP))
+    out[present] = L[present]
     return out
 
 
 def chimera_log_ratio(x: dict[str, np.ndarray], present) -> np.ndarray:
-    """[ko_mut vs ko_host] - [wt_mut vs wt_host], each with the pseudocount; 0 where any arm has < MIN_UMI."""
+    """[ko_mut vs ko_host] - [wt_mut vs wt_host], each with the pseudocount; NaN where any arm has < MIN_UMI."""
     a = log_ratio(x["ko_mut"], x["ko_host"], present)
     b = log_ratio(x["wt_mut"], x["wt_host"], present)
     low = np.min(np.vstack([x[k] for k in CHIMERA_ARMS]), 0) < cm.MIN_UMI
-    L = np.where(low, 0.0, a - b)
+    L = np.where(low, np.nan, np.clip(a - b, *cm.LOG_CLIP))
     out = np.full(len(L), np.nan)
-    out[present] = np.clip(L, *cm.LOG_CLIP)[present]
+    out[present] = L[present]
     return out
 
 
@@ -348,6 +354,7 @@ def write_unit(out_dir: Path, acc: str, gene: str, Lg: dict, qc: dict, ref: dict
 def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Path | None = None,
         threads: int = 8, classifier=None) -> dict:
     ds = cm.dataset(acc, datasets)
+    floor = cm.qc_floors(datasets)["min_confident_share_per_sample"]
     if ds.get("cell_labels"):
         raise Refused(f"{acc}: a per-cell label table is needed (t3x_screen.screen_cells); its loader is not built "
                       "in stage 1")
@@ -407,9 +414,22 @@ def run(acc: str, dest: Path, wt: Path, refstats: Path, out: Path, datasets: Pat
     calls, conf, crec = (classifier or classify)(wt, C, present, genes, list(obs.index), threads)
     obs["call"], obs["conf"] = calls, conf
     qc["classifier"] = crec
+    # 3b. the transfer has never run on real cells: each sample's confident share goes into QC.json, and a table
+    # with a sample under the floor fixed in datasets.yaml is refused
+    by_sample = {}
+    for gsm, sub in obs.groupby("sample"):
+        share = float((sub["conf"].to_numpy(float) >= cm.CONFIDENT).mean()) if len(sub) else 0.0
+        by_sample[str(gsm)] = {"cells": int(len(sub)), "confident_share": share, "unconfident_share": 1.0 - share}
+    qc["confidence_by_sample"] = by_sample
+    qc["min_confident_share_per_sample"] = floor
     # 4. one table per knockout gene
     qc["units"] = {}
     for u in pl["units"]:
+        low = sorted(g for g in u["ko"] + u["control"] if by_sample.get(g, {}).get("confident_share", 0.0) < floor)
+        if low:
+            qc["units"][u["gene"]] = {"status": "refused_low_confidence", "samples_under_floor": low,
+                                      "reason": f"confident share under {floor} in {low}: no table written"}
+            continue
         rows = obs["sample"].isin(u["ko"] + u["control"]).to_numpy()
         sub = obs[rows].copy()
         sub["arm"] = np.where(sub["sample"].isin(u["ko"]), "ko", "control")
@@ -475,6 +495,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"refused: {e}")
         return 2
     print(f"{a.accession}: status {qc['status']}; panel genes present {qc['panel_genes_present']}/{qc['panel_genes']}")
+    for gsm, v in (qc.get("confidence_by_sample") or {}).items():
+        print(f"  {gsm}: {v['cells']} cells, confident share {v['confident_share']:.3f}")
     for gname, v in (qc.get("units") or {}).items():
         passed = sorted(v.get("groups", {}))
         print(f"  {gname}: {v['status']}; groups with a factor: {passed}")

@@ -49,7 +49,7 @@ def test_log_ratio_on_hand_checked_numbers():
     assert L[0] == pytest.approx(math.log(110 / 160) - math.log(60 / 130))  # 0.398497
     assert L[0] == pytest.approx(0.398497, abs=1e-6)
     assert L[1] == pytest.approx(math.log(130 / 160))                          # -0.207639
-    assert L[2] == 0.0 and L[3] == 0.0                                         # under 20 UMIs in an arm
+    assert np.isnan(L[2]) and np.isnan(L[3])                                   # under 20 UMIs in an arm: NaN
     assert np.isnan(L[4])                                                      # absent gene
     big = pr.log_ratio(np.array([5000.0, 100.0]), np.array([100.0, 5000.0]), np.array([True, True]))
     assert big.tolist() == pytest.approx([math.log(4), math.log(0.25)])       # clipped to log [0.25, 4]
@@ -112,9 +112,9 @@ def test_unit_ratio_passes_a_clean_group_and_equals_k_times_the_hand_ratio():
     x_ko, x_ct = parts[0][0].sum(0), parts[1][0].sum(0)
     k = cm.shrink_k([150, 150], 1, 1.0)   # n_h 150 -> 150/350 = 0.4286 < 0.5; times 0.5
     assert k == pytest.approx((150 / 350) * 0.5)
-    assert Lg["CM"] == pytest.approx(k * pr.log_ratio(x_ko, x_ct, present))
+    assert Lg["CM"] == pytest.approx(k * pr.log_ratio(x_ko, x_ct, present), nan_ok=True)
     enough = np.minimum(x_ko, x_ct) >= cm.MIN_UMI
-    assert np.all(Lg["CM"][:5][enough[:5]] > 0) and np.all(Lg["CM"][~enough] == 0)
+    assert np.all(Lg["CM"][:5][enough[:5]] > 0) and np.all(np.isnan(Lg["CM"][~enough]))
     assert qc["stages"]["E8.5"]["groups"]["CM"]["m"] == 1
 
 
@@ -161,7 +161,9 @@ def test_stages_average_with_equal_weight_and_a_late_stage_refuses():
     Lg, _ = pr.unit_log_ratios(C, present, obs, REF, d=1.0)
     a = cm.shrink_k([150, 150], 1, 1.0) * pr.log_ratio(parts[0][0].sum(0), parts[1][0].sum(0), present)
     b = cm.shrink_k([300, 300], 1, 1.0) * pr.log_ratio(parts[2][0].sum(0), parts[3][0].sum(0), present)
-    assert Lg["CM"] == pytest.approx((a + b) / 2)
+    both = np.isfinite(a) & np.isfinite(b)
+    one = np.where(np.isfinite(a), a, b)
+    assert Lg["CM"] == pytest.approx(np.where(both, (a + b) / 2, one), nan_ok=True)   # a NaN stage holds no value
     late = obs.copy()
     late["stage"] = 10.5
     with pytest.raises(cm.Refused):
@@ -180,8 +182,8 @@ def test_chimeras_need_the_second_difference_and_take_it():
     Lg, qc = pr.unit_log_ratios(C, present, obs, REF, d=1.0, chimera=True)
     x = {a: p[0].sum(0) for a, p in zip(pr.CHIMERA_ARMS, parts, strict=True)}
     raw = pr.log_ratio(x["ko_mut"], x["ko_host"], present) - pr.log_ratio(x["wt_mut"], x["wt_host"], present)
-    raw = np.where(np.min(np.vstack(list(x.values())), 0) < cm.MIN_UMI, 0.0, np.clip(raw, *cm.LOG_CLIP))
-    assert Lg["CM"] == pytest.approx(cm.shrink_k([150] * 4, 1, 1.0) * raw)
+    raw = np.where(np.min(np.vstack(list(x.values())), 0) < cm.MIN_UMI, np.nan, np.clip(raw, *cm.LOG_CLIP))
+    assert Lg["CM"] == pytest.approx(cm.shrink_k([150] * 4, 1, 1.0) * raw, nan_ok=True)
 
 
 # ---------------------------------------------------------------------------------------------------------------------

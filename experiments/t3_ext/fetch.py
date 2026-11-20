@@ -142,7 +142,8 @@ def resolve_arm(ds: dict, rec: dict) -> tuple[str | None, str | None]:
     """(arm, gene) for one sample: ('control', gene_hint or None), ('ko', gene) or (None, None)."""
     title = " ".join(rec.get("title", [])).lower()
     text = sample_text(rec)
-    if any(re.search(p, text, re.IGNORECASE) for p in ds.get("exclude_match") or []):
+    where = title if ds.get("exclude_match_on", "text") == "title" else text
+    if any(re.search(p, where, re.IGNORECASE) for p in ds.get("exclude_match") or []):
         return None, None
     arms = ds.get("arms") or {}
     ko = arms.get("ko") or []
@@ -158,20 +159,18 @@ def resolve_arm(ds: dict, rec: dict) -> tuple[str | None, str | None]:
 def screen_all(ds: dict, metas: dict[str, dict]) -> dict:
     """The held-out screen over every sample (and the series title and design) of every screened series."""
     records, refusals = [], []
+    extra, cleared = ds.get("screen_extra_refuse"), ds.get("review_cleared")
     for series, meta in metas.items():
-        for key in ("title", "overall_design"):
-            for v in meta["series"].get(key, []):
-                got = sc.match(v)
-                if got and got[0] == "held_out":
-                    refusals.append(f"{series} {key}: held-out term {got[1]!r}")
-        for v in meta["series"].get("summary", []):
-            got = sc.match(v)
-            if got:
-                refusals.append(f"{series} summary: {got[0]} term {got[1]!r} (refuse for review)")
-        for v in meta["series"].get("supplementary_file", []):
-            got = sc.match(Path(v).name)
-            if got:
-                refusals.append(f"{series} series file name: {got[0]} term {got[1]!r}")
+        # every series-level text field (title, summary, overall_design, type, relations ...) is screened alike: a
+        # held-out term refuses, and so does a review term not cleared for this series; contact fields are skipped
+        for key, vals in meta["series"].items():
+            if key.startswith("contact_"):
+                continue
+            for v in vals:
+                txt = Path(urllib.parse.urlparse(v).path).name if key == "supplementary_file" else v
+                got = sc.screen_text(series, txt, extra, cleared)
+                if got:
+                    refusals.append(f"{series} {key}: {got[0][0]} term {got[0][1]!r}")
         for gsm, rec in meta["samples"].items():
             r = sc.screen_record(gsm, rec, ds.get("screen_extra_refuse"), ds.get("review_cleared"))
             records.append({"series": series, **r})

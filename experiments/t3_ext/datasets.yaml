@@ -16,7 +16,9 @@
 # characteristics, description; lower-cased) is matched: `control` first (a control that also matches a knockout's
 # gene regex is that knockout's own control), then the `ko` list in order, first match wins (double knockouts are
 # listed first). `all`: every regex must match; `none`: no regex may match; `on`: title or text. Samples matching
-# exclude_match are never selected; a match of design_refuse anywhere refuses the dataset. Stages come from the
+# exclude_match (on the joined text, or on the title only when exclude_match_on: title) are never selected; a match
+# of design_refuse anywhere refuses the dataset. review_cleared entries name a GSM, or a series accession for a
+# series-level field (title, summary, overall_design ...), with the review term and the reason. Stages come from the
 # characteristics (one value; a range or two values refuse the sample) and must be in stages_used. `expect` counts are
 # checked when given. The selectors are written from the scouts' records; the GSM titles were NOT all read by me, so a
 # refusal at plan time on a count or an unmatched arm is the expected way a wrong selector shows up.
@@ -25,6 +27,12 @@
 
 version: 1
 fixed: "2026-11-20, the AI assistant (engineer of the outside-knockout campaign), before any download"
+# The lineage transfer has never run on real 10x cells restricted to the panel (the reviewer's point 10). process.py
+# writes each sample's confident and unconfident share to QC.json and refuses a knockout gene's table when any of its
+# samples has a confident share (label_conf >= 0.6) under this floor. Fixed 2026-11-20 (stage 2) before any download,
+# equal to the per-arm stage floor MIN_CONF_SHARE; no count or score was read.
+qc_floors:
+  min_confident_share_per_sample: 0.5
 datasets:
 
   # ------------------------------------------------------------------------------------------------- (a) canonical Wnt
@@ -43,7 +51,8 @@ datasets:
       control: {on: title, all: ['^\s*e8\.5_crispr_t_wt\b']}
       ko:
         - {gene: T, on: title, all: ['^\s*e8\.5_crispr_t_ko\b']}
-    exclude_match: ['atac']
+    exclude_match: ['(?<![a-z])atac(?![a-z])']
+    exclude_match_on: title
     design_refuse: ['chimer', 'tdtom', '(?<![a-z])host(?![a-z])']
     expect: {E8.5: {ko: 1, control: 1}}
     sample_file_patterns: ['(matrix\.mtx|barcodes\.tsv|features\.tsv|genes\.tsv)(\.gz)?$', 'filtered_feature_bc_matrix\.h5$']
@@ -77,6 +86,9 @@ datasets:
   # ---------------------------------------------------------------------------------------------- (b) cardiac TFs
   - accession: GSE168768
     status: cleared
+    status_reason: "cleared by the engineer's reading that a Tbx1 loss (pharyngeal and outflow-tract phenotype) is not a
+      phenocopy of Gata4 loss. The scout synthesis lists Tbx1 among Gata4's cardiac partners, so this reading goes into
+      the same priced phenocopy question as Wls, Hand2 and Mef2c."
     tier: cardiac
     study: GSE167493
     kind: "Tbx1 conditional (Tbx1Cre/flox; Rosa26-GFPflox/+), GFP lineage, 10x 3'"
@@ -101,6 +113,9 @@ datasets:
 
   - accession: GSE186934
     status: cleared
+    status_reason: "cleared by the engineer's reading that a Tbx1 loss (pharyngeal and outflow-tract phenotype) is not a
+      phenocopy of Gata4 loss. The scout synthesis lists Tbx1 among Gata4's cardiac partners, so this reading goes into
+      the same priced phenocopy question as Wls, Hand2 and Mef2c."
     tier: cardiac
     study: GSE167493
     kind: "Mesp1Cre; Tbx1 flox/flox conditional knockout (per the scout; not verified)"
@@ -155,7 +170,8 @@ datasets:
       control: {on: text, all: ['(?<![a-z])(wt|wild[ -]?type)(?![a-z])'], none: ['mef2c\s*-?\s*(ko|null|knock)']}
       ko:
         - {gene: Mef2c, on: text, all: ['mef2c\s*-?\s*(ko|null|knock)']}
-    exclude_match: ['atac']
+    exclude_match: ['(?<![a-z])atac(?![a-z])']
+    exclude_match_on: title
     sample_file_patterns: ['(matrix\.mtx|barcodes\.tsv|features\.tsv|genes\.tsv)(\.gz)?$', 'filtered_feature_bc_matrix\.h5$']
     licence: "GEO: NCBI places no restriction on use; submitter rights may apply"
     verified: false

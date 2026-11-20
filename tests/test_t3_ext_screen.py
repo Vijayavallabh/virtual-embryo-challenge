@@ -16,20 +16,77 @@ import t3x_common as cm  # noqa: E402
 import t3x_screen as sc  # noqa: E402
 
 HELD = [
-    # knockout, conditional, knockdown, guide, degron, other alleles and spellings
+    # knockout, conditional, knockdown, guide, degron, other alleles and spellings (stage 1)
     "Ctnnb1 KO", "Mesp1-Cre; Ctnnb1 F/F", "Ctnnb1 fl/fl", "ctnnb1-/-", "Ctnnb1 cKO", "CTNNB1 null",
     "Ctnnb exon3 deletion", "Catnb lox", "beta-catenin knockdown", "β-catenin shRNA", "β-cat cKO", "ß-catenin",
     "ß-cat", "bcat KO", "b-cat fl", "B_catenin", "beta catenin", "sgCtnnb1", "guide: sgRNA-Ctnnb1-2",
     "Ctnnb1-dTAG degron", "Ctnnb1 siRNA", "Gata4 KO", "GATA-4 null", "gata 4 siRNA", "Gata4 flox/flox", "sgGata4",
     "Gata4-AID degron", "shGata4", "Gata4_cKO",
-    # drugs naming the protein or acting on it (the phenocopy clause)
     "beta-catenin inhibitor", "Gata4 inhibitor", "CHIR99021", "CHIR-99021 3uM", "XAV939", "XAV-939", "IWR-1",
     "IWR1-endo", "ICG-001", "PNU-74654", "iCRT14", "IWP-2", "IWP2", "LGK974", "LGK-974", "Wnt-C59", "WntC59",
+    # the reviewer's blocker strings (stage 2)
+    "GATA binding protein 4", "GATA-binding factor 4", "sgbcat", "sgβcat", "shBcat",
+    # symbols in any case, with separators, orthologues, allele and line names
+    "CTNNB1", "ctnnb1", "Ctnn-b1", "CTNN B1", "ctnnb2 morphant", "GATA4", "gata4", "Gata-4", "GATA 4", "gata_4",
+    "GATA4/GATA-4", "Ctnnb1tm2Kem", "Ctnnb1tm1Mmt", "Catnb^lox(ex3)", "Ctnnb1 lox(ex3)/+", "Ctnnb1 del(ex3)",
+    "Ctnnb1 delta ex3", "Ctnnb1(ex3)fl", "Bfc/+ (batface)",
+    # full names
+    "catenin beta 1", "Catenin beta-1", "catenin (cadherin-associated protein), beta 1", "catenin, beta",
+    "cadherin associated protein beta", "cadherin-associated protein, beta 1", "GATA binding protein 4 null",
+    "transcription factor GATA-4", "GATA-binding protein 4", "gata binding factor-4", "GATA IV",
+    # beta-catenin short names and encodings
+    "beta-catenin", "β-catenin", "ß-catenin", "b-catenin", "bcat", "β-cat", "Β-CATENIN", "betacatenin", "βcatenin",
+    "beta-cat", "bCat", "B-Cat", "ss-catenin", "ꞵ-catenin", "ϐ-catenin", "beta—catenin", "beta‑catenin",
+    "β​catenin", "be­ta-catenin", "Î²-catenin", "%CE%B2-catenin", "&beta;-catenin", "&#946;-catenin",
+    "beta-catenins", "anti-β-catenin antibody", "nuclear β-cat",
+    # stabilised or dominant-active forms
+    "deltaN beta-catenin", "ΔN89 β-catenin", "β-catenin S33Y", "S33Y", "S37A mutant", "T41A", "S45F", "S45del",
+    "stabilised β-catenin", "dominant-active bcat", "Ctnnb1 ca",
+    # guides, hairpins, siRNA, morpholinos, degrons, CRISPRi / a, glued prefixes and suffixes
+    "sgbcat_1", "gbcat", "shbcat", "sibcat", "crbcat", "crisprbcat", "crispribcat", "crisprabcat", "MObcat",
+    "bcat MO", "β-cat MO", "bcatMO", "bcatKO", "bcatfl/fl", "bcatcKO", "β-cat-AID", "bcat-dTAG", "βcatKD",
+    "CRISPRi-Ctnnb1", "CRISPRa Gata4", "dCas9-KRAB sgGata4", "siGata4", "siCtnnb1", "MO-ctnnb1", "Gata4 MO",
+    "crGata4", "gRNA_Gata4_1", "Gata4-dTAG", "Gata4 degron", "shRNA_Ctnnb1",
+    # compound genotypes
+    "Gata4;Gata6", "Gata4/6 dKO", "Gata4+/-; Gata6+/-", "GATA5/4", "Gata6, 4 double", "Gata 5/6/4",
+    "Ctnnb1;Apc", "Apc; Ctnnb1 fl/fl", "Hand2;Gata4",
+    # numerals, fullwidth and superscript forms
+    "Ｇａｔａ４", "Gata⁴", "GATA４", "Ｃｔｎｎｂ１",
+    # Gata4 alleles and the reporter knock-in (held out: fails closed)
+    "Gata4 flox", "Gata4 fl/+", "G4 fl/fl", "G4 KO", "G4 -/-", "G4 knockout", "Gata4-H2B-GFP knock-in reporter",
+    "Gata4tm1.1Sad", "Gata4 G295S",
+    # identifiers
+    "ENSMUSG00000006932", "ENSG00000168036", "ENSMUSG00000021944", "ENSG00000136574.15",
+    "Entrez gene ID: 12387", "GeneID:1499", "ncbi gene 14463", "gene_id=2626",
+    # drugs on beta-catenin or the TCF complex
+    "CHIR98014", "PRI-724", "FH535", "PKF115-584", "CWP232291", "tegavivint", "BC2059", "KYA1797K", "MSAB",
+    "WNT974",
+    # the fly orthologue
+    "armadillo", "arm (armadillo) RNAi",
 ]
-REVIEW = ["Gata6 F/+", "GATA-6 het", "Apc min", "Axin2 KO", "Axin1/2", "Gsk3b inhibitor", "Gsk-3", "Wnt agonist",
-          "CHIR treated", "alpha-catenin KO", "Porcn cKO", "inhibitor of Wnt secretion"]
-CLEAN = ["Tbx1Cre/flox; Rosa26-GFPflox/+", "wild type", "E8.5_CRISPR_T_WT", "Hand2 null", "Mef2c KO",
-         "subcategory", "Dnmt3a+3b", "Eed+Cdkn2a", "Gata1 chimera", "whole embryo"]
+REVIEW = ["Gata6 F/+", "GATA-6 het", "Gata5 KO", "GATA VI", "G4 ESC chimera", "Apc min", "ApcMin/+", "Apc fl",
+          "adenomatous polyposis coli", "Axin2 KO", "Axin1/2", "conductin", "Gsk3b inhibitor", "Gsk-3",
+          "glycogen synthase kinase 3", "LiCl 10 mM", "lithium chloride", "kenpaullone", "SB216763", "SB-415286",
+          "TWS119", "AZD1080", "LY2090314", "BIO 2uM", "6-bromoindirubin-3'-oxime", "BIO-acetoxime", "Wnt agonist",
+          "CHIR treated", "IWP", "IWR", "XAV", "LGK", "C59", "C-59", "tankyrase inhibitor", "Tnks1/2", "TNKS2",
+          "G007-LK", "G244-LM", "NVP-TNKS656", "JW55", "Porcn cKO", "porcupine inhibitor", "ETC-159", "GNF-6231",
+          "Wnt signalling inhibition", "inhibitor of Wnt secretion", "Wnt pathway blocked", "Wnt loss",
+          "loss of Wnt signalling", "Wnt3a", "Wnt3 null", "WNT5A KO", "R-spondin", "Rspo3", "Dkk1", "Dickkopf",
+          "Sfrp1", "Lrp5", "Lrp6 KO", "Lrp5/6", "Tcf7 KO", "Tcf7l1", "Tcf7l2 null", "Tcf1/Lef1 dKO", "Lef1",
+          "TCF/LEF", "Tcf3", "Wls fl/fl", "Gpr177", "Wntless", "phenocopy", "phenocopies the mutant",
+          "lox(ex3)", "delta ex3", "Δex3", "ex3 flox", "exon 3 del", "ΔN", "deltaN", "pannier",
+          "alpha-catenin KO"]
+CLEAN = ["Tbx1Cre/flox; Rosa26-GFPflox/+", "wild type", "E8.5_CRISPR_T_WT", "E8.5_CRISPR_T_KO", "Hand2 null",
+         "Mef2c KO", "subcategory", "Dnmt3a+3b", "Eed+Cdkn2a", "Gata1 chimera", "whole embryo", "C57BL/6",
+         "bio replicate 1", "biological replicate 2", "conducting", "ΔNp63", "abcam", "Chromium Single Cell 3' v2",
+         "Mesp1Cre; Tbx1 flox/flox", "Dnmt1 KO E8.5 rep2", "armadillo repeat protein Armc5", "category",
+         "embryonic day 8.5", "10x Genomics", "L3mbtl2 KO", "Kmt2b null", "Rnf2", "G9a / Ehmt2"]
+# the separators an insertion uses in the property test (glued to letters, a short name cannot be told from a word)
+JOINS = [" ", "_", "; ", ", ", "-", "/", " | ", "\t", "(", ")"]
+CLEAN_RECORD = {"title": ["E8.5_embryo_3"], "source_name_ch1": ["whole embryo"],
+                "characteristics_ch1": ["genotype: wild type", "developmental stage: E8.5"],
+                "description": ["10x Chromium 3' v3 library"], "extract_protocol_ch1": ["dissociated with TrypLE"],
+                "supplementary_file_1": ["ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM1_matrix.mtx.gz"]}
 
 
 @pytest.mark.parametrize("text", HELD)
@@ -48,6 +105,33 @@ def test_clean_labels_pass(text):
     assert sc.match(text) is None
 
 
+def test_the_clean_record_is_clean():
+    assert sc.screen_record("GSM1", CLEAN_RECORD)["verdict"] == "pass"
+
+
+def _insertions(value, spelling, join):
+    mid = len(value) // 2
+    return [spelling + join + value, value + join + spelling, value[:mid] + join + spelling + join + value[mid:]]
+
+
+@pytest.mark.parametrize("i", range(len(HELD)))
+def test_property_a_held_out_spelling_in_any_field_is_caught(i):
+    """Any held-out spelling inserted into any field of a clean record (start, end, middle; rotating separators)
+    makes the record held_out, and in a cell table removes that cell only."""
+    spelling = HELD[i]
+    for j, field in enumerate(CLEAN_RECORD):
+        for join in (JOINS[(i + j) % len(JOINS)], JOINS[(i + j + 5) % len(JOINS)]):
+            for text in _insertions(CLEAN_RECORD[field][0], spelling, join):
+                r = sc.screen_record("GSM1", {**CLEAN_RECORD, field: [text]})
+                assert r["verdict"] == "held_out", (field, text)
+    for col in ("genotype", "note"):
+        for text in _insertions("wild type", spelling, JOINS[i % len(JOINS)]):
+            obs = pd.DataFrame({"genotype": ["wild type"] * 2, "note": ["wild type"] * 2}, index=["a", "b"])
+            obs.loc["a", col] = text
+            keep, _ = sc.screen_cells(obs, ["genotype"])
+            assert keep.tolist() == [False, True], (col, text)
+
+
 def test_record_screens_every_field_and_refuses_an_empty_record():
     rec = {"title": ["E8.5 embryo 3"], "source_name_ch1": ["whole embryo"],
            "supplementary_file_1": ["ftp://x/GSM1_Gata4KO_matrix.mtx.gz"]}
@@ -63,15 +147,36 @@ def test_review_clearing_is_per_sample_and_never_clears_a_held_out_term():
     ok = [{"sample": "GSM1", "term": "gata6", "reason": "a reason"}]
     assert sc.screen_record("GSM1", rec, review_cleared=ok)["verdict"] == "pass"
     assert sc.screen_record("GSM2", rec, review_cleared=ok)["verdict"] == "review"
-    for term in ("gata4", "ctnnb1", "beta-catenin", "chir99021"):
+    for term in ("gata4", "ctnnb1", "beta-catenin", "chir99021", "gata binding protein 4", "bcat", "s33y",
+                 "ensmusg00000006932", "not a term at all"):
         with pytest.raises(cm.Refused):
             sc.check_review_cleared([{"sample": "GSM1", "term": term, "reason": "x"}])
+    with pytest.raises(cm.Refused):
+        sc.check_review_cleared([{"sample": "GSM1", "term": "gata6", "reason": " "}])
+    # clearing one review term never passes a second one in the same text, nor a held-out term beside it
+    two = {"characteristics_ch1": ["genotype: Gata6 F/+; Axin2 KO"]}
+    assert sc.screen_record("GSM1", two, review_cleared=ok)["verdict"] == "review"
+    both = {"characteristics_ch1": ["genotype: Gata6 F/+; Gata4 F/+"]}
+    assert sc.screen_record("GSM1", both, review_cleared=ok)["verdict"] == "held_out"
+
+
+def test_a_column_name_with_a_screen_term_refuses_the_cell_table():
+    obs = pd.DataFrame({"genotype": ["wt", "wt"], "Ctnnb1_fl": [0, 1]}, index=["a", "b"])
+    with pytest.raises(cm.Refused, match="column name"):
+        sc.screen_cells(obs, ["genotype"])
+    obs = pd.DataFrame({"genotype": ["wt", "wt"], "note": ["Gata6 F/+", "x"]}, index=["a", "b"])
+    cleared = [{"sample": "GSM1", "term": "gata6", "reason": "a reason"}]
+    with pytest.raises(cm.Refused, match="review"):
+        sc.screen_cells(obs, ["genotype"], review_cleared=cleared, sample_id="GSM2")
+    keep, _ = sc.screen_cells(obs, ["genotype"], review_cleared=cleared, sample_id="GSM1")
+    assert keep.tolist() == [True, True]
 
 
 def test_extra_refuse_terms_only_add():
-    rec = {"title": ["Wls fl/fl"]}
+    rec = {"title": ["Hoxz fl/fl"]}
     assert sc.screen_record("GSM1", rec)["verdict"] == "pass"
-    assert sc.screen_record("GSM1", rec, extra_refuse=["wls"])["verdict"] == "held_out"
+    assert sc.screen_record("GSM1", rec, extra_refuse=["hoxz"])["verdict"] == "held_out"
+    assert sc.screen_record("GSM1", {"title": ["Wls fl/fl"]})["verdict"] == "review"   # a stage-2 review term
 
 
 def test_the_screen_has_no_switch(tmp_path):
@@ -92,7 +197,7 @@ def test_the_screen_has_no_switch(tmp_path):
 
 def test_cells_are_removed_by_label_before_counts_and_unscreenable_tables_refused():
     obs = pd.DataFrame({
-        "genotype": ["Wls fl/+", "Wls fl/fl", "Ctnnb1 fl/fl", "", None, "Wls fl/fl", "Wls fl/+"],
+        "genotype": ["Hoxz fl/+", "Hoxz fl/fl", "Ctnnb1 fl/fl", "", None, "Hoxz fl/fl", "Hoxz fl/+"],
         "hashing": ["Bar1", "Bar2", "Bar3", "Bar1", "Bar2", "Negative", "Doublet"],
         "condition": ["ctrl", "ko", "ko", "ctrl", "ko", "ko", "ctrl"],
     }, index=[f"c{i}" for i in range(7)])
@@ -142,6 +247,11 @@ def test_the_committed_dataset_list_loads_and_holds_back_what_the_plan_holds_bac
     for d in ds.values():
         for s in d["stages_used"]:
             assert cm.stage_ok(s) <= 9.5
+    for acc in ("GSE168768", "GSE186934"):
+        assert "is not a phenocopy of Gata4 loss" in ds[acc]["status_reason"]
+        assert "enter no model" not in ds[acc]["status_reason"]
+    assert ds["GSE205117"]["exclude_match_on"] == "title"
+    assert 0 < cm.qc_floors()["min_confident_share_per_sample"] <= 1
     with pytest.raises(cm.Refused):
         cm.dataset("GSE165300")
     with pytest.raises(cm.Refused):

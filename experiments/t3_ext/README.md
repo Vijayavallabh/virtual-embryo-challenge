@@ -18,19 +18,31 @@ scored, and (3) the captain rules on any change to an upload, with a `docs/S2_RU
 | `fetch.py` | `plan` screens every GSM of the series (and superseries) from GEO's family SOFT and picks the samples and per-sample files. `fetch` downloads exactly those files with sha256 and size in a manifest. |
 | `process.py` | `reference` writes the WT E8.75 statistics. `run` turns one fetched dataset into one table per knockout gene plus `QC.json`. |
 | `combine.py` | Tier tables (wnt, cardiac, unrelated), the all-knockouts table, one table per study, and leave-one-study-out tables. |
-| `run_dgx.sh` | The detached DGX launcher, with exit files. |
+| `run_dgx.sh` | The detached DGX launcher, with exit files: mode `plan` (the default) or `all`. |
 
 ## The rules each step keeps
 
 - **Held-out genes.** Before any file is chosen, `fetch.py plan` screens every sample of every listed series, plus
-  the series title, design, summary and file names. A held-out hit anywhere, a review term not cleared for that
-  sample, or a record with no text refuses the whole dataset. `process.py run` screens each chosen record again
+  every series-level field (title, summary, overall_design, type, file names and the rest; contact fields are
+  skipped). A held-out hit anywhere, a review term not cleared for that sample (or, for a series-level field, that
+  series accession), or a record with no text refuses the whole dataset. Clearing one review term never passes a
+  second term in the same text, and nothing clears a held-out term. The spelling families caught, the review terms
+  and the known over-refusals are listed in `t3x_screen.py`'s docstring; each has a test string, and a property
+  test inserts every held-out spelling into every field of a clean record. A Gata4 reporter knock-in counts as
+  held out. A label that names neither gene nor drug (for example 'Mesp1-Cre; F/F' alone) cannot be caught by any
+  text screen: that is why a person reads every plan before any fetch. `process.py run` screens each chosen record again
   before it reads a count. Per-cell label tables (MULTI-seq, gem.group, chimera sorts) go through
   `t3x_screen.screen_cells`. That function drops held-out, unassigned, negative and doublet cells. It refuses a
   table with no genotype column, a review term, or guides without a gene map. No stage-1 loader uses it yet, and a
   dataset that needs it is refused. Series-level files are never fetched in stage 1.
 - **Phenocopy clause.** Wls (GSE165300), Hand2 (GSE126128) and Mef2c (GSE280543) have status `held_phenocopy`, and
-  nothing fetches them. Each waits for one priced question to the captain.
+  nothing fetches them. Each waits for one priced question to the captain. Tbx1 (GSE168768, GSE186934) is cleared
+  on the engineer's reading that a Tbx1 loss is not a phenocopy of Gata4 loss; that reading goes into the same
+  priced question (its `status_reason`).
+- **Confidence floor.** The lineage transfer has never run on real 10x cells restricted to the panel. `process.py`
+  writes each sample's confident and unconfident shares to `QC.json` and refuses a knockout gene's table (status
+  `refused_low_confidence`, nothing written) when any of its samples has a confident share under
+  `qc_floors.min_confident_share_per_sample` in `datasets.yaml` (0.5, fixed before any download).
 - **Design.** Chimeras need a wild-type-chimera second difference. Without one they are `excluded_design`
   (Stat3 GSE259342, Tal1 E-MTAB-7325).
 - **Stage window.** Every outside cell is capped at E9.5 inclusive, whole-embryo cells included. A range, an
@@ -54,9 +66,14 @@ scored, and (3) the captain rules on any change to an upload, with a `docs/S2_RU
    drops if any arm has under 100 confident cells, or if the group's share of an arm moves more than 2x across arms.
    It also drops unless the control profile's best Spearman match among reference groups is its own group, ahead of
    the next by 0.05. Where author labels exist, under half agreement drops it too.
-3. **Log ratio.** On summed UMIs per gene: `log((x_ko+10)/N_ko) - log((x_ctl+10)/N_ctl)`. It is 0 below 20 UMIs in
-   any arm, then clipped to log [0.25, 4]. Chimeras take [mut vs host] in knockout chimeras minus the same in
-   wild-type chimeras.
+3. **Log ratio.** On summed UMIs per gene: `log((x_ko+10)/N_ko) - log((x_ctl+10)/N_ctl)`, clipped to log
+   [0.25, 4]. A gene under 20 UMIs in any arm is NaN there (not measured): it holds no value in any stage, group or
+   study mean, and a gene no group or study holds ends as exactly 1 in the finished table, not rescaled. Chimeras
+   take [mut vs host] in knockout chimeras minus the same in wild-type chimeras.
+
+   Two departures from the frozen factor: within a group the log ratio is taken on summed UMIs with a pseudocount
+   of 10 (challenger change 3), not on props_type_means. Groups are pooled by the reference share-weighted mean of
+   log values. Only the finishing step (rescale, clip, absent genes = 1) is gene_factor's.
 4. **Shrinkage.** `L = k * ratio` with `k = min(n_h/(n_h+200), m/(m+1)) * m/(m+1) * d`. Here m is the smallest
    number of libraries of an arm. d is 1 for germline or conditional knockouts against littermate or same-capture
    controls, and 0.5 otherwise. Stages are averaged with equal weight.
@@ -87,18 +104,21 @@ logs/<step>.log, logs/<step>.exit, logs/ALL.exit
 
 ## Running on the DGX
 
-Use a campaign checkout at this branch's commit, synced only when nothing runs in it (`docs/COMPUTE.md`), and check
-`df -h /home` first. The plan's download estimate is under 40 GB, but nobody has checked it.
+The branch is never pushed, so its commit does not exist on the DGX. It goes over as a git bundle into a scratch
+clone under `~/v/scratch`, so no shared checkout's HEAD moves and nothing is synced in a checkout where a build may
+run. The clone gets its own environment (`uv sync --frozen`), and the launcher refuses unless `vec` is imported from
+the clone. The WT E8.75 file is read in place from a checkout that holds `data/` (environment variable `WT`). Check
+`df -h /home` first; the plan's download estimate is under 40 GB, but nobody has checked it.
 
-```bash
-mkdir -p ~/v/vec-ext/t3
-cd ~/v/vec-campaign-d
-setsid nohup bash experiments/t3_ext/run_dgx.sh "$PWD" > ~/v/vec-ext/t3/launcher.log 2>&1 < /dev/null &
-```
+Two runs, each detached, each ending with `logs/ALL.exit` (99 if the launcher was killed):
 
-Wait for `~/v/vec-ext/t3/logs/ALL.exit` with a background poller. A `plan_<ACC>.exit` of 2 is a refusal: its log
-names the reason (a screen hit, a selector that found the wrong number of samples, a stage). Fix a selector only in a
-reviewed commit, before any fetch of that dataset. Never relax the screen.
+1. `run_dgx.sh <clone> plan` (the default mode): only the GEO family SOFT metadata, the screen and the sample
+   tables. A `plan_<ACC>.exit` of 2 is a refusal: its log names the reason (a screen hit, a selector that found the
+   wrong number of samples, a stage).
+2. A person reads every `plan_<ACC>.log` and `meta/<ACC>/plan.json`. Then `run_dgx.sh <clone> all "<accessions>"`
+   fetches and processes only accessions whose plan passed, without re-planning, and combines.
+
+Fix a selector only in a reviewed commit, then plan again before any fetch of that dataset. Never relax the screen.
 
 ## What stage 2 needs
 
