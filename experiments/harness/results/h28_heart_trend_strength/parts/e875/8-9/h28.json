@@ -1,0 +1,4152 @@
+{
+ "label": "try H28: the trend step at three strengths and its placebos on the full trim; a diagnostic on one truth, not an adoption result",
+ "axis": "h28-heart-trend-strength",
+ "task": "T2h/<=E8.75->E10.5",
+ "arms": [
+  "control",
+  "trend_s0",
+  "trend_s1",
+  "placebo_s1",
+  "trend_s0.5",
+  "placebo_s0.5",
+  "trend_s0.25",
+  "placebo_s0.25"
+ ],
+ "truth_values": [
+  "own",
+  "radial_0",
+  "thin_0.5",
+  "thin_0"
+ ],
+ "forecast_targets": {
+  "full_iso_half": 342.7089940258472,
+  "half_iso_half": 404.5586767733152,
+  "core_iso_half": 341.3898784136632
+ },
+ "size_result": {
+  "board": "heart",
+  "valid": true,
+  "target_t": 10.5,
+  "timestamp": "try H27 analogue (in memory, never a size file)",
+  "preregistered": {
+   "target_t": 10.5,
+   "z_mode_requested": "raw",
+   "z_mode": "raw",
+   "rules": [
+    "latest_rate",
+    "half_rate",
+    "power_t"
+   ],
+   "min_start_t": -Infinity,
+   "tie_tol": Infinity,
+   "reference": "E8.75",
+   "stages": [
+    {
+     "name": "E8.25_late",
+     "t": 8.25,
+     "n_cells": 54431,
+     "n_core": 2036,
+     "n_levels": 38,
+     "z_step": 15.0,
+     "z_range": 555.0,
+     "rms_full": 353.4964257628457,
+     "rms_core": 152.17958425737348,
+     "rms_xy_full": 321.70018435371907,
+     "sd_z_full": 146.52206118496372,
+     "rms_xy_core": 125.45807745419077,
+     "sd_z_core": 86.13301728283587,
+     "core_thin_axis_cos_z": 0.7354854035259737,
+     "log_scope": 0.8428120754583706,
+     "log_scope_xy": 0.9416483487288667,
+     "core_thin_axis_angle_deg": 42.65175200533025
+    },
+    {
+     "name": "E8.5",
+     "t": 8.5,
+     "n_cells": 23710,
+     "n_core": 2431,
+     "n_levels": 25,
+     "z_step": 15.0,
+     "z_range": 360.0000000000001,
+     "rms_full": 255.22353488610761,
+     "rms_core": 134.07526158422002,
+     "rms_xy_full": 231.62806165620404,
+     "sd_z_full": 107.17972668909886,
+     "rms_xy_core": 107.75796844638313,
+     "sd_z_core": 79.77716468504832,
+     "core_thin_axis_cos_z": 0.2736455051050436,
+     "log_scope": 0.6437384726629188,
+     "log_scope_xy": 0.7652452233295622,
+     "core_thin_axis_angle_deg": 74.11868863245238
+    },
+    {
+     "name": "E8.75",
+     "t": 8.75,
+     "n_cells": 23377,
+     "n_core": 3914,
+     "n_levels": 35,
+     "z_step": 14.0,
+     "z_range": 476.0,
+     "rms_full": 216.9416140719822,
+     "rms_core": 154.4831472408458,
+     "rms_xy_full": 169.4958000360066,
+     "sd_z_full": 135.40619515484116,
+     "rms_xy_core": 119.36506828412158,
+     "sd_z_core": 98.06642266833148,
+     "core_thin_axis_cos_z": 0.42628193988806146,
+     "log_scope": 0.3395432467203799,
+     "log_scope_xy": 0.3506415502450217,
+     "core_thin_axis_angle_deg": 64.76816696175234
+    }
+   ],
+   "growth": {
+    "core": {
+     "valid": true,
+     "applicable": [
+      "latest_rate",
+      "half_rate",
+      "power_t"
+     ],
+     "chosen": [
+      "latest_rate",
+      "half_rate",
+      "power_t"
+     ],
+     "mae_common": {
+      "latest_rate": 0.2683437180796133,
+      "half_rate": 0.2050137166122079,
+      "power_t": 0.2646718917968167
+     },
+     "common_pseudo_targets": [
+      "E8.75:next"
+     ],
+     "pseudo_targets": [
+      {
+       "target": "E8.75",
+       "t_target": 8.75,
+       "kind": "next",
+       "train": "E8.25_late,E8.5",
+       "rule": "copy_last",
+       "pred": 4.898401295896137,
+       "obs": 5.040085011040939,
+       "error": -0.1416837151448025,
+       "eligible": true
+      },
+      {
+       "target": "E8.75",
+       "t_target": 8.75,
+       "kind": "next",
+       "train": "E8.25_late,E8.5",
+       "rule": "latest_rate",
+       "pred": 4.771741292961326,
+       "obs": 5.040085011040939,
+       "error": -0.2683437180796133,
+       "eligible": true
+      },
+      {
+       "target": "E8.75",
+       "t_target": 8.75,
+       "kind": "next",
+       "train": "E8.25_late,E8.5",
+       "rule": "half_rate",
+       "pred": 4.835071294428731,
+       "obs": 5.040085011040939,
+       "error": -0.2050137166122079,
+       "eligible": true
+      },
+      {
+       "target": "E8.75",
+       "t_target": 8.75,
+       "kind": "next",
+       "train": "E8.25_late,E8.5",
+       "rule": "power_t",
+       "pred": 4.7754131192441225,
+       "obs": 5.040085011040939,
+       "error": -0.2646718917968167,
+       "eligible": true
+      },
+      {
+       "target": "E8.75",
+       "t_target": 8.75,
+       "kind": "next",
+       "train": "E8.25_late,E8.5",
+       "rule": "decaying_rate",
+       "pred": 4.771741292961326,
+       "obs": 5.040085011040939,
+       "error": -0.2683437180796133,
+       "eligible": false
+      }
+     ],
+     "all_rule_predictions": {
+      "copy_last": 5.040085011040939,
+      "latest_rate": 6.031871017054557,
+      "half_rate": 5.535978014047748,
+      "power_t": 5.931226456776795,
+      "decaying_rate": 6.031871017054557
+     },
+     "pred_log_target": 5.833025162626367
+    }
+   },
+   "scope": {
+    "H1": {
+     "pred_log_scope": 0.0038565105139775503,
+     "pred_rms_full": 342.7089940258472,
+     "scale_vs_reference_full": 1.579729161193273
+    },
+    "H0": {
+     "pred_log_scope": 0.3395432467203799,
+     "pred_rms_full": 479.41586233631404,
+     "scale_vs_reference_full": 2.2098842787130812
+    },
+    "H2": {
+     "pred_log_scope": 0.16977162336018994,
+     "pred_rms_full": 404.5586767733152,
+     "scale_vs_reference_full": 1.8648274490991885
+    }
+   },
+   "valid": true,
+   "pred_rms_core": 341.3898784136632,
+   "pred_log_growth_core": 0.7929401515854276
+  },
+  "z_modes": {
+   "raw": {
+    "target_t": 10.5,
+    "z_mode_requested": "raw",
+    "z_mode": "raw",
+    "rules": [
+     "latest_rate",
+     "half_rate",
+     "power_t"
+    ],
+    "min_start_t": -Infinity,
+    "tie_tol": Infinity,
+    "reference": "E8.75",
+    "stages": [
+     {
+      "name": "E8.25_late",
+      "t": 8.25,
+      "n_cells": 54431,
+      "n_core": 2036,
+      "n_levels": 38,
+      "z_step": 15.0,
+      "z_range": 555.0,
+      "rms_full": 353.4964257628457,
+      "rms_core": 152.17958425737348,
+      "rms_xy_full": 321.70018435371907,
+      "sd_z_full": 146.52206118496372,
+      "rms_xy_core": 125.45807745419077,
+      "sd_z_core": 86.13301728283587,
+      "core_thin_axis_cos_z": 0.7354854035259737,
+      "log_scope": 0.8428120754583706,
+      "log_scope_xy": 0.9416483487288667,
+      "core_thin_axis_angle_deg": 42.65175200533025
+     },
+     {
+      "name": "E8.5",
+      "t": 8.5,
+      "n_cells": 23710,
+      "n_core": 2431,
+      "n_levels": 25,
+      "z_step": 15.0,
+      "z_range": 360.0000000000001,
+      "rms_full": 255.22353488610761,
+      "rms_core": 134.07526158422002,
+      "rms_xy_full": 231.62806165620404,
+      "sd_z_full": 107.17972668909886,
+      "rms_xy_core": 107.75796844638313,
+      "sd_z_core": 79.77716468504832,
+      "core_thin_axis_cos_z": 0.2736455051050436,
+      "log_scope": 0.6437384726629188,
+      "log_scope_xy": 0.7652452233295622,
+      "core_thin_axis_angle_deg": 74.11868863245238
+     },
+     {
+      "name": "E8.75",
+      "t": 8.75,
+      "n_cells": 23377,
+      "n_core": 3914,
+      "n_levels": 35,
+      "z_step": 14.0,
+      "z_range": 476.0,
+      "rms_full": 216.9416140719822,
+      "rms_core": 154.4831472408458,
+      "rms_xy_full": 169.4958000360066,
+      "sd_z_full": 135.40619515484116,
+      "rms_xy_core": 119.36506828412158,
+      "sd_z_core": 98.06642266833148,
+      "core_thin_axis_cos_z": 0.42628193988806146,
+      "log_scope": 0.3395432467203799,
+      "log_scope_xy": 0.3506415502450217,
+      "core_thin_axis_angle_deg": 64.76816696175234
+     }
+    ],
+    "growth": {
+     "core": {
+      "valid": true,
+      "applicable": [
+       "latest_rate",
+       "half_rate",
+       "power_t"
+      ],
+      "chosen": [
+       "latest_rate",
+       "half_rate",
+       "power_t"
+      ],
+      "mae_common": {
+       "latest_rate": 0.2683437180796133,
+       "half_rate": 0.2050137166122079,
+       "power_t": 0.2646718917968167
+      },
+      "common_pseudo_targets": [
+       "E8.75:next"
+      ],
+      "pseudo_targets": [
+       {
+        "target": "E8.75",
+        "t_target": 8.75,
+        "kind": "next",
+        "train": "E8.25_late,E8.5",
+        "rule": "copy_last",
+        "pred": 4.898401295896137,
+        "obs": 5.040085011040939,
+        "error": -0.1416837151448025,
+        "eligible": true
+       },
+       {
+        "target": "E8.75",
+        "t_target": 8.75,
+        "kind": "next",
+        "train": "E8.25_late,E8.5",
+        "rule": "latest_rate",
+        "pred": 4.771741292961326,
+        "obs": 5.040085011040939,
+        "error": -0.2683437180796133,
+        "eligible": true
+       },
+       {
+        "target": "E8.75",
+        "t_target": 8.75,
+        "kind": "next",
+        "train": "E8.25_late,E8.5",
+        "rule": "half_rate",
+        "pred": 4.835071294428731,
+        "obs": 5.040085011040939,
+        "error": -0.2050137166122079,
+        "eligible": true
+       },
+       {
+        "target": "E8.75",
+        "t_target": 8.75,
+        "kind": "next",
+        "train": "E8.25_late,E8.5",
+        "rule": "power_t",
+        "pred": 4.7754131192441225,
+        "obs": 5.040085011040939,
+        "error": -0.2646718917968167,
+        "eligible": true
+       },
+       {
+        "target": "E8.75",
+        "t_target": 8.75,
+        "kind": "next",
+        "train": "E8.25_late,E8.5",
+        "rule": "decaying_rate",
+        "pred": 4.771741292961326,
+        "obs": 5.040085011040939,
+        "error": -0.2683437180796133,
+        "eligible": false
+       }
+      ],
+      "all_rule_predictions": {
+       "copy_last": 5.040085011040939,
+       "latest_rate": 6.031871017054557,
+       "half_rate": 5.535978014047748,
+       "power_t": 5.931226456776795,
+       "decaying_rate": 6.031871017054557
+      },
+      "pred_log_target": 5.833025162626367
+     }
+    },
+    "scope": {
+     "H1": {
+      "pred_log_scope": 0.0038565105139775503,
+      "pred_rms_full": 342.7089940258472,
+      "scale_vs_reference_full": 1.579729161193273
+     },
+     "H0": {
+      "pred_log_scope": 0.3395432467203799,
+      "pred_rms_full": 479.41586233631404,
+      "scale_vs_reference_full": 2.2098842787130812
+     },
+     "H2": {
+      "pred_log_scope": 0.16977162336018994,
+      "pred_rms_full": 404.5586767733152,
+      "scale_vs_reference_full": 1.8648274490991885
+     }
+    },
+    "valid": true,
+    "pred_rms_core": 341.3898784136632,
+    "pred_log_growth_core": 0.7929401515854276
+   }
+  },
+  "provenance": {
+   "analogue": "size procedure, E9.0 cut-off lifted, all three rules averaged",
+   "git_commit": null,
+   "size_procedure_sha256": null,
+   "departures": [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f"
+   ]
+  }
+ },
+ "v7": {
+  "reference": "E8.75",
+  "loaded_rms_full": 216.9416140719822,
+  "size_rms_full": 216.9416140719822,
+  "log_diff": 0.0,
+  "ok": true
+ },
+ "truth_info": {
+  "own": {
+   "cells": 167864,
+   "core_share": 0.2306748320068627,
+   "xy_scope": 0.20989552277802517
+  },
+  "radial_0": {
+   "cells": 96544,
+   "core_share": 0.40108137222406365,
+   "xy_scope": -2.170625565868641e-06
+  },
+  "thin_0.5": {
+   "cells": 45788,
+   "core_share": 0.8456800908534987,
+   "xy_scope": 0.10493046043228518
+  },
+  "thin_0": {
+   "cells": 38722,
+   "core_share": 1.0,
+   "xy_scope": 0.0
+  }
+ },
+ "pred_info": {
+  "core_iso_half": {
+   "pool_cells": 8277,
+   "core_share": 0.4728766461278241,
+   "xy_scope": -4.4193136049459223e-05
+  }
+ },
+ "truth_seed": 20261102,
+ "half_seed_base": 2000000,
+ "perm_seed": 20261120,
+ "seeds": [
+  8,
+  9
+ ],
+ "rows": [
+  {
+   "seed": 8,
+   "build_seed": 1000008,
+   "n_cells": {
+    "control": 12589,
+    "trend_s0": 12589,
+    "trend_s1": 12589,
+    "placebo_s1": 12589,
+    "trend_s0.5": 12589,
+    "placebo_s0.5": 12589,
+    "trend_s0.25": 12589,
+    "placebo_s0.25": 12589
+   },
+   "checks": {
+    "s1_equals_harness_b0_trend": true,
+    "s0_counts_equal_drawn": true,
+    "s0_x_max_abs_diff_control": 9.5367431640625e-07,
+    "same_draw": true,
+    "pre_size_coords_equal": true,
+    "post_size_coords_equal": true,
+    "n_cells": {
+     "control": 12589,
+     "trend_s0": 12589,
+     "trend_s1": 12589,
+     "placebo_s1": 12589,
+     "trend_s0.5": 12589,
+     "placebo_s0.5": 12589,
+     "trend_s0.25": 12589,
+     "placebo_s0.25": 12589
+    },
+    "whole_pool": {
+     "CM": {
+      "cosine": 1.0,
+      "norm_ratio": 1.0
+     },
+     "CranialMesoderm": {
+      "cosine": 0.7536026775825065,
+      "norm_ratio": 1.3135842263549335
+     },
+     "Ectoderm": {
+      "cosine": 0.5317388989786285,
+      "norm_ratio": 1.314622872731926
+     },
+     "Endoderm": {
+      "cosine": 0.9132201686814171,
+      "norm_ratio": 0.9801398921615909
+     },
+     "Endothelial": {
+      "cosine": 0.8038245972071472,
+      "norm_ratio": 1.194517877214557
+     },
+     "EpiblastStreak": {
+      "in_trimmed": false,
+      "in_whole": true
+     },
+     "ExtraEmbryonicMeso": {
+      "cosine": 0.9390987965071329,
+      "norm_ratio": 0.99145582043787
+     },
+     "NCC": {
+      "cosine": 0.6063588409985441,
+      "norm_ratio": 1.3706060498180421
+     },
+     "Neural": {
+      "in_trimmed": false,
+      "in_whole": true
+     }
+    }
+   },
+   "records": {
+    "control": {
+     "size": {
+      "sizing": "f",
+      "hypothesis": "core",
+      "z_mode_used": "raw",
+      "target_rms_full": 341.3898784136632,
+      "rms_before": 178.49101284926897,
+      "rms_after": 341.38987841366315,
+      "log_rms_after_vs_target": -1.1102230246251565e-16,
+      "target_source": "preregistered.pred_rms_core",
+      "warnings": []
+     },
+     "trend": {
+      "strength": null
+     }
+    },
+    "trend_s0": {
+     "size": {
+      "sizing": "f",
+      "hypothesis": "core",
+      "z_mode_used": "raw",
+      "target_rms_full": 341.3898784136632,
+      "rms_before": 178.49101284926897,
+      "rms_after": 341.38987841366315,
+      "log_rms_after_vs_target": -1.1102230246251565e-16,
+      "target_source": "preregistered.pred_rms_core",
+      "warnings": []
+     },
+     "trend": {
+      "strength": 0.0,
+      "placebo": false,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.0,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 7,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "CranialMesoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         8246,
+         5490,
+         609
+        ],
+        "own_factor": false,
+        "cosine": 0.9267193929280553,
+        "norm_ratio": 0.5726596377046321
+       },
+       {
+        "lineage": "Ectoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         4681,
+         2593,
+         291
+        ],
+        "own_factor": false,
+        "cosine": 0.8961684047819412,
+        "norm_ratio": 0.5604901393597218
+       },
+       {
+        "lineage": "Endoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10205,
+         2591,
+         916
+        ],
+        "own_factor": false,
+        "cosine": 0.7970027457305968,
+        "norm_ratio": 0.6436089614033065
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1215
+        ],
+        "own_factor": false,
+        "cosine": 0.8099998630355094,
+        "norm_ratio": 0.6469220374363847
+       },
+       {
+        "lineage": "ExtraEmbryonicMeso",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10327,
+         3154,
+         626
+        ],
+        "own_factor": false,
+        "cosine": 0.8211576529605863,
+        "norm_ratio": 0.6161583296002572
+       },
+       {
+        "lineage": "NCC",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         3303,
+         1461,
+         334
+        ],
+        "own_factor": false,
+        "cosine": 0.8457096860091915,
+        "norm_ratio": 0.5888593159150286
+       }
+      ],
+      "shifted": [
+       "CM",
+       "CranialMesoderm",
+       "Ectoderm",
+       "Endoderm",
+       "Endothelial",
+       "ExtraEmbryonicMeso",
+       "NCC"
+      ],
+      "fixed_points": {},
+      "ref_cells": 8277
+     }
+    },
+    "trend_s1": {
+     "size": {
+      "sizing": "f",
+      "hypothesis": "core",
+      "z_mode_used": "raw",
+      "target_rms_full": 341.3898784136632,
+      "rms_before": 178.49101284926897,
+      "rms_after": 341.38987841366315,
+      "log_rms_after_vs_target": -1.1102230246251565e-16,
+      "target_source": "preregistered.pred_rms_core",
+      "warnings": []
+     },
+     "trend": {
+      "strength": 1.0,
+      "placebo": false,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.125,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 7,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "CranialMesoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         8246,
+         5490,
+         609
+        ],
+        "own_factor": false,
+        "cosine": 0.9267193929280553,
+        "norm_ratio": 0.5726596377046321
+       },
+       {
+        "lineage": "Ectoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         4681,
+         2593,
+         291
+        ],
+        "own_factor": false,
+        "cosine": 0.8961684047819412,
+        "norm_ratio": 0.5604901393597218
+       },
+       {
+        "lineage": "Endoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10205,
+         2591,
+         916
+        ],
+        "own_factor": false,
+        "cosine": 0.7970027457305968,
+        "norm_ratio": 0.6436089614033065
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1215
+        ],
+        "own_factor": false,
+        "cosine": 0.8099998630355094,
+        "norm_ratio": 0.6469220374363847
+       },
+       {
+        "lineage": "ExtraEmbryonicMeso",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10327,
+         3154,
+         626
+        ],
+        "own_factor": false,
+        "cosine": 0.8211576529605863,
+        "norm_ratio": 0.6161583296002572
+       },
+       {
+        "lineage": "NCC",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         3303,
+         1461,
+         334
+        ],
+        "own_factor": false,
+        "cosine": 0.8457096860091915,
+        "norm_ratio": 0.5888593159150286
+       }
+      ],
+      "shifted": [
+       "CM",
+       "CranialMesoderm",
+       "Ectoderm",
+       "Endoderm",
+       "Endothelial",
+       "ExtraEmbryonicMeso",
+       "NCC"
+      ],
+      "fixed_points": {},
+      "ref_cells": 8277
+     }
+    },
+    "placebo_s1": {
+     "size": {
+      "sizing": "f",
+      "hypothesis": "core",
+      "z_mode_used": "raw",
+      "target_rms_full": 341.3898784136632,
+      "rms_before": 178.49101284926897,
+      "rms_after": 341.38987841366315,
+      "log_rms_after_vs_target": -1.1102230246251565e-16,
+      "target_source": "preregistered.pred_rms_core",
+      "warnings": []
+     },
+     "trend": {
+      "strength": 1.0,
+      "placebo": true,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.125,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 7,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "CranialMesoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         8246,
+         5490,
+         609
+        ],
+        "own_factor": false,
+        "cosine": 0.9267193929280553,
+        "norm_ratio": 0.5726596377046321
+       },
+       {
+        "lineage": "Ectoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         4681,
+         2593,
+         291
+        ],
+        "own_factor": false,
+        "cosine": 0.8961684047819412,
+        "norm_ratio": 0.5604901393597218
+       },
+       {
+        "lineage": "Endoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10205,
+         2591,
+         916
+        ],
+        "own_factor": false,
+        "cosine": 0.7970027457305968,
+        "norm_ratio": 0.6436089614033065
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1215
+        ],
+        "own_factor": false,
+        "cosine": 0.8099998630355094,
+        "norm_ratio": 0.6469220374363847
+       },
+       {
+        "lineage": "ExtraEmbryonicMeso",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10327,
+         3154,
+         626
+        ],
+        "own_factor": false,
+        "cosine": 0.8211576529605863,
+        "norm_ratio": 0.6161583296002572
+       },
+       {
+        "lineage": "NCC",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         3303,
+         1461,
+         334
+        ],
+        "own_factor": false,
+        "cosine": 0.8457096860091915,
+        "norm_ratio": 0.5888593159150286
+       }
+      ],
+      "shifted": [
+       "CM",
+       "CranialMesoderm",
+       "Ectoderm",
+       "Endoderm",
+       "Endothelial",
+       "ExtraEmbryonicMeso",
+       "NCC"
+      ],
+      "fixed_points": {
+       "CM": 0,
+       "CranialMesoderm": 0,
+       "Ectoderm": 0,
+       "Endoderm": 0,
+       "Endothelial": 0,
+       "ExtraEmbryonicMeso": 0,
+       "NCC": 0
+      },
+      "ref_cells": 8277
+     }
+    },
+    "trend_s0.5": {
+     "size": {
+      "sizing": "f",
+      "hypothesis": "core",
+      "z_mode_used": "raw",
+      "target_rms_full": 341.3898784136632,
+      "rms_before": 178.49101284926897,
+      "rms_after": 341.38987841366315,
+      "log_rms_after_vs_target": -1.1102230246251565e-16,
+      "target_source": "preregistered.pred_rms_core",
+      "warnings": []
+     },
+     "trend": {
+      "strength": 0.5,
+      "placebo": false,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.0625,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 7,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "CranialMesoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         8246,
+         5490,
+         609
+        ],
+        "own_factor": false,
+        "cosine": 0.9267193929280553,
+        "norm_ratio": 0.5726596377046321
+       },
+       {
+        "lineage": "Ectoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         4681,
+         2593,
+         291
+        ],
+        "own_factor": false,
+        "cosine": 0.8961684047819412,
+        "norm_ratio": 0.5604901393597218
+       },
+       {
+        "lineage": "Endoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10205,
+         2591,
+         916
+        ],
+        "own_factor": false,
+        "cosine": 0.7970027457305968,
+        "norm_ratio": 0.6436089614033065
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1215
+        ],
+        "own_factor": false,
+        "cosine": 0.8099998630355094,
+        "norm_ratio": 0.6469220374363847
+       },
+       {
+        "lineage": "ExtraEmbryonicMeso",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10327,
+         3154,
+         626
+        ],
+        "own_factor": false,
+        "cosine": 0.8211576529605863,
+        "norm_ratio": 0.6161583296002572
+       },
+       {
+        "lineage": "NCC",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         3303,
+         1461,
+         334
+        ],
+        "own_factor": false,
+        "cosine": 0.8457096860091915,
+        "norm_ratio": 0.5888593159150286
+       }
+      ],
+      "shifted": [
+       "CM",
+       "CranialMesoderm",
+       "Ectoderm",
+       "Endoderm",
+       "Endothelial",
+       "ExtraEmbryonicMeso",
+       "NCC"
+      ],
+      "fixed_points": {},
+      "ref_cells": 8277
+     }
+    },
+    "placebo_s0.5": {
+     "size": {
+      "sizing": "f",
+      "hypothesis": "core",
+      "z_mode_used": "raw",
+      "target_rms_full": 341.3898784136632,
+      "rms_before": 178.49101284926897,
+      "rms_after": 341.38987841366315,
+      "log_rms_after_vs_target": -1.1102230246251565e-16,
+      "target_source": "preregistered.pred_rms_core",
+      "warnings": []
+     },
+     "trend": {
+      "strength": 0.5,
+      "placebo": true,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.0625,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 7,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "CranialMesoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         8246,
+         5490,
+         609
+        ],
+        "own_factor": false,
+        "cosine": 0.9267193929280553,
+        "norm_ratio": 0.5726596377046321
+       },
+       {
+        "lineage": "Ectoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         4681,
+         2593,
+         291
+        ],
+        "own_factor": false,
+        "cosine": 0.8961684047819412,
+        "norm_ratio": 0.5604901393597218
+       },
+       {
+        "lineage": "Endoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10205,
+         2591,
+         916
+        ],
+        "own_factor": false,
+        "cosine": 0.7970027457305968,
+        "norm_ratio": 0.6436089614033065
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1215
+        ],
+        "own_factor": false,
+        "cosine": 0.8099998630355094,
+        "norm_ratio": 0.6469220374363847
+       },
+       {
+        "lineage": "ExtraEmbryonicMeso",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10327,
+         3154,
+         626
+        ],
+        "own_factor": false,
+        "cosine": 0.8211576529605863,
+        "norm_ratio": 0.6161583296002572
+       },
+       {
+        "lineage": "NCC",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         3303,
+         1461,
+         334
+        ],
+        "own_factor": false,
+        "cosine": 0.8457096860091915,
+        "norm_ratio": 0.5888593159150286
+       }
+      ],
+      "shifted": [
+       "CM",
+       "CranialMesoderm",
+       "Ectoderm",
+       "Endoderm",
+       "Endothelial",
+       "ExtraEmbryonicMeso",
+       "NCC"
+      ],
+      "fixed_points": {
+       "CM": 0,
+       "CranialMesoderm": 0,
+       "Ectoderm": 0,
+       "Endoderm": 0,
+       "Endothelial": 0,
+       "ExtraEmbryonicMeso": 0,
+       "NCC": 0
+      },
+      "ref_cells": 8277
+     }
+    },
+    "trend_s0.25": {
+     "size": {
+      "sizing": "f",
+      "hypothesis": "core",
+      "z_mode_used": "raw",
+      "target_rms_full": 341.3898784136632,
+      "rms_before": 178.49101284926897,
+      "rms_after": 341.38987841366315,
+      "log_rms_after_vs_target": -1.1102230246251565e-16,
+      "target_source": "preregistered.pred_rms_core",
+      "warnings": []
+     },
+     "trend": {
+      "strength": 0.25,
+      "placebo": false,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.03125,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 7,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "CranialMesoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         8246,
+         5490,
+         609
+        ],
+        "own_factor": false,
+        "cosine": 0.9267193929280553,
+        "norm_ratio": 0.5726596377046321
+       },
+       {
+        "lineage": "Ectoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         4681,
+         2593,
+         291
+        ],
+        "own_factor": false,
+        "cosine": 0.8961684047819412,
+        "norm_ratio": 0.5604901393597218
+       },
+       {
+        "lineage": "Endoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10205,
+         2591,
+         916
+        ],
+        "own_factor": false,
+        "cosine": 0.7970027457305968,
+        "norm_ratio": 0.6436089614033065
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1215
+        ],
+        "own_factor": false,
+        "cosine": 0.8099998630355094,
+        "norm_ratio": 0.6469220374363847
+       },
+       {
+        "lineage": "ExtraEmbryonicMeso",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10327,
+         3154,
+         626
+        ],
+        "own_factor": false,
+        "cosine": 0.8211576529605863,
+        "norm_ratio": 0.6161583296002572
+       },
+       {
+        "lineage": "NCC",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         3303,
+         1461,
+         334
+        ],
+        "own_factor": false,
+        "cosine": 0.8457096860091915,
+        "norm_ratio": 0.5888593159150286
+       }
+      ],
+      "shifted": [
+       "CM",
+       "CranialMesoderm",
+       "Ectoderm",
+       "Endoderm",
+       "Endothelial",
+       "ExtraEmbryonicMeso",
+       "NCC"
+      ],
+      "fixed_points": {},
+      "ref_cells": 8277
+     }
+    },
+    "placebo_s0.25": {
+     "size": {
+      "sizing": "f",
+      "hypothesis": "core",
+      "z_mode_used": "raw",
+      "target_rms_full": 341.3898784136632,
+      "rms_before": 178.49101284926897,
+      "rms_after": 341.38987841366315,
+      "log_rms_after_vs_target": -1.1102230246251565e-16,
+      "target_source": "preregistered.pred_rms_core",
+      "warnings": []
+     },
+     "trend": {
+      "strength": 0.25,
+      "placebo": true,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.03125,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 7,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "CranialMesoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         8246,
+         5490,
+         609
+        ],
+        "own_factor": false,
+        "cosine": 0.9267193929280553,
+        "norm_ratio": 0.5726596377046321
+       },
+       {
+        "lineage": "Ectoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         4681,
+         2593,
+         291
+        ],
+        "own_factor": false,
+        "cosine": 0.8961684047819412,
+        "norm_ratio": 0.5604901393597218
+       },
+       {
+        "lineage": "Endoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10205,
+         2591,
+         916
+        ],
+        "own_factor": false,
+        "cosine": 0.7970027457305968,
+        "norm_ratio": 0.6436089614033065
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1215
+        ],
+        "own_factor": false,
+        "cosine": 0.8099998630355094,
+        "norm_ratio": 0.6469220374363847
+       },
+       {
+        "lineage": "ExtraEmbryonicMeso",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10327,
+         3154,
+         626
+        ],
+        "own_factor": false,
+        "cosine": 0.8211576529605863,
+        "norm_ratio": 0.6161583296002572
+       },
+       {
+        "lineage": "NCC",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         3303,
+         1461,
+         334
+        ],
+        "own_factor": false,
+        "cosine": 0.8457096860091915,
+        "norm_ratio": 0.5888593159150286
+       }
+      ],
+      "shifted": [
+       "CM",
+       "CranialMesoderm",
+       "Ectoderm",
+       "Endoderm",
+       "Endothelial",
+       "ExtraEmbryonicMeso",
+       "NCC"
+      ],
+      "fixed_points": {
+       "CM": 0,
+       "CranialMesoderm": 0,
+       "Ectoderm": 0,
+       "Endoderm": 0,
+       "Endothelial": 0,
+       "ExtraEmbryonicMeso": 0,
+       "NCC": 0
+      },
+      "ref_cells": 8277
+     }
+    }
+   },
+   "scores": {
+    "own": {
+     "floor": 50.0,
+     "control": 53.85234174534798,
+     "trend_s0": 53.85234174534798,
+     "trend_s1": 54.46643982017479,
+     "placebo_s1": 54.343975789555266,
+     "trend_s0.5": 54.17708279486207,
+     "placebo_s0.5": 54.13003591088813,
+     "trend_s0.25": 53.99833944797807,
+     "placebo_s0.25": 54.014008938820325
+    },
+    "radial_0": {
+     "floor": 50.0,
+     "control": 57.333827722932405,
+     "trend_s0": 57.333827722932405,
+     "trend_s1": 58.041928168786505,
+     "placebo_s1": 57.9603955440391,
+     "trend_s0.5": 57.71915032483088,
+     "placebo_s0.5": 57.714251009331306,
+     "trend_s0.25": 57.54166817513489,
+     "placebo_s0.25": 57.443221089109834
+    },
+    "thin_0.5": {
+     "floor": 50.0,
+     "control": 64.66081582446952,
+     "trend_s0": 64.66081582446952,
+     "trend_s1": 65.54153011530016,
+     "placebo_s1": 65.39689888843269,
+     "trend_s0.5": 65.24803241627895,
+     "placebo_s0.5": 65.13451099849301,
+     "trend_s0.25": 64.92043891191386,
+     "placebo_s0.25": 64.89713561598201
+    },
+    "thin_0": {
+     "floor": 50.0,
+     "control": 66.55142561992182,
+     "trend_s0": 66.55142561992182,
+     "trend_s1": 67.29903126261968,
+     "placebo_s1": 67.1633917033536,
+     "trend_s0.5": 66.95412555320138,
+     "placebo_s0.5": 66.87658607623035,
+     "trend_s0.25": 66.82396409362856,
+     "placebo_s0.25": 66.85121726019214
+    }
+   },
+   "skills": {
+    "own": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.4744533006335582,
+      "de_direction": 0.53364556416882,
+      "mmd_u": 0.4307643108410617,
+      "variogram": 0.5083240542081964,
+      "d2_shape": 0.7820978054259546,
+      "occupancy_dice": 0.5114713979810339,
+      "scale_log_ratio": 0.7401749025392477,
+      "neighborhood_mmd": 0.5103413272427357
+     },
+     "trend_s0": {
+      "de_score": 0.4744533006335582,
+      "de_direction": 0.53364556416882,
+      "mmd_u": 0.4307643108410617,
+      "variogram": 0.5083240542081964,
+      "d2_shape": 0.7820978054259546,
+      "occupancy_dice": 0.5114713979810339,
+      "scale_log_ratio": 0.7401749025392477,
+      "neighborhood_mmd": 0.5103413272427357
+     },
+     "trend_s1": {
+      "de_score": 0.4961795351322469,
+      "de_direction": 0.5352880825098547,
+      "mmd_u": 0.4323959938366717,
+      "variogram": 0.5258500075855908,
+      "d2_shape": 0.7820978054259546,
+      "occupancy_dice": 0.5114713979810339,
+      "scale_log_ratio": 0.7401749025392477,
+      "neighborhood_mmd": 0.5152314826676231
+     },
+     "placebo_s1": {
+      "de_score": 0.4887111204673438,
+      "de_direction": 0.5370571026113339,
+      "mmd_u": 0.43488086782462704,
+      "variogram": 0.5226518781623831,
+      "d2_shape": 0.7820978054259546,
+      "occupancy_dice": 0.5114713979810339,
+      "scale_log_ratio": 0.7401749025392477,
+      "neighborhood_mmd": 0.5129709461010638
+     },
+     "trend_s0.5": {
+      "de_score": 0.4850859321945359,
+      "de_direction": 0.5349703184025905,
+      "mmd_u": 0.4318968834166987,
+      "variogram": 0.5167929404488425,
+      "d2_shape": 0.7820978054259546,
+      "occupancy_dice": 0.5114713979810339,
+      "scale_log_ratio": 0.7401749025392477,
+      "neighborhood_mmd": 0.513285178284285
+     },
+     "placebo_s0.5": {
+      "de_score": 0.4850859321945359,
+      "de_direction": 0.5344223408269988,
+      "mmd_u": 0.4329519156595526,
+      "variogram": 0.5151089828269485,
+      "d2_shape": 0.7820978054259546,
+      "occupancy_dice": 0.5114713979810339,
+      "scale_log_ratio": 0.7401749025392477,
+      "neighborhood_mmd": 0.5117178554161683
+     },
+     "trend_s0.25": {
+      "de_score": 0.4779453394410418,
+      "de_direction": 0.5342495284289949,
+      "mmd_u": 0.43156478277585547,
+      "variogram": 0.5129013164384912,
+      "d2_shape": 0.7820978054259546,
+      "occupancy_dice": 0.5114713979810339,
+      "scale_log_ratio": 0.7401749025392477,
+      "neighborhood_mmd": 0.5118220457611158
+     },
+     "placebo_s0.25": {
+      "de_score": 0.4814891631235093,
+      "de_direction": 0.5340480551664691,
+      "mmd_u": 0.431924581543,
+      "variogram": 0.5116366797329879,
+      "d2_shape": 0.7820978054259546,
+      "occupancy_dice": 0.5114713979810339,
+      "scale_log_ratio": 0.7401749025392477,
+      "neighborhood_mmd": 0.5110676256067499
+     }
+    },
+    "radial_0": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.5605980027181942,
+      "de_direction": 0.5982869895651125,
+      "mmd_u": 0.548050139275766,
+      "variogram": 0.5780833512298033,
+      "d2_shape": 0.49874055415617125,
+      "occupancy_dice": 0.3201342281879192,
+      "scale_log_ratio": 0.876984126984127,
+      "neighborhood_mmd": 0.5885608856088561
+     },
+     "trend_s0": {
+      "de_score": 0.5605980027181942,
+      "de_direction": 0.5982869895651125,
+      "mmd_u": 0.548050139275766,
+      "variogram": 0.5780833512298033,
+      "d2_shape": 0.49874055415617125,
+      "occupancy_dice": 0.3201342281879192,
+      "scale_log_ratio": 0.876984126984127,
+      "neighborhood_mmd": 0.5885608856088561
+     },
+     "trend_s1": {
+      "de_score": 0.5781230956733698,
+      "de_direction": 0.5981787480400435,
+      "mmd_u": 0.5536621589931995,
+      "variogram": 0.6021871154947,
+      "d2_shape": 0.49874055415617125,
+      "occupancy_dice": 0.3201342281879192,
+      "scale_log_ratio": 0.876984126984127,
+      "neighborhood_mmd": 0.5951677601915483
+     },
+     "placebo_s1": {
+      "de_score": 0.5736485669367517,
+      "de_direction": 0.6029054218332117,
+      "mmd_u": 0.5534458509142053,
+      "variogram": 0.5960299835233897,
+      "d2_shape": 0.49874055415617125,
+      "occupancy_dice": 0.3201342281879192,
+      "scale_log_ratio": 0.876984126984127,
+      "neighborhood_mmd": 0.5943730203092976
+     },
+     "trend_s0.5": {
+      "de_score": 0.5692427697107885,
+      "de_direction": 0.5987203476791211,
+      "mmd_u": 0.5516355140186916,
+      "variogram": 0.5899138214421533,
+      "d2_shape": 0.49874055415617125,
+      "occupancy_dice": 0.3201342281879192,
+      "scale_log_ratio": 0.876984126984127,
+      "neighborhood_mmd": 0.5925513142007987
+     },
+     "placebo_s0.5": {
+      "de_score": 0.5736485669367517,
+      "de_direction": 0.5994802369152665,
+      "mmd_u": 0.5508204370479819,
+      "variogram": 0.5866617949654814,
+      "d2_shape": 0.49874055415617125,
+      "occupancy_dice": 0.3201342281879192,
+      "scale_log_ratio": 0.876984126984127,
+      "neighborhood_mmd": 0.5915623551228558
+     },
+     "trend_s0.25": {
+      "de_score": 0.5648704971717773,
+      "de_direction": 0.5986842105263158,
+      "mmd_u": 0.550221393614542,
+      "variogram": 0.5843693132841682,
+      "d2_shape": 0.49874055415617125,
+      "occupancy_dice": 0.3201342281879192,
+      "scale_log_ratio": 0.876984126984127,
+      "neighborhood_mmd": 0.5907225085645504
+     },
+     "placebo_s0.25": {
+      "de_score": 0.5605980027181942,
+      "de_direction": 0.5987564891947362,
+      "mmd_u": 0.5496236517420656,
+      "variogram": 0.5822650320331337,
+      "d2_shape": 0.49874055415617125,
+      "occupancy_dice": 0.3201342281879192,
+      "scale_log_ratio": 0.876984126984127,
+      "neighborhood_mmd": 0.5900850906400296
+     }
+    },
+    "thin_0.5": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.584,
+      "de_direction": 0.6516667771224071,
+      "mmd_u": 0.6313211125158027,
+      "variogram": 0.6349944423860688,
+      "d2_shape": 0.6454052130593363,
+      "occupancy_dice": 0.5501930501930501,
+      "scale_log_ratio": 0.8420342034203421,
+      "neighborhood_mmd": 0.6565979777294253
+     },
+     "trend_s0": {
+      "de_score": 0.584,
+      "de_direction": 0.6516667771224071,
+      "mmd_u": 0.6313211125158027,
+      "variogram": 0.6349944423860688,
+      "d2_shape": 0.6454052130593363,
+      "occupancy_dice": 0.5501930501930501,
+      "scale_log_ratio": 0.8420342034203421,
+      "neighborhood_mmd": 0.6565979777294253
+     },
+     "trend_s1": {
+      "de_score": 0.6033057851239669,
+      "de_direction": 0.6460578186596584,
+      "mmd_u": 0.6435763189689891,
+      "variogram": 0.6623361566455186,
+      "d2_shape": 0.6454052130593363,
+      "occupancy_dice": 0.5501930501930501,
+      "scale_log_ratio": 0.8420342034203421,
+      "neighborhood_mmd": 0.6666883264563501
+     },
+     "placebo_s1": {
+      "de_score": 0.6033057851239669,
+      "de_direction": 0.6570225845249231,
+      "mmd_u": 0.6382298905663392,
+      "variogram": 0.6535882491276463,
+      "d2_shape": 0.6454052130593363,
+      "occupancy_dice": 0.5501930501930501,
+      "scale_log_ratio": 0.8420342034203421,
+      "neighborhood_mmd": 0.6621277144977574
+     },
+     "trend_s0.5": {
+      "de_score": 0.6033057851239669,
+      "de_direction": 0.6478455659507182,
+      "mmd_u": 0.6381789137380192,
+      "variogram": 0.6485918824308555,
+      "d2_shape": 0.6454052130593363,
+      "occupancy_dice": 0.5501930501930501,
+      "scale_log_ratio": 0.8420342034203421,
+      "neighborhood_mmd": 0.6627906976744187
+     },
+     "placebo_s0.5": {
+      "de_score": 0.6033057851239669,
+      "de_direction": 0.6533988969366735,
+      "mmd_u": 0.6352361265702019,
+      "variogram": 0.6440785188154532,
+      "d2_shape": 0.6454052130593363,
+      "occupancy_dice": 0.5501930501930501,
+      "scale_log_ratio": 0.8420342034203421,
+      "neighborhood_mmd": 0.6590441932168551
+     },
+     "trend_s0.25": {
+      "de_score": 0.5887096774193549,
+      "de_direction": 0.6517531649764698,
+      "mmd_u": 0.6346306592533756,
+      "variogram": 0.6420276463169461,
+      "d2_shape": 0.6454052130593363,
+      "occupancy_dice": 0.5501930501930501,
+      "scale_log_ratio": 0.8420342034203421,
+      "neighborhood_mmd": 0.6597858589755957
+     },
+     "placebo_s0.25": {
+      "de_score": 0.5934959349593495,
+      "de_direction": 0.6523152447923576,
+      "mmd_u": 0.6333227647431833,
+      "variogram": 0.6394167392115409,
+      "d2_shape": 0.6454052130593363,
+      "occupancy_dice": 0.5501930501930501,
+      "scale_log_ratio": 0.8420342034203421,
+      "neighborhood_mmd": 0.658008658008658
+     }
+    },
+    "thin_0": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.5755378293449359,
+      "de_direction": 0.6651400862068966,
+      "mmd_u": 0.6529194889822515,
+      "variogram": 0.6555330576871813,
+      "d2_shape": 0.7149016437617893,
+      "occupancy_dice": 0.48038540949759145,
+      "scale_log_ratio": 1.0,
+      "neighborhood_mmd": 0.6559907994702725
+     },
+     "trend_s0": {
+      "de_score": 0.5755378293449359,
+      "de_direction": 0.6651400862068966,
+      "mmd_u": 0.6529194889822515,
+      "variogram": 0.6555330576871813,
+      "d2_shape": 0.7149016437617893,
+      "occupancy_dice": 0.48038540949759145,
+      "scale_log_ratio": 1.0,
+      "neighborhood_mmd": 0.6559907994702725
+     },
+     "trend_s1": {
+      "de_score": 0.5925833748133399,
+      "de_direction": 0.6619302949061663,
+      "mmd_u": 0.6625772209170799,
+      "variogram": 0.6830506471248744,
+      "d2_shape": 0.7149016437617893,
+      "occupancy_dice": 0.48038540949759145,
+      "scale_log_ratio": 1.0,
+      "neighborhood_mmd": 0.6621754731583761
+     },
+     "placebo_s1": {
+      "de_score": 0.5970036983639441,
+      "de_direction": 0.6697409466974095,
+      "mmd_u": 0.6588510122858626,
+      "variogram": 0.6733607154301029,
+      "d2_shape": 0.7149016437617893,
+      "occupancy_dice": 0.48038540949759145,
+      "scale_log_ratio": 1.0,
+      "neighborhood_mmd": 0.6567461009734482
+     },
+     "trend_s0.5": {
+      "de_score": 0.5839362354383812,
+      "de_direction": 0.6626853653626787,
+      "mmd_u": 0.6583952965588795,
+      "variogram": 0.6692860038218773,
+      "d2_shape": 0.7149016437617893,
+      "occupancy_dice": 0.48038540949759145,
+      "scale_log_ratio": 1.0,
+      "neighborhood_mmd": 0.6603402911769864
+     },
+     "placebo_s0.5": {
+      "de_score": 0.5882280279167439,
+      "de_direction": 0.6665766738660908,
+      "mmd_u": 0.6562957855726967,
+      "variogram": 0.664296757803744,
+      "d2_shape": 0.7149016437617893,
+      "occupancy_dice": 0.48038540949759145,
+      "scale_log_ratio": 1.0,
+      "neighborhood_mmd": 0.6564025666062212
+     },
+     "trend_s0.25": {
+      "de_score": 0.5839362354383812,
+      "de_direction": 0.6658127148924695,
+      "mmd_u": 0.6553920302952062,
+      "variogram": 0.6625792545202307,
+      "d2_shape": 0.7149016437617893,
+      "occupancy_dice": 0.48038540949759145,
+      "scale_log_ratio": 1.0,
+      "neighborhood_mmd": 0.6580548175080408
+     },
+     "placebo_s0.25": {
+      "de_score": 0.5925833748133399,
+      "de_direction": 0.6656332142616432,
+      "mmd_u": 0.6548284461260641,
+      "variogram": 0.6598104698293087,
+      "d2_shape": 0.7149016437617893,
+      "occupancy_dice": 0.48038540949759145,
+      "scale_log_ratio": 1.0,
+      "neighborhood_mmd": 0.6563567891763721
+     }
+    }
+   },
+   "groups": {
+    "own": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.504049432401189,
+      "cell_state": 0.46178820818791555,
+      "shape_growth": 0.6779147019820787,
+      "local_organisation": 0.5103413272427357
+     },
+     "trend_s0": {
+      "expression_change": 0.504049432401189,
+      "cell_state": 0.46178820818791555,
+      "shape_growth": 0.6779147019820787,
+      "local_organisation": 0.5103413272427357
+     },
+     "trend_s1": {
+      "expression_change": 0.5157338088210508,
+      "cell_state": 0.4697775993362393,
+      "shape_growth": 0.6779147019820787,
+      "local_organisation": 0.5152314826676231
+     },
+     "placebo_s1": {
+      "expression_change": 0.5128841115393388,
+      "cell_state": 0.4699892719597295,
+      "shape_growth": 0.6779147019820787,
+      "local_organisation": 0.5129709461010638
+     },
+     "trend_s0.5": {
+      "expression_change": 0.5100281252985632,
+      "cell_state": 0.4658553062295562,
+      "shape_growth": 0.6779147019820787,
+      "local_organisation": 0.513285178284285
+     },
+     "placebo_s0.5": {
+      "expression_change": 0.5097541365107674,
+      "cell_state": 0.46581474252651095,
+      "shape_growth": 0.6779147019820787,
+      "local_organisation": 0.5117178554161683
+     },
+     "trend_s0.25": {
+      "expression_change": 0.5060974339350184,
+      "cell_state": 0.4640993962409098,
+      "shape_growth": 0.6779147019820787,
+      "local_organisation": 0.5118220457611158
+     },
+     "placebo_s0.25": {
+      "expression_change": 0.5077686091449892,
+      "cell_state": 0.4638094208189951,
+      "shape_growth": 0.6779147019820787,
+      "local_organisation": 0.5110676256067499
+     }
+    },
+    "radial_0": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.5794424961416533,
+      "cell_state": 0.5600634240573809,
+      "shape_growth": 0.5652863031094058,
+      "local_organisation": 0.5885608856088561
+     },
+     "trend_s0": {
+      "expression_change": 0.5794424961416533,
+      "cell_state": 0.5600634240573809,
+      "shape_growth": 0.5652863031094058,
+      "local_organisation": 0.5885608856088561
+     },
+     "trend_s1": {
+      "expression_change": 0.5881509218567067,
+      "cell_state": 0.5730721415937997,
+      "shape_growth": 0.5652863031094058,
+      "local_organisation": 0.5951677601915483
+     },
+     "placebo_s1": {
+      "expression_change": 0.5882769943849817,
+      "cell_state": 0.570479503957879,
+      "shape_growth": 0.5652863031094058,
+      "local_organisation": 0.5943730203092976
+     },
+     "trend_s0.5": {
+      "expression_change": 0.5839815586949548,
+      "cell_state": 0.5669468369880762,
+      "shape_growth": 0.5652863031094058,
+      "local_organisation": 0.5925513142007987
+     },
+     "placebo_s0.5": {
+      "expression_change": 0.5865644019260091,
+      "cell_state": 0.5651569802149817,
+      "shape_growth": 0.5652863031094058,
+      "local_organisation": 0.5915623551228558
+     },
+     "trend_s0.25": {
+      "expression_change": 0.5817773538490465,
+      "cell_state": 0.5638805614823925,
+      "shape_growth": 0.5652863031094058,
+      "local_organisation": 0.5907225085645504
+     },
+     "placebo_s0.25": {
+      "expression_change": 0.5796772459564652,
+      "cell_state": 0.5626802038584928,
+      "shape_growth": 0.5652863031094058,
+      "local_organisation": 0.5900850906400296
+     }
+    },
+    "thin_0.5": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.6178333885612035,
+      "cell_state": 0.6327904444639092,
+      "shape_growth": 0.6792108222242428,
+      "local_organisation": 0.6565979777294253
+     },
+     "trend_s0": {
+      "expression_change": 0.6178333885612035,
+      "cell_state": 0.6327904444639092,
+      "shape_growth": 0.6792108222242428,
+      "local_organisation": 0.6565979777294253
+     },
+     "trend_s1": {
+      "expression_change": 0.6246818018918127,
+      "cell_state": 0.651080254039601,
+      "shape_growth": 0.6792108222242428,
+      "local_organisation": 0.6666883264563501
+     },
+     "placebo_s1": {
+      "expression_change": 0.630164184824445,
+      "cell_state": 0.6443732339908621,
+      "shape_growth": 0.6792108222242428,
+      "local_organisation": 0.6621277144977574
+     },
+     "trend_s0.5": {
+      "expression_change": 0.6255756755373425,
+      "cell_state": 0.6423441012151536,
+      "shape_growth": 0.6792108222242428,
+      "local_organisation": 0.6627906976744187
+     },
+     "placebo_s0.5": {
+      "expression_change": 0.6283523410303202,
+      "cell_state": 0.6387730834683024,
+      "shape_growth": 0.6792108222242428,
+      "local_organisation": 0.6590441932168551
+     },
+     "trend_s0.25": {
+      "expression_change": 0.6202314211979123,
+      "cell_state": 0.6375894540788039,
+      "shape_growth": 0.6792108222242428,
+      "local_organisation": 0.6597858589755957
+     },
+     "placebo_s0.25": {
+      "expression_change": 0.6229055898758535,
+      "cell_state": 0.6357603545305264,
+      "shape_growth": 0.6792108222242428,
+      "local_organisation": 0.658008658008658
+     }
+    },
+    "thin_0": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.6203389577759162,
+      "cell_state": 0.6539649164642234,
+      "shape_growth": 0.7317623510864603,
+      "local_organisation": 0.6559907994702725
+     },
+     "trend_s0": {
+      "expression_change": 0.6203389577759162,
+      "cell_state": 0.6539649164642234,
+      "shape_growth": 0.7317623510864603,
+      "local_organisation": 0.6559907994702725
+     },
+     "trend_s1": {
+      "expression_change": 0.6272568348597531,
+      "cell_state": 0.6707665914001977,
+      "shape_growth": 0.7317623510864603,
+      "local_organisation": 0.6621754731583761
+     },
+     "placebo_s1": {
+      "expression_change": 0.6333723225306768,
+      "cell_state": 0.6646548935435588,
+      "shape_growth": 0.7317623510864603,
+      "local_organisation": 0.6567461009734482
+     },
+     "trend_s0.5": {
+      "expression_change": 0.62331080040053,
+      "cell_state": 0.6627515794640786,
+      "shape_growth": 0.7317623510864603,
+      "local_organisation": 0.6603402911769864
+     },
+     "placebo_s0.5": {
+      "expression_change": 0.6274023508914173,
+      "cell_state": 0.6594961744651155,
+      "shape_growth": 0.7317623510864603,
+      "local_organisation": 0.6564025666062212
+     },
+     "trend_s0.25": {
+      "expression_change": 0.6248744751654254,
+      "cell_state": 0.658266919985216,
+      "shape_growth": 0.7317623510864603,
+      "local_organisation": 0.6580548175080408
+     },
+     "placebo_s0.25": {
+      "expression_change": 0.6291082945374915,
+      "cell_state": 0.6568212556073619,
+      "shape_growth": 0.7317623510864603,
+      "local_organisation": 0.6563567891763721
+     }
+    }
+   },
+   "seconds": 175.3
+  },
+  {
+   "seed": 9,
+   "build_seed": 1000009,
+   "n_cells": {
+    "control": 12589,
+    "trend_s0": 12589,
+    "trend_s1": 12589,
+    "placebo_s1": 12589,
+    "trend_s0.5": 12589,
+    "placebo_s0.5": 12589,
+    "trend_s0.25": 12589,
+    "placebo_s0.25": 12589
+   },
+   "checks": {
+    "s1_equals_harness_b0_trend": true,
+    "s0_counts_equal_drawn": true,
+    "s0_x_max_abs_diff_control": 9.5367431640625e-07,
+    "same_draw": true,
+    "pre_size_coords_equal": true,
+    "post_size_coords_equal": true,
+    "n_cells": {
+     "control": 12589,
+     "trend_s0": 12589,
+     "trend_s1": 12589,
+     "placebo_s1": 12589,
+     "trend_s0.5": 12589,
+     "placebo_s0.5": 12589,
+     "trend_s0.25": 12589,
+     "placebo_s0.25": 12589
+    },
+    "whole_pool": {
+     "CM": {
+      "cosine": 1.0,
+      "norm_ratio": 1.0
+     },
+     "CranialMesoderm": {
+      "cosine": 0.7536026775825065,
+      "norm_ratio": 1.3135842263549335
+     },
+     "Ectoderm": {
+      "cosine": 0.5317388989786285,
+      "norm_ratio": 1.314622872731926
+     },
+     "Endoderm": {
+      "cosine": 0.9132201686814171,
+      "norm_ratio": 0.9801398921615909
+     },
+     "Endothelial": {
+      "cosine": 0.8038245972071472,
+      "norm_ratio": 1.194517877214557
+     },
+     "EpiblastStreak": {
+      "in_trimmed": false,
+      "in_whole": true
+     },
+     "ExtraEmbryonicMeso": {
+      "cosine": 0.9390987965071329,
+      "norm_ratio": 0.99145582043787
+     },
+     "NCC": {
+      "cosine": 0.6063588409985441,
+      "norm_ratio": 1.3706060498180421
+     },
+     "Neural": {
+      "in_trimmed": false,
+      "in_whole": true
+     }
+    }
+   },
+   "records": {
+    "control": {
+     "size": {
+      "sizing": "f",
+      "hypothesis": "core",
+      "z_mode_used": "raw",
+      "target_rms_full": 341.3898784136632,
+      "rms_before": 178.42612314354886,
+      "rms_after": 341.38987841366315,
+      "log_rms_after_vs_target": -1.1102230246251565e-16,
+      "target_source": "preregistered.pred_rms_core",
+      "warnings": []
+     },
+     "trend": {
+      "strength": null
+     }
+    },
+    "trend_s0": {
+     "size": {
+      "sizing": "f",
+      "hypothesis": "core",
+      "z_mode_used": "raw",
+      "target_rms_full": 341.3898784136632,
+      "rms_before": 178.42612314354886,
+      "rms_after": 341.38987841366315,
+      "log_rms_after_vs_target": -1.1102230246251565e-16,
+      "target_source": "preregistered.pred_rms_core",
+      "warnings": []
+     },
+     "trend": {
+      "strength": 0.0,
+      "placebo": false,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.0,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 7,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "CranialMesoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         8246,
+         5490,
+         609
+        ],
+        "own_factor": false,
+        "cosine": 0.9267193929280553,
+        "norm_ratio": 0.5726596377046321
+       },
+       {
+        "lineage": "Ectoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         4681,
+         2593,
+         291
+        ],
+        "own_factor": false,
+        "cosine": 0.8961684047819412,
+        "norm_ratio": 0.5604901393597218
+       },
+       {
+        "lineage": "Endoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10205,
+         2591,
+         916
+        ],
+        "own_factor": false,
+        "cosine": 0.7970027457305968,
+        "norm_ratio": 0.6436089614033065
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1215
+        ],
+        "own_factor": false,
+        "cosine": 0.8099998630355094,
+        "norm_ratio": 0.6469220374363847
+       },
+       {
+        "lineage": "ExtraEmbryonicMeso",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10327,
+         3154,
+         626
+        ],
+        "own_factor": false,
+        "cosine": 0.8211576529605863,
+        "norm_ratio": 0.6161583296002572
+       },
+       {
+        "lineage": "NCC",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         3303,
+         1461,
+         334
+        ],
+        "own_factor": false,
+        "cosine": 0.8457096860091915,
+        "norm_ratio": 0.5888593159150286
+       }
+      ],
+      "shifted": [
+       "CM",
+       "CranialMesoderm",
+       "Ectoderm",
+       "Endoderm",
+       "Endothelial",
+       "ExtraEmbryonicMeso",
+       "NCC"
+      ],
+      "fixed_points": {},
+      "ref_cells": 8277
+     }
+    },
+    "trend_s1": {
+     "size": {
+      "sizing": "f",
+      "hypothesis": "core",
+      "z_mode_used": "raw",
+      "target_rms_full": 341.3898784136632,
+      "rms_before": 178.42612314354886,
+      "rms_after": 341.38987841366315,
+      "log_rms_after_vs_target": -1.1102230246251565e-16,
+      "target_source": "preregistered.pred_rms_core",
+      "warnings": []
+     },
+     "trend": {
+      "strength": 1.0,
+      "placebo": false,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.125,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 7,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "CranialMesoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         8246,
+         5490,
+         609
+        ],
+        "own_factor": false,
+        "cosine": 0.9267193929280553,
+        "norm_ratio": 0.5726596377046321
+       },
+       {
+        "lineage": "Ectoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         4681,
+         2593,
+         291
+        ],
+        "own_factor": false,
+        "cosine": 0.8961684047819412,
+        "norm_ratio": 0.5604901393597218
+       },
+       {
+        "lineage": "Endoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10205,
+         2591,
+         916
+        ],
+        "own_factor": false,
+        "cosine": 0.7970027457305968,
+        "norm_ratio": 0.6436089614033065
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1215
+        ],
+        "own_factor": false,
+        "cosine": 0.8099998630355094,
+        "norm_ratio": 0.6469220374363847
+       },
+       {
+        "lineage": "ExtraEmbryonicMeso",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10327,
+         3154,
+         626
+        ],
+        "own_factor": false,
+        "cosine": 0.8211576529605863,
+        "norm_ratio": 0.6161583296002572
+       },
+       {
+        "lineage": "NCC",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         3303,
+         1461,
+         334
+        ],
+        "own_factor": false,
+        "cosine": 0.8457096860091915,
+        "norm_ratio": 0.5888593159150286
+       }
+      ],
+      "shifted": [
+       "CM",
+       "CranialMesoderm",
+       "Ectoderm",
+       "Endoderm",
+       "Endothelial",
+       "ExtraEmbryonicMeso",
+       "NCC"
+      ],
+      "fixed_points": {},
+      "ref_cells": 8277
+     }
+    },
+    "placebo_s1": {
+     "size": {
+      "sizing": "f",
+      "hypothesis": "core",
+      "z_mode_used": "raw",
+      "target_rms_full": 341.3898784136632,
+      "rms_before": 178.42612314354886,
+      "rms_after": 341.38987841366315,
+      "log_rms_after_vs_target": -1.1102230246251565e-16,
+      "target_source": "preregistered.pred_rms_core",
+      "warnings": []
+     },
+     "trend": {
+      "strength": 1.0,
+      "placebo": true,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.125,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 7,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "CranialMesoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         8246,
+         5490,
+         609
+        ],
+        "own_factor": false,
+        "cosine": 0.9267193929280553,
+        "norm_ratio": 0.5726596377046321
+       },
+       {
+        "lineage": "Ectoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         4681,
+         2593,
+         291
+        ],
+        "own_factor": false,
+        "cosine": 0.8961684047819412,
+        "norm_ratio": 0.5604901393597218
+       },
+       {
+        "lineage": "Endoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10205,
+         2591,
+         916
+        ],
+        "own_factor": false,
+        "cosine": 0.7970027457305968,
+        "norm_ratio": 0.6436089614033065
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1215
+        ],
+        "own_factor": false,
+        "cosine": 0.8099998630355094,
+        "norm_ratio": 0.6469220374363847
+       },
+       {
+        "lineage": "ExtraEmbryonicMeso",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10327,
+         3154,
+         626
+        ],
+        "own_factor": false,
+        "cosine": 0.8211576529605863,
+        "norm_ratio": 0.6161583296002572
+       },
+       {
+        "lineage": "NCC",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         3303,
+         1461,
+         334
+        ],
+        "own_factor": false,
+        "cosine": 0.8457096860091915,
+        "norm_ratio": 0.5888593159150286
+       }
+      ],
+      "shifted": [
+       "CM",
+       "CranialMesoderm",
+       "Ectoderm",
+       "Endoderm",
+       "Endothelial",
+       "ExtraEmbryonicMeso",
+       "NCC"
+      ],
+      "fixed_points": {
+       "CM": 0,
+       "CranialMesoderm": 0,
+       "Ectoderm": 0,
+       "Endoderm": 0,
+       "Endothelial": 0,
+       "ExtraEmbryonicMeso": 0,
+       "NCC": 0
+      },
+      "ref_cells": 8277
+     }
+    },
+    "trend_s0.5": {
+     "size": {
+      "sizing": "f",
+      "hypothesis": "core",
+      "z_mode_used": "raw",
+      "target_rms_full": 341.3898784136632,
+      "rms_before": 178.42612314354886,
+      "rms_after": 341.38987841366315,
+      "log_rms_after_vs_target": -1.1102230246251565e-16,
+      "target_source": "preregistered.pred_rms_core",
+      "warnings": []
+     },
+     "trend": {
+      "strength": 0.5,
+      "placebo": false,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.0625,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 7,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "CranialMesoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         8246,
+         5490,
+         609
+        ],
+        "own_factor": false,
+        "cosine": 0.9267193929280553,
+        "norm_ratio": 0.5726596377046321
+       },
+       {
+        "lineage": "Ectoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         4681,
+         2593,
+         291
+        ],
+        "own_factor": false,
+        "cosine": 0.8961684047819412,
+        "norm_ratio": 0.5604901393597218
+       },
+       {
+        "lineage": "Endoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10205,
+         2591,
+         916
+        ],
+        "own_factor": false,
+        "cosine": 0.7970027457305968,
+        "norm_ratio": 0.6436089614033065
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1215
+        ],
+        "own_factor": false,
+        "cosine": 0.8099998630355094,
+        "norm_ratio": 0.6469220374363847
+       },
+       {
+        "lineage": "ExtraEmbryonicMeso",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10327,
+         3154,
+         626
+        ],
+        "own_factor": false,
+        "cosine": 0.8211576529605863,
+        "norm_ratio": 0.6161583296002572
+       },
+       {
+        "lineage": "NCC",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         3303,
+         1461,
+         334
+        ],
+        "own_factor": false,
+        "cosine": 0.8457096860091915,
+        "norm_ratio": 0.5888593159150286
+       }
+      ],
+      "shifted": [
+       "CM",
+       "CranialMesoderm",
+       "Ectoderm",
+       "Endoderm",
+       "Endothelial",
+       "ExtraEmbryonicMeso",
+       "NCC"
+      ],
+      "fixed_points": {},
+      "ref_cells": 8277
+     }
+    },
+    "placebo_s0.5": {
+     "size": {
+      "sizing": "f",
+      "hypothesis": "core",
+      "z_mode_used": "raw",
+      "target_rms_full": 341.3898784136632,
+      "rms_before": 178.42612314354886,
+      "rms_after": 341.38987841366315,
+      "log_rms_after_vs_target": -1.1102230246251565e-16,
+      "target_source": "preregistered.pred_rms_core",
+      "warnings": []
+     },
+     "trend": {
+      "strength": 0.5,
+      "placebo": true,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.0625,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 7,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "CranialMesoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         8246,
+         5490,
+         609
+        ],
+        "own_factor": false,
+        "cosine": 0.9267193929280553,
+        "norm_ratio": 0.5726596377046321
+       },
+       {
+        "lineage": "Ectoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         4681,
+         2593,
+         291
+        ],
+        "own_factor": false,
+        "cosine": 0.8961684047819412,
+        "norm_ratio": 0.5604901393597218
+       },
+       {
+        "lineage": "Endoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10205,
+         2591,
+         916
+        ],
+        "own_factor": false,
+        "cosine": 0.7970027457305968,
+        "norm_ratio": 0.6436089614033065
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1215
+        ],
+        "own_factor": false,
+        "cosine": 0.8099998630355094,
+        "norm_ratio": 0.6469220374363847
+       },
+       {
+        "lineage": "ExtraEmbryonicMeso",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10327,
+         3154,
+         626
+        ],
+        "own_factor": false,
+        "cosine": 0.8211576529605863,
+        "norm_ratio": 0.6161583296002572
+       },
+       {
+        "lineage": "NCC",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         3303,
+         1461,
+         334
+        ],
+        "own_factor": false,
+        "cosine": 0.8457096860091915,
+        "norm_ratio": 0.5888593159150286
+       }
+      ],
+      "shifted": [
+       "CM",
+       "CranialMesoderm",
+       "Ectoderm",
+       "Endoderm",
+       "Endothelial",
+       "ExtraEmbryonicMeso",
+       "NCC"
+      ],
+      "fixed_points": {
+       "CM": 0,
+       "CranialMesoderm": 0,
+       "Ectoderm": 0,
+       "Endoderm": 0,
+       "Endothelial": 0,
+       "ExtraEmbryonicMeso": 0,
+       "NCC": 0
+      },
+      "ref_cells": 8277
+     }
+    },
+    "trend_s0.25": {
+     "size": {
+      "sizing": "f",
+      "hypothesis": "core",
+      "z_mode_used": "raw",
+      "target_rms_full": 341.3898784136632,
+      "rms_before": 178.42612314354886,
+      "rms_after": 341.38987841366315,
+      "log_rms_after_vs_target": -1.1102230246251565e-16,
+      "target_source": "preregistered.pred_rms_core",
+      "warnings": []
+     },
+     "trend": {
+      "strength": 0.25,
+      "placebo": false,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.03125,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 7,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "CranialMesoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         8246,
+         5490,
+         609
+        ],
+        "own_factor": false,
+        "cosine": 0.9267193929280553,
+        "norm_ratio": 0.5726596377046321
+       },
+       {
+        "lineage": "Ectoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         4681,
+         2593,
+         291
+        ],
+        "own_factor": false,
+        "cosine": 0.8961684047819412,
+        "norm_ratio": 0.5604901393597218
+       },
+       {
+        "lineage": "Endoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10205,
+         2591,
+         916
+        ],
+        "own_factor": false,
+        "cosine": 0.7970027457305968,
+        "norm_ratio": 0.6436089614033065
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1215
+        ],
+        "own_factor": false,
+        "cosine": 0.8099998630355094,
+        "norm_ratio": 0.6469220374363847
+       },
+       {
+        "lineage": "ExtraEmbryonicMeso",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10327,
+         3154,
+         626
+        ],
+        "own_factor": false,
+        "cosine": 0.8211576529605863,
+        "norm_ratio": 0.6161583296002572
+       },
+       {
+        "lineage": "NCC",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         3303,
+         1461,
+         334
+        ],
+        "own_factor": false,
+        "cosine": 0.8457096860091915,
+        "norm_ratio": 0.5888593159150286
+       }
+      ],
+      "shifted": [
+       "CM",
+       "CranialMesoderm",
+       "Ectoderm",
+       "Endoderm",
+       "Endothelial",
+       "ExtraEmbryonicMeso",
+       "NCC"
+      ],
+      "fixed_points": {},
+      "ref_cells": 8277
+     }
+    },
+    "placebo_s0.25": {
+     "size": {
+      "sizing": "f",
+      "hypothesis": "core",
+      "z_mode_used": "raw",
+      "target_rms_full": 341.3898784136632,
+      "rms_before": 178.42612314354886,
+      "rms_after": 341.38987841366315,
+      "log_rms_after_vs_target": -1.1102230246251565e-16,
+      "target_source": "preregistered.pred_rms_core",
+      "warnings": []
+     },
+     "trend": {
+      "strength": 0.25,
+      "placebo": true,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.03125,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 7,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "CranialMesoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         8246,
+         5490,
+         609
+        ],
+        "own_factor": false,
+        "cosine": 0.9267193929280553,
+        "norm_ratio": 0.5726596377046321
+       },
+       {
+        "lineage": "Ectoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         4681,
+         2593,
+         291
+        ],
+        "own_factor": false,
+        "cosine": 0.8961684047819412,
+        "norm_ratio": 0.5604901393597218
+       },
+       {
+        "lineage": "Endoderm",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10205,
+         2591,
+         916
+        ],
+        "own_factor": false,
+        "cosine": 0.7970027457305968,
+        "norm_ratio": 0.6436089614033065
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1215
+        ],
+        "own_factor": false,
+        "cosine": 0.8099998630355094,
+        "norm_ratio": 0.6469220374363847
+       },
+       {
+        "lineage": "ExtraEmbryonicMeso",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         10327,
+         3154,
+         626
+        ],
+        "own_factor": false,
+        "cosine": 0.8211576529605863,
+        "norm_ratio": 0.6161583296002572
+       },
+       {
+        "lineage": "NCC",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         3303,
+         1461,
+         334
+        ],
+        "own_factor": false,
+        "cosine": 0.8457096860091915,
+        "norm_ratio": 0.5888593159150286
+       }
+      ],
+      "shifted": [
+       "CM",
+       "CranialMesoderm",
+       "Ectoderm",
+       "Endoderm",
+       "Endothelial",
+       "ExtraEmbryonicMeso",
+       "NCC"
+      ],
+      "fixed_points": {
+       "CM": 0,
+       "CranialMesoderm": 0,
+       "Ectoderm": 0,
+       "Endoderm": 0,
+       "Endothelial": 0,
+       "ExtraEmbryonicMeso": 0,
+       "NCC": 0
+      },
+      "ref_cells": 8277
+     }
+    }
+   },
+   "scores": {
+    "own": {
+     "floor": 50.0,
+     "control": 54.57270847398935,
+     "trend_s0": 54.57270847398935,
+     "trend_s1": 54.922895069220466,
+     "placebo_s1": 54.96723974584857,
+     "trend_s0.5": 54.84033810427199,
+     "placebo_s0.5": 54.77368971302787,
+     "trend_s0.25": 54.75219403135097,
+     "placebo_s0.25": 54.74726063666534
+    },
+    "radial_0": {
+     "floor": 50.0,
+     "control": 57.79207147257666,
+     "trend_s0": 57.79207147257666,
+     "trend_s1": 58.2530979155047,
+     "placebo_s1": 58.254222178096484,
+     "trend_s0.5": 58.07057984528203,
+     "placebo_s0.5": 58.13314333985178,
+     "trend_s0.25": 57.9529583100959,
+     "placebo_s0.25": 57.91584375987618
+    },
+    "thin_0.5": {
+     "floor": 50.0,
+     "control": 65.29384756642187,
+     "trend_s0": 65.29384756642187,
+     "trend_s1": 65.99586464282199,
+     "placebo_s1": 65.9843222862152,
+     "trend_s0.5": 65.8454316084241,
+     "placebo_s0.5": 65.68020141596081,
+     "trend_s0.25": 65.52623943453553,
+     "placebo_s0.25": 65.56519358218196
+    },
+    "thin_0": {
+     "floor": 54.166666666666664,
+     "control": 67.02568368111706,
+     "trend_s0": 67.02568368111706,
+     "trend_s1": 67.71947558336687,
+     "placebo_s1": 67.61306896433845,
+     "trend_s0.5": 67.46947504810169,
+     "placebo_s0.5": 67.45566490740818,
+     "trend_s0.25": 67.23236509645565,
+     "placebo_s0.25": 67.23551119545694
+    }
+   },
+   "skills": {
+    "own": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.5,
+      "de_direction": 0.544141868892061,
+      "mmd_u": 0.45081662954714175,
+      "variogram": 0.5279560783291518,
+      "d2_shape": 0.7852412488174078,
+      "occupancy_dice": 0.47381546134663355,
+      "scale_log_ratio": 0.7386727216431004,
+      "neighborhood_mmd": 0.5132551848512173
+     },
+     "trend_s0": {
+      "de_score": 0.5,
+      "de_direction": 0.544141868892061,
+      "mmd_u": 0.45081662954714175,
+      "variogram": 0.5279560783291518,
+      "d2_shape": 0.7852412488174078,
+      "occupancy_dice": 0.47381546134663355,
+      "scale_log_ratio": 0.7386727216431004,
+      "neighborhood_mmd": 0.5132551848512173
+     },
+     "trend_s1": {
+      "de_score": 0.5073537305421364,
+      "de_direction": 0.5448298609202353,
+      "mmd_u": 0.4515989092711948,
+      "variogram": 0.543933265076621,
+      "d2_shape": 0.7852412488174078,
+      "occupancy_dice": 0.47381546134663355,
+      "scale_log_ratio": 0.7386727216431004,
+      "neighborhood_mmd": 0.5163815448418869
+     },
+     "placebo_s1": {
+      "de_score": 0.5073537305421364,
+      "de_direction": 0.5472667034787411,
+      "mmd_u": 0.454897309445034,
+      "variogram": 0.5418113321109915,
+      "d2_shape": 0.7852412488174078,
+      "occupancy_dice": 0.47381546134663355,
+      "scale_log_ratio": 0.7386727216431004,
+      "neighborhood_mmd": 0.5158066437097066
+     },
+     "trend_s0.5": {
+      "de_score": 0.5073537305421364,
+      "de_direction": 0.5449796546794238,
+      "mmd_u": 0.45218740304064536,
+      "variogram": 0.536812288800053,
+      "d2_shape": 0.7852412488174078,
+      "occupancy_dice": 0.47381546134663355,
+      "scale_log_ratio": 0.7386727216431004,
+      "neighborhood_mmd": 0.5154996636133106
+     },
+     "placebo_s0.5": {
+      "de_score": 0.5036500239782598,
+      "de_direction": 0.5452794894366196,
+      "mmd_u": 0.4533407988055244,
+      "variogram": 0.534969075341712,
+      "d2_shape": 0.7852412488174078,
+      "occupancy_dice": 0.47381546134663355,
+      "scale_log_ratio": 0.7386727216431004,
+      "neighborhood_mmd": 0.5145809117912954
+     },
+     "trend_s0.25": {
+      "de_score": 0.5073537305421364,
+      "de_direction": 0.5449197272927204,
+      "mmd_u": 0.4513751238850347,
+      "variogram": 0.5322191261886123,
+      "d2_shape": 0.7852412488174078,
+      "occupancy_dice": 0.47381546134663355,
+      "scale_log_ratio": 0.7386727216431004,
+      "neighborhood_mmd": 0.5143284969277637
+     },
+     "placebo_s0.25": {
+      "de_score": 0.5073537305421364,
+      "de_direction": 0.5448598130841121,
+      "mmd_u": 0.4523839086168363,
+      "variogram": 0.5312826173678774,
+      "d2_shape": 0.7852412488174078,
+      "occupancy_dice": 0.47381546134663355,
+      "scale_log_ratio": 0.7386727216431004,
+      "neighborhood_mmd": 0.5139304509338561
+     }
+    },
+    "radial_0": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.5555555555555556,
+      "de_direction": 0.5971652593486128,
+      "mmd_u": 0.5350610884857461,
+      "variogram": 0.5834603148291009,
+      "d2_shape": 0.5414653784219001,
+      "occupancy_dice": 0.40369496855345904,
+      "scale_log_ratio": 0.8786638283936465,
+      "neighborhood_mmd": 0.5729602806382257
+     },
+     "trend_s0": {
+      "de_score": 0.5555555555555556,
+      "de_direction": 0.5971652593486128,
+      "mmd_u": 0.5350610884857461,
+      "variogram": 0.5834603148291009,
+      "d2_shape": 0.5414653784219001,
+      "occupancy_dice": 0.40369496855345904,
+      "scale_log_ratio": 0.8786638283936465,
+      "neighborhood_mmd": 0.5729602806382257
+     },
+     "trend_s1": {
+      "de_score": 0.5681952487885592,
+      "de_direction": 0.5924485399712781,
+      "mmd_u": 0.5384099545488414,
+      "variogram": 0.6037340018472094,
+      "d2_shape": 0.5414653784219001,
+      "occupancy_dice": 0.40369496855345904,
+      "scale_log_ratio": 0.8786638283936465,
+      "neighborhood_mmd": 0.5773210569824122
+     },
+     "placebo_s1": {
+      "de_score": 0.5555555555555556,
+      "de_direction": 0.6012266213262084,
+      "mmd_u": 0.5414356361456617,
+      "variogram": 0.6001744502521659,
+      "d2_shape": 0.5414653784219001,
+      "occupancy_dice": 0.40369496855345904,
+      "scale_log_ratio": 0.8786638283936465,
+      "neighborhood_mmd": 0.578905245105045
+     },
+     "trend_s0.5": {
+      "de_score": 0.5596949764247046,
+      "de_direction": 0.5965535940230162,
+      "mmd_u": 0.538289630512515,
+      "variogram": 0.5947681409027394,
+      "d2_shape": 0.5414653784219001,
+      "occupancy_dice": 0.40369496855345904,
+      "scale_log_ratio": 0.8786638283936465,
+      "neighborhood_mmd": 0.5758764821291478
+     },
+     "placebo_s0.5": {
+      "de_score": 0.5638965456571462,
+      "de_direction": 0.5990802928541176,
+      "mmd_u": 0.5387310817863268,
+      "variogram": 0.5919519783695674,
+      "d2_shape": 0.5414653784219001,
+      "occupancy_dice": 0.40369496855345904,
+      "scale_log_ratio": 0.8786638283936465,
+      "neighborhood_mmd": 0.5758764821291478
+     },
+     "trend_s0.25": {
+      "de_score": 0.5596949764247046,
+      "de_direction": 0.5974535360849625,
+      "mmd_u": 0.5360136488391068,
+      "variogram": 0.5888477080276941,
+      "d2_shape": 0.5414653784219001,
+      "occupancy_dice": 0.40369496855345904,
+      "scale_log_ratio": 0.8786638283936465,
+      "neighborhood_mmd": 0.5744554118447924
+     },
+     "placebo_s0.25": {
+      "de_score": 0.5555555555555556,
+      "de_direction": 0.5983200386753686,
+      "mmd_u": 0.5371292648479893,
+      "variogram": 0.5875132411003756,
+      "d2_shape": 0.5414653784219001,
+      "occupancy_dice": 0.40369496855345904,
+      "scale_log_ratio": 0.8786638283936465,
+      "neighborhood_mmd": 0.5744717061409729
+     }
+    },
+    "thin_0.5": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.6017787217096967,
+      "de_direction": 0.6563372788934698,
+      "mmd_u": 0.658580560563842,
+      "variogram": 0.6618561235776986,
+      "d2_shape": 0.6541828793774319,
+      "occupancy_dice": 0.5237265999129299,
+      "scale_log_ratio": 0.8376642335766423,
+      "neighborhood_mmd": 0.6509472122969056
+     },
+     "trend_s0": {
+      "de_score": 0.6017787217096967,
+      "de_direction": 0.6563372788934698,
+      "mmd_u": 0.658580560563842,
+      "variogram": 0.6618561235776986,
+      "d2_shape": 0.6541828793774319,
+      "occupancy_dice": 0.5237265999129299,
+      "scale_log_ratio": 0.8376642335766423,
+      "neighborhood_mmd": 0.6509472122969056
+     },
+     "trend_s1": {
+      "de_score": 0.618190495670553,
+      "de_direction": 0.6500691562932227,
+      "mmd_u": 0.6677746385241815,
+      "variogram": 0.6882340279552823,
+      "d2_shape": 0.6541828793774319,
+      "occupancy_dice": 0.5237265999129299,
+      "scale_log_ratio": 0.8376642335766423,
+      "neighborhood_mmd": 0.6578884611453685
+     },
+     "placebo_s1": {
+      "de_score": 0.618190495670553,
+      "de_direction": 0.6619274361209846,
+      "mmd_u": 0.6636934258341592,
+      "variogram": 0.6793867279319,
+      "d2_shape": 0.6541828793774319,
+      "occupancy_dice": 0.5237265999129299,
+      "scale_log_ratio": 0.8376642335766423,
+      "neighborhood_mmd": 0.6574852745905825
+     },
+     "trend_s0.5": {
+      "de_score": 0.618190495670553,
+      "de_direction": 0.6553349711174556,
+      "mmd_u": 0.6653419440304686,
+      "variogram": 0.6764536709530264,
+      "d2_shape": 0.6541828793774319,
+      "occupancy_dice": 0.5237265999129299,
+      "scale_log_ratio": 0.8376642335766423,
+      "neighborhood_mmd": 0.6554099918544664
+     },
+     "placebo_s0.5": {
+      "de_score": 0.6125937436659686,
+      "de_direction": 0.6591425136903968,
+      "mmd_u": 0.6611815040315945,
+      "variogram": 0.6709619457942332,
+      "d2_shape": 0.6541828793774319,
+      "occupancy_dice": 0.5237265999129299,
+      "scale_log_ratio": 0.8376642335766423,
+      "neighborhood_mmd": 0.6543883429345985
+     },
+     "trend_s0.25": {
+      "de_score": 0.6071380741931164,
+      "de_direction": 0.6567740218259249,
+      "mmd_u": 0.6611815040315945,
+      "variogram": 0.6685550371793364,
+      "d2_shape": 0.6541828793774319,
+      "occupancy_dice": 0.5237265999129299,
+      "scale_log_ratio": 0.8376642335766423,
+      "neighborhood_mmd": 0.6531047077922078
+     },
+     "placebo_s0.25": {
+      "de_score": 0.6125937436659686,
+      "de_direction": 0.6579561362575829,
+      "mmd_u": 0.6604750554779322,
+      "variogram": 0.6660959461482875,
+      "d2_shape": 0.6541828793774319,
+      "occupancy_dice": 0.5237265999129299,
+      "scale_log_ratio": 0.8376642335766423,
+      "neighborhood_mmd": 0.6527514872904272
+     }
+    },
+    "thin_0": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 1.0,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.59026018169458,
+      "de_direction": 0.669869174161897,
+      "mmd_u": 0.6605386228027738,
+      "variogram": 0.6821463001716477,
+      "d2_shape": 0.7386258124419683,
+      "occupancy_dice": 0.46689895470383247,
+      "scale_log_ratio": 0.9967776584317938,
+      "neighborhood_mmd": 0.6476801670402554
+     },
+     "trend_s0": {
+      "de_score": 0.59026018169458,
+      "de_direction": 0.669869174161897,
+      "mmd_u": 0.6605386228027738,
+      "variogram": 0.6821463001716477,
+      "d2_shape": 0.7386258124419683,
+      "occupancy_dice": 0.46689895470383247,
+      "scale_log_ratio": 0.9967776584317938,
+      "neighborhood_mmd": 0.6476801670402554
+     },
+     "trend_s1": {
+      "de_score": 0.6028149457207775,
+      "de_direction": 0.6661020394335659,
+      "mmd_u": 0.6703215776123067,
+      "variogram": 0.7088344704998443,
+      "d2_shape": 0.7386258124419683,
+      "occupancy_dice": 0.46689895470383247,
+      "scale_log_ratio": 0.9967776584317938,
+      "neighborhood_mmd": 0.6544929874643167
+     },
+     "placebo_s1": {
+      "de_score": 0.607145127455343,
+      "de_direction": 0.6751596730993751,
+      "mmd_u": 0.6635347480965496,
+      "variogram": 0.6990686634778732,
+      "d2_shape": 0.7386258124419683,
+      "occupancy_dice": 0.46689895470383247,
+      "scale_log_ratio": 0.9967776584317938,
+      "neighborhood_mmd": 0.6515212355212355
+     },
+     "trend_s0.5": {
+      "de_score": 0.5985836049135121,
+      "de_direction": 0.6695954229668982,
+      "mmd_u": 0.6668837512211007,
+      "variogram": 0.6967893791919108,
+      "d2_shape": 0.7386258124419683,
+      "occupancy_dice": 0.46689895470383247,
+      "scale_log_ratio": 0.9967776584317938,
+      "neighborhood_mmd": 0.6517426770485725
+     },
+     "placebo_s0.5": {
+      "de_score": 0.607145127455343,
+      "de_direction": 0.672849223188009,
+      "mmd_u": 0.6632124352331606,
+      "variogram": 0.6909149365611436,
+      "d2_shape": 0.7386258124419683,
+      "occupancy_dice": 0.46689895470383247,
+      "scale_log_ratio": 0.9967776584317938,
+      "neighborhood_mmd": 0.6498351766844327
+     },
+     "trend_s0.25": {
+      "de_score": 0.5944112521782425,
+      "de_direction": 0.6706917724109701,
+      "mmd_u": 0.6626223408557793,
+      "variogram": 0.6888846674423575,
+      "d2_shape": 0.7386258124419683,
+      "occupancy_dice": 0.46689895470383247,
+      "scale_log_ratio": 0.9967776584317938,
+      "neighborhood_mmd": 0.6495150115473441
+     },
+     "placebo_s0.25": {
+      "de_score": 0.5985836049135121,
+      "de_direction": 0.6715163934426229,
+      "mmd_u": 0.6618728286337562,
+      "variogram": 0.6862245350521865,
+      "d2_shape": 0.7386258124419683,
+      "occupancy_dice": 0.46689895470383247,
+      "scale_log_ratio": 0.9967776584317938,
+      "neighborhood_mmd": 0.6486561289132172
+     }
+    }
+   },
+   "groups": {
+    "own": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.5220709344460305,
+      "cell_state": 0.4816724090599458,
+      "shape_growth": 0.6659098106023805,
+      "local_organisation": 0.5132551848512173
+     },
+     "trend_s0": {
+      "expression_change": 0.5220709344460305,
+      "cell_state": 0.4816724090599458,
+      "shape_growth": 0.6659098106023805,
+      "local_organisation": 0.5132551848512173
+     },
+     "trend_s1": {
+      "expression_change": 0.5260917957311859,
+      "cell_state": 0.48853265159336523,
+      "shape_growth": 0.6659098106023805,
+      "local_organisation": 0.5163815448418869
+     },
+     "placebo_s1": {
+      "expression_change": 0.5273102170104387,
+      "cell_state": 0.489662918511417,
+      "shape_growth": 0.6659098106023805,
+      "local_organisation": 0.5158066437097066
+     },
+     "trend_s0.5": {
+      "expression_change": 0.5261666926107801,
+      "cell_state": 0.48603735734440845,
+      "shape_growth": 0.6659098106023805,
+      "local_organisation": 0.5154996636133106
+     },
+     "placebo_s0.5": {
+      "expression_change": 0.5244647567074396,
+      "cell_state": 0.48599210941999943,
+      "shape_growth": 0.6659098106023805,
+      "local_organisation": 0.5145809117912954
+     },
+     "trend_s0.25": {
+      "expression_change": 0.5261367289174284,
+      "cell_state": 0.48371272480646577,
+      "shape_growth": 0.6659098106023805,
+      "local_organisation": 0.5143284969277637
+     },
+     "placebo_s0.25": {
+      "expression_change": 0.5261067718131243,
+      "cell_state": 0.4839433921172528,
+      "shape_growth": 0.6659098106023805,
+      "local_organisation": 0.5139304509338561
+     }
+    },
+    "radial_0": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.5763604074520842,
+      "cell_state": 0.554420779023088,
+      "shape_growth": 0.6079413917896686,
+      "local_organisation": 0.5729602806382257
+     },
+     "trend_s0": {
+      "expression_change": 0.5763604074520842,
+      "cell_state": 0.554420779023088,
+      "shape_growth": 0.6079413917896686,
+      "local_organisation": 0.5729602806382257
+     },
+     "trend_s1": {
+      "expression_change": 0.5803218943799187,
+      "cell_state": 0.5645395734681886,
+      "shape_growth": 0.6079413917896686,
+      "local_organisation": 0.5773210569824122
+     },
+     "placebo_s1": {
+      "expression_change": 0.578391088440882,
+      "cell_state": 0.5649311617882634,
+      "shape_growth": 0.6079413917896686,
+      "local_organisation": 0.578905245105045
+     },
+     "trend_s0.5": {
+      "expression_change": 0.5781242852238604,
+      "cell_state": 0.5608810346686048,
+      "shape_growth": 0.6079413917896686,
+      "local_organisation": 0.5758764821291478
+     },
+     "placebo_s0.5": {
+      "expression_change": 0.5814884192556319,
+      "cell_state": 0.560019440419623,
+      "shape_growth": 0.6079413917896686,
+      "local_organisation": 0.5758764821291478
+     },
+     "trend_s0.25": {
+      "expression_change": 0.5785742562548335,
+      "cell_state": 0.5571472725145418,
+      "shape_growth": 0.6079413917896686,
+      "local_organisation": 0.5744554118447924
+     },
+     "placebo_s0.25": {
+      "expression_change": 0.5769377971154621,
+      "cell_state": 0.5572828553489438,
+      "shape_growth": 0.6079413917896686,
+      "local_organisation": 0.5744717061409729
+     }
+    },
+    "thin_0.5": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.6290580003015833,
+      "cell_state": 0.6598907857693845,
+      "shape_growth": 0.6718579042890014,
+      "local_organisation": 0.6509472122969056
+     },
+     "trend_s0": {
+      "expression_change": 0.6290580003015833,
+      "cell_state": 0.6598907857693845,
+      "shape_growth": 0.6718579042890014,
+      "local_organisation": 0.6509472122969056
+     },
+     "trend_s1": {
+      "expression_change": 0.6341298259818878,
+      "cell_state": 0.6759583942966219,
+      "shape_growth": 0.6718579042890014,
+      "local_organisation": 0.6578884611453685
+     },
+     "placebo_s1": {
+      "expression_change": 0.6400589658957687,
+      "cell_state": 0.6699707466732556,
+      "shape_growth": 0.6718579042890014,
+      "local_organisation": 0.6574852745905825
+     },
+     "trend_s0.5": {
+      "expression_change": 0.6367627333940042,
+      "cell_state": 0.6697866347994919,
+      "shape_growth": 0.6718579042890014,
+      "local_organisation": 0.6554099918544664
+     },
+     "placebo_s0.5": {
+      "expression_change": 0.6358681286781827,
+      "cell_state": 0.66509368073665,
+      "shape_growth": 0.6718579042890014,
+      "local_organisation": 0.6543883429345985
+     },
+     "trend_s0.25": {
+      "expression_change": 0.6319560480095207,
+      "cell_state": 0.6641309172906913,
+      "shape_growth": 0.6718579042890014,
+      "local_organisation": 0.6531047077922078
+     },
+     "placebo_s0.25": {
+      "expression_change": 0.6352749399617758,
+      "cell_state": 0.6627234117460743,
+      "shape_growth": 0.6718579042890014,
+      "local_organisation": 0.6527514872904272
+     }
+    },
+    "thin_0": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.6666666666666666,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.6300646779282385,
+      "cell_state": 0.6691816937503233,
+      "shape_growth": 0.7341008085258648,
+      "local_organisation": 0.6476801670402554
+     },
+     "trend_s0": {
+      "expression_change": 0.6300646779282385,
+      "cell_state": 0.6691816937503233,
+      "shape_growth": 0.7341008085258648,
+      "local_organisation": 0.6476801670402554
+     },
+     "trend_s1": {
+      "expression_change": 0.6344584925771717,
+      "cell_state": 0.6857267347673217,
+      "shape_growth": 0.7341008085258648,
+      "local_organisation": 0.6544929874643167
+     },
+     "placebo_s1": {
+      "expression_change": 0.641152400277359,
+      "cell_state": 0.677748314249079,
+      "shape_growth": 0.7341008085258648,
+      "local_organisation": 0.6515212355212355
+     },
+     "trend_s0.5": {
+      "expression_change": 0.6340895139402052,
+      "cell_state": 0.6788460024094247,
+      "shape_growth": 0.7341008085258648,
+      "local_organisation": 0.6517426770485725
+     },
+     "placebo_s0.5": {
+      "expression_change": 0.639997175321676,
+      "cell_state": 0.6742934357643537,
+      "shape_growth": 0.7341008085258648,
+      "local_organisation": 0.6498351766844327
+     },
+     "trend_s0.25": {
+      "expression_change": 0.6325515122946064,
+      "cell_state": 0.6731272714904106,
+      "shape_growth": 0.7341008085258648,
+      "local_organisation": 0.6495150115473441
+     },
+     "placebo_s0.25": {
+      "expression_change": 0.6350499991780676,
+      "cell_state": 0.6716135112011283,
+      "shape_growth": 0.7341008085258648,
+      "local_organisation": 0.6486561289132172
+     }
+    }
+   },
+   "seconds": 175.9
+  }
+ ],
+ "source": "experiments/harness/h28_heart_trend_strength.py (try H28)",
+ "provenance": {
+  "commit": "b685467835f5ccf7f50d83941aab82adaa0807f4",
+  "tree_clean": true,
+  "utc": "2026-11-20 09:38:07"
+ }
+}
