@@ -741,6 +741,16 @@ None or the file does not hash to it. A 10x features file states no chromosome, 
 chrY rule then covers Xist, Tsix and the four Y genes only, and a unit whose sex check finds an imbalance (or cannot
 run) is REFUSED (`refused_sex_chromosomes`) rather than read with unknown chrX genes.
 
+**The committed map (2026-11-20).** `panel_ids.tsv` was made on the compute machine by `make_panel_ids.py` from the
+features file of GSM8532456 (the pinned wild-type sample of GSE277839, fetched under its current pins), with the 25
+pinned lines of E-MTAB-7322 as extras. The source was chosen on coverage alone, before any count was read: maps were
+made from the features files of three pinned wild-type samples (GSM5169142 of GSE168768, GSM6202159 of GSE204906,
+GSM8532456 of GSE277839); they give 494, 498 and 500 of the 500 panel genes one id, agree on every id that two of them
+give, and give the same ids for the extras. In all three, 23 of the 25 lines get an id, equal to the id the resource's
+own sample table states for that line; Mir96 (a microRNA) and Zfyve20 (a symbol the 10x annotations no longer use) get
+none, so the genotype guard (G9) refuses those two units. The pin is `t3x_common.PANEL_IDS_SHA256`;
+`tests/test_t3_ext_panel_ids.py` holds the file to it.
+
 ### The guards (fail closed; design numbers fixed before any count; verdicts to QC.json; no gene-level print)
 
 - **G1 library size**: T_i >= 1,000,000 and a present-panel total >= 10,000, else the library is dropped; the largest

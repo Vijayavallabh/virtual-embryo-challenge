@@ -163,7 +163,9 @@ BULK_TEXT = re.compile(r"\.(txt|tsv|csv|tab)(\.gz)?$", re.IGNORECASE)   # the on
 # commit, and pinned here. None until then: every dataset that needs the Ensembl route is refused while it is None or
 # the file does not hash to it.
 PANEL_IDS = HERE / "panel_ids.tsv"
-PANEL_IDS_SHA256: str | None = None
+# Pinned 2026-11-20 (docs/PLAN.md decision log 2026-11-20 (ggg)): the map made by make_panel_ids.py from the features
+# file of the pinned wild-type sample GSM8532456 of GSE277839, with the 25 pinned lines of E-MTAB-7322 as extras.
+PANEL_IDS_SHA256: str | None = "5fc8e6676b29faadf430d2569886490bd32a6d44a3ab2b8e679ec8babdd36a07"
 BULK_PIN_KEYS = {"per_sample": PIN_KEYS,
                  "series_table": ("accession", "arm", "gene", "stage", "column", "metadata_sha256"),
                  "arrayexpress": ("accession", "source_name", "arm", "gene", "stage", "runs", "metadata_sha256")}
