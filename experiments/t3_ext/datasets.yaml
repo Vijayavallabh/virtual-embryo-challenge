@@ -647,79 +647,14 @@ datasets:
     raw_matrices:
       patterns: ['^GSM\d+_[A-Za-z0-9_.+-]*raw_feature_bc_matrix\.tar\.gz$']
       reason: "the series' only per-sample files are unfiltered matrices (raw_feature_bc_matrix), one archive per single-embryo library; the fixed cell call of t3x_common turns each into called cells"
-    # Pinned 2026-11-20 by two readers who each read every line of this series' plan table (the main session, and an
-    # independent second reader agent) and read the same nine hashes. The second reader held on this entry's earlier
-    # words "and litters": the records state five litters and no littermate relation, and the library codes in the file
-    # names differ between the arms, so genotype may be confounded with litter or capture group. The control definition
-    # now says so and the relation stays same_series (d = 0.5); on that wording both readers pin all nine (decision log
-    # 2026-11-20 (bbb)). Eight embryos are male and one knockout is female; the molecule is nuclear RNA.
-    pinned:
-      # GSM8366419: title "Embryo_15, E9.5, KO"
-      - accession: GSM8366419
-        arm: ko
-        gene: "Cmtr2"
-        stage: E9.5
-        files: ["GSM8366419_SIS1117_1-15_N1_A_SN_3GEX_raw_feature_bc_matrix.tar.gz"]
-        metadata_sha256: "2f7cb6d8ab29d9415b675659d2983781e4280c4d6d912f7bd4013f70172c7270"
-      # GSM8366420: title "Embryo_16, E9.5, KO"
-      - accession: GSM8366420
-        arm: ko
-        gene: "Cmtr2"
-        stage: E9.5
-        files: ["GSM8366420_SIS1117_1-16_N1_A_SN_3GEX_raw_feature_bc_matrix.tar.gz"]
-        metadata_sha256: "257c3b280667471d77a53a9623ea847aabd09cd6b342cdf523d783128f7d9db0"
-      # GSM8366421: title "Embryo_18, E9.5, KO"
-      - accession: GSM8366421
-        arm: ko
-        gene: "Cmtr2"
-        stage: E9.5
-        files: ["GSM8366421_SIS1117_2-18_N1_A_SN_3GEX_raw_feature_bc_matrix.tar.gz"]
-        metadata_sha256: "cca50c9792cd9afd2af0b5cce742499c9647b095046a7e036305f376533885b0"
-      # GSM8366422: title "Embryo_19, E9.5, KO"
-      - accession: GSM8366422
-        arm: ko
-        gene: "Cmtr2"
-        stage: E9.5
-        files: ["GSM8366422_SIS1117_2-19_N1_A_SN_3GEX_raw_feature_bc_matrix.tar.gz"]
-        metadata_sha256: "19236119853431e133b9fd7fda3012032be7d9760dea38d62495efb60618237e"
-      # GSM8366423: title "Embryo_4, E9.5, KO"
-      - accession: GSM8366423
-        arm: ko
-        gene: "Cmtr2"
-        stage: E9.5
-        files: ["GSM8366423_SIS1117_20200806_4_SN_3GEX_raw_feature_bc_matrix.tar.gz"]
-        metadata_sha256: "e21db9ff9551e900c6db62bc597e8e8c145550399dc5649bb08b9bd5b6361e83"
-      # GSM8366424: title "Embryo_2, E9.5, WT"
-      - accession: GSM8366424
-        arm: control
-        gene: "Cmtr2"
-        stage: E9.5
-        files: ["GSM8366424_SIS1117_3-2_N1_A_SN_3GEX_raw_feature_bc_matrix.tar.gz"]
-        metadata_sha256: "f0269700272d23b4cf9b37ed6657e68a49b1502a891b1ea438e400808526df38"
-      # GSM8366425: title "Embryo_8, E9.5, WT"
-      - accession: GSM8366425
-        arm: control
-        gene: "Cmtr2"
-        stage: E9.5
-        files: ["GSM8366425_SIS1117_3-8_N1_A_SN_3GEX_raw_feature_bc_matrix.tar.gz"]
-        metadata_sha256: "a68955a394f4b1eed594596c1f08a055c6af216c01b61f234b0f702c028d3d4c"
-      # GSM8366426: title "Embryo_9, E9.5, WT"
-      - accession: GSM8366426
-        arm: control
-        gene: "Cmtr2"
-        stage: E9.5
-        files: ["GSM8366426_SIS1117_4-9_N1_A_SN_3GEX_raw_feature_bc_matrix.tar.gz"]
-        metadata_sha256: "0dbdac7c8e90a851a23d71377f00f6676bc7274584fffe04458dfd5c717cc5a8"
-      # GSM8366427: title "Embryo_13, E9.5, WT"
-      - accession: GSM8366427
-        arm: control
-        gene: "Cmtr2"
-        stage: E9.5
-        files: ["GSM8366427_SIS1117_4-13_N1_A_SN_3GEX_raw_feature_bc_matrix.tar.gz"]
-        metadata_sha256: "0afaec651833bb91b2d65ffeef37519929d15444a35247c4ac7c141a2a6e12c7"
-    pinned_series:
-      - accession: GSE270969
-        series_metadata_sha256: "11fe71a605212a7a959aa228fcd2a4275d24221b01e1629a21aa470020dde7a5"
+    # Pinned on 2026-11-20 by two readers (decision log 2026-11-20 (bbb)) and WITHDRAWN the same day (decision log
+    # (ddd)) before any table was written: the pipeline's fixed cell call, run on the nine fetched files, kept 3,590 to
+    # 4,903 nuclei in each knockout library and 409 to 3,370 in each wild-type library (one under the floor of 500, so
+    # refused), at a call level about three times lower in the wild-type libraries, whose called nuclei hold 15% to 47%
+    # of their library's UMIs against 63% to 77% in the knockouts. With the library codes that differ between the arms,
+    # the two arms were not captured or sequenced alike; a ratio of them would measure that. Nothing is pinned, and no
+    # guard was changed.
+    pinned: []
 
   # GSE299068 joined the cleared list on 2026-11-20 for its metadata step only (docs/PLAN.md decision log 2026-11-20
   # (oo)); nothing is pinned until two readers have read every line of its plan table.

@@ -8529,3 +8529,22 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     archive; the Finder file only when it is at most 65,536 bytes; every skipped member first passes all the earlier
     checks; the number skipped is recorded with the sample's cell call; anything else without a rule still refuses. It
     is merged only on a ready review.
+- 2026-11-20 (ddd), T3 outside knockouts: the macOS rule is reviewed and merged; the Cmtr2 pins are withdrawn (state at
+  22:19 UTC, 2026-11-20). Written by the AI assistant.
+  - **The macOS companion rule** (entry (ccc)): an independent reviewer found no blocker (no byte of a skipped member
+    is read on any route; a lone companion named like a matrix is now refused, where the old code would have read it;
+    archives without such members give identical results). Its tightening points are applied (a size must not be
+    negative; all skipped members of one archive together hold at most 1 MiB; wording). Merged at 6ded9b1.
+  - **The Cmtr2 study, second run:** the archives were read, and the fixed cell call refused one wild-type library
+    (409 nuclei called, under the floor of 500). The AI assistant then ran the same fixed call on each of the nine
+    files and read only the call records (counts of barcodes and nuclei, the call level, the share of UMIs in called
+    nuclei; no gene-level value): each knockout library has 3,590 to 4,903 called nuclei at a call level of 5,300 to
+    9,400, holding 63% to 77% of the library's UMIs; the wild-type libraries have 738, 3,370, 409 and 1,637 called
+    nuclei at a call level of 1,100 to 2,900, holding 15% to 47%. Together with the second reader's point that the
+    library codes differ between the arms, this says the two arms were not captured or sequenced alike: a
+    knockout-over-control ratio would mostly measure depth and ambient RNA.
+  - **Decision, the AI assistant's, before any table of this study existed:** the nine pins are withdrawn (register
+    row X016 says not used; the dataset entry carries the figures; the fetched files stay outside every repository).
+    No guard and no constant of the cell call is changed, and nothing was read against any practice target. The
+    reviewer of the unfiltered intake had warned that unequal libraries between arms can by themselves make a ratio;
+    the per-unit record of the arms' call levels is what showed it here. The tables stay the three-study ones.
