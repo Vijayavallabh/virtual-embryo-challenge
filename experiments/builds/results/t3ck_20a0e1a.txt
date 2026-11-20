@@ -1,0 +1,42 @@
+T3 candidate CK of row R18 (docs/PLAN.md decision log 2026-11-21 (b)): C2's factor times the square of the outside-knockout table, on every possible base
+====================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-20 in the campaign checkout ~/v/vec-campaign-c at commit 20a0e1a (main; it
+holds the merged builder, row R18, the decision-log entry and the rules-note amendment; clean tree, untracked files
+included) with `experiments/t3_decomp/build_combination.sh 20a0e1a337c87904bc23c82ae06037b6b14fccf8 <base>` for each of
+the four bases (s1, s1x1.5, s1x2.0, s2), one after another. The thin builder `experiments/t3_decomp/build_combination.py`
+imports the two existing builders' functions unchanged. The table is `all` at sha256
+9490f524e40e146480c775f85ae8829ec9c005607104ad8ace129c5c46ed6228 (the two-study tables folder, every byte checked against
+the pins). 16 BLAS threads, seed 1000001, the reference checkout's run folder (read only), board T3:bcatenin.
+
+Built BEFORE any score of its parts, for every base B can be. Nothing here chooses a base, and CK is uploaded only under
+decision log 2026-11-21 (b)'s rule: after C2 on B and row K23's file on B have both been uploaded and each returned a
+headline strictly above B's; otherwise never.
+
+Steps and exit codes, per base (the launcher stops at the first failure; every all.exit is 0, no form refused by its own
+rules):
+  targeted tests (synthetic data only)                                                                       exit 0
+  identity of the barred s1 through the new builder: 3712c3f9988d...: passed
+  identity of the base through the new builder (s1x1.5 c060fcaa6c7f..., s1x2.0 7393810fbe3b..., s2 1b69521e3c28...): passed
+  gate-c2: with the table exponent 0 the builder reproduces C2 on the base byte for byte
+    (s1 047506dbab19..., s1x1.5 12a0dffbfc4f..., s1x2.0 9559c9cd785b..., s2 47111ac1d07e...,
+    as experiments/builds/results/t3two_fb01487.SHA256SUMS records them): passed
+  gate-k23: with the Gata4 weight 0 the builder reproduces row K23's file on the base byte for byte
+    (s1 f3af008c12e6..., s1x1.5 0b31c03e301f..., s1x2.0 7e2815bd6f1d..., s2 77ff0b947f7f...,
+    as experiments/builds/results/t3k23_49f3fd5.SHA256SUMS records them): passed
+  CK twice (folders a, b): exit 0, the same bytes; `vec check` for T3:bcatenin inside each build: exit 0
+    base s1:      7d712052f28f3bf93214b3785a85caf69a4d6eb806b49aa9c1bad78d893e2fc0  ck-s1.h5ad
+    base s1x1.5:  079f717e2702d6538d18c0dc374e56941a23454787f10bf03915409ef6f39f61  ck-s1x1.5.h5ad
+    base s1x2.0:  b146fca4b934899230e2a1f9b4677463c97ea889d62434159f9e1f607251c769  ck-s1x2.0.h5ad
+    base s2:      e470aaeeab28918e157fb57cdc771122af35e46f0916cd1c6d63650c31faae26  ck-s2.h5ad
+Each stamp says commit 20a0e1a337c87904bc23c82ae06037b6b14fccf8, clean True. The four files differ from one another and
+from every C1, C2 and K23 file.
+
+Kept: ~/v/vec-campaign-c/runs/archive/t3ck_20a0e1a/ on the DGX and runs/archive/t3ck_20a0e1a/ on the local machine
+(SHA256SUMS checked on both); copies for upload at runs/manual_upload/T3_ck_s1.h5ad, T3_ck_s1x1.5.h5ad,
+T3_ck_s1x2.0.h5ad and T3_ck_s2.h5ad (sha256 checked; the local format check passes on each, exit codes only). The
+reference checkout was not touched. No log, size or count of a build was read.
+
+Data used: released challenge data (the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4
+validation knockout files) and two public single-cell knockout studies of other genes, GEO GSE204906 (Dnmt3a and Dnmt3b
+nulls, E8.5; register row X013) and GEO GSE277839 (a Usb1 knockout, E9.5; register row X014).

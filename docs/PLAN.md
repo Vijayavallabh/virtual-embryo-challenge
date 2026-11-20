@@ -8432,3 +8432,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Conditions before the upload:** the docs/S2_RULES.md amendment of this date, row R18, the build record with its
     hash list, copies under runs/manual_upload/T3_ck_<B>.h5ad with hashes checked, and the captain's go-ahead for the
     upload, which is his own act.
+  - Later, at 21:04 UTC on 2026-11-20: CK is built for every possible base at 20a0e1a (record
+    `experiments/builds/results/t3ck_20a0e1a.txt`): every exit 0, no form refused by its own rules; on each base the
+    builder reproduced the barred s1, the base, C2 and row K23's file byte for byte, and built CK twice with the same
+    bytes. Four files (on s1 7d712052f28f, on the 1.5 file 079f717e2702, on the 2.0 file b146fca4b934, on the barred
+    s2 e470aaeeab28), copies under `runs/manual_upload/T3_ck_<base>.h5ad`, hashes checked, the local format check
+    passed (exit codes only). No score of C2, of row K23's file or of CK existed when this was written.
