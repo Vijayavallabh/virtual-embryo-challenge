@@ -729,3 +729,81 @@ def test_stage8_the_readme_states_the_new_rules():
         assert s in " ".join(text.split()) or s in text, s
     assert "a raw-called arm against a filtered arm is allowed by the code" not in text
     assert "must use the filtered one" not in text
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# macOS companion members (2026-11-20: a real archive of the pinned study held them)
+
+
+def _tar_with_dirs(path: Path, members: dict[str, bytes | None]) -> Path:
+    """A tar.gz whose members are written in order; a value of None makes a directory member."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with tarfile.open(path, "w:gz") as t:
+        for name, data in members.items():
+            ti = tarfile.TarInfo(name)
+            if data is None:
+                ti.type = tarfile.DIRTYPE
+                t.addfile(ti)
+            else:
+                ti.size = len(data)
+                t.addfile(ti, io.BytesIO(data))
+    return path
+
+
+def _mac_layout(X, names, folder="SIS1_raw_feature_bc_matrix", ad_size=176, ds_size=6148):
+    """The member layout of an archive made on macOS: an AppleDouble companion beside the folder and beside every
+    file, and a Finder .DS_Store with its own companion."""
+    ad = b"\x00\x05\x16\x07" + b"\x00" * (ad_size - 4)
+    out: dict[str, bytes | None] = {f"._{folder}": ad, folder: None, f"{folder}/._.DS_Store": ad,
+                                    f"{folder}/.DS_Store": b"\x00" * ds_size}
+    for k, v in _triple_bytes(X, names).items():
+        out[f"{folder}/._{k}"] = ad
+        out[f"{folder}/{k}"] = v
+    return out
+
+
+def test_macos_companion_members_are_skipped_unread_and_recorded(tmp_path):
+    rng = np.random.default_rng(1)
+    X, names, _ = _library(rng, _mu(rng))
+    plain = pr.read_raw_sample([_raw_archive(tmp_path / "a" / raw_name("GSM1"), X, names)], "GSM1")
+    mac = pr.read_raw_sample([_tar_with_dirs(tmp_path / "b" / raw_name("GSM1"), _mac_layout(X, names))], "GSM1")
+    # the same cells, counts, symbols and call; '._matrix.mtx.gz' was never read as a matrix
+    assert (mac[0] != plain[0]).nnz == 0 and mac[1:4] == plain[1:4]
+    rec = dict(mac[4])
+    assert rec.pop("mac_companions_skipped") == 6      # the folder's, .DS_Store and its own, and one per triple file
+    assert rec == plain[4] and "mac_companions_skipped" not in plain[4]
+    # the names reach a caller that asks for them, and only they are skipped
+    with tarfile.open(tmp_path / "b" / raw_name("GSM1")) as t:
+        skipped: list[str] = []
+        items = pr.archive_members(t, "GSM1", raw_ok=True, skipped=skipped)
+    assert sorted(i[1] for i in items) == ["barcodes", "features", "matrix"]
+    assert all(s.rsplit("/", 1)[-1].startswith("._") or s.endswith("/.DS_Store") for s in skipped) and len(skipped) == 6
+
+
+@pytest.mark.parametrize("change,match", [
+    ("big_appledouble", "a '._' member larger than"),
+    ("orphan_appledouble", "names no member beside it"),
+    ("big_ds_store", "a '.DS_Store' member larger than"),
+    ("other_dotfile", "not part of a 10x triple"),
+    ("too_many", "hold more than"),
+])
+def test_a_macos_companion_outside_its_rule_is_refused(tmp_path, change, match):
+    rng = np.random.default_rng(2)
+    X, names, _ = _library(rng, _mu(rng))
+    folder = "SIS1_raw_feature_bc_matrix"
+    members = _mac_layout(X, names, folder)
+    if change == "big_appledouble":
+        members[f"{folder}/._matrix.mtx.gz"] = b"\x00" * (pr.MAC_APPLEDOUBLE_MAX + 1)
+    elif change == "orphan_appledouble":
+        members[f"{folder}/._notes.txt"] = b"\x00" * 176
+    elif change == "big_ds_store":
+        members[f"{folder}/.DS_Store"] = b"\x00" * (pr.MAC_DS_STORE_MAX + 1)
+    elif change == "too_many":
+        for i in range(20):       # 20 further folders, each with a 64 KiB .DS_Store: over 1 MiB skipped in total
+            members[f"extra{i}"] = None
+            members[f"extra{i}/.DS_Store"] = b"\x00" * pr.MAC_DS_STORE_MAX
+    else:
+        members[f"{folder}/.hidden"] = b"x"
+    p = _tar_with_dirs(tmp_path / raw_name("GSM1"), members)
+    with pytest.raises(pr.Refused, match=match):
+        pr.read_raw_sample([p], "GSM1")
