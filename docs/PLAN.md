@@ -8352,3 +8352,35 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     build record and its hash list are committed with this entry; each upload is the captain's own act. **Task 3's
     list as it stands:** the 1.5 file, then the 2.0 file or the barred s2 by entry (k)'s rule; then, on the base B
     those two scores fix, C1 and C2 of entry (q) (only C2 when B is the 1.5 or 2.0 file), then row K23's file.
+- 2026-11-20 (xx), T1: row T64, candidate D's counted practice row, fixed before any score of D (state at 20:28 UTC,
+  2026-11-20; no D score exists; the read runs on `~/v/vec-campaign-d` after the row's commit). Written by the AI
+  assistant from the challenger's final text (verdict: run as amended; the code review: ready, no blocker; merged at
+  20889cd).
+  - **What it is.** Decision log 2026-11-20 (r) put D (R13's file with the team's released per-category momentum on
+    the cells R1 holds) behind a counted practice row, and row T64 is that row. The arm `m1rc_gmom_heldmom` runs
+    against `m1rc_gmom`, taken unchanged from T62's code, on row T62's five tasks: ten seeds, T62's scoring, the
+    direction at 1/5. The arm gives the drawn cells whose label has no recomputed direction B0's momentum at damping
+    0.5. The momentum is fitted on each task's start-to-reference pair (E8.5 -> E9.5; E10.5 is in no fit) and runs on
+    `build_submission`'s stream [seed, 1]. Every other cell keeps `m1rc_gmom`'s scored bytes, and each seed checks
+    this. Five tries, T1 413 to 418.
+  - **What it can and cannot price.** Every practice pool is E9.5, which has no Macrophage or Early VIC label, so the
+    arm moves the drawn Blood cells alone. Their momentum is not idle: the committed library report has blood shifted
+    from its own cells (266 at E8.5, 213 at E9.5). D's Macrophage and Early VIC part is unpriced, and so is the test's
+    mixing of appearing states into the blood and endocardium category factors. R1's readout already read this
+    momentum against E10.5 on Blood (sign agreement 0.50 / 0.55), so the row is not independent of R1's evidence.
+  - **Gate and statement, fixed now.** The gate: `m1rc_gmom` within 0.02 of T62's committed scores on every seed of
+    every task; any failure voids the read. The statement is T61's rule unchanged: a chamber mean above +0.3 with at
+    least 8 of 10 seeds above 0, a whole-cut mean above 0, at least two valid libraries, and none below -0.3. One
+    wording note: rows T62 and T63 wrote the whole-cut clause as "at least -0.3" while naming it T61's bar; T61's own
+    text and code say "above 0", and this row follows T61 as entry (r) quotes it.
+  - **What follows, fixed now.** AHEAD: one question to the captain, QD: reverse R1 for this one file, or keep it. The
+    default is keep R1, with no advice added. It is priced both ways, with the Blood-only coverage, T63's placebo gain
+    and the reviewer's corrected wording about row T26. Anything else ends D with no question. No outcome builds a
+    file; the builder option is written only after AHEAD and his answer naming R1.
+  - **Odds, committed before the run:** the designer 0.25, the challenger of entry (r) 0.1. This row's challenger
+    gives 0.07 and the planner 0.12; neither adds to the committed estimates. Void about 0.05.
+  - **Who.** A planning agent of the AI assistant drafted the row from entry (r)'s package, rows T61, T62, T63, R1 and
+    R13 and the scripts of T61 to T63. A challenger agent amended it before the code: practice prices Blood only; the
+    base is taken from T62's committed functions; the byte check is on the scored rows; J5's noise figures were
+    corrected; the 'advice' was removed from QD. <the reviewer's verdict on the row and the script, when there is
+    one>.
