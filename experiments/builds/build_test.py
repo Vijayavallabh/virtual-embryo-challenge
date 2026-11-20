@@ -88,7 +88,13 @@ machine, and an official upload needs the captain's go-ahead.
           cells, expression and positions, the rows re-ordered (vec.t2_build.copy_parity_order) so that the file's
           pre-fix SVD parity on the rows the scorer's _match_n takes is the floor copy's (vec.evaluate.subsample of
           E7.5 as released, 0.1, seed 0, the bake protocol); refused unless the copy and the file get the same truth
-          rows (a gate on the test board's truth_cells, read by code; nothing about it is printed)
+          rows (a gate on the test board's truth_cells, read by code; nothing about it is printed). On a test board it
+          is refused unless --row-order-test-ok (the captain's yes) is also given: a refusal there, or a success,
+          shows one bit of the test count. It assumes the server scores the prediction's rows as the file holds them
+          (file order, full count, no subsample or sort); score_h5ad's `_prediction` does this in the pinned copy,
+          but the live server's handling is not shown. The as-built uploaded files' pre-fix parities are never
+          computed, by any script, and the returned occupancy of a copy_parity upload is never compared with an
+          earlier upload's to infer a mode (limit 2)
 
 The board is the test board from boards/ (after the intake, `vec boards update --from-file`); before that, --board
 may name a validation board of the same task for a dry run, and the script refuses a dry run whose output file name
@@ -1024,7 +1030,13 @@ def build_embryo(a) -> dict:
     if a.positions != t2_build.POSITIONS[0] and (a.method != "fgw_shape0" or a.herd
                                                  or a.draw != t2_build.DRAWS[0]):
         raise SystemExit(f"--positions {a.positions} is for --method fgw_shape0, without --herd and --draw midpoint")
+    if a.row_order_test_ok and a.row_order != t2_build.ROW_ORDERS[1]:
+        raise SystemExit("--row-order-test-ok is for --row-order copy_parity only")
     board, dry = _board("embryo", a.board)
+    if (a.row_order != t2_build.ROW_ORDERS[0] and (not dry or str(board.split).startswith("test"))
+            and not a.row_order_test_ok):  # before anything loads: nothing about the test count is computed
+        raise SystemExit("--row-order copy_parity on a test board needs the captain's yes (--row-order-test-ok); a "
+                         "refusal there shows one bit of the test count")
     genes = board.genes
     files = {"before": ("T2/E7.5.h5ad", 7.5), "after": ("T2/E8.0.h5ad", 8.0)}
     if a.method == "pseudobulk_shift":  # only it uses the stage before the bracket (E7.25 lacks two panel genes)
@@ -1248,7 +1260,13 @@ def build_parser() -> argparse.ArgumentParser:
                                 "the file's pre-fix SVD parity on the scorer's matched rows is the floor copy's "
                                 "(vec.t2_build.copy_parity_order; branch campaign/embryo-occupancy). Same cells, "
                                 "expression and positions. No try and no ruling: only the captain's ruling puts it "
-                                "in an upload")
+                                "in an upload. It assumes the server scores the prediction's rows as the file holds "
+                                "them (file order, full count, no subsample or sort); score_h5ad's _prediction does "
+                                "this in the pinned copy, but the live server's handling is not shown")
+            p.add_argument("--row-order-test-ok", action="store_true",
+                           help="--row-order copy_parity on the test board: the captain's yes (off by default; "
+                                "without it the option refuses on a test board before anything loads, because a "
+                                "refusal or a success there shows one bit of the test count)")
     return ap
 
 

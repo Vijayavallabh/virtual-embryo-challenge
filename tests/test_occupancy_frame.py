@@ -386,7 +386,7 @@ def _file(path: Path) -> tuple[np.ndarray, np.ndarray]:
 def test_copy_parity_reorders_the_file_into_the_copys_parity_and_changes_nothing_else(bt, embryo_env, tmp_path,
                                                                                     capsys, arm, chk):
     base, _, _ = _build(bt, tmp_path, "base", *ARMS[arm])
-    out, rec, text = _build(bt, tmp_path, "cp", *ARMS[arm], "--row-order", "copy_parity")
+    out, rec, text = _build(bt, tmp_path, "cp", *ARMS[arm], "--row-order", "copy_parity", "--row-order-test-ok")
     assert "released:E7.5.h5ad" in embryo_env
     X0, C0 = _file(base)
     X1, C1 = _file(out)
@@ -417,6 +417,112 @@ def test_copy_parity_refuses_when_the_truth_rows_differ_and_shows_no_value(bt, e
     monkeypatch.setattr(bt, "load_boards", lambda: {big.key: big})
     out = tmp_path / "r" / "T2embryo.h5ad"
     with pytest.raises(SystemExit, match="different truth rows") as e:
-        bt.main(["embryo", *ARMS["floor_exact"], "--row-order", "copy_parity", "--out", str(out)])
+        bt.main(["embryo", *ARMS["floor_exact"], "--row-order", "copy_parity", "--row-order-test-ok", "--out",
+                 str(out)])
     assert not out.exists()
     assert not _shows(str(e.value) + capsys.readouterr().out, 390, 150, SECRET_MAX)
+
+
+# ------------------------------------------------------------------------------------------------ the reviewer's points
+def test_copy_parity_on_a_test_board_needs_the_named_flag_and_refuses_before_anything_loads(bt, embryo_env, tmp_path,
+                                                                                            capsys):
+    out = tmp_path / "g" / "T2embryo.h5ad"
+    with pytest.raises(SystemExit, match="needs the captain's yes") as e:
+        bt.main(["embryo", *ARMS["floor_exact"], "--row-order", "copy_parity", "--out", str(out)])
+    assert not out.exists() and embryo_env == []  # refused before any stage was read
+    assert not _shows(str(e.value) + capsys.readouterr().out, SECRET_MAX, SECRET_TRUTH)
+    with pytest.raises(SystemExit, match="for --row-order copy_parity only"):
+        bt.main(["embryo", *ARMS["floor_exact"], "--row-order-test-ok", "--out", str(out)])
+    assert bt.build_parser().parse_args(["embryo", *ARMS["floor_exact"], "--out", "x.h5ad"]).row_order_test_ok is False
+
+
+def test_the_option_on_a_validation_board_needs_no_flag(bt, embryo_env, tmp_path, monkeypatch):
+    """A dry run on a validation board (released data) is not a test board: no flag is needed there."""
+    val = Board(**{**embryo_test_board().__dict__, "key": "T2:embryo:val_interp", "split": "val_interp"})
+    monkeypatch.setattr(bt, "load_boards", lambda: {val.key: val})
+    out = tmp_path / "v" / "T2embryo_dry.h5ad"
+    bt.main(["embryo", *ARMS["floor_exact"], "--board", val.key, "--row-order", "copy_parity", "--out", str(out)])
+    assert out.exists()
+
+
+def test_n_ref_below_two_is_refused(chk, tmp_path):
+    for mode in (["file", "--file", str(tmp_path / "x.h5ad")], ["practice"]):
+        with pytest.raises(SystemExit, match="at least 2"):
+            chk.main([*mode, "--n-ref", "1"])
+
+
+def test_practice_mode_refuses_a_within_type_task(chk, tmp_path, monkeypatch):
+    from types import SimpleNamespace
+
+    from vec import boards as vb
+    from vec import harness
+
+    t = SimpleNamespace(key="T1/x", task="T2", setting="embryo", kind="interp", panel_board="P", reference="T2/r",
+                        target="T2/t", inputs={"before": "T2/r"}, target_filter={"within": "CM"})
+    monkeypatch.setattr(harness, "load_tasks", lambda: {"T2:embryo:test_interp": [t]})
+    monkeypatch.setattr(vb, "load_boards", lambda: {})
+    with pytest.raises(SystemExit, match="within-type task"):
+        chk.main(["practice", "--task", "T1/x", "--data-dir", str(tmp_path)])
+
+
+# ------------------------------------------------------------------------------------------------ file_axes
+def _plane_turn(C: np.ndarray, deg: float) -> np.ndarray:
+    """C turned by `deg` degrees in the plane of its own second and third principal axes, about its centroid."""
+    X = C.astype(np.float64) - C.mean(0)
+    _, _, Vt = np.linalg.svd(X, full_matrices=False)
+    th = np.deg2rad(deg)
+    R = np.array([[1.0, 0.0, 0.0], [0.0, np.cos(th), -np.sin(th)], [0.0, np.sin(th), np.cos(th)]])
+    return (X @ Vt.T @ R.T @ Vt + C.mean(0)).astype(np.float32)
+
+
+def _axes_case(seed: int):
+    stage = _cloud(6000, seed)
+    copy = stage[np.sort(np.random.default_rng(0).choice(len(stage), 600, replace=False))]
+    refs = [stage[np.sort(np.random.default_rng(4900 + k).choice(len(stage), 600, replace=False))] for k in range(50)]
+    draws = [stage[np.random.default_rng(4950 + k).choice(len(stage), 1800, replace=False)] for k in range(20)]
+    return stage, copy, refs, draws
+
+
+def test_file_axes_reads_a_plain_draw_as_stage_noise(chk):
+    stage, copy, refs, draws = _axes_case(31)
+    f = chk.file_axes_facts(stage[np.random.default_rng(7).permutation(len(stage))[:1800]], copy, stage, refs, draws)
+    assert f["reading"] == "S1" and not f["option_a_eligible"]
+    assert f["file_rank23"] >= chk.S1_MIN_RANK and len(f["ref_cos"]) == 50 and len(f["dedup_draw_min23"]) == 20
+    assert len(f["file_min23_by_metric_seed"]) == 10 and len(f["ref_turn_cost"]) == 50
+    assert f["ref_axes_agree_n"] <= 50 and all(0 < v <= 1 for v in f["sv_ratio_copy"] + f["sv_ratio_stage"])
+    assert not _shows(json.dumps(f), 1800, 600, 6000)
+
+
+def test_file_axes_reads_a_turned_file_as_its_own_and_the_cost_side_gates_option_a(chk):
+    stage, copy, refs, draws = _axes_case(32)
+    turned = _plane_turn(stage[np.random.default_rng(7).permutation(len(stage))[:1800]], 30.0)
+    f = chk.file_axes_facts(turned, copy, stage, refs, draws)
+    assert f["file_rank23"] < chk.S1_MIN_RANK and f["reading"] == "S3"  # the stage's own draws are not turned
+    # a physical turn of the cloud is matched by its own PCA, so in the copy's basis it scores worse: no grid cost
+    assert f["turn_cost"] < 0 and not f["turn_cost_above_ref_p98"]
+    assert f["option_a_eligible"] == bool(f["reading"] in ("S2", "S3") and f["grid_cost"])
+    # the de-duplicated draws carry the same turn: S2
+    g = chk.file_axes_facts(turned, copy, stage, refs, [_plane_turn(d, 30.0) for d in draws])
+    assert g["reading"] == "S2"
+
+
+def test_file_axes_mode_reads_the_file_and_its_stage_and_prints_no_count(chk, tmp_path, capsys):
+    stage = _cloud(5000, 33)
+    rng = np.random.default_rng(1)
+    (tmp_path / "T2").mkdir()
+    counts = rng.poisson(3.0, size=(len(stage), 30)).astype(np.int32)
+    a = ad.AnnData(X=sparse.csr_matrix(np.log1p(counts).astype(np.float32)),
+                   var=pd.DataFrame(index=[f"h{i}" for i in range(30)]))
+    a.layers["counts"] = sparse.csr_matrix(counts)
+    a.obsm["spatial_3D"] = stage
+    a.write_h5ad(tmp_path / "T2" / "E7.5.h5ad")
+    f = ad.AnnData(X=np.zeros((1700, 1), dtype=np.float32))
+    f.obsm["spatial_3D"] = (stage[rng.permutation(5000)[:1700]] * 0.8).astype(np.float32)
+    f.write_h5ad(tmp_path / "T2embryo_s2x.h5ad")
+    chk.main(["file_axes", "--file", str(tmp_path / "T2embryo_s2x.h5ad"), "--data-dir", str(tmp_path)])
+    out = capsys.readouterr().out
+    row = json.loads(out)
+    assert row["mode"] == "file_axes" and row["prefix"] == chk.WITHHELD and row["build"] == "main"
+    assert row["ref_seeds"] == "4900-4949" and row["dedup_seeds"] == "4950-4969"
+    assert row["reading"] in ("S1", "S2", "S3") and "not computed" in row["fallback"]
+    assert not _shows(out, 1700, 5000, 500)

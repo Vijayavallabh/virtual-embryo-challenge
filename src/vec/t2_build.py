@@ -1289,7 +1289,14 @@ def copy_parity_order(coords, copy_coords, n_true: int, seed: int, metric_seed: 
     The first of the permutations default_rng([seed, COPY_PARITY_STREAM]).permutation(n) that matches is returned;
     the identity is never tried, so the result says nothing about the parity of the file as built. Refused (values not
     shown) when the copy and the file are not handed the same truth rows (`truth_rows_shared`), when a parity is
-    undefined, or when no permutation matches. The record holds no count, no parity and no number of tries."""
+    undefined, or when no permutation matches. The record holds no count, no parity and no number of tries.
+
+    Preconditions no local check shows: the server's metric seed is 0, its LAPACK picks SVD signs as numpy/OpenBLAS
+    do, its floor copy is the bake copy at seed 0, and the server scores the prediction's rows as the file holds them
+    (file order, full count, no subsample or sort); score_h5ad's `_prediction` does this in the pinned copy, but the
+    live server's handling is not shown. The as-built uploaded files' pre-fix parities are never computed, by any
+    script, and the returned occupancy of a copy_parity upload is never compared with an earlier upload's to infer a
+    mode (limit 2)."""
     from vec.evaluate import prefix_parity
 
     C, Q = _as_read(coords), _as_read(copy_coords)
