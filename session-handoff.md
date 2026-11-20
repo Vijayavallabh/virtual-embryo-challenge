@@ -2,7 +2,43 @@
 
 ## Current Objective
 
-- **State at 2026-11-20, 22:51 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+- **State at 2026-11-20, 23:32 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+  2026-11-20 (eee) to (hhh). Local main = origin/main (1c75cd5 or later). Everything about uploads, the pre-built T3
+  files, T64 and E49 is as in the next bullet.
+  - **The many-line set E-MTAB-7322 is pinned, mapped and run once.** Pins (25 lines, 103 knockout and 114 wild-type
+    embryos, two readers, register row X017) at 270fff8; the gene-id map `experiments/t3_ext/panel_ids.tsv` with
+    `PANEL_IDS_SHA256` (reviewed: ready) at d51640a. First run on `~/v/vec-campaign-c` at 71bef8c: 12 of 25 lines pass
+    every guard (57 knockout, 37 wild-type libraries); verdict copies in `~/v/scratch/dmdd_pins/first_run/` on the
+    DGX. Combine refused because the other datasets' stored plans predate the dataset-file change, so the whole chain
+    was started again for `GSE168768 GSE186934 GSE204906 GSE277839 GSE299068 E-MTAB-7322` (waiter btwyreynw; exit file
+    `~/v/vec-ext/t3/logs/ALL.exit`). A copy of the tables folder before the bulk run is
+    `~/v/vec-ext/t3/tables_before_bulk_keep`.
+  - **The whole-embryo guard (G5) is with analysts** (entry (hhh); workflow `t3-ext-whole-embryo-guard`, task
+    w87x9vftw; branch `campaign/t3-ext-g5` if they decide a change): at its design number it drops 46 of 111 genuine
+    whole-embryo control libraries, cutting one tight cluster in two. They decide from guard-level figures only. If a
+    change is decided, implemented and reviewed ready: merge, sync, run `all "E-MTAB-7322"` again (plans stay valid:
+    the dataset file does not change), read verdicts only, write a decision-log entry with the new unit counts. If
+    they say keep: the present tables stand. **No bulk table value has been read and none may be before row K24 is
+    placed.**
+  - **Row K24** (workflow `t3-wider-tables-row` finished: planner, challenger verdict run as amended, engineer branch
+    `campaign/t3-wider-tables` 7304c05, reviewer NOT READY with one blocker). The package is in the session scratchpad
+    `lift8/k24_package.json`; the row text draft in `lift8/k24_row.txt` (it holds raw pipe characters inside cells:
+    write `abs` instead before placing). A fix round runs (workflow `t3-k24-fix`, task wm5m03cbo; branch
+    `campaign/t3-wider-tables-2`). After a ready check: merge; freeze the tables (`~/v/vec-ext/t3/tables` for sc3 and
+    bulk, `tables_two_study` for the named form's table); on the DGX run `k24_wider_tables.py listing` and `pins` with
+    `VEC_T3_EXT_TABLES` and `VEC_T3_EXT_TABLES_TWO` set, commit the listing `experiments/t3_ext/TABLES_K24.sha256` and
+    the pins; place row K24 and decision-log entry 2026-11-21 (c) in ONE commit that becomes the row's commit; sync;
+    `run_k24.sh <commit>` detached; wait on `~/v/scratch/k24_<7>/all.exit`. Preconditions checked: `runs/k23_b706e82`
+    is in the checkout; `tables_two_study/COMBINE.json` is at 719c8819.... The challenger's own odds that the row
+    names a file are about one in ten: an arm must beat K23's named form head to head.
+  - **GEO bulk forms** (workflow `t3-ext-geo-bulk-open`, task w7w5t1rq8; branch `campaign/t3-ext-geo-bulk`): closing
+    the two blockers; merge its first commit after a ready verification and the flag commit only on `ready_to_open`.
+    Then the Zmym2, Uhrf1 and Rreb1 studies go to the plan step (two readers each, register rows from X018). Any bulk
+    table that changes after K24's listing is pinned needs its own row.
+  - **Tries:** T1 418, embryo 76 (E49 running: 8 of 9 tasks done at 23:16 UTC), heart 80, T3 66. **Next labels:**
+    decision log 2026-11-20 (iii) or 2026-11-21 (c); register row X018.
+
+- **State at 2026-11-20, 22:51 UTC (superseded above where they differ).** Decision log
   2026-11-20 (yy) to (eee) and 2026-11-21 (a), (b). Local main = origin/main (936b196 or later).
   - **With the captain, no score reported yet** (uploads are the captain's acts): unchanged from the bullet below (T1
     A then B, C on its condition; heart K1 then K2; embryo `T2embryo_s2x.h5ad`; T3 `T3_barred_x1.5.h5ad`, then x2.0 or
