@@ -64,23 +64,25 @@ def test_the_heart3_set_checks_the_rules_hash_and_builds_the_full_trim_and_its_h
 
 def test_the_usage_line_and_the_unknown_set_message_name_every_set():
     text = (ROOT / "experiments" / "builds" / "build_all.sh").read_text()
-    assert "usage: build_all.sh s1|s2|heart2|t3alt|t1none|embryo2|heart3|embryo3}" in text
-    assert "unknown set $set_name (s1, s2, heart2, t3alt, t1none, embryo2, heart3 or embryo3)" in text
-    for name in ("s1", "s2", "heart2", "t3alt", "t1none", "embryo2", "heart3", "embryo3"):
+    assert "usage: build_all.sh s1|s2|heart2|t3alt|t1none|embryo2|heart3|embryo3|t1rc}" in text
+    assert "unknown set $set_name (s1, s2, heart2, t3alt, t1none, embryo2, heart3, embryo3 or t1rc)" in text
+    for name in ("s1", "s2", "heart2", "t3alt", "t1none", "embryo2", "heart3", "embryo3", "t1rc"):
         assert f"\n  {name})\n" in text, name
 
 
 def test_the_t1_commands_of_build_all_are_the_ones_the_rules_give():
     """Each T1 build command of experiments/builds/build_all.sh (from `build_test.py t1` up to its --out) appears word
     for word in docs/S2_RULES.md, as the heart's do: the first upload's (row R6), the second as ruled on 2026-11-13
-    (row R7), and T1's last upload with no outside data, by the amendment of 2026-11-19 (set t1none, row R8)."""
+    (row R7), T1's last upload with no outside data, by the amendment of 2026-11-19 (set t1none, row R8), and the
+    recomputed-groups file that replaced it by the later amendment of 2026-11-19 for T1 (set t1rc)."""
     rules = " ".join((ROOT / "docs" / "S2_RULES.md").read_text().split())
     script = (ROOT / "experiments" / "builds" / "build_all.sh").read_text().splitlines()
     commands = [line[line.index("build_test.py t1"):line.index(" --out")].strip()
                 for line in script if "build_test.py t1" in line and " --out" in line]
     assert commands == ["build_test.py t1 --g-mom --base lib3",
                         "build_test.py t1 --g-mom --base mid --cm-share 0.60",
-                        "build_test.py t1 --g-mom --base lib3 --feng-groups none"], commands
+                        "build_test.py t1 --g-mom --base lib3 --feng-groups none",
+                        "build_test.py t1 --g-mom --base lib3 --feng-groups recomputed"], commands
     for c in commands:
         # with its --out after it: the first upload's command is a prefix of the t1none command, so a bare `in` check
         # would pass on the t1none section alone
@@ -105,6 +107,38 @@ def test_the_t1none_set_checks_the_rules_hash_and_builds_one_file():
         'files="$O/builds/T1_s2none.h5ad:T1:test"',
     ], lines
     assert "--out runs/builds/T1_s2none.h5ad" in " ".join((ROOT / "docs" / "S2_RULES.md").read_text().split())
+
+
+def test_the_t1rc_set_checks_the_rules_hash_and_builds_the_recomputed_groups_file():
+    """The set t1rc checks docs/S2_RULES.sha256 before it builds, builds one file, T1_s2rc.h5ad, by the first upload's
+    command plus --feng-groups recomputed (the later amendment of 2026-11-19 for T1; the captain's own say-so), and
+    checks it locally for T1:test. The rules' section for it, the last of the file, gives the same command with runs/
+    as its output folder, the captain's answer, the three sha256 it rests on and the condition on row T63's read."""
+    text = (ROOT / "experiments" / "builds" / "build_all.sh").read_text()
+    block = text[text.index("\n  t1rc)\n"):]
+    block = block[:block.index("\n    ;;\n")]
+    lines = [ln.strip() for ln in block.strip().splitlines()]
+    assert lines == [
+        "t1rc)",
+        "sha256sum -c docs/S2_RULES.sha256",
+        "$U run python experiments/builds/build_test.py t1 --g-mom --base lib3 --feng-groups recomputed "
+        "--out $O/builds/T1_s2rc.h5ad",
+        'files="$O/builds/T1_s2rc.h5ad:T1:test"',
+    ], lines
+    rules = " ".join((ROOT / "docs" / "S2_RULES.md").read_text().split())
+    heading = ("## Amendment of 2026-11-19: T1's last upload is the recomputed-groups file (the captain's own "
+               "say-so)")
+    assert rules.count(heading) == 1
+    section = rules[rules.index(heading):]
+    assert " ## " not in section  # the last section of the file
+    assert ("uv run python experiments/builds/build_test.py t1 --g-mom --base lib3 --feng-groups recomputed "
+            "--out runs/builds/T1_s2rc.h5ad") in section
+    assert '"proceed with your recommendation"' in section  # the captain's answer, decision log 2026-11-19 (ii)
+    for sha in ("883e74c2c1ef5f01d5244555f8b3dcae24255568c731a6d53ee2788b7b677b49",  # the labeller's frozen settings
+                "36d1f7edcbbf3d7a80c68b51d5624a94bb753668079fe3d69aed720c71baa7e9",  # the recomputed statistics
+                "ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f"):  # the check builds at 8138fa2
+        assert sha in section, sha
+    assert "**Built after row T63's read.**" in section
 
 
 def test_the_t1none_guard_string_marks_only_the_draft_heading():

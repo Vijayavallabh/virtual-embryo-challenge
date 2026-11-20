@@ -414,6 +414,16 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
      For T1's last upload (row R8; `docs/S2_RULES.md`, the amendment of 2026-11-19):
      `experiments/builds/results/t1none_385ff58.SHA256SUMS` (`builds/T1_s2none.h5ad`). That list is outside the pointer and is built in a campaign checkout: its line is ticked only
      once the captain has accepted that provenance or a rebuild in the reference checkout has matched it.
+     For T1's last upload since the captain's later ruling (row R13; `docs/S2_RULES.md`, the amendment of 2026-11-19
+     for the recomputed-groups file; decision log 2026-11-19 (ii)): set t1rc, `bash experiments/builds/build_all.sh
+     t1rc` (`builds/T1_s2rc.h5ad`), built twice at 16 BLAS threads on the DGX checkout that holds the relabelling's
+     output, the two sha256 equal to each other and to the check builds' ad8f24c71c90; its list:
+     [MAIN SESSION: the build record, and the t1rc list's path under `experiments/builds/results/`]. That list is
+     outside the pointer and is built in a campaign checkout (the reference checkout does not hold
+     `data/derived/feng_relabel_c/`, so the builder refuses the option there): its line is ticked only once the
+     captain has accepted that provenance. Nothing is built before row T63's read; if its outcome sends a question to
+     the captain, nothing is built until he answers ([MAIN SESSION: row T63's outcome]). The t1none list's
+     `T1_s2none.h5ad` is no longer T1's last upload.
      For the embryo's last upload (row R9; `docs/S2_RULES.md`, the amendment of 2026-11-19 for the embryo; decision
      log 2026-11-19 (j)): `experiments/builds/results/embryo2_2dccfee.SHA256SUMS`
      (`builds/T2embryo_s2x.h5ad`). That list is outside the pointer and is built in a campaign checkout
@@ -465,6 +475,12 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
      `T2embryo_s2x.h5ad`. Each is rewritten for the file now named and reviewed before this line is ticked: the
      drafts are in `docs/ORGANIZER_QUESTIONS.md`, "Notes before the second uploads of the heart, the embryo and Task 3" (not yet reviewed; the heart's is held with its
      file). The heart's note names the captain's exception. The embryo's note names the twin and its 64 characters.
+     For T1's last upload since row R13: the note of 2026-11-19 for `T1_s2none.h5ad` names a file that is not
+     uploaded. The note for the recomputed-groups file is `docs/ORGANIZER_QUESTIONS.md`, "Note before Task 1's second
+     upload (drafted 2026-11-19 after the captain's ruling of entry (ii) ...)" (not yet reviewed; nothing sent). Its
+     "[HASH]" is filled from the t1rc build record, and it is reviewed before this line is ticked. Its sources list
+     X010 beside the T1 list of the disclosure-ids line, since X010's symbols shaped the recomputed groups; the
+     captain confirms the list.
   4a. [ ] **The method-report fields of the submission page.** Source: an organiser, 2026-11-16, read through the
      screen on 2026-11-19 (`docs/ORGANIZER_QUESTIONS.md`, "Screened reads of 2026-11-19"). In their words: "On the
      submission page, use the P3 method report → Data used field to list external datasets, links/accessions, stages
@@ -503,6 +519,16 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
      - Pre-trained models: "None."
      - External code: "veckit (github.com/aristoteleo/veckit @ cc3859a), local scoring only; open-source Python
        libraries (POT 0.9.7, numpy, scipy, scikit-learn, pandas, anndata, scanpy, h5py, rdata), library calls only."
+
+     **T1's last upload since row R13** (`T1_s2rc.h5ad`): the paste above describes row R8's file and no longer
+     applies. The Data used text for this file is written from `EXTERNAL_DATA.md` rows X002 (its amendments of
+     2026-11-19, the recomputation and the ruling) and X010, and from `docs/S2_RULES.md`'s "What the record must say":
+     the dataset with its accession, stages E9.5 and E14.5 of CD1 hearts, every E10.5 to E13.5 cell removed on the
+     per-cell stage column before any use; the cell groups recomputed from the permitted cells' raw counts by fixed
+     marker scores, with the columns read and the marker sources; no clustering, embedding or classifier, the authors'
+     labels not read; what cannot be undone (the authors' quality filter, made on all stages pooled, chose which
+     permitted cells exist; zone from their demultiplexing; ambient correction not stated). [TO CONFIRM: the text is
+     drafted and reviewed before line 4a is ticked; none is drafted here.]
   5. [ ] **The screened check** of mail, Slack and the Rules page ran on the upload day, by a screening agent, audited,
      with the switches fixed beforehand (`docs/ORGANIZER_QUESTIONS.md`; for T3 `docs/S2_RULES.md`, the amendment of
      2026-11-18: the
@@ -528,6 +554,13 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
      T3 (row R12): -4.48 on rep1 at matched depth with severity scored in 6 of 10 seeds; the stage-priced cells (about
      -2.8, +1.8, -9.6, -0.2); the overrides of row K18's fixed reading and of the cold challenge of decision log
      2026-11-19 (s).
+     T1 (row R13): the gain over row R8's file counts zero at the centre for the test's 2/5 step (J6; range 0 to
+     +1.97); the 2/5 step read on the recomputed groups only by row T63 ([MAIN SESSION: row T63's outcome]); the
+     epicardium direction on 11 early cells (half-agreement 0.350, deciding nothing); the compliance price (if the
+     organisers discounted the first upload and rejected this file, Task 1 would have no counted upload; break-even
+     rejection chance about 1.5 to 4 percent, the AI assistant's arithmetic after the result); the residues the cold
+     check named (the authors' quality filter on all stages pooled, zone from their demultiplexing, the atlas, bracket
+     and R2's held genes chosen by readouts that read the authors' groups).
   7. [ ] **The go-ahead:** the captain's own word for this board and these 64 characters.
   8. [ ] **Afterwards, paste back** into the main session: the board, the time and file name the site lists, the first characters of the hash the site shows, the outcome (scored, or "rejected" and the kind of rejection in
      your own words, with no number from the message), the board total and every per-metric value. The main session

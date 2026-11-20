@@ -187,13 +187,18 @@ damped momentum, on Task 2 a copy with damped momentum or bracket interpolation,
 captain's ruling of 2026-11-05), with R2's two gene modules (the captain's ruling of 2026-11-06) held flat in Feng's direction and, by the captain's ruling of
 2026-11-10 (R3b), within-type factors on cardiomyocytes and endocardium; s2 = the same with cardiomyocytes at 60% of
 heart cells. (Since 2026-11-13, row R6: s1 draws these cells from library 3 alone at its own chamber mix. Since the
-same day, row R7: s2 draws them from the base half-way between the pooled base and library 3.)
+same day, row R7: s2 draws them from the base half-way between the pooled base and library 3.) On 2026-11-19 the
+s2 was held and the last upload became s1's command without Feng's direction (row R8; Departures, item 13); later
+that day, by the captain's ruling on the AI assistant's pre-set advice (row R13; Departures, item 17), it became s1's
+command with Feng's direction formed on cell groups recomputed from the atlas's permitted cells only: the same cells
+as s1, the same R1, R2 and R3b, and the authors' labels not read. Row R8's file stays built and is not uploaded. The
+last file is built only after a practice check at the test's step size (row T63): [MAIN SESSION: row T63's outcome].
 
 | Facet | Change beyond the baseline | Held-out evidence |
 |---|---|---|
 | States that emerge | None. Births by the legal route (states present in legal post-E14.5 chamber data and absent at E10.5) were designed and pruned on 2026-11-04 (`experiments/harness/TRIES.md`) | - |
 | Proportions | Chamber categories only (the surrounding, cardiac-progenitor (first and second heart field, JCF, DMP), pericardial and pharyngeal categories dropped; `configs/t1_chamber_classes.yaml`), at E10.5's own chamber mix; s2 moves cardiomyocytes to 60% of heart cells | A premise rather than a measurement (the organisers' E12.5 collection note). On the chamber-cut backtest (E10.5 from E9.5) B0 beats a copy (+1.62, 9 of 10 seeds) but not the floor (-0.32, vetoed), and that backtest draws E9.5's mix, so E10.5's own mix is never tested (`experiments/harness/results/d2_v1/`). The s2 rests on a sensitivity grid on an oracle base, not on a backtest (`experiments/s2_hedge/`) |
-| Expression | Count-space shifts: Feng 2022's E9.5 -> E14.5 direction at 2/5 for cardiomyocytes, endocardium, endothelium and epicardium; the other cells (mostly blood) keep their E10.5 expression (R1, the captain's ruling of 2026-11-05; until then half the E9.5 -> E10.5 per-type change, a step with no measured sign skill on blood); 23 genes held flat (13 Y-linked, Xist and Tsix, 2 named strain genes and 6 by the pool rule alone; `experiments/t1_direction/results/held_flat_genes.csv`); R2 holds 40 more flat in Feng's direction only (32 dissociation-stress and 8 haemoglobin genes; `experiments/t1_hygiene/results/n12_hygiene_size/`); R3b adds a per-metacell, category-mean-free within-type change on cardiomyocytes and endocardium, fitted from E9.5 to E10.5 and not scaled to the two-day step (below) | The pre-registered readout on E10.5 from E9.5: de_score +0.175 and de_direction +0.188 over cross-fitted momentum, cardiomyocyte sign agreement 0.912 (`experiments/t1_direction/results/E10.5/`). A labelled diagnostic at 1/5, in-sample for that readout: +0.97 over the floor and +1.29 over B0, 10 of 10 seeds each (measured before R1, R2 and R3b); over the floor all of the gain is on de_direction (skill 0.620, against 0.536 for a copy), and de_score (0.480) stays below the floor (`experiments/t1_m1/results/diag_v1/`). No harness task can judge it, and the 2/5 used at test is untested. R2 has a target-free size check only (N12: 0.7-1.1% of each group's summed absolute log factor) and no run of its own; R1 and R2 together read -0.16 and -0.14 in T26's void, in-sample diagnostic. R3b's evidence is under Task 1 below: one fit, cuts it was selected on |
+| Expression | Count-space shifts: Feng 2022's E9.5 -> E14.5 direction at 2/5 for cardiomyocytes, endocardium, endothelium and epicardium; the other cells (mostly blood) keep their E10.5 expression (R1, the captain's ruling of 2026-11-05; until then half the E9.5 -> E10.5 per-type change, a step with no measured sign skill on blood); 23 genes held flat (13 Y-linked, Xist and Tsix, 2 named strain genes and 6 by the pool rule alone; `experiments/t1_direction/results/held_flat_genes.csv`); R2 holds 40 more flat in Feng's direction only (32 dissociation-stress and 8 haemoglobin genes; `experiments/t1_hygiene/results/n12_hygiene_size/`); R3b adds a per-metacell, category-mean-free within-type change on cardiomyocytes and endocardium, fitted from E9.5 to E10.5 and not scaled to the two-day step (below). The last upload (row R13): the same steps, with Feng's direction formed on the four groups recomputed from the permitted cells' raw counts (row N54) | The pre-registered readout on E10.5 from E9.5: de_score +0.175 and de_direction +0.188 over cross-fitted momentum, cardiomyocyte sign agreement 0.912 (`experiments/t1_direction/results/E10.5/`). A labelled diagnostic at 1/5, in-sample for that readout: +0.97 over the floor and +1.29 over B0, 10 of 10 seeds each (measured before R1, R2 and R3b); over the floor all of the gain is on de_direction (skill 0.620, against 0.536 for a copy), and de_score (0.480) stays below the floor (`experiments/t1_m1/results/diag_v1/`). No harness task can judge it, and the 2/5 used at test is untested. R2 has a target-free size check only (N12: 0.7-1.1% of each group's summed absolute log factor) and no run of its own; R1 and R2 together read -0.16 and -0.14 in T26's void, in-sample diagnostic. R3b's evidence is under Task 1 below: one fit, cuts it was selected on. The last upload against row R8's file without the direction (row T62, labelled in-sample diagnostics on one truth at 1/5 of the bracket): +1.23 to +2.51 on five tasks, each 10 of 10 seeds; by ledger rule 9, J6, zero at the centre for the test's 2/5 (range 0 to +1.97). No practice run has read the step at 2/5 on these groups (row T63: [MAIN SESSION: row T63's outcome]) |
 | Spatial organisation | Not scored on Task 1 | - |
 
 **Task 2 heart, E12.5, beyond E10.5 with its coordinates.** s1 = H1 (B0 with the pre-registered size; the trend since
@@ -298,7 +303,8 @@ Task 3's last upload (row R12) is the same five-state depletion with another kno
 
 ### External data across a protected window: Feng et al. 2022 and its cell-type labels (2026-11-19)
 (Written on 2026-11-19 by the AI assistant from the audit of `docs/PLAN.md` decision log 2026-11-19 (c), its
-correction in (e), the captain's answer in (f), the amendment in (h), and the record named in each sentence.)
+correction in (e), the captain's answer in (f), the amendment in (h), and the record named in each sentence; brought
+up to date after the captain's ruling of entry (ii) from entries (u) to (z), (gg), (hh) and (ii).)
 
 **What the organisers asked.** On 2026-11-16 an organiser wrote that external datasets spanning a protected window are
 allowed "provided all cells within the protected windows are removed before training, and the retained data do not
@@ -362,8 +368,9 @@ missed the reply.
 - The built second Task 1 file was held from upload on 2026-11-19 and will not be uploaded. Its 0.60 cannot be
   recomputed on permitted data, because the second strain's tables are gone. It cannot be re-chosen either, because
   composition is closed by our own block of 2026-11-04.
-- Our last Task 1 upload takes Feng's direction out and puts nothing in its place (the captain's answer of
-  2026-11-19, as the AI assistant reads it; `docs/S2_RULES.md`, the amendment of 2026-11-19; row R8). It reads no
+- The captain's first answer of 2026-11-19 made our last Task 1 upload a file that takes Feng's direction out and
+  puts nothing in its place (as the AI assistant reads that answer; `docs/S2_RULES.md`, the amendment of 2026-11-19;
+  row R8). His later ruling the same day replaced it as the last upload (below); it stays built. It reads no
   external data, and its mask for the within-type factors no longer reads the list of groups fixed by counting Feng
   cells (it edits the same cells). Beyond the baseline it keeps the first upload's proportions: chamber categories
   only, drawn from library 3's cells at library 3's own chamber mix. Its one expression step is the within-type
@@ -381,9 +388,29 @@ missed the reply.
   permitted cell on fixed marker-gene sets and never reads the authors' annotation columns. Beyond raw counts and
   stage it reads two bookkeeping columns (zone and strain), and the genes that keep other cell types out come from
   eight published papers; the captain accepted both. Its dry run on the released E9.5 moved one threshold, by a rule
-  fixed beforehand. [TO COMPLETE: the relabelling's route, and whether any upload uses the recomputed groups.] A file
-  built on the recomputed groups becomes Task 1's last upload only by the captain's later ruling; until then the last
-  upload is the file with no outside data.
+  fixed beforehand.
+- The relabelling ran once on 2026-11-19 (ledger row N54; record
+  `experiments/external/results/feng_relabel/MANIFEST.json`). What entered it: the permitted CD1 cells at E9.5 and
+  E14.5 as raw counts, with gene names and the cell name, stage, zone and strain columns; marker gene sets, those of
+  the four direction groups from the released E9.5 label means and those of the competing classes from the eight
+  papers of register row X010. Each cell was scored on the sets against expression-matched control genes and assigned
+  by a fixed threshold, margin and endothelial split. No clustering, embedding, classifier or fitted transformation
+  was used, and the record says no author label column was read. By the terminal rule fixed before the run, the route
+  is the recomputed groups: 0.019 of the permitted cells at E9.5 and 0.038 at E14.5 stayed unassigned, under the
+  fixed cap of 0.40, and each of
+  the four groups had its own direction with at least 10 cells at both ends (the epicardium group 11 at E9.5). The
+  settings file's sha256 is 883e74c2c1ef, the statistics file's 36d1f7edcbbf.
+- The filtering, as the organisers ask: the in-window cells (E10.5 to E13.5) removed at ingest on the per-cell stage
+  column, CD1 only, as above. What could not be undone: the authors' quality filter, made on all stages pooled, chose
+  which permitted cells exist; the zone column comes from their sample demultiplexing; ambient correction is not
+  stated. The traces listed above stay in the evidence behind the design.
+- Our last Task 1 upload uses the recomputed groups, by the captain's ruling of 2026-11-19 (decision log entry (ii);
+  `docs/S2_RULES.md`, "Amendment of 2026-11-19: T1's last upload is the recomputed-groups file"; ledger row R13;
+  Departures, item 17). It is the first upload's command with the direction formed on these groups; the file with no
+  outside data stays built and is not uploaded. The captain chose it after the first scores, on the AI assistant's
+  advice fixed before its practice read (row T62); a cold check let the advice stand and named the compliance price,
+  which was put to him with it. It is built only after a further practice check at the test's step size (row T63):
+  [MAIN SESSION: row T63's outcome]. Build record: [MAIN SESSION: the build record].
 - We told the organisers on [TO COMPLETE: the date the captain sends the disclosure email] and asked whether our
   first Task 1 upload stands as an eligible entry.
 
@@ -898,7 +925,7 @@ the pre-registered mode; and the heart's last file (item 14) is drawn from E10.5
 reference list; the embryo's first file is as built that day, and its last is a new file by the captain's choice of
 2026-11-19 (items 10 and 15): the first file's cells, count and size target, each cell on a real E7.5 position, with E7.5's cells rendered at a released E8.0 sample's detection profile and depth (item 15). Task 3's last upload is the barred s1 built on 2026-11-13 (item 16). T1's depth,
 Task 3's composition and depth, the adoption rule, row before run and the count of tries are unchanged; T1's step is
-unchanged in the first file and taken out of the last (item 13). Every upload
+unchanged in the first file, taken out of the file of item 13, and formed on recomputed groups in the last (item 17). Every upload
 remains the captain's own act. One compute rule changed and no rule of the entry with it: on 2026-11-18 (17:17) the
 captain released the DGX's GPUs 2 to 7 to this work and lifted `docs/COMPUTE.md`'s "ask before writing more than
 50 GB" for it ((r)).
@@ -1044,6 +1071,56 @@ captain released the DGX's GPUs 2 to 7 to this work and lifted `docs/COMPUTE.md`
   drafted "Note before Task 3's second upload" describes the refused s1. A note for this file is drafted in
   `docs/ORGANIZER_QUESTIONS.md`, "Notes before the second uploads of the heart, the embryo and Task 3".
 
+**17. Task 1's last file: the atlas step on recomputed groups (2026-11-19).**
+- Procedure: by item 13 the last upload was the file with no outside data (`T1_s2none.h5ad`, 55eaee547ff1; row R8).
+  Row N54's terminal rule named a file on recomputed groups as a candidate only; it could replace item 13's file only
+  by the captain's ruling on a priced question with both readings. Row T62's advice, fixed by the AI assistant before
+  its run: the recomputed file if its step is AHEAD under both readings of the first upload, the ruled file otherwise.
+- Done: row T62's reading was AHEAD under both readings, and an independent recomputation matched every figure
+  (decision log 2026-11-19 (gg)). A cold check let the advice stand with conditions (entry (hh)). The AI assistant
+  then put one question to the captain (entry (ii), state at 20:55 UTC). The file:
+  `build_test.py t1 --g-mom --base lib3 --feng-groups recomputed` (set t1rc, `T1_s2rc.h5ad`).
+- By: the captain's own word. The question, verbatim: "Task 1, last upload (one left). Our own odds are about 0.6 that
+  only a compliant upload will count, because the first one (70.9) used the atlas authors' labels; then this file is
+  Task 1's whole score. On practice (five tasks, ten seeds, one day ahead; independently recomputed) the atlas step on
+  groups we recomputed from permitted cells beat the no-outside-data file on every task, by +1.2 to +2.5 points. By
+  our own rule a one-day gain counts as zero at the centre for the two-day test, so the honest edge is 0 to about +2.
+  A cold check let my pre-set advice (the recomputed file) stand, with one thing it says my rule left out: if the
+  organisers rejected this second atlas file while discounting the first, Task 1 would have no counted upload, and a
+  rejection chance of roughly 2 to 4% cancels the edge. Which file?" The options were "Recomputed atlas file",
+  "No-outside-data file" and "Own-data momentum file". His answer: "proceed with your recommendation". The AI
+  assistant reads it as the recommendation the question named, the recomputed file, and nothing beyond it; that is
+  its reading, which the captain can correct before any upload. It stated no lean on the third option.
+- Changed: T1's last file only. It returns Feng's direction, on groups recomputed from the permitted cells' raw
+  counts; the authors' labels are not read. The cells, count rule, seed, base, R1, R2 and g_mom are the first
+  upload's, so no quantity closed by the block of 2026-11-04 moves. Item 13's file stays built and is not uploaded.
+  `docs/S2_RULES.md` gained the section "Amendment of 2026-11-19: T1's last upload is the recomputed-groups file (the
+  captain's own say-so)"; its sha256 is now c7ee6367ed16369f247d6eded9372b1f03bd0f48898292d31d1052cd84bfb7b2; row
+  R13. "No score feedback" does not hold for this upload: it was chosen after the first scores. Nothing in it is
+  computed from them: the labeller's settings were frozen before it ran, its route was fixed by its terminal rule, and
+  row T62's advice was fixed before its run. The first upload's 70.9 is only the score a second file must beat if the
+  first upload stands, and it favours neither T1 file.
+- Evidence, both ways (row T62; labelled in-sample diagnostics on one truth, one day ahead, the step at 1/5 of the
+  bracket). For it: against item 13's file +1.97 and +1.67 on the two cuts, +2.50, +1.23 and +2.51 on the three
+  library tasks, each ahead in 10 of 10 seeds; the epicardium step alone +0.68 on library 3. Against it: by rule 9,
+  J6, the gain counts zero at the centre for the test's 2/5 step (range 0 to +1.97); the epicardium direction rests on
+  11 early cells. The compliance price, which the advice rule left out: if the organisers discounted the first upload
+  and also rejected this file, Task 1 would have no counted upload. The AI assistant's arithmetic, made after the
+  result: the two files break even at a rejection chance of about 1.5 to 4 percent, which nobody can estimate so
+  finely. The cold check put 0.35 on the advice being a mistake. It named what an organiser could still object to:
+  the authors' quality filter, made on all stages pooled, chose which permitted cells exist; the zone column comes
+  from their demultiplexing; the atlas, the bracket and R2's held genes were chosen by readouts that read the
+  authors' groups.
+- Still to run: the practice check the chosen option promised, row T63 (the candidate at 2/5, with a placebo
+  direction and the epicardium-held arm). The file is built only after its read; if its outcome sends a question to
+  the captain, nothing is built until he answers. Row T63's outcome: [MAIN SESSION: row T63's outcome].
+- Builds: set t1rc, twice at 16 BLAS threads on the DGX checkout that holds the relabelling's output, the two sha256
+  compared with each other and with the check builds' ad8f24c71c90. Build record: [MAIN SESSION: the build record].
+- Disclosure: [TO CONFIRM: whether, and when, the captain sent the note that names this board, file and sha256]. The
+  drafted note before Task 1's second upload of 2026-11-19 names item 13's file. A note for this file is drafted in
+  `docs/ORGANIZER_QUESTIONS.md`, "Note before Task 1's second upload (drafted 2026-11-19 after the captain's ruling of
+  entry (ii) ...)". [TO CONFIRM: whether the captain sent the disclosure of the X002 labels or the sources note.]
+
 ## Shared machinery
 
 - **Local board emulator** (`vec.evaluate`): the official veckit metric code (git `cc3859a`), the published skill map
@@ -1172,8 +1249,9 @@ captain released the DGX's GPUs 2 to 7 to this work and lifted `docs/COMPUTE.md`
   backtest's fit does; the per-gene sizes carry (Spearman 0.79 and 0.68) but the leading axis does not (absolute cosine
   0.20 and 0.29 against ceilings of 0.91 and 0.84; N21), and the one-day step is applied unscaled to the two-day
   horizon, which is untested.
-- **The last upload, with no outside data** (the captain's answer of 2026-11-19, as the AI assistant reads it; row
-  R8; `docs/S2_RULES.md`, the amendment of 2026-11-19). `build_test.py t1 --g-mom --base lib3 --feng-groups none`: the
+- **The last upload with no outside data, until the captain's later ruling the same day** (the captain's answer of
+  2026-11-19, as the AI assistant reads it; row R8; `docs/S2_RULES.md`, the amendment of 2026-11-19; since entry (ii)
+  the file stays built and is not uploaded, next bullet). `build_test.py t1 --g-mom --base lib3 --feng-groups none`: the
   first upload's design with Feng's direction taken out and nothing put in its place.
   - What is unchanged: the same base, seed and drawn cells (library 3 at its own chamber mix).
   - Its changes beyond the baseline:
@@ -1198,6 +1276,27 @@ captain released the DGX's GPUs 2 to 7 to this work and lifted `docs/COMPUTE.md`
     them. It is not expected to beat the first upload's 70.9. It is the file whose data hold no annotation the
     organisers' condition excludes; traces of the labels remain in how its parts were chosen, listed in "External
     data across a protected window" above.
+- **The last upload since 2026-11-19: the recomputed-groups file** (the captain's ruling, decision log 2026-11-19
+  (ii); row R13; `docs/S2_RULES.md`, "Amendment of 2026-11-19: T1's last upload is the recomputed-groups file";
+  Departures, item 17). `build_test.py t1 --g-mom --base lib3 --feng-groups recomputed`: the first upload's design
+  with Feng's direction formed on cell groups recomputed from the atlas's permitted cells only.
+  - What is unchanged: the same base, count rule, seed and drawn cells as the first upload (library 3 at its own
+    chamber mix); R1's hold, R2's held genes and g_mom's within-type edit. No lever of the post-exposure block moves.
+  - Its change beyond the first upload: the four groups (cardiomyocytes, endocardium, endothelium, epicardium) are
+    the labeller's (`experiments/external/feng_relabel.py`, settings sha256 883e74c2c1ef; row N54), not the authors'
+    labels, which are not read. Each group has its own recomputed direction, so the same facet as the first upload
+    moves: the expression of those groups' cells along Feng's E9.5 -> E14.5 direction at 2/5.
+  - Facets left at the baseline: which states emerge (no births); the expression of cells outside the four groups
+    and outside g_mom's edit.
+  - The evidence: against row R8's file, on row T62's five tasks (labelled in-sample diagnostics on one truth, one day
+    ahead, the step at 1/5): +1.97 and +1.67 on the two cuts, +2.50, +1.23 and +2.51 on the three library tasks, each
+    ahead in 10 of 10 seeds; the epicardium step alone +0.68 on library 3. By rule 9, J6, zero at the centre for the
+    test's 2/5 step (range 0 to +1.97). No practice run applies this path end to end (J1), so the file is unpriced.
+  - Against it: the epicardium direction rests on 11 early cells; if the organisers discounted the first upload and
+    also rejected this file, Task 1 would have no counted upload. The AI assistant's arithmetic after the result put
+    the break-even rejection chance at about 1.5 to 4 percent; the question to the captain said "roughly 2 to 4%".
+  - Built only after row T63's read (the candidate at 2/5, with a placebo direction and the epicardium-held arm):
+    [MAIN SESSION: row T63's outcome]. Build record: [MAIN SESSION: the build record].
 - **What the T1 scorer rewards.** On the released E9.5 -> E10.5 transition the changed genes are mostly highly
   expressed genes going down, which de_score's expression-magnitude null names 39-41% of; a copy names 11%
   (`experiments/harness/results/t1_de_v1/`). Better direction raises de_score but has not cleared its floor on this transition: in the labelled diagnostic (B0 with Feng's direction at 1/5) de_score skill is 0.480 against B0's 0.450, with raw overlap 0.347 against the null's 0.388 (`experiments/t1_m1/results/diag_v1/`).
@@ -1216,7 +1315,10 @@ captain released the DGX's GPUs 2 to 7 to this work and lifted `docs/COMPUTE.md`
   share from a sample coded Theiler stage 22 (X006) informed the s2's rationale in October and was withdrawn on
   2026-11-05 under our staging rule; no rule changed, and no cell, count or expression from it enters any model
   (`docs/DATA_POLICY.md` 2026-11-05 (c), (e)). The open-source libraries the method runs on are listed in X005 (POT also
-  runs R3b's within-category transport). T1's last upload (row R8) reads released T1 E9.5 and E10.5 only.
+  runs R3b's within-category transport). Row R8's file reads released T1 E9.5 and E10.5 only. T1's last upload (row
+  R13) reads those, the statistics of Feng's permitted E9.5 and E14.5 cells on the recomputed groups (X002; the
+  labeller reads raw counts, gene names and the cell name, stage, zone and strain columns), and through the labeller
+  the marker gene symbols of X010; R2's lists (X007, X009) act in its direction as in the first upload.
 
 ## Task 2: spatial-temporal (heart E12.5, embryo E7.75)
 
