@@ -32,6 +32,18 @@ git) that is missing, VOID, does not name the form's arm, or records other table
 form's own refusal (outside_forms.FormRefused: the product cannot be made, or it changes fewer than 10 genes against
 phi_M ** x); the launcher lists it, builds nothing in its place, and goes on.
 
+--table-exponent E (row K23; default 1.0): only 1.0, 2.0 or 4.0 (else exit 2). At 1.0 nothing changes: the code path,
+the file and the sidecar are as above. At 2.0 or 4.0 only the kind xall is built (identity and xunrel are refused), as
+
+  xall-B --table-exponent E   phi_M ** x * T_all ** E   outside_forms.product at exponent E, the factor K23's arm x_eE
+                                                        applies
+
+and only when the committed K23 reading (experiments/t3_decomp/results/k23_outside_exponents/reading.json, tracked by
+git) is not VOID or incomplete, names exactly x_eE, records the pinned tables, and holds E among its pre-gate's
+exponents, not dropped; K22's reading is not used then. The form's own refusal (exit 4) is as above. The sidecar's
+`outside_build` then records `exponent` E, `k23_reading`, `priced_at` 'x = 1 only' and K23's list entry, with
+`k22_reading` None. K23's arms (x_e1, x_e2, x_e4, their controls and twins) are refused by name.
+
 The sidecar is the frozen builder's plus one block `outside_build` (this script and its sha256, outside_forms.py's
 sha256, the form, the base, x, the table's name, sha256, listing sha256, studies, tiers and register accessions, the
 exponent 1.0, the product's figures, the pinned frozen hashes, the K22 reading's sha256, the ledger row). It adds no
@@ -81,8 +93,16 @@ KINDS = {"identity": None, "xall": ("all", "x_all"), "xunrel": ("unrelated", "x_
 FORMS = tuple(f"{k}-{b}" for k in KINDS for b in BASES)
 REFUSED_KINDS = {"xall_perm": "a control of try K22, never built", "xunrel_perm": "a control of try K22, never built",
                  "rep_all": "the labelled control of the planner's doubt in try K22, never built",
-                 "x_all": "use xall-<base>", "x_unrel": "use xunrel-<base>", "barred_form": "use identity-<base>"}
+                 "x_all": "use xall-<base>", "x_unrel": "use xunrel-<base>", "barred_form": "use identity-<base>",
+                 "x_e1": "the reproduction guard of try K23, never built",
+                 "x_e2": "use xall-<base> --table-exponent 2.0", "x_e4": "use xall-<base> --table-exponent 4.0",
+                 "x_e2_perm": "a control of try K23, never built", "x_e4_perm": "a control of try K23, never built",
+                 "x_e2_size": "a size twin of try K23, never built", "x_e4_size": "a size twin of try K23, never built"}
 READING = HERE / "results" / "k22_outside_forms" / "reading.json"
+READING_K23 = HERE / "results" / "k23_outside_exponents" / "reading.json"
+TABLE_EXPONENTS = (1.0, 2.0, 4.0)  # --table-exponent: 1.0 (K22's forms, the default) or one of K23's exponents
+K23_LIST_ENTRY = "experiments/harness/TRIES.md row K23 and decision log 2026-11-21 (a)"
+K23_PRICED_AT = "x = 1 only"
 # the outside datasets by register accession (experiments/t3_ext/datasets.yaml: study -> series), for the sidecar
 STUDY_SERIES = {"GSE167493": ["GSE168768", "GSE186934"], "GSE137337": ["GSE137337"], "GSE204908": ["GSE204906"],
                 "GSE205117": ["GSE205117"]}
@@ -158,15 +178,58 @@ def check_reading(arm: str, table: str, path: Path | None = None, check_tracked:
             "sha256": hashlib.sha256(raw).hexdigest(), "names": r["names"], "outcome": r.get("outcome")}
 
 
-def form_factor(kind: str, x: float, phi_m: np.ndarray, T: np.ndarray | None) -> tuple[np.ndarray, dict]:
-    """The vector applied: phi_M ** x (identity) or outside_forms.product(phi_M, x, T); FormRefused where the product
-    cannot be made or changes fewer than MIN_CHANGED genes against phi_M ** x."""
+def check_exponent(e) -> float:
+    """--table-exponent: one of TABLE_EXPONENTS, else Refused."""
+    try:
+        v = float(e)
+    except (TypeError, ValueError):
+        raise Refused(f"--table-exponent {e!r} is not one of {list(TABLE_EXPONENTS)}") from None
+    if v not in TABLE_EXPONENTS:
+        raise Refused(f"--table-exponent {e!r} is not one of {list(TABLE_EXPONENTS)}")
+    return v
+
+
+def check_reading_k23(e: float, path: Path | None = None, check_tracked: bool = True) -> dict:
+    """The committed K23 reading names exactly x_eE, is not VOID, records the pinned tables and holds E among its
+    pre-gate's exponents, not dropped; returns its record."""
+    path = READING_K23 if path is None else Path(path)
+    arm = f"x_e{e:g}"
+    if path.is_symlink() or not path.is_file():
+        raise Refused(f"no K23 reading at {path.name}: a form at exponent {e:g} is built only when the reading names "
+                      "it")
+    if check_tracked and not ext.tracked(path):
+        raise Refused(f"{path.name} is not committed: a form at exponent {e:g} is built only from a committed reading")
+    raw = path.read_bytes()
+    r = json.loads(raw)
+    if r.get("incomplete") or r.get("void") is not False:
+        raise Refused("the K23 reading is VOID or incomplete: it names no file")
+    if (r.get("names") or []) != [arm]:
+        raise Refused(f"the K23 reading does not name {arm} (it names {r.get('names') or 'none'}): not built")
+    rec = r.get("ext") or {}
+    pins = {n: v for n, v in ext.K22_TABLE_SHA256.items() if v is not None}
+    if rec.get("listing_sha256") != ext.K22_LISTING_SHA256 or rec.get("tables") != pins or "all" not in pins:
+        raise Refused("the K23 reading records other tables than the pins: not built")
+    pre = r.get("pregate") or {}
+    exps = [float(v) for v in ((pre.get("constants") or {}).get("exponents") or [])]
+    if e not in exps or f"{e:g}" in (pre.get("dropped") or {}):
+        raise Refused(f"the K23 reading's pre-gate does not hold exponent {e:g} undropped: not built")
+    return {"file": str(path.relative_to(HERE.parents[1])) if path.is_relative_to(HERE.parents[1]) else str(path),
+            "sha256": hashlib.sha256(raw).hexdigest(), "names": r["names"], "outcome": r.get("outcome")}
+
+
+def form_factor(kind: str, x: float, phi_m: np.ndarray, T: np.ndarray | None,
+                e: float = 1.0) -> tuple[np.ndarray, dict]:
+    """The vector applied: phi_M ** x (identity) or outside_forms.product(phi_M, x, T) (at e = 1, the default; else
+    outside_forms.product(phi_M, x, T, e)); FormRefused where the product cannot be made or changes fewer than
+    MIN_CHANGED genes against phi_M ** x."""
     phi_m = np.asarray(phi_m, dtype=np.float64)
     base = phi_m if x == 1.0 else phi_m ** x
     if kind == "identity":
+        if e != 1.0:
+            raise Refused("identity takes no table exponent")
         return base, {"applied": ext.figures(base, base)}
     try:
-        phi = ext.product(phi_m, x, T)
+        phi = ext.product(phi_m, x, T) if e == 1.0 else ext.product(phi_m, x, T, e)
         figs = ext.figures(base, phi)
     except ext.FormRefused as e:
         raise FormRefused(f"{kind}: {e}") from e
@@ -177,7 +240,7 @@ def form_factor(kind: str, x: float, phi_m: np.ndarray, T: np.ndarray | None) ->
 
 
 @contextmanager
-def outside_loader(kind: str, x: float, out: dict, env: dict | None = None):
+def outside_loader(kind: str, x: float, out: dict, env: dict | None = None, exponent: float = 1.0):
     """bs.load_factor, for this process only: the frozen loader for phi_M (checked against TABLE_SHA256 too), then, for
     an outside form, the table through outside_forms (by name, against the same genes), then the form's factor."""
     original = bs.load_factor
@@ -197,7 +260,8 @@ def outside_loader(kind: str, x: float, out: dict, env: dict | None = None):
                 T, trec = ext.load_table(table, list(genes), listing, lsha, env=env)
             except ext.TableRefused as e:
                 raise Refused(str(e)) from None
-        phi, frec = form_factor(kind, x, phi_m, T)
+        phi, frec = (form_factor(kind, x, phi_m, T) if exponent == 1.0 else
+                      form_factor(kind, x, phi_m, T, exponent))
         out.update(table_m=rec, table=trec, factor=frec, n_loads=out.get("n_loads", 0) + 1)
         return phi, rec
 
@@ -210,19 +274,27 @@ def outside_loader(kind: str, x: float, out: dict, env: dict | None = None):
 
 def build_form(decision: Path, form, wt: Path, board, n_cells: int, out: Path, run_dir: Path | None = None,
                seed: int = 1_000_001, overwrite: bool = False, threads: int = 16, env: dict | None = None,
-               reading: Path | None = None) -> dict:
-    """The named form through bs.build_submission; returns the sidecar (the frozen builder's plus `outside_build`)."""
+               reading: Path | None = None, table_exponent: float = 1.0, k23_reading: Path | None = None) -> dict:
+    """The named form through bs.build_submission; returns the sidecar (the frozen builder's plus `outside_build`).
+    table_exponent 1.0 (the default) is K22's path unchanged; 2.0 or 4.0 build xall at that exponent from the K23
+    reading (k23_reading, default READING_K23)."""
     kind, base = parse_form(form)
+    te = check_exponent(table_exponent)
+    if te != 1.0 and kind != "xall":
+        raise Refused(f"--table-exponent {te:g} is for the kind xall only (K23 reads `all`), not {kind}")
     slot, x, base_sha = BASES[base]
     frozen = check_frozen()
     tree = check_clean()
-    rrec = None
+    rrec = k23rec = None
     if kind != "identity":
         try:
             ext.check_pins(ext.K22_LISTING_SHA256, ext.K22_TABLE_SHA256)
         except ext.TableRefused as e:
             raise Refused(str(e)) from None
-        rrec = check_reading(KINDS[kind][1], KINDS[kind][0], reading)
+        if te == 1.0:
+            rrec = check_reading(KINDS[kind][1], KINDS[kind][0], reading)
+        else:
+            k23rec = check_reading_k23(te, k23_reading)
     rules = bs.load_rules()
     dec = bs.load_decision(Path(decision), rules)
     bs.check_hashes(dec, allow_mismatch=False)
@@ -230,7 +302,7 @@ def build_form(decision: Path, form, wt: Path, board, n_cells: int, out: Path, r
     if spec["factor"] != FROZEN_FACTOR:
         raise Refused(f"the frozen barred {slot} factor is {spec['factor']}, not {FROZEN_FACTOR}: not built")
     got: dict = {}
-    with outside_loader(kind, x, got, env):
+    with (outside_loader(kind, x, got, env) if te == 1.0 else outside_loader(kind, x, got, env, te)):
         side = bs.build_submission(Path(decision), BRANCH, slot, Path(wt), board, n_cells, Path(out),
                                    run_dir=run_dir, seed=seed, overwrite=overwrite, threads=threads)
     if got.get("n_loads") != 1 or side["construction"]["factor_exponent"] != 1.0 or \
@@ -254,6 +326,9 @@ def build_form(decision: Path, form, wt: Path, board, n_cells: int, out: Path, r
         "identity": f"the {base} base file byte for byte ({base_sha[:12]})" if kind == "identity" else None,
         "depth_step": None,
     }
+    if te != 1.0:
+        side["outside_build"] |= {"exponent": te, "k23_reading": k23rec, "priced_at": K23_PRICED_AT,
+                                  "list_entry": K23_LIST_ENTRY}
     bs.dump_json(side, Path(out).with_suffix(".json"))
     return side
 
@@ -278,15 +353,22 @@ def build(
     boards_dir: Path = typer.Option(None, help="boards directory (default: the repository's boards/)"),
     overwrite: bool = typer.Option(False, help="replace an existing output"),
     threads: int = typer.Option(16, help="BLAS threads while preparing the reference (the frozen default)"),
+    table_exponent: float = typer.Option(1.0, help="the table's exponent: 1.0 (the default, K22's forms), or 2.0 or "
+                                         "4.0 for xall when the committed K23 reading names that exponent"),
 ):
     """Build one fixed form."""
     try:
         if seed != LIST_SEED or n_cells != LIST_N_CELLS:
             raise Refused(LIST_INPUTS_REFUSAL)
         parse_form(form)
+        te = check_exponent(table_exponent)
         b = bs.board_spec(board, boards_dir)
-        s = build_form(decision, form, wt, b, bs.resolve_n_cells(n_cells, b), out, run_dir=run_dir, seed=seed,
-                       overwrite=overwrite, threads=threads)
+        if te == 1.0:
+            s = build_form(decision, form, wt, b, bs.resolve_n_cells(n_cells, b), out, run_dir=run_dir, seed=seed,
+                           overwrite=overwrite, threads=threads)
+        else:
+            s = build_form(decision, form, wt, b, bs.resolve_n_cells(n_cells, b), out, run_dir=run_dir, seed=seed,
+                           overwrite=overwrite, threads=threads, table_exponent=te)
     except FormRefused as e:
         bs.say(f"refused (the form's own refusal): {e}", "red")
         raise typer.Exit(EXIT_FORM_REFUSED) from None

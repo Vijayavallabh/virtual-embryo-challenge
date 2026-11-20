@@ -8156,3 +8156,130 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     a sorted lineage of one region, so the guards may refuse every group, as they did for the two Tbx1 studies. **The
     two-study tables that K22 read are kept aside before the rerun** (`~/v/vec-ext/t3/tables_two_study`), because the
     planned row K23 reads that table at its pinned hash.
+- 2026-11-20 (qq), T3 outside knockouts: the run with the Kmt2d pair; a three-study table exists and is not read yet (state at
+  19:49 UTC, 2026-11-20). Written by the AI assistant.
+  - **The run** (`~/v/vec-campaign-c` at d79ee75; every step exit 0). GSE299068: 9,301 and 37,090 cells in its two
+    libraries, all 500 panel genes matched, confident calls for 0.74 and 0.53 of the cells; the Kmt2d unit gives
+    factors in two lineage groups (ectoderm, endothelium); eight groups have too few confident cells in an arm, two
+    (neural crest, pharyngeal mesoderm) fail the share guard and two (neural, paraxial mesoderm) fail the
+    control-profile guard. No guard was loosened. Combine wrote three-study tables (`all`: GSE204908, GSE277839,
+    GSE299068; the manifest's summary: 137 genes up, 315 down, none at the clip; sha256 14aa9ad68369...) and their
+    leave-one-study-out forms. With three studies the pipeline's sign rule keeps a value when two studies share its
+    sign, so the table is not simply the two-study table plus genes.
+  - **What is read, and when.** The planned row K23 stays on the two-study table that K22 read (sha256
+    9490f524e40e..., the committed listing and pins; a copy is kept at `~/v/vec-ext/t3/tables_two_study` and is put in
+    place for that run, where the script checks every byte against the pins). The three-study table is not listed, not
+    pinned and not read by any row. It will be read together with the further whole-embryo studies the extension
+    brings, in one later row with its own listing, so that the fold is not read once per added study. This is the AI
+    assistant's choice, made before any score of either table at any exponent beyond K22's.
+- 2026-11-20 (rr), T1 outside atlases: the third verification, and two rule decisions made before any atlas record or
+  data is read (state at 19:54 UTC, 2026-11-20). Written by the AI assistant; both decisions are the AI assistant's.
+  - **Third round verified: not ready, one blocker.** With pinned samples as the first line (branch
+    `campaign/t1-multi-atlas-3`, 6bdf01a) the verifier could not get a sample fetched or loaded without a valid pin,
+    and a record changed by one character was refused. The blocker: a reduction written earlier is read by the tables
+    step without any check against the current pins, so a sample whose pin was withdrawn could still enter a table. A
+    fourth round closes it (workflow `t1-multi-atlas-fix4`).
+  - **Decision 1, the unstated plug-day convention.** The second round's rule widened every stage by a day when a
+    record states no convention, which refuses every sample labelled E9.5 or E14.5, the atlas in use included (its
+    public series record, read today, states none). A cold adversarial check of the claim "read a silent record at its
+    label" returned: 20% that it is a mistake; the rule is keyed to the wrong thing; silence says nothing, the label's
+    form does; a half-day label is the mark of the standard convention, a whole-day label is not. The AI assistant
+    then counted the eight embryo series whose records are on disk (about 2,750 sample records): none states a
+    convention. Decision: in a record that states no convention a half-day label is read at its label; a whole-day
+    label keeps the widening; a stated convention shifts as before. A second cold check of this rule is running; if it
+    says stop, the rule reverts before any atlas data is fetched.
+  - **Decision 2, shared protocol sentences.** Real series copy one protocol to every sample, and it often lists every
+    stage of the series; the third round's parser then refuses every sample. Decision: such a sentence keeps a sample
+    refused unless the two readers clear that exact sentence for that atlas in the configuration (verbatim, hashed,
+    two names, a reason); a cleared sentence is left out of the parser's reading of protocol text only, never of a
+    title, a characteristic, a source name or a description. The readers clear a sentence only when it describes the
+    series as a whole and says nothing of pooling. The same second cold check covers this rule.
+  - **What neither decision touches:** the organisers' window itself; the pins; the refusal of ranged, pooled or
+    conflicting stage wording; the rule that a reader who doubts does not pin. **Said plainly:** both decisions make
+    the loader usable on real records and so serve the team's interest; that is why each goes to a cold check before
+    any data, and why the register row of the atlas in use will say that its record states no convention and that its
+    half-day labels are read as labelled.
+- 2026-11-20 (ss), T3 outside knockouts: practice read K23, the K22 table at two larger exponents, with its rule fixed before
+  the run (state at 20:06 UTC, 2026-11-20). Written by the AI assistant from the challenger's final text. The planner
+  drafted the row, a challenger amended the design before the run (verdict: run as amended), an engineer built it and a
+  reviewer read the code against the rule (ready, no blocker); merged at 0892b78.
+  - **Why, said plainly.** K22 missed narrowly on this fold. Its product of the barred factor with the two-study table
+    was ahead in both plain cells (+0.39, +0.49, ten of ten seeds) and +0.28 (nine of ten) in dm g2, against a 0.3
+    bar. Its outcome, "no file: nothing qualifies", stands and is not reread.
+    - The table is very small (SD of its logs 0.025 against the barred factor's 0.70) because the pipeline shrinks
+      ratios measured on few libraries, by up to eight times.
+    - K23 turns the one size dial on the same table: its exponent. Same bytes, same pins, same pipeline, same shuffle,
+      same seeds, worlds and bars.
+    - Every arm draws the same rows from the same seeds as K22, so this is K22's response at a larger dial, not a
+      fresh sample.
+    - The choice to turn the dial follows the near miss. The values 2 and 4 come from the shrinkage range, not from
+      K22's margins.
+    - No further exponent of this table is read on this fold.
+  - **Arms.** For E = 2 and 4:
+    - the product phi_M * T ** E;
+    - its shuffled control at the same E (K22's shuffle);
+    - a size and depth twin, k_E * phi_M ** a_E, matched to the product's log SD and den-weighted total with no gene
+      of the table.
+    - Six tries, T3 60 to 66, three if the pre-gate drops E = 4. A reproduction arm, the exponent-1 product, must
+      equal K22's committed x_all within K17's tolerance or the run is VOID. It is not counted and never named.
+  - **Pre-gate, target-free:** K22's table drops, plus, per E, any of:
+    - the table's log SD above 0.25;
+    - more than 45 genes at or beyond the clip in the product or its control;
+    - the den-weighted total moved more than 5%;
+    - the product's log SD more than 5% above phi_M's.
+    - If E = 2 drops, E = 4 drops too.
+  - **Qualification.** K22's bars and constants are unchanged. Additions, each of which can only make naming harder:
+    - the dm cell that meets (a) must not differ from the barred form in gated seeds;
+    - (e): in every AHEAD cell the try beats its twin by the same bar;
+    - (f), dose-response: in every AHEAD cell the try beats the exponent-1 product, and E = 4 beats E = 2, with a
+      positive mean and at least eight of ten seeds.
+  - **The rule that maps the outcome to files, fixed now.** At most one file.
+    - If both exponents qualify: E = 2, unless E = 4 beats E = 2 directly, paired by seed, by the AHEAD bar in a plain
+      cell and a dm cell and is 0.3 behind it in none.
+    - If only E = 2 qualifies: E = 2.
+    - If only E = 4 qualifies: it is named only when E = 2 is behind in no cell, within the gate bound, and positive
+      in every cell where E = 4 is ahead.
+    - Otherwise no file, as when the run is VOID or both exponents drop.
+    - File factor: phi_M ** x * T ** E on (q)'s B, built by build_outside_form.py --form xall-<B> --table-exponent E.
+      Priced at x = 1 only.
+    - The controls, twins and the reproduction arm are never named or built. A form the builder refuses on B is not
+      built, and nothing replaces it.
+  - **Place.** After (q)'s C list and after any K21 or K22 file (both named none). (q)'s lapse clause holds first.
+    Ranking ahead of C1 or C2 would change (q), which is the captain's call. Before any upload, as (kk): the S2_RULES
+    amendment with the captain's words, the EXTERNAL_DATA rows, a reference-checkout build, a new reference list and
+    pointer, and his go-ahead per upload.
+  - **Checked and not checked.** Checked by reading the frozen code: the build does not renormalise after the gene
+    factor and returns log1p CP10k, so the twin's scalar acts through count depth only. Not checked: the clip count at
+    E = 4, which needs the gene-level files and is left to the pre-gate. The odds (about 0.4 that a file is named) are
+    the challenger's judgement, not cold-checked.
+  - **Added by the AI assistant.** The reviewer's three clarifications are written into the row (how a failed guard is
+    counted; when a run part stops without a reading; that the twins' constants are read from the pre-gate file). The
+    run uses the two-study table at the bytes K22 read: the tables folder on the compute machine is set to the copy
+    kept before the three-study rerun of entry (qq), and the script checks every byte against the pins. The
+    three-study table is read by no arm of this row.
+- 2026-11-20 (tt), T1 outside atlases: the second cold check; decision 1 of entry (rr) is withdrawn; the line is parked
+  (state at 20:11 UTC, 2026-11-20). Written by the AI assistant.
+  - **The second cold check, on the two rules of entry (rr):** 35% that they are a mistake. Its points: the half-day
+    clause changes the outcome only for E9.5 and E14.5, the two labels one counting step from the window, so it is an
+    exemption nobody verified; the answer is not in the records (none of eight series states a convention) but in
+    papers' methods, which the team does not read and an auditor can; a cleared sentence lets the first line switch
+    off the second; a stated convention must never admit a label that is itself in the window. Its alternative: every
+    branch only refuses (a sample is used only when its written label and every widened or converted reading clear the
+    window, which leaves E8.5 and earlier and E15.5 and later for silent records); the sentence rule made mechanical;
+    and for E9.5 and E14.5 a filter that prints only a paper's plug-day and pooling sentences.
+  - **Done as entry (rr) said it would be.** Decision 1 is withdrawn before any atlas record or data was read; the
+    fourth-round workflow that was building it was stopped (its branch `campaign/t1-multi-atlas-4` holds a merge
+    commit only). No atlas data was fetched at any point of this line.
+  - **The atlas in use, checked the way the cold check proposed.** A filter fetched the two publications that the
+    atlas's own series record names and printed only sentences naming a plug, days post coitum or mating: none exists
+    in either main text. Every stage in both texts is a half-day label. So the convention of the atlas in use is
+    stated neither in its record nor in its papers' main text; its samples are used as labelled, as they have been
+    since October, and register row X002 now says so. That exposure is not new and is not removed.
+  - **The line is parked, by the AI assistant's judgement.** Under the strict rule the new atlases could give only
+    brackets from E8.5 or earlier to E15.5 or later; an E9.5 or E14.5 end would need a convention stated in a record
+    or a paper, which the count and the check above suggest is rarely there. The expected gain was well under a point
+    of about 190; a barred or mixed sample in a file could cost the entry. The captain's order to use outside data
+    widely stands for lines whose gain covers their risk; this one does not on the evidence above. What is kept:
+    branch `campaign/t1-multi-atlas-3` (6bdf01a, pinned samples as the first line; one known blocker, the tables step
+    reading an earlier reduction without a pin check) and the four reviews. One word from the captain reopens it in
+    the strict form.
