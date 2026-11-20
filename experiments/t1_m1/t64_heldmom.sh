@@ -23,7 +23,7 @@ case "$STEP" in
   cut|lib) ARG=${1:?the cut or library}; shift; NAME="${STEP}_${ARG}" ;;
   *) ARG=""; NAME="$STEP" ;;
 esac
-ROWC=${1:?the row's commit}
+ROWC=${1:?the commit of the row}
 S=~/v/scratch/t64
 mkdir -p "$S/tmp"
 export OMP_NUM_THREADS=8 OPENBLAS_NUM_THREADS=8 MKL_NUM_THREADS=8 NUMPY_MADVISE_HUGEPAGE=0 TMPDIR="$S/tmp"

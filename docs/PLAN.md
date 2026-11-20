@@ -8384,3 +8384,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     base is taken from T62's committed functions; the byte check is on the scored rows; J5's noise figures were
     corrected; the 'advice' was removed from QD. <the reviewer's verdict on the row and the script, when there is
     one>.
+  - Later the same hour: the first launch at 0f7b580 ran nothing. The launcher's usage message for a missing commit
+    held an apostrophe inside a shell parameter expansion, so the shell read the next thirty lines as part of that
+    message and the tests step stopped on an unset variable before any test, task or score, with no exit file. One
+    message reworded (one line of the launcher; nothing of the arm, the gate, the statement or the read script). The
+    run commit is the commit of that fix, as row T64's last cell says. No other launcher holds the same construct
+    outside double quotes.
