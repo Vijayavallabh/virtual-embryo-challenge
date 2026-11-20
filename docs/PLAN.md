@@ -8283,3 +8283,25 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     branch `campaign/t1-multi-atlas-3` (6bdf01a, pinned samples as the first line; one known blocker, the tables step
     reading an earlier reduction without a pin check) and the four reviews. One word from the captain reopens it in
     the strict form.
+- 2026-11-20 (uu), T3: practice read K23's outcome: it names one file (state at 20:17 UTC, 2026-11-20). Written by the AI
+  assistant.
+  - **Outcome, as the row fixed it: "names x_e2: phi_M ** x * T ** 2 on base B (build_outside_form.py --form xall-<B>
+    --table-exponent 2.0), after (q)'s C list and after any K21 or K22 file, under the R14/R17 conditions".** Valid run
+    (both guards hold); six tries, T3 60 to 66. Row K23 holds the fixed statements; the result files are committed
+    with it.
+  - **The fixed statements.** The barred factor times the two-study outside-knockout table at exponent 2 is ahead of
+    the barred form in three of four cells and behind in none: +0.70 and +0.93 in the plain world, +0.19 and +0.69 in
+    the depth-matched world (ten, ten, eight and ten of ten seeds). It beats the same table with its genes shuffled by
+    +0.76 to +2.33 in every cell, beats a twin of the same size without the table's genes in the three cells where it
+    is ahead, and beats the exponent-1 product in every cell. At exponent 4 the gain is larger in three cells (+1.33,
+    +1.70, +1.22) and the arm is behind in the fourth (-0.64, with one more gated seed than the base), so it does not
+    qualify. One file is named: exponent 2.
+  - **What the file is.** The best Task 3 base B of entry (q), with its per-gene factor multiplied by the square of
+    the outside table (two DNA-methyltransferase nulls and a Usb1 knockout, register rows X013 and X014). It is priced
+    on practice at the base's exponent 1 only. It stands in Task 3's list after C1 and C2. No further exponent of this
+    table is read on this fold.
+  - **The AI assistant's reading after the result, labelled as that.** The gain grows with the exponent in the three
+    cells that have no gated seeds, the shuffled table loses at every exponent, and the size twin loses in the plain
+    world: on this fold the table's genes, not its size, carry the gain. The fold is one knockout in two replicates
+    and has been read by many rows, and the test knockout is another gene; the test board decides. A better-estimated
+    table is the obvious next step, which is what the bulk whole-embryo intake of entry (vv) is for.
