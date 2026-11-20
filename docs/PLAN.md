@@ -8605,3 +8605,27 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the 25 lines are expected to survive to a table. Next: the plan again with pins, the gene-id map from a pinned single-cell
     sample's features file with the 25 lines as extras (reviewed before it is pinned in code), then fetch, process and
     combine, reading verdicts only.
+- 2026-11-20 (ggg), T3 outside knockouts: the gene-id map of the bulk route is reviewed and pinned (state at 23:20 UTC,
+  2026-11-20). Written by the AI assistant.
+  - **What the map is for.** The many-line set's count matrix is keyed by Ensembl gene ids; the panel is keyed by
+    symbols. The map (`experiments/t3_ext/panel_ids.tsv`) gives each of the 500 panel symbols one id, and gives the
+    pipeline the ids of the five sex-call genes and of each pinned line's own gene. No annotation file is downloaded:
+    the tool reads the features file of a single-cell sample that is already pinned and fetched.
+  - **How the source was chosen,** on coverage alone and before any count of the set was fetched: the AI assistant
+    made maps from the features files of three pinned wild-type samples. They give 494, 498 and 500 of the 500 panel
+    genes one id, agree on every id that two of them give, and give the same ids for the extras; the one with all 500
+    (GSM8532456 of GSE277839) is committed. For 23 of the 25 lines the map's id equals the id the resource's own
+    sample table states for that line. Two lines get no id (a microRNA line, and a line whose symbol the single-cell
+    annotations no longer use); the genotype guard refuses their units, which is the fail-closed outcome and, for the
+    second, changes nothing, since the somite guard refuses it anyway.
+  - **The plan with pins passed** on the compute machine at 270fff8 (all 217 pins equal the live metadata). A trace of
+    the launcher's full mode at that commit, before the map was pinned, stopped at the gate with the map refusal and
+    wrote its exit file: the path is live and nothing was fetched.
+  - **The review** (an independent agent; branch `campaign/t3-panel-ids`): ready, no blocker. It re-derived every
+    figure above, found the committed file byte-identical to the chosen map, and confirmed that a missing id, a
+    missing sex gene or an id absent from the matrix each fail closed. Its three lesser points are applied (a test now
+    holds the extras to the ids the resource states; two README sentences). What it could not check, and what stays
+    open: two panel genes get their id from one source only; the set has no symbol column, so a symbol that named
+    another gene in the reference would not be counted; and whether the ids are present in the matrix is seen only at
+    the read. Merged at d51640a. Next: fetch, process and combine for the set; the AI assistant reads the verdicts in
+    the QC file only.
