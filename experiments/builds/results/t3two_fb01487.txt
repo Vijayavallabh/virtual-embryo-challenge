@@ -1,0 +1,41 @@
+T3 candidates of docs/PLAN.md decision log 2026-11-20 (q), row R17: the two-knockout files C1 and C2 on every possible base
+====================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-20 in the campaign checkout ~/v/vec-campaign-c at commit fb01487 (main; clean
+tree, untracked files included) with `experiments/t3_decomp/build_two_knockout.sh fb014872f7b0b9938e1ae3977c36c0919103b573
+<base>` for each of the four bases the list allows (s1, s1x1.5, s1x2.0, s2), one after another. The thin builder
+`experiments/t3_decomp/build_two_knockout.py` imports the frozen builder and script unchanged. 16 BLAS threads, seed
+1000001, the run folder gata4_20261028T122425Z of the reference checkout (read only), board T3:bcatenin.
+
+They were built BEFORE the two scores that fix the base B, for every base B can be, so that no time passes between
+those scores and the hand-over. Nothing here chooses a base: decision log (q)'s rule does, from the returned headlines.
+The files of the bases the rule does not pick are never uploaded (decision log 2026-11-20 (nn)).
+
+Steps and exit codes, per base (the launcher stops at the first failure; every all.exit is 0):
+  targeted tests (synthetic data only)                                                                       exit 0
+  identity of the barred s1 through the builder: 3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2,
+    the reference list's line: passed (each base)
+  identity of the base through the builder: s1x1.5 c060fcaa6c7fdc6d6b1a58c8f850a1895a8295abbc50f297de71a32c97f9c420,
+    s1x2.0 7393810fbe3be2cde67cf23ed54f45d22da738d7d3c9e124780a8f6281075661,
+    s2 1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f: each equals its reference hash
+  each candidate twice (folders a, b): exit 0, the same bytes; `vec check` for T3:bcatenin inside each build: exit 0
+    base s1:      C1 b233384dc826f4fd0e249035fc346f434bfee1d8935ee9e8ed49a24721ef04dc  c1-s1.h5ad
+                  C2 047506dbab19f007ce45820e3ab79c57b760fbbfc8da53058e4748b8c9930eac  c2-s1.h5ad
+    base s1x1.5:  C2 12a0dffbfc4fa0cdbedaef992edf17778e2610792008cc114e12b02569f8c1c8  c2-s1x1.5.h5ad   (C1 exists only at exponent 1)
+    base s1x2.0:  C2 9559c9cd785b2eefc07847d4094d2d002daaac6a03bc2ba422eb00cd9e1d8d00  c2-s1x2.0.h5ad
+    base s2:      C1 8718330866429dc089eaffd2f96f66936fe54134eba2d50f8126266e6a3e54b8  c1-s2.h5ad
+                  C2 47111ac1d07e73c0c26e990a474dff0de94ae22d6a4474a569bcb674ae2b85a7  c2-s2.h5ad
+Each stamp says commit fb014872f7b0b9938e1ae3977c36c0919103b573, clean True. The six files differ from one another.
+
+A first launch at 3631702 stopped at the launcher's clean-tree step on every base (exit 98): the folder of K22's reading
+was untracked in that checkout. The checkout was synced to fb01487, where that folder is tracked, and the launch repeated.
+
+Kept: ~/v/vec-campaign-c/runs/archive/t3two_fb01487/ on the DGX and runs/archive/t3two_fb01487/ on the local machine
+(SHA256SUMS checked on both); copies for upload at runs/manual_upload/T3_c1_s1.h5ad, T3_c2_s1.h5ad, T3_c2_s1x1.5.h5ad,
+T3_c2_s1x2.0.h5ad, T3_c1_s2.h5ad and T3_c2_s2.h5ad (sha256 checked; the local format check passes on each, exit codes
+only). The reference checkout was not touched. No log, size or count of a build was read.
+
+Which files are handed over, by decision log (q): B is the highest returned T3 headline among the barred s1 (61.8), the
+1.5 file, the 2.0 file and the barred s2 (ties: s1, then the lower exponent), fixed once both uploads of entry (k) have
+headlines. B = s1: C1 (T3_c1_s1) then C2 (T3_c2_s1). B = the 1.5 file: T3_c2_s1x1.5 only. B = the 2.0 file:
+T3_c2_s1x2.0 only. B = the barred s2: C1 (T3_c1_s2) then C2 (T3_c2_s2).

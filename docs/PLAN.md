@@ -8107,3 +8107,21 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     `campaign/t1-multi-atlas-3`). The verifier also noted that the atlas in use (X002) was never read under the
     stricter plug-day rule the new pipeline applies; that point is open and will be read from X002's own series record
     at the plan run.
+- 2026-11-20 (nn), T3: the two-knockout files are built for every possible base, ahead of the scores that fix the base
+  (state at 19:34 UTC, 2026-11-20). Written by the AI assistant.
+  - **A departure from what the question said, stated plainly.** The question put to the captain on these files said
+    they would be built only after both of the day's Task 3 scores were back, because the base B is the best-scoring
+    of four files. The AI assistant built them now instead, once for each base B can be (s1, the 1.5 file, the 2.0
+    file, the barred s2), so that no time passes between his two scores and the hand-over. Nothing else changed: the
+    list and its rule are entry (q)'s; the returned headlines fix B; only B's files are handed over; the files of the
+    other bases are never uploaded.
+  - **The builds** (`~/v/vec-campaign-c` at fb01487, clean; record `experiments/builds/results/t3two_fb01487.txt`):
+    every exit 0; the builder reproduced the barred s1 and each base byte for byte; each candidate was built twice
+    with the same bytes; stamps name the commit and a clean tree. Six files: C1 and C2 on s1 (b233384dc826,
+    047506dbab19), C2 on the 1.5 file (12a0dffbfc4f), C2 on the 2.0 file (9559c9cd785b), C1 and C2 on the barred s2
+    (8718330866429, 47111ac1d07e). Copies under `runs/manual_upload/` (hashes checked; the local format check passes,
+    exit codes only). A first launch stopped at the clean-tree step because K22's reading folder was untracked at the
+    checkout's commit; the checkout was synced to main and the launch repeated.
+  - **Data used, for the hand-over:** released challenge data only: the wild-type E8.75 cells and the two released
+    knockouts (the Mab21l2 knockout and the Gata4 validation knockout), whose per-gene changes are multiplied. No
+    outside data.
