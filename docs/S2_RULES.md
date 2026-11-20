@@ -1445,3 +1445,70 @@ The candidate sets as they stand at this note:
   construction, his decision of 2026-11-02 that no parity hedge is used without the organisers' approval.
 - **Heart**: a list fixed by analysts other than the AI assistant (decision log 2026-11-20 (m)). Scope is a closed
   lever, so nothing on it is built before the captain's own named exception.
+
+## Amendment of 2026-11-20: the heart's next two files, K1 the half trim and K2 the full-scope copy (the captain's own named exception; row R16)
+
+Written by the AI assistant, which is recused on the heart's scope and size and stated no preference. The list was
+fixed, before either file has a score, by analysts who had not seen the AI assistant's conversation (a designer, a cold
+challenger, a writer and a reviewer; `docs/PLAN.md` decision log 2026-11-20 (m); `experiments/harness/TRIES.md` row
+R16). Scope is a closed lever, so the list went to the captain in one question.
+
+**The question, in full:** "Heart board (56.4 with the full trim, which keeps only the heart core). Analysts who have
+not seen my conversation fixed the heart's next two files before either has a score. K1, the half trim: keeps half of
+the tissue around the core; never built. K2, the full-scope copy: the whole E10.5 stage; built on 18 Nov, never
+uploaded. Their rule: K1 first, K2 in the next slot whatever K1 scores, then the best of the three stands and the heart
+list ends. Practice at forecast sizes (ten seeds) reads both ways. With the released stages as they are: the half trim
+beats the full trim on all three transitions (by 6.2, 2.5 and 1.9 points) and the full scope beats it by 2.9 on
+average. With the practice truth cut down towards the core: the full trim beats the half trim by 6.2 on average (-0.3,
++11.9, +1.3) and the full scope by 11.3. Nothing released says which case the hidden E12.5 heart is. A miss costs one
+upload slot per file; your table showed the board keeping our best score, not our latest. Scope is a closed lever, so
+each file needs your own named exception. I am recused on the heart's scope and size and state no preference. Which
+heart files may be built and uploaded?" The options: "Both, K1 then K2" ("The analysts' list as they fixed it: the half
+trim first, the full-scope copy in the next slot whatever the first scores. Two heart slots."), "Half trim only" ("K1
+alone, one heart slot. The full-scope copy stays set aside as on 19 November.") and "Neither" ("The full trim stands as
+the heart's file. No heart slot is used and nothing is built.").
+
+**His answer, verbatim:** "Both, K1 then K2". This is his own named exception on scope for K1, and his word for K2, the
+full-scope file he ruled on 2026-11-18 and set aside on 2026-11-19.
+
+**The files.** Each differs from the full trim of the heart section above in one named option; the copy draw, the raw
+mode, the count rule, the seed (1000001) and the halving are the full trim's.
+
+- K1, the half trim: `uv run python experiments/builds/build_test.py heart --entry s2_trim --expression copy --z-mode
+  raw --out <folder>/T2heart_s2trimcopy.h5ad`, then `uv run python experiments/builds/halve.py
+  <folder>/T2heart_s2trimcopy.h5ad <folder>/T2heart_s2trimcopy_half.h5ad`. The half is the upload file. The option is
+  the scope `s2_trim` together with the size field the builder ties to it; a K1 score is read as that form, never as
+  scope alone.
+- K2, the full-scope copy: `uv run python experiments/builds/build_test.py heart --entry s1 --expression copy --z-mode
+  raw --out <folder>/T2heart_s2iso.h5ad`, then `halve.py` into `T2heart_s2iso_half.h5ad`, which must equal set heart2's
+  file (sha256 dc436d9225bb28e7997d2ec51e95254cd125e569d44c059596298d0a7b6af5c2).
+
+**Builds.** `experiments/builds/heart_candidates.sh <commit>` on the DGX campaign checkout, from a clean tree at a
+commit that holds this amendment and row R16. It first rebuilds the full trim and stops unless its half is the uploaded
+file (sha256 04cde6361c04840ee47fff32eb9a20f4781bd649387cc540ed9fdea71e65fa35). Each candidate is then built twice into
+separate folders and must give identical bytes; every file passes the format check. A test build is read by its exit
+code, its sha256 and its stamp's commit and clean fields.
+
+**The analysts' rule, in their words, fixed before either file has a score:**
+
+> Search rule, fixed before either file has a score: 1. Only the headlines (board totals) of the team's own heart
+> uploads choose, as the captain reports them in the decision log. 2. No per-term value and no difference between
+> scores goes into any number, file or rule. No reading of the headlines is written as a statement about the E12.5
+> stack's scope or size. 3. "Beats" means a strictly higher headline at the precision the site shows. Equal or lower
+> keeps the incumbent. 4. K1 goes first. K2 goes in the next slot whatever K1 scores, and neither result decides
+> whether the other is uploaded. 5. If only one slot remains, K1 goes and K2 does not. 6. A candidate is skipped if the
+> captain does not approve it, or if its build or check fails. 7. A refused upload has no score. The incumbent stands,
+> and the file is not changed to get it accepted. 8. No candidate is rebuilt with another seed, uploaded again, or
+> changed after its score. 9. After K1 and K2, the heart's best file is whichever of C, B and A has the highest
+> headline. The list ends there: no further heart file is designed from these scores. 10. Each upload is the captain's
+> own act.
+
+> Left off the list: - K3, the trend step at any strength. Row H28's pre-set outcome was PLACEBO ("no question; the
+> ruled file stands"), its S3 test failed in CLEAN, and H17a/H19/H28 tie the trend to the closed depth lever. It can
+> come back only as the captain's own exception, put to him as a separate priced question. - Any other size for the
+> full trim. - Trim fractions other than 0, 0.5 and the whole stage. - Trend strengths 0.5 and 0.25. - A quarter of the
+> rows, or undoing the halving. - Mirrors, flips or row-order changes. - The outside-atlas direction. - Depth, herding,
+> cfm, and the Potts and flow lines. - The old s2 with the trend, and the first upload's form. - Any re-draw with a new
+> seed.
+
+Every upload stays the captain's own act. Nothing else in the heart sections above changes.

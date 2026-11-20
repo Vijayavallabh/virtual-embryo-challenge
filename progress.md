@@ -2,6 +2,14 @@
 
 ## Current State
 
+- **2026-11-20, 15:05 UTC.** The four last files were uploaded and scored (heart and T3 rose; T1 and the embryo did
+  not beat their first uploads). New regime on the captain's word: up to two uploads per board a day, candidates
+  fixed in the decision log before their scores. Ready and handed over: T3 at exponent 1.5 (then 2.0 or the barred
+  s2 by rule), the embryo positions file. Building: T1's A, B, C (row R15) and the heart's K1, K2 (row R16; "Both,
+  K1 then K2"). With agents: the embryo's row-order practice read E48 ("Use it, after a practice read"), the T3
+  outside-knockout screen fix, T3 candidates from the two released knockouts. Tries unchanged: T1 413, embryo 75,
+  heart 80, T3 51. What waits: `session-handoff.md`, first bullet.
+
 - **2026-11-20, 10:17 UTC.** All four last files exist as the captain named them and are handed to him: T1
   recomputed-groups atlas file (ad8f24c71c90), heart full trim (04cde6361c04), embryo series twin (bc50d012cd2c), T3
   barred s1 (3712c3f9988d). Reads T63, H27 and H28 are run and recorded; K20 is shelved unrun. Tries: T1 413, embryo
