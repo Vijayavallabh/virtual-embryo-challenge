@@ -61,7 +61,7 @@ STATUSES = ("cleared", "held_phenocopy", "excluded_design")
 # Held and excluded datasets: never fetched by any flag or YAML (the main session's decision of 2026-11-20).
 NEVER_FETCH = frozenset({"GSE165300", "GSE126128", "GSE280543", "GSE280587", "GSE259342", "E-MTAB-7325"})
 # sha256 of the committed datasets.yaml; the pin-and-commit step updates it in the same commit as the YAML.
-DATASETS_SHA256 = "ac3e1692c4cd8147d835961419cf0731cf77b0ad199e055c551f7024d8df040c"
+DATASETS_SHA256 = "f72a38f8d7947ee15a2f3f0b7c124bc072f24833fde8c4c9cb10899b370d2a37"
 PIN_KEYS = ("accession", "arm", "gene", "stage", "files", "metadata_sha256")
 SERIES_PIN_KEYS = ("accession", "series_metadata_sha256")
 PIN_ARMS = ("ko", "control")

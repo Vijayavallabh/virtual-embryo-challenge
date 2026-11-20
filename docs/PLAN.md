@@ -7980,3 +7980,23 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **J7 for E49.** E48's gate reran the floor and the exact-position control at 9cd4b6e against row E47's committed
     scores: worst ten-seed mean difference 0.0000, worst seed difference 0.0000 on all nine tasks (gate files
     committed with this entry).
+- 2026-11-20 (ii), T3 outside knockouts: the Usb1 pair pinned as the second study; the Cmtr2 study not usable as the
+  pipeline stands (state at 18:54 UTC, 2026-11-20). Written by the AI assistant.
+  - **Two readers on the two added studies.** The AI assistant read both series' text, all eleven sample records and
+    the shared protocol texts; a second reader agent, which had not seen that reading, read every line of both tables.
+    Neither found a held-out or pathway label, a pooled or per-cell-genotype design, or a hidden character. GSE270969
+    (Cmtr2): clean labels, one embryo per library, but its only per-sample files are unfiltered matrices, a file type
+    the pipeline denies by design; nothing is pinned, and no code is changed to take them now. GSE277839 (Usb1): the
+    second reader held on the record's sentence that "demultiplexing ... and aggregation were made using the Cell
+    Ranger software", since the readers' checklist says a demultiplexed design is not pinned, and left the ruling to
+    the main session; it also noted that the record calls the molecule nuclear RNA while the protocol describes a cell
+    suspension, and that the stated software version does not fit the stated chemistry.
+  - **The AI assistant's ruling on that sentence.** It describes the vendor pipeline's own steps, which every library
+    of this kind goes through; the two genotypes are two libraries with their own sample records and their own files.
+    That is not a pooled-genotype design. The two samples are pinned (knockout GSM8532457, control GSM8532456, gene
+    Usb1, E9.5), with hashes equal to those the second reader read; register row X014 is placed before any table
+    exists; the dataset file's hash pin is updated. The pipeline's own shrinkage leaves little of a
+    one-library-per-arm ratio, which is the right weight for it.
+  - **Why it is pinned at all:** practice read K22 requires tables from at least two independent studies, and this is
+    the only other whole-embryo study with per-sample files and its own control that the hunt found usable today. The
+    rerun covers every pinned dataset in one launch.
