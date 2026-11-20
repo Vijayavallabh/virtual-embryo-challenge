@@ -7312,3 +7312,12 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     (`~/v/scratch/vec-campaign-c_leftovers_20261120`). T1: builder options for candidates A, B and C
     (wf_729a761e-919). Embryo: fresh analysts on the occupancy term (wf_409f1d09-957). Heart: fresh analysts fix
     the next candidates (wf_5fc02235-25b). T3's outside-knockout work starts now.
+- 2026-11-20 (k), T3's two strength candidates are built (state at 12:13 UTC). Written by the AI assistant.
+  - The builder (`experiments/t3_decomp/build_barred_exponent.py`; wf_77224e74-5ed, reviewed ready) sets only the
+    barred s1 factor's exponent and leaves the three frozen T3 files byte-identical. On `~/v/vec-campaign-c` at
+    3654966: exponent 1.0 reproduced the reference hash, then exponents 1.5 and 2.0 were each built twice with the
+    same bytes: `runs/manual_upload/T3_barred_x1.5.h5ad` (sha256 c060fcaa6c7fdc6d6b1a58c8f850a1895a8295abbc50f297de71a32c97f9c420) and
+    `runs/manual_upload/T3_barred_x2.0.h5ad` (sha256 7393810fbe3be2cde67cf23ed54f45d22da738d7d3c9e124780a8f6281075661). Record
+    `experiments/builds/results/t3_exponent_3654966.txt`; ledger row R14.
+  - With the barred s2 (the mild composition, built) these are T3's three candidates of entry (h). Order of
+    upload, fixed now: exponent 1.5 first; then, if it beats 61.8, exponent 2.0, otherwise the barred s2.

@@ -1,0 +1,29 @@
+T3 candidates of docs/PLAN.md decision log 2026-11-20 (h): the barred branch's s1 with its factor at exponents 1.5 and 2.0
+=================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-20 in the campaign checkout ~/v/vec-campaign-c at commit 3654966 (the head
+of `campaign/t3-exponent-build`, merged to main afterwards; clean tree; docs/S2_RULES.sha256 and the three frozen T3
+files' hashes checked by the launcher) with `experiments/t3_decomp/build_barred_exponent.py`, a thin builder that
+imports the frozen builder and script unchanged and sets only the s1 factor's exponent. 16 BLAS threads, seed 1000001,
+the committed decision file, wild-type E8.75, the run folder gata4_20261028T122425Z of the reference checkout (read
+only), board T3:bcatenin. T3 files that apply a per-gene factor are built on the DGX only (docs/COMPUTE.md, "What
+reproduces where").
+
+Steps and exit codes (the launcher stops at the first failure):
+  targeted tests (tests/test_t3_barred_exponent_build.py, experiments/t3_decomp/test_build_submission.py)  exit 0
+  exponent 1.0, once: sha256 3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2, the reference list's
+    barred_s1 line: the identity check passed
+  exponent 1.5, twice (folders a, b): exit 0, the same bytes
+    c060fcaa6c7fdc6d6b1a58c8f850a1895a8295abbc50f297de71a32c97f9c420  barred_s1_x1.5.h5ad
+  exponent 2.0, twice (folders a, b): exit 0, the same bytes
+    7393810fbe3be2cde67cf23ed54f45d22da738d7d3c9e124780a8f6281075661  barred_s1_x2.0.h5ad
+  `vec check` for T3:bcatenin on all five files: exit 0
+Each stamp says commit 3654966, clean True.
+
+Kept: ~/v/vec-campaign-c/runs/archive/t3_exponent_3654966/ on the DGX and runs/archive/t3_exponent_3654966/ on the local
+machine (SHA256SUMS checked on both); copies for upload at runs/manual_upload/T3_barred_x1.5.h5ad and
+runs/manual_upload/T3_barred_x2.0.h5ad (sha256 checked; the local format check passes, exit codes only).
+
+Before the build, 14 untracked scripts of earlier campaign branches in that checkout were moved to
+~/v/scratch/vec-campaign-c_leftovers_20261120 (the builder refuses an unclean tree); nothing was deleted. The reference
+checkout was not touched. Logs of the builds are kept on the DGX and were not read.
