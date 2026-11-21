@@ -113,3 +113,41 @@ def test_the_fits_refuse_without_a_gpu(tmp_path):
         out = _run(tmp_path, "fit", _head(), cuda=cuda)
         want = 95 if _clean() else 98
         assert out.returncode == want and _exit(tmp_path, "fit") == str(want)
+
+
+def _parallel(tmp_path: Path, step: str, fake_exit: dict[str, int], cuda: str = "4,6") -> int:
+    """The launcher's own parallel() text, run with a fake interpreter that records its arguments and the GPU it was
+    given and exits as told; the launcher's lists and allowed log lines, a temporary runs folder. No git, no python."""
+    tmp_path.mkdir(parents=True, exist_ok=True)
+    sh = LAUNCHER.read_text()
+    func = re.search(r"^parallel\(\) \{.*?^\}$", sh, flags=re.M | re.S).group(0)
+    lists = "\n".join(re.findall(r"^(?:TASKS|FOLDS|OK_LINE)=.*$", sh, flags=re.M))
+    fake = tmp_path / "fakepy"
+    codes = " ".join(f"{k}) code={v} ;;" for k, v in fake_exit.items())
+    fake.write_text('echo "$CUDA_VISIBLE_DEVICES $2 $4" >> "$(dirname "$0")/calls"\n'
+                    f'case "$4" in {codes} *) code=0 ;; esac\n'
+                    'if [ "$2" = fit ]; then echo "fit $4 done"; else echo "repro $4 pass"; echo "n_cells 12"; fi\n'
+                    'exit $code\n')
+    script = (f'set -u\nR="{tmp_path}/runs"\nPY="bash {fake}"\nSCRIPT=x.py\nCOMMIT=c\nDATA=d\nOUT=o\n'
+              f'export CUDA_VISIBLE_DEVICES={cuda}\n{lists}\n{func}\nparallel {step}\nexit $?\n')
+    return subprocess.run(["bash", "-c", script], capture_output=True, text=True).returncode
+
+
+def test_parallel_spreads_the_fits_over_the_listed_gpus(tmp_path):
+    assert _parallel(tmp_path, "fit", {}) == 0
+    calls = [c.split() for c in (tmp_path / "calls").read_text().splitlines()]
+    assert sorted(c[2] for c in calls) == sorted(e54.folds()) and all(c[1] == "fit" for c in calls)
+    assert {c[0] for c in calls} == {"4", "6"}  # one GPU id per process, from the list
+    ex = tmp_path / "runs" / "exit"
+    assert all((ex / f"fit-{f}").read_text().strip() == "0" for f in e54.folds())
+    assert all((ex / f"fit-{f}.other_lines").read_text().strip() == "0" for f in e54.folds())
+
+
+def test_parallel_returns_3_on_a_miss_and_1_on_an_error_and_counts_other_lines(tmp_path):
+    assert _parallel(tmp_path / "a", "repro", {"x2": 3}) == 3
+    ex = tmp_path / "a" / "runs" / "exit"
+    assert (ex / "repro-x2").read_text().strip() == "3"
+    assert (ex / "repro-half.other_lines").read_text().strip() == "1"  # the count line is counted, never printed
+    calls = [c.split() for c in (tmp_path / "a" / "calls").read_text().splitlines()]
+    assert sorted(c[2] for c in calls) == sorted(e54.nt.all_tasks())
+    assert _parallel(tmp_path / "b", "repro", {"x2": 3, "e75": 1}) == 1
