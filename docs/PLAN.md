@@ -9632,3 +9632,82 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     use data across tasks or from outside on a board that has had none (question A15). The judges' own odds: each kill
     test passes with a chance between about one in twenty and one in five, and a gain of three board points or more at
     the test is about one or two in a hundred per moonshot. Most likely no file comes of them.
+- 2026-11-21 (aa), the T1 file at twice the calendar fraction: the code is reviewed and merged; a cold challenger's check of the
+  rule reading; what the Rules page says about trying settings (state at 23:25 UTC, 2026-11-21). Written by the AI
+  assistant.
+  - **The code** (workflow `t1-fraction-2x`; branch `campaign/t1-fraction-2x`, 6165ed8, merged to main at 0619ad2).
+    The builder takes `--feng-fraction-mult 2.0` only with `--captain-ruling R20`, only on R13's exact command, and
+    refuses every other value and combination before anything is read; the commands that exist (the default, A, B, C)
+    build the same bytes and records as before, pinned by tests on a synthetic fixture. The launcher
+    `experiments/builds/t1_fraction2.sh` first rebuilds R13's bytes and B's bytes and stops if either differs, then
+    builds the 2.0 file twice. The reviewer: READY, no blocker; lesser points noted (two refusals leave no exit file,
+    so the waiter also watches the process; the launcher runs Python isolated where the reference sets did not, which
+    fails closed at the identity steps if it mattered). On merged main: 152 passed on the related test files, the step
+    script's guard passes, the linter is clean.
+  - **The rule check** (a cold challenger, told only the sign of B's headline against R13's file). Verdict: the
+    reading of entry 2026-11-21 (x) stands. It puts the chance that the organisers would treat the 2.0 file as
+    improper at about one in twenty, on the score-use question alone, and the loss at that one file. Its strongest
+    argument against: the direction of the move follows a comparison of two submissions, a one-bit estimate of a
+    hidden-target property, and the team's own paraphrase lists 'differencing submissions' among prohibited acts. Its
+    conditions for staying on the allowed side: a round step on the existing scale, fixed before its own score; only
+    the team's own headlines, used only to choose which file stands; nothing else in R13's command changes; any
+    further strengths named before the 2.0 score; the method report says plainly that the strength was tried at 1.0,
+    1.5 and 2.0 and the best headline kept; the normal build checks. What it says would cross the line: a value fitted
+    from the sizes of returned scores; setting the strength from per-metric returns; inverting the skill map.
+  - **Two corrections to entry (x), from the challenger.** (1) Entry (x) understated the record. The Rules page's
+    Section 10, as the screened check of 2026-11-18 quotes it in `docs/ORGANIZER_QUESTIONS.md`, says: "Trying a
+    parameter value, seeing how it scores, and trying another is ordinary leaderboard work and remains permitted
+    however many rounds it takes; ... what is prohibited is solving for a property of the target and building a
+    submission out of the solution." (2) Entry (x) said the 'Scores' section of `docs/DATA_POLICY.md` records the
+    Rules page's test ("whether the truth enters your prediction's content or only its selection"); that sentence is
+    in a later change note of that file and in `docs/ORGANIZER_QUESTIONS.md`, not in the 'Scores' section.
+  - **What this means beyond the one file (the AI assistant's reading, put to the captain).** Entry 2026-11-21 (t)
+    refused to tune any file from the returned scores and named the organisers' rule as the reason. On the record just
+    quoted that was stricter than the organisers' rule: trying a setting, seeing its score and trying another is
+    permitted by them for as many rounds as it takes. What their rule prohibits is solving for a property of the
+    hidden target (by inverting the skill map) and building a submission out of the solution. The bars on setting a
+    number from a score and on reading per-metric lines are the team's own (entries 2026-11-18 (k), 2026-11-20 (n) and
+    (q), 2026-11-21 (l)), written after the AI assistant's lapses, which were of the prohibited kind (bounding a
+    hidden quantity from scores). The team's own rules are the captain's to lift; the levers closed after the exposure
+    of 2026-11-04 (sizes, scope, cell numbers, T1's composition, depth and draw) and the AI assistant's recusals stay
+    whatever is lifted, because those concern leaked or solved hidden properties. The captain is asked one question:
+    whether to lift the team's own bars so that a score-guided search (round steps on a few settings per board, each
+    fixed in the log before its own score) may run.
+- 2026-11-21 (bb), the T1 file at twice the calendar fraction is built and handed over; the moonshot kill tests' reviews (state at
+  23:45 UTC, 2026-11-21). Written by the AI assistant.
+  - **The 2.0 file** (row R20; record `experiments/builds/results/t1x2_3d18841.txt`). On the DGX at 3d18841, clean,
+    `experiments/builds/t1_fraction2.sh` (run r1) passed its gate and tests (172 passed), rebuilt R13's bytes
+    (ad8f24c71c90...) and B's bytes (c7240cb6a7f7...), and built the 2.0 file twice with the same bytes: sha256
+    52897fe375b8a81afffa788592047c30361824148b00a8176514385060518837. Stamps: this commit, clean.
+    `runs/manual_upload/T1_s2rcB2.h5ad`, format check passes. It is handed over as T1's file after C. Unpriced on
+    practice; the cost of a miss is one slot.
+  - **The moonshot kill tests** (workflow `moonshots-engineering-1`, sixteen agents; hand-back in the scratchpad
+    `lift8/moonshots_eng1.json`). One of the eight is reviewed ready: T67, T1's per-gene timing
+    (`campaign/moon-t1-timing`, 485e3d3). Seven are not ready, each with stated fixes: T66 T1 blood (four blockers;
+    its work was left uncommitted in the engineer's worktree; it also needs the `rdata` package, which the DGX
+    environments lack); K25 T3 dispersion (the row text leaves out constants the code fixes); K26 T3 map (its pre-gate
+    on one fold reads a table derived from that fold's target; the try count on a void); H30 heart chord (row
+    placeholders; its gate needs its own row); H31 heart bridge (four); E53 embryo geodesic (row wording twice; a
+    stale exit file can let a step run; the register lacks torch); E54 embryo flow (the launcher's clean-tree check
+    refuses after its own gate). The outside nuclei atlas and the heart atlas's later stages are on the DGX. A fix
+    round follows for T66, K25, H30, E53 and E54; K26 and H31 wait (the lowest odds; H31 depends on H30's gate).
+- 2026-11-21 (cc), the first moonshot kill test starts: T1's per-gene timing, its late labelling first (state at 23:49 UTC,
+  2026-11-21). Written by the AI assistant, which gives no design lean; the kill test is its score-blind judge's.
+  - **Merged.** `campaign/moon-t1-timing` (485e3d3; review ready, no blocker) is merged to main at c64b2bb, with both
+    sides of the step script's test list kept; on merged main the timing tests and the related guards pass (124
+    passed; the step script's guard 1 passed; the linter clean).
+  - **Two steps, two rows.** (1) Row N57, placed with this entry: the frozen relabeller of row N54 rerun unchanged on
+    the outside heart atlas's permitted cells at E15.5, E16.5 and E17.5. It is target-free and counts no try. Register
+    row X002 is amended in the same commit, before any read: the later stages are a new use of the same source, after
+    the protected window, with no authors' label read; the captain's approval of new outside uses in bulk (2026-11-20)
+    covers it, and no upload uses it without a pass and the captain's word. (2) Row T67, placed in a second commit
+    once the late statistics exist (the row must carry their sha256): two counted arms on row T62's five tasks, ten
+    tries, with an idle pre-gate that prunes the row before any score if the timing changes the direction by less than
+    five per cent in every group.
+  - **The reviewer's lesser points, recorded.** The control permutes each gene's deviation within bins of the
+    direction's absolute size, which mixes genes whose direction is positive and negative; the limiter then zeroes
+    more of the control's slopes than the arm's, so the comparison of arm and control partly measures more timing
+    against less. That is the specification's literal design; it is kept, and the pre-gate reports both ratios. The
+    row text handed back leaves out rules the code fixes; they are written into row T67 when it is placed.
+  - **The judge's odds:** the kill test passes with about 0.12; given a pass, three board points or more at the test
+    about 0.04; the most likely outcome is that the permuted control ties the arm.
