@@ -810,7 +810,7 @@ def test_the_handed_row_has_eleven_cells_no_inner_pipe_and_only_two_placeholders
     cells = row[2:-2].split(" | ")
     assert len(cells) == 11 and row.count("|") == 12
     assert cells[1] == "T3" and cells[9] == "<this row's commit>" and cells[10] == "<outcome>"
-    assert re.findall(r"<[^>]*>", row) == ["<this row's commit>", "<outcome>"]
+    assert re.findall(r"<[a-z' ]+>", row) == ["<this row's commit>", "<outcome>"]
     assert k25.ROW_SCRIPT in cells[2]
 
 
@@ -829,8 +829,9 @@ def test_the_row_states_every_rule_the_code_fixes(tmp_path):
             k25.row_present(p)
         assert e.value.code == k25.EXIT_REFUSED, phrase
     # the first engineer's row text (no AHEAD definition, no gated states, no estimator constants) is refused
-    old = ("| K25 (one row) | T3 | `experiments/t3_decomp/k25_dispersion.py` | Pre-gate, source-only, before any score: "
-           "at least 50 genes with abs(ln r) > ln 1.2. PASS: AHEAD on x2 and in at least one dm and one plain cell |\n")
+    old = ("| K25 (one row) | T3 | `experiments/t3_decomp/k25_dispersion.py` | Pre-gate, source-only, before any "
+           "score: at least 50 genes with abs(ln r) > ln 1.2. PASS: AHEAD on x2 and in at least one dm and one "
+           "plain cell |\n")
     p.write_text(old)
     with pytest.raises(SystemExit) as e:
         k25.row_present(p)
