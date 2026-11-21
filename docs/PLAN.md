@@ -8974,3 +8974,49 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     three unscored files (the positions file, the copy-positions file of entry (h) when it exists, the overlay file);
     their order and what each score means are fixed by fresh analysts in a later entry, before any score of the new
     files.
+- 2026-11-21 (k), the embryo's overlay file is built and its review is ready; three corrections to the wording of
+  entry (j), row R19 and the rules amendment (state at 08:45 UTC, 2026-11-21). Written by the AI assistant, which
+  is recused on the embryo's shape forms and states no preference.
+  - **The build** (`experiments/builds/results/embov_3b813b5.txt`). On the DGX campaign checkout at 3b813b5, clean,
+    `experiments/builds/embryo_overlay.sh` (run r1; its refusal path traced once first with a wrong commit) passed its
+    gate and its tests (105 passed), gave the positions file's bytes with the default command (a03611a343fa...), and
+    built the overlay file twice with the same bytes: sha256
+    1cfc91be3a20bfdd1a4f7bcfebd7316e1143c6d4048e578c1f30bcfbe1e0e1ea. `vec check` passed for board
+    T2:embryo:test_interp after each build and once more on the local copy, `runs/manual_upload/T2embryo_s2x_ov.h5ad`
+    (sha256 checked). All three stamps say commit 3b813b5, clean True. The build was read by exit codes, sha256 and
+    those two stamp fields only. Archives: `runs/archive/embov_3b813b5/` on both machines.
+  - **The review** (one independent reviewer, read-only, at 3b813b5; blocker standard set in the brief: what can make
+    the bytes differ from the record, make the practice reading not describe the file, expose or use a hidden count or
+    a test score, or misstate the captain's order). Verdict: READY, no blocker. What it traced: the test build and the
+    practice arm E49c call the same function with the same order of steps (exact positions, the form, the size
+    rescale, the jitter, then the cloud guard); no code under `src/`, the builder, the count decision or the lock file
+    changed between row E49's run commit d76ccd5 and this build; the file differs from the positions file in
+    coordinates only (rows, row names, expression, count and seed are the same); the test path reads no hidden count
+    beyond what the positions file's own path reads, and no test score. The differences between the practice arm and
+    the test build are the ones that follow from the practice tasks not being the test pair (the stages, the calendar
+    fraction, the coupling's rotation, the panel, the count, the pre-registered size target) and the thread count (8
+    in practice, 16 in builds, as for the positions file).
+  - **Lesser points, recorded and not acted on:** the launcher's gate checks tracked files only while the stamp also
+    counts stray files (the stamps were read and say clean); it accepts a commit prefix (the full commit was given);
+    its check that the rules note names R19 is a plain search; a failed stamp read or a killed run would not write a
+    failing exit file (neither happened: all six exit files are 0 and the stamp list has its three full lines); no
+    test pins the builder's overlay output byte for byte to the practice candidate on one synthetic input (the
+    reviewer's trace found the same call). One point is a standing caution: the builder writes sidecar files beside
+    each test build (`.build.json`, `.stamp.json`); the overlay's `.build.json` holds one more number that follows
+    from the rows drawn, and so from the test board's count. Those sidecars are not opened, except the stamp's commit
+    and clean fields by code.
+  - **Corrections of wording (the reviewer's points; the order itself is recorded correctly everywhere).** (1) Entry
+    (j) says row E49's last line sends each candidate to the captain as a priced question and calls the captain's
+    answer "the captain's order on that question". That is wrong: under row E49's rule the overlay was not a candidate
+    and the rule put nothing to the captain; the question came from the side agent's note. (2) The rules amendment of
+    2026-11-21 summarises the dialog as giving the practice figures, the failed check and the cost; the dialog also
+    gave a conversion, "about +1.2 Overall if it carried over", which entry (j) quotes in full. The rules note is
+    hash-pinned and is not reopened for this; the sentence is added when the note is next amended. (3) Row R19's risk
+    cell says the practice gain "cannot be credited to the form's own geometry". Row E49's fixed statement compares
+    the shape term only (clause P5). The board-level wording is the AI assistant's reading beyond the fixed statement;
+    the reviewer checked it against the committed `reading.json` and reports that the board means of the form and of
+    its rotated control are close on all nine tasks.
+  - **What is still open before any score of this file.** Its place in the embryo's list and what each returned score
+    means: fresh analysts, in a later entry, once the round on the copy-positions file of entry (h) has handed back
+    (its engineer has finished and its reviewer is running). Until that entry exists the positions file is the embryo
+    file with the captain.
