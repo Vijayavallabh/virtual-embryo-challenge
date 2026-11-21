@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-- **State at 2026-11-21, 22:57 UTC (newest; it supersedes the bullets below where they differ).** Decision log 2026-11-21 (c) to (y). Local main = origin/main. Nothing of ours is running on the DGX. **EIGHT SCORES ARE IN FOR
+- **State at 2026-11-21, 22:57 UTC (newest; it supersedes the bullets below where they differ).** Decision log 2026-11-21 (c) to (aa). Local main = origin/main. Nothing of ours is running on the DGX. **EIGHT SCORES ARE IN FOR
   THE DAY (entries (s) and (w)); only headlines are recorded; the pasted per-metric lines and ranks are recorded
   nowhere and used for nothing; the main session gives no design lean on any board (entry (t)).**
   - **Headlines (first, second upload of the day) and the next file by each pre-set rule:** T1: A 70.8, B 71.59 (the
@@ -36,6 +36,30 @@
     WORD: T3's `runs/manual_upload/T3_refused_s1.h5ad` (0394575a11fc; the rules note of 19 Nov says it is not
     uploaded). Questions put to the captain in plain text, each with a default of no: re-admit T3's refused s1 after
     the queued list; start the heart's organ-cut file D; upload T1's no-outside-data file F in a free slot.
+  - **THE 2x T1 FILE IS BUILDING (entry 2026-11-21 (aa)).** Code reviewed READY and merged (0619ad2); DGX
+    `~/v/vec-campaign-d` at 3d18841203032ed84f43cc941f4f73174c6e5e4f; `bash experiments/builds/t1_fraction2.sh <that
+    commit> r1` started 23:26 UTC; exit files in `~/v/scratch/t1x2/r1/` (gate, tests, D must give R13's ad8f24c71c90,
+    B must give c7240cb6a7f7, X2a, X2b, done); output `runs/t1x2_3d18841_r1/`; a local background waiter is polling.
+    On done.exit 0: read stamps and SHA256SUMS, archive on both machines, copy `T1_s2rcB2.h5ad` to
+    `runs/manual_upload/`, local format check by exit code, build record
+    `experiments/builds/results/t1x2_3d18841.txt`, log entry, hand over (after C in T1's order; data-used text as
+    B's). **THE RULES PAGE ON SCORES (screened quote in `docs/ORGANIZER_QUESTIONS.md`, 18 Nov): trying a parameter
+    value, seeing how it scores and trying another is permitted however many rounds it takes; prohibited is solving
+    for a property of the target and building a submission out of the solution.** Entry (t)'s refusal to tune from
+    scores was stricter than that; the bars are the team's own. ONE QUESTION IS WITH THE CAPTAIN (default no): lift
+    the team's own bars (no number set from a score; no per-metric reading) for a score-guided search of round steps
+    on a few settings per board, each fixed in the log before its own score. Staying closed whatever the answer:
+    solving for hidden properties; the levers closed after the 4 Nov exposure; the main session's recusals.
+  - **The moonshot round handed back (entry 2026-11-21 (z); scratchpad `lift8/moonshots_round1.json`; per-job
+    specifications `lift8/job_moon_*.txt`).** Eight kill tests are with engineers (workflow `moonshots-engineering-1`,
+    task w82xiz87h; branches `campaign/moon-*`): T66 T1 blood along the outside nuclei atlas (needs X003 amended
+    before the read; a file would amend ruling R1); T67 T1 per-gene timing from the heart atlas's later stages (X002
+    amended first); K25 T3 within-label dispersion (released data only); K26 T3 gene-conditioned response map (a file
+    needs the captain's ruling on question A15); H30 heart late-anchor chord, its target-free gate first (if the gate
+    fails, H30 and H31 end at no cost); H31 heart latent bridge (GPU); E53 embryo geodesic overlay; E54 embryo
+    multi-stage flow. Judges' odds: a kill test passes with about 0.05 to 0.2; three board points or more at the test
+    about 0.01 to 0.02 per moonshot. Run order when several are ready, by the judges' ranks and board weight: T66,
+    E53, H30's gate, T67, K25, then the rest.
   - **Running (four workflows):** `moonshots-round-1` (task w8ary0c7c; hand-back to `lift8/`; a kill test is a counted
     try, row first); `blind-round-2-engineering` (task wany2l7le): three practice reads, each an engineer and a
     reviewer on its own branch (`campaign/embryo-so-ohi`, row E51; `campaign/t1-ms-read`, row T65;
