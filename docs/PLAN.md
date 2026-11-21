@@ -9251,3 +9251,33 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     campaign checkout (its gate requires this committed reading, made at the run commit, and unchanged builder code);
     the build is read by exit codes, one sha256 and the stamps' commit and clean fields only. A copy-rows build step
     that exits non-zero means no file, and its reason is not read.
+- 2026-11-21 (q), the embryo's copy-rows file is built; the five conditions of entry (l) hold; it is handed over as the third
+  file of the embryo's list (state at 11:09 UTC, 2026-11-21). Written by the AI assistant, which is recused on the
+  embryo's occupancy term and states no preference.
+  - **The build** (`experiments/builds/results/embcr_59ad7fa.txt`). On the DGX campaign checkout at 59ad7fa, clean,
+    `experiments/builds/embryo_copy_rows.sh` (run r1; its refusal path traced once first) passed its gate (the
+    committed reading of row E50, made at the run commit, with reading (i) holding; unchanged builder code) and its
+    tests (109 passed), gave the positions file's bytes with the default command (a03611a343fa...), and built the
+    copy-rows file twice with the same bytes: sha256 f20730da83084702c50c43d4d4aaa98be8ee801ea443472792172804fea4228e.
+    `vec check` passed for board T2:embryo:test_interp after each build and once more on the local copy,
+    `runs/manual_upload/T2embryo_s2x_cr.h5ad` (sha256 checked). Each build step passed only with a stamp of this
+    commit, clean. The build was read by exit codes, sha256 and those two stamp fields only; that the copy-rows steps
+    exited 0 shows only that the copy's count lies within the board's published limits, and nothing about them is
+    quoted.
+  - **The five conditions of entry (l) for C.** (1) The copy-rows round's review blocker was settled and re-reviewed
+    (entry (m)). (2) The captain has not answered 'no' to the count-and-size question: it was put at 09:27 UTC and has
+    no answer at the time of this entry, so the default (build) applies; a 'no' before an upload means the file is not
+    uploaded. (3) Row E50 was placed before its run, is not void, and its reading (i) holds (entry (p)). (4) The
+    test-board build passes: the default command first gave P's bytes, two builds from one clean stamped commit gave
+    identical bytes, `vec check` passes, and no refusal fired. (5) Its sha256 is committed with this entry under
+    `experiments/builds/results/`. So C exists, and it is the third file of the list O, P, C.
+  - **The rules note** gains the file's own section in this commit: the analysts' text with its four bracketed blanks
+    filled by the main session from the record (the captain's answer, the mixture expression, row E50's figures, the
+    list's first line), a line on the file as built, and the correction of the earlier section's sentence on the
+    question's timing. The note's new sha256: f0938c604057ba3a66443a3a11a8e6075c898b55db9d3eeb786295f924adff1f.
+  - **What goes to the captain with the file, and nothing more:** its path, sha256 and board; the data-used text of
+    entry (l), "Released challenge data only. No outside data."; the practice figures of row E50, which decide nothing
+    (about 2.7 board points below the exact-position form on practice, behind in every seed; the file aims at the
+    baseline's level on the three shape terms, not above it, and the challenger put about 0.7 on that if the build
+    passes the board's limits, which it has); and that the question on count and size is still open with a default of
+    build.

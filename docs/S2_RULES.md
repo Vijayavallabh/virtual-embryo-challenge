@@ -1697,3 +1697,76 @@ exists.
 **Correction to the section above (the overlay file).** That section says the dialog gave the practice figures, the
 failed check and the cost of one upload slot. The dialog also gave a conversion, "about +1.2 Overall if it carried
 over"; decision log 2026-11-21 (j) quotes the dialog in full.
+
+## Amendment of 2026-11-21: the embryo's copy-rows file (the second construction) joins the embryo's list after the exact-position file (the captain's order; row E50)
+
+Written by the AI assistant, which is recused on the embryo's occupancy term and states no preference. Fresh analysts
+who had not seen its conversation specified the construction, and a cold challenger checked it. The captain's words,
+verbatim, in reply to a side agent's note that the construction was shelved and built only if he asked: "reopen it [my
+ordeer]" (decision log 2026-11-21 (h)). The question on the count and size departures was put to the captain as plain
+text on 2026-11-21 at 09:27 UTC; it had no answer by 11:09 UTC, and by its stated default the file is built as
+described. A 'no' before an upload means the file is not uploaded.
+
+**The file.**
+- The handed-over form's command with `--copy-rows --copy-rows-test-ok`.
+- Its rows, order, count and coordinates are those of `vec.evaluate.subsample(T2/E7.5.h5ad as released, 0.1, 0)`, bit
+  for bit, checked by code before writing and on the file read back.
+- Half the rows keep their own E7.5 cell's expression. The other half take E8.0 cells by the exact expression
+  assignment, with the handed-over file's expression rule (mixture, as the exact-position file: each cell carries its
+  own measured panel expression).
+- No size rule, centring or jitter.
+- Built twice from one clean stamped commit with identical bytes, after the default command reproduces the
+  exact-position file's bytes.
+- A refusal at the board's limits means no file. It is read by exit code only, and no limit or count is quoted.
+
+**What it departs from.**
+- The count rule (docs/PLAN.md 3.6 and approved rule 7). The file may fall below the truth count, and
+  allow_below_truth is used.
+- The pre-registered embryo size (R9).
+- Both departures are forced.
+
+**What it is and is not.**
+- Under three assumptions, the three shape terms equal the floor's under either scorer build, whatever the hidden
+  half's count or handedness. The assumptions: the server's floor copy is that draw; uploads are scored as held;
+  anchors and uploads go through the same build and numeric library. The shape group can still sit below the floor's
+  through the gate on the file's own neighbourhood skill.
+- Otherwise the file is one more 10% copy of E7.5 on those terms.
+- It aims at the baseline's level on these terms, not above it. It claims no held-out gain.
+- It was reopened by the captain's order after the team's uploads had been scored. No number in it comes from any
+  score.
+- It is not a parity hedge as defined on 2026-10-19: it is one file, no parity of it or of any upload is computed or
+  chosen, and its effect holds under the fixed scorer build.
+- Practice row E50: reading (i) held on all 90 task-seeds under both scorer builds; its price tables, which decide
+  nothing: against the exact-position form the board is -2.6994 under main and -2.7392 under prefix.
+
+**The list.**
+- The list and its order are those of the section above (decision log 2026-11-21 (l), which replaced this round's own
+  order for two files): the overlay file, the exact-position file, then this file, each in the next slot whatever the
+  others score.
+- Only headlines choose. No per-term value is set beside another upload's.
+- No re-seed, no change after a score, and nothing further on this term.
+- Each upload is the captain's own act.
+
+**Method report line:** "The embryo's last file places the team's cells on the exact positions, order and count of the
+baseline's own copy of the earlier released stage. By the public scorer's code, its position-only terms then equal the
+baseline's, if the server draws that copy as on the validation boards. It aims at the baseline's level on those terms,
+not above it. It was built on the captain's order of 21 November, after the team's uploads had been scored, and no
+number in it comes from a score. It departs from the team's cell-count and size rules. Its expression follows the
+exact-position file's rule. Data used: released challenge stages only."
+
+**The file as built.** `runs/manual_upload/T2embryo_s2x_cr.h5ad`, sha256
+f20730da83084702c50c43d4d4aaa98be8ee801ea443472792172804fea4228e, built twice with identical bytes at 59ad7fa by
+`experiments/builds/embryo_copy_rows.sh`, after the default command gave the exact-position file's bytes; record
+`experiments/builds/results/embcr_59ad7fa.txt`. The five conditions of decision log 2026-11-21 (l) for this file hold
+(decision log 2026-11-21 (q)).
+
+**Notes by the AI assistant on the text above, which is the analysts' with its four bracketed blanks filled.** The
+sentence on the captain's answer, the words on mixture expression, the figures of row E50 and the first line of the
+list were filled in by the main session from the record; nothing else is changed. The analysts' specification with the
+fix round's decisions is `experiments/coords/E50_COPY_ROWS_SPEC.md`: no cloud guard runs on this path, and the
+analysts' third assumption (anchors and uploads scored with the same build and numeric library) is the cold
+challenger's. The method report line calls this 'the embryo's last file': it is the last of the three in the list.
+
+**Correction to the section above (the embryo's list).** That section says the analysts' one question goes to the
+captain "when the file is ready". That timing was the main session's own and was withdrawn: the question was put on
+2026-11-21 at 09:27 UTC (decision log 2026-11-21 (n) and (o)).

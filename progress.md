@@ -2,6 +2,16 @@
 
 ## Current State
 
+- **2026-11-21, 11:10 UTC.** No new score. The embryo now has three files with the captain, in the order fresh
+  analysts fixed (decision log (l)): the overlay file (the captain's "Build it"), the positions file, and the
+  copy-positions file (the captain's "reopen it"), built today twice with one sha256 (f20730da8308...) after its
+  practice row E50 held its equality check on all 90 task-seeds (one try; embryo 84). On practice the copy-positions
+  form sits about 2.7 board points below the positions form (its price tables decide nothing; it aims at the
+  baseline's level on three shape terms at the test, which practice cannot price). One question is open with the
+  captain, default build: the file takes the copy's cell count and E7.5's own size. An independent review of the main
+  session's own record found one blocker in the build launcher's gate, fixed and confirmed before the build. Tries: T1
+  418, embryo 84, heart 80, T3 72. What waits: `session-handoff.md`, first bullet.
+
 - **2026-11-21, 09:20 UTC.** No new score. The embryo's upload order is fixed by fresh analysts and committed
   (decision log (l)): the overlay file, then the positions file, then the copy-positions file if it comes to exist; no
   file waits on another's score; the list is closed at three. The overlay file (the captain's "Build it") is built and

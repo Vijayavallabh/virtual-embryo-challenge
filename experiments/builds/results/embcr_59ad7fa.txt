@@ -1,0 +1,44 @@
+The embryo's copy-rows file (practice row E50; decision log 2026-11-21 (h), (l), (m), (p), (q); the captain's order "reopen it [my ordeer]")
+======================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-21 in the campaign checkout ~/v/vec-campaign at commit 59ad7fa
+(59ad7fa79f4d37a024bbff42b9c54c9606fe28d4; clean tree) by `bash experiments/builds/embryo_copy_rows.sh
+59ad7fa79f4d37a024bbff42b9c54c9606fe28d4 r1`. Before the real launch the launcher's refusal path was traced once with
+a wrong commit (run name dry1: exit 96 at the gate, nothing built). The steps and their exit files
+(~/v/scratch/embcr/r1/):
+  gate   0   HEAD is the full commit; tracked tree clean; rules hash checks; row E50 is in the ledger; its reading is a
+             tracked file of this commit, made at the run commit 5fcf6b9, not void, reading (i) holds, mixture arm;
+             the builder's code and records are unchanged since the run commit
+  tests  0   109 passed (tests/test_embryo_copy_rows_launcher.py, test_copy_rows.py, test_copy_rows_build.py,
+             test_e47_floor_exact.py, test_hidden_counts.py, test_s2_rules.py; 8 BLAS threads)
+  D      0   the positions file by the default command, 16 BLAS threads
+  CRa    0   the copy-rows file, first build, 16 BLAS threads
+  CRb    0   the copy-rows file, second build, 16 BLAS threads
+  done   0   one sha256 list; CRa and CRb compared byte for byte
+
+Commands the launcher runs (each followed by `vec check` for board T2:embryo:test_interp, exit 0 every time):
+  D:   build_test.py embryo --method fgw_shape0 --positions floor_exact --expression mixture --out <O>/D/T2embryo_s2x.h5ad
+  CR:  build_test.py embryo --method fgw_shape0 --positions floor_exact --expression mixture --copy-rows
+       --copy-rows-test-ok --out <O>/CR{a,b}/T2embryo_s2x_cr.h5ad
+
+The default command gives the positions file handed over on 2026-11-20 (set embryo2, built at 2dccfee):
+  a03611a343faf1d37edf06ce0e2bccc86cce6f14d3580b823864e5faf3ba03f9  D/T2embryo_s2x.h5ad
+Both copy-rows builds give the same bytes (cmp, and one sha256):
+  f20730da83084702c50c43d4d4aaa98be8ee801ea443472792172804fea4228e  CR/T2embryo_s2x_cr.h5ad
+Each build step passed only with a stamp that says commit 59ad7fa, clean True (the launcher checks it).
+
+Kept: ~/v/vec-campaign/runs/archive/embcr_59ad7fa/ on the DGX and runs/archive/embcr_59ad7fa/ on the local machine
+(SHA256SUMS checked on both); the file for upload is copied to runs/manual_upload/T2embryo_s2x_cr.h5ad here (sha256
+checked). The local format check (`vec check runs/manual_upload/T2embryo_s2x_cr.h5ad --board T2:embryo:test_interp`)
+passes (exit 0; its output was not read).
+
+Read by exit codes, sha256 and the stamps' commit and clean fields only. Builder and check output went to /dev/null;
+no log, file size, cell count or sidecar record (`.build.json`, the stamp's other fields) was read. That the copy-rows
+steps exited 0 shows only that the copy's count lies within the board's published limits; nothing about the limits or
+the count is quoted anywhere. Built in a campaign checkout; the reference checkout stays untouched at dc7b6ae.
+
+Practice: row E50's reading (i) holds on all 90 task-seeds under both scorer builds (reading.json sha256
+3af2a511be5f...). Its price tables, which decide nothing: against the exact-position form the board is -2.6994 under
+main and -2.7392 under prefix. The file aims at the baseline's level on the three shape terms, not above it. Data
+used: released challenge data only. Its place in the embryo's list: third, after the overlay file and the
+exact-position file (decision log 2026-11-21 (l)).

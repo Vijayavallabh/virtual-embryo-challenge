@@ -2,7 +2,41 @@
 
 ## Current Objective
 
-- **State at 2026-11-21, 09:20 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+- **State at 2026-11-21, 11:10 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+  2026-11-21 (c) to (q). Local main = origin/main. No score line since 20 Nov 15:30 UTC. Nothing of ours is running on
+  the DGX.
+  - **THE EMBRYO HAS THREE FILES WITH THE CAPTAIN, IN THE ANALYSTS' ORDER (entry 2026-11-21 (l); the main session is
+    recused, executes the rule and states no preference). Each embryo upload takes the first not yet uploaded:** (1)
+    O, the overlay file, `runs/manual_upload/T2embryo_s2x_ov.h5ad`, sha256
+    1cfc91be3a20bfdd1a4f7bcfebd7316e1143c6d4048e578c1f30bcfbe1e0e1ea; (2) P, the positions file,
+    `runs/manual_upload/T2embryo_s2x.h5ad`, sha256 a03611a343faf1d37edf06ce0e2bccc86cce6f14d3580b823864e5faf3ba03f9;
+    (3) C, the copy-positions file, `runs/manual_upload/T2embryo_s2x_cr.h5ad`, sha256
+    f20730da83084702c50c43d4d4aaa98be8ee801ea443472792172804fea4228e (built twice at 59ad7fa, entry (q), record
+    `experiments/builds/results/embcr_59ad7fa.txt`). Board T2:embryo:test_interp; data-used text for each: "Released
+    challenge data only. No outside data." No file waits on another's headline. A headline goes into
+    `results/manual_uploads.csv` and serves the final mark only (highest headline, earliest on a tie, with the
+    captain's go-ahead): no differencing, no per-term value tabulated or compared with another upload's or with 50, no
+    new file, re-seed or re-upload from a score. The list is closed at these three; a fourth embryo file needs the
+    captain's own named order.
+  - **The captain's question on C (count below the count rule; E7.5's own size, not the pre-registered size) is open
+    since 09:27 UTC with a default of build.** A 'no' means C is not uploaded (record it verbatim in the log and the
+    rules note). C's practice figures, which decide nothing, were sent with the hand-over: row E50's reading (i) holds
+    on all 90 task-seeds; against the positions form the board is -2.70 on practice, behind in every seed; the file
+    aims at the baseline's level on the three shape terms, not above it (the challenger: about 0.7, given that the
+    build passes the board's limits, which it did).
+  - **When the captain reports an embryo score:** add the row to `results/manual_uploads.csv` (headline only; per-term
+    values are not tabulated or compared) and a decision-log entry; nothing is re-planned from it.
+  - **Unchanged queue on the other boards:** T1 `T1_s2rcA` then `T1_s2rcB` (`T1_s2rcC` only if A and B each beat
+    70.60); heart K1 `T2heart_s2trimcopy_half` then K2 `T2heart_s2iso_half`; T3 `T3_barred_x1.5`, then
+    `T3_barred_x2.0` if 1.5 beats 61.8, else the barred s2; then on base B the C files, the K23 file and CK by entry
+    2026-11-20 (q). Every one of these files was re-checked today against its recorded sha256 and passes the format
+    check. The heart check returned 'do not pursue' (entry (j)).
+  - **DGX:** `~/v/vec-campaign` is at 59ad7fa (holds `runs/embov_3b813b5_r1`, `runs/embcr_59ad7fa_r1` and their
+    archives); worktree `~/v/scratch/e50-wt` at 5fcf6b9 holds row E50's run folder `runs/e50`. Launchers on this
+    machine may hold no removal of a variable path; the two embryo build launchers take a run name whose folders must
+    not exist.
+  - **Tries:** T1 418, embryo 84, heart 80, T3 72. **Next labels:** decision log 2026-11-21 (r); register row X018.
+- **State at 2026-11-21, 09:20 UTC (superseded by the bullet above where they differ).** Decision log
   2026-11-21 (c) to (o). Local main = origin/main. No score line since 20 Nov 15:30 UTC.
   - **THE EMBRYO'S ORDER RULE IS IN FORCE (entry 2026-11-21 (l), the analysts' rule; the main session is recused,
     executes it and states no preference): each embryo upload takes the first not yet uploaded of O, P, C.** O, the
