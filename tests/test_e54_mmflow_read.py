@@ -70,6 +70,34 @@ def test_has_row_reads_the_ledger(tmp_path):
     assert e54.has_row(p)
 
 
+def test_the_steps_refuse_until_the_register_names_torch_and_torchdiffeq(tmp_path, monkeypatch):
+    """The review's lesser point 1: the X005 amendment is checked by code, in every step's refusal path."""
+    p = tmp_path / "EXTERNAL_DATA.md"
+    row = "| X005 | Open-source Python libraries: POT 0.9.7, numpy 2.5, scipy 1.18{} | MIT | code |\n"
+    assert e54.register_problems(tmp_path / "missing.md") != []
+    p.write_text(row.format(""))
+    assert len(e54.register_problems(p)) == 2
+    p.write_text(row.format("; torchdiffeq 0.2.5"))  # torchdiffeq alone does not name torch
+    assert e54.register_problems(p) == ["the register's X005 row does not name torch: its amendment is committed "
+                                        "before the run"]
+    p.write_text(row.format("; pytorch-lightning, torch-geometric, torchdiffeq 0.2.5"))
+    assert len(e54.register_problems(p)) == 1  # neither names torch itself
+    p.write_text(row.format("; torch 2.14.1 and torchdiffeq 0.2.5 (row E54's flow; torchcfm installed, unused)"))
+    assert e54.register_problems(p) == []
+    p.write_text(row.format("; torch, torchdiffeq") + row.format(""))
+    assert e54.register_problems(p) != []  # two X005 rows: refused
+    monkeypatch.setattr(e54, "REGISTER", tmp_path / "missing.md")
+    monkeypatch.setattr(e54, "_own_code", lambda: None)
+    monkeypatch.setattr(e54, "has_row", lambda path=None: True)
+    monkeypatch.setattr(e54, "repo_state", lambda repo: type("S", (), {"unclean": ()})())
+    monkeypatch.setattr(e54, "commit_problems", lambda c: [])
+    with pytest.raises(SystemExit, match="X005"):
+        e54._refuse_unless_ready(C)
+    p.write_text(row.format("; torch 2.14.1, torchdiffeq 0.2.5"))
+    monkeypatch.setattr(e54, "REGISTER", p)
+    e54._refuse_unless_ready(C)  # nothing else refuses here
+
+
 def test_a_reading_is_never_overwritten(tmp_path):
     f = tmp_path / "r" / "reading.txt"
     e54._write_new(f, "one")

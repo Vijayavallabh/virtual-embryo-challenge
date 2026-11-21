@@ -14,12 +14,14 @@
 #   repro COMMIT   the reproduction gate, not counted: the floor and C0 under build main, ten seeds, against E47 within
 #                  0.01; nine processes; exit 0 all pass, 3 some task misses (stop and report), 1 an error
 #   gate COMMIT    E54a, counted: the leave-one-stage-out gate; writes its reading (gate.json, gate.txt, never
-#                  overwritten); exit 0 it passes, 3 it fails (E54b and E54c then do not run and are not counted)
+#                  overwritten); exit 0 it passes, 3 it fails (E54b and E54c then do not run and are not counted).
+#                  Call it once: a second call exits 1 ("refusing to overwrite") and its gate.exit then blocks run
 #   run COMMIT     E54b and E54c with C0 and the floor, nine processes, seed by seed; a seed whose file exists is
 #                  skipped, so a killed run is resumed by calling the step again
 #   read COMMIT    the kill test's reading into experiments/coords/results/e54_mmflow/ (reading.json, reading.txt); it
 #                  refuses to overwrite either file
-# COMMIT is the run commit (full hash): the row's commit. Each step refuses on an unclean tree (exit 98) or another HEAD
+# COMMIT is the run commit (full hash): the row's commit. Each step refuses on an unclean tree (exit 98; untracked files
+# under results/, runs/ and experiments/**/results/ are allowed, as in the script's repo_state) or another HEAD
 # (exit 99), runs with 8 BLAS threads a process and NUMPY_MADVISE_HUGEPAGE=0, and writes ~/v/scratch/e54/<STEP>.exit
 # on every path (a call without its two arguments writes usage.exit, 2; an unknown step 97) and one exit file per fold
 # or task under runs/e54/exit/. The script prints only "fit <fold> done", "repro <task> pass|fail", "gate pass|fail",
@@ -58,7 +60,10 @@ export CUBLAS_WORKSPACE_CONFIG=:4096:8
 export UV_PROJECT_ENVIRONMENT="${E54_VENV:-$HOME/v/vec-campaign/.venv}"
 DATA="${E54_DATA:-$HOME/v/vec-campaign/data/raw}"
 PY="uv run --frozen --no-sync python -I -B"
-if [ -n "$(git status --porcelain)" ]; then
+# Clean as the script's repo_state reads it (vec.provenance): no tracked change, and no untracked, non-ignored file
+# outside results/, runs/ and experiments/**/results/ (the gate's gate.json and gate.txt lie in OUT until the read).
+UNCLEAN=$(git status --porcelain --untracked-files=all | grep -vE '^\?\? (results/|runs/|experiments/([^/]+/)+results/).+')
+if [ -n "$UNCLEAN" ]; then
   echo "refused: the tree is not clean" >&2
   finish 98
 fi

@@ -115,6 +115,69 @@ def test_the_fits_refuse_without_a_gpu(tmp_path):
         assert out.returncode == want and _exit(tmp_path, "fit") == str(want)
 
 
+def _scratch_repo(tmp_path: Path) -> tuple[Path, Path, str]:
+    """A scratch git repository holding only the launcher, one commit, with a fake `uv` first on PATH that records its
+    call and exits 0 (so a step past the refusals reaches it and nothing real runs)."""
+    repo = tmp_path / "repo"
+    (repo / "experiments" / "coords").mkdir(parents=True)
+    (repo / "experiments" / "coords" / "run_e54.sh").write_text(LAUNCHER.read_text())
+    (repo / ".gitignore").write_text("runs/\n")
+    bin_ = tmp_path / "bin"
+    bin_.mkdir()
+    (bin_ / "uv").write_text(f'#!/usr/bin/env bash\necho "$*" >> "{tmp_path}/uv_calls"\nexit 0\n')
+    (bin_ / "uv").chmod(0o755)
+    env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_") and k != "CUDA_VISIBLE_DEVICES"}
+    env.update(HOME=str(tmp_path / "home"), PATH=f"{bin_}:{env.get('PATH', '')}",
+               GIT_CEILING_DIRECTORIES=str(tmp_path))
+    git = ["git", "-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false"]
+    for args in (["init", "-q"], ["add", "-A"], ["commit", "-q", "-m", "scratch"]):
+        subprocess.run([*git, *args], cwd=repo, env=env, check=True, capture_output=True)
+    head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, env=env, capture_output=True,
+                          text=True).stdout.strip()
+    s = tmp_path / "home" / "v" / "scratch" / "e54"
+    s.mkdir(parents=True)
+    (s / "gate.exit").write_text("0\n")
+    (s / "gate.head").write_text(head + "\n")
+    return repo, s, head
+
+
+def test_the_gates_reading_in_the_results_folder_does_not_stop_the_run(tmp_path):
+    """The review's blocker: the gate writes gate.json and gate.txt into OUT (untracked); run and read must still get
+    past the clean check, as the script's repo_state allows, while any other untracked or changed file still refuses."""
+    repo, s, head = _scratch_repo(tmp_path)
+    env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_") and k != "CUDA_VISIBLE_DEVICES"}
+    env.update(HOME=str(tmp_path / "home"), PATH=f"{tmp_path / 'bin'}:{env.get('PATH', '')}",
+               GIT_CEILING_DIRECTORIES=str(tmp_path))
+
+    def call(step: str) -> int:
+        return subprocess.run(["bash", "experiments/coords/run_e54.sh", step, head], cwd=repo, env=env,
+                              capture_output=True, text=True).returncode
+
+    out = repo / "experiments" / "coords" / "results" / "e54_mmflow"
+    out.mkdir(parents=True)
+    (out / "gate.json").write_text("{}")
+    (out / "gate.txt").write_text("gate\n")
+    (repo / "results").mkdir()
+    (repo / "results" / "other.json").write_text("{}")
+    assert call("run") == 0 and (s / "run.exit").read_text().strip() == "0"
+    assert (s / "run.head").read_text().strip() == head
+    calls = (tmp_path / "uv_calls").read_text().splitlines()
+    assert len(calls) == 9 and all(" run --task " in c and f"--commit {head}" in c for c in calls)  # the fake reached
+    assert call("read") == 0 and (s / "read.exit").read_text().strip() == "0"
+    stray = repo / "experiments" / "coords" / "stray.py"  # untracked outside a results folder: still refused
+    stray.write_text("x = 1\n")
+    assert call("run") == 98 and (s / "run.exit").read_text().strip() == "98"
+    stray.unlink()
+    near = repo / "experiments" / "coords" / "results_not" / "x.json"  # a name that only starts like results
+    near.parent.mkdir()
+    near.write_text("{}")
+    assert call("run") == 98
+    near.unlink()
+    (repo / "experiments" / "coords" / "run_e54.sh").write_text(LAUNCHER.read_text() + "\n# changed\n")
+    assert call("run") == 98  # a tracked change is never exempt
+    assert call("read") == 96  # run's 98 now blocks read
+
+
 def _parallel(tmp_path: Path, step: str, fake_exit: dict[str, int], cuda: str = "4,6") -> int:
     """The launcher's own parallel() text, run with a fake interpreter that records its arguments and the GPU it was
     given and exits as told; the launcher's lists and allowed log lines, a temporary runs folder. No git, no python."""

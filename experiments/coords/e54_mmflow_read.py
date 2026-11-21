@@ -16,7 +16,8 @@ released stages of the embryo series (E6.75, E7.25, E7.5, E8.0 and the heart-set
 less a fit's exclusions; the genes the validation board's embryo panel (every one of the seven files holds it: run_task
 refuses an input that lacks a panel gene, and each of the seven is an input of a practice task).
 
-Steps (each refuses unless row E54 is in TRIES.md, the tree is clean and HEAD is the run commit):
+Steps (each refuses unless row E54 is in TRIES.md, EXTERNAL_DATA.md's X005 row names torch and torchdiffeq, the tree
+is clean and HEAD is the run commit):
   fit --fold NAME --commit SHA    target-free (it loads only the fold's training stages; no try): the embedding, the
                                   flow, and the integrated states every task and gate stage of the fold needs, under
                                   runs/e54/fits/<fold>/. A fold whose done.json is of this commit is not refitted.
@@ -66,6 +67,7 @@ import dataclasses
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -92,6 +94,8 @@ from vec.provenance import repo_state  # noqa: E402
 
 ROW_IDS = ("E54", "E54a")  # the row's first word: "E54" as the brief labels it, or "E54a to E54c"
 TRIES = REPO / "experiments" / "harness" / "TRIES.md"
+REGISTER = REPO / "EXTERNAL_DATA.md"
+REGISTER_LIBS = ("torch", "torchdiffeq")
 TRY_IDS = {"gate": "E54a", "fgw_mmflow_snap": "E54b", "fgw_mmflow_anti": "E54c"}
 C0 = "fgw_shape0x"
 ARM, ANTI = "fgw_mmflow_snap", "fgw_mmflow_anti"
@@ -173,6 +177,17 @@ def has_row(path: Path | None = None) -> bool:
     return any(r in rows for r in ROW_IDS)
 
 
+def register_problems(path: Path | None = None) -> list[str]:
+    """The X005 amendment comes before the run: the register's X005 row must name torch and torchdiffeq, the
+    libraries the fits import (the review's lesser point 1)."""
+    p = REGISTER if path is None else Path(path)
+    lines = [x for x in p.read_text().splitlines() if x.startswith("| X005 |")] if p.exists() else []
+    if len(lines) != 1:
+        return [f"{p.name} has no single X005 row"]
+    return [f"the register's X005 row does not name {lib}: its amendment is committed before the run"
+            for lib in REGISTER_LIBS if not re.search(rf"(?<![A-Za-z0-9_.-]){lib}(?![A-Za-z0-9_-])", lines[0])]
+
+
 def commit_problems(commit: str) -> list[str]:
     why = []
     head = _git("rev-parse", "HEAD").stdout.strip()
@@ -199,7 +214,7 @@ def _refuse_unless_ready(commit: str) -> None:
         sys.exit("E54 has no row in experiments/harness/TRIES.md: a row is committed before its run")
     if repo_state(REPO).unclean != ():
         sys.exit("the tree is not clean: row E54 runs on a committed tree")
-    why = commit_problems(commit) + exclusion_problems()
+    why = register_problems() + commit_problems(commit) + exclusion_problems()
     if why:
         sys.exit("refused: " + "; ".join(why))
 
@@ -776,7 +791,8 @@ def cmd_read(a) -> None:
         sys.exit("E54 has no row in experiments/harness/TRIES.md")
     runs = Path(a.runs)
     gate, why = load_gate(out, a.commit)
-    why = [*why, *repro_problems(runs, a.commit), *commit_problems(a.commit), *exclusion_problems(),
+    why = [*why, *register_problems(), *repro_problems(runs, a.commit), *commit_problems(a.commit),
+           *exclusion_problems(),
            *fit_problems(runs, a.commit, task_folds().values())]
     res = {**reading(load_runs(runs), gate, why, a.commit), "reading_code": provenance()}
     _write_new(files[0], json.dumps(res, indent=1, default=float))
