@@ -8751,3 +8751,26 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     library counts go into the row before the read. The analyst's and the challenger's odds that the change is a
     mistake: about one in five each, mostly that a later, thinly recorded dataset passes a sample that is not a whole
     embryo; the GEO bulk forms are closed (entry (iii)).
+- 2026-11-21 (e), T3 outside knockouts: the many-line set is rebuilt once under the changed guard; both runs' counts
+  (state at 00:05 UTC, 2026-11-21). Written by the AI assistant, from the QC file's verdicts and guard-level figures
+  only: no table value and no gene-level value was read.
+  - **The rerun** (compute machine, 103a1be; plan with pins, fetch check, process and combine all exit 0; QC file
+    sha256 11d9ec8d...). Under the single-lineage check no library is dropped by it (the smallest margin is 0.030) and
+    no control arm mean fails. **Fourteen of the 25 lines pass every guard:** Adamts3, Ccdc6, Cyp11a1, Fryl, H13,
+    Morc2a, Nadk2, Otud7b, Pdzk1, Psph, Sh3pxd2a, Smg9, Ssr2, Tial1, with 63 knockout and 64 wild-type libraries; four
+    libraries were dropped by the within-arm outlier guard. Refused: seven lines by the somite guard (the two arms'
+    ranges do not overlap: Bap1, Brd2, Col4a3bp, Edc4, Ehmt1, Fcho2, Zfyve20), two by the sex guard (Camsap3,
+    Dennd4c), one by the composition guard (Cnot4), one by the genotype guard (Mir96, whose own gene has no id). In
+    every passing line the knockout arm is lower on its own gene.
+  - **Both runs side by side,** as entry (d) requires. First run (old guard, 71bef8c; QC file sha256 07e8f3a6...;
+    table sha256 865a5530..., never read; copies kept in `~/v/scratch/dmdd_pins/first_run/` and
+    `~/v/vec-ext/t3/tables_first_bulk_run_keep/`): 12 lines, 57 knockout and 37 wild-type libraries. Rerun (new
+    guard): 14 lines, 63 and 64. Gained: Cyp11a1, Otud7b, Psph. Lost: Camsap3, which with all seven of its controls
+    kept is sex-imbalanced and refused. The bulk table's bytes are now sha256 6833d8d7...; the three-study single-cell
+    table is unchanged (14aa9ad6...).
+  - **What the metadata says about the passing lines** (reported, deciding nothing): in ten of the fourteen the
+    knockouts' median somite number is below the wild types' (the differences run from -6 to +2, median about -1), so
+    the table carries what delayed embryos share as part of what knockouts share; the drafted row says so in its own
+    words. The bulk table will be combined once more, with unchanged values, when the manifest gains the count of
+    lines holding each gene (entry (iii)); its bytes are then checked against 6833d8d7... before the listing is
+    pinned.
