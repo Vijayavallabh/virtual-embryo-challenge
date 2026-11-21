@@ -1,0 +1,26 @@
+T1's atlas step at twice the calendar fraction (row R20; the captain's order "I allow and they allow too, so go ahead")
+======================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-21 in the campaign checkout ~/v/vec-campaign-d (it holds the relabelling's
+output data/derived/feng_relabel_c) at commit 3d18841 (3d18841203032ed84f43cc941f4f73174c6e5e4f; clean tree) by `bash
+experiments/builds/t1_fraction2.sh 3d18841203032ed84f43cc941f4f73174c6e5e4f r1`. The launcher's refusal path was
+traced once first with a wrong commit (run name dry1: exit 96 at the gate, nothing built). Steps and exit files
+(~/v/scratch/t1x2/r1/): gate 0; tests 0 (172 passed, 8 BLAS threads); D 0; B 0; X2a 0; X2b 0; done 0. Builds at 16
+BLAS threads, seed 1000001, board T1:test; `vec check` after each build, exit 0.
+
+Identity steps (each must reproduce the uploaded file's bytes before the new file counts):
+  ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f  D/T1_s2rc.h5ad     `t1 --g-mom --base lib3 --feng-groups recomputed` (R13's file)
+  c7240cb6a7f7ee93d037f437832efbaad004f1fbe608d80072f8efd5d20a0062  B/T1_s2rcB.h5ad    `... --feng-fraction-mult 1.5` (candidate B)
+The new file, `... --feng-fraction-mult 2.0 --captain-ruling R20`, built twice with the same bytes (cmp, and one sha256):
+  52897fe375b8a81afffa788592047c30361824148b00a8176514385060518837  X2/T1_s2rcB2.h5ad
+Each build step passed only with a stamp that says commit 3d18841, clean True.
+
+Kept: ~/v/vec-campaign-d/runs/archive/t1x2_3d18841/ on the DGX and runs/archive/t1x2_3d18841/ on the local machine
+(SHA256SUMS checked on both); the file for upload is runs/manual_upload/T1_s2rcB2.h5ad here (sha256 checked); the
+local format check for T1:test passes (exit 0; output not read). Read by exit codes, sha256 and the stamps' commit and
+clean fields only.
+
+What the file is: R13's file with one change, the outside atlas's direction step at 2.0 times the calendar fraction
+(the applied fraction is 4/5; B's is 3/5). Unpriced on practice. Its place: the next free T1 slot after C. Data used:
+as R13's file and B. Review: ready, no blocker; a cold challenger's check of the rule on scores: the reading stands
+(docs/PLAN.md decision log 2026-11-21 (x) and (aa)).
