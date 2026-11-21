@@ -9479,3 +9479,99 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     practice (no row reads a step at four fifths of the chord). It goes in the next free T1 slot after C. If the
     captain wants further strengths, they are named and fixed before the 2.0 file's score exists, so that later scores
     select among files fixed in advance.
+- 2026-11-21 (y), the score-blind candidate round's lists, fixed before any score of their files (state at 23:05 UTC,
+  2026-11-21). Written by the AI assistant, which gives no design lean on any board (entry (t)); the lists and order
+  rules below are the round's challengers', verbatim, and the notes between them are marked as the AI assistant's.
+  - **The round** (workflow `blind-candidates-round-2`, twelve agents: per board two designers and a cold challenger,
+    all told to use no test score; hand-back in the session scratchpad `lift8/blind_round2.json`). The challengers'
+    own odds that a list raises its board's best headline by a point, from practice and code only: T1 about 0.05, T3
+    about 0.15, heart about 0.06, embryo about 0.2. They also said what the brief got wrong: it named no bar and no
+    idle case, so designers were pushed to fill slots; it sent designers through ledger rows that hold test headlines
+    (one designer confirms seeing some); and for T3 every practice read is one truth.
+  - **T1: the challenger's order rule, verbatim.** T1: the list after decision log 2026-11-20 (r), fixed before any
+    score of MS or rc18 exists and before their practice rows run. Written from a score-blind challenger's text. (1)
+    Entries (n) and (r) stand unchanged. Round one is A and B. C goes only on (n)'s condition. Then (r)'s F (only on
+    QF 'Upload it' and its sha256 55eaee54...). Then (r)'s E (only on the upload answers to E1 and E2; the set advice
+    is decline). D ended in entry (zz). (2) Two new candidates, each a single change to R13's file (ad8f24c7...). Each
+    goes forward only by its own path: - MS: momentum added on the direction-group cells, arm 'all'. - rc18: the
+    E9.5-to-E18 chord at 2/8.5, with E18 cells labelled by N54's frozen controls and E9.5 and E14.5 unchanged. - Path
+    for each: a counted practice row committed and read first, under its fixed statement. Only on AHEAD, one priced
+    question to the captain. Only on his yes, the builder option is written, reviewed and dry-run traced, and the file
+    is built twice with one sha256 in a campaign checkout where the default command first rebuilds ad8f24c7.... A
+    candidate that is not AHEAD ends there, with no question and no rerun under another row. (3) Order: after (r)'s
+    list, MS, then rc18. Neither waits on any other file's score: no practice reading ties either one's value to A's,
+    B's or C's result. A candidate not ready when a slot comes gives the slot to the next ready one in the combined
+    order. At most two T1 uploads a day until 2026-11-26 11:59 UTC; each upload is the captain's act. (4) Only the
+    headlines of the team's own T1 uploads choose, and they serve only the board's best-headline mark. No per-metric
+    value of any T1 upload is read or compared. Nothing is re-seeded, rebuilt, resized or altered after any score. No
+    damping, fraction, bracket, share or other number is set from a score. No property of the hidden E12.5 sample is
+    inferred or bounded from a score. (5) MS and rc18 are never stacked on each other or on A, B or C. Any combination
+    needs its own list, fixed before its score. (6) The standing file is the highest headline among the first upload,
+    R13, A, B, C, F, E, MS and rc18; a tie keeps the earlier file. The list ends after rc18.
+  - **T3: the challenger's order rule, verbatim.** T3 order, fixed before any score of the added file: 1. The queued
+    files keep their places and their conditions exactly as decision log 2026-11-20 (k) and (q) and the T3 amendments
+    of docs/S2_RULES.md set them: the barred s2 or the exponent-2.0 file, then C1, C2, row K23's x_e2 file on base B,
+    then CK on its condition. 2. The refused s1 with the wild-type-only factor (t3_build/refused_s1.h5ad, sha256
+    0394575a11fc..., the reference-listed bytes) takes the first T3 slot free after the last of those files that is
+    uploadable. 3. It waits on no file's score. Practice gives no reason to condition it on one: it is a different bet
+    whose only practice lead occurs where the barred family's severity is gated, and no score is read for that
+    property. 4. If fewer slots remain before 2026-11-26 11:59 UTC than files, the queued files keep precedence unless
+    the captain says otherwise. 5. Headlines serve only the board's best-headline mark. No per-metric value is read,
+    no score enters any weight, exponent, composition or choice of file, and no file is built or changed because of a
+    score. 6. The list ends with the refused s1. x_e4 and wtprod are struck and are not built. A later file needs its
+    own entry and the captain's word before its score.
+  - **Heart: the challenger's order rule, verbatim.** Heart (T2:heart:test_extrap), candidates after K2, fixed before
+    any of their scores by a cold judge blind to test scores, from practice rows H11, H25, H26, H27, H28 and N27 and
+    the builder's code only. 1. K2 keeps its place as queued. 2. Then, in the next free heart slots in this order, at
+    most two heart uploads a day: H-T1 (build_test.py heart --entry s1 --trend --z-mode raw, then halve.py at seed
+    1000001); H-T1B (--entry s2_trim --trend --z-mode raw, then the half); D (the organ cut, --entry organ_scope
+    --expression copy --z-mode raw, then the half). 3. A file enters only if (a) its practice read, committed as a row
+    before it runs, qualifies under the bars fixed in that row (H-T1: H28's S1 to S3 in both worlds on the whole pool
+    against H27's full_iso_half:f; H-T1B: its own S1 to S3 against H27's half_iso_half:f AND H-T1's S2; D: its gate
+    passes and its read is not void), (b) two DGX builds from one clean commit give identical sha256 and pass the
+    format check, and (c) the captain says yes to it by name. A file failing any of these is skipped, and the next one
+    moves up. 4. No file waits on another file's score. The only dependency is H-T1B's on H-T1's practice placebo
+    test, a practice reason (the whole pool is the clean test of the trend; H28 limit (b)). 5. A file is never
+    rebuilt, re-seeded, changed or uploaded again after its score. A refused upload has no score and the file is not
+    changed to get it accepted. 6. Only the headlines of the team's own heart uploads, as the captain reports them,
+    are recorded. They serve the board's best-headline mark only. No per-metric value is read or recorded, and no
+    difference between headlines enters any number, file, rule or statement about the E12.5 stack. 7. D drops if it is
+    not built, read and reviewed by 2026-11-25 12:00 UTC. 8. The list ends after D. No further heart file is designed
+    from any of these scores. If no file qualifies, no further heart file goes, and the board's best headline stands.
+  - **Embryo: the challenger's order rule, verbatim.** Embryo (T2:embryo:test_interp), files beyond O, P and C
+    (proposal from a score-blind round; it takes effect only through the captain's own named order). (1) P and C keep
+    their places in entry 2026-11-21 (l): the next embryo slots take P, then C if it exists. (2) Then each slot the
+    captain chooses to use takes the first file below that he has named, that exists, and that has not been uploaded:
+    SO (T2embryo_s2xs_ov), then T2embryo_s2 (sha 41982d8a...), then O_hi (T2embryo_s2x_ovhi). A file exists only when
+    all of these hold: its row was placed by fresh analysts before any score of it; for SO and O_hi, that row's
+    practice read is not void and its pre-set pass rule holds; its test build gives one sha256 twice from a clean,
+    stamped commit, vec check passes, and its identity booleans hold; its sha256 is committed under
+    experiments/builds/results/. For T2embryo_s2: the archived bytes match the reference sha and the yes-or-no check
+    of rulings R9 and R11 says 'not closed'. (3) The only wait is SO and O_hi on their own practice read, for a reason
+    from practice: the overlay's gain and the deeper expression's gain have never been read together, and both act on
+    the neighbourhood term. No file waits on any upload's headline, and no headline decides whether, when or in what
+    order another file goes. A file not ready holds up none of the others. Two embryo files may go on one day within
+    the captain's stated allowance. (4) A headline is recorded and used only for the board's best-headline mark under
+    docs/S2_RULES.md, 'Uploads and final marks', as entry (l) extends it. No per-metric value is read, tabulated,
+    compared or quoted, and no headline or per-term value of s1, s2xs, O, P, C or these files enters any number, file,
+    form or rule. (5) The list ends with these three files. Nothing else is built for this board without a further
+    named order, and nothing goes after 2026-11-26 11:59 UTC. Each upload is the captain's own act; he may use fewer,
+    none, or another order.
+  - **Notes by the AI assistant on what is executed.** The captain reopened the embryo's and the heart's lists by name
+    (entry (v)), so the embryo's and the heart's rules above take effect as written, with the captain's upload as the
+    naming act for each file; the challengers wrote them without knowing (v). T1: MS's practice read is being written
+    (its row comes first; only AHEAD leads to a question and a build); rc18 is not started (about a day and a half,
+    weak on practice); F stays on entry 2026-11-20 (r)'s terms. T3: the refused s1 is built and reference-listed
+    (`runs/manual_upload/T3_refused_s1.h5ad`, sha256 0394575a11fcd4f915e0daf4972e5a783b6b89efa065ed4f85fe2445cbbb1545,
+    format check passes); it is NOT handed over: the rules note of 2026-11-19 says it is not uploaded, and the captain
+    is asked by name. Heart: the trend read for H-T1 and H-T1B is being written; D (a new scope and size) is not
+    started and is put to the captain with the challenger's default of no. Embryo: the shared read for SO and O_hi is
+    being written. `T2embryo_s2` (ruling R4's file, built on 2026-11-13 before any score;
+    `runs/manual_upload/T2embryo_s2.h5ad`, sha256 41982d8afd784ecb07a4021077f701c3806c3bdb06eda92c2cb99fcc41b19b73,
+    the reference-listed bytes, format check passes): the challenger asked for a check of the record by someone who
+    may read the entries of 2026-11-19. The AI assistant read the rules note's two amendments of that day for that one
+    point: they say of this file that it 'is not uploaded' and that the files replacing it touch no closed lever; they
+    do not close its geometry as a lever after an exposure. It was set aside as the last upload of a two-upload board,
+    not closed. So it exists under the challenger's rule and is handed over as the embryo's file after C. A copy-rows
+    file at the team's own size, which the round did not propose and the captain's yes of entry (v) covers, is being
+    specified by a fresh analyst.

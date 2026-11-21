@@ -1811,3 +1811,39 @@ Only headlines of the team's own T1 uploads choose, through the board's best-hea
 **Data used, for the hand-over:** as R13's file and candidate B: released challenge data and the outside heart atlas
 of register row X002, its permitted cells at E9.5 and E14.5 only, with groups recomputed from raw counts. Every upload
 is the captain's own act.
+
+## Amendment of 2026-11-21: the embryo's list is reopened; its files after O, P and C (the captain's word; decision log 2026-11-21 (v) and (y))
+
+Written by the AI assistant, which is recused on the embryo's occupancy term and shape forms and gives no design lean.
+**The captain's words,** answering the question whether the embryo's and the heart's lists are reopened for new files
+designed without scores, verbatim: "yes, reopen both lists and go ahead with wilder moonshot approached to drastically
+increase our score at all costs" (decision log 2026-11-21 (v)). The paragraph that follows is the order rule of a
+score-blind round's cold challenger, verbatim (decision log 2026-11-21 (y)); it was written without knowledge of the
+captain's reopening, so where it says a file must be named by the captain, the reopening and the captain's own upload
+are that naming.
+
+Embryo (T2:embryo:test_interp), files beyond O, P and C (proposal from a score-blind round; it takes effect only
+through the captain's own named order). (1) P and C keep their places in entry 2026-11-21 (l): the next embryo slots
+take P, then C if it exists. (2) Then each slot the captain chooses to use takes the first file below that he has
+named, that exists, and that has not been uploaded: SO (T2embryo_s2xs_ov), then T2embryo_s2 (sha 41982d8a...), then
+O_hi (T2embryo_s2x_ovhi). A file exists only when all of these hold: its row was placed by fresh analysts before any
+score of it; for SO and O_hi, that row's practice read is not void and its pre-set pass rule holds; its test build
+gives one sha256 twice from a clean, stamped commit, vec check passes, and its identity booleans hold; its sha256 is
+committed under experiments/builds/results/. For T2embryo_s2: the archived bytes match the reference sha and the
+yes-or-no check of rulings R9 and R11 says 'not closed'. (3) The only wait is SO and O_hi on their own practice read,
+for a reason from practice: the overlay's gain and the deeper expression's gain have never been read together, and
+both act on the neighbourhood term. No file waits on any upload's headline, and no headline decides whether, when or
+in what order another file goes. A file not ready holds up none of the others. Two embryo files may go on one day
+within the captain's stated allowance. (4) A headline is recorded and used only for the board's best-headline mark
+under docs/S2_RULES.md, 'Uploads and final marks', as entry (l) extends it. No per-metric value is read, tabulated,
+compared or quoted, and no headline or per-term value of s1, s2xs, O, P, C or these files enters any number, file,
+form or rule. (5) The list ends with these three files. Nothing else is built for this board without a further named
+order, and nothing goes after 2026-11-26 11:59 UTC. Each upload is the captain's own act; he may use fewer, none, or
+another order.
+
+**`T2embryo_s2` (ruling R4's file).** The amendments of 2026-11-19 above say this file is not uploaded. Under the
+reopening it is uploaded after C: `runs/manual_upload/T2embryo_s2.h5ad`, sha256
+41982d8afd784ecb07a4021077f701c3806c3bdb06eda92c2cb99fcc41b19b73, the reference-listed bytes built on 2026-11-13
+before any score. The record check the challenger asked for: those amendments set the file aside as the last upload of
+a two-upload board and close no lever on its geometry. Data used: released challenge data only; no outside data. Every
+upload is the captain's own act.

@@ -2,8 +2,7 @@
 
 ## Current Objective
 
-- **State at 2026-11-21, 22:57 UTC (newest; it supersedes the bullets below where they differ).** Decision log
-  2026-11-21 (c) to (w). Local main = origin/main. Nothing of ours is running on the DGX. **EIGHT SCORES ARE IN FOR
+- **State at 2026-11-21, 22:57 UTC (newest; it supersedes the bullets below where they differ).** Decision log 2026-11-21 (c) to (y). Local main = origin/main. Nothing of ours is running on the DGX. **EIGHT SCORES ARE IN FOR
   THE DAY (entries (s) and (w)); only headlines are recorded; the pasted per-metric lines and ranks are recorded
   nowhere and used for nothing; the main session gives no design lean on any board (entry (t)).**
   - **Headlines (first, second upload of the day) and the next file by each pre-set rule:** T1: A 70.8, B 71.59 (the
@@ -28,8 +27,27 @@
     up to E8.0's depth; the same read). Nobody proposed the copy-rows file at the team's own size; the captain's yes
     of entry (v) covers it, so fresh analysts specify it. The challengers' odds that a list raises its board's best by
     a point: T1 about 0.05, T3 about 0.15, heart about 0.06, embryo about 0.2.
-  - **Running:** workflow `moonshots-round-1` (task w8ary0c7c). **Tries:** T1 418, embryo 84, heart 80, T3 72. **Next
-    labels:** decision log 2026-11-21 (x) (or 2026-11-22 (a) after midnight UTC); register row X018.
+  - **Since the second scores (entries (x), (y)):** (1) THE CAPTAIN ORDERED A 2x T1 FILE, verbatim "I allow and they
+    allow too, so go ahead" on a forwarded side note (entry (x); ruling row R20; rules amendment): R13's file with
+    `--feng-fraction-mult 2.0 --captain-ruling R20`, to go after C; the main session's reading of the rule on scores
+    is in (x) (trying a setting is fine; nothing is fitted from score sizes; about one in ten that the organisers
+    would object). (2) The blind round's lists are fixed in entry (y). READY NOW AND HANDED OVER: the embryo's
+    `runs/manual_upload/T2embryo_s2.h5ad` (41982d8afd78; R4's file; after C). BUILT BUT WAITING FOR THE CAPTAIN'S
+    WORD: T3's `runs/manual_upload/T3_refused_s1.h5ad` (0394575a11fc; the rules note of 19 Nov says it is not
+    uploaded). Questions put to the captain in plain text, each with a default of no: re-admit T3's refused s1 after
+    the queued list; start the heart's organ-cut file D; upload T1's no-outside-data file F in a free slot.
+  - **Running (four workflows):** `moonshots-round-1` (task w8ary0c7c; hand-back to `lift8/`; a kill test is a counted
+    try, row first); `blind-round-2-engineering` (task wany2l7le): three practice reads, each an engineer and a
+    reviewer on its own branch (`campaign/embryo-so-ohi`, row E51; `campaign/t1-ms-read`, row T65;
+    `campaign/heart-trend-forms`, row H29a), and the copy-rows file at the team's own size (analyst, challenger,
+    engineer, reviewer; `campaign/embryo-copy-rows-size`, row E52); `t1-fraction-2x` (task ws65954zt): engineer and
+    reviewer on `campaign/t1-fraction-2x`, and a cold challenge of the rule reading. **When each hands back with a
+    ready review:** merge (resolve the test-list and harness conflicts by keeping both sides), run the related tests
+    on main, place the row and a log entry in one commit, sync a DGX checkout (T1 builds and reads need
+    `~/v/vec-campaign-d`, which holds the relabelling's output; never sync a checkout while a run goes in it), trace
+    the launcher's refusal path, run, read in the row's fixed words, and only on a pass build twice and hand over.
+    **Tries:** T1 418, embryo 84, heart 80, T3 72. **Next labels:** decision log 2026-11-21 (z), then 2026-11-22 (a);
+    register row X018.
 - **State at 2026-11-21, 22:31 UTC (superseded by the bullet above where they differ).** Decision log 2026-11-21 (c) to (v). Local main = origin/main. Nothing of ours is running on the DGX. **FOUR SCORES CAME IN at
   22:31 UTC (entry (s)), one per board, reported by the captain as the first upload of the day; only the headlines are
   recorded (`results/manual_uploads.csv`); the paste's per-metric lines and ranks are recorded nowhere and are used
