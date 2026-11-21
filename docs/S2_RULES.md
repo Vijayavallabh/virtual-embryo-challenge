@@ -1780,3 +1780,70 @@ answer, verbatim: "yes, build it that way".** The file had already been built th
 (sha256 f20730da83084702c50c43d4d4aaa98be8ee801ea443472792172804fea4228e); nothing in it changes, and it stays the
 third file of the embryo's list. This is the captain's own word for the two departures from frozen rules that the file
 makes: the count rule and the pre-registered embryo size, for this one file and for nothing else.
+
+## Amendment of 2026-11-21: T1's atlas step at twice the calendar fraction joins T1's list (the captain's order; row R20)
+
+Written by the AI assistant, which gives no design lean on any board since decision log 2026-11-21 (t). **The
+captain's words.** A side agent's note, forwarded by the captain on 2026-11-21, said that T1's highest headline came
+from candidate B, R13's file with the outside atlas's step at 1.5 times the calendar fraction; that the team's own
+rule bars setting a strength from a score and the builder takes 1.0 and 1.5 only; and that a 2x file needs the
+captain's order by name. The captain added, verbatim: "I allow and they allow too, so go ahead" (`docs/PLAN.md`
+decision log 2026-11-21 (x)).
+
+**The file.** R13's command with one named change:
+
+```bash
+uv run python experiments/builds/build_test.py t1 --g-mom --base lib3 --feng-groups recomputed --feng-fraction-mult 2.0 --captain-ruling R20 --out runs/builds/T1_s2rcB2.h5ad
+```
+
+Everything else is R13's command's. The value 2.0 is the next half step on candidate B's own scale and is not fitted
+from the size of any score. The file counts only after the default command has given R13's bytes (ad8f24c71c90...) and
+the 1.5 command B's bytes (c7240cb6a7f7...), and two builds from one clean commit have given one sha256. It is fixed
+here before its own score exists and goes in the next free T1 slot after C.
+
+**What the order sets aside, and what stands.** Decision log 2026-11-20 (n) says that no damping, fraction or other
+number is set from a score; the captain sets that aside for this one file and for nothing else. T1's composition,
+depth and advance draw stay closed. The rule on scores stands as `docs/DATA_POLICY.md` has it: trying a setting and
+seeing its score is fine; solving for a property of a hidden target from scores is prohibited. No further strength is
+built unless the captain names it before this file's score exists; no value is ever fitted from the size of a score.
+Only headlines of the team's own T1 uploads choose, through the board's best-headline mark.
+
+**Data used, for the hand-over:** as R13's file and candidate B: released challenge data and the outside heart atlas
+of register row X002, its permitted cells at E9.5 and E14.5 only, with groups recomputed from raw counts. Every upload
+is the captain's own act.
+
+## Amendment of 2026-11-21: the embryo's list is reopened; its files after O, P and C (the captain's word; decision log 2026-11-21 (v) and (y))
+
+Written by the AI assistant, which is recused on the embryo's occupancy term and shape forms and gives no design lean.
+**The captain's words,** answering the question whether the embryo's and the heart's lists are reopened for new files
+designed without scores, verbatim: "yes, reopen both lists and go ahead with wilder moonshot approached to drastically
+increase our score at all costs" (decision log 2026-11-21 (v)). The paragraph that follows is the order rule of a
+score-blind round's cold challenger, verbatim (decision log 2026-11-21 (y)); it was written without knowledge of the
+captain's reopening, so where it says a file must be named by the captain, the reopening and the captain's own upload
+are that naming.
+
+Embryo (T2:embryo:test_interp), files beyond O, P and C (proposal from a score-blind round; it takes effect only
+through the captain's own named order). (1) P and C keep their places in entry 2026-11-21 (l): the next embryo slots
+take P, then C if it exists. (2) Then each slot the captain chooses to use takes the first file below that he has
+named, that exists, and that has not been uploaded: SO (T2embryo_s2xs_ov), then T2embryo_s2 (sha 41982d8a...), then
+O_hi (T2embryo_s2x_ovhi). A file exists only when all of these hold: its row was placed by fresh analysts before any
+score of it; for SO and O_hi, that row's practice read is not void and its pre-set pass rule holds; its test build
+gives one sha256 twice from a clean, stamped commit, vec check passes, and its identity booleans hold; its sha256 is
+committed under experiments/builds/results/. For T2embryo_s2: the archived bytes match the reference sha and the
+yes-or-no check of rulings R9 and R11 says 'not closed'. (3) The only wait is SO and O_hi on their own practice read,
+for a reason from practice: the overlay's gain and the deeper expression's gain have never been read together, and
+both act on the neighbourhood term. No file waits on any upload's headline, and no headline decides whether, when or
+in what order another file goes. A file not ready holds up none of the others. Two embryo files may go on one day
+within the captain's stated allowance. (4) A headline is recorded and used only for the board's best-headline mark
+under docs/S2_RULES.md, 'Uploads and final marks', as entry (l) extends it. No per-metric value is read, tabulated,
+compared or quoted, and no headline or per-term value of s1, s2xs, O, P, C or these files enters any number, file,
+form or rule. (5) The list ends with these three files. Nothing else is built for this board without a further named
+order, and nothing goes after 2026-11-26 11:59 UTC. Each upload is the captain's own act; he may use fewer, none, or
+another order.
+
+**`T2embryo_s2` (ruling R4's file).** The amendments of 2026-11-19 above say this file is not uploaded. Under the
+reopening it is uploaded after C: `runs/manual_upload/T2embryo_s2.h5ad`, sha256
+41982d8afd784ecb07a4021077f701c3806c3bdb06eda92c2cb99fcc41b19b73, the reference-listed bytes built on 2026-11-13
+before any score. The record check the challenger asked for: those amendments set the file aside as the last upload of
+a two-upload board and close no lever on its geometry. Data used: released challenge data only; no outside data. Every
+upload is the captain's own act.

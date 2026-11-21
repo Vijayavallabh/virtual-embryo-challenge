@@ -9452,3 +9452,262 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Standing by the record's best headline per board:** T1 71.59, T3 62.30, heart 56.4, embryo 69.9; the total is
     71.59 + 62.30 + (56.4 + 69.9) / 2 = 197.04 (195.85 after the first uploads of the day, 193.2 before; labelled
     arithmetic from reported headlines).
+- 2026-11-21 (x), the captain orders a T1 file with the atlas step at twice the calendar fraction; the AI assistant's
+  reading of the rule on scores (state at 23:03 UTC, 2026-11-21). Written by the AI assistant.
+  - **The note, in substance** (a side agent's, forwarded by the captain): T1's highest headline came from candidate
+    B, the 70.60 file with the outside atlas's step 1.5 times stronger; C keeps 1.5; no stronger file exists because
+    the team's own rule bars setting a strength from a score and the builder takes 1.0 and 1.5 only; the design
+    round's T1 ideas do not extend the step; the main agent gives no design opinions; "A 2x file needs your order by
+    name. Ask the main agent whether the organisers' rule allows it." **The captain's words added to it, verbatim: "I
+    allow and they allow too, so go ahead".**
+  - **The AI assistant's reading (its own).** (1) This is the captain's own named order for one file: R13's file with
+    the atlas step at 2.0 times the calendar fraction. It sets aside, for that file only, entry 2026-11-20 (n)'s line
+    that no fraction is set from a score. (2) On the organisers' rule the AI assistant was asked, and answers from the
+    repository's own record, not from the site: `docs/DATA_POLICY.md`, 'Scores', says "Trying a setting and seeing its
+    score is fine; solving for a property of a hidden target from scores (inverting the skill map, differencing
+    submissions) is prohibited", and records the Rules page's own test as "whether the truth enters your prediction's
+    content or only its selection". A round step on the scale the candidates already used (1.0, 1.5, 2.0), fixed in
+    the log before its own score, is a setting that is tried; no number in it is computed from a score. A value fitted
+    from the sizes of returned scores would be the other thing, and is not done. The AI assistant puts the chance that
+    the organisers would treat the 2.0 file as improper at about one in ten; the loss in that case is that file alone.
+    The captain states that the organisers allow it; the AI assistant has not opened the Rules page (the captain's
+    instruction of 2026-11-20) and records the statement as the captain's.
+  - **What is done.** Ruling row R20 and an amendment of `docs/S2_RULES.md` are committed with this entry, before any
+    build (the note's new sha256: 924904c23a543ce0dbae9e27bc3482740c6ce45d85787882a2d0baa76e368a9b). An engineer adds
+    the value 2.0 to the builder behind `--captain-ruling R20` and a thin launcher that first rebuilds R13's and B's
+    bytes; a reviewer checks them; a cold challenger checks this entry's reading of the rule. The file is unpriced on
+    practice (no row reads a step at four fifths of the chord). It goes in the next free T1 slot after C. If the
+    captain wants further strengths, they are named and fixed before the 2.0 file's score exists, so that later scores
+    select among files fixed in advance.
+- 2026-11-21 (y), the score-blind candidate round's lists, fixed before any score of their files (state at 23:05 UTC,
+  2026-11-21). Written by the AI assistant, which gives no design lean on any board (entry (t)); the lists and order
+  rules below are the round's challengers', verbatim, and the notes between them are marked as the AI assistant's.
+  - **The round** (workflow `blind-candidates-round-2`, twelve agents: per board two designers and a cold challenger,
+    all told to use no test score; hand-back in the session scratchpad `lift8/blind_round2.json`). The challengers'
+    own odds that a list raises its board's best headline by a point, from practice and code only: T1 about 0.05, T3
+    about 0.15, heart about 0.06, embryo about 0.2. They also said what the brief got wrong: it named no bar and no
+    idle case, so designers were pushed to fill slots; it sent designers through ledger rows that hold test headlines
+    (one designer confirms seeing some); and for T3 every practice read is one truth.
+  - **T1: the challenger's order rule, verbatim.** T1: the list after decision log 2026-11-20 (r), fixed before any
+    score of MS or rc18 exists and before their practice rows run. Written from a score-blind challenger's text. (1)
+    Entries (n) and (r) stand unchanged. Round one is A and B. C goes only on (n)'s condition. Then (r)'s F (only on
+    QF 'Upload it' and its sha256 55eaee54...). Then (r)'s E (only on the upload answers to E1 and E2; the set advice
+    is decline). D ended in entry (zz). (2) Two new candidates, each a single change to R13's file (ad8f24c7...). Each
+    goes forward only by its own path: - MS: momentum added on the direction-group cells, arm 'all'. - rc18: the
+    E9.5-to-E18 chord at 2/8.5, with E18 cells labelled by N54's frozen controls and E9.5 and E14.5 unchanged. - Path
+    for each: a counted practice row committed and read first, under its fixed statement. Only on AHEAD, one priced
+    question to the captain. Only on his yes, the builder option is written, reviewed and dry-run traced, and the file
+    is built twice with one sha256 in a campaign checkout where the default command first rebuilds ad8f24c7.... A
+    candidate that is not AHEAD ends there, with no question and no rerun under another row. (3) Order: after (r)'s
+    list, MS, then rc18. Neither waits on any other file's score: no practice reading ties either one's value to A's,
+    B's or C's result. A candidate not ready when a slot comes gives the slot to the next ready one in the combined
+    order. At most two T1 uploads a day until 2026-11-26 11:59 UTC; each upload is the captain's act. (4) Only the
+    headlines of the team's own T1 uploads choose, and they serve only the board's best-headline mark. No per-metric
+    value of any T1 upload is read or compared. Nothing is re-seeded, rebuilt, resized or altered after any score. No
+    damping, fraction, bracket, share or other number is set from a score. No property of the hidden E12.5 sample is
+    inferred or bounded from a score. (5) MS and rc18 are never stacked on each other or on A, B or C. Any combination
+    needs its own list, fixed before its score. (6) The standing file is the highest headline among the first upload,
+    R13, A, B, C, F, E, MS and rc18; a tie keeps the earlier file. The list ends after rc18.
+  - **T3: the challenger's order rule, verbatim.** T3 order, fixed before any score of the added file: 1. The queued
+    files keep their places and their conditions exactly as decision log 2026-11-20 (k) and (q) and the T3 amendments
+    of docs/S2_RULES.md set them: the barred s2 or the exponent-2.0 file, then C1, C2, row K23's x_e2 file on base B,
+    then CK on its condition. 2. The refused s1 with the wild-type-only factor (t3_build/refused_s1.h5ad, sha256
+    0394575a11fc..., the reference-listed bytes) takes the first T3 slot free after the last of those files that is
+    uploadable. 3. It waits on no file's score. Practice gives no reason to condition it on one: it is a different bet
+    whose only practice lead occurs where the barred family's severity is gated, and no score is read for that
+    property. 4. If fewer slots remain before 2026-11-26 11:59 UTC than files, the queued files keep precedence unless
+    the captain says otherwise. 5. Headlines serve only the board's best-headline mark. No per-metric value is read,
+    no score enters any weight, exponent, composition or choice of file, and no file is built or changed because of a
+    score. 6. The list ends with the refused s1. x_e4 and wtprod are struck and are not built. A later file needs its
+    own entry and the captain's word before its score.
+  - **Heart: the challenger's order rule, verbatim.** Heart (T2:heart:test_extrap), candidates after K2, fixed before
+    any of their scores by a cold judge blind to test scores, from practice rows H11, H25, H26, H27, H28 and N27 and
+    the builder's code only. 1. K2 keeps its place as queued. 2. Then, in the next free heart slots in this order, at
+    most two heart uploads a day: H-T1 (build_test.py heart --entry s1 --trend --z-mode raw, then halve.py at seed
+    1000001); H-T1B (--entry s2_trim --trend --z-mode raw, then the half); D (the organ cut, --entry organ_scope
+    --expression copy --z-mode raw, then the half). 3. A file enters only if (a) its practice read, committed as a row
+    before it runs, qualifies under the bars fixed in that row (H-T1: H28's S1 to S3 in both worlds on the whole pool
+    against H27's full_iso_half:f; H-T1B: its own S1 to S3 against H27's half_iso_half:f AND H-T1's S2; D: its gate
+    passes and its read is not void), (b) two DGX builds from one clean commit give identical sha256 and pass the
+    format check, and (c) the captain says yes to it by name. A file failing any of these is skipped, and the next one
+    moves up. 4. No file waits on another file's score. The only dependency is H-T1B's on H-T1's practice placebo
+    test, a practice reason (the whole pool is the clean test of the trend; H28 limit (b)). 5. A file is never
+    rebuilt, re-seeded, changed or uploaded again after its score. A refused upload has no score and the file is not
+    changed to get it accepted. 6. Only the headlines of the team's own heart uploads, as the captain reports them,
+    are recorded. They serve the board's best-headline mark only. No per-metric value is read or recorded, and no
+    difference between headlines enters any number, file, rule or statement about the E12.5 stack. 7. D drops if it is
+    not built, read and reviewed by 2026-11-25 12:00 UTC. 8. The list ends after D. No further heart file is designed
+    from any of these scores. If no file qualifies, no further heart file goes, and the board's best headline stands.
+  - **Embryo: the challenger's order rule, verbatim.** Embryo (T2:embryo:test_interp), files beyond O, P and C
+    (proposal from a score-blind round; it takes effect only through the captain's own named order). (1) P and C keep
+    their places in entry 2026-11-21 (l): the next embryo slots take P, then C if it exists. (2) Then each slot the
+    captain chooses to use takes the first file below that he has named, that exists, and that has not been uploaded:
+    SO (T2embryo_s2xs_ov), then T2embryo_s2 (sha 41982d8a...), then O_hi (T2embryo_s2x_ovhi). A file exists only when
+    all of these hold: its row was placed by fresh analysts before any score of it; for SO and O_hi, that row's
+    practice read is not void and its pre-set pass rule holds; its test build gives one sha256 twice from a clean,
+    stamped commit, vec check passes, and its identity booleans hold; its sha256 is committed under
+    experiments/builds/results/. For T2embryo_s2: the archived bytes match the reference sha and the yes-or-no check
+    of rulings R9 and R11 says 'not closed'. (3) The only wait is SO and O_hi on their own practice read, for a reason
+    from practice: the overlay's gain and the deeper expression's gain have never been read together, and both act on
+    the neighbourhood term. No file waits on any upload's headline, and no headline decides whether, when or in what
+    order another file goes. A file not ready holds up none of the others. Two embryo files may go on one day within
+    the captain's stated allowance. (4) A headline is recorded and used only for the board's best-headline mark under
+    docs/S2_RULES.md, 'Uploads and final marks', as entry (l) extends it. No per-metric value is read, tabulated,
+    compared or quoted, and no headline or per-term value of s1, s2xs, O, P, C or these files enters any number, file,
+    form or rule. (5) The list ends with these three files. Nothing else is built for this board without a further
+    named order, and nothing goes after 2026-11-26 11:59 UTC. Each upload is the captain's own act; he may use fewer,
+    none, or another order.
+  - **Notes by the AI assistant on what is executed.** The captain reopened the embryo's and the heart's lists by name
+    (entry (v)), so the embryo's and the heart's rules above take effect as written, with the captain's upload as the
+    naming act for each file; the challengers wrote them without knowing (v). T1: MS's practice read is being written
+    (its row comes first; only AHEAD leads to a question and a build); rc18 is not started (about a day and a half,
+    weak on practice); F stays on entry 2026-11-20 (r)'s terms. T3: the refused s1 is built and reference-listed
+    (`runs/manual_upload/T3_refused_s1.h5ad`, sha256 0394575a11fcd4f915e0daf4972e5a783b6b89efa065ed4f85fe2445cbbb1545,
+    format check passes); it is NOT handed over: the rules note of 2026-11-19 says it is not uploaded, and the captain
+    is asked by name. Heart: the trend read for H-T1 and H-T1B is being written; D (a new scope and size) is not
+    started and is put to the captain with the challenger's default of no. Embryo: the shared read for SO and O_hi is
+    being written. `T2embryo_s2` (ruling R4's file, built on 2026-11-13 before any score;
+    `runs/manual_upload/T2embryo_s2.h5ad`, sha256 41982d8afd784ecb07a4021077f701c3806c3bdb06eda92c2cb99fcc41b19b73,
+    the reference-listed bytes, format check passes): the challenger asked for a check of the record by someone who
+    may read the entries of 2026-11-19. The AI assistant read the rules note's two amendments of that day for that one
+    point: they say of this file that it 'is not uploaded' and that the files replacing it touch no closed lever; they
+    do not close its geometry as a lever after an exposure. It was set aside as the last upload of a two-upload board,
+    not closed. So it exists under the challenger's rule and is handed over as the embryo's file after C. A copy-rows
+    file at the team's own size, which the round did not propose and the captain's yes of entry (v) covers, is being
+    specified by a fresh analyst.
+- 2026-11-21 (z), the moonshot round's outcome: eight kill tests go to engineers (state at 23:08 UTC, 2026-11-21). Written by the
+  AI assistant, which gives no design lean on any board (entry 2026-11-21 (t)); the judgements below are the
+  score-blind judges'.
+  - **The round** (workflow `moonshots-round-1`, the captain's order of entry 2026-11-21 (v); twelve agents: per board
+    two designers and a cold judge, all told to use no test score; hand-back in the session scratchpad
+    `lift8/moonshots_round1.json`). Twenty-three proposals; the judges kept two per board and struck the rest (closed
+    levers such as size, scope and composition; duplicates; ideas already read; kill tests that were not fair). Their
+    plain summaries, verbatim, follow.
+  - **T1, the judge's summary, verbatim:** "Of six proposals, two can run tonight on the existing harness without a
+    GPU. Both are for T1 and both can be built by 25 November if they pass. First: move the blood cells, which nothing
+    moves today, along the change of red-blood-cell nuclei in the JAX atlas between E8.5 and E15.5-E16.5. Chance it
+    passes its practice test: about 1 in 5; chance of 3 or more points at the test if it passes: about 7 in 100.
+    Second: let each gene move at its own pace, using how fast it is still changing in Feng's hearts after E14.5.
+    About 1 in 8 to pass; about 4 in 100 for 3 or more points if it passes. Both most likely fail against their
+    shuffled-gene controls; either file needs your ruling (the blood one amends your ruling R1), and I struck the
+    neural-network and learned-transfer ideas as too weakly identified to finish in time."
+  - **T3, the judge's summary, verbatim:** "Of the six moonshots, two survive and four are struck. The transport map
+    would bring back T3's closed composition and confuse genotype with slide. The scorer-optimised posterior repeats
+    exponent and shrinkage reads, and rests on outside tables that row K24 closed on this fold. The spatial field
+    revives pruned lines and cannot move a fitted field from E9.5 into the E8.75 frame. The duplicate gene-map design
+    is merged into survivor 2. First to run: a mean-preserving within-label spread transfer, released data only. It
+    must gain on the Mab21l2-truth fold and in the depth-matched world, because added noise has scored by depth
+    before. Pass about 0.08; given a pass, about 0.12 for a gain of 3 points or more. Second: a map from the
+    knocked-out gene's own wild-type co-expression in the released T1 files to its response, gated first on outside
+    tables alone and needing your A15 ruling for any file. Pass about 0.05; given a pass, about 0.15 for 3 points or
+    more. Honestly, the most likely outcome of both is no file, and the realistic size of a success is 0.5 to 2
+    points."
+  - **Heart, the judge's summary, verbatim:** "I struck the size idea because size is a closed lever. I also struck
+    the T1-trained translator: it needs T1 data on the heart, and its own designer expects it to fail. Two ideas
+    survive, and both pull the heart's expression toward legal E14.5 data (JAX embryos 54-56 and Feng's E14.5 hearts)
+    without changing cells, positions, size or depth. First comes a cheap check that reads no target: does the JAX
+    atlas's E8.75-to-E9.5 change agree with the MERFISH change on the panel genes? About 0.35 that it passes. If it
+    fails, the heart line ends at no cost. If it passes, the chord idea (H29, CPU, 30 tries) and the latent bridge
+    (H30, two GPU fits, 18 tries) each face a placebo bar in both practice worlds. Honest odds of a gain of three
+    board points or more at the test are about 1% for each idea, and about 2-4% of any real gain; most likely nothing
+    changes, and a pass would still need your yes on the outside-data question."
+  - **Embryo, the judge's summary, verbatim:** "Two of five moonshots survive. Both designer two's ideas are struck:
+    they crop the embryo's scope and size, which the post-exposure block closes, and one of their checks compared a
+    candidate with a practice truth before any row was written. Designer one's simulator idea is struck because its
+    fake truths are made from bracket cells, so it favours the current mixture by design. First to run is a smooth
+    deformation that carries both halves of the overlay file to one midpoint shape: about 12% to pass its test, and
+    about 2% overall to add 3 or more board points over the overlay already built. Second is a flow through all seven
+    released stages that picks which real cells go in: about 7% to pass, and under 1% overall for a 3-point gain. Each
+    costs about 3 hours on the DGX and could be built by 24 November; most likely neither passes."
+  - **Row labels.** The judges drafted rows under labels that collide with the candidate round's (E51, E52, H29a,
+    T65). The labels in force: T1 blood along the outside nuclei atlas T66; T1 per-gene timing T67; T3 within-label
+    dispersion K25; T3 gene-conditioned response map K26; heart late-anchor chord H30 (its target-free gate first);
+    heart latent bridge H31; embryo geodesic overlay E53; embryo multi-stage flow E54.
+  - **What is done.** Workflow `moonshots-engineering-1` (sixteen agents): per moonshot an engineer writes the kill
+    test exactly as its judge specified, on its own branch, and a reviewer checks it. Each kill test is a counted try:
+    the AI assistant places its row and a log entry in one commit before the read, amends the register row of any
+    outside source first (the outside nuclei atlas and the heart atlas's later stages are new uses of rows X003 and
+    X002), runs it on the DGX and reads it in its fixed words. Only a pass leads to a build path, and several passes
+    would still need the captain's word before any file: the blood line amends ruling R1; the heart lines and T3's map
+    use data across tasks or from outside on a board that has had none (question A15). The judges' own odds: each kill
+    test passes with a chance between about one in twenty and one in five, and a gain of three board points or more at
+    the test is about one or two in a hundred per moonshot. Most likely no file comes of them.
+- 2026-11-21 (aa), the T1 file at twice the calendar fraction: the code is reviewed and merged; a cold challenger's check of the
+  rule reading; what the Rules page says about trying settings (state at 23:25 UTC, 2026-11-21). Written by the AI
+  assistant.
+  - **The code** (workflow `t1-fraction-2x`; branch `campaign/t1-fraction-2x`, 6165ed8, merged to main at 0619ad2).
+    The builder takes `--feng-fraction-mult 2.0` only with `--captain-ruling R20`, only on R13's exact command, and
+    refuses every other value and combination before anything is read; the commands that exist (the default, A, B, C)
+    build the same bytes and records as before, pinned by tests on a synthetic fixture. The launcher
+    `experiments/builds/t1_fraction2.sh` first rebuilds R13's bytes and B's bytes and stops if either differs, then
+    builds the 2.0 file twice. The reviewer: READY, no blocker; lesser points noted (two refusals leave no exit file,
+    so the waiter also watches the process; the launcher runs Python isolated where the reference sets did not, which
+    fails closed at the identity steps if it mattered). On merged main: 152 passed on the related test files, the step
+    script's guard passes, the linter is clean.
+  - **The rule check** (a cold challenger, told only the sign of B's headline against R13's file). Verdict: the
+    reading of entry 2026-11-21 (x) stands. It puts the chance that the organisers would treat the 2.0 file as
+    improper at about one in twenty, on the score-use question alone, and the loss at that one file. Its strongest
+    argument against: the direction of the move follows a comparison of two submissions, a one-bit estimate of a
+    hidden-target property, and the team's own paraphrase lists 'differencing submissions' among prohibited acts. Its
+    conditions for staying on the allowed side: a round step on the existing scale, fixed before its own score; only
+    the team's own headlines, used only to choose which file stands; nothing else in R13's command changes; any
+    further strengths named before the 2.0 score; the method report says plainly that the strength was tried at 1.0,
+    1.5 and 2.0 and the best headline kept; the normal build checks. What it says would cross the line: a value fitted
+    from the sizes of returned scores; setting the strength from per-metric returns; inverting the skill map.
+  - **Two corrections to entry (x), from the challenger.** (1) Entry (x) understated the record. The Rules page's
+    Section 10, as the screened check of 2026-11-18 quotes it in `docs/ORGANIZER_QUESTIONS.md`, says: "Trying a
+    parameter value, seeing how it scores, and trying another is ordinary leaderboard work and remains permitted
+    however many rounds it takes; ... what is prohibited is solving for a property of the target and building a
+    submission out of the solution." (2) Entry (x) said the 'Scores' section of `docs/DATA_POLICY.md` records the
+    Rules page's test ("whether the truth enters your prediction's content or only its selection"); that sentence is
+    in a later change note of that file and in `docs/ORGANIZER_QUESTIONS.md`, not in the 'Scores' section.
+  - **What this means beyond the one file (the AI assistant's reading, put to the captain).** Entry 2026-11-21 (t)
+    refused to tune any file from the returned scores and named the organisers' rule as the reason. On the record just
+    quoted that was stricter than the organisers' rule: trying a setting, seeing its score and trying another is
+    permitted by them for as many rounds as it takes. What their rule prohibits is solving for a property of the
+    hidden target (by inverting the skill map) and building a submission out of the solution. The bars on setting a
+    number from a score and on reading per-metric lines are the team's own (entries 2026-11-18 (k), 2026-11-20 (n) and
+    (q), 2026-11-21 (l)), written after the AI assistant's lapses, which were of the prohibited kind (bounding a
+    hidden quantity from scores). The team's own rules are the captain's to lift; the levers closed after the exposure
+    of 2026-11-04 (sizes, scope, cell numbers, T1's composition, depth and draw) and the AI assistant's recusals stay
+    whatever is lifted, because those concern leaked or solved hidden properties. The captain is asked one question:
+    whether to lift the team's own bars so that a score-guided search (round steps on a few settings per board, each
+    fixed in the log before its own score) may run.
+- 2026-11-21 (bb), the T1 file at twice the calendar fraction is built and handed over; the moonshot kill tests' reviews (state at
+  23:45 UTC, 2026-11-21). Written by the AI assistant.
+  - **The 2.0 file** (row R20; record `experiments/builds/results/t1x2_3d18841.txt`). On the DGX at 3d18841, clean,
+    `experiments/builds/t1_fraction2.sh` (run r1) passed its gate and tests (172 passed), rebuilt R13's bytes
+    (ad8f24c71c90...) and B's bytes (c7240cb6a7f7...), and built the 2.0 file twice with the same bytes: sha256
+    52897fe375b8a81afffa788592047c30361824148b00a8176514385060518837. Stamps: this commit, clean.
+    `runs/manual_upload/T1_s2rcB2.h5ad`, format check passes. It is handed over as T1's file after C. Unpriced on
+    practice; the cost of a miss is one slot.
+  - **The moonshot kill tests** (workflow `moonshots-engineering-1`, sixteen agents; hand-back in the scratchpad
+    `lift8/moonshots_eng1.json`). One of the eight is reviewed ready: T67, T1's per-gene timing
+    (`campaign/moon-t1-timing`, 485e3d3). Seven are not ready, each with stated fixes: T66 T1 blood (four blockers;
+    its work was left uncommitted in the engineer's worktree; it also needs the `rdata` package, which the DGX
+    environments lack); K25 T3 dispersion (the row text leaves out constants the code fixes); K26 T3 map (its pre-gate
+    on one fold reads a table derived from that fold's target; the try count on a void); H30 heart chord (row
+    placeholders; its gate needs its own row); H31 heart bridge (four); E53 embryo geodesic (row wording twice; a
+    stale exit file can let a step run; the register lacks torch); E54 embryo flow (the launcher's clean-tree check
+    refuses after its own gate). The outside nuclei atlas and the heart atlas's later stages are on the DGX. A fix
+    round follows for T66, K25, H30, E53 and E54; K26 and H31 wait (the lowest odds; H31 depends on H30's gate).
+- 2026-11-21 (cc), the first moonshot kill test starts: T1's per-gene timing, its late labelling first (state at 23:49 UTC,
+  2026-11-21). Written by the AI assistant, which gives no design lean; the kill test is its score-blind judge's.
+  - **Merged.** `campaign/moon-t1-timing` (485e3d3; review ready, no blocker) is merged to main at c64b2bb, with both
+    sides of the step script's test list kept; on merged main the timing tests and the related guards pass (124
+    passed; the step script's guard 1 passed; the linter clean).
+  - **Two steps, two rows.** (1) Row N57, placed with this entry: the frozen relabeller of row N54 rerun unchanged on
+    the outside heart atlas's permitted cells at E15.5, E16.5 and E17.5. It is target-free and counts no try. Register
+    row X002 is amended in the same commit, before any read: the later stages are a new use of the same source, after
+    the protected window, with no authors' label read; the captain's approval of new outside uses in bulk (2026-11-20)
+    covers it, and no upload uses it without a pass and the captain's word. (2) Row T67, placed in a second commit
+    once the late statistics exist (the row must carry their sha256): two counted arms on row T62's five tasks, ten
+    tries, with an idle pre-gate that prunes the row before any score if the timing changes the direction by less than
+    five per cent in every group.
+  - **The reviewer's lesser points, recorded.** The control permutes each gene's deviation within bins of the
+    direction's absolute size, which mixes genes whose direction is positive and negative; the limiter then zeroes
+    more of the control's slopes than the arm's, so the comparison of arm and control partly measures more timing
+    against less. That is the specification's literal design; it is kept, and the pre-gate reports both ratios. The
+    row text handed back leaves out rules the code fixes; they are written into row T67 when it is placed.
+  - **The judge's odds:** the kill test passes with about 0.12; given a pass, three board points or more at the test
+    about 0.04; the most likely outcome is that the permuted control ties the arm.
