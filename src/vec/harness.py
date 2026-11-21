@@ -1188,18 +1188,23 @@ def _fgw_shape0x_series(ctx: BuildContext) -> Stage:
 
 # Row E50 (as specified; the captain's order of 2026-11-21, docs/PLAN.md decision log 2026-11-21 (h)): the copy-rows
 # file, the floor copy's own rows, order, count and coordinates with the mixture's expression
-# (vec.t2_build.copy_rows_cloud). Off by default: only these two candidates set needs_reference_cells.
+# (vec.t2_build.copy_rows_cloud). Off by default: only these two candidates set needs_reference_cells, and row E52's
+# fgw_copyrows_sized (the same file at the embryo size rule).
 REFERENCE_RELEASED = "reference_released"
 REFERENCE_RELEASED_ROWS = "reference_released_rows"
 
 
-def _copy_rows(ctx: BuildContext, expression: str = "mixture") -> Stage:
+def _copy_rows(ctx: BuildContext, expression: str = "mixture", sized: bool = False) -> Stage:
     """The copy-rows arms: the floor copy of this scoring seed (copy seed = build seed - BUILD_SEED_OFFSET) drawn from
     the very reference cells run_task drew the floor from, the earlier bracket's own expression in round((1 - t) n)
     slots and the later bracket's rows in the others, then the expression step of the arm (mixture, or the series
     rendering of fgw_shape0x_series). Finish: build_submission with duplicate positions and a count below the
     truth's allowed (this path only); no cloud guard, because the coordinates are the floor copy's by construction
-    and reading (i) of row E50 checks them bit for bit."""
+    and reading (i) of row E50 checks them bit for bit.
+
+    sized (row E52, off by default): the coordinates are then scaled about the copy's own centroid to the embryo size
+    rule read on the task's own role stages only (target_rms of a context holding ctx.task.roles alone, fgw_shape0x's
+    target; never the reference cells run_task adds), vec.t2_build.copy_rows_sized, before build_submission."""
     t = ctx.task
     if REFERENCE_RELEASED not in ctx.inputs:
         raise ValueError(f"{t.key}: the copy-rows arm needs the reference cells run_task hands over")
@@ -1221,7 +1226,11 @@ def _copy_rows(ctx: BuildContext, expression: str = "mixture") -> Stage:
     else:
         raise ValueError(f"unknown expression step {expression!r}")
     X = np.clip(np.asarray(X, dtype=np.float32), 0.0, None)
-    sub, rep = t2_build.build_submission(ctx.board, X, res.coords, genes=g, allow_duplicate_coords=True,
+    coords = res.coords
+    if sized:  # row E52 only: the task's own role stages, never the reference-augmented inputs
+        own = replace(ctx, inputs={r: ctx.inputs[r] for r in t.roles})
+        coords = t2_build.copy_rows_sized(res.coords, target_rms(own))
+    sub, rep = t2_build.build_submission(ctx.board, X, coords, genes=g, allow_duplicate_coords=True,
                                          allow_below_truth=True)
     if not rep.ok:
         raise ValueError(f"{t.key}: the built file fails its check: {rep.errors}")
@@ -1234,6 +1243,11 @@ def _fgw_copyrows(ctx: BuildContext) -> Stage:
 
 def _fgw_copyrows_series(ctx: BuildContext) -> Stage:
     return _copy_rows(ctx, expression="series")
+
+
+def _fgw_copyrows_sized(ctx: BuildContext) -> Stage:
+    """Row E52: fgw_copyrows rescaled about the copy's centroid to the embryo size rule (COPY_ROWS_SIZE_RULE)."""
+    return _copy_rows(ctx, sized=True)
 
 
 def _fgw_late(ctx: BuildContext) -> Stage:
@@ -1784,6 +1798,13 @@ CANDIDATES = {
                                       "rule": t2_build.COPY_ROWS_RULE, "series_rule": t2_build.SERIES_RULE,
                                       "stream": t2_build.COPY_ROWS_STREAM, "scope": "whole"},
                                      requires=_series_applies, needs_reference_cells=True),
+    # row E52 (as specified): fgw_copyrows at the team's pre-registered size rule
+    "fgw_copyrows_sized": Candidate("fgw_copyrows_sized", frozenset({"T2"}), (), _fgw_copyrows_sized,
+                                    {"what": "fgw_copyrows rescaled about the copy centroid to the embryo size rule "
+                                             "(row E52)",
+                                     "rule": t2_build.COPY_ROWS_RULE, "size_rule": t2_build.COPY_ROWS_SIZE_RULE,
+                                     "stream": t2_build.COPY_ROWS_STREAM, "scope": "whole"},
+                                    requires=_interp, needs_reference_cells=True),
     # row E49 (as drafted): fgw_shape0x with a shape form between the brackets, three arms and four controls
     **{name: Candidate(name, frozenset({"T2"}), (), _fgw_shape0x_form(form),
                        {"what": "fgw_shape0x (the earlier bracket's own positions) with the shape form "

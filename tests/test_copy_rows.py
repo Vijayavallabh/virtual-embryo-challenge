@@ -242,7 +242,8 @@ def test_the_arms_are_registered_off_by_default():
     for name in ("fgw_copyrows", "fgw_copyrows_series"):
         c = CANDIDATES[name]
         assert c.needs_reference_cells and c.params["stream"] == 51 and c.tasks == frozenset({"T2"})
-    assert [n for n, c in CANDIDATES.items() if c.needs_reference_cells] == ["fgw_copyrows", "fgw_copyrows_series"]
+    assert [n for n, c in CANDIDATES.items() if c.needs_reference_cells] == ["fgw_copyrows", "fgw_copyrows_series",
+                                                                             "fgw_copyrows_sized"]  # row E52's arm
     tasks = {t.key: t for ts in harness.load_tasks().values() for t in ts}
     for key in ("T2e/E6.75+E7.5->E7.25", "T2e/E7.25+E8.0->E7.5"):
         assert CANDIDATES["fgw_copyrows"].applies(tasks[key]) == CANDIDATES["fgw_shape0x"].applies(tasks[key])
