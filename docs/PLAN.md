@@ -9328,3 +9328,39 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Standing by the record's best headline per board:** T1 70.9, T3 61.8, heart 56.4, embryo 69.9; the total is 70.9
     + 61.8 + (56.4 + 69.9) / 2 = 195.85, against 193.2 before today (labelled arithmetic from reported headlines;
     which upload is marked on each board is the captain's go-ahead).
+- 2026-11-21 (t), the captain's instruction after the four scores; what the AI assistant will and will not do with them; a
+  lapse disclosed; a score-blind candidate round starts (state at 22:36 UTC, 2026-11-21). Written by the AI assistant.
+  - **The captain's words, verbatim:** "With this feedback, do whatever it takes and to whatever extreme, go ahead
+    with optimizing to ensure that our next upload is a lot better than this and we have a lot of chances to beat 226
+    score in the leaderboard".
+  - **What the AI assistant does not do, whatever the cost allowed.** It does not shape, tune or pick the content of
+    any file from the per-metric lines the captain pasted, on any board. The organisers' rule as this repository
+    records it (`docs/CHALLENGE.md`, "Rules that constrain methods"): score returns may be used to choose among
+    predictions, not to compute them. The captain's instruction lifts cost and effort; it cannot lift that rule, and
+    the AI assistant reads it as not trying to. The team's own rules built on it also stand unless the captain names
+    them: no per-term value is tabulated, compared or quoted (entries 2026-11-18 (k), 2026-11-20 (q), 2026-11-21 (l));
+    candidates are fixed in the log before their own scores; the embryo's list is closed at three and the heart's
+    after K2.
+  - **A lapse, disclosed.** Reading the pasted lines, the AI assistant began to work out in its own reasoning how one
+    of the queued embryo files would fare at the test from the embryo's per-metric values. Entry 2026-11-21 (l) bars
+    exactly that (no per-term value set beside another upload's or beside 50). It stopped. The result is written
+    nowhere and enters no advice, order, estimate or file; the embryo's order stays the analysts' (P, then C). It was
+    already recused on that lever and stays so. Because the per-metric lines of all four boards are now in its
+    context, it also gives no design lean on any new candidate on any board: fresh analysts who are told to use no
+    test score design them, and it executes.
+  - **What it does do, at full scale.** (1) The queued files keep moving by their pre-set rules (entry (s)). (2) The
+    slots are no longer the limit: at two uploads per board per day until 2026-11-26 11:59 UTC, each board has more
+    free slots than queued files. So a score-blind candidate round starts on all four boards (workflow
+    `blind-candidates-round-2`): per board two fresh designers, one for files the reviewed builders can already
+    produce with existing options and one for new forms, and a cold challenger who checks each against the ledger, the
+    closed levers and the data rules, strikes any reason that leans on a test score, and returns a ranked list with an
+    order rule. Every candidate is designed from released data, allowed outside data, the public scorer's code and
+    committed practice readings only, and is fixed in this log before its own score. Headlines then choose, through
+    each board's best-headline mark. (3) For T1 and T3 new entries need no further word (T3's rule of 2026-11-20 (q),
+    point 5, asks only for a log entry before the score; T1's closed levers stay closed). For the embryo and the heart
+    the lists are closed by the analysts' rule (l) and by row R16: the round only prepares proposals there, and
+    nothing joins either list without the captain's own named word, asked for in one short question.
+  - **The odds, as the AI assistant sees them (its own estimate, not raised because the captain insists).** By the
+    record's best headline per board the total is 195.85. Beating 226 needs about thirty more points. The queued files
+    and a blind candidate round can plausibly add a few points; the AI assistant puts the chance of 226 at about one
+    in a hundred or less, and says so to the captain.
