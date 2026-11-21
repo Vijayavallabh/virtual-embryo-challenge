@@ -3,8 +3,15 @@
 ## Current Objective
 
 - **State at 2026-11-21, 00:54 UTC (newest; it supersedes the bullets below where they differ).** Decision log
-  2026-11-21 (c) to (h). Local main = origin/main (9100471 or later). No score line since 20 Nov 15:30 UTC.
-  - **THE CAPTAIN'S ORDER OF 21 NOV, 01:05 UTC (entry 2026-11-21 (h)): the embryo's shelved second construction is
+  2026-11-21 (c) to (i). Local main = origin/main (9100471 or later). No score line since 20 Nov 15:30 UTC.
+  - **The captain, 21 Nov about 08:10 UTC, verbatim: "Proceed with decisions that help us place at the top of the
+    leaderboard at all wild costs"** (entry 2026-11-21 (i), with the AI assistant's reading: score decisions without a
+    question first; no organiser rule, recusal, exposed lever or captain-fixed list lifted). Running since 08:18 UTC
+    besides the embryo round: workflow `heart-frame-check` (task w24d1gdhv; read-only: do the heart candidates face
+    the same frame luck, are they already the copy's rows, does the construction apply). Its verdict may carry one
+    short priced question for the captain (a new heart file needs a named exception to R16). Not built, available at
+    one word: the K23 table at exponent 4 as an extra T3 candidate.
+  - **THE CAPTAIN'S ORDER OF 21 NOV, ABOUT 08:00 UTC (entry 2026-11-21 (h)): the embryo's shelved second construction is
     reopened** (verbatim: "reopen it [my ordeer]", on a forwarded side-agent note). The construction: the file takes
     the baseline copy's own rows and count, so its positions equal the copy's row for row. The main session is recused
     on this term: fresh analysts decide, it executes and states no preference. Workflow `embryo-second-construction`
@@ -39,7 +46,7 @@
     bulk tables; `tables_two_study`; `tables_first_bulk_run_keep` is the never-read first bulk run).
   - **Parked, one word reopens:** the GEO single-study bulk forms (closed in code); the T1 extra atlases in their
     strict form.
-  - **Tries:** T1 418, embryo 83, heart 80, T3 72. **Next labels:** decision log 2026-11-21 (i); register row X018.
+  - **Tries:** T1 418, embryo 83, heart 80, T3 72. **Next labels:** decision log 2026-11-21 (j); register row X018.
 
 - **State at 2026-11-21, 00:42 UTC (superseded above where they differ).** Decision log
   2026-11-21 (c), (d), (e). Local main = origin/main (88f381d or later). Uploads and the pre-built T3 files are as in

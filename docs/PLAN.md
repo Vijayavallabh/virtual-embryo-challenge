@@ -8902,3 +8902,32 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     off-by-default builder option with a test-board guard, and a practice read if the analysts require one; a reviewer
     checks the code. The exact-position file already handed over (`T2embryo_s2x`) is unchanged and unscored. No number
     in the construction comes from a board score.
+- 2026-11-21 (i), the captain's instruction to proceed with decisions; what the AI assistant does and does not read into
+  it (state at 08:18 UTC, 2026-11-21). Written by the AI assistant.
+  - **The captain's words, verbatim:** "Proceed with decisions that help us place at the top of the leaderboard at all
+    wild costs".
+  - **The AI assistant's reading (its own).** Decisions on score items are taken without a question first, and cost in
+    compute, agents and effort is no object. It lifts no rule of the organisers (the data windows, the two held-out
+    genes and their phenocopies by any route, scores choosing and never computing), not the never-open list, and not
+    the AI assistant's recusals: where it is recused, fresh analysts decide and it executes. By the team's standing
+    rule a general go-ahead is not the captain's word for a lever closed after an exposure (Task 1's advance draw,
+    composition and depth stay as they are) or for changing a list the captain fixed (the heart's list under R16; Task
+    3's 'at most one file' of row K23): building and rehearsing code paths that are off by default needs no ruling,
+    and a change to an upload list is put as one short priced question when a file is ready. Uploads stay the
+    captain's own acts.
+  - **What it starts or continues under this instruction.** (1) The embryo's second construction of entry (h) goes
+    through specification, challenge, build and review without pause, then its practice read if the analysts require
+    one, then the test-board build and hand-over. (2) A read-only check by fresh analysts of whether the heart's
+    candidate files face the same frame luck on the occupancy term and whether the same construction applies there
+    (workflow `heart-frame-check`); a new heart file would need the captain's named exception to R16, so the analysts
+    write that one question if they recommend one. (3) Nothing else changes: the files with the captain and their
+    pre-set rules stand.
+  - **What it looked at and left alone, with reasons.** Using what is known in general about what loss of beta-catenin
+    does to gene expression would help Task 3's which-genes terms more than anything else, and stays barred: the
+    organisers forbid measured data from a held-out genotype 'by any route (directly, via a pretrained model trained
+    on it, via a public dataset containing it)', and a language model's own knowledge is such a route. Re-uploading
+    one prediction in other row orders to redraw the scorer's handedness coin stays out: the captain decided on
+    2026-10-19 and 2026-11-02 that it exploits a defect and is not used without the organisers' word. Task 1's advance
+    draw stays declined: its practice gain sits where the base carries the earlier stage's mix, not on the
+    like-for-like library, and it touches two closed quantities. An exponent-4 version of the K23 table is not built:
+    row K23 named one file; it can be added at the captain's word.
