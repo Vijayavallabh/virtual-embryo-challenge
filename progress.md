@@ -2,6 +2,14 @@
 
 ## Current State
 
+- **2026-11-21, 22:31 UTC.** Four scores, the first upload of the day on each board as the captain reported them
+  (headlines only are recorded): T1 A 70.8 (above R13's file, below the first upload); heart K1 54.1 (the best stays
+  56.4); embryo overlay 69.9, the board's highest (64.6 before); T3 exponent 1.5 61.8, equal to barred s1 as reported.
+  By the record's best headline per board the total is 195.85 (193.2 before). Second uploads by the pre-set rules: T1
+  B; heart K2; embryo positions; T3 the barred s2. Earlier today the captain answered the copy-positions question
+  ("yes, build it that way"; the file was already built). Tries: T1 418, embryo 84, heart 80, T3 72. What waits:
+  `session-handoff.md`, first bullet.
+
 - **2026-11-21, 11:10 UTC.** No new score. The embryo now has three files with the captain, in the order fresh
   analysts fixed (decision log (l)): the overlay file (the captain's "Build it"), the positions file, and the
   copy-positions file (the captain's "reopen it"), built today twice with one sha256 (f20730da8308...) after its

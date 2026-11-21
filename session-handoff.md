@@ -2,7 +2,34 @@
 
 ## Current Objective
 
-- **State at 2026-11-21, 11:10 UTC (newest; it supersedes the bullets below where they differ).** Decision log 2026-11-21 (c) to (r). Local main = origin/main. No score line since 20 Nov 15:30 UTC. Nothing of ours is running on
+- **State at 2026-11-21, 22:31 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+  2026-11-21 (c) to (s). Local main = origin/main. Nothing of ours is running on the DGX. **FOUR SCORES CAME IN at
+  22:31 UTC (entry (s)), one per board, reported by the captain as the first upload of the day; only the headlines are
+  recorded (`results/manual_uploads.csv`); the paste's per-metric lines and ranks are recorded nowhere and are used
+  for nothing.**
+  - **Headlines and what each board's pre-set rule says next (the second upload of the day):** T1: A (`T1_s2rcA`)
+    70.8, above R13's file (70.60), below the first upload (70.9); next `runs/manual_upload/T1_s2rcB.h5ad`
+    (c7240cb6a7f7); C (`T1_s2rcC`, 31477ef7df5d) only if B also returns strictly above 70.60. Heart: K1 54.1 (best so
+    far 56.4); next K2 `runs/manual_upload/T2heart_s2iso_half.h5ad` (dc436d9225bb) whatever K1 scored; then the
+    heart's list is spent. Embryo: O (overlay) 69.9, the board's highest; next P
+    `runs/manual_upload/T2embryo_s2x.h5ad` (a03611a343fa), then C `T2embryo_s2x_cr.h5ad` (f20730da8308), each whatever
+    the others scored. T3: the exponent-1.5 file 61.8, EQUAL to barred s1 at the reported precision, so not above
+    61.8: next the barred s2 `runs/archive/builds_dc7b6ae/t3_build/barred_s2.h5ad` (1b69521e3c28); the exponent-2.0
+    file goes instead only if the captain reports a more precise headline for both files with the 1.5 file strictly
+    higher. After the second T3 score the base B is fixed (highest headline among barred s1, the 1.5 file, the second
+    file; ties to barred s1); then on B: C1 and C2 (B is barred s1 or s2), then the K23 file, then CK only if C2 and
+    the K23 file each beat B. All of those files exist for every base in `runs/manual_upload/` and were re-checked on
+    21 Nov.
+  - **The files of the four scores are ASSUMED** (the first of each pair in the hand-over table); the captain was
+    asked to say if any was another file. **Standing by the record's best headline per board:** T1 70.9, T3 61.8,
+    heart 56.4, embryo 69.9: 195.85 (193.2 before).
+  - **When the next scores come:** add rows to `results/manual_uploads.csv` (headline only), one decision-log entry,
+    apply the rules above, name the next files with path, sha256, board and data-used text. Embryo headlines serve the
+    final mark only (entry (l)); no per-term value is tabulated, compared or quoted on any board; nothing is
+    re-planned from a score.
+  - **Tries:** T1 418, embryo 84, heart 80, T3 72. **Next labels:** decision log 2026-11-21 (t) (or 2026-11-22 (a)
+    after midnight UTC); register row X018.
+- **State at 2026-11-21, 11:10 UTC (superseded by the bullet above where they differ).** Decision log 2026-11-21 (c) to (r). Local main = origin/main. No score line since 20 Nov 15:30 UTC. Nothing of ours is running on
   the DGX.
   - **THE EMBRYO HAS THREE FILES WITH THE CAPTAIN, IN THE ANALYSTS' ORDER (entry 2026-11-21 (l); the main session is
     recused, executes the rule and states no preference). Each embryo upload takes the first not yet uploaded:** (1)

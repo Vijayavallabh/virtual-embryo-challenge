@@ -9298,3 +9298,33 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     file now rests on the captain's own yes instead of on the default. The embryo's list and order stand: the overlay
     file, the exact-position file, the copy-rows file. The rules note records the answer in this commit (its new
     sha256: 65b8b5281367d855b91262066f9abadae841bc45a8d456314096ae96f9498d23).
+- 2026-11-21 (s), four scores reported by the captain, one per board; each board's pre-set rule applied (state at 22:31 UTC,
+  2026-11-21). Written by the AI assistant, which is recused on the heart's scope and size and on the embryo's
+  occupancy term and shape forms, and states no preference on either.
+  - **What the captain pasted,** under the heading "Leaderboard results FOR THE 1ST UPLOAD TODAY": for each of the
+    four boards a rank, an overall score and a table of per-metric scores. **Only the four overall scores (headlines)
+    are recorded:** T1 70.8; heart 54.1; embryo 69.9; T3 61.8. The per-metric lines and the ranks are written nowhere
+    in the repository and are used for nothing: no per-term value is tabulated, compared with another upload's or with
+    50, or quoted (entry 2026-11-21 (l) for the embryo; entry 2026-11-20 (q), point 2, for T3; entry 2026-11-18 (k);
+    the Official Rules' Section 10 for all four). The AI assistant states that it has drawn no inference from them.
+  - **The files.** The captain did not name them. They are taken to be the first file of each pair named in the
+    hand-over of the same day (`T1_s2rcA`, the heart's K1 `T2heart_s2trimcopy_half`, the embryo's O `T2embryo_s2x_ov`,
+    `T3_barred_x1.5`), and `results/manual_uploads.csv` says 'assumed' on each row. The captain is asked to say so if
+    any was another file.
+  - **T1** (rule of entry 2026-11-20 (n)): A returned 70.8, strictly above R13's file (70.60) and below the first
+    upload (70.9). B goes next, as fixed. C goes only if B also returns a headline strictly above 70.60.
+  - **Heart** (row R16; the main session executes and states nothing more): K1 returned 54.1. K2 goes in the next slot
+    whatever K1 scored. The best of the board's uploads stands (56.4 so far).
+  - **Embryo** (entry 2026-11-21 (l); the main session executes and states nothing more): O returned 69.9, the board's
+    highest headline so far (the first upload returned 64.6). P goes next, then C, each whatever the others scored.
+    The headline is used for the final mark and for nothing else.
+  - **T3** (entries 2026-11-20 (k) and (q)): the exponent-1.5 file returned 61.8, the same headline as barred s1 at
+    the precision reported. The rule sends the exponent-2.0 file only if 1.5 returns a headline above 61.8; it did
+    not, so the second file is the barred s2 (`runs/archive/builds_dc7b6ae/t3_build/barred_s2.h5ad`, 1b69521e3c28).
+    The captain is told that the two headlines are equal as reported, and that a more precise headline shown by the
+    site for both files would be the same quantity at its real precision: only a strictly higher value for the 1.5
+    file would make the second file the exponent-2.0 one. Default, with no such report: the barred s2. After its score
+    the base B is fixed (ties go to barred s1).
+  - **Standing by the record's best headline per board:** T1 70.9, T3 61.8, heart 56.4, embryo 69.9; the total is 70.9
+    + 61.8 + (56.4 + 69.9) / 2 = 195.85, against 193.2 before today (labelled arithmetic from reported headlines;
+    which upload is marked on each board is the captain's go-ahead).
