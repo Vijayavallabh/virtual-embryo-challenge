@@ -289,6 +289,9 @@ class _World:
                 np.ones(160, bool), {"stages": list(stages)})
 
 
+ROW_C = "| H30 (x) | heart | ... named in this row before the read: C. Changes no file |"
+
+
 def _wire(h30, monkeypatch, world):
     class Task:
         panel_board = "pb"
@@ -296,7 +299,8 @@ def _wire(h30, monkeypatch, world):
         def __init__(self, key):
             self.reference = h30.TRANSITIONS.get(key, {}).get("merfish", "T2/E9.5.h5ad")
 
-    monkeypatch.setattr(h30, "tries_rows", lambda path=h30.TRIES: {"H30"})
+    monkeypatch.setattr(h30, "tries_rows", lambda path=h30.TRIES: {"H30", "N56"})
+    monkeypatch.setattr(h30, "row_text", lambda *a, **k: ROW_C)
     monkeypatch.setattr(h30, "register_names_row", lambda *a, **k: [])
     monkeypatch.setattr(h30.provenance, "git_state", lambda repo, ignore=(): ("c" * 40, []))
     monkeypatch.setattr(h30.payoff, "provenance", lambda: {"commit": "c" * 40, "tree_clean": True})
@@ -519,6 +523,7 @@ def _part(h30, key, seeds, score=None, de=None, groups=None, commit=COMMIT, clea
         for f in h30.FORMS:
             ck[h30.LETTER[f]] = {"chord0_counts_equal_control": True, "same_draw": True,
                                  "pre_size_coords_equal": True, "post_size_coords_equal": True,
+                                 "chord0_x_max_abs_diff_control": 9.5e-7,
                                  "placebo_fixed_points": {p: {"CM": 0} for p in h30.PLACEBOS}}
             ck[h30.LETTER[f]].update((checks or {}).get(h30.LETTER[f], {}))
         recs = {nm: {"size": {}, "chord": {"mean_total_change": 0.001, "unmoved_counts_equal": True}}
@@ -705,6 +710,11 @@ def test_void_on_every_identity_depth_and_table_failure(h30):
         assert r["void"] and any(w.startswith("V5:") for w in r["why"]), k
     r = _read(h30, _parts(h30, checks={"A": {"placebo_fixed_points": {"P2": {"CM": 1}}}}))
     assert any("own factor" in w for w in r["why"])
+    # CHORD0's X against the control's: void above 1e-5 (a normalisation offset), or when the record is missing
+    for v, bad in ((1e-5, False), (-1e-5, False), (1.0001e-5, True), (float("nan"), True), (None, True),
+                   (True, True)):
+        r = _read(h30, _parts(h30, checks={"C": {"chord0_x_max_abs_diff_control": v}}))
+        assert any("CHORD0's X differs" in w for w in r["why"]) is bad, v
     p = _parts(h30)
     p[h30.TASK_KEYS[0]][0]["rows"][0]["n_cells"][h30.name("core_iso_half", "A2")] = 349
     assert any("cell numbers differ" in w for w in _read(h30, p)["why"])
@@ -804,7 +814,23 @@ def test_each_step_refuses_before_anything_loads(h30, monkeypatch, tmp_path):
     for call in calls:
         with pytest.raises(SystemExit, match="no row"):
             call()
+    # the gate's row N56 is committed with row H30: every step refuses without it (blocker 2)
     monkeypatch.setattr(h30, "tries_rows", lambda path=h30.TRIES: {"H30"})
+    for call in calls:
+        with pytest.raises(SystemExit, match="gate's row N56"):
+            call()
+    monkeypatch.setattr(h30, "tries_rows", lambda path=h30.TRIES: {"N56", "H27"})
+    for call in calls:
+        with pytest.raises(SystemExit, match="no row"):
+            call()
+    # row H30 must name the form in force before anything runs (blocker 1: TRIES.md cannot change before the read)
+    monkeypatch.setattr(h30, "tries_rows", lambda path=h30.TRIES: {"H30", "N56"})
+    for txt in (None, "| H30 | ... named in this row before the read: <form>. |"):
+        monkeypatch.setattr(h30, "row_text", lambda *a, t=txt, **k: t)
+        for call in calls:
+            with pytest.raises(SystemExit, match="form in force"):
+                call()
+    monkeypatch.setattr(h30, "row_text", lambda *a, **k: ROW_C)
     for state in (("c" * 40, ["src/x.py"]), ("unknown", None)):
         monkeypatch.setattr(h30.provenance, "git_state", lambda repo, ignore=(), s=state: s)
         for call in calls:
@@ -813,7 +839,7 @@ def test_each_step_refuses_before_anything_loads(h30, monkeypatch, tmp_path):
     monkeypatch.setattr(h30.provenance, "git_state", lambda repo, ignore=(): ("c" * 40, []))
     monkeypatch.setattr(h30, "register_names_row", lambda *a, **k: ["X003"])
     for call in calls:
-        with pytest.raises(SystemExit, match="do not name row H30"):
+        with pytest.raises(SystemExit, match="required wording for row H30"):
             call()
     monkeypatch.setattr(h30, "register_names_row", lambda *a, **k: [])
     (tmp_path / "g").mkdir()
@@ -835,7 +861,23 @@ def test_each_step_refuses_before_anything_loads(h30, monkeypatch, tmp_path):
     monkeypatch.setattr(h30, "COMMITTED_GATE", gate)
     with pytest.raises(SystemExit, match="committed gate reading does not say PASS"):
         calls[0]()
+    # a committed PASS must come from a clean tree at a strict ancestor of this commit (lesser point 6)
     gate.write_text(json.dumps({"axis": h30.AXIS + ":gate", "outcome": "PASS"}))
+    with pytest.raises(SystemExit, match="ancestor"):
+        calls[0]()
+    seen = []
+    monkeypatch.setattr(h30, "is_ancestor", lambda old, new, repo=None: seen.append((old, new)) or old == "b" * 40)
+    gate.write_text(json.dumps({"axis": h30.AXIS + ":gate", "outcome": "PASS",
+                                "provenance": {"commit": "d" * 40, "tree_clean": True}}))
+    with pytest.raises(SystemExit, match="ancestor"):
+        calls[0]()
+    assert seen[-1] == ("d" * 40, "c" * 40)
+    gate.write_text(json.dumps({"axis": h30.AXIS + ":gate", "outcome": "PASS",
+                                "provenance": {"commit": "b" * 40, "tree_clean": False}}))
+    with pytest.raises(SystemExit, match="ancestor"):
+        calls[0]()
+    gate.write_text(json.dumps({"axis": h30.AXIS + ":gate", "outcome": "PASS",
+                                "provenance": {"commit": "b" * 40, "tree_clean": True}}))
     monkeypatch.setattr(h30, "COMMITTED_SHA", tmp_path / "none_sha.json")
     with pytest.raises(SystemExit, match="sha256 is not committed"):
         calls[0]()
@@ -862,12 +904,20 @@ def test_the_read_refuses_without_the_row_a_pass_or_the_form_or_with_a_reading(h
     with pytest.raises(SystemExit, match="no row"):
         h30.main(argv)
     monkeypatch.setattr(h30, "tries_rows", lambda path=h30.TRIES: {"H30"})
+    with pytest.raises(SystemExit, match="gate's row N56"):
+        h30.main(argv)
+    monkeypatch.setattr(h30, "tries_rows", lambda path=h30.TRIES: {"H30", "N56"})
     monkeypatch.setattr(h30, "COMMITTED_GATE", tmp_path / "none.json")
     with pytest.raises(SystemExit, match="does not say PASS"):
         h30.main(argv)
     gate = tmp_path / "cg.json"
     gate.write_text(json.dumps({"axis": h30.AXIS + ":gate", "outcome": "PASS"}))
     monkeypatch.setattr(h30, "COMMITTED_GATE", gate)
+    with pytest.raises(SystemExit, match="ancestor of the run commit"):  # no provenance
+        h30.main(argv)
+    gate.write_text(json.dumps({"axis": h30.AXIS + ":gate", "outcome": "PASS",
+                                "provenance": {"commit": "b" * 40, "tree_clean": True}}))
+    monkeypatch.setattr(h30, "is_ancestor", lambda old, new, repo=None: (old, new) == ("b" * 40, COMMIT))
     monkeypatch.setattr(h30, "row_text", lambda *a, **k: "| H30 | ... named in this row before the read: <form>. |")
     with pytest.raises(SystemExit, match="form in force"):
         h30.main(argv)
@@ -882,13 +932,29 @@ def test_the_read_refuses_without_the_row_a_pass_or_the_form_or_with_a_reading(h
         h30.main(argv)
 
 
-def test_the_register_must_name_the_row_in_both_outside_sources(h30, tmp_path):
+def test_the_register_must_carry_the_required_wording_in_both_outside_sources(h30, tmp_path):
     p = tmp_path / "EXTERNAL_DATA.md"
-    p.write_text("| X002 | Feng ... T1 only |\n| X003 | Qiu ... T2-heart amendment for row H30 |\n")
+    amend, lic = "T2-heart amendment for row H30", "Licence confirmed for row H30"
+    p.write_text(f"| X002 | Feng ... T1 only |\n| X003 | Qiu ... T1. {amend}: raw counts. {lic}: CC BY 4.0. |\n")
     assert h30.register_names_row(p) == ["X002"]
-    p.write_text("| X002 | Feng ... row H30 |\n| X003 | Qiu ... row H300 |\n")
-    assert h30.register_names_row(p) == ["X003"]
-    assert h30.register_names_row(h30.REGISTER) == ["X002", "X003"]  # today neither names it
+    p.write_text(f"| X002 | Feng. {amend}: raw counts |\n| X003 | Qiu. {amend}: raw counts |\n")
+    assert h30.register_names_row(p) == ["X003"]  # X003 also needs the licence confirmed
+    # merely naming the row, or the phrase inside wording that denies it, is not the amendment
+    p.write_text(f"| X002 | Feng ... row H30 |\n| X003 | Qiu ... there is no {amend}. {lic} |\n")
+    assert h30.register_names_row(p) == ["X002", "X003"]
+    p.write_text(f"| X002 | Feng. {amend}0 |\n| X003 | Qiu. {amend}. Licence not confirmed for row H30 |\n")
+    assert h30.register_names_row(p) == ["X002", "X003"]
+    p.write_text(f"| X002 | Feng. {amend} (stages E9.5, E14.5) |\n| X003 | Qiu; {amend}; {lic} |\n")
+    assert h30.register_names_row(p) == []
+    assert h30.register_names_row(h30.REGISTER) == ["X002", "X003"]  # today neither carries it
+
+
+def test_the_gate_provenance_must_be_a_strict_ancestor(h30):
+    def rev(r):
+        return subprocess.run(["git", "rev-parse", r], cwd=REPO_ROOT, capture_output=True, text=True).stdout.strip()
+    head, parent = rev("HEAD"), rev("HEAD^")
+    assert h30.is_ancestor(parent, head) and not h30.is_ancestor(head, parent)
+    assert not h30.is_ancestor(head, head) and not h30.is_ancestor("", head) and not h30.is_ancestor("0" * 40, head)
 
 
 def test_a_table_is_read_only_with_its_committed_checksum(h30, tmp_path):
@@ -940,30 +1006,40 @@ def test_the_launcher_steps_threads_and_no_removal():
         assert "'" not in msg and '"' not in msg, msg
     for need in ("OMP_NUM_THREADS=8", "OPENBLAS_NUM_THREADS=8", "MKL_NUM_THREADS=8", "NUMPY_MADVISE_HUGEPAGE=0",
                  'TMPDIR="$S/tmp"', 'S="$HOME/v/scratch/h30"', "status --porcelain", "python -I -B",
-                 "merge-base --is-ancestor", "git diff --name-only", "0-1 2-3 4-5 6-7 8-9"):
+                 "merge-base --is-ancestor", "git diff --name-only", "0-1 2-3 4-5 6-7 8-9",
+                 'cmp -s runs/h30/gate/gate.json "$H30R/gate/gate.json"',
+                 'cmp -s runs/h30/gate/gate.txt "$H30R/gate/gate.txt"',
+                 'cmp -s runs/h30/tables/tables_sha256.json "$H30R/tables_sha256.json"'):
         assert need in sh, need
+    # a refusal writes <step>.refused.exit; only a step that ran writes <step>.exit (lesser point 1)
+    body = sh.split("export OMP_NUM_THREADS")[0]
+    assert "finish " not in body.split("finish() {")[1].split("\n", 1)[1]
+    assert re.findall(r"refuse \d+", body) and "$S/$STEP.refused.exit" in sh
     order = dict(re.findall(r"^  (tests|gate|tables|run|read)\) PREV=\"?([a-z]*)\"? ;;$", sh, flags=re.M))
     assert order == {"tests": "", "gate": "tests", "tables": "gate", "run": "tables", "read": "run"}
     listed = re.findall(r"tests/test_[a-z0-9_]+\.py", sh)
     assert "tests/test_h30_heart_late_chord.py" in listed and all((REPO_ROOT / f).exists() for f in listed)
-    assert sh.count("finish ") >= 10 and "$S/$STEP.exit" in sh
+    assert sh.count("finish $") == 5 and sh.count("refuse 9") >= 7 and "$S/$STEP.exit" in sh
     assert "results/h30_heart_late_chord" in sh and "--commit \"$RUN\"" in sh
 
 
 def test_the_launcher_refusal_paths_under_a_temporary_home(tmp_path):
     s = tmp_path / "v" / "scratch" / "h30"
+
+    def refused(step):
+        return (s / f"{step}.refused.exit").read_text().strip()
     out = _run(tmp_path)
-    assert out.returncode == 2 and (s / "usage.exit").read_text().strip() == "2"
+    assert out.returncode == 2 and refused("usage") == "2"
     out = _run(tmp_path, "build", "0" * 40)
-    assert out.returncode == 97 and (s / "build.exit").read_text().strip() == "97"
+    assert out.returncode == 97 and refused("build") == "97"
     out = _run(tmp_path, "gate", "0" * 40)  # tests has not run
-    assert out.returncode == 96 and (s / "gate.exit").read_text().strip() == "96"
+    assert out.returncode == 96 and refused("gate") == "96"
     out = _run(tmp_path, "run", "0" * 40)  # run needs RUN
-    assert out.returncode == 2 and (s / "run.exit").read_text().strip() == "2"
+    assert out.returncode == 2 and refused("run") == "2"
     out = _run(tmp_path, "read", "0" * 40, "1" * 40)
-    assert out.returncode == 96 and (s / "read.exit").read_text().strip() == "96"
+    assert out.returncode == 96 and refused("read") == "96"
     out = _run(tmp_path, "tests", "0" * 40)  # a wrong commit
-    assert out.returncode == 99 and "HEAD is not" in out.stderr and (s / "tests.exit").read_text().strip() == "99"
+    assert out.returncode == 99 and "HEAD is not" in out.stderr and refused("tests") == "99"
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO_ROOT, capture_output=True, text=True).stdout.strip()
     out = _run(tmp_path, "tests", head[:12])  # the right commit, shortened: never enough
     assert out.returncode == 99
@@ -973,7 +1049,24 @@ def test_the_launcher_refusal_paths_under_a_temporary_home(tmp_path):
     assert _run(tmp_path, "gate", "0" * 40).returncode == 96
     (s / "tests.head").write_text("0" * 40 + "\n")
     out = _run(tmp_path, "gate", "0" * 40)
-    assert out.returncode == 99 and (s / "gate.exit").read_text().strip() == "99"
+    assert out.returncode == 99 and refused("gate") == "99"
     assert not (s / "gate.head").exists()  # nothing recorded before the checks pass
-    assert sorted(p.name for p in s.iterdir()) == ["build.exit", "gate.exit", "read.exit", "run.exit", "tests.exit",
-                                                   "tests.head", "tmp", "usage.exit"]
+    # a refused call never overwrites a finished step's exit (the reviewer's stray call: run.exit 0 became 99)
+    (s / "gate.exit").write_text("0\n")
+    (s / "gate.head").write_text("0" * 40 + "\n")
+    (s / "tables.exit").write_text("0\n")
+    (s / "tables.head").write_text("0" * 40 + "\n")
+    (s / "run.exit").write_text("0\n")
+    (s / "run.head").write_text("0" * 40 + "\n")
+    (s / "run.run").write_text("1" * 40 + "\n")
+    assert _run(tmp_path, "run", "0" * 40, "2" * 40).returncode == 94  # run already exited 0 at this ROW
+    assert _run(tmp_path, "tests", "0" * 40).returncode == 94
+    out = _run(tmp_path, "read", "0" * 40, "1" * 40)  # the right order, another HEAD
+    assert out.returncode == 99 and refused("read") == "99"
+    for step in ("tests", "gate", "tables", "run"):
+        assert (s / f"{step}.exit").read_text().strip() == "0", step
+    assert not (s / "read.exit").exists()
+    assert sorted(p.name for p in s.iterdir()) == [
+        "build.refused.exit", "gate.exit", "gate.head", "gate.refused.exit", "read.refused.exit", "run.exit",
+        "run.head", "run.refused.exit", "run.run", "tables.exit", "tables.head", "tests.exit", "tests.head",
+        "tests.refused.exit", "tmp", "usage.refused.exit"]

@@ -27,8 +27,10 @@ Steps (one per call, run_h30.sh):
            (row H27's form at its forecast size f, then row H25's half), CHORD0 (all factors 1), A (the practice tau),
            A2 (tau 0.4) and P1 to P3 (A2's factors deranged within ten level bins), every arm by
            vec.core.apply_factors(keep_depth=True, seed=[build seed, 29]) on the drawn counts before the size step.
-           Refused before anything loads unless row H30 is in TRIES.md, the tree is clean, the committed gate reading
-           says PASS, the committed table checksums exist and the output does not exist. Prints no score.
+           Refused before anything loads unless rows H30 and N56 are in TRIES.md (row H30 naming the form in force),
+           the tree is clean, EXTERNAL_DATA.md's X002 and X003 carry their required wording, the committed gate reading
+           says PASS and was made from a clean tree at an ancestor of this commit, the committed table checksums exist
+           and the output does not exist. Gate and tables refuse on the same rows, tree and register. Prints no score.
   read     the void conditions, the reproduction gate against row H27's committed scores, the fixed statements on the
            form in force (which the row names) and on the other forms; prints the outcome and what follows only.
 
@@ -82,9 +84,14 @@ import filterio as fio  # noqa: E402  (verify_manifest_output)
 import windows  # noqa: E402  (parse_stage, allowed_label)
 
 ROW = "H30"
+GATE_ROW = "N56"  # the gate's own row (STEP G), committed with row H30 before anything runs
 TRIES = HERE / "experiments" / "harness" / "TRIES.md"
 REGISTER = HERE / "EXTERNAL_DATA.md"
-REGISTER_ROWS = ("X002", "X003")  # each must name row H30 (its T2-heart amendment) before any outside file is read
+REGISTER_ROWS = ("X002", "X003")  # each must carry its T2-heart amendment for row H30 before any outside file is read
+# the register's required wording, each opening a sentence or a cell of the source's line
+AMENDMENT = "T2-heart amendment for row H30"
+LICENCE = "Licence confirmed for row H30"
+REGISTER_WORDS = {"X002": (AMENDMENT,), "X003": (AMENDMENT, LICENCE)}
 AXIS = "h30-heart-late-chord"
 PART = "h30.json"
 SOURCE = "experiments/harness/h30_heart_late_chord.py (try H30)"
@@ -150,6 +157,7 @@ TRUTHS = (OWN, *CLEAN)
 WORLDS = (("own", (OWN,)), ("CLEAN", CLEAN))
 GUARD_MEAN, GUARD_SEED = h25.GUARD_MEAN, h25.GUARD_SEED  # 0.1 and 0.5 board points
 TOL = 1e-9
+X_TOL = 1e-5  # CHORD0's largest X difference from the control (row H28 recorded 9.5e-7 for the same pattern)
 SHAPE_TERMS = h28.SHAPE_TERMS  # d2_shape, occupancy_dice, scale_log_ratio
 DEPTH_TOL = 0.01  # mean per-cell total count change
 S1_FOLD, S1_EACH, S2_BAR, MIN_AHEAD = 1.0, 0.5, 0.5, 9
@@ -182,13 +190,21 @@ def row_text(row: str = ROW, path: Path = TRIES) -> str | None:
     return None
 
 
+def _opens_sentence(line: str, words: str) -> bool:
+    """`words` opens a sentence or a cell of `line` (a phrase quoted inside wording that denies it does not count)."""
+    return re.search(rf"(^|[|.;:]\s*){re.escape(words)}(?![\w-])", line) is not None
+
+
 def register_names_row(path: Path = REGISTER, ids=REGISTER_ROWS, row: str = ROW) -> list[str]:
-    """The register rows among `ids` that do not yet name row H30 (each needs its T2-heart amendment first)."""
+    """The register rows among `ids` that do not yet carry their required wording for row H30: on X002 and X003
+    "T2-heart amendment for row H30", on X003 also "Licence confirmed for row H30", each opening a sentence or a
+    cell of the source's line."""
     lines = Path(path).read_text(encoding="utf-8").splitlines()
     missing = []
     for x in ids:
         ln = next((ln for ln in lines if ln.startswith(f"| {x} ")), None)
-        if ln is None or not re.search(rf"\b{row}\b", ln):
+        words = tuple(w.replace(ROW, row) for w in REGISTER_WORDS.get(x, (AMENDMENT,)))
+        if ln is None or not all(_opens_sentence(ln, w) for w in words):
             missing.append(x)
     return missing
 
@@ -200,15 +216,29 @@ def _clean_or_exit() -> str:
     return commit
 
 
-def refuse_common(out_files) -> str:
-    """Row first, then a clean tree, then the register's amendments, then no existing output."""
-    if ROW not in tries_rows():
+def refuse_rows() -> None:
+    """Row H30 and the gate's row N56 both in TRIES.md, and row H30 naming the form in force (TRIES.md cannot change
+    between the row commit and the read, so a placeholder there would refuse the read for ever)."""
+    have = tries_rows()
+    if ROW not in have:
         sys.exit(f"{ROW} is refused: it has no row in experiments/harness/TRIES.md (a row comes before its run)")
+    if GATE_ROW not in have:
+        sys.exit(f"{ROW} is refused: the gate's row {GATE_ROW} is not in experiments/harness/TRIES.md (it is committed "
+                 f"with row {ROW} before anything runs)")
+    if form_in_force(row_text()) is None:
+        sys.exit(f"{ROW} is refused: row {ROW} does not name the form in force ('named in this row before the read: "
+                 "<A, B or C>')")
+
+
+def refuse_common(out_files) -> str:
+    """Rows first (H30 naming its form, and the gate's N56), then a clean tree, then the register's amendments, then
+    no existing output."""
+    refuse_rows()
     commit = _clean_or_exit()
     missing = register_names_row()
     if missing:
-        sys.exit(f"{ROW} is refused: EXTERNAL_DATA.md rows {missing} do not name row {ROW} (the T2-heart amendment "
-                 "comes before any outside file is read)")
+        sys.exit(f"{ROW} is refused: EXTERNAL_DATA.md rows {missing} do not carry the required wording for row {ROW} "
+                 f"('{AMENDMENT}'; on X003 also '{LICENCE}'), which comes before any outside file is read")
     for p in out_files:
         if Path(p).exists():
             sys.exit(f"{ROW} is refused: {p} exists")
@@ -231,6 +261,28 @@ def gate_passed(path: Path, commit: str | None = None) -> bool:
     if commit is not None:
         return g.get("provenance", {}).get("commit") == commit and g.get("provenance", {}).get("tree_clean") is True
     return True
+
+
+def is_ancestor(older: str, newer: str, repo: Path = HERE) -> bool:
+    """`older` is a strict ancestor of `newer` (git merge-base --is-ancestor, and not the same commit)."""
+    import subprocess
+
+    if not older or not newer or older == newer:
+        return False
+    r = subprocess.run(["git", "merge-base", "--is-ancestor", older, newer], cwd=repo, capture_output=True)
+    return r.returncode == 0
+
+
+def committed_gate_ok(commit: str) -> bool:
+    """The committed gate reading says PASS and was made from a clean tree at a strict ancestor of `commit` (the row
+    commit, with the run commit after it)."""
+    if not gate_passed(COMMITTED_GATE):
+        return False
+    try:
+        prov = json.loads(Path(COMMITTED_GATE).read_text()).get("provenance", {})
+    except (OSError, ValueError):
+        return False
+    return prov.get("tree_clean") is True and is_ancestor(str(prov.get("commit", "")), str(commit))
 
 
 def sha256_bytes(b: bytes) -> str:
@@ -848,6 +900,9 @@ def refuse_run(path: Path) -> str:
     commit = refuse_common([path])
     if not gate_passed(COMMITTED_GATE):
         sys.exit(f"{ROW} is refused: the committed gate reading does not say PASS (FAIL or VOID ends H30)")
+    if not committed_gate_ok(commit):
+        sys.exit(f"{ROW} is refused: the committed gate reading was not made from a clean tree at an ancestor of this "
+                 "commit")
     if not COMMITTED_SHA.exists():
         sys.exit(f"{ROW} is refused: the tables' sha256 is not committed")
     return commit
@@ -983,7 +1038,7 @@ def table_checks(key: str, part: dict, sha: dict) -> list[str]:
 
 
 def identities(key: str, rows: list[dict]) -> list[str]:
-    """V5: CHORD0's counts are the control's; every arm has the control's draw, coordinates (before and after the size
+    """V5: CHORD0's counts are the control's and its X within 1e-5 of the control's; every arm has the control's draw, coordinates (before and after the size
     step and half) and cell number; no shape term moves by more than 1e-9; no placebo gene keeps its factor; the mean
     per-cell total count change is within 1%; unmoved cells keep their counts."""
     why = []
@@ -993,6 +1048,9 @@ def identities(key: str, rows: list[dict]) -> list[str]:
             c = r["checks"][LETTER[form]]
             if c.get("chord0_counts_equal_control") is not True:
                 why.append(f"{tag} {LETTER[form]}: CHORD0's counts are not the control's")
+            xd = c.get("chord0_x_max_abs_diff_control")
+            if isinstance(xd, bool) or not isinstance(xd, (int, float)) or not abs(xd) <= X_TOL:
+                why.append(f"{tag} {LETTER[form]}: CHORD0's X differs from the control's by more than {X_TOL:g}")
             for k in ("same_draw", "pre_size_coords_equal", "post_size_coords_equal"):
                 if c.get(k) is not True:
                     why.append(f"{tag} {LETTER[form]}: {k.replace('_', ' ')} fails")
@@ -1304,11 +1362,16 @@ def cmd_run(a) -> None:
 def cmd_read(a) -> None:
     if ROW not in tries_rows():
         sys.exit(f"{ROW} is refused: it has no row in experiments/harness/TRIES.md (a row comes before its read)")
+    if GATE_ROW not in tries_rows():
+        sys.exit(f"{ROW} is refused: the gate's row {GATE_ROW} is not in experiments/harness/TRIES.md")
     out = Path(a.out)
     if (out / "reading.json").exists() or (out / "reading.txt").exists():
         sys.exit(f"{out} already holds a reading: there is one read under row {ROW}")
     if not gate_passed(COMMITTED_GATE):
         sys.exit(f"{ROW} is refused: the committed gate reading does not say PASS")
+    if not committed_gate_ok(a.commit):
+        sys.exit(f"{ROW} is refused: the committed gate reading was not made from a clean tree at an ancestor of the "
+                 "run commit")
     in_force = form_in_force(row_text())
     if in_force is None:
         sys.exit(f"{ROW} is refused: row {ROW} does not name the form in force ('named in this row before the read: "
