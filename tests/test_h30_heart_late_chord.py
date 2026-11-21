@@ -778,7 +778,7 @@ def test_every_step_prints_step_lines_only(h30):
 
 def test_the_script_names_no_test_stage_or_board_file(h30):
     src = SCRIPT.read_text()
-    for bad in ("results/p3", "size_heart_E12", "submissions", "leaderboard", "registry", "build_" + "test",
+    for bad in ("results/p3", "size_heart_E12", "submissions", "leaderboard", "registry", "experiments/builds",
                 "boards/", "upload", "12.5", "manual", "celltype", "cell_type", "lpm"):
         assert bad not in src, bad
     assert h30.JAX_CELL_COLUMNS == ("embryo_id", "day") and h30.FENG_OBS_COLUMNS == ("stage",)
