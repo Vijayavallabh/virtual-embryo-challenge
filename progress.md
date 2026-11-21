@@ -2,6 +2,12 @@
 
 ## Current State
 
+- **2026-11-21, 00:42 UTC.** No new score. The practice read of the wider outside tables (K24) is placed and running
+  on the DGX: the three-study single-cell table, the bulk table of the 73-line set (14 lines) and their joint, each at
+  the size of the form K23 named, with controls; a file is named only if an arm beats the K23 form head to head. Its
+  code went through four review rounds and two of its clauses were restated on a cold check before placement. What
+  waits: `session-handoff.md`, first bullet.
+
 - **2026-11-21, 00:06 UTC.** No new score. The embryo's shape-interpolation read (E49) is done: by its rule, no file.
   The bulk whole-embryo guard was recalibrated for the bulk route by an independent decision made before any table was
   read; the 73-line set now gives 14 knockout lines with 63 knockout and 64 wild-type embryos. The practice row for

@@ -2,7 +2,29 @@
 
 ## Current Objective
 
-- **State at 2026-11-21, 00:06 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+- **State at 2026-11-21, 00:42 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+  2026-11-21 (c), (d), (e). Local main = origin/main (88f381d or later). Uploads and the pre-built T3 files are as in
+  the bullets below; no score line since 20 Nov 15:30 UTC.
+  - **Row K24 is PLACED and RUNNING** (row commit 88f381ddbcf29defcebd9bea7906a9122f7797b2; ledger row K24 after K23;
+    entry 2026-11-21 (c); tables pinned in `experiments/t3_ext/TABLES_K24.sha256`: bulk 6833d8d7..., sc3 14aa9ad6...,
+    two 9490f524...). Launched 00:41 UTC on the DGX checkout `~/v/vec-campaign-c` with `run_k24.sh <commit>`; waiter
+    bk7qo7kud polls `~/v/scratch/k24_88f381d/all.exit`. **When it ends:** exit 0 is a reading (VOID included); 22 the
+    pre-gate refused (nothing counted); 25 no try left; 26 the guard part failed (a VOID reading counts the failed
+    guard arms only); 30 or 43 incomplete (rerun the launcher at the same commit); 41 a crash in the read. Copy back
+    `experiments/t3_decomp/results/k24_wider_tables/` (reading.json, reading.txt) and `runs/k24_88f381d/pregate.json`
+    and `guard.json` (into the results folder); commit; fill the row's last cell with the reading's fixed statements
+    only and the count (T3 66 plus the tries that ran: 9, 6 or 3); update the totals line; a decision-log entry (label
+    2026-11-21 (f)). **If the reading names an arm:** `bash experiments/t3_decomp/build_k24_form.sh <HEAD> <B>
+    sc3|bulk|joint` for every base (s1, s1x1.5, s1x2.0, s2) on `~/v/vec-campaign-c`, each built twice with identical
+    bytes; a rules-note amendment (`docs/S2_RULES.md` with its sha file); register rows already exist (X013 to X015,
+    X017); a data-used text; one short question to the captain on the file's place with the default 'last, after CK'.
+    **If none:** the K23 file stands alone; nothing changes in T3's list.
+  - **What is NOT to be done:** no other size, weight or combination of these tables on this fold; no return to the
+    first run's bulk table; no guard change for this row.
+  - **Tries:** T1 418, embryo 83, heart 80, T3 66 (K24 adds 9, 6 or 3 when it runs its tries). **Next labels:**
+    decision log 2026-11-21 (f); register row X018.
+
+- **State at 2026-11-21, 00:06 UTC (superseded above where they differ).** Decision log
   2026-11-20 (hhh) to (jjj) and 2026-11-21 (d), (e). Local main = origin/main (9954da3 or later). Uploads and the
   pre-built T3 files are as in the bullets below; no score line since 20 Nov 15:30 UTC.
   - **E49 is read: no candidate file** (entry (jjj); row E49 filled; seven tries, embryo 83). Nothing is asked of the
