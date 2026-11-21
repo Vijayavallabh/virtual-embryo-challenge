@@ -9673,3 +9673,21 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     whatever is lifted, because those concern leaked or solved hidden properties. The captain is asked one question:
     whether to lift the team's own bars so that a score-guided search (round steps on a few settings per board, each
     fixed in the log before its own score) may run.
+- 2026-11-21 (bb), the T1 file at twice the calendar fraction is built and handed over; the moonshot kill tests' reviews (state at
+  23:45 UTC, 2026-11-21). Written by the AI assistant.
+  - **The 2.0 file** (row R20; record `experiments/builds/results/t1x2_3d18841.txt`). On the DGX at 3d18841, clean,
+    `experiments/builds/t1_fraction2.sh` (run r1) passed its gate and tests (172 passed), rebuilt R13's bytes
+    (ad8f24c71c90...) and B's bytes (c7240cb6a7f7...), and built the 2.0 file twice with the same bytes: sha256
+    52897fe375b8a81afffa788592047c30361824148b00a8176514385060518837. Stamps: this commit, clean.
+    `runs/manual_upload/T1_s2rcB2.h5ad`, format check passes. It is handed over as T1's file after C. Unpriced on
+    practice; the cost of a miss is one slot.
+  - **The moonshot kill tests** (workflow `moonshots-engineering-1`, sixteen agents; hand-back in the scratchpad
+    `lift8/moonshots_eng1.json`). One of the eight is reviewed ready: T67, T1's per-gene timing
+    (`campaign/moon-t1-timing`, 485e3d3). Seven are not ready, each with stated fixes: T66 T1 blood (four blockers;
+    its work was left uncommitted in the engineer's worktree; it also needs the `rdata` package, which the DGX
+    environments lack); K25 T3 dispersion (the row text leaves out constants the code fixes); K26 T3 map (its pre-gate
+    on one fold reads a table derived from that fold's target; the try count on a void); H30 heart chord (row
+    placeholders; its gate needs its own row); H31 heart bridge (four); E53 embryo geodesic (row wording twice; a
+    stale exit file can let a step run; the register lacks torch); E54 embryo flow (the launcher's clean-tree check
+    refuses after its own gate). The outside nuclei atlas and the heart atlas's later stages are on the DGX. A fix
+    round follows for T66, K25, H30, E53 and E54; K26 and H31 wait (the lowest odds; H31 depends on H30's gate).
