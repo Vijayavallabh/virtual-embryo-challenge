@@ -2,9 +2,65 @@
 
 ## Current Objective
 
-- **State at 2026-11-21, 00:54 UTC (newest; it supersedes the bullets below where they differ).** Decision log
-  2026-11-21 (c) to (h). Local main = origin/main (9100471 or later). No score line since 20 Nov 15:30 UTC.
-  - **THE CAPTAIN'S ORDER OF 21 NOV, 01:05 UTC (entry 2026-11-21 (h)): the embryo's shelved second construction is
+- **State at 2026-11-21, 08:42 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+  2026-11-21 (c) to (k). Local main = origin/main. No score line since 20 Nov 15:30 UTC.
+  - **THE EMBRYO'S OVERLAY FILE IS BUILT (the captain's order of 21 Nov, verbatim "Build it", answering a one-question
+    dialog on a forwarded side-agent note; entry 2026-11-21 (j), ruling row R19, the rules-note amendment of
+    2026-11-21).** `runs/manual_upload/T2embryo_s2x_ov.h5ad`, sha256
+    1cfc91be3a20bfdd1a4f7bcfebd7316e1143c6d4048e578c1f30bcfbe1e0e1ea, board T2:embryo:test_interp; data used: released
+    challenge data only. Built twice with one sha256 at 3b813b5 on the DGX by `experiments/builds/embryo_overlay.sh`
+    (run r1), after the default command gave the positions file's bytes; record
+    `experiments/builds/results/embov_3b813b5.txt`; archives `runs/archive/embov_3b813b5/` on both machines. It is row
+    E49's overlay form (arm E49c), which did NOT pass its pre-set rule (clause P5); it exists by the captain's order,
+    not by the rule. The main session is recused on the embryo's shape forms and states no preference. The independent
+    review of the record and the build path said READY, no blocker (entry 2026-11-21 (k), which also corrects three
+    wordings; never open the `.build.json` sidecars of test builds). **Before any score of it:** fresh analysts fix
+    the order of the embryo's unscored files (the positions file a03611a3, the copy-positions file of entry (h) when
+    it exists, the overlay file) and what each score means, in a decision-log entry before any score of the new files.
+  - **The heart check: do not pursue** (entry (j); hand-back in the session scratchpad
+    `lift8/heart_frame_check.json`). K1 and K2 are fresh draws with zero-mean frame luck; a copy-rows heart file would
+    score the baseline on every term but size and needs R16's closed list reopened. K1 then K2 stand; nothing is asked
+    of the captain.
+  - **The embryo's copy-positions file (the captain's order of entry (h); practice row E50, not yet placed).** State
+    at 08:55 UTC. The first round (task w7at8dmdh) handed back: the cold challenger says build as amended (it puts
+    about 0.7 on the file landing at the baseline's level on the three shape terms, if the build passes the board's
+    limits); the code reviewer says NOT READY, one blocker (the practice arm splits slots by the task's time fraction,
+    the row text says one half) and six lesser points. Hand-back saved in the session scratchpad
+    `lift8/embryo_copy_rows.json` (parts spec, fin, build, review). The engineer's branch is
+    `campaign/embryo-copy-rows` (5dcd7b7). **Running:** workflow `embryo-copy-rows-fix` (task wj4gyfldx): a fresh
+    analyst decides the blocker and the open points and returns the final row text; an engineer applies them on
+    `campaign/embryo-copy-rows-2` (main merged in); a reviewer checks; in parallel an analyst and a cold challenger
+    fix the order of the three unscored embryo files (positions, overlay, copy-positions) and what each headline
+    means. **When it hands back with a ready review:** merge the branch (no force); run the full related test list in
+    the main checkout (include tests/test_e48_row_order_read.py, tests/test_harness.py, tests/test_hidden_counts.py);
+    place row E50 (the analyst's final text, commit filled in; embryo 83 to 84 when its run step starts) with a
+    decision-log entry in ONE commit; place the order rule in the log before any score of the new files; sync
+    `~/v/vec-campaign` (nothing running there), make a detached worktree `~/v/scratch/e50-wt` at that commit, trace
+    the launcher's refusal path, then run `experiments/coords/run_e50.sh` step by step (tests, gate, run, read; exit
+    files in `~/v/scratch/e50/`; a gate exit of 3 means stop, report, count nothing); copy `reading.json` and
+    `reading.txt` back and commit with the outcome in the row's fixed words. If reading (i) holds: build the test file
+    twice with `--copy-rows --copy-rows-test-ok` (the handed-over file's expression is MIXTURE; read by exit code,
+    sha256 and the stamp's two fields only; a refusal means no file and the positions file stands), copy under
+    `runs/manual_upload/`, write the build record and the rules-note amendment (add there the sentence that the
+    overlay dialog also gave 'about +1.2 Overall if it carried over'). **One short question goes to the captain when
+    the file is ready, priced with E50's tables:** the file takes the copy's cell count (below the count rule) and
+    E7.5's own size (not the pre-registered size); the analysts' default is build; the main session gives no
+    preference.
+  - **Launchers on this machine may hold no removal of a variable path:** a built-in safety check refuses any command
+    whose text has `rm` on a shell variable. `embryo_overlay.sh` deletes nothing and takes a run name whose folders
+    must not exist (a rerun takes a new name).
+  - **Tries:** T1 418, embryo 83, heart 80, T3 72 (unchanged: R19 is a ruling, not a try). **Next labels:** decision
+    log 2026-11-21 (l); register row X018.
+- **State at 2026-11-21, 00:54 UTC (superseded by the bullet above where they differ).** Decision log
+  2026-11-21 (c) to (i). Local main = origin/main (9100471 or later). No score line since 20 Nov 15:30 UTC.
+  - **The captain, 21 Nov about 08:10 UTC, verbatim: "Proceed with decisions that help us place at the top of the
+    leaderboard at all wild costs"** (entry 2026-11-21 (i), with the AI assistant's reading: score decisions without a
+    question first; no organiser rule, recusal, exposed lever or captain-fixed list lifted). Running since 08:18 UTC
+    besides the embryo round: workflow `heart-frame-check` (task wfxrciozn (relaunched after a schema slip of the main session); read-only: do the heart candidates face
+    the same frame luck, are they already the copy's rows, does the construction apply). Its verdict may carry one
+    short priced question for the captain (a new heart file needs a named exception to R16). Not built, available at
+    one word: the K23 table at exponent 4 as an extra T3 candidate.
+  - **THE CAPTAIN'S ORDER OF 21 NOV, ABOUT 08:00 UTC (entry 2026-11-21 (h)): the embryo's shelved second construction is
     reopened** (verbatim: "reopen it [my ordeer]", on a forwarded side-agent note). The construction: the file takes
     the baseline copy's own rows and count, so its positions equal the copy's row for row. The main session is recused
     on this term: fresh analysts decide, it executes and states no preference. Workflow `embryo-second-construction`
@@ -39,7 +95,7 @@
     bulk tables; `tables_two_study`; `tables_first_bulk_run_keep` is the never-read first bulk run).
   - **Parked, one word reopens:** the GEO single-study bulk forms (closed in code); the T1 extra atlases in their
     strict form.
-  - **Tries:** T1 418, embryo 83, heart 80, T3 72. **Next labels:** decision log 2026-11-21 (i); register row X018.
+  - **Tries:** T1 418, embryo 83, heart 80, T3 72. **Next labels:** decision log 2026-11-21 (k); register row X018.
 
 - **State at 2026-11-21, 00:42 UTC (superseded above where they differ).** Decision log
   2026-11-21 (c), (d), (e). Local main = origin/main (88f381d or later). Uploads and the pre-built T3 files are as in

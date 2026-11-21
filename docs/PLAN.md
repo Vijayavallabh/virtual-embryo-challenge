@@ -8902,3 +8902,121 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     off-by-default builder option with a test-board guard, and a practice read if the analysts require one; a reviewer
     checks the code. The exact-position file already handed over (`T2embryo_s2x`) is unchanged and unscored. No number
     in the construction comes from a board score.
+- 2026-11-21 (i), the captain's instruction to proceed with decisions; what the AI assistant does and does not read into
+  it (state at 08:18 UTC, 2026-11-21). Written by the AI assistant.
+  - **The captain's words, verbatim:** "Proceed with decisions that help us place at the top of the leaderboard at all
+    wild costs".
+  - **The AI assistant's reading (its own).** Decisions on score items are taken without a question first, and cost in
+    compute, agents and effort is no object. It lifts no rule of the organisers (the data windows, the two held-out
+    genes and their phenocopies by any route, scores choosing and never computing), not the never-open list, and not
+    the AI assistant's recusals: where it is recused, fresh analysts decide and it executes. By the team's standing
+    rule a general go-ahead is not the captain's word for a lever closed after an exposure (Task 1's advance draw,
+    composition and depth stay as they are) or for changing a list the captain fixed (the heart's list under R16; Task
+    3's 'at most one file' of row K23): building and rehearsing code paths that are off by default needs no ruling,
+    and a change to an upload list is put as one short priced question when a file is ready. Uploads stay the
+    captain's own acts.
+  - **What it starts or continues under this instruction.** (1) The embryo's second construction of entry (h) goes
+    through specification, challenge, build and review without pause, then its practice read if the analysts require
+    one, then the test-board build and hand-over. (2) A read-only check by fresh analysts of whether the heart's
+    candidate files face the same frame luck on the occupancy term and whether the same construction applies there
+    (workflow `heart-frame-check`); a new heart file would need the captain's named exception to R16, so the analysts
+    write that one question if they recommend one. (3) Nothing else changes: the files with the captain and their
+    pre-set rules stand.
+  - **What it looked at and left alone, with reasons.** Using what is known in general about what loss of beta-catenin
+    does to gene expression would help Task 3's which-genes terms more than anything else, and stays barred: the
+    organisers forbid measured data from a held-out genotype 'by any route (directly, via a pretrained model trained
+    on it, via a public dataset containing it)', and a language model's own knowledge is such a route. Re-uploading
+    one prediction in other row orders to redraw the scorer's handedness coin stays out: the captain decided on
+    2026-10-19 and 2026-11-02 that it exploits a defect and is not used without the organisers' word. Task 1's advance
+    draw stays declined: its practice gain sits where the base carries the earlier stage's mix, not on the
+    like-for-like library, and it touches two closed quantities. An exponent-4 version of the K23 table is not built:
+    row K23 named one file; it can be added at the captain's word.
+- 2026-11-21 (j), the heart check's verdict; the captain orders the embryo's overlay file (state at 08:36 UTC,
+  2026-11-21). Written by the AI assistant, which is recused on the heart's scope and size and on the embryo's
+  occupancy term and shape forms, and states no preference on either.
+  - **The heart check** (workflow `heart-frame-check`, run wf_6c23ce78-697: an analyst and a cold challenger; code,
+    synthetic checks and committed practice readings only; no score used). Verdict: do not pursue; keep K1 then K2; no
+    question for the captain. Their finding: K1 and K2 are fresh draws, not the baseline copy's rows, so each carries
+    its own frame luck on the occupancy term; that luck is zero in expectation, because the baseline's own toss has
+    already happened on the server and cannot be known; a file made of the copy's own rows would score the baseline on
+    every term except size, give up whatever the full-scope copy earns above it, could not stand in for the half trim
+    at all, and would need the halving undone, the count rule broken and R16's closed list reopened, each of which R16
+    names as left off. The challenger puts the chance that acting on this verdict is a mistake at one in ten. Nothing
+    changes for the heart.
+  - **The overlay file: the note and the question.** The captain forwarded a second note from a side agent. In
+    substance: of row E49's three shape forms, the overlay scored about 2.5 practice points above the unchanged file,
+    ahead in ten of ten repeats and on all five practice stages; one pre-set check dropped it, because a deliberately
+    mis-turned version did almost as well on the shape measure; the main agent is recused and reported only 'no file';
+    it is a different file from the copy-positions one; it is built only if the captain orders it. The message held no
+    words of the captain's own, so the AI assistant asked, in a one-question dialog, verbatim: "Embryo: the note you
+    forwarded says the 'overlay' shape file is built only if you order it. Do you order it? (I am recused on embryo
+    shape choices and give no preference. On practice it scored +2.46 embryo points over the unchanged file, ahead in
+    10 of 10 repeats, +3.25 on the test-like tasks; the embryo counts half, so about +1.2 Overall if it carried over.
+    Its pre-set rule dropped it because a deliberately mis-turned version did almost as well on the shape term, so the
+    gain may not be the idea's own. Cost if it scores lower: one embryo upload slot. It is a separate file from the
+    copy-positions one, which is already being built.)" The two options were "Build it" ("Your order sets row E49's
+    'no file' outcome aside for this one form. Fresh analysts fix its place in the embryo list before any score; I
+    build the test-board file and hand it over. Uploading stays your act.") and "Do not build it" ("Row E49's rule
+    stands: no overlay file. The embryo list stays the positions file plus the copy-positions file now being built.");
+    neither was marked as recommended. **The captain's answer, verbatim: "Build it".**
+  - **The reason, as the record has it.** Row E49's fixed statements for the overlay arm: board +2.461 (SE 0.091, ten
+    of ten seeds ahead), test-like board +3.247, and against its rotated control the ungated shape term +0.0069 (SE
+    0.0044, six of ten ahead), which is the failed clause P5. The row's own last line says each candidate goes to the
+    captain as a priced question. This is the captain's order on that question, not the rule's outcome; what the
+    practice figures are worth on the hidden stage is unknown, and the order's cost if the file scores lower is one
+    upload slot.
+  - **What follows.** Ruling row R19 and an amendment of `docs/S2_RULES.md` are committed with this entry, before any
+    build (the note's new sha256: 349374fef4e8106273e74c0b4112b2e8d634a03b1757b1c0a64bedadfda62a00). The file is the
+    positions file's command with `--shape-interp overlay`; the captain's answer is the yes that the test-board guard
+    asks for. `experiments/builds/embryo_overlay.sh` (with `tests/test_embryo_overlay.py`; it deletes nothing and
+    never reuses a run folder) first gives the positions file's bytes, then builds the overlay file twice; the build
+    is read by exit codes, one sha256 and the stamp's commit and clean fields only. The embryo's list then has up to
+    three unscored files (the positions file, the copy-positions file of entry (h) when it exists, the overlay file);
+    their order and what each score means are fixed by fresh analysts in a later entry, before any score of the new
+    files.
+- 2026-11-21 (k), the embryo's overlay file is built and its review is ready; three corrections to the wording of
+  entry (j), row R19 and the rules amendment (state at 08:45 UTC, 2026-11-21). Written by the AI assistant, which
+  is recused on the embryo's shape forms and states no preference.
+  - **The build** (`experiments/builds/results/embov_3b813b5.txt`). On the DGX campaign checkout at 3b813b5, clean,
+    `experiments/builds/embryo_overlay.sh` (run r1; its refusal path traced once first with a wrong commit) passed its
+    gate and its tests (105 passed), gave the positions file's bytes with the default command (a03611a343fa...), and
+    built the overlay file twice with the same bytes: sha256
+    1cfc91be3a20bfdd1a4f7bcfebd7316e1143c6d4048e578c1f30bcfbe1e0e1ea. `vec check` passed for board
+    T2:embryo:test_interp after each build and once more on the local copy, `runs/manual_upload/T2embryo_s2x_ov.h5ad`
+    (sha256 checked). All three stamps say commit 3b813b5, clean True. The build was read by exit codes, sha256 and
+    those two stamp fields only. Archives: `runs/archive/embov_3b813b5/` on both machines.
+  - **The review** (one independent reviewer, read-only, at 3b813b5; blocker standard set in the brief: what can make
+    the bytes differ from the record, make the practice reading not describe the file, expose or use a hidden count or
+    a test score, or misstate the captain's order). Verdict: READY, no blocker. What it traced: the test build and the
+    practice arm E49c call the same function with the same order of steps (exact positions, the form, the size
+    rescale, the jitter, then the cloud guard); no code under `src/`, the builder, the count decision or the lock file
+    changed between row E49's run commit d76ccd5 and this build; the file differs from the positions file in
+    coordinates only (rows, row names, expression, count and seed are the same); the test path reads no hidden count
+    beyond what the positions file's own path reads, and no test score. The differences between the practice arm and
+    the test build are the ones that follow from the practice tasks not being the test pair (the stages, the calendar
+    fraction, the coupling's rotation, the panel, the count, the pre-registered size target) and the thread count (8
+    in practice, 16 in builds, as for the positions file).
+  - **Lesser points, recorded and not acted on:** the launcher's gate checks tracked files only while the stamp also
+    counts stray files (the stamps were read and say clean); it accepts a commit prefix (the full commit was given);
+    its check that the rules note names R19 is a plain search; a failed stamp read or a killed run would not write a
+    failing exit file (neither happened: all six exit files are 0 and the stamp list has its three full lines); no
+    test pins the builder's overlay output byte for byte to the practice candidate on one synthetic input (the
+    reviewer's trace found the same call). One point is a standing caution: the builder writes sidecar files beside
+    each test build (`.build.json`, `.stamp.json`); the overlay's `.build.json` holds one more number that follows
+    from the rows drawn, and so from the test board's count. Those sidecars are not opened, except the stamp's commit
+    and clean fields by code.
+  - **Corrections of wording (the reviewer's points; the order itself is recorded correctly everywhere).** (1) Entry
+    (j) says row E49's last line sends each candidate to the captain as a priced question and calls the captain's
+    answer "the captain's order on that question". That is wrong: under row E49's rule the overlay was not a candidate
+    and the rule put nothing to the captain; the question came from the side agent's note. (2) The rules amendment of
+    2026-11-21 summarises the dialog as giving the practice figures, the failed check and the cost; the dialog also
+    gave a conversion, "about +1.2 Overall if it carried over", which entry (j) quotes in full. The rules note is
+    hash-pinned and is not reopened for this; the sentence is added when the note is next amended. (3) Row R19's risk
+    cell says the practice gain "cannot be credited to the form's own geometry". Row E49's fixed statement compares
+    the shape term only (clause P5). The board-level wording is the AI assistant's reading beyond the fixed statement;
+    the reviewer checked it against the committed `reading.json` and reports that the board means of the form and of
+    its rotated control are close on all nine tasks.
+  - **What is still open before any score of this file.** Its place in the embryo's list and what each returned score
+    means: fresh analysts, in a later entry, once the round on the copy-positions file of entry (h) has handed back
+    (its engineer has finished and its reviewer is running). Until that entry exists the positions file is the embryo
+    file with the captain.

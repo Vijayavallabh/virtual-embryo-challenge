@@ -1622,3 +1622,40 @@ and the released Gata4 validation knockout files our team unlocked on 2026-10-28
 studies of other genes, GEO GSE204906 (Dnmt3a and Dnmt3b nulls, E8.5) and GEO GSE277839 (a Usb1 knockout, E9.5), each
 as knockout-over-its-own-control changes on the panel genes. No data on a perturbation of beta-catenin or Gata4 from
 outside the release. Every upload is the captain's own act.
+
+## Amendment of 2026-11-21: the embryo's overlay shape file joins the embryo's candidates (the captain's order; rows E49 and R19)
+
+Written by the AI assistant, which is recused on the embryo's shape forms and states no preference. Times are UTC. The
+record is `docs/PLAN.md` decision log 2026-11-20 (hh) and (jjj) and 2026-11-21 (j), and rows E49 and R19 of
+`experiments/harness/TRIES.md`. Like the sections since 2026-11-18, this one was written with test scores of earlier
+embryo files known; no value in the file comes from any of them.
+
+**The captain's words.** A side agent's note, forwarded by the captain on 2026-11-21, said that row E49's overlay form
+scored about 2.5 practice points above the unchanged file in all ten repeats, that one pre-set check dropped it, and
+that it is built only if the captain orders it. The message held no words of the captain's own, so the AI assistant
+asked, in a one-question dialog: "Embryo: the note you forwarded says the 'overlay' shape file is built only if you
+order it. Do you order it?" It gave the practice figures, the failed check and the cost of one upload slot, and marked
+no option as recommended. The captain chose, verbatim: "Build it".
+
+**The file.** The exact-position file's own command with one named change, form F3 of row E49:
+
+```bash
+uv run python experiments/builds/build_test.py embryo --method fgw_shape0 --positions floor_exact --expression mixture --shape-interp overlay --shape-interp-test-ok --out runs/builds/T2embryo_s2x_ov.h5ad
+```
+
+Seed, board, count rule, rows, row names and expression are the positions file's command's; only the coordinates
+differ. `--shape-interp-test-ok` is the yes the builder's test-board guard asks for, and the captain's answer is that
+yes. The file counts only after `experiments/builds/embryo_overlay.sh` has, at one clean commit that holds this
+section and row R19, given the positions file's bytes with the default command (a03611a343fa...), built the overlay
+file twice with one sha256 and passed `vec check` for board T2:embryo:test_interp. A test build is read by its exit
+code, its sha256 and its stamp's commit and clean fields only.
+
+**What it is not.** It is not the outcome of row E49's rule: by that rule the form does not pass (its rotated control
+did almost as well on the shape term; clause P5) and the outcome was no candidate file. The captain's order sets that
+outcome aside for this one form and for nothing else: the two stretch forms stay without a file. The file's place in
+the embryo's list, and what each returned score means, are fixed by fresh analysts in the decision log before any
+score of it. Only headlines of the team's own uploads choose; no file and no row order is chosen by a test score's
+parity; no value in the file comes from a score.
+
+**Data used, for the hand-over:** released challenge data only. No outside data. Every upload is the captain's own
+act.

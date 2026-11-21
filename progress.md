@@ -2,6 +2,19 @@
 
 ## Current State
 
+- **2026-11-21, 08:42 UTC.** No new score. Three things since 00:54. (1) The captain ordered the embryo's shelved
+  second construction reopened ("reopen it [my ordeer]", about 08:00 UTC): analysts specified it, a challenger passed
+  it with changes, an engineer built it and its reviewer is running. (2) The captain's instruction "Proceed with
+  decisions that help us place at the top of the leaderboard at all wild costs" (about 08:10 UTC): read as score
+  decisions without a question first, with no organiser rule, recusal, exposed lever or captain-fixed list lifted
+  (decision log (i)); under it a read-only check by fresh analysts of the heart's candidates returned 'do not pursue'
+  (K1 then K2 stand). (3) On a second forwarded side-agent note the captain answered a one-question dialog with "Build
+  it": the embryo's overlay shape file (row E49's overlay form, which failed its pre-set rule; ruling row R19) is
+  built twice with one sha256 at 3b813b5, `runs/manual_upload/T2embryo_s2x_ov.h5ad`, 1cfc91be3a20...; an independent
+  review of its record and build path is running, and fresh analysts will fix the order of the embryo's unscored files
+  before any score. Tries unchanged: T1 418, embryo 83, heart 80, T3 72. What waits: `session-handoff.md`, first
+  bullet.
+
 - **2026-11-21, 00:54 UTC.** No new score. K24 is read: no file. Neither the three-study single-cell table nor the
   bulk table of the 73-line set beats the form K23 named at the same size (the first lost to it in every cell; the
   second did not beat a shuffled table of its own size), so the K23 file stands alone and the outside-table line is
