@@ -48,8 +48,8 @@ GATE_CELLS = 5000
 DIRECTIONS = ("snap", "anti")  # the arm (towards the target day) and its placebo (away from it by the same span)
 RULE = ("mmflow: panel counts binomially thinned, each count kept with p = min(1, 30 / total) (stream [stage key, "
         "53]); 30 PCs of log1p on the pooled training stages, 3,000 cells per stage (stream [stage key, 54]); MLP 3 x "
-        "256 SiLU on (z, t); multi-marginal CFM with minibatch exact OT between consecutive stages and a natural cubic spline through each chained "
-        "triple; 20,000 steps, batch 1,024 per stage, Adam 1e-3, torch seed 20261122, deterministic algorithms; "
+        "256 SiLU on (z, t); multi-marginal CFM with minibatch exact OT between consecutive stages and a natural "
+        "cubic spline through each chained triple;20,000 steps, batch 1,024 per stage, Adam 1e-3, torch seed 20261122, deterministic algorithms; "
         "dopri5 rtol 1e-5; exact one-to-one retrieval against the bracket's whole pool")
 
 
