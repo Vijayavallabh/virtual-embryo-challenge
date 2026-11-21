@@ -1,0 +1,40 @@
+The embryo's overlay shape file (row R19; docs/S2_RULES.md, the amendment of 2026-11-21; the captain's order "Build it")
+========================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-21 in the campaign checkout ~/v/vec-campaign at commit 3b813b5
+(3b813b55155161bbc0bd808787cffa93853be9a8; clean tree; docs/S2_RULES.sha256 checked by the launcher) by `bash
+experiments/builds/embryo_overlay.sh 3b813b55155161bbc0bd808787cffa93853be9a8 r1`. Before the real launch the
+launcher's refusal path was traced once with a wrong commit (run name dry1: exit 96 at the gate, nothing built). The
+steps and their exit files (~/v/scratch/embov/r1/):
+  gate   0   HEAD is the commit, tracked tree clean, rules hash checks, row R19 and its amendment are present
+  tests  0   105 passed (tests/test_embryo_overlay.py, test_shape_interp.py, test_shape_interp_build.py,
+             test_e47_floor_exact.py, test_hidden_counts.py, test_s2_rules.py; 8 BLAS threads)
+  D      0   the positions file by the default command, 16 BLAS threads
+  OVa    0   the overlay file, first build, 16 BLAS threads
+  OVb    0   the overlay file, second build, 16 BLAS threads
+  done   0   one sha256 list; OVa and OVb compared byte for byte
+
+Commands the launcher runs (each followed by `vec check` for board T2:embryo:test_interp, exit 0 every time):
+  D:   build_test.py embryo --method fgw_shape0 --positions floor_exact --expression mixture --out <O>/D/T2embryo_s2x.h5ad
+  OV:  build_test.py embryo --method fgw_shape0 --positions floor_exact --expression mixture --shape-interp overlay
+       --shape-interp-test-ok --out <O>/OV{a,b}/T2embryo_s2x_ov.h5ad
+
+The default command gives the positions file handed over on 2026-11-20 (set embryo2, built at 2dccfee):
+  a03611a343faf1d37edf06ce0e2bccc86cce6f14d3580b823864e5faf3ba03f9  D/T2embryo_s2x.h5ad
+Both overlay builds give the same bytes (cmp, and one sha256):
+  1cfc91be3a20bfdd1a4f7bcfebd7316e1143c6d4048e578c1f30bcfbe1e0e1ea  OV/T2embryo_s2x_ov.h5ad
+The stamps say commit 3b813b5, clean True, for all three builds.
+
+Kept: ~/v/vec-campaign/runs/archive/embov_3b813b5/ on the DGX and runs/archive/embov_3b813b5/ on the local machine
+(SHA256SUMS checked on both); the file for upload is copied to runs/manual_upload/T2embryo_s2x_ov.h5ad here (sha256
+checked). The local format check (`vec check runs/manual_upload/T2embryo_s2x_ov.h5ad --board T2:embryo:test_interp`)
+passes (exit 0; its output was not read).
+
+Built in a campaign checkout, not the reference checkout that docs/COMPUTE.md names as the source of uploads; the
+reference checkout stays untouched at dc7b6ae. The builds were read by their exit codes, their sha256 and their
+stamps' commit and clean fields only; builder and check output went to /dev/null, and no log, file size or cell count
+was read.
+
+What the file is not: the outcome of row E49's rule (the overlay form does not pass it; clause P5). It exists by the
+captain's order of 2026-11-21 (docs/PLAN.md decision log 2026-11-21 (j)). Its place in the embryo's list and what each
+returned score means are fixed in the decision log before any score of it. Data used: released challenge data only.
