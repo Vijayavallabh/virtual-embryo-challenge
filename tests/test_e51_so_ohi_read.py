@@ -98,23 +98,34 @@ def test_the_registry_entries():
     assert not set(harness.SO_OHI_CANDIDATES) & set(harness.SHAPE_CANDIDATES)  # E49's seven stay seven
 
 
+def _canon(x):
+    """A repr that does not depend on the hash seed (sets and mappings sorted, recursively)."""
+    if isinstance(x, (set, frozenset)):
+        return "{" + ",".join(sorted(_canon(v) for v in x)) + "}"
+    if isinstance(x, dict) or hasattr(x, "items"):
+        return "{" + ",".join(sorted(f"{_canon(k)}:{_canon(v)}" for k, v in x.items())) + "}"
+    if isinstance(x, (list, tuple)):
+        return "[" + ",".join(_canon(v) for v in x) + "]"
+    return repr(x)
+
+
 def _old_registry_digest() -> tuple[int, str]:
     """Every candidate but the two new ones: name, roles, params, the builder's and the condition's qualified names
     and the builder's bytecode. Pinned on main before the arms were added."""
     h = hashlib.sha256()
-    names = sorted(set(harness.CANDIDATES) - set(harness.SO_OHI_CANDIDATES))
+    names = sorted(set(harness.CANDIDATES) - set(getattr(harness, "SO_OHI_CANDIDATES", {})))
     for n in names:
         c = harness.CANDIDATES[n]
         b = c.build
-        h.update(repr((n, sorted(c.tasks), repr(c.needs), repr(sorted(c.params.items(), key=lambda kv: kv[0])),
-                       None if b is None else (b.__qualname__, b.__code__.co_code.hex()),
-                       None if c.requires is None else c.requires.__qualname__, sorted(c.tuned_on), c.externals,
-                       c.derived, c.derived_optional, c.needs_reference_cells)).encode())
+        h.update(_canon((n, c.tasks, c.needs, c.params,
+                         None if b is None else (b.__qualname__, b.__code__.co_code.hex()),
+                         None if c.requires is None else c.requires.__qualname__, c.tuned_on, c.externals,
+                         c.derived, c.derived_optional, c.needs_reference_cells)).encode())
     return len(names), h.hexdigest()
 
 
 # computed with _old_registry_digest on main's src/ (5b22c73) before the two arms were added
-OLD_REGISTRY_PINNED = (63, "5b46d91149e510fd580f16385c52fd513afa938bec58d55e41b28cbcce373eb4")
+OLD_REGISTRY_PINNED = (63, "2a0f61f21da6d826c56569acfcb4e08e61811b9ea915163c4122093530da856b")
 
 
 def test_no_existing_candidate_changed():
