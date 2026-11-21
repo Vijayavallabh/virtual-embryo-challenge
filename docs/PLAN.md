@@ -8820,3 +8820,33 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     hand-over; one short question to the captain on its place, with the default 'last, after CK'. No combination with
     the Gata4 factor is built from it. **Odds:** the first challenger's, about one in ten that a file is named, set
     before the line count was known and before the two clauses were restated; not re-estimated.
+- 2026-11-21 (f), T3 outside knockouts: practice read K24 is read; no file; the outside-table line is finished on this
+  fold (state at 00:52 UTC, 2026-11-21). Written by the AI assistant.
+  - **The run** (row K24, its commit 88f381d, compute machine, ten minutes): tests, pre-gate, guard part, five scoring
+    parts and the read all exit 0. The run is valid: the barred form and K23's named form reproduce their committed
+    figures in all four cells with no seed differing. Counted: six tries, T3 66 to 72.
+  - **What the pre-gate decided, before any score.** The three-study single-cell table was kept (its correlation with
+    the two-study table is 0.49, so it is not a repeat of the named form). The bulk table was kept: 14 lines, 64
+    knockout and 66 wild-type libraries, and 158 of the 386 genes held in at least 12 lines have two thirds or more of
+    the lines agreeing in sign, against 115 needed and 72 expected by chance. The joint was dropped by the row's own
+    window: the two tables' correlation is -0.03, below the lower bound of 0.
+  - **The reading's statement: no file: no wider table beats the named form at a like size; the K23 file stands
+    alone.** The three-study table's arm is not qualified: against the barred form +0.18, +0.48, -1.00, +0.29 (plain
+    g1, plain g2, depth-matched g1, depth-matched g2); it beats its shuffled control by +0.34, +0.66, +0.02, +0.47;
+    against the named form it is -0.52, -0.45, -1.19, -0.40, with no seed ahead in any cell. The bulk table's arm is
+    not qualified: against the barred form +0.19, +0.04, +1.24, +0.09; against its shuffled control -0.06, +0.05,
+    +0.06, +0.06; against the named form -0.50, -0.89, +1.05, -0.59. Nothing is built; Task 3's list is unchanged;
+    nothing is asked of the captain.
+  - **What binds from here** (the row's words): no later row reads these tables, their joint or another size of them
+    on this fold. The many-line set (register row X017) and the third single-cell study (X015) therefore enter no
+    file; the K23 file rests on the two studies of X013 and X014 as before.
+  - **My reading after the result (not part of the rule).** The three-study table carries signal on this fold (it
+    beats a shuffled table of the same size in three cells) but less than the two-study table at the same size, so the
+    added study made the table worse here, not better. The bulk table does not beat a shuffled table of its own size
+    in any cell, although its lines agree with each other well beyond chance: what the fourteen lines share at
+    embryonic day 9.5 is real, and it is not what the released Gata4 replicates show on this panel. Its one lead, in
+    the depth-matched g1 cell, is the cell whose mean moves by more than a point whenever one seed crosses the
+    severity gate; the shuffled table gets the same lead there. The joint was not read because of a bound at exactly
+    zero that a correlation of -0.03 missed; by the row it stays unread. Two days of pipeline work on the many-line
+    set bought a clean negative: on this fold, more outside knockouts of unrelated genes do not add to what the two
+    single-cell studies already give.

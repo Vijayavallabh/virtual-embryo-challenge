@@ -1,0 +1,177 @@
+Try K24: no file: no wider table beats the named form at a like size; the K23 file stands alone.
+arms: barred_form, x_e2, x_sc3, x_sc3_perm, x_sc3_size, x_bulk, x_bulk_perm, x_bulk_size; tries counted: 6
+tables: listing cf6676d6c7fe3331f102b183dbcffd2df1655d471b9ea561574088622c7e3924, bulk 6833d8d7991e6f3872e09efb5024bcb34bfcc6ee6d2562558c9021d897bc972a, sc3 14aa9ad68369c0e342af02306cef871867d73a242ea2f103886d145f80214698, two 9490f524e40e146480c775f85ae8829ec9c005607104ad8ace129c5c46ed6228
+pre-gate (the tables, phi_M and the worlds' bases alone; no score): 500 genes; S* 0.04949423311987974; `two` at e = 2 checked against K23's committed figures: True
+  table two: genes_ne_1 447, genes_at_clip 0, sd_ln 0.0247471, gene_mean_ln -0.00612174, min 0.900557, max 1.11371, n_up 88, n_down 359, den_total 1.00181, den_total_phi_m 1, corr_ln_phi_m 0.0373522, ols_slope_ln_t_on_ln_phi_m 0.00140155
+    record: studies ['GSE204908', 'GSE277839'], tiers ['unrelated'], modality None, sign_rule applied, refstats_sha256 d0fa02a747648f6896d1408b9dbddf83b7a5569ed45162d49e1b5024e6c0c718, sha256 9490f524e40e146480c775f85ae8829ec9c005607104ad8ace129c5c46ed6228, checked by try K21 only, after its row, libraries_by_unit None, k_by_unit None
+  table sc3: genes_ne_1 452, genes_at_clip 0, sd_ln 0.0313361, gene_mean_ln 0.00189093, min 0.916789, max 1.19181, n_up 137, n_down 315, den_total 1.00092, den_total_phi_m 1, corr_ln_phi_m 0.0223544, ols_slope_ln_t_on_ln_phi_m 0.0010614
+    record: studies ['GSE204908', 'GSE277839', 'GSE299068'], tiers ['unrelated'], modality None, sign_rule applied, refstats_sha256 d0fa02a747648f6896d1408b9dbddf83b7a5569ed45162d49e1b5024e6c0c718, sha256 14aa9ad68369c0e342af02306cef871867d73a242ea2f103886d145f80214698, checked by try K21 only, after its row, libraries_by_unit None, k_by_unit None
+  table bulk: genes_ne_1 433, genes_at_clip 0, sd_ln 0.0280997, gene_mean_ln -0.00298629, min 0.846645, max 1.19442, n_up 189, n_down 244, den_total 1.00048, den_total_phi_m 1, corr_ln_phi_m -0.192927, ols_slope_ln_t_on_ln_phi_m -0.00841763
+    record: studies ['MGP-DMDD'], tiers ['unrelated'], modality bulk, sign_rule single study, refstats_sha256 d0fa02a747648f6896d1408b9dbddf83b7a5569ed45162d49e1b5024e6c0c718, sha256 6833d8d7991e6f3872e09efb5024bcb34bfcc6ee6d2562558c9021d897bc972a, checked by the practice read named in its TRIES row only
+  scaled sc3: genes_ne_1 452, genes_at_clip 0, sd_ln 0.0494942, gene_mean_ln 0.00298665, min 0.871778, max 1.31936, n_up 137, n_down 315, den_total 1.00181, den_total_phi_m 1, corr_ln_phi_m 0.0223544, ols_slope_ln_t_on_ln_phi_m 0.00167644, max_abs_ln 0.277147
+  scaled bulk: genes_ne_1 433, genes_at_clip 0, sd_ln 0.0494942, gene_mean_ln -0.00526, min 0.745855, max 1.36743, n_up 189, n_down 244, den_total 1.00113, den_total_phi_m 1, corr_ln_phi_m -0.192927, ols_slope_ln_t_on_ln_phi_m -0.0148267, max_abs_ln 0.312932
+  e_sc3 1.5794644049231028, e_bulk 1.7613808578421228, c 0.7173841777326849; corr(ln sc3, ln two) 0.485659, corr(ln sc3, ln bulk) -0.0280512
+  bulk: lines 14, libraries_ko 64, libraries_wt 66, units_short [], agree_G 386, agree_count 158, E0 72.4812, agree_needed 114.941, n_g_source manifest lines_held_by_study[MGP-DMDD], agree_left_out_few_lines 47; somites and composition (reported only): units_with_somites 0, lines_ko_below_wt 0, note reported only; the manifest's guards_by_unit carries no somite or composition record
+  bulk (b4): genes != 1 with an agreement value per n_g (counts only): {'1': 10, '2': 4, '3': 2, '4': 4, '5': 4, '7': 3, '8': 4, '9': 3, '10': 5, '11': 8, '12': 6, '13': 22, '14': 358}
+  x_sc3: a 1.0040223905902554, k 1.0066166068032696, den shift +0.7385%
+    product: genes_changed 452, genes_ne_1 500, genes_at_clip 16, sd_ln 0.6992, gene_mean_ln -0.0337475, min 0.218776, max 4.18822, n_up 245, n_down 255, den_total 0.990221, den_total_phi_m 0.982962
+    control (dm basis): genes_changed 452, genes_ne_1 500, genes_at_clip 17, sd_ln 0.698772, gene_mean_ln -0.0337475, min 0.218776, max 4.40085, n_up 237, n_down 263, den_total 0.977203, den_total_phi_m 0.982962
+    control (plain basis): genes_changed 452, genes_ne_1 500, genes_at_clip 17, sd_ln 0.698772, gene_mean_ln -0.0337475, min 0.218776, max 4.40085, n_up 237, n_down 263, den_total 0.977203, den_total_phi_m 0.982962
+    size twin: genes_changed 500, genes_ne_1 500, genes_at_clip 13, sd_ln 0.6992, gene_mean_ln -0.0302871, min 0.250255, max 4.04898, n_up 240, n_down 260, den_total 0.990221, den_total_phi_m 0.982962
+  x_bulk: a 0.9898082110388502, k 0.9983032326104505, den shift -0.3595%
+    product: genes_changed 433, genes_ne_1 500, genes_at_clip 13, sd_ln 0.689301, gene_mean_ln -0.0419942, min 0.231082, max 4.31624, n_up 243, n_down 257, den_total 0.979428, den_total_phi_m 0.982962
+    control (dm basis): genes_changed 433, genes_ne_1 500, genes_at_clip 20, sd_ln 0.701281, gene_mean_ln -0.0419942, min 0.230912, max 4.2007, n_up 239, n_down 261, den_total 0.987448, den_total_phi_m 0.982962
+    control (plain basis): genes_changed 433, genes_ne_1 500, genes_at_clip 20, sd_ln 0.701281, gene_mean_ln -0.0419942, min 0.230912, max 4.2007, n_up 239, n_down 261, den_total 0.987448, den_total_phi_m 0.982962
+    size twin: genes_changed 500, genes_ne_1 500, genes_at_clip 0, sd_ln 0.689301, gene_mean_ln -0.038058, min 0.253127, max 3.93719, n_up 238, n_down 262, den_total 0.979428, den_total_phi_m 0.982962
+  dropped: joint (corr(ln sc3, ln bulk) -0.028 outside [0.0, 0.9))
+guard part: passes True, failed none
+  guard1 plain g1: passes True; mean +0.0000, largest seed 0.0000, seeds differing none
+  guard1 plain g2: passes True; mean +0.0000, largest seed 0.0000, seeds differing none
+  guard1 dm g1: passes True; mean +0.0000, largest seed 0.0000, seeds differing none
+  guard1 dm g2: passes True; mean +0.0000, largest seed 0.0000, seeds differing none
+  guard2 plain g1: passes True; mean +0.0000, largest seed 0.0000, seeds differing none, mean 60.13 against 60.13, gated 0 against 0
+  guard2 plain g2: passes True; mean +0.0000, largest seed 0.0000, seeds differing none, mean 62.97 against 62.97, gated 0 against 0
+  guard2 dm g1: passes True; mean +0.0000, largest seed 0.0000, seeds differing none, mean 55.83 against 55.83, gated 4 against 4
+  guard2 dm g2: passes True; mean +0.0000, largest seed 0.0000, seeds differing none, mean 64.52 against 64.52, gated 0 against 0
+commit 88f381ddbcf29defcebd9bea7906a9122f7797b2, machine p01r10srv05.
+  x_sc3: qualified no ((a) False, (b) False, (c) True, (d) False, (e) True, (f) False); ahead in ['plain g2']; behind in ['dm g1']; X - x_e2 {'plain g1': -0.5179360957997773, 'plain g2': -0.45188324581769806, 'dm g1': -1.1916848223573573, 'dm g2': -0.4000694751110281}; gated (arm, base) {'plain g1': [0, 0], 'plain g2': [0, 0], 'dm g1': [5, 4], 'dm g2': [0, 0]}
+  x_bulk: qualified no ((a) False, (b) True, (c) True, (d) False, (e) True, (f) False); ahead in ['dm g1']; behind in none; X - x_e2 {'plain g1': -0.503846555533908, 'plain g2': -0.8880910872512523, 'dm g1': 1.0475735466755354, 'dm g2': -0.5928248124525574}; gated (arm, base) {'plain g1': [0, 0], 'plain g2': [0, 0], 'dm g1': [3, 4], 'dm g2': [0, 0]}
+  x_joint: not run (dropped by the pre-gate)
+  qualified: none; rule: nothing qualifies on (a) to (f); rank None; named: none
+  scoring part against the guard part, plain g1 barred_form: mean +0.0000, largest seed 0.0000, seeds differing none
+  scoring part against the guard part, plain g1 x_e2: mean +0.0000, largest seed 0.0000, seeds differing none
+  scoring part against the guard part, plain g2 barred_form: mean +0.0000, largest seed 0.0000, seeds differing none
+  scoring part against the guard part, plain g2 x_e2: mean +0.0000, largest seed 0.0000, seeds differing none
+  scoring part against the guard part, dm g1 barred_form: mean +0.0000, largest seed 0.0000, seeds differing none
+  scoring part against the guard part, dm g1 x_e2: mean +0.0000, largest seed 0.0000, seeds differing none
+  scoring part against the guard part, dm g2 barred_form: mean +0.0000, largest seed 0.0000, seeds differing none
+  scoring part against the guard part, dm g2 x_e2: mean +0.0000, largest seed 0.0000, seeds differing none
+U3d's check arm in the dm world, reported only: g1 mean -0.0000, largest seed 0.0000, seeds differing none; g2 mean +0.0000, largest seed 0.0000, seeds differing none
+task files: pregate.json d1eaad345608, guard.json 45a788257864, guard/plain_g1/seed_0.json 8b2513ced7d6, guard/plain_g1/seed_1.json c6acaff7747a, guard/plain_g1/seed_2.json 2c139d6863e0, guard/plain_g1/seed_3.json 7f9266837353, guard/plain_g1/seed_4.json 19110f3fff12, guard/plain_g1/seed_5.json 8044387423d8, guard/plain_g1/seed_6.json 23d2c5d46a41, guard/plain_g1/seed_7.json 108f6e12dffa, guard/plain_g1/seed_8.json d1857726852d, guard/plain_g1/seed_9.json ea66f145c331, guard/plain_g2/seed_0.json 5258ae9c0355, guard/plain_g2/seed_1.json a7ff134e5811, guard/plain_g2/seed_2.json 74c15e2e3e6a, guard/plain_g2/seed_3.json 6818c6b480d5, guard/plain_g2/seed_4.json 23cdd7e0b9f4, guard/plain_g2/seed_5.json 9125e86fa9ae, guard/plain_g2/seed_6.json 73470597c066, guard/plain_g2/seed_7.json 8c177c7af916, guard/plain_g2/seed_8.json b148b150a120, guard/plain_g2/seed_9.json d8764a54093e, guard/dm/g1_seed_0.json f50535a16acf, guard/dm/g1_seed_1.json 08006ddf190f, guard/dm/g1_seed_2.json e9f968d7fc30, guard/dm/g1_seed_3.json 7e40312b7508, guard/dm/g1_seed_4.json b675e548ae48, guard/dm/g1_seed_5.json c34a494d206d, guard/dm/g1_seed_6.json 84f58df51201, guard/dm/g1_seed_7.json b3328ac23148, guard/dm/g1_seed_8.json 44d7de77f289, guard/dm/g1_seed_9.json ee28e5038c0e, guard/dm/g2_seed_0.json 537485ece68c, guard/dm/g2_seed_1.json a2fcee05672d, guard/dm/g2_seed_2.json d78831460e33, guard/dm/g2_seed_3.json 67c0c34ddc05, guard/dm/g2_seed_4.json 24bff06fd3c2, guard/dm/g2_seed_5.json 8ee0d85f26da, guard/dm/g2_seed_6.json efa0c2908e62, guard/dm/g2_seed_7.json a6fb82665f4f, guard/dm/g2_seed_8.json 7c8b196e1869, guard/dm/g2_seed_9.json 893b89799009, plain_g1/seed_0.json 7e85f1463ce5, plain_g1/seed_1.json 78b10e4df459, plain_g1/seed_2.json 186054a267ed, plain_g1/seed_3.json c510f9c335de, plain_g1/seed_4.json 3f0daaa629b3, plain_g1/seed_5.json c7ecece88636, plain_g1/seed_6.json 355788c7db69, plain_g1/seed_7.json a26ed4e344a7, plain_g1/seed_8.json d7f715c70b48, plain_g1/seed_9.json 8e84286e4d0a, plain_g2/seed_0.json 7f8eddaf7eea, plain_g2/seed_1.json b65c1dbfe662, plain_g2/seed_2.json fdc9f1338e54, plain_g2/seed_3.json 3a133b91f58a, plain_g2/seed_4.json 9b9e802845de, plain_g2/seed_5.json b404536af906, plain_g2/seed_6.json 16e8d0d90066, plain_g2/seed_7.json 0ded2b63f78a, plain_g2/seed_8.json f2d6f54c2741, plain_g2/seed_9.json 9a56f3ef6cdf, dm/g1_seed_0.json bba6a606740b, dm/g1_seed_1.json 7c0597ff504a, dm/g1_seed_2.json 5bca9ae16d2d, dm/g1_seed_3.json bfa9cb2e7a64, dm/g1_seed_4.json f4ddd63c4f31, dm/g1_seed_5.json ae280193e3e2, dm/g1_seed_6.json defe17483158, dm/g1_seed_7.json f7b04fcf97cc, dm/g1_seed_8.json 73b6b1fd6020, dm/g1_seed_9.json 1b51e5e6dfe6, dm/g2_seed_0.json 08f1c425f034, dm/g2_seed_1.json 90d4eb678814, dm/g2_seed_2.json 471640129389, dm/g2_seed_3.json 66db547b0794, dm/g2_seed_4.json 374668fd3fc5, dm/g2_seed_5.json efd5c94baacd, dm/g2_seed_6.json ce423a7748f9, dm/g2_seed_7.json fd9b39c74c7b, dm/g2_seed_8.json 1f55fcadec4a, dm/g2_seed_9.json 51aa8de89642
+g1 and g2 are two replicates of one knockout run; the controls, the twins, x_e2 and barred_form are never named.
+
+WORLD plain (K8's: the harness, the reference as released):
+plain g1 T3w/WT->Gata4rep1:
+    floor         50.00 (sd 0.00); severity scored 0, gated 10 {'no_response': 10}, median beta n/a, r2 n/a; skills de_score 0.500, de_direction 0.500, severity_slope 0.500, mmd_u 0.500, variogram 0.500
+    barred_form   59.43 (sd 0.46); severity scored 10, gated 0 {'scored': 10}, median beta 0.437, r2 0.167; skills de_score 0.486, de_direction 0.527, severity_slope 0.897, mmd_u 0.493, variogram 0.418
+    x_e2          60.13 (sd 0.36); severity scored 10, gated 0 {'scored': 10}, median beta 0.465, r2 0.179; skills de_score 0.495, de_direction 0.532, severity_slope 0.904, mmd_u 0.500, variogram 0.424
+    x_sc3         59.61 (sd 0.42); severity scored 10, gated 0 {'scored': 10}, median beta 0.453, r2 0.173; skills de_score 0.486, de_direction 0.528, severity_slope 0.901, mmd_u 0.497, variogram 0.420
+    x_sc3_perm    59.27 (sd 0.48); severity scored 10, gated 0 {'scored': 10}, median beta 0.434, r2 0.164; skills de_score 0.483, de_direction 0.526, severity_slope 0.896, mmd_u 0.492, variogram 0.416
+    x_sc3_size    59.37 (sd 0.44); severity scored 10, gated 0 {'scored': 10}, median beta 0.435, r2 0.166; skills de_score 0.486, de_direction 0.526, severity_slope 0.896, mmd_u 0.492, variogram 0.416
+    x_bulk        59.62 (sd 0.46); severity scored 10, gated 0 {'scored': 10}, median beta 0.433, r2 0.165; skills de_score 0.489, de_direction 0.529, severity_slope 0.896, mmd_u 0.496, variogram 0.422
+    x_bulk_perm   59.68 (sd 0.42); severity scored 10, gated 0 {'scored': 10}, median beta 0.443, r2 0.173; skills de_score 0.491, de_direction 0.527, severity_slope 0.899, mmd_u 0.495, variogram 0.420
+    x_bulk_size   59.40 (sd 0.44); severity scored 10, gated 0 {'scored': 10}, median beta 0.434, r2 0.166; skills de_score 0.485, de_direction 0.527, severity_slope 0.896, mmd_u 0.494, variogram 0.420
+    x_e2 - barred_form: +0.70 (sd 0.29, ahead 10 of 10)
+    x_sc3 - barred_form: +0.18 (sd 0.16, ahead 8 of 10)
+    x_sc3_perm - barred_form: -0.16 (sd 0.18, ahead 2 of 10)
+    x_sc3_size - barred_form: -0.06 (sd 0.15, ahead 3 of 10)
+    x_bulk - barred_form: +0.19 (sd 0.18, ahead 9 of 10)
+    x_bulk_perm - barred_form: +0.25 (sd 0.20, ahead 9 of 10)
+    x_bulk_size - barred_form: -0.03 (sd 0.13, ahead 5 of 10)
+    x_sc3 - x_sc3_perm: +0.34 (sd 0.23, ahead 9 of 10)
+    x_bulk - x_bulk_perm: -0.06 (sd 0.25, ahead 5 of 10)
+    barred_form - floor: +9.43 (sd 0.46, ahead 10 of 10)
+    x_sc3 - x_sc3_size: +0.24 (sd 0.12, ahead 10 of 10)
+    x_bulk - x_bulk_size: +0.22 (sd 0.12, ahead 10 of 10)
+    x_sc3 - x_e2: -0.52 (sd 0.20, ahead 0 of 10)
+    x_bulk - x_e2: -0.50 (sd 0.27, ahead 0 of 10)
+    per-term skill, x_e2 - barred_form: de_score +0.009, de_direction +0.005, severity_slope +0.007, mmd_u +0.007, variogram +0.006
+    per-term skill, x_sc3 - barred_form: de_score -0.000, de_direction +0.001, severity_slope +0.003, mmd_u +0.004, variogram +0.002
+    per-term skill, x_sc3_perm - barred_form: de_score -0.003, de_direction -0.000, severity_slope -0.001, mmd_u -0.001, variogram -0.002
+    per-term skill, x_sc3_size - barred_form: de_score +0.000, de_direction -0.000, severity_slope -0.001, mmd_u -0.001, variogram -0.002
+    per-term skill, x_bulk - barred_form: de_score +0.003, de_direction +0.002, severity_slope -0.001, mmd_u +0.003, variogram +0.004
+    per-term skill, x_bulk_perm - barred_form: de_score +0.005, de_direction +0.001, severity_slope +0.002, mmd_u +0.002, variogram +0.002
+    per-term skill, x_bulk_size - barred_form: de_score -0.001, de_direction -0.000, severity_slope -0.001, mmd_u +0.002, variogram +0.002
+plain g2 T3w/WT->Gata4rep2:
+    floor         50.00 (sd 0.00); severity scored 0, gated 10 {'no_response': 10}, median beta n/a, r2 n/a; skills de_score 0.500, de_direction 0.500, severity_slope 0.500, mmd_u 0.500, variogram 0.500
+    barred_form   62.04 (sd 0.50); severity scored 10, gated 0 {'scored': 10}, median beta 0.433, r2 0.265; skills de_score 0.499, de_direction 0.559, severity_slope 0.893, mmd_u 0.564, variogram 0.500
+    x_e2          62.97 (sd 0.53); severity scored 10, gated 0 {'scored': 10}, median beta 0.462, r2 0.294; skills de_score 0.509, de_direction 0.568, severity_slope 0.900, mmd_u 0.577, variogram 0.510
+    x_sc3         62.52 (sd 0.61); severity scored 10, gated 0 {'scored': 10}, median beta 0.449, r2 0.281; skills de_score 0.504, de_direction 0.564, severity_slope 0.897, mmd_u 0.571, variogram 0.504
+    x_sc3_perm    61.86 (sd 0.58); severity scored 10, gated 0 {'scored': 10}, median beta 0.431, r2 0.259; skills de_score 0.495, de_direction 0.559, severity_slope 0.892, mmd_u 0.563, variogram 0.498
+    x_sc3_size    61.96 (sd 0.52); severity scored 10, gated 0 {'scored': 10}, median beta 0.431, r2 0.263; skills de_score 0.498, de_direction 0.560, severity_slope 0.892, mmd_u 0.563, variogram 0.498
+    x_bulk        62.08 (sd 0.52); severity scored 10, gated 0 {'scored': 10}, median beta 0.430, r2 0.268; skills de_score 0.498, de_direction 0.561, severity_slope 0.892, mmd_u 0.566, variogram 0.503
+    x_bulk_perm   62.03 (sd 0.47); severity scored 10, gated 0 {'scored': 10}, median beta 0.437, r2 0.271; skills de_score 0.495, de_direction 0.560, severity_slope 0.894, mmd_u 0.568, variogram 0.502
+    x_bulk_size   62.09 (sd 0.51); severity scored 10, gated 0 {'scored': 10}, median beta 0.429, r2 0.267; skills de_score 0.500, de_direction 0.559, severity_slope 0.892, mmd_u 0.566, variogram 0.502
+    x_e2 - barred_form: +0.93 (sd 0.23, ahead 10 of 10)
+    x_sc3 - barred_form: +0.48 (sd 0.22, ahead 9 of 10)
+    x_sc3_perm - barred_form: -0.18 (sd 0.20, ahead 2 of 10)
+    x_sc3_size - barred_form: -0.09 (sd 0.09, ahead 1 of 10)
+    x_bulk - barred_form: +0.04 (sd 0.22, ahead 5 of 10)
+    x_bulk_perm - barred_form: -0.01 (sd 0.25, ahead 6 of 10)
+    x_bulk_size - barred_form: +0.05 (sd 0.10, ahead 8 of 10)
+    x_sc3 - x_sc3_perm: +0.66 (sd 0.14, ahead 10 of 10)
+    x_bulk - x_bulk_perm: +0.05 (sd 0.27, ahead 5 of 10)
+    barred_form - floor: +12.04 (sd 0.50, ahead 10 of 10)
+    x_sc3 - x_sc3_size: +0.56 (sd 0.26, ahead 10 of 10)
+    x_bulk - x_bulk_size: -0.01 (sd 0.18, ahead 3 of 10)
+    x_sc3 - x_e2: -0.45 (sd 0.16, ahead 0 of 10)
+    x_bulk - x_e2: -0.89 (sd 0.22, ahead 0 of 10)
+    per-term skill, x_e2 - barred_form: de_score +0.010, de_direction +0.008, severity_slope +0.007, mmd_u +0.012, variogram +0.010
+    per-term skill, x_sc3 - barred_form: de_score +0.005, de_direction +0.005, severity_slope +0.004, mmd_u +0.007, variogram +0.004
+    per-term skill, x_sc3_perm - barred_form: de_score -0.004, de_direction -0.000, severity_slope -0.001, mmd_u -0.001, variogram -0.002
+    per-term skill, x_sc3_size - barred_form: de_score -0.001, de_direction +0.000, severity_slope -0.001, mmd_u -0.001, variogram -0.002
+    per-term skill, x_bulk - barred_form: de_score -0.001, de_direction +0.002, severity_slope -0.001, mmd_u +0.002, variogram +0.004
+    per-term skill, x_bulk_perm - barred_form: de_score -0.004, de_direction +0.000, severity_slope +0.001, mmd_u +0.004, variogram +0.002
+    per-term skill, x_bulk_size - barred_form: de_score +0.001, de_direction -0.000, severity_slope -0.001, mmd_u +0.002, variogram +0.002
+
+WORLD dm (U3d's: the frozen script, the reference and the pool at each replicate's per-label depth):
+dm g1 T3w/WT->Gata4rep1:
+    barred_form   55.64 (sd 5.17); severity scored 6, gated 4 {'r2_gate': 4, 'scored': 6}, median beta 0.415, r2 0.017; skills de_score 0.550, de_direction 0.560, severity_slope 0.735, mmd_u 0.356, variogram 0.314
+    x_e2          55.83 (sd 5.08); severity scored 6, gated 4 {'r2_gate': 4, 'scored': 6}, median beta 0.440, r2 0.024; skills de_score 0.550, de_direction 0.565, severity_slope 0.738, mmd_u 0.353, variogram 0.315
+    x_sc3         54.64 (sd 5.18); severity scored 5, gated 5 {'r2_gate': 5, 'scored': 5}, median beta 0.422, r2 0.013; skills de_score 0.548, de_direction 0.561, severity_slope 0.696, mmd_u 0.354, variogram 0.315
+    x_sc3_perm    54.61 (sd 5.28); severity scored 5, gated 5 {'r2_gate': 5, 'scored': 5}, median beta 0.408, r2 0.010; skills de_score 0.551, de_direction 0.560, severity_slope 0.694, mmd_u 0.353, variogram 0.312
+    x_sc3_size    55.63 (sd 5.12); severity scored 6, gated 4 {'r2_gate': 4, 'scored': 6}, median beta 0.414, r2 0.021; skills de_score 0.551, de_direction 0.560, severity_slope 0.734, mmd_u 0.355, variogram 0.313
+    x_bulk        56.88 (sd 5.01); severity scored 7, gated 3 {'r2_gate': 3, 'scored': 7}, median beta 0.411, r2 0.023; skills de_score 0.555, de_direction 0.562, severity_slope 0.774, mmd_u 0.358, variogram 0.318
+    x_bulk_perm   56.82 (sd 4.99); severity scored 7, gated 3 {'r2_gate': 3, 'scored': 7}, median beta 0.427, r2 0.037; skills de_score 0.552, de_direction 0.561, severity_slope 0.776, mmd_u 0.357, variogram 0.316
+    x_bulk_size   55.67 (sd 5.13); severity scored 6, gated 4 {'r2_gate': 4, 'scored': 6}, median beta 0.409, r2 0.018; skills de_score 0.549, de_direction 0.560, severity_slope 0.734, mmd_u 0.358, variogram 0.317
+    x_e2 - barred_form: +0.19 (sd 0.21, ahead 8 of 10)
+    x_sc3 - barred_form: -1.00 (sd 2.96, ahead 5 of 10)
+    x_sc3_perm - barred_form: -1.03 (sd 2.99, ahead 4 of 10)
+    x_sc3_size - barred_form: -0.01 (sd 0.13, ahead 5 of 10)
+    x_bulk - barred_form: +1.24 (sd 3.21, ahead 8 of 10)
+    x_bulk_perm - barred_form: +1.18 (sd 3.23, ahead 7 of 10)
+    x_bulk_size - barred_form: +0.03 (sd 0.16, ahead 6 of 10)
+    x_sc3 - x_sc3_perm: +0.02 (sd 0.22, ahead 6 of 10)
+    x_bulk - x_bulk_perm: +0.06 (sd 0.29, ahead 6 of 10)
+    x_sc3 - x_sc3_size: -0.99 (sd 2.92, ahead 4 of 10)
+    x_bulk - x_bulk_size: +1.21 (sd 3.17, ahead 8 of 10)
+    x_sc3 - x_e2: -1.19 (sd 3.01, ahead 0 of 10)
+    x_bulk - x_e2: +1.05 (sd 3.16, ahead 6 of 10)
+    per-term skill, x_e2 - barred_form: de_score +0.000, de_direction +0.005, severity_slope +0.003, mmd_u -0.002, variogram +0.001
+    per-term skill, x_sc3 - barred_form: de_score -0.002, de_direction +0.002, severity_slope -0.039, mmd_u -0.002, variogram +0.001
+    per-term skill, x_sc3_perm - barred_form: de_score +0.001, de_direction +0.000, severity_slope -0.041, mmd_u -0.003, variogram -0.003
+    per-term skill, x_sc3_size - barred_form: de_score +0.001, de_direction +0.000, severity_slope -0.000, mmd_u -0.001, variogram -0.002
+    per-term skill, x_bulk - barred_form: de_score +0.005, de_direction +0.002, severity_slope +0.039, mmd_u +0.003, variogram +0.003
+    per-term skill, x_bulk_perm - barred_form: de_score +0.003, de_direction +0.001, severity_slope +0.042, mmd_u +0.001, variogram +0.002
+    per-term skill, x_bulk_size - barred_form: de_score -0.001, de_direction +0.001, severity_slope -0.001, mmd_u +0.003, variogram +0.003
+dm g2 T3w/WT->Gata4rep2:
+    barred_form   63.84 (sd 0.60); severity scored 10, gated 0 {'scored': 10}, median beta 0.513, r2 0.222; skills de_score 0.580, de_direction 0.591, severity_slope 0.914, mmd_u 0.455, variogram 0.420
+    x_e2          64.52 (sd 0.60); severity scored 10, gated 0 {'scored': 10}, median beta 0.541, r2 0.246; skills de_score 0.587, de_direction 0.598, severity_slope 0.922, mmd_u 0.458, variogram 0.427
+    x_sc3         64.12 (sd 0.58); severity scored 10, gated 0 {'scored': 10}, median beta 0.524, r2 0.229; skills de_score 0.579, de_direction 0.596, severity_slope 0.918, mmd_u 0.459, variogram 0.424
+    x_sc3_perm    63.65 (sd 0.63); severity scored 10, gated 0 {'scored': 10}, median beta 0.501, r2 0.209; skills de_score 0.577, de_direction 0.592, severity_slope 0.912, mmd_u 0.451, variogram 0.417
+    x_sc3_size    63.94 (sd 0.59); severity scored 10, gated 0 {'scored': 10}, median beta 0.516, r2 0.225; skills de_score 0.581, de_direction 0.592, severity_slope 0.915, mmd_u 0.457, variogram 0.420
+    x_bulk        63.93 (sd 0.56); severity scored 10, gated 0 {'scored': 10}, median beta 0.506, r2 0.222; skills de_score 0.580, de_direction 0.594, severity_slope 0.913, mmd_u 0.456, variogram 0.423
+    x_bulk_perm   63.87 (sd 0.57); severity scored 10, gated 0 {'scored': 10}, median beta 0.517, r2 0.232; skills de_score 0.578, de_direction 0.590, severity_slope 0.916, mmd_u 0.457, variogram 0.423
+    x_bulk_size   63.84 (sd 0.57); severity scored 10, gated 0 {'scored': 10}, median beta 0.509, r2 0.220; skills de_score 0.579, de_direction 0.591, severity_slope 0.913, mmd_u 0.457, variogram 0.423
+    x_e2 - barred_form: +0.69 (sd 0.22, ahead 10 of 10)
+    x_sc3 - barred_form: +0.29 (sd 0.16, ahead 10 of 10)
+    x_sc3_perm - barred_form: -0.19 (sd 0.24, ahead 2 of 10)
+    x_sc3_size - barred_form: +0.11 (sd 0.16, ahead 7 of 10)
+    x_bulk - barred_form: +0.09 (sd 0.29, ahead 7 of 10)
+    x_bulk_perm - barred_form: +0.03 (sd 0.19, ahead 5 of 10)
+    x_bulk_size - barred_form: +0.00 (sd 0.08, ahead 5 of 10)
+    x_sc3 - x_sc3_perm: +0.47 (sd 0.17, ahead 10 of 10)
+    x_bulk - x_bulk_perm: +0.06 (sd 0.32, ahead 6 of 10)
+    x_sc3 - x_sc3_size: +0.18 (sd 0.17, ahead 9 of 10)
+    x_bulk - x_bulk_size: +0.09 (sd 0.28, ahead 8 of 10)
+    x_sc3 - x_e2: -0.40 (sd 0.25, ahead 0 of 10)
+    x_bulk - x_e2: -0.59 (sd 0.20, ahead 0 of 10)
+    per-term skill, x_e2 - barred_form: de_score +0.007, de_direction +0.008, severity_slope +0.008, mmd_u +0.003, variogram +0.006
+    per-term skill, x_sc3 - barred_form: de_score -0.000, de_direction +0.006, severity_slope +0.004, mmd_u +0.004, variogram +0.003
+    per-term skill, x_sc3_perm - barred_form: de_score -0.003, de_direction +0.001, severity_slope -0.002, mmd_u -0.004, variogram -0.003
+    per-term skill, x_sc3_size - barred_form: de_score +0.002, de_direction +0.001, severity_slope +0.001, mmd_u +0.002, variogram -0.001
+    per-term skill, x_bulk - barred_form: de_score -0.000, de_direction +0.004, severity_slope -0.001, mmd_u +0.001, variogram +0.003
+    per-term skill, x_bulk_perm - barred_form: de_score -0.002, de_direction -0.000, severity_slope +0.002, mmd_u +0.002, variogram +0.003
+    per-term skill, x_bulk_size - barred_form: de_score -0.001, de_direction -0.000, severity_slope -0.001, mmd_u +0.002, variogram +0.003
+
+read by experiments/t3_decomp/k24_wider_tables.py 922be9197c4f (outside_forms 4837687d47f1, k22 6482585242ad, k23 98bdac5b9f24, k21 97ce564ddea8) at commit 88f381ddbcf29defcebd9bea7906a9122f7797b2, clean True, machine p01r10srv05
