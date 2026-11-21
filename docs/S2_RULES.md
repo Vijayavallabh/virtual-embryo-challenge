@@ -1780,3 +1780,34 @@ answer, verbatim: "yes, build it that way".** The file had already been built th
 (sha256 f20730da83084702c50c43d4d4aaa98be8ee801ea443472792172804fea4228e); nothing in it changes, and it stays the
 third file of the embryo's list. This is the captain's own word for the two departures from frozen rules that the file
 makes: the count rule and the pre-registered embryo size, for this one file and for nothing else.
+
+## Amendment of 2026-11-21: T1's atlas step at twice the calendar fraction joins T1's list (the captain's order; row R20)
+
+Written by the AI assistant, which gives no design lean on any board since decision log 2026-11-21 (t). **The
+captain's words.** A side agent's note, forwarded by the captain on 2026-11-21, said that T1's highest headline came
+from candidate B, R13's file with the outside atlas's step at 1.5 times the calendar fraction; that the team's own
+rule bars setting a strength from a score and the builder takes 1.0 and 1.5 only; and that a 2x file needs the
+captain's order by name. The captain added, verbatim: "I allow and they allow too, so go ahead" (`docs/PLAN.md`
+decision log 2026-11-21 (x)).
+
+**The file.** R13's command with one named change:
+
+```bash
+uv run python experiments/builds/build_test.py t1 --g-mom --base lib3 --feng-groups recomputed --feng-fraction-mult 2.0 --captain-ruling R20 --out runs/builds/T1_s2rcB2.h5ad
+```
+
+Everything else is R13's command's. The value 2.0 is the next half step on candidate B's own scale and is not fitted
+from the size of any score. The file counts only after the default command has given R13's bytes (ad8f24c71c90...) and
+the 1.5 command B's bytes (c7240cb6a7f7...), and two builds from one clean commit have given one sha256. It is fixed
+here before its own score exists and goes in the next free T1 slot after C.
+
+**What the order sets aside, and what stands.** Decision log 2026-11-20 (n) says that no damping, fraction or other
+number is set from a score; the captain sets that aside for this one file and for nothing else. T1's composition,
+depth and advance draw stay closed. The rule on scores stands as `docs/DATA_POLICY.md` has it: trying a setting and
+seeing its score is fine; solving for a property of a hidden target from scores is prohibited. No further strength is
+built unless the captain names it before this file's score exists; no value is ever fitted from the size of a score.
+Only headlines of the team's own T1 uploads choose, through the board's best-headline mark.
+
+**Data used, for the hand-over:** as R13's file and candidate B: released challenge data and the outside heart atlas
+of register row X002, its permitted cells at E9.5 and E14.5 only, with groups recomputed from raw counts. Every upload
+is the captain's own act.

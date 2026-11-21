@@ -9452,3 +9452,30 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Standing by the record's best headline per board:** T1 71.59, T3 62.30, heart 56.4, embryo 69.9; the total is
     71.59 + 62.30 + (56.4 + 69.9) / 2 = 197.04 (195.85 after the first uploads of the day, 193.2 before; labelled
     arithmetic from reported headlines).
+- 2026-11-21 (x), the captain orders a T1 file with the atlas step at twice the calendar fraction; the AI assistant's
+  reading of the rule on scores (state at 23:03 UTC, 2026-11-21). Written by the AI assistant.
+  - **The note, in substance** (a side agent's, forwarded by the captain): T1's highest headline came from candidate
+    B, the 70.60 file with the outside atlas's step 1.5 times stronger; C keeps 1.5; no stronger file exists because
+    the team's own rule bars setting a strength from a score and the builder takes 1.0 and 1.5 only; the design
+    round's T1 ideas do not extend the step; the main agent gives no design opinions; "A 2x file needs your order by
+    name. Ask the main agent whether the organisers' rule allows it." **The captain's words added to it, verbatim: "I
+    allow and they allow too, so go ahead".**
+  - **The AI assistant's reading (its own).** (1) This is the captain's own named order for one file: R13's file with
+    the atlas step at 2.0 times the calendar fraction. It sets aside, for that file only, entry 2026-11-20 (n)'s line
+    that no fraction is set from a score. (2) On the organisers' rule the AI assistant was asked, and answers from the
+    repository's own record, not from the site: `docs/DATA_POLICY.md`, 'Scores', says "Trying a setting and seeing its
+    score is fine; solving for a property of a hidden target from scores (inverting the skill map, differencing
+    submissions) is prohibited", and records the Rules page's own test as "whether the truth enters your prediction's
+    content or only its selection". A round step on the scale the candidates already used (1.0, 1.5, 2.0), fixed in
+    the log before its own score, is a setting that is tried; no number in it is computed from a score. A value fitted
+    from the sizes of returned scores would be the other thing, and is not done. The AI assistant puts the chance that
+    the organisers would treat the 2.0 file as improper at about one in ten; the loss in that case is that file alone.
+    The captain states that the organisers allow it; the AI assistant has not opened the Rules page (the captain's
+    instruction of 2026-11-20) and records the statement as the captain's.
+  - **What is done.** Ruling row R20 and an amendment of `docs/S2_RULES.md` are committed with this entry, before any
+    build (the note's new sha256: 924904c23a543ce0dbae9e27bc3482740c6ce45d85787882a2d0baa76e368a9b). An engineer adds
+    the value 2.0 to the builder behind `--captain-ruling R20` and a thin launcher that first rebuilds R13's and B's
+    bytes; a reviewer checks them; a cold challenger checks this entry's reading of the rule. The file is unpriced on
+    practice (no row reads a step at four fifths of the chord). It goes in the next free T1 slot after C. If the
+    captain wants further strengths, they are named and fixed before the 2.0 file's score exists, so that later scores
+    select among files fixed in advance.
