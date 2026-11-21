@@ -9281,3 +9281,20 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     baseline's level on the three shape terms, not above it, and the challenger put about 0.7 on that if the build
     passes the board's limits, which it has); and that the question on count and size is still open with a default of
     build.
+- 2026-11-21 (r), the captain answers the question on the copy-rows file's count and size (state at 13:09 UTC,
+  2026-11-21). Written by the AI assistant, which is recused on the embryo's occupancy term and states no preference.
+  - **The captain's message, verbatim and whole: "yes, build it that way".** It arrived after the hand-over of the
+    three embryo files and after the main session's reply on the upload timeline.
+  - **The AI assistant's reading (its own).** It answers the one question open with the captain, whose words it
+    repeats: "Embryo: the baseline-copy file you ordered can only be exact if it also takes the copy's cell count (a
+    tenth of E7.5, below our max_cells rule) and E7.5's own size (not our pre-registered size). Build it that way? If
+    I hear nothing, it is built as described and goes after the exact-position file." (sent at 09:27 UTC; repeated at
+    the hand-over as still open, with a default of uploading the file as built). Nothing else was asked of the
+    captain, and the timeline reply held no question. So the answer is yes to the two departures from frozen rules
+    that the copy-rows file makes, the count rule and the pre-registered embryo size, for this one file.
+  - **What it changes.** Nothing in any file: the copy-rows file was already built that way under the question's
+    default (`runs/manual_upload/T2embryo_s2x_cr.h5ad`, sha256
+    f20730da83084702c50c43d4d4aaa98be8ee801ea443472792172804fea4228e, entry (q)). Condition (2) of entry (l) for that
+    file now rests on the captain's own yes instead of on the default. The embryo's list and order stand: the overlay
+    file, the exact-position file, the copy-rows file. The rules note records the answer in this commit (its new
+    sha256: 65b8b5281367d855b91262066f9abadae841bc45a8d456314096ae96f9498d23).

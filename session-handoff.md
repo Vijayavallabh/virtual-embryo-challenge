@@ -2,8 +2,7 @@
 
 ## Current Objective
 
-- **State at 2026-11-21, 11:10 UTC (newest; it supersedes the bullets below where they differ).** Decision log
-  2026-11-21 (c) to (q). Local main = origin/main. No score line since 20 Nov 15:30 UTC. Nothing of ours is running on
+- **State at 2026-11-21, 11:10 UTC (newest; it supersedes the bullets below where they differ).** Decision log 2026-11-21 (c) to (r). Local main = origin/main. No score line since 20 Nov 15:30 UTC. Nothing of ours is running on
   the DGX.
   - **THE EMBRYO HAS THREE FILES WITH THE CAPTAIN, IN THE ANALYSTS' ORDER (entry 2026-11-21 (l); the main session is
     recused, executes the rule and states no preference). Each embryo upload takes the first not yet uploaded:** (1)
@@ -18,12 +17,12 @@
     captain's go-ahead): no differencing, no per-term value tabulated or compared with another upload's or with 50, no
     new file, re-seed or re-upload from a score. The list is closed at these three; a fourth embryo file needs the
     captain's own named order.
-  - **The captain's question on C (count below the count rule; E7.5's own size, not the pre-registered size) is open
-    since 09:27 UTC with a default of build.** A 'no' means C is not uploaded (record it verbatim in the log and the
-    rules note). C's practice figures, which decide nothing, were sent with the hand-over: row E50's reading (i) holds
-    on all 90 task-seeds; against the positions form the board is -2.70 on practice, behind in every seed; the file
-    aims at the baseline's level on the three shape terms, not above it (the challenger: about 0.7, given that the
-    build passes the board's limits, which it did).
+  - **The captain's question on C is ANSWERED (entry 2026-11-21 (r); 13:09 UTC), verbatim: "yes, build it that way"**
+    (the file takes the copy's cell count, below the count rule, and E7.5's own size, not the pre-registered size).
+    The file was already built that way; nothing changes; C stays third in the embryo's list. Nothing is open with the
+    captain. C's practice figures, which decide nothing, were sent with the hand-over: row E50's reading (i) holds on
+    all 90 task-seeds; against the positions form the board is -2.70 on practice, behind in every seed; the file aims
+    at the baseline's level on the three shape terms, not above it.
   - **When the captain reports an embryo score:** add the row to `results/manual_uploads.csv` (headline only; per-term
     values are not tabulated or compared) and a decision-log entry; nothing is re-planned from it.
   - **The upload timeline (a side agent's note the captain forwarded at about 12:23 UTC, with no words of the
@@ -45,7 +44,7 @@
     archives); worktree `~/v/scratch/e50-wt` at 5fcf6b9 holds row E50's run folder `runs/e50`. Launchers on this
     machine may hold no removal of a variable path; the two embryo build launchers take a run name whose folders must
     not exist.
-  - **Tries:** T1 418, embryo 84, heart 80, T3 72. **Next labels:** decision log 2026-11-21 (r); register row X018.
+  - **Tries:** T1 418, embryo 84, heart 80, T3 72. **Next labels:** decision log 2026-11-21 (s); register row X018.
 - **State at 2026-11-21, 09:20 UTC (superseded by the bullet above where they differ).** Decision log
   2026-11-21 (c) to (o). Local main = origin/main. No score line since 20 Nov 15:30 UTC.
   - **THE EMBRYO'S ORDER RULE IS IN FORCE (entry 2026-11-21 (l), the analysts' rule; the main session is recused,

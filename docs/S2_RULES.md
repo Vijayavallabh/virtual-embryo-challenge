@@ -1770,3 +1770,13 @@ challenger's. The method report line calls this 'the embryo's last file': it is 
 **Correction to the section above (the embryo's list).** That section says the analysts' one question goes to the
 captain "when the file is ready". That timing was the main session's own and was withdrawn: the question was put on
 2026-11-21 at 09:27 UTC (decision log 2026-11-21 (n) and (o)).
+
+**Addition of 2026-11-21, 13:09 UTC, to the copy-rows section above: the captain's answer on the copy-rows file's
+count and size.** The question, as sent at 09:27 UTC: "Embryo: the baseline-copy file you ordered can only be exact if
+it also takes the copy's cell count (a tenth of E7.5, below our max_cells rule) and E7.5's own size (not our
+pre-registered size). Build it that way? If I hear nothing, it is built as described and goes after the exact-position
+file." It was repeated at the hand-over as still open, with a default of uploading the file as built. **The captain's
+answer, verbatim: "yes, build it that way".** The file had already been built that way under the question's default
+(sha256 f20730da83084702c50c43d4d4aaa98be8ee801ea443472792172804fea4228e); nothing in it changes, and it stays the
+third file of the embryo's list. This is the captain's own word for the two departures from frozen rules that the file
+makes: the count rule and the pre-registered embryo size, for this one file and for nothing else.
