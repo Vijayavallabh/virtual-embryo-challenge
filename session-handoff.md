@@ -4,6 +4,10 @@
 
 - **State at 2026-11-21, 00:54 UTC (newest; it supersedes the bullets below where they differ).** Decision log
   2026-11-21 (c) to (f). Local main = origin/main (9100471 or later). No score line since 20 Nov 15:30 UTC.
+  - **Outside data on the two position boards: scoped, not pursued** (entry 2026-11-21 (g); hand-back in the session
+    scratchpad `lift8/t2_outside_scoping.json`). Fresh analysts and challengers returned 'do not pursue' for the heart
+    and for the embryo; no row is opened. With K24 this closes the outside-data push on every board except the two
+    parked lines.
   - **K24 is read: NO FILE** (entry (f); row K24 filled; six tries, T3 72). The reading's statement: no wider table
     beats the named form at a like size; the K23 file stands alone. The three-study table lost to the two-study table
     at the same size in every cell; the bulk table (14 lines of the many-line set) did not beat its shuffled control
@@ -22,7 +26,7 @@
     bulk tables; `tables_two_study`; `tables_first_bulk_run_keep` is the never-read first bulk run).
   - **Parked, one word reopens:** the GEO single-study bulk forms (closed in code); the T1 extra atlases in their
     strict form.
-  - **Tries:** T1 418, embryo 83, heart 80, T3 72. **Next labels:** decision log 2026-11-21 (g); register row X018.
+  - **Tries:** T1 418, embryo 83, heart 80, T3 72. **Next labels:** decision log 2026-11-21 (h); register row X018.
 
 - **State at 2026-11-21, 00:42 UTC (superseded above where they differ).** Decision log
   2026-11-21 (c), (d), (e). Local main = origin/main (88f381d or later). Uploads and the pre-built T3 files are as in

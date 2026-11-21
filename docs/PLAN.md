@@ -8850,3 +8850,31 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     zero that a correlation of -0.03 missed; by the row it stays unread. Two days of pipeline work on the many-line
     set bought a clean negative: on this fold, more outside knockouts of unrelated genes do not add to what the two
     single-cell studies already give.
+- 2026-11-21 (g), the two position boards: a scoping round on outside data returns 'do not pursue' for both (state at
+  01:04 UTC, 2026-11-21). Written by the AI assistant, who is recused on the heart's scope and size and on the embryo's
+  occupancy term, asked the question and reports the answer without a view of its own on those matters.
+  - **Why it was asked.** The captain's order of 20 November is to bring in outside data widely. It has been followed
+    on Task 1 (two atlases) and Task 3 (outside knockouts: one file named by K23, the wider tables read by K24 and not
+    named). On the heart and embryo boards no outside data is in use. Four fresh agents (an analyst and a challenger
+    for each board; workflow `t2-outside-data-scoping`; no web, no data fetched, committed practice readings only)
+    were asked whether any outside data at stages the organisers permit could add expected points there, and to
+    propose at most two rows or none.
+  - **The heart: do not pursue** (the challenger puts the chance that pursuing would be a mistake at 0.85). The one
+    idea that adds something the released stages lack is a per-lineage expression direction from the heart atlas
+    already on the team's machines, across the barred window. That is the line the ledger pruned three times, because
+    its recorded agreement with the imaging panel is close to zero outside one lineage, and its in-platform twin (row
+    H28) did not beat a shuffled-gene placebo. Every other idea (size, cell mix, layout, depth, new cell states) acts
+    on a lever already closed, and a size idea would also risk reading barred-stage figures. K1 and K2 stay as they
+    are under R16's rule. What would reopen it: a committed, target-free recomputation showing strong per-lineage
+    agreement between the atlas's direction and the panel for more than one lineage, and then the captain's named
+    exception.
+  - **The embryo: do not pursue** (0.85 likewise). The two released stages on either side of the hidden stage are half
+    a day apart, the rules bar outside data inside that gap, and what outside data could legally add is a development
+    direction that the released stages already give on the same platform. The best proposal (an outside direction
+    applied to one half of the file) would overshoot, because the file's mix already sits at the hidden stage's mean
+    position between the brackets; its fix is the intermediate-cell idea that row E8 read and dropped with losses on
+    both practice folds. The expected gain, about +0.05 embryo points for about three of the five days, is below the
+    board's practice noise.
+  - **So:** no outside-data row is opened on either board. Nothing changes in the files with the captain. With K24
+    (entry (f)) this closes the outside-data push of 20 November on every board except the two parked lines (the GEO
+    single-study bulk forms; the Task 1 extra atlases in their strict form), which one word from the captain reopens.
