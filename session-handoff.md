@@ -2,7 +2,35 @@
 
 ## Current Objective
 
-- **State at 2026-11-20, 23:32 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+- **State at 2026-11-21, 00:06 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+  2026-11-20 (hhh) to (jjj) and 2026-11-21 (d), (e). Local main = origin/main (9954da3 or later). Uploads and the
+  pre-built T3 files are as in the bullets below; no score line since 20 Nov 15:30 UTC.
+  - **E49 is read: no candidate file** (entry (jjj); row E49 filled; seven tries, embryo 83). Nothing is asked of the
+    captain; the main session is recused on the embryo's shape forms and states no preference.
+  - **The bulk guard G5 is changed for the bulk route only** (entry 2026-11-21 (d); merged at 8f59260): margin above
+    zero. **The many-line set is rebuilt under it** (entry (e)): 14 lines, 63 knockout and 64 wild-type libraries;
+    bulk table sha256 6833d8d7...; the first run's table (865a5530...) is never read. DGX checkout
+    `~/v/vec-campaign-c` is at 103a1be.
+  - **Row K24 is NOT placed.** Code: branch `campaign/t3-wider-tables-3` (36a0c53) has two review blockers closed;
+    workflow `t3-k24-amend` (task wgd9buxh5; branch `campaign/t3-wider-tables-4`) implements the two clauses a cold
+    challenger restated (entry (iii); specification in the session scratchpad `lift8/k24_cold_amendments.txt`) and a
+    manifest field in `experiments/t3_ext/combine.py` (`lines_held_by_study`). STILL OPEN after it: the last delta
+    review's blocker (in `pregate_k24`, check the exponent bound (s1) BEFORE forming T ** e_T, so that a nearly
+    constant table drops instead of raising; the reviewer's replacement code is in its hand-back; reviewer agent
+    af9b13d17501dbca2 can be resumed by SendMessage to check the fix). Then: merge; sync; run `all "E-MTAB-7322"` once
+    more so the manifest gains the field (the bulk csv must stay 6833d8d7...); on the DGX run `k24_wider_tables.py
+    listing` and `pins` with `VEC_T3_EXT_TABLES=~/v/vec-ext/t3/tables` and
+    `VEC_T3_EXT_TABLES_TWO=~/v/vec-ext/t3/tables_two_study`; commit the listing and pins; place row K24 (draft
+    `lift8/k24_row_final_draft.txt`, to be completed with the restated clauses, the try counts of the amendments file,
+    both runs' counts from entry (e), the sentence that the first run's table is never read and that a pre-gate miss
+    reads nothing, and the engineer's row-text changes) with decision-log entry 2026-11-21 (c) in ONE commit; sync;
+    `run_k24.sh <commit>` detached; wait on `~/v/scratch/k24_<7>/all.exit`. The K24 builder cites entry 2026-11-21
+    (c): keep that label for the placement.
+  - **GEO bulk forms: parked** (entry (iii)); branch `campaign/t3-ext-geo-bulk` not merged.
+  - **Tries:** T1 418, embryo 83, heart 80, T3 66. **Next labels:** decision log 2026-11-21 (c) (K24 placement,
+    reserved), then (f); register row X018.
+
+- **State at 2026-11-20, 23:32 UTC (superseded above where they differ).** Decision log
   2026-11-20 (eee) to (hhh). Local main = origin/main (1c75cd5 or later). Everything about uploads, the pre-built T3
   files, T64 and E49 is as in the next bullet.
   - **The many-line set E-MTAB-7322 is pinned, mapped and run once.** Pins (25 lines, 103 knockout and 114 wild-type
