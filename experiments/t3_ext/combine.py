@@ -295,9 +295,10 @@ def single_cell_tables(units: list[dict], ref: dict, record: dict, out: Path) ->
 
 
 def bulk_study_tables(units: list[dict], P: int) -> dict[str, dict]:
-    """{study: {'tier', 'genes', 'L': {'__whole__': (P,)}, 'units', 'line_agreement'}} with equal weight per gene
-    inside the study; line_agreement per panel gene is the share of the study's genes whose value has the sign of the
-    study mean (a record, for reading only)."""
+    """{study: {'tier', 'genes', 'L': {'__whole__': (P,)}, 'units', 'line_agreement', 'lines_held'}} with equal weight
+    per gene inside the study; line_agreement per panel gene is the share of the study's genes whose value has the sign
+    of the study mean, and lines_held the number of the study's genes (lines) holding a value for it, the share's
+    denominator (records, for reading only)."""
     out: dict[str, dict] = {}
     for st in sorted({u["study"] for u in units}):
         us = [u for u in units if u["study"] == st]
@@ -314,7 +315,10 @@ def bulk_study_tables(units: list[dict], P: int) -> dict[str, dict]:
         share = np.where(held.sum(0) > 0, agree / np.maximum(held.sum(0), 1), np.nan)
         out[st] = {"tier": tiers.pop(), "genes": genes, "L": {"__whole__": L},
                    "units": [f"{u['accession']}:{u['gene']}" for u in us],
-                   "line_agreement": [None if not np.isfinite(v) else float(v) for v in share]}
+                   "line_agreement": [None if not np.isfinite(v) else float(v) for v in share],
+                   # row K24's restated (b4): the number of the study's lines holding each panel gene, the same
+                   # count the share above divides by (integers, panel order)
+                   "lines_held": [int(v) for v in held.sum(0)]}
     return out
 
 
@@ -350,6 +354,7 @@ def bulk_tables(units: list[dict], ref: dict, record: dict, out: Path) -> dict:
                "guards_by_unit": {f"{u['accession']}:{u['gene']}": u.get("guards") for u in us},
                "line_agreement_by_study": {s: studies[s]["line_agreement"] for s in names
                                            if len(studies[s]["genes"]) > 1},
+               "lines_held_by_study": {s: studies[s]["lines_held"] for s in names if len(studies[s]["genes"]) > 1},
                "unit_sha256": {f"{u['accession']}:{u['gene']}": u["sha256"] for u in us},
                "refstats_sha256": ref["file_sha256"], "inputs": record,
                "created": time.strftime("%Y-%m-%d %H:%M:%S %Z"),

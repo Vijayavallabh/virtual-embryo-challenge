@@ -50,7 +50,13 @@ pre-gate's (INCOMPLETE); 2 refused (no row, a dirty tree, pins not filled or `tw
 or off its pin, K23's committed files untracked, a folder variable unset or refused, bytes or records that disagree, a
 missing or unpinned table, the frozen T3 files off their pins, `two`'s figures off K23's, a scoring part without a
 passing guard.json); 3 INCOMPLETE (a file missing; nothing written); 4 read: the reading files exist already; 5
-pregate: both tables dropped, nothing runs; 6 guard: the guard part failed (VOID; the failed guard arms counted).
+pregate: no try left (both tables dropped, or bulk dropped and sc3 a repeat of the named form), nothing runs; 6
+guard: the guard part failed (VOID; the failed guard arms counted).
+
+The try count (row K24 as restated on 2026-11-20): both tables pass 9; sc3 a repeat of the named form only and the
+joint passes its own drops 6 (bulk 3, joint 3), the joint failing them 3; sc3 dropped for another reason 3; bulk
+dropped and sc3 passing 3; bulk dropped and sc3 a repeat 0 (exit 5); both dropped 0 (exit 5); the joint dropped on its
+own with both tables valid 6. Never more than nine.
 
 K23's run folder is runs/k23_<first 7 of K23's committed reading's commit> in this checkout; no option overrides it.
 """
@@ -68,6 +74,7 @@ import sys
 import tempfile
 import traceback
 from contextlib import contextmanager
+from fractions import Fraction
 from pathlib import Path
 
 import numpy as np
@@ -128,7 +135,12 @@ JOINT_CORR = (0.0, 0.9)  # the joint runs when 0 <= corr(ln sc3, ln bulk) < 0.9
 SC3_TWO_MAX_CORR = ext.FILE2_MAX_CORR  # 0.9: sc3 is dropped as a repeat of the named form at or above it
 BULK_MIN_LINES = 12  # (b2)
 BULK_MIN_LIBS_UNIT, BULK_MIN_LIBS_TOTAL = 2, 36  # (b3)
-AGREE, AGREE_FLOOR, AGREE_MULT = 2.0 / 3.0, 50, 2  # (b4)
+# (b4) as restated by the cold challenger on 2026-11-20, before any table value, agreement count or score was read:
+# at least max(AGREE_FLOOR, E0 + AGREE_EXCESS G) of the G genes != 1 with an agreement value and held in at least
+# AGREE_MIN_LINES lines agree at AGREE or more; E0 the exact sum of chance_agreement(n_g) over those genes
+AGREE, AGREE_FLOOR, AGREE_EXCESS = 2.0 / 3.0, 50, 0.11
+AGREE_MIN_LINES = BULK_MIN_LINES  # 12, the (b2) floor
+AGREE_TOL = 1e-12  # a share of exactly 2/3 counts
 BULK_SIGN_RULE = "single study"  # combine.py's sign rule of a one-study bulk table
 BULK_STUDY = "MGP-DMDD"
 BULK_MODALITY, BULK_TIER = "bulk", "unrelated"
@@ -239,6 +251,7 @@ def combine_record(d: Path, fname: str) -> tuple[dict, str]:
 
 RECORD_FIELDS = ("modality", "studies", "tiers", "sign_rule", "genes_by_study", "units_by_study", "libraries_by_unit",
                  "k_by_unit", "guards_by_unit", "line_agreement_by_study", "refstats_sha256", "checked")
+OPTIONAL_FIELDS = ("lines_held_by_study",)  # combine.py writes it since the restated (b4); older manifests lack it
 
 
 def _plain_file(p: Path, what: str) -> Path:
@@ -307,6 +320,7 @@ def load_k24_table(key: str, genes: list[str], listing: dict[str, str], listing_
            "sha256": sha, "listing_sha256": listing_sha256, "pinned_sha256": pins.get(key), "combine_file": cfile,
            "combine_sha256": comb_sha, "manifest_sha256": man_sha}
     rec |= {f: man.get(f) for f in RECORD_FIELDS}
+    rec |= {f: man.get(f) for f in OPTIONAL_FIELDS}  # (b4)'s n_g; absent means the fallback n_g = U, never (b5)
     rec["studies"] = [str(s) for s in rec["studies"] or []]
     rec["tiers"] = sorted({str(t) for t in rec["tiers"] or []})
     return T, rec, comb
@@ -448,10 +462,39 @@ def arm_figures(phi_m, scaled, bases_by_world: dict, den, genes=None) -> tuple[d
     return figs, why
 
 
-def expected_agreement(G: int, U: int) -> float:
-    """E0 = G x 2 x P(Bin(U, 1/2) >= ceil(2U/3)), an exact sum with math.comb."""
-    j0 = math.ceil(2 * U / 3)
-    return G * 2 * sum(math.comb(U, j) for j in range(j0, U + 1)) / 2 ** U
+def chance_agreement(n: int) -> Fraction:
+    """2 P(Bin(n, 1/2) >= ceil(2n/3)): a gene's chance of a line agreement of 2/3 or more over n lines, an exact
+    fraction (math.comb, integers only)."""
+    n = int(n)
+    if n < 1:
+        raise ValueError(f"chance_agreement needs n >= 1, not {n}")
+    j0 = -(-2 * n // 3)  # ceil(2n/3) in integers
+    return Fraction(2 * sum(math.comb(n, j) for j in range(j0, n + 1)), 2 ** n)
+
+
+def lines_held(rec: dict, size: int, U: int, share: list) -> tuple[list[int] | None, str, str | None]:
+    """(n_g per gene in the table's gene order, its source, the reason it is malformed or None). n_g comes from the
+    manifest's lines_held_by_study[MGP-DMDD] when it is there: one integer per gene, 0 <= n_g <= U, and n_g >= 1
+    wherever the gene has an agreement value; anything else is malformed (the caller drops the bulk table). When the
+    manifest records no lines_held_by_study, or records none for MGP-DMDD, n_g = U for every gene ('fallback U')."""
+    field = rec.get("lines_held_by_study")
+    if field is None:
+        return [U] * size, "fallback U (the manifest records no lines_held_by_study)", None
+    if not isinstance(field, dict):
+        return None, "malformed", "lines_held_by_study is not a mapping of study to counts"
+    if BULK_STUDY not in field:
+        return [U] * size, f"fallback U (lines_held_by_study records nothing for {BULK_STUDY})", None
+    v = field[BULK_STUDY]
+    if not isinstance(v, list) or len(v) != size:
+        return None, "malformed", f"lines_held_by_study[{BULK_STUDY}] is not one count per gene of the table"
+    if any(isinstance(x, bool) or not isinstance(x, int) for x in v):
+        return None, "malformed", f"lines_held_by_study[{BULK_STUDY}] holds a value that is not an integer"
+    if any(x < 0 or x > U for x in v):
+        return None, "malformed", f"lines_held_by_study[{BULK_STUDY}] holds a count outside [0, {U}]"
+    if any(share[i] is not None and v[i] < 1 for i in range(size)):
+        return None, "malformed", (f"lines_held_by_study[{BULK_STUDY}] holds 0 lines for a gene with an agreement "
+                                   "value")
+    return list(v), f"manifest lines_held_by_study[{BULK_STUDY}]", None
 
 
 def somite_report(guards: dict | None) -> dict:
@@ -519,20 +562,34 @@ def bulk_drops(T, rec: dict) -> tuple[list[str], dict]:
     T = np.asarray(T, dtype=np.float64)
     las = rec.get("line_agreement_by_study") or {}
     share = las.get(BULK_STUDY) if isinstance(las, dict) else None
+    empty = {"agree_G": None, "agree_count": None, "E0": None, "agree_needed": None, "n_g_source": None,
+             "n_g_histogram": None, "agree_left_out_few_lines": None}
     if not isinstance(share, list) or len(share) != T.size:
         why.append(f"(b4) no line agreement for {BULK_STUDY} over the table's {T.size} genes")
-        figs |= {"agree_G": None, "agree_count": None, "E0": None, "agree_needed": None}
+        figs |= empty
     else:
-        ne1 = T != 1.0
-        held = [i for i in range(T.size) if ne1[i] and share[i] is not None]
-        G = len(held)
-        n_agree = sum(1 for i in held if float(share[i]) >= AGREE)
-        E0 = expected_agreement(G, U)
-        need = max(AGREE_FLOOR, AGREE_MULT * E0)
-        figs |= {"agree_G": G, "agree_count": n_agree, "E0": E0, "agree_needed": need}
-        if n_agree < need:
-            why.append(f"(b4) {n_agree} genes != 1 with line agreement >= 2/3 (< max({AGREE_FLOOR}, {AGREE_MULT} x E0 "
-                       f"{E0:.3f}))")
+        n_g, source, bad = lines_held(rec, T.size, U, share)
+        if bad is not None:
+            why.append(f"(b4) {bad}: malformed")
+            figs |= empty | {"n_g_source": source}
+        else:
+            ne1 = T != 1.0
+            valued = [i for i in range(T.size) if ne1[i] and share[i] is not None]
+            held = [i for i in valued if n_g[i] >= AGREE_MIN_LINES]
+            G = len(held)
+            n_agree = sum(1 for i in held if float(share[i]) >= AGREE - AGREE_TOL)
+            E0 = sum((chance_agreement(n_g[i]) for i in held), Fraction(0))
+            need = max(Fraction(AGREE_FLOOR), E0 + Fraction(str(AGREE_EXCESS)) * G)
+            hist: dict[str, int] = {}
+            for i in valued:
+                hist[str(n_g[i])] = hist.get(str(n_g[i]), 0) + 1
+            figs |= {"agree_G": G, "agree_count": n_agree, "E0": float(E0), "agree_needed": float(need),
+                     "n_g_source": source, "n_g_histogram": dict(sorted(hist.items(), key=lambda kv: int(kv[0]))),
+                     "agree_left_out_few_lines": len(valued) - G}
+            if n_agree < need:
+                why.append(f"(b4) {n_agree} of {G} genes != 1 held in >= {AGREE_MIN_LINES} lines with line agreement "
+                           f">= 2/3 (< max({AGREE_FLOOR}, E0 {float(E0):.3f} + {AGREE_EXCESS} x {G}) = "
+                           f"{float(need):.3f})")
     figs["somites_and_composition"] = somite_report(rec.get("guards_by_unit"))
     return why, figs
 
@@ -562,12 +619,13 @@ def pregate_k24(phi_m, loaded: dict, bases_by_world: dict, den, genes: list[str]
     two_T, two_rec = tabs["two"]
     out: dict = {"n_genes": int(phi_m.size), "s_star": S_STAR, "two": None, "two_checked": k23_pre is not None,
                  "phi_m": ext.figures(phi_m, phi_m, den), "tables": {}, "scaled": {}, "records": {}, "e": {},
-                 "c": None, "corr": {}, "arms": {}, "bulk": None, "dropped": {},
+                 "c": None, "corr": {}, "arms": {}, "bulk": None, "dropped": {}, "sc3_repeat_only": False,
                  "constants": {"s_star": S_STAR, "e_max": E_MAX, "e_min": E_MIN, "min_genes": MIN_GENES,
                                "max_abs_ln_scaled": MAX_ABS_LN_SCALED, "joint_corr": list(JOINT_CORR),
                                "sc3_two_max_corr": SC3_TWO_MAX_CORR, "bulk_min_lines": BULK_MIN_LINES,
                                "bulk_min_libs_unit": BULK_MIN_LIBS_UNIT, "bulk_min_libs_total": BULK_MIN_LIBS_TOTAL,
-                               "agree": AGREE, "agree_floor": AGREE_FLOOR, "agree_mult": AGREE_MULT,
+                               "agree": AGREE, "agree_floor": AGREE_FLOOR, "agree_excess": AGREE_EXCESS,
+                               "agree_min_lines": AGREE_MIN_LINES,
                                "bulk_sign_rule": BULK_SIGN_RULE, "bulk_study": BULK_STUDY,
                                "min_changed": MIN_CHANGED, "max_abs_corr": MAX_ABS_CORR, "min_studies": MIN_STUDIES,
                                "max_at_clip": MAX_AT_CLIP, "max_den_shift": MAX_DEN_SHIFT,
@@ -589,6 +647,7 @@ def pregate_k24(phi_m, loaded: dict, bases_by_world: dict, den, genes: list[str]
         e = exponent(T)
         out["e"][key] = e
         why = []
+        repeat = None  # sc3 only: the repeat clause's reason, kept apart from every other drop
         if e is None:
             why.append("SD(ln T) is 0: no exponent")
         else:
@@ -629,9 +688,12 @@ def pregate_k24(phi_m, loaded: dict, bases_by_world: dict, den, genes: list[str]
                 why.append("its bytes equal `two`'s")
             ct = ext.corr_between(T, two_T)
             out["corr"]["sc3_two"] = ct
-            if ct is None or ct >= SC3_TWO_MAX_CORR:
-                why.append(f"corr(ln sc3, ln two) {'undefined' if ct is None else f'{ct:.3f}'} "
-                           f"(>= {SC3_TWO_MAX_CORR}: a repeat of the named form)")
+            # restated clause (2026-11-20): an undefined corr is a drop of sc3 like any other (it takes the joint); a
+            # corr of 0.9 or more is the repeat clause, which drops x_sc3, its control and its twin only
+            if ct is None:
+                why.append("corr(ln sc3, ln two) undefined")
+            elif ct >= SC3_TWO_MAX_CORR:
+                repeat = f"corr(ln sc3, ln two) {ct:.3f} (>= {SC3_TWO_MAX_CORR}: a repeat of the named form)"
         else:
             bwhy, bfigs = bulk_drops(T, rec)
             out["bulk"] = bfigs
@@ -640,13 +702,17 @@ def pregate_k24(phi_m, loaded: dict, bases_by_world: dict, den, genes: list[str]
             figs, pwhy = arm_figures(phi_m, scaled[key], bases_by_world, den, genes)
             out["arms"][f"x_{key}"] = figs
             why += pwhy
+        if repeat is not None:
+            out["sc3_repeat_only"] = not why
+            why.append(repeat)  # kept in the record of sc3's drop, for reporting
         if why:
             out["dropped"][key] = "; ".join(why)
-    # (iv) the joint
+    # (iv) the joint: dropped when bulk is dropped, or sc3 for any reason other than the repeat clause alone
     jwhy = []
-    for key in ("sc3", "bulk"):
-        if key in out["dropped"]:
-            jwhy.append(f"{key} is dropped")
+    if "bulk" in out["dropped"]:
+        jwhy.append("bulk is dropped")
+    if "sc3" in out["dropped"] and not out["sc3_repeat_only"]:
+        jwhy.insert(0, "sc3 is dropped")
     out["corr"]["sc3_bulk"] = cj = ext.corr_between(tabs["sc3"][0], tabs["bulk"][0])
     if cj is None or cj < JOINT_CORR[0] or cj >= JOINT_CORR[1]:
         jwhy.append(f"corr(ln sc3, ln bulk) {'undefined' if cj is None else f'{cj:.3f}'} outside "
@@ -675,11 +741,13 @@ def pregate_k24(phi_m, loaded: dict, bases_by_world: dict, den, genes: list[str]
 
 
 def dropped_arms(pre: dict) -> dict[str, str]:
-    """The pre-gate's drops as arm drops: a dropped table drops its try, its control and its twin (and the joint)."""
+    """The pre-gate's drops as arm drops: a dropped table drops its try, its control and its twin, and the joint with
+    them, except that sc3 dropped by the repeat clause alone (pre['sc3_repeat_only']) leaves the joint in."""
     out = {}
+    sc3_takes_joint = "sc3" in pre["dropped"] and not pre.get("sc3_repeat_only")
     for kind in ("sc3", "bulk", "joint"):
         why = pre["dropped"].get(kind)
-        if why is None and kind == "joint" and ("sc3" in pre["dropped"] or "bulk" in pre["dropped"]):
+        if why is None and kind == "joint" and (sc3_takes_joint or "bulk" in pre["dropped"]):
             why = "a table is dropped"
         if why is not None:
             for a in ARMS_OF_KIND[kind]:
@@ -697,7 +765,8 @@ def nothing_runs(arms: tuple[str, ...]) -> bool:
 
 
 def constants_of(pre: dict) -> dict:
-    """e_sc3, e_bulk, c and each undropped try's twin constants (a, k), at full precision."""
+    """e_sc3, e_bulk, c and each undropped try's twin constants (a, k), at full precision. e_sc3 is carried whenever
+    the pre-gate made it, so also when x_sc3 is dropped as a repeat of the named form and the joint runs on it."""
     arms = active_arms(pre)
     return {"e_sc3": pre["e"].get("sc3"), "e_bulk": pre["e"].get("bulk"),
             "c": pre.get("c") if "x_joint" in arms else None,
@@ -956,7 +1025,8 @@ def load_pregate(out: Path, record: dict) -> tuple[dict, tuple[str, ...]]:
     if list(arms) != body.get("arms"):
         refuse("pregate.json's arms are not its pre-gate's: refused")
     if nothing_runs(arms):
-        refuse("the pre-gate drops both tables: nothing runs")
+        refuse("the pre-gate leaves no try (both tables dropped, or bulk dropped and sc3 a repeat of the named form): "
+               "nothing runs")
     _K24["consts"] = constants_of(pre)
     return pre, arms
 
@@ -1160,6 +1230,7 @@ def pregate_lines(pre: dict) -> list[str]:
         b = pre["bulk"]
         lines.append("  bulk: " + _figs(b) + "; somites and composition (reported only): "
                      + _figs(b.get("somites_and_composition") or {}))
+        lines.append(f"  bulk (b4): genes != 1 with an agreement value per n_g (counts only): {b.get('n_g_histogram')}")
     for t, v in pre["arms"].items():
         lines.append(f"  {t}: a {v['a']!r}, k {v['k']!r}, den shift {v['den_shift']:+.4%}")
         lines.append(f"    product: {_figs(v['product'])}")
@@ -1167,6 +1238,9 @@ def pregate_lines(pre: dict) -> list[str]:
             lines.append(f"    control ({w} basis): {_figs(c)}")
         lines.append(f"    size twin: {_figs(v['size'])}")
     lines.append("  dropped: " + ("; ".join(f"{k} ({v})" for k, v in pre["dropped"].items()) or "none"))
+    if pre.get("sc3_repeat_only"):
+        lines.append("  sc3 is a repeat of the named form only: x_sc3, x_sc3_perm and x_sc3_size are dropped; sc3 "
+                     "enters the joint unchanged")
     return lines
 
 
@@ -1216,7 +1290,8 @@ def cmd_pregate(a) -> None:
         sys.exit(1)
     print("\n".join(pregate_lines(pre)), flush=True)
     if nothing_runs(arms):
-        print("both tables dropped: nothing runs and nothing is counted", flush=True)
+        print("no try left (both tables dropped, or bulk dropped and sc3 a repeat of the named form): nothing runs and "
+              "nothing is counted", flush=True)
         sys.exit(EXIT_NOTHING_RUNS)
 
 

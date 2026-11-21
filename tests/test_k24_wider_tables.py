@@ -100,7 +100,9 @@ def test_arms_constants_and_the_shared_modules():
     assert (k24.E_MAX, k24.E_MIN, k24.MIN_GENES, k24.MAX_ABS_LN_SCALED) == (8.0, 0.125, 100, 0.5)
     assert k24.JOINT_CORR == (0.0, 0.9) and k24.SC3_TWO_MAX_CORR == k22.ext.FILE2_MAX_CORR == ext.FILE2_MAX_CORR == 0.9
     assert (k24.BULK_MIN_LINES, k24.BULK_MIN_LIBS_UNIT, k24.BULK_MIN_LIBS_TOTAL) == (12, 2, 36)
-    assert (k24.AGREE, k24.AGREE_FLOOR, k24.AGREE_MULT) == (2 / 3, 50, 2)
+    # (b4) as restated on 2026-11-20: AGREE_MULT = 2 gave way to an excess of 0.11 over chance, at n_g lines each
+    assert (k24.AGREE, k24.AGREE_FLOOR, k24.AGREE_EXCESS, k24.AGREE_MIN_LINES) == (2 / 3, 50, 0.11, 12)
+    assert not hasattr(k24, "AGREE_MULT") and not hasattr(k24, "expected_agreement")
     assert k24.BULK_SIGN_RULE == "single study" and k24.BULK_STUDY == "MGP-DMDD"
     assert (k24.MIN_CHANGED, k24.MAX_ABS_CORR, k24.MIN_STUDIES) == (10, 0.5, 2)
     assert (k24.MAX_AT_CLIP, k24.MAX_DEN_SHIFT, k24.MAX_SD_RATIO) == (k23.MAX_AT_CLIP, k23.MAX_DEN_SHIFT,
@@ -399,10 +401,11 @@ def test_b4_by_hand_skips_none_shares_and_counts_lines_not_units():
     G = len(idx) - 60
     assert figs["lines"] == 25 and figs["agree_G"] == G and figs["agree_count"] == 60
     p = sum(math.comb(25, j) for j in range(17, 26)) / 2 ** 25
-    assert math.ceil(2 * 25 / 3) == 17 and math.isclose(figs["E0"], G * 2 * p, rel_tol=1e-15)
-    assert figs["E0"] == k24.expected_agreement(G, 25)
-    need = max(50, 2 * G * 2 * p)
-    assert math.isclose(figs["agree_needed"], need, rel_tol=1e-15)
+    # restated (b4), no lines_held_by_study in this manifest: n_g = U = 25 for every gene, recorded as the fallback
+    assert math.ceil(2 * 25 / 3) == 17 and math.isclose(figs["E0"], G * 2 * p, rel_tol=1e-14)
+    assert figs["n_g_source"].startswith("fallback U") and figs["n_g_histogram"] == {"25": G}
+    need = max(50, G * 2 * p + 0.11 * G)
+    assert math.isclose(figs["agree_needed"], need, rel_tol=1e-14)
     assert (60 >= need) == (not any("(b4)" in w for w in why))
     assert not any(w.startswith("(b2)") or w.startswith("(b3)") for w in why)
     # a share of exactly 2/3 counts as agreeing
@@ -461,12 +464,19 @@ def test_the_common_drops():
 
 @pytest.mark.parametrize("case", ["at_0.9", "below_0.9", "undefined"])
 def test_the_corr_with_two_drop_takes_the_joint(case, monkeypatch):
+    """Restated 2026-11-20: a corr of 0.9 or more (the repeat clause) drops x_sc3's three arms only and the joint keeps
+    its own drops (here sc3 = two ** 1.3 is uncorrelated with bulk, so the joint's window drops it on its own); an
+    undefined corr still takes the joint."""
     s0 = _synth()
     if case == "at_0.9":
         sc3 = s0.two ** 1.3  # corr 1 with `two`
         pre = _drops(sc3=sc3)
-        assert "repeat of the named form" in pre["dropped"]["sc3"] and "joint" in pre["dropped"]
-        assert _arms_left(pre) == BULK_ONLY
+        assert "repeat of the named form" in pre["dropped"]["sc3"] and pre["sc3_repeat_only"] is True
+        assert "sc3 is dropped" not in pre.get("dropped", {}).get("joint", "")
+        if "joint" in pre["dropped"]:
+            assert _arms_left(pre) == BULK_ONLY
+        else:
+            assert _arms_left(pre) == BULK_ONLY + k24.ARMS_OF_KIND["joint"]
     elif case == "below_0.9":
         pre = _drops()
         assert pre["corr"]["sc3_two"] < 0.9 and "sc3" not in pre["dropped"] and "joint" not in pre["dropped"]
@@ -475,6 +485,7 @@ def test_the_corr_with_two_drop_takes_the_joint(case, monkeypatch):
         monkeypatch.setattr(ext, "corr_between", lambda a, b: None if b is s0.two else original(a, b))
         pre = k24.pregate_k24(s0.phi, s0.loaded, s0.bases, s0.den)
         assert "corr(ln sc3, ln two) undefined" in pre["dropped"]["sc3"] and "joint" in pre["dropped"]
+        assert pre["sc3_repeat_only"] is False and "sc3 is dropped" in pre["dropped"]["joint"]
 
 
 @pytest.mark.parametrize("case", ["negative", "at_0.9", "undefined"])
@@ -503,6 +514,10 @@ def test_drops_as_arm_drops_and_the_count():
     assert k24.active_arms({"dropped": {"bulk": "x"}}) == SC3_ONLY  # the joint goes with either
     assert k24.active_arms({"dropped": {"sc3": "x"}}) == BULK_ONLY
     assert k24.active_arms({"dropped": {"sc3": "x", "bulk": "y"}}) == ("barred_form", "x_e2")
+    # the restated repeat clause: sc3 dropped by it alone leaves the joint in
+    rep = ("barred_form", "x_e2", "x_bulk", "x_bulk_perm", "x_bulk_size", "x_joint", "x_joint_perm", "x_joint_size")
+    assert k24.active_arms({"dropped": {"sc3": "x"}, "sc3_repeat_only": True}) == rep
+    assert k24.active_arms({"dropped": {"sc3": "x", "bulk": "y"}, "sc3_repeat_only": True}) == ("barred_form", "x_e2")
     for r in range(len(k24.ARMS) + 1):
         for sub in itertools.combinations(k24.ARMS, r):
             assert k24.try_count(sub) <= 9
@@ -1167,18 +1182,19 @@ def pins(monkeypatch):
     monkeypatch.setattr(k24, "K24_TABLE_SHA256", dict(EREC["tables"]))
 
 
-def _pre(dropped=None) -> dict:
+def _pre(dropped=None, repeat_only=False) -> dict:
     s = _synth(7, n=200)
     pre = json.loads(json.dumps(k24.pregate_k24(s.phi, s.loaded, s.bases, s.den)))
     assert pre["dropped"] == {}
     pre["dropped"] = dict(dropped or {})
+    pre["sc3_repeat_only"] = repeat_only
     return pre
 
 
 def _write(root: Path, cells=None, gcells=None, commit="abc", clean=True, machine="m1", dropped=None, drop=None,
-           guard=None, ext_rec=None, bad_file=None, k23_ext=None):
+           guard=None, ext_rec=None, bad_file=None, k23_ext=None, repeat_only=False):
     cells = cells or {}
-    pre = _pre(dropped)
+    pre = _pre(dropped, repeat_only)
     arms = k24.active_arms(pre)
     erec = ext_rec or EREC
     root.mkdir(parents=True)
@@ -1559,6 +1575,296 @@ def test_the_pregate_command_writes_its_file_and_exits_5_when_both_tables_drop(t
         k24.main(["pregate", "--out", str(tmp_path / "b")])
     assert e.value.code == 5 and (tmp_path / "b" / "pregate.json").exists()
     assert "nothing runs" in capsys.readouterr().out
+
+
+# ------------------------------------------------------------------------------------- (9b) the two restated clauses
+# The cold challenger's restatement of 2026-11-20 (before any table value, agreement count or score was read): (b4) at
+# n_g lines per gene with an excess of 0.11 over chance, and the repeat clause that drops x_sc3's arms only. Synthetic
+# tables only. Numbers in the comments refer to the challenger's test list.
+
+
+def _b4(n, U, shares, held=..., T=None, **over):
+    """A one-study bulk table of n genes (none exactly 1 unless T says so) whose manifest records `held` as
+    lines_held_by_study[MGP-DMDD] (an int for all genes, a list, or ... for no field)."""
+    T = np.exp(np.linspace(-0.05, 0.05, n) + 1e-3) if T is None else T
+    rec = _bulk_rec(n, shares, lines=U, libs=(4, 4), **over)
+    if held is not ...:
+        rec["lines_held_by_study"] = {"MGP-DMDD": [held] * n if isinstance(held, int) else list(held)}
+    return k24.bulk_drops(T, rec)
+
+
+def _b4_fails(why):
+    return any(w.startswith("(b4)") for w in why)
+
+
+def test_1_chance_agreement_is_the_exact_fraction():
+    from fractions import Fraction
+
+    want = {12: Fraction(397, 1024), 13: Fraction(1093, 4096), 14: Fraction(1471, 8192), 15: Fraction(309, 1024),
+            16: Fraction(6885, 32768), 25: Fraction(1807781, 16777216)}
+    for n, f in want.items():
+        got = k24.chance_agreement(n)
+        assert isinstance(got, Fraction) and got == f, n
+        assert got == 2 * Fraction(sum(math.comb(n, j) for j in range(math.ceil(2 * n / 3), n + 1)), 2 ** n)
+
+
+@pytest.mark.parametrize("U", [12, 16])
+def test_2_a_count_of_ceil_need_passes_and_one_less_fails(U):
+    from fractions import Fraction
+
+    n = 300
+    need = max(Fraction(50), n * k24.chance_agreement(U) + Fraction(11, 100) * n)
+    k = math.ceil(need)
+    assert need > 50 and k < n
+    why, figs = _b4(n, U, [0.75] * k + [0.5] * (n - k), held=U)
+    assert not _b4_fails(why), why
+    assert figs["agree_G"] == n and figs["agree_count"] == k and figs["agree_needed"] == float(need)
+    assert figs["E0"] == float(n * k24.chance_agreement(U)) and figs["n_g_source"].startswith("manifest")
+    assert figs["n_g_histogram"] == {str(U): n} and figs["agree_left_out_few_lines"] == 0
+    why, figs = _b4(n, U, [0.75] * (k - 1) + [0.5] * (n - k + 1), held=U)
+    assert _b4_fails(why) and figs["agree_count"] == k - 1
+    assert not any(w.startswith(("(b1)", "(b2)", "(b3)", "(b5)")) for w in why), why
+
+
+def test_3_genes_held_in_fewer_than_12_lines_are_left_out_of_the_count_and_g():
+    n, U = 300, 16
+    held = [11] * 100 + [16] * 200
+    shares = [0.9] * 100 + [0.5] * 200
+    why, figs = _b4(n, U, shares, held=held)
+    assert figs["agree_G"] == 200 and figs["agree_count"] == 0 and figs["agree_left_out_few_lines"] == 100
+    assert figs["E0"] == float(200 * k24.chance_agreement(16)) and figs["n_g_histogram"] == {"11": 100, "16": 200}
+    assert _b4_fails(why)
+    # all held in 12 lines or more: the same agreeing genes now count
+    _, f2 = _b4(n, U, shares, held=[12] * 100 + [16] * 200)
+    assert f2["agree_G"] == 300 and f2["agree_count"] == 100
+
+
+def test_4_the_fallback_n_g_u_is_used_and_recorded_and_a_malformed_field_drops_without_raising():
+    n, U = 200, 14
+    shares = [0.8] * n
+    _, f = _b4(n, U, shares)  # no lines_held_by_study in the manifest
+    assert f["n_g_source"] == "fallback U (the manifest records no lines_held_by_study)"
+    assert f["n_g_histogram"] == {"14": n} and f["E0"] == float(n * k24.chance_agreement(14))
+    _, f = _b4(n, U, shares, lines_held_by_study={"OTHER": [3] * n})  # none for MGP-DMDD
+    assert f["n_g_source"].startswith("fallback U (lines_held_by_study records nothing for MGP-DMDD")
+    bad = {"not a mapping": [U] * n, "one per gene": {"MGP-DMDD": [U] * (n - 1)},
+           "not an integer": {"MGP-DMDD": [float(U)] * n}, "a bool": {"MGP-DMDD": [True] * n},
+           "outside": {"MGP-DMDD": [U + 1] * n}, "negative": {"MGP-DMDD": [-1] + [U] * (n - 1)},
+           "0 lines": {"MGP-DMDD": [0] + [U] * (n - 1)}}
+    for case, field in bad.items():
+        why, f = _b4(n, U, shares, lines_held_by_study=field)
+        assert _b4_fails(why) and any("malformed" in w for w in why), case
+        assert f["n_g_source"] == "malformed" and f["agree_G"] is None and f["agree_needed"] is None, case
+    # 0 lines where the gene has no agreement value is well formed
+    _, f = _b4(n, U, [None] + shares[1:], held=[0] + [U] * (n - 1))
+    assert f["n_g_source"].startswith("manifest") and f["agree_G"] == n - 1
+    # in the pre-gate a malformed field drops bulk (and the joint) and keeps sc3; nothing raises
+    s0 = _synth()
+    rec = _bulk_rec(s0.n, s0.shares, lines_held_by_study={"MGP-DMDD": [99] * s0.n})
+    pre = _drops(bulk_rec=rec)
+    assert "malformed" in pre["dropped"]["bulk"] and "joint" in pre["dropped"] and "sc3" not in pre["dropped"]
+    assert pre["bulk"]["n_g_source"] == "malformed"
+
+
+def test_5_a_share_of_exactly_two_thirds_counts():
+    n, U = 120, 15
+    held = [12] * 60 + [15] * 60
+    shares = [8 / 12] * 60 + [10 / 15] * 60
+    _, f = _b4(n, U, shares, held=held)
+    assert f["agree_count"] == 120 == f["agree_G"]
+    _, f = _b4(n, U, [7 / 12] * 60 + [2 / 3 - 1e-9] * 60, held=held)
+    assert f["agree_count"] == 0
+
+
+def test_6_genes_equal_to_1_and_none_shares_are_skipped():
+    n, U = 200, 16
+    T = np.exp(np.linspace(-0.05, 0.05, n) + 1e-3)
+    T[:30] = 1.0
+    shares = [0.9] * 30 + [None] * 20 + [0.9] * 150
+    _, f = _b4(n, U, shares, held=U, T=T)
+    assert f["agree_G"] == 150 and f["agree_count"] == 150 and f["n_g_histogram"] == {"16": 150}
+
+
+def test_7_the_floor_of_50_binds_at_g_100_and_u_25():
+    from fractions import Fraction
+
+    n, U = 100, 25
+    assert 100 * k24.chance_agreement(25) + Fraction(11) < 50
+    why, f = _b4(n, U, [0.8] * 50 + [0.5] * 50, held=U)
+    assert f["agree_needed"] == 50.0 and not _b4_fails(why)
+    why, f = _b4(n, U, [0.8] * 49 + [0.5] * 51, held=U)
+    assert _b4_fails(why) and f["agree_count"] == 49
+
+
+def _sc3_like_two(corr: str) -> np.ndarray:
+    """A synthetic sc3 in _synth()'s world, built from `two`, `bulk` and noise: corr(ln sc3, ln two) 0.953 ('0.95') or
+    0.861 ('0.85'), corr(ln sc3, ln bulk) 0.26 or 0.41 (inside the joint's window)."""
+    s0 = _synth()
+    lt, lb = np.log(s0.two), np.log(s0.bulk)
+    z = np.random.default_rng(99).normal(size=s0.n)
+    b, g = {"0.95": (0.3, 0.1), "0.85": (0.5, 0.3)}[corr]
+    ls = lt / lt.std() + b * lb / lb.std() + g * z
+    return np.exp(0.03 * ls / ls.std())
+
+
+REPEAT_ARMS = ("barred_form", "x_e2", "x_bulk", "x_bulk_perm", "x_bulk_size", "x_joint", "x_joint_perm", "x_joint_size")
+
+
+def test_8_a_repeat_of_the_named_form_with_a_valid_bulk_runs_bulk_and_the_joint():
+    pre = _drops(sc3=_sc3_like_two("0.95"))
+    assert 0.95 <= pre["corr"]["sc3_two"] < 0.96 and 0 <= pre["corr"]["sc3_bulk"] < 0.9
+    assert pre["sc3_repeat_only"] is True and "repeat of the named form" in pre["dropped"]["sc3"]
+    assert set(pre["dropped"]) == {"sc3"}
+    arms = k24.active_arms(pre)
+    assert arms == REPEAT_ARMS and k24.try_count(arms) == 6
+    assert not any(a.startswith("x_sc3") for a in arms) and not k24.nothing_runs(arms)
+    assert set(k24.dropped_arms(pre)) == {"x_sc3", "x_sc3_perm", "x_sc3_size"}
+    co = k24.constants_of(pre)
+    assert co["e_sc3"] == pre["e"]["sc3"] is not None and co["c"] == pre["c"] is not None
+    assert set(co["twins"]) == {"x_bulk", "x_joint"}
+    # the joint is built from sc3 with the same formula, at S*
+    assert math.isclose(pre["scaled"]["joint"]["sd_ln"], k24.S_STAR, rel_tol=1e-12)
+    assert "x_joint" in pre["arms"] and "sc3 enters the joint unchanged" in "\n".join(k24.pregate_lines(pre))
+    # fold_factors' constants: the joint's scaled table is made, and x_sc3's arms are not run
+    F = {"phi_barred": np.ones(3), "ext": {"sc3": np.array([1.1, 0.9, 1.0]), "bulk": np.array([0.95, 1.05, 1.0]),
+                                         "two": np.ones(3)}}
+    F["scaled"] = {k: k24.k24_table(k, F["ext"], co) for k in ("bulk", "joint")}
+    k24._K24["consts"] = co
+    want = 1.1 ** (co["c"] * co["e_sc3"]) * 0.95 ** (co["c"] * co["e_bulk"])
+    assert math.isclose(k24.arm_factor("x_joint", F)[0], want, rel_tol=1e-14)
+
+
+def test_9_a_repeat_with_bulk_dropped_runs_nothing():
+    pre = _drops(sc3=_sc3_like_two("0.95"), bulk_rec=_bulk_bad("b2"))
+    assert pre["sc3_repeat_only"] is True and "bulk is dropped" in pre["dropped"]["joint"]
+    assert "sc3 is dropped" not in pre["dropped"]["joint"]
+    arms = k24.active_arms(pre)
+    assert arms == ("barred_form", "x_e2") and k24.nothing_runs(arms) and k24.try_count(arms) == 0
+
+
+def test_9_the_pregate_command_exits_5_on_a_repeat_with_bulk_dropped(tmp_path, monkeypatch, capsys):
+    import vec.prep
+
+    s = _synth()
+    n = s.n
+    genes = [f"g{i}" for i in range(n)]
+    C = np.random.default_rng(0).poisson(3.0, size=(30, n)).astype(np.int32)
+    C[C.sum(1) == 0, 0] = 1
+    wt = ad.AnnData(X=np.log1p(C).astype(np.float32), var=pd.DataFrame(index=genes), layers={"counts": C})
+    t = s.loaded["tables"]
+    loaded = {**s.loaded, "tables": {**t, "sc3": (_sc3_like_two("0.95"), t["sc3"][1]),
+                                     "bulk": (t["bulk"][0], _bulk_bad("b2"))}}
+
+    def load(*a):
+        k18._BARRED.clear()
+        k18._BARRED.update(phi=s.phi, genes=genes, spec={}, record={"file": "f"})
+        return {"file": "f"}
+
+    def load_k24(g, phi_m):
+        k24._K24.clear()
+        k24._K24.update(genes=list(g), T={k: v[0] for k, v in loaded["tables"].items()}, record=dict(EREC),
+                        table_records={})
+        return loaded
+
+    monkeypatch.setattr(k24, "preconditions", lambda: ("K24", _prov()))
+    monkeypatch.setattr(k24, "guard_refs", lambda **k: {})
+    monkeypatch.setattr(k24, "k23_committed", lambda *a: ({"pregate": None}, {}))
+    monkeypatch.setattr(k18, "load_barred_for_plain", load)
+    monkeypatch.setattr(vec.prep, "load_stage", lambda p, drop_duplicates=False, genes=None: wt)
+    monkeypatch.setattr(k24, "load_k24", load_k24)
+    monkeypatch.setattr(k24, "world_bases", lambda data, g, bs: {
+        "plain": {"genes": list(g), "basis": np.arange(n, dtype=float)},
+        "dm": {"genes": list(g)[::-1], "basis": np.arange(n, dtype=float)}})
+    with pytest.raises(SystemExit) as e:
+        k24.main(["pregate", "--out", str(tmp_path / "r")])
+    assert e.value.code == 5
+    body = json.loads((tmp_path / "r" / "pregate.json").read_text())
+    assert body["pregate"]["sc3_repeat_only"] is True and body["tries_if_run"] == 0 and body["arms"] == [
+        "barred_form", "x_e2"]
+    assert body["constants"]["e_sc3"] == body["pregate"]["e"]["sc3"] is not None
+    assert "nothing runs" in capsys.readouterr().out
+
+
+def test_10_a_repeat_with_another_sc3_failure_drops_the_joint(monkeypatch):
+    sc3 = _sc3_like_two("0.95")
+    tiny = np.where(sc3 != 1.0, sc3 ** 0.05, 1.0)  # e_sc3 above 8, the same corr with `two`
+    pre = _drops(sc3=tiny)
+    assert pre["corr"]["sc3_two"] >= 0.9 and "(s1)" in pre["dropped"]["sc3"]
+    assert pre["sc3_repeat_only"] is False and "sc3 is dropped" in pre["dropped"]["joint"]
+    assert k24.active_arms(pre) == BULK_ONLY and k24.try_count(k24.active_arms(pre)) == 3
+    # a failed product bound of sc3 at e_sc3 (the first product the pre-gate makes is x_sc3's)
+    original, calls = k24.arm_figures, []
+
+    def bound(*a, **k):
+        figs, why = original(*a, **k)
+        calls.append(1)
+        return figs, why + (["the product fails a bound (test)"] if len(calls) == 1 else [])
+
+    monkeypatch.setattr(k24, "arm_figures", bound)
+    pre = _drops(sc3=sc3)
+    assert "fails a bound (test)" in pre["dropped"]["sc3"] and "repeat of the named form" in pre["dropped"]["sc3"]
+    assert pre["sc3_repeat_only"] is False and "sc3 is dropped" in pre["dropped"]["joint"]
+    assert k24.active_arms(pre) == BULK_ONLY
+
+
+def test_11_bytes_equal_to_two_s_or_an_undefined_corr_with_two_drop_the_joint(monkeypatch):
+    s0 = _synth()
+    rec = {**s0.loaded["tables"]["sc3"][1], "sha256": "2" * 64}
+    pre = _drops(sc3=_sc3_like_two("0.95"), sc3_rec=rec)
+    assert "`two`'s" in pre["dropped"]["sc3"] and "repeat" in pre["dropped"]["sc3"]
+    assert pre["sc3_repeat_only"] is False and "sc3 is dropped" in pre["dropped"]["joint"]
+    assert k24.active_arms(pre) == BULK_ONLY
+    original = ext.corr_between
+    monkeypatch.setattr(ext, "corr_between", lambda a, b: None if b is s0.two else original(a, b))
+    pre = k24.pregate_k24(s0.phi, s0.loaded, s0.bases, s0.den)
+    assert "corr(ln sc3, ln two) undefined" in pre["dropped"]["sc3"] and "repeat" not in pre["dropped"]["sc3"]
+    assert pre["sc3_repeat_only"] is False and "sc3 is dropped" in pre["dropped"]["joint"]
+    assert k24.active_arms(pre) == BULK_ONLY
+
+
+def test_12_a_corr_with_two_below_0_9_gives_nine_arms():
+    pre = _drops(sc3=_sc3_like_two("0.85"))
+    assert 0.85 <= pre["corr"]["sc3_two"] < 0.9 and pre["dropped"] == {} and pre["sc3_repeat_only"] is False
+    assert k24.active_arms(pre) == k24.ARMS and k24.try_count(k24.ARMS) == 9
+
+
+def test_the_try_counts_of_the_restated_clause():
+    """The eight cases of the restatement, from the pre-gate's drop record."""
+    def count(dropped, repeat=False):
+        return k24.try_count(k24.active_arms({"dropped": dropped, "sc3_repeat_only": repeat}))
+
+    assert count({}) == 9
+    assert count({"sc3": "repeat"}, True) == 6
+    assert count({"sc3": "repeat", "joint": "its own window"}, True) == 3
+    assert count({"sc3": "(s1)", "joint": "sc3 is dropped"}) == 3
+    assert count({"bulk": "(b2)", "joint": "bulk is dropped"}) == 3
+    assert count({"bulk": "(b2)", "sc3": "repeat", "joint": "bulk is dropped"}, True) == 0
+    assert count({"bulk": "(b2)", "sc3": "(s1)", "joint": "x"}) == 0
+    assert count({"joint": "its own window"}) == 6
+    # the joint is dropped with a table even when the pre-gate's record of the joint is missing
+    assert count({"sc3": "(s1)"}) == 3 and count({"sc3": "repeat"}, True) == 6
+
+
+def test_a_repeat_reads_with_six_tries_and_may_name_the_joint(tmp_path, u3d, monkeypatch, pins):
+    w = _write(tmp_path / "rep", _everywhere(x_joint=57.5, x_e2=57.0),
+               dropped={"sc3": "corr(ln sc3, ln two) 0.950 (>= 0.9: a repeat of the named form)"}, repeat_only=True)
+    res = _read(w, u3d, monkeypatch)
+    assert not res["void"], res.get("why")
+    assert res["arms"] == list(REPEAT_ARMS) and res["tries_counted"] == 6 and res["names"] == ["x_joint"]
+    assert res["status"]["x_sc3"]["ran"] is False and res["files"] == [
+        "k24joint-B (base B of decision log 2026-11-20 (q))"]
+    assert "x_sc3: not run (dropped by the pre-gate)" in k24.text(res)
+
+
+def test_14_the_tie_order_and_f_are_unchanged_in_the_repeat_state():
+    arms = REPEAT_ARMS
+    res = k24.decide(_per(_everywhere(x_bulk=57.5, x_joint=57.5, x_e2=57.0), arms=arms), arms)
+    assert res["qualified"] == ["x_bulk", "x_joint"] and res["names"] == ["x_bulk"]
+    res = k24.decide(_per(_everywhere(x_joint=57.5, x_e2=57.3), arms=arms), arms)
+    s = res["status"]["x_joint"]
+    assert s["qualified_a_to_e"] and not s["f"] and res["names"] == [] and res["reported"] == {
+        "x_joint": k24.NOT_AHEAD}
+    assert k24.NAMEABLE == ("x_sc3", "x_bulk", "x_joint") and k24.MIN_GAIN == 0.3 and k24.MIN_AHEAD == 8
 
 
 # ------------------------------------------------------------------------------------------------ (10) the launcher

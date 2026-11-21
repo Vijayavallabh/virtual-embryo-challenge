@@ -255,6 +255,35 @@ def test_the_reading_must_name_exactly_the_arm_undropped_with_its_constants(worl
     assert not (tmp_path / "x.h5ad").exists()
 
 
+def test_13_the_joint_builds_with_e_sc3_from_the_pregate_when_x_sc3_was_dropped_as_a_repeat(world, tb, tmp_path,
+                                                                                             monkeypatch):
+    """Restated joint clause (2026-11-20): x_sc3 dropped as a repeat of the named form alone leaves the joint in, and
+    the joint's file is built with e_sc3 and c from the reading's pre-gate (pregate.json's), recomputed to 1e-12."""
+    repeat = "corr(ln sc3, ln two) 0.950 (>= 0.9: a repeat of the named form)"
+
+    def reading(names, repeat_only, rel):
+        pre = {"dropped": {"sc3": repeat}, "sc3_repeat_only": repeat_only, "e": dict(tb.e), "c": tb.c}
+        body = {"incomplete": False, "void": False, "names": list(names), "outcome": "test",
+                "arms": list(k24.active_arms(pre)), "pregate": pre,
+                "ext": {"listing_sha256": k24.K24_LISTING_SHA256, "tables": dict(k24.K24_TABLE_SHA256)}}
+        return commit_file(tb.repo, rel, json.dumps(body))
+
+    r = reading(("x_joint",), True, "rep.json")
+    spy = Spy(monkeypatch)
+    side = build(world, tb, "k24joint-s1", tmp_path / "j.h5ad", reading=r)
+    (phi,) = spy.seen
+    e, c = tb.e, tb.c
+    assert np.allclose(phi, PHI * tb.sc3 ** (c * e["sc3"]) * tb.bulk ** (c * e["bulk"]), rtol=1e-14, atol=0)
+    ob = side["outside_build"]
+    assert ob["e"] == {"e_sc3": e["sc3"], "e_bulk": e["bulk"]} and ob["c"] == c and ob["arm"] == "x_joint"
+    # x_sc3 stays dropped in that state, and without the repeat-only flag the joint goes with sc3
+    with pytest.raises(bk24.Refused, match="dropped"):
+        build(world, tb, "k24sc3-s1", tmp_path / "s.h5ad", reading=reading(("x_sc3",), True, "rep_sc3.json"))
+    with pytest.raises(bk24.Refused, match="dropped"):
+        build(world, tb, "k24joint-s1", tmp_path / "n.h5ad", reading=reading(("x_joint",), False, "other.json"))
+    assert not (tmp_path / "s.h5ad").exists() and not (tmp_path / "n.h5ad").exists()
+
+
 def test_pins_register_and_loader_refusals(world, tb, tmp_path, monkeypatch):
     r = tb.make_reading()
     reg = tmp_path / "reg.md"
