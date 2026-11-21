@@ -9632,3 +9632,44 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     use data across tasks or from outside on a board that has had none (question A15). The judges' own odds: each kill
     test passes with a chance between about one in twenty and one in five, and a gain of three board points or more at
     the test is about one or two in a hundred per moonshot. Most likely no file comes of them.
+- 2026-11-21 (aa), the T1 file at twice the calendar fraction: the code is reviewed and merged; a cold challenger's check of the
+  rule reading; what the Rules page says about trying settings (state at 23:25 UTC, 2026-11-21). Written by the AI
+  assistant.
+  - **The code** (workflow `t1-fraction-2x`; branch `campaign/t1-fraction-2x`, 6165ed8, merged to main at 0619ad2).
+    The builder takes `--feng-fraction-mult 2.0` only with `--captain-ruling R20`, only on R13's exact command, and
+    refuses every other value and combination before anything is read; the commands that exist (the default, A, B, C)
+    build the same bytes and records as before, pinned by tests on a synthetic fixture. The launcher
+    `experiments/builds/t1_fraction2.sh` first rebuilds R13's bytes and B's bytes and stops if either differs, then
+    builds the 2.0 file twice. The reviewer: READY, no blocker; lesser points noted (two refusals leave no exit file,
+    so the waiter also watches the process; the launcher runs Python isolated where the reference sets did not, which
+    fails closed at the identity steps if it mattered). On merged main: 152 passed on the related test files, the step
+    script's guard passes, the linter is clean.
+  - **The rule check** (a cold challenger, told only the sign of B's headline against R13's file). Verdict: the
+    reading of entry 2026-11-21 (x) stands. It puts the chance that the organisers would treat the 2.0 file as
+    improper at about one in twenty, on the score-use question alone, and the loss at that one file. Its strongest
+    argument against: the direction of the move follows a comparison of two submissions, a one-bit estimate of a
+    hidden-target property, and the team's own paraphrase lists 'differencing submissions' among prohibited acts. Its
+    conditions for staying on the allowed side: a round step on the existing scale, fixed before its own score; only
+    the team's own headlines, used only to choose which file stands; nothing else in R13's command changes; any
+    further strengths named before the 2.0 score; the method report says plainly that the strength was tried at 1.0,
+    1.5 and 2.0 and the best headline kept; the normal build checks. What it says would cross the line: a value fitted
+    from the sizes of returned scores; setting the strength from per-metric returns; inverting the skill map.
+  - **Two corrections to entry (x), from the challenger.** (1) Entry (x) understated the record. The Rules page's
+    Section 10, as the screened check of 2026-11-18 quotes it in `docs/ORGANIZER_QUESTIONS.md`, says: "Trying a
+    parameter value, seeing how it scores, and trying another is ordinary leaderboard work and remains permitted
+    however many rounds it takes; ... what is prohibited is solving for a property of the target and building a
+    submission out of the solution." (2) Entry (x) said the 'Scores' section of `docs/DATA_POLICY.md` records the
+    Rules page's test ("whether the truth enters your prediction's content or only its selection"); that sentence is
+    in a later change note of that file and in `docs/ORGANIZER_QUESTIONS.md`, not in the 'Scores' section.
+  - **What this means beyond the one file (the AI assistant's reading, put to the captain).** Entry 2026-11-21 (t)
+    refused to tune any file from the returned scores and named the organisers' rule as the reason. On the record just
+    quoted that was stricter than the organisers' rule: trying a setting, seeing its score and trying another is
+    permitted by them for as many rounds as it takes. What their rule prohibits is solving for a property of the
+    hidden target (by inverting the skill map) and building a submission out of the solution. The bars on setting a
+    number from a score and on reading per-metric lines are the team's own (entries 2026-11-18 (k), 2026-11-20 (n) and
+    (q), 2026-11-21 (l)), written after the AI assistant's lapses, which were of the prohibited kind (bounding a
+    hidden quantity from scores). The team's own rules are the captain's to lift; the levers closed after the exposure
+    of 2026-11-04 (sizes, scope, cell numbers, T1's composition, depth and draw) and the AI assistant's recusals stay
+    whatever is lifted, because those concern leaked or solved hidden properties. The captain is asked one question:
+    whether to lift the team's own bars so that a score-guided search (round steps on a few settings per board, each
+    fixed in the log before its own score) may run.
