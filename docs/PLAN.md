@@ -9423,3 +9423,32 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     is of the kind the team does not use (entry (i): prior knowledge of the held-out genotype's biology, by any
     route). The result of that lookup is written nowhere, enters no brief and no design, and the moonshot designers
     are told to use no such knowledge.
+- 2026-11-21 (w), the second scores of the day, one per board; each board's pre-set rule applied (state at 22:56 UTC,
+  2026-11-21). Written by the AI assistant, which is recused on the heart's scope and size and on the embryo's occupancy
+  term and shape forms, and states no preference on either.
+  - **What the captain pasted,** under the heading "Our second submission scores": for each board a headline score, a
+    leaderboard rank and per-metric lines. **Only the four headlines are recorded:** T1 71.59; heart 49.51; embryo
+    67.11; T3 62.30. The per-metric lines and the ranks are written nowhere in the repository and are used for nothing
+    (entries 2026-11-18 (k), 2026-11-20 (q), 2026-11-21 (l) and (t)). The files are taken to be the second of each
+    pair named in the hand-over (`T1_s2rcB`, the heart's K2 `T2heart_s2iso_half`, the embryo's P `T2embryo_s2x`, the
+    barred s2), marked 'assumed' in `results/manual_uploads.csv`.
+  - **T1** (rule of entry 2026-11-20 (n)): B returned 71.59, strictly above R13's file (70.60); A had returned 70.8,
+    also strictly above it. Both conditions hold, so C (`runs/manual_upload/T1_s2rcC.h5ad`, 31477ef7df5d) is uploaded
+    next. B is T1's highest headline so far (the first upload returned 70.9). By the same entry the line 'more atlases
+    for the direction' may now be weighed: its reading is the sign of B's headline against R13's file, which is
+    positive, and nothing else.
+  - **Heart** (row R16; the main session executes and states nothing more): K2 returned 49.51. K1 and K2 are both
+    uploaded, so R16's list is spent; the best of the board's uploads stands (56.4, the full trim). New heart files
+    come only from the score-blind rounds under the captain's reopening of entry (v).
+  - **Embryo** (entry 2026-11-21 (l); the main session executes and states nothing more): P returned 67.11; O's 69.9
+    stays the board's highest. C (`runs/manual_upload/T2embryo_s2x_cr.h5ad`, f20730da8308) goes next, whatever the
+    others scored.
+  - **T3** (entries 2026-11-20 (k) and (q)): the barred s2 returned 62.30. Both uploads of entry (k) have now
+    returned, so the base B is fixed: the highest headline among barred s1 (61.8), the exponent-1.5 file (61.8) and
+    the barred s2 (62.30) is the barred s2. B being a barred file at exponent 1, the list is: C1 on B
+    (`runs/manual_upload/T3_c1_s2.h5ad`, 871833086642), then C2 on B (`T3_c2_s2.h5ad`, 47111ac1d07e) whatever C1
+    returned, then row K23's file on B (`T3_k23_s2.h5ad`, 77ff0b947f7f), then CK on B (`T3_ck_s2.h5ad`, e470aaeeab28)
+    only if C2 and the K23 file each return a headline strictly above 62.30.
+  - **Standing by the record's best headline per board:** T1 71.59, T3 62.30, heart 56.4, embryo 69.9; the total is
+    71.59 + 62.30 + (56.4 + 69.9) / 2 = 197.04 (195.85 after the first uploads of the day, 193.2 before; labelled
+    arithmetic from reported headlines).

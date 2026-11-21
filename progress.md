@@ -2,6 +2,14 @@
 
 ## Current State
 
+- **2026-11-21, 22:57 UTC.** Second scores of the day (headlines only): T1 B 71.59, the board's best; heart K2 49.51;
+  embryo positions 67.11; T3 barred s2 62.30, the board's best and now the base for T3's later files. By the record's
+  best headline per board the total is 197.04 (193.2 this morning). Next by the pre-set rules: T1 C; embryo
+  copy-positions; T3 C1 then C2 on the barred s2; the heart's list is spent. The captain reopened the embryo's and the
+  heart's lists and ordered moonshots (entry (v)); a score-blind candidate round returned lists for all four boards
+  and a moonshot round is running. The main session shapes no file from the pasted per-metric lines and gives no
+  design lean. Tries: T1 418, embryo 84, heart 80, T3 72. What waits: `session-handoff.md`, first bullet.
+
 - **2026-11-21, 22:31 UTC.** Four scores, the first upload of the day on each board as the captain reported them
   (headlines only are recorded): T1 A 70.8 (above R13's file, below the first upload); heart K1 54.1 (the best stays
   56.4); embryo overlay 69.9, the board's highest (64.6 before); T3 exponent 1.5 61.8, equal to barred s1 as reported.

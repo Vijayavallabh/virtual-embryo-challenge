@@ -2,7 +2,35 @@
 
 ## Current Objective
 
-- **State at 2026-11-21, 22:31 UTC (newest; it supersedes the bullets below where they differ).** Decision log 2026-11-21 (c) to (v). Local main = origin/main. Nothing of ours is running on the DGX. **FOUR SCORES CAME IN at
+- **State at 2026-11-21, 22:57 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+  2026-11-21 (c) to (w). Local main = origin/main. Nothing of ours is running on the DGX. **EIGHT SCORES ARE IN FOR
+  THE DAY (entries (s) and (w)); only headlines are recorded; the pasted per-metric lines and ranks are recorded
+  nowhere and used for nothing; the main session gives no design lean on any board (entry (t)).**
+  - **Headlines (first, second upload of the day) and the next file by each pre-set rule:** T1: A 70.8, B 71.59 (the
+    board's best; first upload 70.9; R13's file 70.60): both beat 70.60, so next is C
+    `runs/manual_upload/T1_s2rcC.h5ad` (31477ef7df5d); the 'more atlases' line may now be weighed (B's sign against
+    R13's file is positive). Heart: K1 54.1, K2 49.51; R16's list is spent; the best stays 56.4
+    (`T2heart_s2core_half`). Embryo: O 69.9 (the board's best), P 67.11; next C `T2embryo_s2x_cr.h5ad` (f20730da8308).
+    T3: exponent 1.5 61.8 (a tie with barred s1), barred s2 62.30 (the board's best): the base B is the BARRED S2;
+    next C1 `T3_c1_s2.h5ad` (871833086642), then C2 `T3_c2_s2.h5ad` (47111ac1d07e) whatever C1 returned, then the K23
+    file `T3_k23_s2.h5ad` (77ff0b947f7f), then CK `T3_ck_s2.h5ad` (e470aaeeab28) only if C2 and the K23 file each
+    return strictly above 62.30. **Standing by best headline per board: 71.59 + 62.30 + (56.4 + 69.9)/2 = 197.04.**
+  - **The blind candidate round handed back (scratchpad `lift8/blind_round2.json`; parts per board: design.ready,
+    design.fresh, final).** T1: two files survive, both need code and a practice row that reads AHEAD first: MS
+    (released per-type momentum on top of the atlas step; 6 to 8 h) and rc18 (the atlas direction to E18; about 1.5
+    days; weak); F (`T1_s2none`, 55eaee547ff1, no outside data) is already listed in entry 2026-11-20 (r), gated on
+    the captain's answer to QF. T3: one file, the refused s1 with the wild-type-only factor (built, reference-listed,
+    `t3_build/refused_s1.h5ad`, 0394575a11fc; no code), to go after the queued list; it needs the captain's word
+    because the amendment of 2026-11-19 says it is not uploaded. Heart: H-T1 and H-T1B (the ladder trend on K2's and
+    K1's forms; each only if a whole-pool placebo read passes; no code for the files) and D (an organ cut; a day of
+    code; a long shot). Embryo: SO (the overlay's positions with the series expression; a practice read first),
+    T2embryo_s2 (R4's file, built, 41982d8afd78; needs a record check of rulings R9 and R11), O_hi (the overlay topped
+    up to E8.0's depth; the same read). Nobody proposed the copy-rows file at the team's own size; the captain's yes
+    of entry (v) covers it, so fresh analysts specify it. The challengers' odds that a list raises its board's best by
+    a point: T1 about 0.05, T3 about 0.15, heart about 0.06, embryo about 0.2.
+  - **Running:** workflow `moonshots-round-1` (task w8ary0c7c). **Tries:** T1 418, embryo 84, heart 80, T3 72. **Next
+    labels:** decision log 2026-11-21 (x) (or 2026-11-22 (a) after midnight UTC); register row X018.
+- **State at 2026-11-21, 22:31 UTC (superseded by the bullet above where they differ).** Decision log 2026-11-21 (c) to (v). Local main = origin/main. Nothing of ours is running on the DGX. **FOUR SCORES CAME IN at
   22:31 UTC (entry (s)), one per board, reported by the captain as the first upload of the day; only the headlines are
   recorded (`results/manual_uploads.csv`); the paste's per-metric lines and ranks are recorded nowhere and are used
   for nothing.**
