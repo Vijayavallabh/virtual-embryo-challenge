@@ -15,8 +15,8 @@ seed, under build "main" (primary) and "prefix" (reported, deciding nothing). Th
 as E49 wraps its forms (e49_shape_interp_read.guarded): a refusal (vec.shape_interp.ShapeRefused or the harness's cloud
 guard) is recorded and C0's file of that seed stands in; any other error is raised.
 
-Steps (each refuses unless row E53 is in TRIES.md, the tree is clean and HEAD is the run commit; none meets a test
-board):
+Steps (each refuses unless row E53 is in TRIES.md, EXTERNAL_DATA.md's X005 line names torch, the tree is clean and HEAD
+is the run commit; none meets a test board):
   describe --pair NAME --commit SHA  target-free, not a try: the arm's fit at build seeds 1,000,001 to 1,000,010 on one
                                      pair of brackets ("test": E7.5 and E8.0 with the validation board's panel and count
                                      rule at t = 1/2; or a task's two brackets with its panel board, at its t). Reads no
@@ -27,9 +27,10 @@ board):
                                      (experiments/coords/results/e48_row_order/gate, its worst deviations from E47);
                                      the result is quoted in the reading, deciding nothing
   gate --task NAME --commit SHA      the reproduction gate: the floor and C0 under main against E47's committed per-seed
-                                     scores (0.01 per seed and per ten-seed mean, as E49's gate), and E49c against E49's
-                                     committed reading (its per-task ten-seed mean and SD of E49c minus C0, 0.01 each);
-                                     exit 3 on a miss
+                                     scores (d5ee9b5; 0.01 per seed and per ten-seed mean, as E49's gate), and E49c
+                                     against E49's committed reading (53ba6cc; its per-task ten-seed mean and SD of E49c
+                                     minus C0, 0.01 each), since E49c's per-seed scores were not committed; exit 3 on a
+                                     miss
   run --task NAME --commit SHA       C0, E49c, the arm and the placebo, both builds, seed by seed (resumable); refused
                                      unless the pregate, j7 and all nine gate files pass at the same commit
   read --commit SHA                  the reading into experiments/coords/results/e53_geodesic/ (reading.json,
@@ -53,7 +54,8 @@ Pass line, fixed in the row (build main; merged over five truths at equal weight
   (d) local_organisation skill not below E49c's by more than 0.01 merged;
   (e) arm minus placebo on the ungated shape S = (d2_shape skill + occupancy_dice skill) / 2 at least +0.03 merged,
       with at least 8 of 10 seeds ahead;
-  (f) the arm refused (cloud guard or form) on at most 5 of 90 task-seeds.
+  (f) the arm refused by the cloud guard on at most 5 of 90 task-seeds (a form refusal is reported, deciding nothing;
+      C0's file stands in for either, as in E49).
 Outcome: if (a) to (f) all hold, the candidate file is fixed in the decision log before any score of it and goes to the
 captain as a priced question beside E49c; otherwise no file.
 Void (read as nothing): a missing task, seed, build or arm; a result from another commit or an unclean tree; a
@@ -70,6 +72,7 @@ import argparse
 import importlib.util
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -109,6 +112,8 @@ e49 = _load_e49()
 
 ROW_IDS = ("E53a", "E53")  # the row's first word: "E53a and E53b" as drafted, or "E53"
 TRIES = REPO / "experiments" / "harness" / "TRIES.md"
+REGISTER = REPO / "EXTERNAL_DATA.md"
+CLOUD_GUARD = "cloud guard"  # e49.guarded's record of a cloud-guard refusal; a form refusal reads "shape: ..."
 C0, E49C = "fgw_shape0x", "fgw_shape0x_ov"
 ARM, PLACEBO = "fgw_shape0x_geo", "fgw_shape0x_geo_rot"
 TRY_IDS = {ARM: "E53a", PLACEBO: "E53b"}
@@ -162,6 +167,20 @@ def has_row(path: Path | None = None) -> bool:
     return any(r in rows for r in ROW_IDS)
 
 
+def register_problems(path: Path | None = None) -> list[str]:
+    """Why the disclosure register does not yet cover the fit's library (empty: it does). The specification makes an
+    X005 amendment naming torch a condition before the run; vec.lddmm runs on torch."""
+    p = REGISTER if path is None else Path(path)
+    if not p.exists():
+        return [f"{p.name} is missing"]
+    lines = [x for x in p.read_text().splitlines() if re.match(r"^\|\s*X005\s*\|", x)]
+    if len(lines) != 1:
+        return [f"{p.name} has {len(lines)} X005 lines, not one"]
+    if not re.search(r"\btorch\b", lines[0]):
+        return [f"{p.name}'s X005 line does not name torch: the register amendment comes before the run"]
+    return []
+
+
 def commit_problems(commit: str) -> list[str]:
     """Why this checkout may not run or read row E53 at `commit` (empty: it may)."""
     why = []
@@ -185,9 +204,14 @@ def _own_code() -> None:
 
 
 def _refuse_unless_ready(commit: str) -> None:
+    """Every step but read: this checkout's code, row E53 committed, the register amended for torch, a clean tree at
+    the run commit."""
     _own_code()
     if not has_row():
         sys.exit("E53 has no row in experiments/harness/TRIES.md: a row is committed before its run")
+    reg = register_problems()
+    if reg:
+        sys.exit("refused: " + "; ".join(reg))
     if repo_state(REPO).unclean != ():
         sys.exit("the tree is not clean: row E53 runs on a committed tree")
     why = commit_problems(commit)
@@ -566,7 +590,7 @@ def clauses(recs, groups, tl_groups, refused_arm: int) -> dict:
          "f": bool(refused_arm <= F_MAX_REFUSED)}
     return {"clauses": c, "passes": all(c.values()), "D": {k: e49._stat(v) for k, v in D.items()},
             "truth_means_vs_e49c": tm, "truths_positive": int(sum(v > 0 for v in tm.values())),
-            "leave_one_out_vs_e49c": loo, "arm_refused_task_seeds": int(refused_arm)}
+            "leave_one_out_vs_e49c": loo, "arm_cloud_guard_refused_task_seeds": int(refused_arm)}
 
 
 def reported(recs, groups, pregate_rec: dict | None, j7_rec: dict | None) -> dict:
@@ -589,6 +613,9 @@ def reported(recs, groups, pregate_rec: dict | None, j7_rec: dict | None) -> dic
             "prefix_board_vs_e49c": e49._stat(e49.merged_D(recs, groups, ARM, E49C, "board", build="prefix")),
             "refused_task_seeds": {n: int(sum(bool(r["facts"]["refused"].get(n)) for rs in recs.values() for r in rs))
                                    for n in WRAPPED},
+            "arm_form_refused_task_seeds": int(sum(bool(r["facts"]["refused"].get(ARM))
+                                                   and r["facts"]["refused"].get(ARM) != CLOUD_GUARD
+                                                   for rs in recs.values() for r in rs)),
             "gate_values": None if pregate_rec is None else pregate_rec.get("pairs"),
             "j7": j7_rec}
 
@@ -601,7 +628,7 @@ def reading(recs: dict[str, list[dict]], why_in: list[str], commit: str, pregate
     tasks = nt.all_tasks()
     groups = e47.truths(tasks)
     tl_groups = e47.truths({n: tasks[n] for n in TEST_LIKE})
-    refused_arm = sum(bool(r["facts"]["refused"].get(ARM)) for rs in recs.values() for r in rs)
+    refused_arm = sum(r["facts"]["refused"].get(ARM) == CLOUD_GUARD for rs in recs.values() for r in rs)
     c = clauses(recs, groups, tl_groups, refused_arm)
     outcome = ("all of (a) to (f) hold: the candidate file is fixed in the decision log before any score of it and "
                "goes to the captain as a priced question beside E49c" if c["passes"] else
@@ -629,8 +656,8 @@ def text(res: dict) -> str:
          f"{D['local_e49c']['mean']:+.4f}",
          f"  (e) {'holds' if res['clauses']['e'] else 'fails'}: ungated S vs the placebo {D['S_placebo']['mean']:+.4f} "
          f"({D['S_placebo']['ahead']} seeds ahead)",
-         f"  (f) {'holds' if res['clauses']['f'] else 'fails'}: the arm refused on {res['arm_refused_task_seeds']} of "
-         f"90 task-seeds",
+         f"  (f) {'holds' if res['clauses']['f'] else 'fails'}: the cloud guard refused the arm on "
+         f"{res['arm_cloud_guard_refused_task_seeds']} of 90 task-seeds",
          f"Outcome: {res['outcome']}.",
          "Reported, deciding nothing:",
          "  per truth, arm minus E49c board: " + ", ".join(f"{k} {v:+.3f}" for k, v in
@@ -640,7 +667,8 @@ def text(res: dict) -> str:
         L.append(f"  {t}: arm minus E49c board {x['board']:+.3f}, d2_shape {x['d2_shape']:+.4f}, occupancy_dice "
                  f"{x['occupancy_dice']:+.4f}")
     L.append(f"  prefix build, board vs E49c {res['reported']['prefix_board_vs_e49c']['mean']:+.3f}; refusals "
-             + ", ".join(f"{k} {v}" for k, v in res["reported"]["refused_task_seeds"].items()))
+             + ", ".join(f"{k} {v}" for k, v in res["reported"]["refused_task_seeds"].items())
+             + f" (the arm's form refusals {res['reported']['arm_form_refused_task_seeds']})")
     j = res["reported"].get("j7") or {}
     if j:
         L.append(f"  J7 dry run on E48's committed rescore: worst {j['worst']['seed']:.4f} per seed, "
@@ -668,7 +696,7 @@ def cmd_read(a) -> None:
     if not has_row():
         sys.exit("E53 has no row in experiments/harness/TRIES.md")
     runs = Path(a.runs)
-    why = [*gate_problems(runs, a.commit), *commit_problems(a.commit)]
+    why = [*gate_problems(runs, a.commit), *commit_problems(a.commit), *register_problems()]
     pg = _read_at(runs / "pregate.json", a.commit)[0]
     jr = _read_at(runs / "j7.json", a.commit)[0]
     res = {**reading(e49.load_runs(runs), why, a.commit, pg, jr), "reading_code": provenance()}

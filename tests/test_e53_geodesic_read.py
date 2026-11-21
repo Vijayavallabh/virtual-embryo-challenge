@@ -57,6 +57,44 @@ def test_the_constants_are_the_rows(e53):
     assert e53.REPRO_TOL == 0.01 and (e53.EXPR_TOL, e53.SCALE_TOL) == (1e-9, 1e-6)
 
 
+X005 = ("| X005 | Open-source Python libraries ..., numpy 2.5, scipy 1.18{extra} | POT MIT | code | n/a | n/a | T1, T2 "
+        "| Library calls only. The GPU group (`--group gpu`) builds no submission | 2026-11-05 |\n")
+
+
+def test_every_step_is_refused_until_the_register_names_torch(e53, tmp_path, monkeypatch):
+    reg = tmp_path / "EXTERNAL_DATA.md"
+    tries = tmp_path / "TRIES.md"
+    tries.write_text("| E53a and E53b (one row) | embryo |\n")
+    monkeypatch.setattr(e53, "TRIES", tries)
+    monkeypatch.setattr(e53, "REGISTER", reg)
+    assert e53.register_problems() == ["EXTERNAL_DATA.md is missing"]
+    reg.write_text(X005.format(extra=""))  # the register as it stands: no torch (the "--group gpu" words do not count)
+    assert e53.register_problems() and "does not name torch" in e53.register_problems()[0]
+    with pytest.raises(SystemExit, match="X005 line does not name torch"):
+        e53._refuse_unless_ready(COMMIT)
+    reg.write_text(X005.format(extra="; torchdiffeq 0.2"))  # another library's name is not torch
+    assert e53.register_problems()
+    reg.write_text("| X004 | torch |\n" + X005.format(extra=""))  # another line naming torch is not the amendment
+    assert e53.register_problems()
+    reg.write_text(X005.format(extra="") * 2)
+    assert "2 X005 lines" in e53.register_problems()[0]
+    reg.write_text(X005.format(extra="; torch 2.14.1 (the uv gpu group; row E53's registration, vec.lddmm)"))
+    assert e53.register_problems() == []
+    with pytest.raises(SystemExit) as e:  # past the register: refused further on (the tree or the commit)
+        e53._refuse_unless_ready(COMMIT)
+    assert "torch" not in str(e.value)
+    for step in ("describe", "pregate", "j7", "gate", "run"):  # every step but read goes through the same check
+        assert "_refuse_unless_ready" in getattr(e53, f"cmd_{step}").__code__.co_names, step
+    assert "register_problems" in e53.cmd_read.__code__.co_names
+
+
+def test_the_committed_register_is_checked_as_it_stands(e53):
+    """The repository's own EXTERNAL_DATA.md has one X005 line; naming torch there is the main session's amendment."""
+    why = e53.register_problems()
+    assert why == [] or why == ["EXTERNAL_DATA.md's X005 line does not name torch: the register amendment comes before "
+                                "the run"]
+
+
 def test_a_run_is_refused_without_row_e53(e53, tmp_path, monkeypatch):
     tries = tmp_path / "TRIES.md"
     tries.write_text("| E50 (one try) | embryo |\n| E51a and E51b | embryo |\n")
@@ -293,12 +331,20 @@ def test_e_fails_on_the_mean_and_on_the_seeds(e53):
     assert res["D"]["S_placebo"]["mean"] >= 0.03 and res["D"]["S_placebo"]["ahead"] == 7
 
 
-def test_f_allows_five_refusals_of_ninety(e53):
+def test_f_allows_five_cloud_guard_refusals_of_ninety(e53):
     five = {(t, s): {ARM: "cloud guard"} for t, s in (("half", 0), ("late", 1), ("x1", 2), ("x2", 3), ("e75", 4))}
     res = e53.reading(_recs(e53, refused_on=five), [], COMMIT)
-    assert res["clauses"]["f"] and res["arm_refused_task_seeds"] == 5
-    six = {**five, ("e725", 5): {ARM: "shape: x"}}
-    _fails(e53, "f", refused_on=six)
+    assert res["clauses"]["f"] and res["arm_cloud_guard_refused_task_seeds"] == 5
+    six = {**five, ("e725", 5): {ARM: "cloud guard"}}
+    res = _fails(e53, "f", refused_on=six)
+    assert res["arm_cloud_guard_refused_task_seeds"] == 6
+    # the specification counts cloud-guard refusals: a form refusal is reported and decides nothing in (f)
+    forms = {**five, **{(t, 6): {ARM: "shape: geodesic_overlay: x"} for t in e53.nt.all_tasks()}}
+    res = e53.reading(_recs(e53, refused_on=forms), [], COMMIT)
+    assert res["clauses"]["f"] and res["arm_cloud_guard_refused_task_seeds"] == 5
+    assert res["reported"]["arm_form_refused_task_seeds"] == 9 and res["reported"]["refused_task_seeds"][ARM] == 14
+    assert "form refusals 9" in e53.text(res) and "cloud guard refused the arm on 5 of 90" in e53.text(res)
+    assert e53.CLOUD_GUARD == "cloud guard"
     placebo = {(t, 0): {PLA: "cloud guard"} for t in e53.nt.all_tasks()}  # the placebo's refusals are reported
     res = e53.reading(_recs(e53, refused_on=placebo), [], COMMIT)
     assert res["clauses"]["f"] and res["reported"]["refused_task_seeds"][PLA] == 9
@@ -412,7 +458,11 @@ def test_the_launchers_refusal_paths_write_exit_files_and_start_nothing(tmp_path
     out = _run(tmp_path)
     assert out.returncode == 2 and (scratch / "usage.exit").read_text().strip() == "2"
     out = _run(tmp_path, "bogus", "0" * 40)
-    assert out.returncode == 97 and (scratch / "bogus.exit").read_text().strip() == "97"
+    assert out.returncode == 97 and (scratch / "unknown.exit").read_text().strip() == "97"
+    assert not (scratch / "bogus.exit").exists()
+    out = _run(tmp_path, "../../escape", "0" * 40)  # a step name never names the exit file
+    assert out.returncode == 97 and not (tmp_path / "v" / "escape.exit").exists()
+    assert sorted(p.name for p in scratch.iterdir() if p.suffix == ".exit") == ["unknown.exit", "usage.exit"]
     for step, prev in (("describe", "tests"), ("j7", "describe"), ("gate", "j7"), ("run", "gate"), ("read", "run")):
         out = _run(tmp_path, step, "0" * 40)
         assert out.returncode == 96 and f"step {prev} has not exited 0" in out.stderr, step
@@ -429,3 +479,47 @@ def test_the_launchers_refusal_paths_write_exit_files_and_start_nothing(tmp_path
     out = _run(tmp_path, "describe", "0" * 40)
     assert out.returncode in (98, 99)  # past the order check, stopped at the tree's own checks
     assert sorted(p.name for p in scratch.iterdir() if p.name.endswith(".log")) == []
+
+
+def test_the_launcher_marks_a_step_running_before_it_records_its_head():
+    sh = LAUNCHER.read_text()
+    mark, head = sh.index('echo running > "$S/$STEP.exit"'), sh.index('git rev-parse HEAD > "$S/$STEP.head"')
+    assert sh.index("finish 99") < mark < head
+
+
+def test_a_stale_exit_0_beside_a_fresh_head_is_refused(tmp_path):
+    """tests exited 0 at an older commit; tests at the new commit starts. While it runs (here: inside a stand-in uv),
+    tests.exit reads 'running' and tests.head the new commit, and describe at the new commit is refused (96)."""
+    repo, home, bin_ = tmp_path / "repo", tmp_path / "home", tmp_path / "bin"
+    (repo / "experiments" / "coords").mkdir(parents=True)
+    bin_.mkdir()
+    launcher = repo / "experiments" / "coords" / "run_e53.sh"
+    launcher.write_text(LAUNCHER.read_text())
+    env = {k: v for k, v in os.environ.items() if k not in ("GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE")}
+    env.update(HOME=str(home), PATH=f"{bin_}:{env.get('PATH', '')}")
+    git = ["git", "-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false"]
+    subprocess.run([*git, "init", "-q"], cwd=repo, env=env, check=True)
+    subprocess.run([*git, "add", "-A"], cwd=repo, env=env, check=True)
+    subprocess.run([*git, "commit", "-q", "-m", "x"], cwd=repo, env=env, check=True)
+    head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, env=env, capture_output=True,
+                          text=True).stdout.strip()
+    assert len(head) == 40
+    seen = tmp_path / "seen"
+    S = home / "v" / "scratch" / "e53"
+    uv = bin_ / "uv"  # the stand-in for the tests step's pytest: looks at the records, tries describe, exits 0
+    uv.write_text("#!/usr/bin/env bash\n"
+                  f'{{ cat "{S}/tests.exit"; cat "{S}/tests.head"; '
+                  f'bash "{launcher}" describe "{head}" 2>/dev/null; echo "describe $?"; }} > "{seen}"\n'
+                  "exit 0\n")
+    uv.chmod(0o755)
+    S.mkdir(parents=True)
+    (S / "tests.exit").write_text("0\n")
+    (S / "tests.head").write_text("1" * 40 + "\n")  # the stale record: exit 0 at another commit
+    out = subprocess.run(["bash", str(launcher), "tests", head], cwd=repo, env=env, capture_output=True, text=True)
+    assert out.returncode == 0, out.stderr
+    assert seen.read_text().split("\n")[:3] == ["running", head, "describe 96"]
+    assert (S / "tests.exit").read_text().strip() == "0" and (S / "tests.head").read_text().strip() == head
+    # killed mid-step: the marker stays, so the next step is still refused
+    (S / "tests.exit").write_text("running\n")
+    out = subprocess.run(["bash", str(launcher), "describe", head], cwd=repo, env=env, capture_output=True, text=True)
+    assert out.returncode == 96 and (S / "describe.exit").read_text().strip() == "96"

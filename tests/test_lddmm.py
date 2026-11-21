@@ -35,6 +35,24 @@ def test_the_rows_constants():
     assert lddmm.DATA_SCALES == (0.05, 0.1, 0.2, 0.4) and lddmm.GAMMA == 10.0
     assert (lddmm.N_STEPS, lddmm.LBFGS_ITERS) == (10, 150)
     assert (lddmm.SUBSAMPLE_STREAM, lddmm.CONTROL_STREAM) == (51, 52)
+    assert lddmm.LBFGS_EVALS_PER_ITER == 30
+
+
+def test_the_evaluation_cap_does_not_bind_before_the_iterations(monkeypatch):
+    """torch's default max_eval (max_iter * 5 // 4 = 187 at 150) could stop the fit early; the fit sets it to 30 per
+    iteration, above strong Wolfe's 25 line-search evaluations plus one, so 150 iterations are reachable."""
+    seen = {}
+    real = torch.optim.LBFGS
+
+    def spy(params, **kw):
+        seen.update(kw)
+        return real(params, **kw)
+
+    monkeypatch.setattr(torch.optim, "LBFGS", spy)
+    A, B, FA, FB = _clouds(80)
+    lddmm.fit(A, B, FA, FB, 1, n_sub=60, n_control=10, iters=3, device="cpu")
+    assert seen["max_iter"] == 3 and seen["max_eval"] == 3 * 30 and seen["line_search_fn"] == "strong_wolfe"
+    assert seen["max_eval"] >= seen["max_iter"] * (25 + 1)
 
 
 def test_the_geodesic_equations_are_the_hamiltonians_gradient():
@@ -129,6 +147,7 @@ def test_the_fit_is_deterministic_lowers_the_data_term_and_records_flat_facts():
     r = f1.record
     assert r["data_ratio"] == pytest.approx(r["data_final"] / r["data_rigid"]) and r["data_ratio"] < 1.0
     assert r["device"] == "cpu" and 0 < r["lbfgs_n_iter"] <= 15
+    assert r["lbfgs_max_eval"] == 15 * lddmm.LBFGS_EVALS_PER_ITER and 0 < r["lbfgs_n_eval"] <= r["lbfgs_max_eval"]
     assert all(not isinstance(v, (list, dict, tuple)) for v in r.values())  # flat values, no count
     # control points are rows of the earlier subsample (stream [seed, 51] then k-means++ on stream [seed, 52])
     rows = lddmm.subsample_rows(len(A), 150, np.random.default_rng([1_000_003, 51]))

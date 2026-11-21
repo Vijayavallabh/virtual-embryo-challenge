@@ -37,6 +37,9 @@ DATA_SCALES = (0.05, 0.1, 0.2, 0.4)
 GAMMA = 10.0
 N_STEPS = 10
 LBFGS_ITERS = 150
+# function evaluations allowed per iteration: torch's default cap (max_iter * 5 // 4) could end the fit before 150
+# iterations; at 30 per iteration (above strong Wolfe's 25 line-search steps plus one) the iteration count binds first
+LBFGS_EVALS_PER_ITER = 30
 SUBSAMPLE_STREAM = 51
 CONTROL_STREAM = 52
 CHUNK = 4096  # points carried per batch (bounds a Jacobian batch's autograd memory near 6 GB on the GPU)
@@ -301,7 +304,8 @@ def fit(Zb, Zt, Fb, Ft, seed: int, *, n_sub: int = SUBSAMPLE, n_control: int = N
         raise ValueError("the data term at the rigid start is not positive")
     K0 = _gauss(q0, q0, sigma)
     p = torch.zeros_like(q0, requires_grad=True)
-    opt = torch.optim.LBFGS([p], lr=1.0, max_iter=iters, line_search_fn="strong_wolfe")
+    opt = torch.optim.LBFGS([p], lr=1.0, max_iter=iters, max_eval=iters * LBFGS_EVALS_PER_ITER,
+                            line_search_fn="strong_wolfe")
 
     def energy():
         qs, ps = shoot(q0, p, sigma, n_steps)
@@ -321,8 +325,10 @@ def fit(Zb, Zt, Fb, Ft, seed: int, *, n_sub: int = SUBSAMPLE, n_control: int = N
         kin, d1 = energy()
     p0 = p.detach()
     norms = p0.norm(dim=1)
+    state = opt.state[opt._params[0]]
     rec = {"sigma_v": float(sigma), "gamma": float(gamma), "n_steps": int(n_steps), "lbfgs_max_iter": int(iters),
-           "lbfgs_n_iter": int(opt.state[opt._params[0]].get("n_iter", 0)),
+           "lbfgs_n_iter": int(state.get("n_iter", 0)), "lbfgs_max_eval": int(iters * LBFGS_EVALS_PER_ITER),
+           "lbfgs_n_eval": int(state.get("func_evals", 0)),
            "feature_bandwidth": data.bandwidth, "data_rigid": d0, "data_final": float(d1),
            "data_ratio": float(d1) / d0, "kinetic": float(kin), "energy": float(kin) + gamma * float(d1) / d0,
            "p0_norm_mean": float(norms.mean()), "p0_norm_max": float(norms.max()), "device": str(dev)}
@@ -341,8 +347,8 @@ def _key(*arrays, seed: int) -> str:
         h.update(np.asarray(a.shape, np.int64).tobytes())
         h.update(a.tobytes())
     h.update(np.int64(seed).tobytes())
-    h.update(repr((SUBSAMPLE, N_CONTROL, SIGMA_V, DATA_SCALES, GAMMA, N_STEPS, LBFGS_ITERS, SUBSAMPLE_STREAM,
-                   CONTROL_STREAM)).encode())
+    h.update(repr((SUBSAMPLE, N_CONTROL, SIGMA_V, DATA_SCALES, GAMMA, N_STEPS, LBFGS_ITERS, LBFGS_EVALS_PER_ITER,
+                   SUBSAMPLE_STREAM, CONTROL_STREAM)).encode())
     return h.hexdigest()
 
 

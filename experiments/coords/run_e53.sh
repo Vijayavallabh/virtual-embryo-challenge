@@ -25,7 +25,9 @@
 # COMMIT is the run commit (full hash): the row's commit. Each step refuses on an unclean tree (exit 98) or another
 # HEAD (exit 99), runs with 8 BLAS threads a process and NUMPY_MADVISE_HUGEPAGE=0, and writes
 # ~/v/scratch/e53/<STEP>.exit on every path (a call without its two arguments writes usage.exit, 2; an unknown step
-# 97) and one exit file per process under runs/e53/exit/. The script prints only step lines; any other log line is
+# writes unknown.exit, 97, whatever name it was called with) and one exit file per process under runs/e53/exit/. A step
+# that passes its checks overwrites its own <STEP>.exit with "running" before it writes <STEP>.head, so an exit 0 left
+# from an earlier commit never stands beside the new HEAD while the step runs or after it is killed. The script prints only step lines; any other log line is
 # counted, never printed: per process in runs/e53/exit/<step>-<name>.other_lines. Nothing is removed.
 set -u
 S="$HOME/v/scratch/e53"
@@ -46,7 +48,8 @@ case "$STEP" in
   run) PREV="gate" ;;
   read) PREV="run" ;;
   *)
-    echo "unknown step $STEP" >&2
+    echo "unknown step" >&2
+    STEP=unknown
     finish 97 ;;
 esac
 if [ -n "$PREV" ]; then
@@ -68,6 +71,7 @@ if [ "$(git rev-parse HEAD)" != "$COMMIT" ]; then
   echo "refused: HEAD is not $COMMIT" >&2
   finish 99
 fi
+echo running > "$S/$STEP.exit"
 git rev-parse HEAD > "$S/$STEP.head"
 SCRIPT=experiments/coords/e53_geodesic_read.py
 R=runs/e53
