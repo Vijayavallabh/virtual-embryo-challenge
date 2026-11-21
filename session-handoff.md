@@ -21,9 +21,31 @@
     `lift8/heart_frame_check.json`). K1 and K2 are fresh draws with zero-mean frame luck; a copy-rows heart file would
     score the baseline on every term but size and needs R16's closed list reopened. K1 then K2 stand; nothing is asked
     of the captain.
-  - **The embryo's second construction** (the captain's order of entry (h); workflow `embryo-second-construction`,
-    task w7at8dmdh): the engineer finished at 08:40 UTC and its reviewer is running. What to do with its hand-back is
-    in the bullet below, unchanged.
+  - **The embryo's copy-positions file (the captain's order of entry (h); practice row E50, not yet placed).** State
+    at 08:55 UTC. The first round (task w7at8dmdh) handed back: the cold challenger says build as amended (it puts
+    about 0.7 on the file landing at the baseline's level on the three shape terms, if the build passes the board's
+    limits); the code reviewer says NOT READY, one blocker (the practice arm splits slots by the task's time fraction,
+    the row text says one half) and six lesser points. Hand-back saved in the session scratchpad
+    `lift8/embryo_copy_rows.json` (parts spec, fin, build, review). The engineer's branch is
+    `campaign/embryo-copy-rows` (5dcd7b7). **Running:** workflow `embryo-copy-rows-fix` (task wj4gyfldx): a fresh
+    analyst decides the blocker and the open points and returns the final row text; an engineer applies them on
+    `campaign/embryo-copy-rows-2` (main merged in); a reviewer checks; in parallel an analyst and a cold challenger
+    fix the order of the three unscored embryo files (positions, overlay, copy-positions) and what each headline
+    means. **When it hands back with a ready review:** merge the branch (no force); run the full related test list in
+    the main checkout (include tests/test_e48_row_order_read.py, tests/test_harness.py, tests/test_hidden_counts.py);
+    place row E50 (the analyst's final text, commit filled in; embryo 83 to 84 when its run step starts) with a
+    decision-log entry in ONE commit; place the order rule in the log before any score of the new files; sync
+    `~/v/vec-campaign` (nothing running there), make a detached worktree `~/v/scratch/e50-wt` at that commit, trace
+    the launcher's refusal path, then run `experiments/coords/run_e50.sh` step by step (tests, gate, run, read; exit
+    files in `~/v/scratch/e50/`; a gate exit of 3 means stop, report, count nothing); copy `reading.json` and
+    `reading.txt` back and commit with the outcome in the row's fixed words. If reading (i) holds: build the test file
+    twice with `--copy-rows --copy-rows-test-ok` (the handed-over file's expression is MIXTURE; read by exit code,
+    sha256 and the stamp's two fields only; a refusal means no file and the positions file stands), copy under
+    `runs/manual_upload/`, write the build record and the rules-note amendment (add there the sentence that the
+    overlay dialog also gave 'about +1.2 Overall if it carried over'). **One short question goes to the captain when
+    the file is ready, priced with E50's tables:** the file takes the copy's cell count (below the count rule) and
+    E7.5's own size (not the pre-registered size); the analysts' default is build; the main session gives no
+    preference.
   - **Launchers on this machine may hold no removal of a variable path:** a built-in safety check refuses any command
     whose text has `rm` on a shell variable. `embryo_overlay.sh` deletes nothing and takes a run name whose folders
     must not exist (a rerun takes a new name).
