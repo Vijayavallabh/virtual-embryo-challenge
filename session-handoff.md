@@ -3,7 +3,7 @@
 ## Current Objective
 
 - **State at 2026-11-21, 00:54 UTC (newest; it supersedes the bullets below where they differ).** Decision log
-  2026-11-21 (c) to (f). Local main = origin/main (9100471 or later). No score line since 20 Nov 15:30 UTC.
+  2026-11-21 (c) to (g). Local main = origin/main (9100471 or later). No score line since 20 Nov 15:30 UTC.
   - **Outside data on the two position boards: scoped, not pursued** (entry 2026-11-21 (g); hand-back in the session
     scratchpad `lift8/t2_outside_scoping.json`). Fresh analysts and challengers returned 'do not pursue' for the heart
     and for the embryo; no row is opened. With K24 this closes the outside-data push on every board except the two
