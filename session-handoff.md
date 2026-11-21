@@ -3,7 +3,20 @@
 ## Current Objective
 
 - **State at 2026-11-21, 00:54 UTC (newest; it supersedes the bullets below where they differ).** Decision log
-  2026-11-21 (c) to (g). Local main = origin/main (9100471 or later). No score line since 20 Nov 15:30 UTC.
+  2026-11-21 (c) to (h). Local main = origin/main (9100471 or later). No score line since 20 Nov 15:30 UTC.
+  - **THE CAPTAIN'S ORDER OF 21 NOV, 01:05 UTC (entry 2026-11-21 (h)): the embryo's shelved second construction is
+    reopened** (verbatim: "reopen it [my ordeer]", on a forwarded side-agent note). The construction: the file takes
+    the baseline copy's own rows and count, so its positions equal the copy's row for row. The main session is recused
+    on this term: fresh analysts decide, it executes and states no preference. Workflow `embryo-second-construction`
+    (task w7at8dmdh; engineer branch `campaign/embryo-copy-rows`): specify, challenge, build, review. **When it hands
+    back:** verdict `cannot_be_built` or `do_not_build` goes to the captain in plain words; on `build_as_amended` with
+    a ready review: merge; if a practice read is specified, place its row and a log entry in one commit, sync a DGX
+    checkout, run its launcher detached and read the result in its fixed words; then build the test-board file twice
+    with the option's flag (read by exit code, sha256 and the stamp's commit and clean fields only), copy it under
+    `runs/manual_upload/`, write the build record, the rules-note amendment and the data-used text the analysts
+    drafted, and hand it over with path, sha256 and board. The order of the two unscored embryo files and what each
+    score means is the analysts' rule, fixed in the log before any score. If the analysts name one short question for
+    the captain, put only that question.
   - **Outside data on the two position boards: scoped, not pursued** (entry 2026-11-21 (g); hand-back in the session
     scratchpad `lift8/t2_outside_scoping.json`). Fresh analysts and challengers returned 'do not pursue' for the heart
     and for the embryo; no row is opened. With K24 this closes the outside-data push on every board except the two
@@ -26,7 +39,7 @@
     bulk tables; `tables_two_study`; `tables_first_bulk_run_keep` is the never-read first bulk run).
   - **Parked, one word reopens:** the GEO single-study bulk forms (closed in code); the T1 extra atlases in their
     strict form.
-  - **Tries:** T1 418, embryo 83, heart 80, T3 72. **Next labels:** decision log 2026-11-21 (h); register row X018.
+  - **Tries:** T1 418, embryo 83, heart 80, T3 72. **Next labels:** decision log 2026-11-21 (i); register row X018.
 
 - **State at 2026-11-21, 00:42 UTC (superseded above where they differ).** Decision log
   2026-11-21 (c), (d), (e). Local main = origin/main (88f381d or later). Uploads and the pre-built T3 files are as in
