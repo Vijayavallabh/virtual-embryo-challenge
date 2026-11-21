@@ -9163,3 +9163,39 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     listed refusals, no reading file is written and the outcome is recorded as void by hand; on a test board the
     builder prints a record, so its output stays sent to /dev/null; the test command is `--expression mixture` (the
     first engineer's hand-back said series).
+- 2026-11-21 (n), the review of the main session's own record of the copy-rows file: one blocker in the build launcher's
+  gate, fixed; the captain's question is put now (state at 09:26 UTC, 2026-11-21). Written by the AI assistant, which is
+  recused on the embryo's occupancy term and states no preference.
+  - **The review** (one independent reviewer, read-only, at f139c28; it compared row E50, entries (l) and (m), the
+    specification file, the rules-note section, the build launcher and the chain script with the analysts'
+    hand-backs). Verdict: NOT READY, one blocker. Found faithful: row E50 is the analyst's final text word for word
+    with the two placeholders filled; entry (l) and the rules note's list paragraph are the analysts' texts word for
+    word; the main session's note under (l) is marked as its own and adds no preference; entry (m) states the fix
+    round's decisions faithfully; the chain cannot run a step out of order or hide a non-zero exit.
+  - **The blocker and its fix.** The launcher `experiments/builds/embryo_copy_rows.sh` tested only that row E50's
+    reading file exists in the working tree; an uncommitted copy would have passed, and the reading's own commit was
+    never compared with the row's run commit. Fixed in this commit: the gate now requires the reading to be a tracked
+    file of the build commit (`git ls-files --error-unmatch`), its `commit` field to equal the run commit
+    5fcf6b9ad187e2c5377900426f6dd749c4a1f9d9, HEAD to equal the full hash given (a prefix no longer passes), and the
+    builder's code and records (`src/`, the builder, the count decision, the size record folder, the lock file and
+    `pyproject.toml`) to be unchanged since the run commit; and a build step now fails unless its stamp says this
+    commit and clean True. `tests/test_embryo_copy_rows_launcher.py` pins each of these. The practice read, which
+    started before this review, is not touched by any of it.
+  - **The captain's question: the timing was the main session's, and is withdrawn.** Entry (m) and the rules-note
+    section say the question is put "when the file is ready", with the practice price tables. The analysts did not say
+    that: their text is "Nothing waits on it: code, tests and the practice read go ahead now, and the test build
+    follows the default if there is no answer", and they wrote the question to go to the captain as plain text. The
+    recused main session should not have set its own timing. The question is therefore put now, in the analysts'
+    words, as plain text in the main session's next message to the captain: "Embryo: the baseline-copy file you
+    ordered can only be exact if it also takes the copy's cell count (a tenth of E7.5, below our max_cells rule) and
+    E7.5's own size (not our pre-registered size). Build it that way? If I hear nothing, it is built as described and
+    goes after the exact-position file." Default: build. A 'no' means no copy-rows file (entry (l), condition 2). The
+    practice price tables are reported to the captain when they exist; they decide nothing. The sentence in the rules
+    note is corrected when that note is next amended.
+  - **Other points recorded.** In row E50 the words ", merged to main at 91e6e48" after the branch name are the main
+    session's addition, not the analyst's text. The paragraph "Correction to the section above (the overlay file)" in
+    the rules note's newest section is the main session's own, restating entry (k). The specification file's list of
+    superseded places (its section 9) lacked two: the first analyst's sentences that no LAPACK behaviour is assumed
+    (the challenger's stricter assumption holds), and a citation of "entry (l)" that means 2026-11-20 (l); both are
+    added in this commit. The step script's test list also gained the launcher's test in f139c28, which that commit's
+    message did not say.

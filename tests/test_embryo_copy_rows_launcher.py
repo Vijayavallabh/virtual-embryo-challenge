@@ -4,7 +4,8 @@
 The launcher experiments/builds/embryo_copy_rows.sh runs only what the specification's start conditions name: the
 default command must first give the exact-position file's known bytes, then the copy-rows file is built twice from one
 clean commit and the two are compared. Its gate refuses unless row E50's committed reading is not void and says the
-test file is built (reading (i) holds, mixture arm). These tests hold the launcher to that, check that it deletes
+test file is built (reading (i) holds, mixture arm), is a tracked file made at the row's run commit, and the builder's
+code is unchanged since that commit. These tests hold the launcher to that, check that it deletes
 nothing and keeps no output of a test build, and run its refusal paths for real under a temporary home (a wrong commit,
 a reused run name, an odd run name). The launcher is never run here with the real commit: that would build files."""
 
@@ -19,6 +20,7 @@ LAUNCHER = REPO / "experiments" / "builds" / "embryo_copy_rows.sh"
 BASE = "--method fgw_shape0 --positions floor_exact --expression mixture"
 COPY_ROWS = BASE + " --copy-rows --copy-rows-test-ok"
 POSITIONS_SHA = "a03611a343faf1d37edf06ce0e2bccc86cce6f14d3580b823864e5faf3ba03f9"
+RUN_COMMIT = "5fcf6b9ad187e2c5377900426f6dd749c4a1f9d9"  # row E50's own commit, the run commit of its reading
 
 
 def test_the_launcher_builds_the_positions_file_then_the_copy_rows_file_twice():
@@ -33,6 +35,14 @@ def test_the_launcher_builds_the_positions_file_then_the_copy_rows_file_twice():
     assert "OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16" in sh
     assert "git status --porcelain" in sh and "S2_RULES.sha256" in sh and "'^| E50 '" in sh
     assert "READING=experiments/coords/results/e50_copy_rows/reading.json" in sh
+    # the reading must be a tracked file of the build commit, made at the row's run commit, and the code unchanged
+    assert 'git ls-files --error-unmatch "$READING"' in sh and f"E50_RUN_COMMIT={RUN_COMMIT}" in sh
+    assert 'git diff --quiet "$E50_RUN_COMMIT" HEAD -- $CODE_PATHS' in sh
+    paths = re.search(r'^CODE_PATHS="([^"]+)"$', sh, flags=re.M).group(1).split()
+    assert {"src", "experiments/builds/build_test.py", "uv.lock", "pyproject.toml",
+            "experiments/density/results/release/count_decision.json", "experiments/coords/results/p3"} == set(paths)
+    assert '[ "$head" = "$COMMIT" ]' in sh  # the full hash, never a prefix
+    assert '[ "$st" = "$head True" ] || return 15' in sh  # a build counts only with a stamp of this commit, clean
     assert "PATH=$HOME/.local/bin:$PATH" in sh
     # every builder and check call sends its output to /dev/null: a test build is read by its exit code only
     for line in sh.splitlines():
@@ -61,20 +71,23 @@ def test_the_command_is_the_specifications_and_the_builder_knows_both_options():
 
 def _reading_check() -> str:
     """The gate's one-line check of row E50's reading, as the launcher holds it."""
-    m = re.search(r"python3 -I -B -c '([^']+)' \"\$READING\"", LAUNCHER.read_text())
+    m = re.search(r"python3 -I -B -c '([^']+)' \"\$READING\" \"\$E50_RUN_COMMIT\"", LAUNCHER.read_text())
     assert m, "the gate's reading check is not where the test expects it"
     return m.group(1)
 
 
 def test_the_gate_takes_only_a_reading_that_is_not_void_holds_and_is_the_mixture_arms(tmp_path):
-    good = {"void": False, "build_test_file": True, "i": {"holds": True}, "handed_over_expression": "mixture"}
+    good = {"void": False, "build_test_file": True, "i": {"holds": True}, "handed_over_expression": "mixture",
+            "commit": RUN_COMMIT}
     cases = [(good, 0), ({**good, "void": True}, 1), ({**good, "build_test_file": False}, 1),
              ({**good, "i": {"holds": False}}, 1), ({**good, "handed_over_expression": "series"}, 1),
-             ({"void": True, "why": ["a gate miss"]}, 1), ({**good, "i": {}}, 1), ({**good, "void": None}, 1)]
+             ({"void": True, "why": ["a gate miss"]}, 1), ({**good, "i": {}}, 1), ({**good, "void": None}, 1),
+             ({**good, "commit": RUN_COMMIT[:7]}, 1), ({**good, "commit": "0" * 40}, 1),
+             ({k: v for k, v in good.items() if k != "commit"}, 1)]
     for k, (reading, want) in enumerate(cases):
         p = tmp_path / f"reading{k}.json"
         p.write_text(json.dumps(reading))
-        got = subprocess.run(["python3", "-I", "-B", "-c", _reading_check(), str(p)], capture_output=True)
+        got = subprocess.run(["python3", "-I", "-B", "-c", _reading_check(), str(p), RUN_COMMIT], capture_output=True)
         assert got.returncode == want, (reading, got.returncode)
 
 
@@ -93,6 +106,13 @@ def test_a_wrong_commit_is_refused_at_the_gate_with_an_exit_file_and_nothing_bui
     again = _run(tmp_path, "0" * 40, "t1")  # the same run name: refused before any step, the first record untouched
     assert again.returncode == 91 and "never reused" in again.stderr
     assert (scratch / "gate.exit").read_text().strip() == "96"
+
+
+def test_a_commit_prefix_is_refused_like_a_wrong_commit(tmp_path):
+    head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()
+    out = _run(tmp_path, head[:12], "t2")  # the right commit, shortened: never enough
+    gate = tmp_path / "v" / "scratch" / "embcr" / "t2" / "gate.exit"
+    assert out.returncode == 96 and gate.read_text().strip() == "96"
 
 
 def test_a_missing_or_odd_run_name_is_refused_before_any_folder_is_made(tmp_path):

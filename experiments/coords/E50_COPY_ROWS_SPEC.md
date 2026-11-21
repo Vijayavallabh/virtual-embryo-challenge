@@ -267,3 +267,9 @@ test-board count in any number.
 - No cloud guard runs on this path, in the builder or in the practice arm (section 6a).
 - The order of the embryo's files is the rule of decision log 2026-11-21 (l), which replaces this round's own order
   rule for two files.
+- Sections 3 and 4 say that no LAPACK sign behaviour is assumed and that the equality still holds if only the metric
+  seed or LAPACK differs. The cold challenger's version holds instead (sections 5 and 7): the stored floor anchor and
+  the live scoring of an upload must also use the same scorer build, metric seed and numeric library; under the prefix
+  build a LAPACK sign difference could split equal arrays.
+- Section 3 cites "entry (l)'s check": that is decision log 2026-11-20 (l), the analysts' check of the occupancy term,
+  not the order rule of 2026-11-21 (l).
