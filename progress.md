@@ -2,6 +2,12 @@
 
 ## Current State
 
+- **2026-11-21, 00:54 UTC.** No new score. K24 is read: no file. Neither the three-study single-cell table nor the
+  bulk table of the 73-line set beats the form K23 named at the same size (the first lost to it in every cell; the
+  second did not beat a shuffled table of its own size), so the K23 file stands alone and the outside-table line is
+  finished on this fold. Nothing is running; every hand-over file is unchanged. Tries: T1 418, embryo 83, heart 80, T3
+  72. What waits: `session-handoff.md`, first bullet.
+
 - **2026-11-21, 00:42 UTC.** No new score. The practice read of the wider outside tables (K24) is placed and running
   on the DGX: the three-study single-cell table, the bulk table of the 73-line set (14 lines) and their joint, each at
   the size of the form K23 named, with controls; a file is named only if an arm beats the K23 form head to head. Its
