@@ -7,7 +7,7 @@
   - **The captain, 21 Nov about 08:10 UTC, verbatim: "Proceed with decisions that help us place at the top of the
     leaderboard at all wild costs"** (entry 2026-11-21 (i), with the AI assistant's reading: score decisions without a
     question first; no organiser rule, recusal, exposed lever or captain-fixed list lifted). Running since 08:18 UTC
-    besides the embryo round: workflow `heart-frame-check` (task w24d1gdhv; read-only: do the heart candidates face
+    besides the embryo round: workflow `heart-frame-check` (task wfxrciozn (relaunched after a schema slip of the main session); read-only: do the heart candidates face
     the same frame luck, are they already the copy's rows, does the construction apply). Its verdict may carry one
     short priced question for the captain (a new heart file needs a named exception to R16). Not built, available at
     one word: the K23 table at exponent 4 as an extra T3 candidate.
