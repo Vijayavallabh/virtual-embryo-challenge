@@ -87,6 +87,10 @@ after() {  # every named step exited 0 at this HEAD
   done
 }
 
+# One test of tests/test_feng_relabel.py reads the checkout's own data folder and fails only where a real N55 run left
+# its marker (the DGX checkout that holds the relabelling's output; the T1 candidates' launcher of 2026-11-20 deselected
+# it for the same reason). It is deselected by name in both test steps; nothing else is.
+KNOWN_DESELECT="--deselect tests/test_feng_relabel.py::test_the_dry_runs_refusals"
 TESTS_T67="tests/test_t1_timing.py tests/test_t62_recomputed_read.py tests/test_t63_double_step_read.py
   tests/test_feng_relabel.py tests/test_t1_bets.py tests/test_t1_scope.py tests/test_core.py tests/test_g_mom_verify.py
   tests/test_t1_state_transport.py"
@@ -103,7 +107,7 @@ run_step() {  # a run: the pre-gate passed at this HEAD, both statistics are in 
 case "$NAME" in
   late_tests)
     $PY -m pytest -q -p no:cacheprovider -o pythonpath=src --basetemp="$S/tmp/pytest" \
-      tests/test_t1_timing.py tests/test_feng_relabel.py > "$S/$NAME.out" 2> "$S/$NAME.err"
+      tests/test_t1_timing.py tests/test_feng_relabel.py $KNOWN_DESELECT > "$S/$NAME.out" 2> "$S/$NAME.err"
     finish $? ;;
   late)
     after late_tests
@@ -112,7 +116,7 @@ case "$NAME" in
     $PY experiments/external/feng_relabel_late.py --row "$NROW" > "$S/$NAME.out" 2> "$S/$NAME.err"
     finish $? ;;
   tests)
-    $PY -m pytest -q -p no:cacheprovider -o pythonpath=src --basetemp="$S/tmp/pytest" $TESTS_T67 \
+    $PY -m pytest -q -p no:cacheprovider -o pythonpath=src --basetemp="$S/tmp/pytest" $TESTS_T67 $KNOWN_DESELECT \
       > "$S/$NAME.out" 2> "$S/$NAME.err"
     finish $? ;;
   pregate)
