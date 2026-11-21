@@ -8931,3 +8931,46 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     draw stays declined: its practice gain sits where the base carries the earlier stage's mix, not on the
     like-for-like library, and it touches two closed quantities. An exponent-4 version of the K23 table is not built:
     row K23 named one file; it can be added at the captain's word.
+- 2026-11-21 (j), the heart check's verdict; the captain orders the embryo's overlay file (state at 08:36 UTC,
+  2026-11-21). Written by the AI assistant, which is recused on the heart's scope and size and on the embryo's
+  occupancy term and shape forms, and states no preference on either.
+  - **The heart check** (workflow `heart-frame-check`, run wf_6c23ce78-697: an analyst and a cold challenger; code,
+    synthetic checks and committed practice readings only; no score used). Verdict: do not pursue; keep K1 then K2; no
+    question for the captain. Their finding: K1 and K2 are fresh draws, not the baseline copy's rows, so each carries
+    its own frame luck on the occupancy term; that luck is zero in expectation, because the baseline's own toss has
+    already happened on the server and cannot be known; a file made of the copy's own rows would score the baseline on
+    every term except size, give up whatever the full-scope copy earns above it, could not stand in for the half trim
+    at all, and would need the halving undone, the count rule broken and R16's closed list reopened, each of which R16
+    names as left off. The challenger puts the chance that acting on this verdict is a mistake at one in ten. Nothing
+    changes for the heart.
+  - **The overlay file: the note and the question.** The captain forwarded a second note from a side agent. In
+    substance: of row E49's three shape forms, the overlay scored about 2.5 practice points above the unchanged file,
+    ahead in ten of ten repeats and on all five practice stages; one pre-set check dropped it, because a deliberately
+    mis-turned version did almost as well on the shape measure; the main agent is recused and reported only 'no file';
+    it is a different file from the copy-positions one; it is built only if the captain orders it. The message held no
+    words of the captain's own, so the AI assistant asked, in a one-question dialog, verbatim: "Embryo: the note you
+    forwarded says the 'overlay' shape file is built only if you order it. Do you order it? (I am recused on embryo
+    shape choices and give no preference. On practice it scored +2.46 embryo points over the unchanged file, ahead in
+    10 of 10 repeats, +3.25 on the test-like tasks; the embryo counts half, so about +1.2 Overall if it carried over.
+    Its pre-set rule dropped it because a deliberately mis-turned version did almost as well on the shape term, so the
+    gain may not be the idea's own. Cost if it scores lower: one embryo upload slot. It is a separate file from the
+    copy-positions one, which is already being built.)" The two options were "Build it" ("Your order sets row E49's
+    'no file' outcome aside for this one form. Fresh analysts fix its place in the embryo list before any score; I
+    build the test-board file and hand it over. Uploading stays your act.") and "Do not build it" ("Row E49's rule
+    stands: no overlay file. The embryo list stays the positions file plus the copy-positions file now being built.");
+    neither was marked as recommended. **The captain's answer, verbatim: "Build it".**
+  - **The reason, as the record has it.** Row E49's fixed statements for the overlay arm: board +2.461 (SE 0.091, ten
+    of ten seeds ahead), test-like board +3.247, and against its rotated control the ungated shape term +0.0069 (SE
+    0.0044, six of ten ahead), which is the failed clause P5. The row's own last line says each candidate goes to the
+    captain as a priced question. This is the captain's order on that question, not the rule's outcome; what the
+    practice figures are worth on the hidden stage is unknown, and the order's cost if the file scores lower is one
+    upload slot.
+  - **What follows.** Ruling row R19 and an amendment of `docs/S2_RULES.md` are committed with this entry, before any
+    build (the note's new sha256: 349374fef4e8106273e74c0b4112b2e8d634a03b1757b1c0a64bedadfda62a00). The file is the
+    positions file's command with `--shape-interp overlay`; the captain's answer is the yes that the test-board guard
+    asks for. `experiments/builds/embryo_overlay.sh` (with `tests/test_embryo_overlay.py`; it deletes nothing and
+    never reuses a run folder) first gives the positions file's bytes, then builds the overlay file twice; the build
+    is read by exit codes, one sha256 and the stamp's commit and clean fields only. The embryo's list then has up to
+    three unscored files (the positions file, the copy-positions file of entry (h) when it exists, the overlay file);
+    their order and what each score means are fixed by fresh analysts in a later entry, before any score of the new
+    files.
