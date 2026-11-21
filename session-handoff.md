@@ -27,16 +27,21 @@
     gate row N56, E53 embryo geodesic, E54 embryo flow). Deferred, not started: K26 (T3 map; two blockers; a file
     needs the A15 ruling) and H31 (heart bridge; four blockers; depends on H30's gate); their reviews are in
     `lift8/fix_moon_t3_map.txt` and `lift8/fix_moon_heart_bridge.txt`.
-  - **READY TO PLACE AND RUN: T67, T1's per-gene timing** (`campaign/moon-t1-timing`,
-    485e3d35abfcb2af9470ffbbfd866456481bd5fc; review ready; hand-back in `lift8/moonshots_eng1.json`, job t1-timing;
-    row text saved as `lift8/t67_row.txt`, which has raw vertical bars: write 'abs D' so that it has eleven cells, and
-    add the rules the reviewer lists as left out). Two phases on `~/v/vec-campaign-d`: first a new N row for the late
-    labelling (the frozen labeller rerun on the atlas's E15.5 to E17.5 cells, controls from those stages) at commit
-    NROWC, then `bash experiments/t1_m1/timing.sh late-tests NROWC NROW` and `late NROWC NROW` (15 to 45 min); then
-    ONE commit ROWC with the late RECORD, the X002 register amendment (its line must hold the token
-    `feng_relabel_late`) and row T67; then `tests`, `pregate` (exit 4 = idle, pruned, no try), the five runs in
-    parallel (`cut chamber`, `cut whole`, `lib 1`, `lib 2`, `lib 3`; about two hours), `read`. Ten tries (T1 418 to
-    428) once the runs start. Exit files in `~/v/scratch/t67/`.
+  - **T67 (T1's per-gene timing) IS IN ITS FIRST STEP (entry 2026-11-21 (cc)).** Merged to main at c64b2bb. Row N57
+    (the late labelling, target-free, no try) and the X002 register amendment are committed at NROWC =
+    ea206dc7d8a1859fd024486fe890011ad6f4adff; `~/v/vec-campaign-d` is at that commit and MUST NOT be synced while the
+    chain runs. Running since 23:50 UTC on 21 Nov: `timing.sh late-tests NROWC N57`, then `late NROWC N57` (15 to 45
+    min); log `~/v/scratch/t67/latechain.log`, exit `~/v/scratch/t67/latechain.exit` (0 done; 3 the labelling stopped:
+    the line ends, T67 is not run, no try); a local background waiter is polling. **When it exits 0:** copy the record
+    `experiments/external/results/feng_relabel_late/MANIFEST.json` from that checkout (it is written there,
+    untracked), read the late statistics' sha256 from it, fill row N57's outcome, place row T67 (text in
+    `lift8/t67_row.txt`, cells 0 to 10 only; fill the stats sha256, the branch and commit; add the rules the reviewer
+    listed as left out: the control's bins and seed, the void list as coded, the late cell minimum, the unassigned
+    cap) in ONE commit with the record = ROWC; sync; then `timing.sh tests ROWC`, `pregate ROWC` (exit 4 = idle,
+    pruned, no try), the five runs in parallel (`cut chamber ROWC`, `cut whole ROWC`, `lib 1 ROWC`, `lib 2 ROWC`, `lib
+    3 ROWC`; about two hours; ten tries, T1 418 to 428, once they start), `read ROWC`; copy
+    `experiments/t1_m1/results/t67_timing/` back and commit with the outcome in the read's fixed words. AHEAD would
+    lead to one priced question to the captain, not to a file.
   - **DGX facts (21 Nov 23:43 UTC):** the outside nuclei atlas (`data/external/jax_qiu2024`, 43 embryo files) and the
     heart atlas's clean reduction are on `~/v/vec-campaign-d` and `~/v/vec-campaign`; torch 2.14, torchdiffeq and scvi
     are in the campaign-d environment; the `rdata` package is MISSING in both environments (T66, H30 and H31 need it:
