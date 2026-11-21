@@ -8717,3 +8717,37 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     exact-position file and the series twin stand as handed over.** Nothing is built and nothing is asked of the
     captain. The clauses and the rule were fixed by fresh analysts before the run; the AI assistant executed them and
     adds no reading of its own. Results: `experiments/coords/results/e49_shape_interp/`.
+- 2026-11-21 (d), T3 outside knockouts: the bulk whole-embryo guard is changed after its first real run, before any bulk
+  table value or score was seen (state at 00:03 UTC, 2026-11-21; label (c) is kept for row K24's placement, which the
+  K24 builder cites). Written by the AI assistant.
+  - **The change** (merged at 8f59260; the engineer's commit 38010ae, the reviewer's lesser points 8f93db6). Old rule:
+    a control library, and a control arm mean, must correlate with the reference's whole-embryo profile at least 0.05
+    better than with its best single lineage group. New rule, for the bulk route only: strictly better (margin above
+    0; `t3x_common.BULK_WHOLE_MARGIN = 0.0`). The single-cell route keeps its own number (0.05) and its code
+    untouched; its tables' hash checks pass; the dataset file, the plans and the pins are unchanged. All 1,655
+    pipeline and table tests pass.
+  - **Who decided, on what.** An independent analyst decided cold and a challenger attacked the decision; both saw
+    only the figures of entry (hhh) and the guard's code: whole-library correlations with reference profiles, somite
+    bins, counts of libraries and lines. No table value, no gene-level value, no practice score: none has been read by
+    anyone. They were given counts, not line names. The AI assistant, who raised the question, had seen the names of
+    the passing and left-out lines in the run's log; it raised the question on the share of controls dropped and the
+    shape of the margin distribution, and line identity played no part in raising it or in the decision.
+  - **Why.** The 0.05 was borrowed from the single-cell route, where it compares lineage groups with each other; here
+    it compared a mixture of those groups with its largest members, where margins are small by construction. On 217
+    single whole embryos it cut one tight distribution at its middle (controls: median 0.051, range 0.038 to 0.069),
+    dropped 46 of 111 controls and, because only controls are tested and failure followed somite number, it filtered
+    one arm by stage; six lines were lost to it. Zero has a meaning that needs no data: more like the whole embryo
+    than like any one lineage. Any number between 0 and 0.038 would act the same on this set; zero was chosen for its
+    meaning. The challenger's synthetic check (random group profiles, no real data, not kept in the repository) found
+    that the margin catches samples of one or two lineages and does not separate partial or contaminated embryos from
+    whole ones at any number, so the guard is now described as a single-lineage check; partial samples rest on the
+    readers' record check, the composition guard and the genotype guard. The arm-mean test moves with the per-library
+    test: the old arm means were computed after the drops and say nothing about 0.05.
+  - **This is a change made after a run, and is called one.** What binds from here: the rule and its commit are fixed
+    before the rerun; row K24 reads only the table built under the new rule; the first run's table (sha256
+    865a5530...) is never read, and its QC file is kept (`~/v/scratch/dmdd_pins/first_run/QC.json` on the compute
+    machine, sha256 recorded with the rerun); if the new table misses K24's pre-gate, K24 records the miss and reads
+    nothing of it, with no return to the old table and no further guard change for that row; both runs' line and
+    library counts go into the row before the read. The analyst's and the challenger's odds that the change is a
+    mistake: about one in five each, mostly that a later, thinly recorded dataset passes a sample that is not a whole
+    embryo; the GEO bulk forms are closed (entry (iii)).
