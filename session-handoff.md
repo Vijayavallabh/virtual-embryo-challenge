@@ -26,6 +26,16 @@
     build passes the board's limits, which it did).
   - **When the captain reports an embryo score:** add the row to `results/manual_uploads.csv` (headline only; per-term
     values are not tabulated or compared) and a decision-log entry; nothing is re-planned from it.
+  - **The upload timeline (a side agent's note the captain forwarded at about 12:23 UTC, with no words of the
+    captain's own; checked against entries 2026-11-20 (k) and (q) and the K23 and CK amendments: it is right).** Task
+    3's chain is sequential and needs three upload days at two a day: day 1 exponent 1.5, then (on its score) exponent
+    2.0 or the barred s2; day 2, on the base those two scores fix, two of the next files (C1 and C2 if the base is
+    barred s1 or s2; C2 and the K23 file if it is an exponent file); day 3 the rest (the K23 file if not yet up; CK
+    only if C2 and the K23 file each beat the base). Task 1 and the embryo need two days, the heart one. Starting by
+    23 Nov leaves a spare day; 24 Nov is the last start that still reaches every file before 26 Nov 11:59 UTC. Every
+    later Task 3 file exists for every possible base in `runs/manual_upload/` (T3_c1_*, T3_c2_*, T3_k23_*, T3_ck_* on
+    s1, s1x1.5, s1x2.0, s2) and all fourteen were re-checked today against their recorded sha256 and pass the format
+    check, so no step waits on a build: each needs only the pasted score of the step before.
   - **Unchanged queue on the other boards:** T1 `T1_s2rcA` then `T1_s2rcB` (`T1_s2rcC` only if A and B each beat
     70.60); heart K1 `T2heart_s2trimcopy_half` then K2 `T2heart_s2iso_half`; T3 `T3_barred_x1.5`, then
     `T3_barred_x2.0` if 1.5 beats 61.8, else the barred s2; then on base B the C files, the K23 file and CK by entry
