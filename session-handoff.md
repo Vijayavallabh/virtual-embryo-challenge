@@ -2,8 +2,7 @@
 
 ## Current Objective
 
-- **State at 2026-11-21, 09:20 UTC (newest; it supersedes the bullets below where they differ).** Decision log
-  2026-11-21 (c) to (n). Local main = origin/main (ef46975 or later). No score line since 20 Nov 15:30 UTC.
+- **State at 2026-11-21, 09:20 UTC (newest; it supersedes the bullets below where they differ).** Decision log 2026-11-21 (c) to (o). Local main = origin/main. No score line since 20 Nov 15:30 UTC.
   - **THE EMBRYO'S ORDER RULE IS IN FORCE (entry 2026-11-21 (l), the analysts' rule; the main session is recused,
     executes it and states no preference): each embryo upload takes the first not yet uploaded of O, P, C.** O, the
     overlay file: `runs/manual_upload/T2embryo_s2x_ov.h5ad`, sha256
@@ -33,8 +32,7 @@
   - **The review of the main session's own record (entry 2026-11-21 (n)):** NOT READY on one blocker, the build
     launcher's gate; fixed at ef46975 (the reading must be a tracked file of the build commit, made at the run commit
     5fcf6b9ad187…; full-hash HEAD; builder code unchanged since the run commit; a build counts only with a stamp of
-    this commit, clean). The same reviewer is verifying the fix (an Agent-tool agent; its hand-back decides whether
-    the test-board build may start). **THE CAPTAIN'S QUESTION WAS PUT AT 09:27 UTC as plain text, in the analysts'
+    this commit, clean). The same reviewer verified the fix: READY, no blocker (entry (o); the launcher's code-unchanged check was widened on its lesser point). **THE CAPTAIN'S QUESTION WAS PUT AT 09:27 UTC as plain text, in the analysts'
     words, default build** (count below the count rule, E7.5's own size instead of the pre-registered size): a 'no'
     means no copy-positions file; no answer means built by the default; record the answer verbatim, or 'no answer by
     <time>; built by the default', in the file's rules-note section and log entry. The earlier plan to hold the
@@ -47,8 +45,7 @@
     `e50_chain.sh`.
   - **Launchers on this machine may hold no removal of a variable path** (a built-in safety check refuses the whole
     command): the two embryo build launchers delete nothing and take a run name whose folders must not exist.
-  - **Tries:** T1 418, embryo 83 (84 once E50's run step starts), heart 80, T3 72. **Next labels:** decision log
-    2026-11-21 (o); register row X018.
+  - **Tries:** T1 418, embryo 83 (84 once E50's run step starts), heart 80, T3 72. **Next labels:** decision log 2026-11-21 (p); register row X018.
 - **State at 2026-11-21, 08:42 UTC (superseded by the bullet above where they differ).** Decision log
   2026-11-21 (c) to (k). Local main = origin/main. No score line since 20 Nov 15:30 UTC.
   - **THE EMBRYO'S OVERLAY FILE IS BUILT (the captain's order of 21 Nov, verbatim "Build it", answering a one-question
