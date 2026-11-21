@@ -9575,3 +9575,119 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     not closed. So it exists under the challenger's rule and is handed over as the embryo's file after C. A copy-rows
     file at the team's own size, which the round did not propose and the captain's yes of entry (v) covers, is being
     specified by a fresh analyst.
+- 2026-11-21 (z), the moonshot round's outcome: eight kill tests go to engineers (state at 23:08 UTC, 2026-11-21). Written by the
+  AI assistant, which gives no design lean on any board (entry 2026-11-21 (t)); the judgements below are the
+  score-blind judges'.
+  - **The round** (workflow `moonshots-round-1`, the captain's order of entry 2026-11-21 (v); twelve agents: per board
+    two designers and a cold judge, all told to use no test score; hand-back in the session scratchpad
+    `lift8/moonshots_round1.json`). Twenty-three proposals; the judges kept two per board and struck the rest (closed
+    levers such as size, scope and composition; duplicates; ideas already read; kill tests that were not fair). Their
+    plain summaries, verbatim, follow.
+  - **T1, the judge's summary, verbatim:** "Of six proposals, two can run tonight on the existing harness without a
+    GPU. Both are for T1 and both can be built by 25 November if they pass. First: move the blood cells, which nothing
+    moves today, along the change of red-blood-cell nuclei in the JAX atlas between E8.5 and E15.5-E16.5. Chance it
+    passes its practice test: about 1 in 5; chance of 3 or more points at the test if it passes: about 7 in 100.
+    Second: let each gene move at its own pace, using how fast it is still changing in Feng's hearts after E14.5.
+    About 1 in 8 to pass; about 4 in 100 for 3 or more points if it passes. Both most likely fail against their
+    shuffled-gene controls; either file needs your ruling (the blood one amends your ruling R1), and I struck the
+    neural-network and learned-transfer ideas as too weakly identified to finish in time."
+  - **T3, the judge's summary, verbatim:** "Of the six moonshots, two survive and four are struck. The transport map
+    would bring back T3's closed composition and confuse genotype with slide. The scorer-optimised posterior repeats
+    exponent and shrinkage reads, and rests on outside tables that row K24 closed on this fold. The spatial field
+    revives pruned lines and cannot move a fitted field from E9.5 into the E8.75 frame. The duplicate gene-map design
+    is merged into survivor 2. First to run: a mean-preserving within-label spread transfer, released data only. It
+    must gain on the Mab21l2-truth fold and in the depth-matched world, because added noise has scored by depth
+    before. Pass about 0.08; given a pass, about 0.12 for a gain of 3 points or more. Second: a map from the
+    knocked-out gene's own wild-type co-expression in the released T1 files to its response, gated first on outside
+    tables alone and needing your A15 ruling for any file. Pass about 0.05; given a pass, about 0.15 for 3 points or
+    more. Honestly, the most likely outcome of both is no file, and the realistic size of a success is 0.5 to 2
+    points."
+  - **Heart, the judge's summary, verbatim:** "I struck the size idea because size is a closed lever. I also struck
+    the T1-trained translator: it needs T1 data on the heart, and its own designer expects it to fail. Two ideas
+    survive, and both pull the heart's expression toward legal E14.5 data (JAX embryos 54-56 and Feng's E14.5 hearts)
+    without changing cells, positions, size or depth. First comes a cheap check that reads no target: does the JAX
+    atlas's E8.75-to-E9.5 change agree with the MERFISH change on the panel genes? About 0.35 that it passes. If it
+    fails, the heart line ends at no cost. If it passes, the chord idea (H29, CPU, 30 tries) and the latent bridge
+    (H30, two GPU fits, 18 tries) each face a placebo bar in both practice worlds. Honest odds of a gain of three
+    board points or more at the test are about 1% for each idea, and about 2-4% of any real gain; most likely nothing
+    changes, and a pass would still need your yes on the outside-data question."
+  - **Embryo, the judge's summary, verbatim:** "Two of five moonshots survive. Both designer two's ideas are struck:
+    they crop the embryo's scope and size, which the post-exposure block closes, and one of their checks compared a
+    candidate with a practice truth before any row was written. Designer one's simulator idea is struck because its
+    fake truths are made from bracket cells, so it favours the current mixture by design. First to run is a smooth
+    deformation that carries both halves of the overlay file to one midpoint shape: about 12% to pass its test, and
+    about 2% overall to add 3 or more board points over the overlay already built. Second is a flow through all seven
+    released stages that picks which real cells go in: about 7% to pass, and under 1% overall for a 3-point gain. Each
+    costs about 3 hours on the DGX and could be built by 24 November; most likely neither passes."
+  - **Row labels.** The judges drafted rows under labels that collide with the candidate round's (E51, E52, H29a,
+    T65). The labels in force: T1 blood along the outside nuclei atlas T66; T1 per-gene timing T67; T3 within-label
+    dispersion K25; T3 gene-conditioned response map K26; heart late-anchor chord H30 (its target-free gate first);
+    heart latent bridge H31; embryo geodesic overlay E53; embryo multi-stage flow E54.
+  - **What is done.** Workflow `moonshots-engineering-1` (sixteen agents): per moonshot an engineer writes the kill
+    test exactly as its judge specified, on its own branch, and a reviewer checks it. Each kill test is a counted try:
+    the AI assistant places its row and a log entry in one commit before the read, amends the register row of any
+    outside source first (the outside nuclei atlas and the heart atlas's later stages are new uses of rows X003 and
+    X002), runs it on the DGX and reads it in its fixed words. Only a pass leads to a build path, and several passes
+    would still need the captain's word before any file: the blood line amends ruling R1; the heart lines and T3's map
+    use data across tasks or from outside on a board that has had none (question A15). The judges' own odds: each kill
+    test passes with a chance between about one in twenty and one in five, and a gain of three board points or more at
+    the test is about one or two in a hundred per moonshot. Most likely no file comes of them.
+- 2026-11-21 (aa), the T1 file at twice the calendar fraction: the code is reviewed and merged; a cold challenger's check of the
+  rule reading; what the Rules page says about trying settings (state at 23:25 UTC, 2026-11-21). Written by the AI
+  assistant.
+  - **The code** (workflow `t1-fraction-2x`; branch `campaign/t1-fraction-2x`, 6165ed8, merged to main at 0619ad2).
+    The builder takes `--feng-fraction-mult 2.0` only with `--captain-ruling R20`, only on R13's exact command, and
+    refuses every other value and combination before anything is read; the commands that exist (the default, A, B, C)
+    build the same bytes and records as before, pinned by tests on a synthetic fixture. The launcher
+    `experiments/builds/t1_fraction2.sh` first rebuilds R13's bytes and B's bytes and stops if either differs, then
+    builds the 2.0 file twice. The reviewer: READY, no blocker; lesser points noted (two refusals leave no exit file,
+    so the waiter also watches the process; the launcher runs Python isolated where the reference sets did not, which
+    fails closed at the identity steps if it mattered). On merged main: 152 passed on the related test files, the step
+    script's guard passes, the linter is clean.
+  - **The rule check** (a cold challenger, told only the sign of B's headline against R13's file). Verdict: the
+    reading of entry 2026-11-21 (x) stands. It puts the chance that the organisers would treat the 2.0 file as
+    improper at about one in twenty, on the score-use question alone, and the loss at that one file. Its strongest
+    argument against: the direction of the move follows a comparison of two submissions, a one-bit estimate of a
+    hidden-target property, and the team's own paraphrase lists 'differencing submissions' among prohibited acts. Its
+    conditions for staying on the allowed side: a round step on the existing scale, fixed before its own score; only
+    the team's own headlines, used only to choose which file stands; nothing else in R13's command changes; any
+    further strengths named before the 2.0 score; the method report says plainly that the strength was tried at 1.0,
+    1.5 and 2.0 and the best headline kept; the normal build checks. What it says would cross the line: a value fitted
+    from the sizes of returned scores; setting the strength from per-metric returns; inverting the skill map.
+  - **Two corrections to entry (x), from the challenger.** (1) Entry (x) understated the record. The Rules page's
+    Section 10, as the screened check of 2026-11-18 quotes it in `docs/ORGANIZER_QUESTIONS.md`, says: "Trying a
+    parameter value, seeing how it scores, and trying another is ordinary leaderboard work and remains permitted
+    however many rounds it takes; ... what is prohibited is solving for a property of the target and building a
+    submission out of the solution." (2) Entry (x) said the 'Scores' section of `docs/DATA_POLICY.md` records the
+    Rules page's test ("whether the truth enters your prediction's content or only its selection"); that sentence is
+    in a later change note of that file and in `docs/ORGANIZER_QUESTIONS.md`, not in the 'Scores' section.
+  - **What this means beyond the one file (the AI assistant's reading, put to the captain).** Entry 2026-11-21 (t)
+    refused to tune any file from the returned scores and named the organisers' rule as the reason. On the record just
+    quoted that was stricter than the organisers' rule: trying a setting, seeing its score and trying another is
+    permitted by them for as many rounds as it takes. What their rule prohibits is solving for a property of the
+    hidden target (by inverting the skill map) and building a submission out of the solution. The bars on setting a
+    number from a score and on reading per-metric lines are the team's own (entries 2026-11-18 (k), 2026-11-20 (n) and
+    (q), 2026-11-21 (l)), written after the AI assistant's lapses, which were of the prohibited kind (bounding a
+    hidden quantity from scores). The team's own rules are the captain's to lift; the levers closed after the exposure
+    of 2026-11-04 (sizes, scope, cell numbers, T1's composition, depth and draw) and the AI assistant's recusals stay
+    whatever is lifted, because those concern leaked or solved hidden properties. The captain is asked one question:
+    whether to lift the team's own bars so that a score-guided search (round steps on a few settings per board, each
+    fixed in the log before its own score) may run.
+- 2026-11-21 (bb), the T1 file at twice the calendar fraction is built and handed over; the moonshot kill tests' reviews (state at
+  23:45 UTC, 2026-11-21). Written by the AI assistant.
+  - **The 2.0 file** (row R20; record `experiments/builds/results/t1x2_3d18841.txt`). On the DGX at 3d18841, clean,
+    `experiments/builds/t1_fraction2.sh` (run r1) passed its gate and tests (172 passed), rebuilt R13's bytes
+    (ad8f24c71c90...) and B's bytes (c7240cb6a7f7...), and built the 2.0 file twice with the same bytes: sha256
+    52897fe375b8a81afffa788592047c30361824148b00a8176514385060518837. Stamps: this commit, clean.
+    `runs/manual_upload/T1_s2rcB2.h5ad`, format check passes. It is handed over as T1's file after C. Unpriced on
+    practice; the cost of a miss is one slot.
+  - **The moonshot kill tests** (workflow `moonshots-engineering-1`, sixteen agents; hand-back in the scratchpad
+    `lift8/moonshots_eng1.json`). One of the eight is reviewed ready: T67, T1's per-gene timing
+    (`campaign/moon-t1-timing`, 485e3d3). Seven are not ready, each with stated fixes: T66 T1 blood (four blockers;
+    its work was left uncommitted in the engineer's worktree; it also needs the `rdata` package, which the DGX
+    environments lack); K25 T3 dispersion (the row text leaves out constants the code fixes); K26 T3 map (its pre-gate
+    on one fold reads a table derived from that fold's target; the try count on a void); H30 heart chord (row
+    placeholders; its gate needs its own row); H31 heart bridge (four); E53 embryo geodesic (row wording twice; a
+    stale exit file can let a step run; the register lacks torch); E54 embryo flow (the launcher's clean-tree check
+    refuses after its own gate). The outside nuclei atlas and the heart atlas's later stages are on the DGX. A fix
+    round follows for T66, K25, H30, E53 and E54; K26 and H31 wait (the lowest odds; H31 depends on H30's gate).
