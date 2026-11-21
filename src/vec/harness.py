@@ -1236,6 +1236,104 @@ def _fgw_copyrows_series(ctx: BuildContext) -> Stage:
     return _copy_rows(ctx, expression="series")
 
 
+# Row E54 (the moonshot "multi-stage flow, then retrieval", as specified; off by default): fgw_shape0x's positions,
+# count, bracket quotas and position assignment, each bracket's rows replaced by the real cells of that bracket
+# retrieved one to one (vec.t2_mmflow.retrieve) for the states its drawn cells reach under a multi-marginal flow. The
+# flow is fitted outside the build (experiments/coords/e54_mmflow_read.py fit), so these arms are not in CANDIDATES:
+# mmflow_candidate makes one around the fitted states of one task.
+MMFLOW_ARMS = {"fgw_mmflow_snap": "snap", "fgw_mmflow_anti": "anti"}
+MMFLOW_STATE_KEYS = ("before_obs", "after_obs", "before_latent", "after_latent", "before_snap", "after_snap",
+                     "before_anti", "after_anti", "days")
+
+
+def _shares(labels: np.ndarray) -> dict[str, float]:
+    names, counts = np.unique(np.asarray(labels).astype(str), return_counts=True)
+    return {str(k): float(v) / float(counts.sum()) for k, v in zip(names, counts, strict=True)}
+
+
+def _median_library(a: ad.AnnData, genes, rows: np.ndarray) -> float | None:
+    """The median library size (vec.t2_build.library_sizes) of the given rows, over those with an expressed panel gene
+    (the formula reads the library from them; a row without one has none to read)."""
+    from scipy import sparse
+
+    if "counts" not in a.layers or len(rows) == 0:
+        return None
+    sub = a[:, list(genes)]
+    C = sparse.csr_matrix(sub.layers["counts"][rows])
+    C.eliminate_zeros()
+    keep = np.flatnonzero(np.diff(C.indptr) > 0)
+    if len(keep) == 0:
+        return None
+    return float(np.median(t2_build.library_sizes(sub.X[rows][keep], C[keep])))
+
+
+def _fgw_mmflow(ctx: BuildContext, states: Mapping[str, np.ndarray], direction: str,
+                facts: dict | None = None) -> Stage:
+    """The E54 arm (direction "snap") or its placebo ("anti"). fgw_shape0x's interpolation is made with fgw_shape0x's
+    own arguments; every slot keeps its coordinates (the jittered ones included), its bracket and its place in the
+    file. The before bracket's slots take the before pool's rows retrieved for the flow states of the rows fgw_shape0x
+    drew there (states[before_<direction>] at those rows), the after bracket's alike; the expression is the mixture's
+    (each cell as released). `states` come from the task's fit (keys MMFLOW_STATE_KEYS: each pool's obs names and
+    latent, the states carried to the target day ("snap") or away from it by the same span ("anti"), and the days
+    (before, after, target) the fit used). `facts`, if given, receives this build's record under the build seed: the
+    C0 and arm rows' median library per bracket, Kish pool use, type shares and the jitter flag (no count)."""
+    from vec import t2_mmflow
+
+    t = ctx.task
+    if direction not in t2_mmflow.DIRECTIONS:
+        raise ValueError(f"unknown direction {direction!r}")
+    before, after = ctx.inputs["before"], ctx.inputs["after"]
+    lo, hi = t.role_days["before"], t.role_days["after"]
+    if [float(x) for x in np.asarray(states["days"]).ravel()] != [lo, hi, t.target_day]:
+        raise ValueError(f"{t.key}: the fitted states are for days {list(np.asarray(states['days']))}")
+    for role, a in (("before", before), ("after", after)):
+        if list(np.asarray(states[f"{role}_obs"]).astype(str)) != list(a.obs_names):
+            raise ValueError(f"{t.key}: the fitted states' {role} cells are not the input's")
+    g = ctx.board.genes
+    frac = (t.target_day - lo) / (hi - lo)
+    Eb, Ea = dense(before[:, g].X).astype(np.float32), dense(after[:, g].X).astype(np.float32)
+    res = t2_build.interpolate_clouds(np.asarray(before.obsm[COORD_KEY], dtype=float)[:, :3],
+                                      np.asarray(after.obsm[COORD_KEY], dtype=float)[:, :3], Eb, Ea,
+                                      frac, count_for(ctx.board, before.n_obs), ctx.seed,
+                                      target_rms=target_rms(ctx), t_pos=0.0, positions=t2_build.POSITIONS[1])
+    rows = res.rows.copy()
+    rec: dict = {"n_jittered_any": bool(res.record.get("n_jittered", 0) > 0)}
+    for s, role, a in ((0, "before", before), (1, "after", after)):
+        slots = res.stage == s
+        old = res.rows[slots]
+        new = t2_mmflow.retrieve(np.asarray(states[f"{role}_{direction}"])[old], states[f"{role}_latent"])
+        rows[slots] = new
+        lib_old, lib_new = _median_library(a, g, old), _median_library(a, g, new)
+        labels = a.obs["celltype"].to_numpy() if "celltype" in a.obs else None
+        rec[role] = {"median_library_c0": lib_old, "median_library_arm": lib_new,
+                     "library_ratio": None if not lib_old or lib_new is None else lib_new / lib_old,
+                     "kish_frac_c0": t2_mmflow.kish_ess_frac(old, a.n_obs),
+                     "kish_frac_arm": t2_mmflow.kish_ess_frac(new, a.n_obs),
+                     "shares_c0": _shares(labels[old]) if labels is not None and len(old) else {},
+                     "shares_arm": _shares(labels[new]) if labels is not None and len(new) else {}}
+    X = np.empty((len(rows), len(g)), dtype=np.float32)
+    X[res.stage == 0], X[res.stage == 1] = Eb[rows[res.stage == 0]], Ea[rows[res.stage == 1]]
+    if facts is not None:
+        facts[ctx.seed] = rec
+    return finish(ctx, before, X, res.coords, guard_source=res.pool_coords, guard_weights=res.pool_weights)
+
+
+def mmflow_candidate(name: str, states: Mapping[str, np.ndarray], facts: dict | None = None) -> Candidate:
+    """A harness candidate for the E54 arm `name` (MMFLOW_ARMS) around one task's fitted states."""
+    direction = MMFLOW_ARMS[name]
+    missing = [k for k in MMFLOW_STATE_KEYS if k not in states]
+    if missing:
+        raise ValueError(f"{name}: the fitted states lack {missing}")
+    what = ("towards the target day" if direction == "snap"
+            else "away from the target day by the same span (the placebo)")
+    return Candidate(name, frozenset({"T2"}), (), lambda ctx: _fgw_mmflow(ctx, states, direction, facts),
+                     {"what": "fgw_shape0x's positions, count, bracket quotas and position assignment, each bracket's "
+                              "rows the real cells retrieved one to one for the states its drawn cells reach under a "
+                              f"multi-marginal flow {what}",
+                      "direction": direction, "positions": t2_build.POSITIONS[1],
+                      "stream": t2_build.FLOOR_EXACT_STREAM, "scope": "whole"}, requires=_interp)
+
+
 def _fgw_late(ctx: BuildContext) -> Stage:
     """Embryo try E23: fgw's coupling, moves and size, every cell drawn from the later bracket (t_mix = 1)."""
     return _fgw(ctx, t_mix=1.0)
