@@ -38,3 +38,8 @@ was read.
 What the file is not: the outcome of row E49's rule (the overlay form does not pass it; clause P5). It exists by the
 captain's order of 2026-11-21 (docs/PLAN.md decision log 2026-11-21 (j)). Its place in the embryo's list and what each
 returned score means are fixed in the decision log before any score of it. Data used: released challenge data only.
+
+Review (docs/PLAN.md decision log 2026-11-21 (k)): one independent reviewer at 3b813b5, READY, no blocker. The
+builder's sidecar files beside each build (`.build.json`, `.stamp.json`) are kept and are not opened, except the
+stamp's commit and clean fields by code: the overlay's `.build.json` holds a number that follows from the test board's
+count.

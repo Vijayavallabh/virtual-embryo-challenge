@@ -3,7 +3,7 @@
 ## Current Objective
 
 - **State at 2026-11-21, 08:42 UTC (newest; it supersedes the bullets below where they differ).** Decision log
-  2026-11-21 (c) to (j). Local main = origin/main. No score line since 20 Nov 15:30 UTC.
+  2026-11-21 (c) to (k). Local main = origin/main. No score line since 20 Nov 15:30 UTC.
   - **THE EMBRYO'S OVERLAY FILE IS BUILT (the captain's order of 21 Nov, verbatim "Build it", answering a one-question
     dialog on a forwarded side-agent note; entry 2026-11-21 (j), ruling row R19, the rules-note amendment of
     2026-11-21).** `runs/manual_upload/T2embryo_s2x_ov.h5ad`, sha256
@@ -12,11 +12,11 @@
     (run r1), after the default command gave the positions file's bytes; record
     `experiments/builds/results/embov_3b813b5.txt`; archives `runs/archive/embov_3b813b5/` on both machines. It is row
     E49's overlay form (arm E49c), which did NOT pass its pre-set rule (clause P5); it exists by the captain's order,
-    not by the rule. The main session is recused on the embryo's shape forms and states no preference. **Before the
-    hand-over counts:** the independent review of the record and the build path (an Agent-tool reviewer, started 08:40
-    UTC) must say READY; and fresh analysts fix the order of the embryo's unscored files (the positions file a03611a3,
-    the copy-positions file of entry (h) when it exists, the overlay file) and what each score means, in a
-    decision-log entry before any score of the new files.
+    not by the rule. The main session is recused on the embryo's shape forms and states no preference. The independent
+    review of the record and the build path said READY, no blocker (entry 2026-11-21 (k), which also corrects three
+    wordings; never open the `.build.json` sidecars of test builds). **Before any score of it:** fresh analysts fix
+    the order of the embryo's unscored files (the positions file a03611a3, the copy-positions file of entry (h) when
+    it exists, the overlay file) and what each score means, in a decision-log entry before any score of the new files.
   - **The heart check: do not pursue** (entry (j); hand-back in the session scratchpad
     `lift8/heart_frame_check.json`). K1 and K2 are fresh draws with zero-mean frame luck; a copy-rows heart file would
     score the baseline on every term but size and needs R16's closed list reopened. K1 then K2 stand; nothing is asked
@@ -28,7 +28,7 @@
     whose text has `rm` on a shell variable. `embryo_overlay.sh` deletes nothing and takes a run name whose folders
     must not exist (a rerun takes a new name).
   - **Tries:** T1 418, embryo 83, heart 80, T3 72 (unchanged: R19 is a ruling, not a try). **Next labels:** decision
-    log 2026-11-21 (k); register row X018.
+    log 2026-11-21 (l); register row X018.
 - **State at 2026-11-21, 00:54 UTC (superseded by the bullet above where they differ).** Decision log
   2026-11-21 (c) to (i). Local main = origin/main (9100471 or later). No score line since 20 Nov 15:30 UTC.
   - **The captain, 21 Nov about 08:10 UTC, verbatim: "Proceed with decisions that help us place at the top of the
