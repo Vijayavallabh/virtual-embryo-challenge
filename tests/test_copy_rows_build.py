@@ -3,6 +3,7 @@ and synthetic stages only. No board file, released stage or test count is read."
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import sys
@@ -244,3 +245,25 @@ def test_the_bit_self_checks_fire_on_one_ulp(bt, monkeypatch, world, own_repo, t
 def test_the_launcher_list_names_this_file():
     sh = (REPO / "experiments" / "external" / "n54_step.sh").read_text()
     assert "tests/test_copy_rows_build.py" in sh
+
+
+# ------------------------------------------------------------------------------------------------ row E52
+# --copy-rows-size (off by default; the copy-rows file at the team's pre-registered size, the captain's order of
+# 2026-11-21, decision log 2026-11-21 (v)). Synthetic stages and a synthetic size JSON only; the size file is never read.
+SIZE_ARGS = ["--copy-rows", "--copy-rows-test-ok", "--copy-rows-size", "--copy-rows-size-test-ok"]
+# The flag-off copy-rows file of the fixture world (mixture, the default seed), pinned on the builder before
+# --copy-rows-size existed and unchanged after it: the flag-off path keeps its bytes and its record.
+GOLDEN_CR_SHA256 = "3e126d6352eaaaf606fa6e75e66ada46e612381bcbdfcdaa9090fec18e6e048b"
+GOLDEN_CR_KEYS = ["allow_below_truth", "board", "copy_rows", "copy_rows_copy", "count_decision", "count_rule",
+                  "dry_run", "entry", "n_cells", "record", "seed", "size_rule", "target_rms"]
+
+
+def test_the_flag_off_copy_rows_file_keeps_its_bytes_and_record(bt, monkeypatch, world, own_repo, tmp_path):
+    _fake(bt, monkeypatch, world, _board(world[3]))
+    out = tmp_path / OUT
+    bt.main([*BASE, "--copy-rows", "--copy-rows-test-ok", "--out", str(out)])
+    assert hashlib.sha256(out.read_bytes()).hexdigest() == GOLDEN_CR_SHA256
+    rec = json.loads(out.with_suffix(".build.json").read_text())
+    assert sorted(rec) == GOLDEN_CR_KEYS
+    assert rec["size_rule"] == "not applied" and rec["target_rms"] is None and "copy_rows_size" not in rec
+    assert rec["n_cells"] == "floor_copy" and rec["record"]["expression"] == "mixture"
