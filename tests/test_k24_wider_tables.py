@@ -118,8 +118,14 @@ def test_arms_constants_and_the_shared_modules():
 def test_s_star_is_k23s_committed_table_figure_and_the_pins_wait_for_the_row():
     pre = json.loads((K23_DIR / "pregate.json").read_text())
     assert k24.S_STAR == pre["pregate"]["exponents"]["2"]["table"]["sd_ln"] == 0.04949423311987974
-    assert k24.K24_LISTING_SHA256 is None and k24.K24_TABLE_SHA256["sc3"] is None and k24.K24_TABLE_SHA256["bulk"] \
-        is None
+    # until TABLES_K24.sha256 is committed the pins are None; once it is (row K24's commit), they are its hash and lines
+    if not k24.LISTING_FILE.exists():
+        assert k24.K24_LISTING_SHA256 is None and k24.K24_TABLE_SHA256["sc3"] is None
+        assert k24.K24_TABLE_SHA256["bulk"] is None
+    else:
+        raw = k24.LISTING_FILE.read_bytes()
+        assert k24.K24_LISTING_SHA256 == hashlib.sha256(raw).hexdigest()
+        assert k24.K24_TABLE_SHA256 == ext.parse_listing(raw) and ext.tracked(k24.LISTING_FILE)
     assert k24.K24_TABLE_SHA256["two"] == TWO_SHA == ext.K22_TABLE_SHA256["all"] == k23.K23_TABLE_SHA256
     r = json.loads((K23_DIR / "reading.json").read_text())
     assert r["ext"]["tables"] == {"all": TWO_SHA} and r["names"] == ["x_e2"]
@@ -1448,9 +1454,15 @@ def test_preconditions_refuse_unfilled_pins_a_dirty_tree_and_a_bad_folder(tmp_pa
     monkeypatch.setattr(k24, "TRIES_MD", tries)
     monkeypatch.setattr(k18, "stamp", lambda: {"commit": "abc", "tree_clean": True, "machine": "m1", "utc": "x"})
     argv = ["pregate", "--out", str(tmp_path / "o")]
-    with pytest.raises(SystemExit) as e:
-        k24.main(argv)
-    assert e.value.code == 2 and "not filled" in capsys.readouterr().err  # the committed pins are None
+    # the unfilled state (the committed pins are filled since row K24's commit: the test sets it itself)
+    with monkeypatch.context() as mp:
+        mp.setattr(k24, "K24_LISTING_SHA256", None)
+        mp.setattr(k24, "K24_TABLE_SHA256", {**k24.K24_TABLE_SHA256, "sc3": None, "bulk": None})
+        with pytest.raises(SystemExit) as e:
+            k24.main(argv)
+        assert e.value.code == 2 and "not filled" in capsys.readouterr().err
+    monkeypatch.setattr(k24, "K24_LISTING_SHA256", "a" * 64)
+    monkeypatch.setattr(k24, "K24_TABLE_SHA256", {**k24.K24_TABLE_SHA256, "sc3": "b" * 64, "bulk": "d" * 64})
     monkeypatch.setattr(k24, "read_listing", lambda *a, **k: ({}, "x"))
     monkeypatch.delenv(k24.ENV_TWO, raising=False)
     monkeypatch.setenv(k24.ENV_TABLES, str(tmp_path))

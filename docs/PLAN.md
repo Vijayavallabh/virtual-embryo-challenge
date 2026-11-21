@@ -8774,3 +8774,49 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     words. The bulk table will be combined once more, with unchanged values, when the manifest gains the count of
     lines holding each gene (entry (iii)); its bytes are then checked against 6833d8d7... before the listing is
     pinned.
+- 2026-11-21 (c), T3 outside knockouts: practice read K24 is placed, the wider tables at the named form's size, with
+  its rule fixed before the run (state at 00:38 UTC, 2026-11-21; written after entries (d) and (e), whose label this
+  entry was kept for because the K24 builder cites it). Written by the AI assistant.
+  - **Why, said plainly.** K23 named the barred factor times the two-study single-cell table at exponent 2. Two tables
+    now exist that K23 did not read: the three-study single-cell table (entry 2026-11-20 (qq)) and the bulk
+    whole-embryo table of the many-line set (entries (eee) to (hhh), 2026-11-21 (d), (e)). Entry (qq) fixed that they
+    are read together, once. K24 is that read and asks one thing: does a wider table beat the named form at a like
+    size? It is the fold's tenth read and the third on outside tables in two days; every arm draws the same rows from
+    the same seeds as K22 and K23; no later row reads these tables, their joint or another size of them on this fold.
+  - **The tables, pinned before the run** (`experiments/t3_ext/TABLES_K24.sha256`, sha256 cf6676d6c7fe...; pins in
+    `experiments/t3_decomp/k24_wider_tables.py`): the two-study table of K22 and K23 (9490f524..., the guard and the
+    comparison only); the three-study table (14aa9ad6...); the bulk table (6833d8d7...: 14 lines of one programme, 63
+    knockout and 64 wild-type embryos, built under the single-lineage check of entry (d); its record holds, per gene,
+    how many lines hold it). The first run's bulk table is never read. No value of the bulk table, no agreement count
+    and no score has been read by anyone; the pre-gate computes the figures the rule needs and writes them down before
+    any scoring part starts.
+  - **The rule in short** (the row holds it in full). Each table is raised to the exponent that brings its log spread
+    to the named form's (0.0495); the joint is the two size-matched tables at equal weight, brought back to that size
+    together; no larger size is read. For each of the three: the product, its shuffled control and its size twin; nine
+    tries at most. The barred form and the named form are scored first as guards; if either fails to reproduce its
+    committed figures the run stops before any try. Target-free drops, fixed now: the three-study table's own arm
+    drops when it merely repeats the named table (correlation 0.9 or more), and the joint is still read; the bulk
+    table is read only with at least 12 lines, at least two embryos an arm in each line and 36 an arm in all, and a
+    count of genes on which two thirds of the holding lines agree in sign that exceeds its chance expectation by 11%
+    of the genes; a table whose exponent or scaled values are out of bounds drops. An arm is named only if it
+    qualifies against the barred form by K23's clauses and also beats the named form itself, paired by seed, by 0.3
+    with eight of ten seeds in a plain cell and in a depth-matched cell with the same gated count, and is 0.3 behind
+    it in no cell. At most one file; otherwise no file and the K23 file stands alone.
+  - **How the row came to this text.** A planner and a challenger designed it (verdict: run as amended); an engineer
+    built it; four review rounds followed. The first three each found one case where a degenerate table (no exponent;
+    one constant value; nearly constant) stopped the pre-gate instead of dropping that table; the fourth found two
+    more on tables no real data gives (values hundreds of log units from 1; a joint whose two halves nearly cancel).
+    All are fixed with tests. For the last pass the AI assistant set the standard down in words: the real tables are
+    fixed files pinned by hash and the pre-gate runs before any score, so a stop at the pre-gate on a pathological
+    table reads nothing and counts nothing and no longer blocks; a blocker is what could change arms, constants,
+    controls, the reading or the naming for tables that pass, start a run without its row, or change pinned bytes.
+    Under that standard the last reviewer's verdict is ready (head 105fe36; merged at 904174f; 1,940 tests pass on
+    main). Separately, a cold challenger restated two clauses on arithmetic alone (entry 2026-11-20 (iii)); their
+    implementation was reviewed ready.
+  - **If a file is named:** it is the barred factor on base B of entry 2026-11-20 (q) times the named arm's scaled
+    table, built for every base by `build_k24_form.py`, priced at exponent 1 on the central composition only, placed
+    after CK in Task 3's list (CK's place against the earlier files and its upload conditions unchanged), with a
+    rules-note amendment, the register rows of every study in the named table and a data-used text before any
+    hand-over; one short question to the captain on its place, with the default 'last, after CK'. No combination with
+    the Gata4 factor is built from it. **Odds:** the first challenger's, about one in ten that a file is named, set
+    before the line count was known and before the two clauses were restated; not re-estimated.

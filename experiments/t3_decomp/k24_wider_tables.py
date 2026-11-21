@@ -105,9 +105,11 @@ SOURCES = {"two": (ENV_TWO, "all", "COMBINE.json"), "sc3": (ENV_TABLES, "all", "
            "bulk": (ENV_TABLES, "bulk_all", "COMBINE_bulk.json")}
 # Filled in the row's commit from the committed listing (`k24_wider_tables.py pins` prints both lines). None refuses
 # every run, pre-gate and build.
-K24_LISTING_SHA256: str | None = None
+K24_LISTING_SHA256: str | None = "cf6676d6c7fe3331f102b183dbcffd2df1655d471b9ea561574088622c7e3924"
 K24_TABLE_SHA256: dict[str, str | None] = {
-    "two": "9490f524e40e146480c775f85ae8829ec9c005607104ad8ace129c5c46ed6228", "sc3": None, "bulk": None}
+    "two": "9490f524e40e146480c775f85ae8829ec9c005607104ad8ace129c5c46ed6228",
+    "sc3": "14aa9ad68369c0e342af02306cef871867d73a242ea2f103886d145f80214698",
+    "bulk": "6833d8d7991e6f3872e09efb5024bcb34bfcc6ee6d2562558c9021d897bc972a"}
 
 STREAM = k18.STREAM  # "t3_s2_form"
 BASE = k18.BARRED  # "barred_form"
