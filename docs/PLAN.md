@@ -9364,3 +9364,28 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     record's best headline per board the total is 195.85. Beating 226 needs about thirty more points. The queued files
     and a blind candidate round can plausibly add a few points; the AI assistant puts the chance of 226 at about one
     in a hundred or less, and says so to the captain.
+- 2026-11-21 (u), a side agent's note on the copy-rows file's size, forwarded by the captain; the blind round is launched (state
+  at 22:39 UTC, 2026-11-21). Written by the AI assistant, which is recused on the embryo's occupancy term and shape
+  forms and states no preference.
+  - **The note, in substance** (forwarded with no words of the captain's own): from the per-metric lines the captain
+    pasted, the copy-rows file, which takes the baseline's size, would by the note's rough arithmetic land a few
+    points under the overlay's headline and so could not become the embryo's best; a version keeping the team's own
+    size might close most of that gap, which the note calls unconfirmed for the embryo; the main agent may not read
+    those lines; a new file needs the captain's order by name.
+  - **What the AI assistant does with it.** It does not use or check the note's arithmetic: it sets per-metric test
+    values beside each other and beside 50, which entry (l) bars, and it is the same reasoning as the lapse disclosed
+    in entry (t). It passes neither the note nor its idea to any designer. What the committed practice record already
+    says, with no test score: row E50's price table has the copy-rows form 2.70 board points below the exact-position
+    form, and the scale term is the largest single part of that (scale skill -0.1439; by the AI assistant's labelled
+    arithmetic about 1.2 of the 2.7 points, the group counting a quarter of the board over three terms); and the heart
+    check of entry (j) found from the scorer's code that a uniform resize changes only the scale term. A copy-rows
+    file at another size is excluded by name in entry (l) and can exist only by the captain's own named order, placed
+    by fresh analysts before any score of it, with no score of O, P or C in its design.
+  - **The blind round** (workflow `blind-candidates-round-2`, twelve agents, launched at this entry's time): the
+    embryo's two designers and its challenger are told to use no test score and are pointed, like the other boards',
+    at the board's ledger rows and newest practice readings (E47 to E50). Whatever they propose for the embryo or the
+    heart is a proposal for the captain's named order; for T1 and T3 the lists go into the log before any score.
+  - **The one question put to the captain** (plain text, default: both lists stay closed to new uploads; the designs
+    are prepared either way): whether the captain reopens, by name, the embryo's list and the heart's list for new
+    files designed without scores, including a copy-rows file at the team's own size if that is what the captain
+    orders.

@@ -2,8 +2,7 @@
 
 ## Current Objective
 
-- **State at 2026-11-21, 22:31 UTC (newest; it supersedes the bullets below where they differ).** Decision log
-  2026-11-21 (c) to (s). Local main = origin/main. Nothing of ours is running on the DGX. **FOUR SCORES CAME IN at
+- **State at 2026-11-21, 22:31 UTC (newest; it supersedes the bullets below where they differ).** Decision log 2026-11-21 (c) to (u). Local main = origin/main. Nothing of ours is running on the DGX. **FOUR SCORES CAME IN at
   22:31 UTC (entry (s)), one per board, reported by the captain as the first upload of the day; only the headlines are
   recorded (`results/manual_uploads.csv`); the paste's per-metric lines and ranks are recorded nowhere and are used
   for nothing.**
@@ -27,8 +26,21 @@
     apply the rules above, name the next files with path, sha256, board and data-used text. Embryo headlines serve the
     final mark only (entry (l)); no per-term value is tabulated, compared or quoted on any board; nothing is
     re-planned from a score.
-  - **Tries:** T1 418, embryo 84, heart 80, T3 72. **Next labels:** decision log 2026-11-21 (t) (or 2026-11-22 (a)
-    after midnight UTC); register row X018.
+  - **THE CAPTAIN'S INSTRUCTION AFTER THE SCORES (entry 2026-11-21 (t)), verbatim: "With this feedback, do whatever it
+    takes and to whatever extreme, go ahead with optimizing to ensure that our next upload is a lot better than this
+    and we have a lot of chances to beat 226 score in the leaderboard".** The main session's reading: cost is lifted;
+    the organisers' rule (scores choose among predictions, never compute them) is not; no file is shaped from the
+    pasted per-metric lines; a lapse in thought on the embryo is disclosed there; the main session gives no design
+    lean on any board. **Running:** workflow `blind-candidates-round-2` (task w4fjqduvg; twelve agents): per board two
+    score-blind designers and a cold challenger return a ranked list of further candidates with an order rule. **When
+    it hands back:** save the hand-back to the scratchpad `lift8/`; T1 and T3: place the lists in the log before any
+    score (a practice row first where a read is asked), build with thin launchers in the manner of
+    `embryo_overlay.sh`, review, hand over; embryo and heart: proposals only, nothing joins either list without the
+    captain's own named word. **One question is open with the captain (entry (u)), default closed:** does the captain
+    reopen, by name, the embryo's and the heart's lists for new files designed without scores (this includes a
+    copy-rows file at the team's own size, raised by a side agent's note that the main session may not act on). The
+    main session's honest odds for 226: about one in a hundred or less (said to the captain).
+  - **Tries:** T1 418, embryo 84, heart 80, T3 72. **Next labels:** decision log 2026-11-21 (v) (or 2026-11-22 (a) after midnight UTC); register row X018.
 - **State at 2026-11-21, 11:10 UTC (superseded by the bullet above where they differ).** Decision log 2026-11-21 (c) to (r). Local main = origin/main. No score line since 20 Nov 15:30 UTC. Nothing of ours is running on
   the DGX.
   - **THE EMBRYO HAS THREE FILES WITH THE CAPTAIN, IN THE ANALYSTS' ORDER (entry 2026-11-21 (l); the main session is
