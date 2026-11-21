@@ -1,11 +1,13 @@
 """Tests for the one field row K24's restated (b4) adds to experiments/t3_ext/combine.py: each bulk table's manifest
 records lines_held_by_study, the number of each study's lines holding each panel gene (the share's denominator), beside
 line_agreement_by_study and under the same condition. Nothing else changes: the bulk tables' csv bytes are those of
-main's combine.py (loaded from `git show main:experiments/t3_ext/combine.py`), and the single-cell family gains nothing.
+the earlier combine.py (loaded from `git show b50bf57:experiments/t3_ext/combine.py`, the last commit before the
+field), and the single-cell family gains nothing.
 Synthetic units only; no outside or competition data."""
 
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import os
@@ -25,6 +27,9 @@ import combine as cb  # noqa: E402
 GIT_VARS = ("GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE", "GIT_OBJECT_DIRECTORY", "GIT_COMMON_DIR", "GIT_NAMESPACE",
             "GIT_ALTERNATE_OBJECT_DIRECTORIES")
 
+
+BASELINE = "b50bf57"   # combine.py as it was before lines_held_by_study (sha256 pinned in the loader)
+BASELINE_SHA256 = "bf56610088cd7dfad8f66d4371a7a699e3e9fc05bc1911006098a22f2563c830"
 
 def _ref(n=40, seed=3):
     rng = np.random.default_rng(seed)
@@ -70,9 +75,14 @@ def _main_combine(tmp_path: Path):
     """main's combine.py, loaded under another module name from `git show` (its imports resolve to the modules already
     loaded from this checkout's experiments/t3_ext, which this change leaves alone)."""
     env = {k: v for k, v in os.environ.items() if k not in GIT_VARS} | {"GIT_OPTIONAL_LOCKS": "0"}
-    r = subprocess.run(["git", "show", "main:experiments/t3_ext/combine.py"], cwd=REPO, env=env, capture_output=True)
+    # the baseline is the last commit of combine.py BEFORE the field was added (b50bf57), not branch main: once
+    # the change is merged, main's combine.py is the new one and would compare with itself
+    r = subprocess.run(["git", "show", f"{BASELINE}:experiments/t3_ext/combine.py"], cwd=REPO, env=env,
+                       capture_output=True)
     if r.returncode != 0:
-        pytest.skip("no branch main in this checkout: the byte comparison with main's combine.py cannot be made")
+        pytest.skip(f"commit {BASELINE} is not in this checkout: the byte comparison with the earlier combine.py "
+                    "cannot be made")
+    assert hashlib.sha256(r.stdout).hexdigest() == BASELINE_SHA256
     d = tmp_path / "main_combine"
     d.mkdir()
     p = d / "combine_main.py"
