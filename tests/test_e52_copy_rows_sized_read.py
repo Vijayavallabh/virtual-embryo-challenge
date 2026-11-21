@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import copy
 import dataclasses
+import json
 import os
 import subprocess
 import sys
@@ -377,3 +378,152 @@ def test_the_launcher_parses_deletes_nothing_and_lists_its_tests():
               "tests/test_copy_rows_build.py", "tests/test_harness.py", "tests/test_hidden_counts.py"):
         assert f in text and (REPO / f).exists()
     assert "SCRIPT=experiments/coords/e52_copy_rows_sized_read.py" in text and "R=runs/e52" in text
+
+
+# ------------------------------------------------------------------------------------------------ fix round 2
+def test_reading_i_compares_the_four_expression_terms_as_reported_and_the_x_bytes_raw(arrays, good_facts):
+    """Row E52's wording of reading (i) for the four expression terms is the code's: the terms as the scorer reports
+    them, the X bytes compared raw. Equal reported terms do not hide an X byte difference."""
+    doc = " ".join(e52.__doc__.split())
+    assert ("its de_score, de_direction, mmd_u and variogram, as the scorer reports them, equal fgw_copyrows's exactly "
+            "(its X bytes compared raw)") in doc
+    X = arrays[2].copy()
+    X[0, 0] = np.nextafter(X[0, 0], np.float32(np.inf))
+    bad = _facts(arrays, "main", arm_X=X)  # the reported terms equal C's, one X byte differs
+    assert all(bad["expression_equal_c"].values()) and e52.i_failures(bad) == ["x_bytes"]
+
+
+def test_raw_facts_computes_every_shape_quantity_inside_the_build(arrays, monkeypatch):
+    """Lesser point 1: the scored parity and d2_shape, like the frame, the voxels and the Dice, are computed under the
+    scorer build they are recorded for."""
+    active, calls = [], []
+
+    @e52.contextlib.contextmanager
+    def scorer_build(build):
+        active.append(build)
+        try:
+            yield
+        finally:
+            active.pop()
+
+    orig_parity, orig_match = ev.svd_parity, ev.match_rows
+    monkeypatch.setattr(ev, "scorer_build", scorer_build)
+    monkeypatch.setattr(ev, "svd_parity", lambda Z: calls.append(("parity", tuple(active))) or orig_parity(Z))
+    monkeypatch.setattr(ev, "match_rows", lambda *a: calls.append(("match", tuple(active))) or orig_match(*a))
+    sm = ev._shape_metrics()
+    orig_d2 = sm.d2_distance
+    monkeypatch.setattr(sm, "d2_distance", lambda *a, **k: calls.append(("d2", tuple(active))) or orig_d2(*a, **k))
+    _facts(arrays, "prefix")
+    assert {k for k, _ in calls} == {"parity", "match", "d2"}
+    assert all(where == ("prefix",) for _, where in calls), calls
+
+
+def _gate_files(runs, commit=C, diff=0.2, passed=True):
+    for name in TASKS:
+        p = e52._gate_path(runs, name)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps({"pass": passed, "commit": commit, "diffs": {b: [diff] * 10 for b in e52.BUILDS}}))
+
+
+@pytest.mark.parametrize("e50_d_s, passed, want", [(0.2, True, 0), (0.24, True, 0), (0.26, True, 3),
+                                                     (0.2, False, 3)])
+def test_gate_all_exits_3_on_a_d_s_miss_and_run_is_then_refused(tmp_path, monkeypatch, capsys, e50_d_s, passed,
+                                                                 want):
+    """Blocker 1: the nine-task gate, D_s included, is its own step (gate-all) that exits 3 on a miss; cmd_run keeps
+    the same check as a second guard."""
+    runs = tmp_path / "runs"
+    _gate_files(runs, passed=passed)
+    e50 = {b: {"per_task": {}, "D_s": [e50_d_s] * 10} for b in e52.BUILDS}
+    monkeypatch.setattr(e52, "_refuse_unless_ready", lambda commit: None)
+    monkeypatch.setattr(e52, "e50_primary", lambda path=None: (e50, []))
+    with pytest.raises(SystemExit) as ex:
+        e52.main(["gate-all", "--commit", C, "--runs", str(runs)])
+    assert ex.value.code == want
+    out = capsys.readouterr().out.strip().splitlines()
+    assert out == [f"gate all {'pass' if want == 0 else 'fail'}"]
+    if want:
+        monkeypatch.setattr(e52, "one_seed", lambda *a: pytest.fail("cmd_run went past its gate check"))
+        with pytest.raises(SystemExit) as ex:
+            e52.main(["run", "--task", "x1", "--commit", C, "--runs", str(runs), "--data", str(tmp_path)])
+        assert str(ex.value.code).startswith("refused (the pre-run gate)")
+
+
+def test_gate_all_exits_1_when_it_may_not_run(tmp_path, monkeypatch):
+    monkeypatch.setattr(e52, "_refuse_unless_ready", lambda commit: e52.sys.exit("refused: not here"))
+    with pytest.raises(SystemExit) as ex:
+        e52.main(["gate-all", "--commit", C, "--runs", str(tmp_path)])
+    assert ex.value.code == "refused: not here"  # Python exits 1 on a message
+
+
+FAKE_SCRIPT = """import os, sys
+cmd = sys.argv[1]
+if cmd == "gate":
+    print("gate " + sys.argv[sys.argv.index("--task") + 1] + " pass")
+    sys.exit(0)
+if cmd == "gate-all":
+    print("gate all " + ("pass" if os.environ["FAKE_GATE_ALL"] == "0" else "fail"))
+    sys.exit(int(os.environ["FAKE_GATE_ALL"]))
+sys.exit(0)
+"""
+
+
+def _fake_e52_checkout(tmp_path):
+    """A temporary repository holding run_e52.sh and a stand-in read script (the per-task gates pass; gate-all exits
+    FAKE_GATE_ALL), committed and clean, with the tests step recorded as passed at its HEAD."""
+    from conftest import git
+
+    repo = tmp_path / "checkout"
+    (repo / "experiments" / "coords").mkdir(parents=True)
+    (repo / "experiments" / "coords" / "run_e52.sh").write_text(SH.read_text())
+    (repo / "experiments" / "coords" / "e52_copy_rows_sized_read.py").write_text(FAKE_SCRIPT)
+    (repo / ".gitignore").write_text("runs/\n")
+    git(repo, "init", "-q")
+    git(repo, "add", "-A")
+    git(repo, "commit", "-qm", "e52 stand-in")
+    head = git(repo, "rev-parse", "HEAD")
+    home = tmp_path / "home"
+    S = home / "v" / "scratch" / "e52"
+    S.mkdir(parents=True)
+    (S / "tests.exit").write_text("0\n")
+    (S / "tests.head").write_text(head + "\n")
+    bin_ = tmp_path / "bin"
+    bin_.mkdir()
+    uv = bin_ / "uv"  # `uv run --frozen --no-sync python ARGS` -> this interpreter with ARGS
+    uv.write_text(f'#!/bin/sh\nshift 4\nexec "{sys.executable}" "$@"\n')
+    uv.chmod(0o755)
+    return repo, head, home, S, bin_
+
+
+@pytest.mark.parametrize("gate_all, want", [("3", 3), ("0", 0), ("1", 1), ("2", 1)])
+def test_the_gate_step_ends_with_gate_all_and_a_d_s_miss_gives_3_and_refuses_run(tmp_path, gate_all, want):
+    """Blocker 1 at the launcher: all nine task gates pass, then gate-all decides the gate step's exit; a D_s miss
+    (gate-all 3) gives gate.exit 3 and the run step is refused (96)."""
+    from conftest import git_env
+
+    repo, head, home, S, bin_ = _fake_e52_checkout(tmp_path)
+    env = {**git_env(), "HOME": str(home), "PATH": f"{bin_}:{os.environ['PATH']}", "FAKE_GATE_ALL": gate_all,
+           "GIT_CEILING_DIRECTORIES": str(tmp_path)}
+
+    def step(name):
+        return subprocess.run(["bash", "experiments/coords/run_e52.sh", name, head], cwd=repo, env=env,
+                              capture_output=True, text=True, timeout=120)
+
+    r = step("gate")
+    assert r.returncode == want, r.stderr
+    assert (S / "gate.exit").read_text().strip() == str(want)
+    assert (repo / "runs/e52/exit/gate-all").read_text().strip() == gate_all
+    assert (repo / "runs/e52/exit/gate-all.other_lines").read_text().strip() == "0"
+    assert all((repo / f"runs/e52/exit/gate-{t}").read_text().strip() == "0" for t in TASKS)
+    r = step("run")
+    if want == 0:
+        assert r.returncode == 0 and (S / "run.exit").read_text().strip() == "0"
+    else:
+        assert r.returncode == 96 and "step gate has not exited 0" in r.stderr
+        assert (S / "run.exit").read_text().strip() == "96"
+
+
+def test_the_launcher_lists_the_e50_test_files_and_the_build_launcher_lists_the_read_tests():
+    """Lesser point 3."""
+    assert "tests/test_shape_interp_build.py" in SH.read_text()
+    build = (REPO / "experiments" / "builds" / "embryo_copy_rows_sized.sh").read_text()
+    assert "tests/test_e52_copy_rows_sized_read.py" in build

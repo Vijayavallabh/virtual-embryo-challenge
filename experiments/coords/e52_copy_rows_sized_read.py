@@ -22,15 +22,18 @@ Steps (each refuses unless row E52 is in TRIES.md, the tree is clean and HEAD is
                                  committed ten-seed mean and 0.5 in any seed; fgw_copyrows minus fgw_shape0x has each
                                  build's ten-seed mean within 0.01 of E50's committed reading (iii) primary board for
                                  the task. Exit 3 on a failure (stop, report, count nothing). A gate file of this commit
-                                 that exists is read again, not re-run. The run step also needs every D_s (the nine
-                                 tasks' paired difference merged over the five truths, per seed and build) within 0.05
-                                 of E50's.
+                                 that exists is read again, not re-run.
+  gate-all --commit SHA          the gate over all nine tasks: every task's gate file passed at the commit, and every
+                                 D_s (the nine tasks' paired difference merged over the five truths, per seed and
+                                 build) within 0.05 of E50's. Exit 3 on any miss (stop, report, count nothing); the
+                                 launcher's gate step ends with it, so the run step starts only after the whole gate
   run --task NAME --commit SHA   the arm and controls under both builds, seed by seed (resumable: a seed whose file
-                                 exists is skipped); refused unless the gate holds on all nine tasks at the commit
+                                 exists is skipped); refused unless the gate holds on all nine tasks at the commit, D_s
+                                 included (the same check as gate-all, kept as a second guard)
   read --commit SHA              the reading into experiments/coords/results/e52_copy_rows_sized/ (reading.json,
                                  reading.txt), never overwriting
-The script prints only "<task> seed <s> done", "wrote <path>" and "gate <task> pass|fail". It reads no test board, test
-file, test anchor or size file, and prints no count.
+The script prints only "<task> seed <s> done", "wrote <path>", "gate <task> pass|fail" and "gate all pass|fail". It
+reads no test board, test file, test anchor or size file, and prints no count.
 
 Readings, fixed in row E52 before any output (applied by `reading`); raw values from the in-memory builds:
   (i)   on every task-seed where the arm builds, under main and under prefix: its X bytes equal fgw_copyrows's; its
@@ -39,8 +42,9 @@ Readings, fixed in row E52 before any output (applied by `reading`); raw values 
         at the scored count and metric seed equals the floor's; its d2_shape is within 1e-6 of the floor's; its
         canonical frame is within 1e-5 of the floor's up to a proper flip; its occupancy_dice equals the floor's except
         by at most 4v over (the arm's plus the truth's occupied voxels), plus 1e-4, v the matched rows whose voxel
-        changes, maximised over the four proper flips; its de_score, de_direction, mmd_u and variogram equal
-        fgw_copyrows's exactly; any failure voids the construction and no test file is built;
+        changes, maximised over the four proper flips; its de_score, de_direction, mmd_u and variogram, as the scorer
+        reports them, equal fgw_copyrows's exactly (its X bytes compared raw); any failure voids the construction and
+        no test file is built;
   (ii)  refusals in E50's three categories, equal to fgw_copyrows's at every task-seed;
   (iii) paired arm minus fgw_shape0x and arm minus fgw_copyrows, per task, merged over the five truths and over the
         test-like four, both builds: board, each group, each metric, seeds ahead, SE, mean gain and mean loss, worst
@@ -284,19 +288,21 @@ def nn_sets_differ(A, B, k: int = NN_K) -> int:
 
 def raw_facts(arm, crow, floor, truth, T: float, seed: int, build: str, metrics: dict, with_reported: bool) -> dict:
     """Reading (i)'s raw quantities for one task-seed under one build, from the built arrays (never panel values,
-    except the four expression terms, compared as the scorer reports them)."""
+    except the four expression terms, compared as the scorer reports them; the X bytes are compared raw). The shape
+    quantities (frame, voxels, Dice, the scored parity, d2_shape) are all computed inside the build's scorer_build."""
     rms = tb.rms_radius(np.asarray(arm.coords, dtype=np.float32).astype(np.float64))
-    with ev.scorer_build(build):
+    with ev.scorer_build(build):  # every shape quantity under the build it is recorded for
         fv = frame_and_voxels(arm.coords, floor.coords, truth.coords, seed)
-    sm = ev._shape_metrics()
-    A, _ = ev.match_rows(arm.coords, truth.coords, seed)
-    F, _ = ev.match_rows(floor.coords, truth.coords, seed)
+        sm = ev._shape_metrics()
+        A, _ = ev.match_rows(arm.coords, truth.coords, seed)
+        F, _ = ev.match_rows(floor.coords, truth.coords, seed)
+        parity_equal = ev.svd_parity(A) == ev.svd_parity(F)
+        d2_diff = abs(float(sm.d2_distance(arm.coords, truth.coords, seed=seed))
+                      - float(sm.d2_distance(floor.coords, truth.coords, seed=seed)))
     out = {"x_equal_c": same_x(arm.X, crow.X),
            "coords_equal_expected": same_bits(arm.coords, expected_coords(floor.coords, T)),
            "rms_rel": abs(rms / T - 1.0), "target_read": T,
-           "parity_equal_scored": ev.svd_parity(A) == ev.svd_parity(F),
-           "d2_diff": abs(float(sm.d2_distance(arm.coords, truth.coords, seed=seed))
-                          - float(sm.d2_distance(floor.coords, truth.coords, seed=seed))),
+           "parity_equal_scored": parity_equal, "d2_diff": d2_diff,
            **fv, "expression_equal_c": {m: metrics[ARM].get(m) == metrics[C_ARM].get(m) for m in EXPRESSION_TERMS}}
     if with_reported:
         out["reported"] = {"parity_flips_all_counts": len(parity_flips(arm.coords, floor.coords, seed)),
@@ -572,6 +578,17 @@ def gate_problems(runs: Path, commit: str) -> list[str]:
         e50, why_e50 = e50_primary()
         why += why_e50 + d_s_check(gates, e50, e47.truths(nt.all_tasks()))
     return why
+
+
+def cmd_gate_all(a) -> None:
+    """The last action of the launcher's gate step: the whole gate (nine task gates and the D_s check). Exit 0 when it
+    holds, 3 on any miss; an error (a refusal to run here included) exits 1."""
+    _refuse_unless_ready(a.commit)
+    why = gate_problems(Path(a.runs), a.commit)
+    print(f"gate all {'fail' if why else 'pass'}", flush=True)
+    for w in why:
+        print(w, file=sys.stderr, flush=True)
+    sys.exit(3 if why else 0)
 
 
 def cmd_run(a) -> None:
@@ -885,12 +902,15 @@ def main(argv=None) -> None:
         p.add_argument("--commit", required=True, help="the run commit (full hash)")
         p.add_argument("--runs", default=str(RUNS))
         p.add_argument("--data", default=str(harness.DATA_DIR))
+    g = sub.add_parser("gate-all")
+    g.add_argument("--commit", required=True, help="the run commit (full hash)")
+    g.add_argument("--runs", default=str(RUNS))
     r = sub.add_parser("read")
     r.add_argument("--commit", required=True)
     r.add_argument("--runs", default=str(RUNS))
     r.add_argument("--out", default=str(RESULTS))
     a = ap.parse_args(argv)
-    {"gate": cmd_gate, "run": cmd_run, "read": cmd_read}[a.cmd](a)
+    {"gate": cmd_gate, "gate-all": cmd_gate_all, "run": cmd_run, "read": cmd_read}[a.cmd](a)
 
 
 if __name__ == "__main__":

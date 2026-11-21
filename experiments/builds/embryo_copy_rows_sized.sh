@@ -93,7 +93,8 @@ STEP=tests
 $PY -m pytest -q -p no:cacheprovider -o pythonpath=src --basetemp="$S/tmp/pytest" \
   tests/test_embryo_copy_rows_sized_launcher.py tests/test_embryo_copy_rows_launcher.py \
   tests/test_copy_rows_sized.py tests/test_copy_rows.py tests/test_copy_rows_build.py \
-  tests/test_e47_floor_exact.py tests/test_hidden_counts.py tests/test_s2_rules.py > "$S/tests.out" 2>&1 || finish 10
+  tests/test_e47_floor_exact.py tests/test_hidden_counts.py tests/test_s2_rules.py \
+  tests/test_e52_copy_rows_sized_read.py > "$S/tests.out" 2>&1 || finish 10
 step_ok
 
 export OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16

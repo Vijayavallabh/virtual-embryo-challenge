@@ -11,8 +11,9 @@
 #                  fgw_shape0x against E47's committed scores (0.1 board points per ten-seed mean, 0.5 per seed), and
 #                  fgw_copyrows minus fgw_shape0x against E50's committed reading (0.01 per task mean per build); nine
 #                  processes, one per task; exit 0 all pass, 3 some task fails (stop and report; nothing is counted),
-#                  1 an error. A task whose gate file of this commit exists is read again, not re-run. The nine-task
-#                  D_s check (0.05 per seed per build) is applied by the run step before anything runs
+#                  1 an error. A task whose gate file of this commit exists is read again, not re-run. Once all nine
+#                  pass, the step ends with the nine-task check (gate-all: every gate file, and each D_s within 0.05
+#                  of E50's per seed per build); a miss there also exits 3, so run starts only after the whole gate
 #   run COMMIT     the arm and its controls under both builds, nine processes (one per task), seed by seed; a seed
 #                  whose file exists is skipped, so a killed run is resumed by calling the step again
 #   read COMMIT    the reading into experiments/coords/results/e52_copy_rows_sized/ (reading.json, reading.txt); it
@@ -20,9 +21,9 @@
 # COMMIT is the run commit (full hash): the row's commit. Each step refuses on an unclean tree (exit 98) or another
 # HEAD (exit 99), runs with 8 BLAS threads a process and NUMPY_MADVISE_HUGEPAGE=0, and writes
 # ~/v/scratch/e52/<STEP>.exit on every path (a call without its two arguments writes usage.exit, 2; an unknown step 97)
-# and one exit file per task under runs/e52/exit/. The script prints only "<task> seed <s> done", "wrote <path>" and
-# "gate <task> pass|fail"; any other log line is counted, never printed: per task in
-# runs/e52/exit/<step>-<task>.other_lines. Nothing here deletes anything.
+# and one exit file per task under runs/e52/exit/ (gate-all's in runs/e52/exit/gate-all). The script prints only
+# "<task> seed <s> done", "wrote <path>" and "gate <task> pass|fail" (gate-all: "gate all pass|fail"); any other log
+# line is counted, never printed: per task in runs/e52/exit/<step>-<task>.other_lines. Nothing here deletes anything.
 set -u
 S="$HOME/v/scratch/e52"
 mkdir -p "$S/tmp"
@@ -67,6 +68,19 @@ R=runs/e52
 TASKS=(half late new1 new2 e75 e725 x1 x2 x3)
 OK_LINE='^([a-z0-9]+ seed [0-9]+ done|wrote [^ ]+|gate [a-z0-9]+ (pass|fail))$'
 
+gate_all() {  # the whole gate after the nine task gates: 0 holds, 3 a miss (D_s included), 1 an error
+  mkdir -p "$R/logs" "$R/exit"
+  local e n
+  $PY "$SCRIPT" gate-all --commit "$COMMIT" --runs "$R" > "$R/logs/gate-all.log" 2>&1
+  e=$?
+  echo "$e" > "$R/exit/gate-all"
+  n=$(grep -cvE "$OK_LINE" "$R/logs/gate-all.log" 2>/dev/null)
+  echo "${n:-unreadable}" > "$R/exit/gate-all.other_lines"
+  if [ "$e" = 0 ]; then return 0; fi
+  if [ "$e" = 3 ]; then return 3; fi
+  return 1
+}
+
 parallel() {  # $1 = gate|run: one process per task, all nine at once
   mkdir -p "$R/logs" "$R/exit"
   local pids=() t
@@ -96,10 +110,13 @@ case "$STEP" in
       tests/test_copy_rows_sized.py tests/test_e52_copy_rows_sized_read.py tests/test_copy_rows.py \
       tests/test_copy_rows_build.py tests/test_e50_copy_rows_read.py tests/test_e47_floor_exact.py \
       tests/test_t2_build.py tests/test_occupancy_frame.py tests/test_harness.py \
-      tests/test_hidden_counts.py > "$S/tests.log" 2>&1
+      tests/test_hidden_counts.py tests/test_shape_interp_build.py > "$S/tests.log" 2>&1
     finish $? ;;
   gate)
     parallel gate
+    e=$?
+    if [ "$e" != 0 ]; then finish "$e"; fi
+    gate_all
     finish $? ;;
   run)
     parallel run
