@@ -1659,3 +1659,41 @@ parity; no value in the file comes from a score.
 
 **Data used, for the hand-over:** released challenge data only. No outside data. Every upload is the captain's own
 act.
+
+## Amendment of 2026-11-21: the embryo's list of three unscored files and their order (the analysts' rule; decision log 2026-11-21 (l))
+
+Written by the AI assistant, which is recused on the embryo's occupancy term and shape forms and had no say in the
+rule. A fresh analyst wrote the rule and a cold challenger checked it, before any score of the three files existed.
+**The captain's words it rests on:** his order of 2026-11-20 that uploads go on with candidate sets fixed before their
+scores ("Note of 2026-11-20: uploads go on after the second files", above), and his two orders of 2026-11-21, "reopen
+it [my ordeer]" (the copy-rows file, decision log 2026-11-21 (h)) and "Build it" (the overlay file, the section
+above). There are no new words of his: he may upload fewer files, none, or in another order. The paragraph that
+follows is the analysts' text.
+
+**The embryo's list (decision log 2026-11-21 (l)).** The embryo's candidate set is closed at three unscored files, and
+they are uploaded in the order O, P, C. Each embryo slot the captain uses takes the first file in that list that has
+not been uploaded and exists. O is the overlay file, runs/manual_upload/T2embryo_s2x_ov.h5ad, sha256
+1cfc91be3a20bfdd1a4f7bcfebd7316e1143c6d4048e578c1f30bcfbe1e0e1ea (row R19). P is the exact-position file,
+runs/manual_upload/T2embryo_s2x.h5ad, sha256 a03611a343faf1d37edf06ce0e2bccc86cce6f14d3580b823864e5faf3ba03f9. C is
+the copy-rows file of decision log 2026-11-21 (h), on P's command with mixture expression and the baseline copy's own
+rows, order, count and coordinates. C counts only once its round's review blocker is settled, the captain has not
+refused its count-and-size question, row E50 is not void and its reading (i) holds, its test-board build passes, and
+its sha256 is committed under experiments/builds/results/. If C never exists, nothing replaces it. No file waits on
+another's headline, and no headline changes the order. If C is ready before P has gone, P still goes first. Any upload
+the captain reports counts as used, and the list continues with the files that remain. At most two uploads per board
+per day, and nothing after 2026-11-26 11:59 UTC. Each upload is the captain's own act. Each file is handed over with
+its path, sha256, the board, and "Released challenge data only. No outside data." Headlines serve only the final mark:
+the highest reported headline among the embryo's allowed uploads (T2embryo_s1, T2embryo_s2xs, and whichever of O, P
+and C have scored), the earliest on a tie, with the captain's go-ahead. No headline or per-term value is differenced
+against or set beside another upload's, or against 50, to learn anything about E7.75 or the server. No further embryo
+file of any kind is designed after these three except by the captain's own named order, and no score of O, P or C
+enters its design.
+
+**The copy-rows file** is specified in `experiments/coords/E50_COPY_ROWS_SPEC.md`; its practice row is E50. It departs
+from two frozen rules, the count rule and the pre-registered embryo size. The analysts' one question on that goes to
+the captain when the file is ready, with a default of build. Its own section is added to this note when the file
+exists.
+
+**Correction to the section above (the overlay file).** That section says the dialog gave the practice figures, the
+failed check and the cost of one upload slot. The dialog also gave a conversion, "about +1.2 Overall if it carried
+over"; decision log 2026-11-21 (j) quotes the dialog in full.

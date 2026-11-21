@@ -9020,3 +9020,146 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     means: fresh analysts, in a later entry, once the round on the copy-positions file of entry (h) has handed back
     (its engineer has finished and its reviewer is running). Until that entry exists the positions file is the embryo
     file with the captain.
+- 2026-11-21 (l), the embryo (board T2:embryo:test_interp): the order of the three unscored files and what each
+  returned headline means (fixed before any score of P, O or C exists). A fresh analyst who had not seen the main
+  session's conversation wrote it, and a cold challenger checked it. The AI assistant is recused on the embryo's
+  occupancy term and shape forms. It executes this rule and has no say in it. No number, file or order here comes from
+  a test score.
+  - **The files.** The embryo's candidate set is closed at these three:
+    - O, the overlay file: runs/manual_upload/T2embryo_s2x_ov.h5ad, sha256
+      1cfc91be3a20bfdd1a4f7bcfebd7316e1143c6d4048e578c1f30bcfbe1e0e1ea. Ruling R19; entries (j) and (k); build record
+      experiments/builds/results/embov_3b813b5.txt. It exists by the captain's order "Build it", which set aside row
+      E49's no-file outcome (clause P5) for this one form.
+    - P, the exact-position file: runs/manual_upload/T2embryo_s2x.h5ad, sha256
+      a03611a343faf1d37edf06ce0e2bccc86cce6f14d3580b823864e5faf3ba03f9. Build record
+      experiments/builds/results/embryo2_2dccfee.txt, --expression mixture.
+    - C, the copy-rows file of entry (h): P's command with --copy-rows --copy-rows-test-ok. Its rows, order, count and
+      float32 coordinates are, bit for bit, those of vec.evaluate.subsample(T2/E7.5.h5ad as released, 0.1, 0).
+      int(round(0.5 n)) of its slots keep their own E7.5 cell's expression, and the rest take E8.0 cells by the
+      exact-position form's assignment. Its expression rule is P's, mixture. It is defined in detail by the
+      specification committed with row E50's placement. A copy-rows file built with series expression, or on any other
+      count, size or coordinates, is not C.
+    - C exists only when all of these hold. (1) The copy-rows round's review blocker is settled and re-reviewed. (2)
+      The captain has not answered 'no' to that round's count-and-size question (its default is build). (3) Row E50
+      was placed before its run, is not void, and its reading (i) holds. (4) The test-board build passes: the default
+      command first gives P's bytes; two builds from one clean, stamped commit give identical bytes; vec check passes
+      for T2:embryo:test_interp; and none of the build's refusals fires (count outside the board's limits, too many
+      dropped slots, a cloud-guard flag), each read by exit code only. (5) Its sha256 is committed under
+      experiments/builds/results/. Readings (iii) and (iv) of E50 decide nothing here. If C never exists, nothing else
+      in this entry changes and nothing replaces it.
+  - **The order.** Each embryo upload slot the captain chooses to use takes the first file in the list O, P, C that
+    has not been uploaded and exists. O and P exist now. No file waits for another file's headline, no headline
+    decides whether or when a later file goes, and none changes the order. C not being ready holds up neither O nor P.
+    If C exists before P has gone, P still goes first. With one more slot: O. With two: O, then P. With three: O, P,
+    then C if it exists; otherwise the third slot stays unused. Two embryo files may go on one day within the
+    captain's stated allowance of at most two uploads per board per day. Nothing goes after 2026-11-26 11:59 UTC. Each
+    upload is the captain's own act, and he may upload fewer files, none, or use another order. Any upload he reports,
+    whenever he made it, counts as used, and the list continues with the files that remain, in the order O, P, C.
+    Nothing is re-planned from its headline. No other account's uploads are planned around or used.
+  - **Hand-over.** For each file the main session hands over its path, its sha256, the board, and the Data-used text
+    "Released challenge data only. No outside data." A file whose sha256 does not match the one above (for C, the
+    committed one) is not handed over until the captain has the explanation.
+  - **What a headline is used for.** It is recorded in results/manual_uploads.csv ("not reported" if the captain does
+    not report it). It is used for the embryo's final mark and nothing else. That mark follows the rule of
+    docs/S2_RULES.md, "Uploads and final marks", which the later sections extend to lists: of the embryo's uploads
+    that every ruling received by then allows and that have a reported published headline (T2embryo_s1, T2embryo_s2xs,
+    and whichever of O, P and C have scored), mark the one with the highest headline. On a tie, mark the earliest of
+    the tied uploads. The mark needs the captain's go-ahead. A headline means only that this file's headline is higher
+    than, equal to or lower than another's, inside that rule.
+  - **What a headline may not be used for.** It may not decide whether, when or in what order another file goes. It
+    may not set, change or bound any number, file, form, row order, seed or estimate, or revise the reasons below. It
+    may not trigger a new file, a re-seed, a re-order or a re-upload. It may not be differenced against another
+    upload's headline, or set beside another upload's per-term values, to learn anything about E7.75, the server, the
+    floor's draw or anchor, the coupling's turn, a parity or coin, a detection profile or a hidden count. This bars O
+    against P as "the overlay's effect at the test"; C against 50 or against P as "the server draws its floor the
+    released way" or "the frame luck was X"; and P, O or C against the series twin as "how E7.75 was measured". If
+    per-term values come back with a headline, they are not tabulated, compared with any other upload's values or with
+    50, or quoted in a later entry. No per-term test value enters any number, file or rule (entry 2026-11-18 (k)).
+  - **No further files.** The embryo's candidate set is closed for files of every kind, not only on the occupancy,
+    shape, scale and neighbourhood terms. Excluded now, whatever any headline shows: the overlay on C's rows (it
+    cannot exist); a series-expression O or C; C on any other count, size or coordinates; row E49's stretch forms and
+    every control form (anti, rot); the row-order option copy_parity (it cannot be built for the test board, entry
+    2026-11-20 (hh)); any rotated, mirrored, re-seeded or re-ordered version of any file; and a re-upload of
+    T2embryo_s1, T2embryo_s2xs, or P, O or C once uploaded. One exception: if the site rejects an upload without
+    returning a score, the same bytes (same sha256) may be sent once more in a later slot. The only route to a fourth
+    embryo file is the captain's own named order. Fresh analysts would then place it before any score of it, and no
+    headline or per-term value of P, O or C could enter its design.
+  - **Reasons (practice only).** (1) The mark is the highest headline and the allowance covers all three files, so a
+    further upload cannot lower the mark. Making a file wait on another's headline adds nothing and invites the barred
+    reading. (2) O before P matters only if the captain stops after one slot. On row E49, O, which is P with only the
+    coordinates changed, scored +2.461 board points against P (SE 0.091, 10 of 10 seeds ahead), positive on all five
+    truths (+0.84 to +4.18), and +3.25 on the test-like tasks. It failed clause P5: its rotated control did almost as
+    well on the shape term (+0.0069, SE 0.0044). Much of its gain is on the neighbourhood term, which depends less on
+    the coupling's turn, and that turn is the doubtful part at the test pair (row E11). On row E47, P sat last of the
+    four exact-position and series forms. The chance that O's headline is at least P's is about 0.6 to 0.65, from
+    practice only. The price with one slot: about +2.5 embryo points (about +1.2 overall) if practice carries over; if
+    the overlay misplaces the E8.0 half at the test, the loss is P's margin over O, of unknown size. The case for P
+    first (a longer record; N53's target-free reading places P's geometry in the floor's form) concerns the strength
+    of the record, not the expected headline, and is not taken. (3) C goes last. It aims at the baseline's level on
+    the three shape terms, not above it (about 0.7 if it builds). It gives up the scale offset and O's gain. Its count
+    change is unpriced until E50, and it may never exist. Lower variance at a mean no higher is the weakest claim on
+    an early slot.
+  - **Before E50 is placed.** The engineer's HANDED_OVER_EXPRESSION is set to mixture. P's build record shows
+    --expression mixture, and a series C is not a candidate.
+  - **Question for the captain:** none. This entry replaces the copy-rows round's order rule for P and C, and keeps
+    its other lines.
+  - **Note by the AI assistant (not part of the analysts' rule; the text above is theirs, verbatim; state at 09:16
+    UTC, 2026-11-21).** The challenger's verdict on the analyst's draft was 'stands with changes', and it puts the
+    chance that following the final rule is a mistake at about one in ten. Three facts settled while the rule was
+    being written: the copy-rows path has no cloud guard since the fix round of entry (m), so that refusal named under
+    C's conditions cannot fire; the specification the rule refers to is committed with this entry as
+    `experiments/coords/E50_COPY_ROWS_SPEC.md`; and the rules note carries the list since this commit (its new sha256:
+    374b7f7e89201f010c96a87ef3955994347d7ceeb5c76e6733d999adf33911e4). The challenger's plain summary for the captain,
+    verbatim: "The embryo has three files left to upload, in this order: the overlay file, then the exact-position
+    file, then the copy-rows file once it is built and checked. On practice the overlay beat the exact-position file
+    in every repeat (about +2.5 embryo points), though its own check showed the gain is not from getting the turn
+    right. Your mark is the best headline, and two uploads a day covers all three files, so uploading all of them
+    cannot lower the mark; the order only matters if you stop early. No file waits on another's score, and no score is
+    used to learn anything about the hidden stage. Nothing beyond these three gets built unless you order it by name."
+- 2026-11-21 (m), the embryo's copy-rows file: specified, written as code and reviewed; practice row E50 is placed (state at
+  09:16 UTC, 2026-11-21). Written by the AI assistant, which is recused on the embryo's occupancy term and states
+  no preference; every choice below is the analysts'.
+  - **The rounds.** (1) Workflow `embryo-second-construction`, on the captain's order of entry (h): a fresh analyst
+    specified the construction from the public scorer and builder code; a cold challenger attacked it on eight points
+    and returned 'build as amended'; an engineer wrote an off-by-default builder option, a practice arm, the practice
+    read and its launcher (branch `campaign/embryo-copy-rows`, 5dcd7b7); a code reviewer returned 'not ready' with one
+    blocker (the practice arm split the slots by the task's time fraction while the row text said one half) and six
+    lesser points. (2) Workflow `embryo-copy-rows-fix`: a further fresh analyst settled the open points; an engineer
+    applied them (branch `campaign/embryo-copy-rows-2`, 968ddde, main merged in); a reviewer returned 'ready', no
+    blocker, seven lesser points. Merged to main at 91e6e48. The specification in force is committed with this entry,
+    in the analysts' own words: `experiments/coords/E50_COPY_ROWS_SPEC.md`.
+  - **The file, in the challenger's words.** The file's rows, order, count and coordinates are the floor copy's,
+    vec.evaluate.subsample(T2/E7.5.h5ad as released, 0.1, 0), bit for bit. Half the rows keep their own E7.5 cell's
+    expression. The other half take E8.0 cells by the exact-position form's expression assignment, with the
+    handed-over file's expression rule (mixture, as the exact-position file: each cell carries its own measured panel
+    expression). It departs from the count rule and the pre-registered size. Both departures are forced. If the server
+    draws its floor that way, scores uploads as held, and scores them with the same build and library that baked its
+    anchors, the file's d2_shape, occupancy_dice and scale_log_ratio equal the floor's under either scorer build. The
+    challenger puts this at about 0.7, given that the build passes the board's limits. Nobody outside the organisers
+    can confirm it. It aims at the baseline's level on those terms, not above it. It is one file. No parity is
+    computed or chosen, and its effect holds under the fixed build too, so it is not a parity hedge as defined on
+    2026-10-19 (b).
+  - **The fix round's decisions (the further analyst's).** The split: the practice arm keeps the task's own time
+    fraction, as its paired control does, so that the paired difference carries only what also differs at the test;
+    the row text says so, and the test build uses exactly one half. The cloud guard is removed from the copy-rows
+    path, in the builder and in the practice arm: the coordinates are the floor copy's by construction and are checked
+    bit for bit, so a guard flag could only stop a correct file. The arm that counts is the mixture arm
+    `fgw_copyrows`: the handed-over file `T2embryo_s2x.h5ad` is the mixture form (the first engineer had assumed
+    series; the series twin is the file already scored). Reading (i) also requires the coordinates to equal the floor
+    copy's bit for bit, and an arm error outside the three listed refusals voids the run.
+  - **Tests on merged main** (the full related list, with the two slow files the engineer could not finish, and the
+    step script's guard): 548 passed, 17 warnings in 225.87s; the step script's guard 1 passed; the linter clean.
+  - **Row E50 is placed in this commit, before its run:** one try (embryo 83 to 84 when the run step starts). Its
+    reading (i): on every task-seed where the arm builds, d2_shape, occupancy_dice and scale_log_ratio equal the
+    floor's exactly under both scorer builds and the coordinates equal the floor copy's bit for bit; any inequality
+    voids the construction and no test file is built. Its price tables (iii) and (iv) decide nothing. It runs on the
+    DGX from a detached worktree at this commit, step by step (tests, gate, run, read); a gate miss means stop, report
+    and count nothing.
+  - **The question for the captain** is the challenger's, on the two frozen rules the file departs from (the count
+    rule and the pre-registered size). Its default is build, and by the challenger's word nothing waits on the answer.
+    The main session puts it once, when the file is ready, with row E50's price tables beside it, and gives no
+    preference. The file is handed over only with the answer or, if there is none, with the default stated.
+  - **The second reviewer's lesser points that stand as cautions:** if the run step dies on an arm error outside the
+    listed refusals, no reading file is written and the outcome is recorded as void by hand; on a test board the
+    builder prints a record, so its output stays sent to /dev/null; the test command is `--expression mixture` (the
+    first engineer's hand-back said series).
