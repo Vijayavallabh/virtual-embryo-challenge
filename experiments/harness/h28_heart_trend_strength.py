@@ -4,8 +4,8 @@ the full trim the captain named for the heart's last file, against that file's o
 the same factor sizes per strength. A labelled diagnostic on one truth (E10.5); it changes no file, rule or default.
 
 The control is row H27's arm C at its forecast size f (`core_iso_half:f`): `vec.harness._copy` on a context whose
-reference input is E10.5's pool under `radial_trim_mask(C, core, 0.0)` (earlier stages whole, as the heart builder loads
-them), then `t2_build.apply_size_procedure` in raw mode with the core hypothesis on the in-memory size result row H27
+reference input is the backtest's reference stage (E9.5 or E8.75; the analogue of E10.5 at the test) under
+`radial_trim_mask(C, core, 0.0)` (earlier stages whole, as the heart builder loads them), then `t2_build.apply_size_procedure` in raw mode with the core hypothesis on the in-memory size result row H27
 forms from the input stages only, then row H25's half, then the checked builder (`h27.size_arm`, imported). Every arm
 here is the control with ONE change, the expression step, made before the size step:
   trend_s{s}    b0_trend's expression (`vec.harness._b0_t2(ctx, trend=True)`, rebuilt step by step below) with every

@@ -1,12 +1,13 @@
 #!/usr/bin/env python
-"""Try H29a of experiments/harness/TRIES.md: the practice read of two heart candidates, H-T1 (the whole E10.5 pool,
+"""Try H29a of experiments/harness/TRIES.md: the practice read of two heart candidates, H-T1 (the whole reference pool,
 row H27's form A `full_iso_half`) and H-T1B (the half trim, row H27's form B `half_iso_half`), each with the heart's
 trend step (b0_trend, row H11) at strength 1 and its placebo. A labelled diagnostic on one truth (rule 9 J5); it
 changes no file, rule or default and builds no test file.
 
 Row H28's script (h28_heart_trend_strength, imported, not copied) parameterised by form. For each form F of the two:
   F:control     row H27's arm F at its forecast size f (`F:f`): `vec.harness._copy` on a context whose reference input
-                is F's pool (E10.5 whole for A, under `radial_trim_mask(C, core, 0.5)` for B; earlier stages whole),
+                is F's pool (the backtest's reference stage, E9.5 or E8.75, whole for A and under
+                `radial_trim_mask(C, core, 0.5)` for B; earlier stages whole; the analogue of E10.5 at the test),
                 then `t2_build.apply_size_procedure` in raw mode with F's size hypothesis (h27.HYP: H1 for A, H2 for B)
                 on row H27's in-memory size result from the input stages only, then row H25's half, then the checked
                 builder (`h27.size_arm`, imported).
@@ -419,13 +420,14 @@ def candidates(st: dict[str, dict | None], whole_void: bool = False) -> dict[str
         own_ok = half["qualified"]
         t1_s2 = None if full is None else bool(full["S2"])
         fails = [k for k in ("S1", "S2", "S3") if not half[k]]
-        if t1_s2 is None:
-            fails.append("H-T1's S2 cannot be read (H-T1's form is void)")
-        elif not t1_s2:
+        if t1_s2 is False:
             fails.append("H-T1's S2 on the whole pool")
+        why = ["fails " + ", ".join(fails)] if fails else []
+        if t1_s2 is None:
+            why.append("H-T1's S2 cannot be read, as H-T1's form is void")
         ok = own_ok and t1_s2 is True
         out["H-T1B"] = {"outcome": QUALIFIED if ok else NOT_QUALIFIED,
-                        "why": "its own S1, S2 and S3 and H-T1's S2 hold" if ok else "fails " + ", ".join(fails)}
+                        "why": "its own S1, S2 and S3 and H-T1's S2 hold" if ok else "; ".join(why)}
     return out
 
 

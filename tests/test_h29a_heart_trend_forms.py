@@ -348,7 +348,7 @@ def test_a_form_void_voids_its_candidate_only(h29):
     res = _read(h29, _both(h29, _good(h29, h29.FULL), _good(h29, h29.HALF)), h27p=_h27(h29, off={h29.FULL: -0.2}))
     assert res["candidates"]["H-T1"]["outcome"] == "VOID"
     assert res["candidates"]["H-T1B"] == {"outcome": "NOT QUALIFIED",
-                                          "why": "fails H-T1's S2 cannot be read (H-T1's form is void)"}
+                                          "why": "H-T1's S2 cannot be read, as H-T1's form is void"}
 
 
 def test_the_gate_at_its_edges_per_form(h29):
@@ -565,9 +565,10 @@ def test_the_launcher_runs_two_transitions_and_the_tests_first(h29):
     assert '> "$S/read.out" 2>&1' in read
 
 
-def _launch(tmp_path, *args, home=None):
+def _launch(tmp_path, *args, home=None, extra_env=None):
     env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
     env.update(HOME=str(home or tmp_path / "home"), GIT_CEILING_DIRECTORIES=str(tmp_path))
+    env.update(extra_env or {})
     r = subprocess.run(["bash", str(LAUNCHER), *args], cwd=tmp_path / "repo", env=env, capture_output=True,
                        text=True, timeout=60)
     return r.returncode, r.stderr
@@ -603,7 +604,9 @@ def test_the_launcher_refusal_paths_under_a_temporary_home(tmp_path, fake_repo):
     assert _launch(tmp_path)[0] == 2 and exit_of("usage") == "2"
     assert _launch(tmp_path, "tests")[0] == 2
     # an unknown step: 97
-    assert _launch(tmp_path, "build", head)[0] == 97 and exit_of("build") == "97"
+    assert _launch(tmp_path, "build", head)[0] == 97 and exit_of("unknown") == "97"
+    assert not (S / "build.exit").exists()
+    assert _launch(tmp_path, "a/b", head)[0] == 97 and exit_of("unknown") == "97" and not (S / "a").exists()
     # run before tests, read before run: 96
     assert _launch(tmp_path, "run", head)[0] == 96 and exit_of("run") == "96"
     assert _launch(tmp_path, "read", head)[0] == 96 and exit_of("read") == "96"
@@ -635,3 +638,129 @@ def test_the_launcher_refusal_paths_under_a_temporary_home(tmp_path, fake_repo):
     assert code == 95 and exit_of("read") == "95" and "already holds a reading" in err
     assert (out / "reading.txt").read_text() == "the one reading\n"
     assert (S / "read.head").read_text().strip() == head2
+
+
+# A stand-in for uv on PATH: it records each call; for "run" it writes a part to its --out and prints the two expected
+# lines; with STUB_KILL set to a step's mode it kills the launcher (and the run step's subshell) mid-step with SIGKILL.
+STUB_UV = r"""#!/usr/bin/env bash
+echo "$*" >> "$HOME/uvcalls"
+case "$*" in
+  *pytest*) mode=tests ;;
+  *" run --task "*) mode=run ;;
+  *" read --runs "*) mode=read ;;
+  *) mode=other ;;
+esac
+if [ "${STUB_KILL:-}" = "$mode" ]; then
+  for p in "$PPID" $(ps -o ppid= -p "$PPID"); do
+    if [ -r "/proc/$p/cmdline" ] && tr '\0' ' ' < "/proc/$p/cmdline" | grep -q run_h29a.sh; then kill -9 "$p"; fi
+  done
+  exit 1
+fi
+if [ "$mode" = run ]; then
+  out=""; prev=""
+  for a in "$@"; do [ "$prev" = "--out" ] && out="$a"; prev="$a"; done
+  mkdir -p "$out"
+  echo '{"stub": 1}' > "$out/h29a.json"
+  echo "T2h/x seed 0 (1.0 s) done"
+  echo "wrote $out/h29a.json"
+fi
+exit 0
+"""
+
+
+@pytest.fixture()
+def stub_repo(tmp_path, fake_repo):
+    """The throwaway repository with runs/ ignored (as in the real one) and a stub uv first on PATH."""
+    repo, _, git, out = fake_repo
+    (repo / ".gitignore").write_text("runs/\n")
+    git("add", ".gitignore")
+    git("commit", "-q", "-m", "ignore runs")
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir()
+    (bin_dir / "uv").write_text(STUB_UV)
+    (bin_dir / "uv").chmod(0o755)
+    env = {"PATH": f"{bin_dir}{os.pathsep}{os.environ['PATH']}"}
+    return repo, git, env, tmp_path / "home" / "v" / "scratch" / "h29a"
+
+
+def _calls(tmp_path):
+    f = tmp_path / "home" / "uvcalls"
+    return f.read_text().splitlines() if f.exists() else []
+
+
+def test_the_launcher_never_skips_or_reads_a_part_of_another_commit(tmp_path, stub_repo):
+    """Blocker 1 of the review: parts written at commit A are neither skipped nor read by a run and read at B."""
+    repo, git, env, S = stub_repo
+    a = git("rev-parse", "HEAD")
+    assert _launch(tmp_path, "tests", a, extra_env=env)[0] == 0
+    assert _launch(tmp_path, "run", a, extra_env=env)[0] == 0
+    parts_a = sorted((repo / "runs" / "h29a" / a).rglob("h29a.json"))
+    assert len(parts_a) == 10
+    # a stale part in the first launcher's layout (one folder for every commit) is also there
+    old = repo / "runs" / "h29a" / "e95" / "0-1"
+    old.mkdir(parents=True)
+    (old / "h29a.json").write_text('{"stale": 1}\n')
+    (repo / "g.txt").write_text("fix\n")
+    git("add", "g.txt")
+    git("commit", "-q", "-m", "a fix")
+    b = git("rev-parse", "HEAD")
+    assert _launch(tmp_path, "tests", b, extra_env=env)[0] == 0
+    n0 = len(_calls(tmp_path))
+    assert _launch(tmp_path, "run", b, extra_env=env)[0] == 0
+    runs_b = [c for c in _calls(tmp_path)[n0:] if " run --task " in c]
+    assert len(runs_b) == 10 and all(f"--out runs/h29a/{b}/" in c for c in runs_b)
+    assert len(sorted((repo / "runs" / "h29a" / b).rglob("h29a.json"))) == 10
+    assert (S / "run.exit").read_text().strip() == "0"
+    assert (repo / "runs" / "h29a" / b / "exit" / "other_lines").read_text().strip() == "0"
+    # a second call at B resumes: it runs nothing, as every part of B exists
+    n1 = len(_calls(tmp_path))
+    assert _launch(tmp_path, "run", b, extra_env=env)[0] == 0
+    assert not [c for c in _calls(tmp_path)[n1:] if " run --task " in c]
+    # the read at B is given B's folder only
+    assert _launch(tmp_path, "read", b, extra_env=env)[0] == 0
+    reads = [c for c in _calls(tmp_path) if " read --runs " in c]
+    assert len(reads) == 1 and f"read --runs runs/h29a/{b} --commit {b} " in reads[0] + " "
+    assert parts_a == sorted((repo / "runs" / "h29a" / a).rglob("h29a.json"))  # nothing of A was touched
+
+
+def test_a_step_killed_part_way_never_leaves_an_earlier_zero(tmp_path, stub_repo):
+    """Blocker 2 of the review: a step killed after its .head is written leaves a non-zero exit file, so the next
+    step refuses (96) even though an earlier call of the killed step exited 0 at another commit."""
+    repo, git, env, S = stub_repo
+    b = git("rev-parse", "HEAD")
+    assert _launch(tmp_path, "tests", b, extra_env=env)[0] == 0
+    assert (S / "tests.exit").read_text().strip() == "0"
+    (repo / "g.txt").write_text("c\n")
+    git("add", "g.txt")
+    git("commit", "-q", "-m", "c")
+    c = git("rev-parse", "HEAD")
+    code, _ = _launch(tmp_path, "tests", c, extra_env={**env, "STUB_KILL": "tests"})
+    assert code != 0
+    assert (S / "tests.head").read_text().strip() == c and (S / "tests.exit").read_text().strip() == "running"
+    code, err = _launch(tmp_path, "run", c, extra_env=env)
+    assert code == 96 and "has not exited 0" in err
+    # the same between run and read: run finished at C after tests passed there, then run is killed at D
+    assert _launch(tmp_path, "tests", c, extra_env=env)[0] == 0
+    assert _launch(tmp_path, "run", c, extra_env=env)[0] == 0
+    (repo / "g.txt").write_text("d\n")
+    git("add", "g.txt")
+    git("commit", "-q", "-m", "d")
+    d = git("rev-parse", "HEAD")
+    assert _launch(tmp_path, "tests", d, extra_env=env)[0] == 0
+    code, _ = _launch(tmp_path, "run", d, extra_env={**env, "STUB_KILL": "run"})
+    assert code != 0
+    assert (S / "run.head").read_text().strip() == d and (S / "run.exit").read_text().strip() == "running"
+    code, err = _launch(tmp_path, "read", d, extra_env=env)
+    assert code == 96 and "has not exited 0" in err
+    assert not [x for x in _calls(tmp_path) if " read --runs " in x]
+
+
+def test_h_t1b_reason_when_form_a_is_void_and_its_own_bars_fail(h29):
+    ok = {"S1": True, "S2": True, "S3": True, "qualified": True}
+    bad = {"S1": False, "S2": True, "S3": True, "qualified": False}
+    out = h29.candidates({h29.FULL: None, h29.HALF: bad})
+    assert out["H-T1B"] == {"outcome": "NOT QUALIFIED",
+                            "why": "fails S1; H-T1's S2 cannot be read, as H-T1's form is void"}
+    out = h29.candidates({h29.FULL: None, h29.HALF: ok})
+    assert out["H-T1B"] == {"outcome": "NOT QUALIFIED", "why": "H-T1's S2 cannot be read, as H-T1's form is void"}
+    assert out["H-T1"]["outcome"] == "VOID"

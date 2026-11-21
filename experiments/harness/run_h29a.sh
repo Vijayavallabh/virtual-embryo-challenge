@@ -5,19 +5,22 @@
 # (else exit 96, refused):
 #   tests COMMIT   the unit tests of the script and of rows H28's and H27's (synthetic arrays and hand-made tables only)
 #   run COMMIT     the ten parts: per transition five processes of two seeds, the two transitions on E10.5 one after
-#                  the other (E8.25_late -> E8.5 is not buildable: one input stage). A part whose h29a.json exists is
-#                  skipped, so a killed run is resumed by calling the step again (the read voids a part of another
-#                  commit). Each part refuses before anything loads unless row H29a is in TRIES.md, the tree is clean,
+#                  the other (E8.25_late -> E8.5 is not buildable: one input stage). Parts, logs and exit files go
+#                  under runs/h29a/COMMIT, one folder per commit, so a part written at another commit is never skipped
+#                  and never read. A part whose h29a.json exists in this commit's folder is skipped, so a killed run
+#                  is resumed by calling the step again at the same commit. Each part refuses before anything loads unless row H29a is in TRIES.md, the tree is clean,
 #                  HEAD is COMMIT and its output does not exist. The script prints "<task> seed <s> (<sec> s) done" and
 #                  "wrote <path>" only; any other log line is counted, never printed: the count per part is in
-#                  runs/h29a/exit/<short>-<seeds>.other_lines and the total in runs/h29a/exit/other_lines.
-#   read COMMIT    the one read: void conditions, gates and fixed statements, into experiments/harness/results/
+#                  runs/h29a/COMMIT/exit/<short>-<seeds>.other_lines and the total in runs/h29a/COMMIT/exit/other_lines.
+#   read COMMIT    the one read of runs/h29a/COMMIT: void conditions, gates and fixed statements, into experiments/harness/results/
 #                  h29a_heart_trend_forms (its printed lines, one outcome word per candidate, in read.out); refused
 #                  (exit 95) if either reading file already exists, so a reading is never overwritten
 # COMMIT is row H29a's run commit (full hash). Each step refuses on an unclean tree (exit 98) or another HEAD (exit
 # 99), runs with 8 BLAS threads a process and NUMPY_MADVISE_HUGEPAGE=0, and writes ~/v/scratch/h29a/<STEP>.exit on
-# every path (a call without its two arguments writes usage.exit, 2; an unknown step 97), and, for run, one exit file
-# per part under runs/h29a/exit/. Nothing is removed.
+# every path (a call without its two arguments writes usage.exit, 2; an unknown step writes unknown.exit, 97), and,
+# for run, one exit file per part under runs/h29a/COMMIT/exit/. Before any check, a step overwrites its own exit file
+# with "running" (and only then, past the checks, writes its .head file), so a step killed part way leaves a non-zero
+# exit file beside its new .head and the next step refuses (96). Nothing is removed.
 set -u
 S="$HOME/v/scratch/h29a"
 mkdir -p "$S/tmp"
@@ -28,15 +31,17 @@ if [ "$#" -lt 2 ] || [ -z "$1" ] || [ -z "$2" ]; then
 fi
 STEP="$1"
 COMMIT="$2"
-finish() { echo "$1" > "$S/$STEP.exit"; exit "$1"; }
 case "$STEP" in
   tests) PREV="" ;;
   run) PREV="tests" ;;
   read) PREV="run" ;;
   *)
     echo "unknown step $STEP" >&2
-    finish 97 ;;
+    echo 97 > "$S/unknown.exit"
+    exit 97 ;;
 esac
+finish() { echo "$1" > "$S/$STEP.exit"; exit "$1"; }
+echo running > "$S/$STEP.exit"  # before anything else: a killed step never leaves an earlier call's 0 here
 if [ -n "$PREV" ]; then
   if [ "$(cat "$S/$PREV.exit" 2>/dev/null)" != 0 ] || [ "$(cat "$S/$PREV.head" 2>/dev/null)" != "$COMMIT" ]; then
     echo "refused: step $PREV has not exited 0 at $COMMIT" >&2
@@ -56,7 +61,7 @@ if [ "$(git rev-parse HEAD)" != "$COMMIT" ]; then
 fi
 git rev-parse HEAD > "$S/$STEP.head"
 SCRIPT=experiments/harness/h29a_heart_trend_forms.py
-R=runs/h29a
+R="runs/h29a/$COMMIT"  # one folder per commit: no part of another commit is skipped or read
 OUT=experiments/harness/results/h29a_heart_trend_forms
 TASKS=("T2h/<=E9.5->E10.5:e95" "T2h/<=E8.75->E10.5:e875")
 DONE_LINE='^T2h/[^ ]+ seed [0-9]+ \([0-9.]+ s\) done$'
