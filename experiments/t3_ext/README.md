@@ -773,12 +773,15 @@ independent reviewer re-derived every figure of this paragraph and found the com
   Spearman with every single reference group (margin > 0, `t3x_common.BULK_WHOLE_MARGIN`) is dropped. A control arm mean
   that fails refuses the unit. Knockout libraries are recorded only. The margin, the threshold and the best group are
   recorded per library and for the control arm mean. G5 catches a library dominated by one or two lineages (a dissected
-  single tissue). It does not show that a library is a whole embryo. On synthetic profiles, partial embryos (head-off,
-  trunk-heavy) and embryos mixed with a tissue the reference lacks score about like whole embryos at any margin. Those
+  single tissue). It does not show that a library is a whole embryo. In the challenger's synthetic check (random group
+  profiles; not kept in the repository), partial embryos (head-off, trunk-heavy) and embryos mixed with a tissue the
+  reference lacks scored about like whole embryos at any margin; no test here shows it. Those
   cases rest on the readers' record check (B6), the composition guard (G12) and the genotype guard (G9). G5 first used
   SPEARMAN_MARGIN (0.05), a number borrowed from the single-cell group check. On E-MTAB-7322 (217 single whole E9.5
   embryos) it cut one tight unimodal margin distribution at its median (controls: median 0.051, range 0.038 to 0.069)
-  and dropped 46 of 111 controls, mostly at the somite extremes. The single-cell route keeps SPEARMAN_MARGIN = 0.05
+  and dropped 46 of 111 controls. Across all
+  libraries, the share failing was highest at the somite extremes (0.70 at 12 or fewer somites, 0.60 at 25 to 27, 0.78
+  at 28 or more). The single-cell route keeps SPEARMAN_MARGIN = 0.05
   unchanged.
 - **G6 somites**, where recorded: non-overlapping arm ranges refuse; the median difference, the ranges and the
   overlap count are recorded; nothing is removed.

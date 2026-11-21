@@ -802,10 +802,6 @@ def test_g5_a_control_of_one_group_fails_a_pseudo_bulk_passes_and_knockouts_are_
     assert out["g5_rule"] == "bulk margin > 0 (BULK_WHOLE_MARGIN), decision 2026-11-21"
 
 
-def _g5_margin(profile, ref, pres):
-    return bulk.whole_embryo_guard(profile, ref, pres)
-
-
 def test_g5_two_lineage_mix_fails_and_a_library_on_each_side_of_zero(tmp_path):
     """Bulk G5 (decision 2026-11-21): margin > 0, strict. A 50/50 mix of the two smallest-share groups fails; along
     the line from pb to one group's profile there is a profile with margin in (0, 0.05), which passes (it failed
@@ -814,12 +810,12 @@ def test_g5_two_lineage_mix_fails_and_a_library_on_each_side_of_zero(tmp_path):
     pres = np.ones(len(PANEL), bool)
     small = sorted(ref["groups"], key=lambda g: ref["shares"][g])[:2]
     assert small == ["CM", "Endoderm"]
-    ok, rec = _g5_margin(0.5 * ref["mu"]["CM"] + 0.5 * ref["mu"]["Endoderm"], ref, pres)
+    ok, rec = bulk.whole_embryo_guard(0.5 * ref["mu"]["CM"] + 0.5 * ref["mu"]["Endoderm"], ref, pres)
     assert ok is False and rec["margin"] <= 0.0
     pb = tb.whole_den(ref)
     above = below = None
     for t in np.linspace(0.0, 1.0, 2001):
-        ok, rec = _g5_margin((1 - t) * pb + t * ref["mu"]["Neural"], ref, pres)
+        ok, rec = bulk.whole_embryo_guard((1 - t) * pb + t * ref["mu"]["Neural"], ref, pres)
         if above is None and 0.0 < rec["margin"] < cm.SPEARMAN_MARGIN:
             above = (ok, rec)
         if below is None and rec["margin"] < 0.0:
@@ -827,6 +823,46 @@ def test_g5_two_lineage_mix_fails_and_a_library_on_each_side_of_zero(tmp_path):
     assert above is not None and below is not None
     assert above[0] is True and above[1]["threshold"] == 0.0
     assert below[0] is False
+
+
+def test_g5_arm_mean_refuses_when_it_fails_and_passes_inside_0_0_05(tmp_path, monkeypatch):
+    """The control arm mean under the new rule (the reviewer's lesser point 3). Two controls with one profile whose
+    margin lies in (0, 0.05): both are kept (the old 0.05 would have dropped them) and the arm mean passes. An arm
+    mean that fails refuses the unit with the new reason."""
+    _, _, ref = make_ref(tmp_path)
+    pres = np.ones(len(PANEL), bool)
+    pb = tb.whole_den(ref)
+    prof = None
+    for t_ in np.linspace(0.0, 1.0, 2001):
+        cand = (1 - t_) * pb + t_ * ref["mu"]["Neural"]
+        ok, rec = bulk.whole_embryo_guard(cand, ref, pres)
+        if 0.0 < rec["margin"] < cm.SPEARMAN_MARGIN:
+            prof = cand
+            break
+    assert prof is not None
+    libs, u = _unit_libs(ref, np.random.default_rng(5), n_ko=2, n_ctl=2)
+    for lab in ("control0", "control1"):
+        libs[lab]["xp"] = prof / prof.sum() * 300_000
+    out = _run_unit(ref, libs, u)
+    st = out["stages"]["E8.5"]
+    assert not any("G5" in v for v in st["dropped"].values())
+    assert st["whole_embryo"]["control0"]["passed"] and st["whole_embryo"]["control1"]["passed"]
+    assert 0.0 < st["whole_embryo_control_mean"]["margin"] < cm.SPEARMAN_MARGIN
+    assert st["whole_embryo_control_mean"]["threshold"] == 0.0 and out["status"] != "refused_whole_embryo"
+    # an arm mean that fails: the guard's verdict on the fifth call (two knockouts, two controls, then the mean)
+    real, calls = bulk.whole_embryo_guard, []
+
+    def guard(profile, ref_, present):
+        calls.append(1)
+        ok, rec = real(profile, ref_, present)
+        return (False, {**rec, "margin": -0.01}) if len(calls) == 5 else (ok, rec)
+
+    monkeypatch.setattr(bulk, "whole_embryo_guard", guard)
+    libs2, u2 = _unit_libs(ref, np.random.default_rng(5), n_ko=2, n_ctl=2)
+    out2 = _run_unit(ref, libs2, u2)
+    assert len(calls) == 5 and out2["status"] == "refused_whole_embryo"
+    assert out2["reason"] == ("E8.5: the control arm's mean is dominated by one lineage (not more like pb than any one "
+                              "group) (G5)")
 
 
 def test_g5_tie_at_zero_fails_under_the_strict_rule(tmp_path):
