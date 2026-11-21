@@ -10,7 +10,8 @@
 #   gate   HEAD is COMMIT (the full hash), the tracked tree is clean, docs/S2_RULES.sha256 checks, row E50 is in
 #          TRIES.md, row E50's reading is a tracked file of this commit, made at the row's run commit, not void, and says
 #          the test file is built (its reading (i) holds, mixture arm), and the code the builder runs (src/, the
-#          builder, the count and size records, the lock file) is byte for byte the code that reading ran
+#          builder and the modules it imports, the count and size records, boards/, configs/, the lock file) is byte
+#          for byte the code that reading ran
 #   tests  the construction's and the embryo builder's targeted tests (synthetic stages only), 8 BLAS threads
 #   D      the positions file by the default command; it must give POSITIONS_SHA or everything stops
 #   CRa CRb  the copy-rows file, twice, into separate folders
@@ -40,7 +41,7 @@ BOARD=T2:embryo:test_interp
 POSITIONS_SHA=a03611a343faf1d37edf06ce0e2bccc86cce6f14d3580b823864e5faf3ba03f9  # set embryo2, the positions file
 READING=experiments/coords/results/e50_copy_rows/reading.json
 E50_RUN_COMMIT=5fcf6b9ad187e2c5377900426f6dd749c4a1f9d9  # row E50's own commit: the code its reading ran
-CODE_PATHS="src experiments/builds/build_test.py experiments/density/results/release/count_decision.json experiments/coords/results/p3 uv.lock pyproject.toml"
+CODE_PATHS="src experiments/builds/build_test.py experiments/density/results/release/count_decision.json experiments/coords/results/p3 boards configs experiments/t1_m1 experiments/t1_hygiene experiments/t1_strong_null uv.lock pyproject.toml"
 BASE_ARGS="--method fgw_shape0 --positions floor_exact --expression mixture"
 CR_ARGS="--method fgw_shape0 --positions floor_exact --expression mixture --copy-rows --copy-rows-test-ok"
 STEP=gate

@@ -39,8 +39,10 @@ def test_the_launcher_builds_the_positions_file_then_the_copy_rows_file_twice():
     assert 'git ls-files --error-unmatch "$READING"' in sh and f"E50_RUN_COMMIT={RUN_COMMIT}" in sh
     assert 'git diff --quiet "$E50_RUN_COMMIT" HEAD -- $CODE_PATHS' in sh
     paths = re.search(r'^CODE_PATHS="([^"]+)"$', sh, flags=re.M).group(1).split()
-    assert {"src", "experiments/builds/build_test.py", "uv.lock", "pyproject.toml",
+    assert {"src", "experiments/builds/build_test.py", "uv.lock", "pyproject.toml", "boards", "configs",
+            "experiments/t1_m1", "experiments/t1_hygiene", "experiments/t1_strong_null",
             "experiments/density/results/release/count_decision.json", "experiments/coords/results/p3"} == set(paths)
+    assert all((REPO / q).exists() for q in paths)
     assert '[ "$head" = "$COMMIT" ]' in sh  # the full hash, never a prefix
     assert '[ "$st" = "$head True" ] || return 15' in sh  # a build counts only with a stamp of this commit, clean
     assert "PATH=$HOME/.local/bin:$PATH" in sh

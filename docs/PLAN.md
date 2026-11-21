@@ -9199,3 +9199,24 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     (the challenger's stricter assumption holds), and a citation of "entry (l)" that means 2026-11-20 (l); both are
     added in this commit. The step script's test list also gained the launcher's test in f139c28, which that commit's
     message did not say.
+- 2026-11-21 (o), the copy-rows record: the reviewer confirms the launcher fix; the question as sent to the captain (state at
+  09:28 UTC, 2026-11-21). Written by the AI assistant, which is recused on the embryo's occupancy term and states no
+  preference.
+  - **The reviewer's verification** (the same independent reviewer, at ef46975): READY, no blocker. An uncommitted or
+    altered reading can no longer pass the gate; the full-hash and stamp checks fail only on what should be refused.
+    One lesser point is applied in this commit: the launcher's code-unchanged check now also covers `boards/`,
+    `configs/` and the three experiment folders whose modules the builder imports; none of these paths differs between
+    the run commit 5fcf6b9 and this commit (`git diff --quiet`, which prints nothing).
+  - **The question as sent, at 09:27 UTC, as plain text in the main session's message.** The text sent was: "Embryo:
+    the baseline-copy file you ordered can only be exact if it also takes the copy's cell count (a tenth of E7.5,
+    below our max_cells rule) and E7.5's own size (not our pre-registered size). Build it that way? If I hear nothing,
+    it is built as described and goes after the exact-position file." That is the first analyst's wording (its
+    specification, item 5 of the rulings section, which also says the question goes to the captain as plain text). The
+    cold challenger's final wording differs in two places: "is exact only if" for "can only be exact if", and a last
+    sentence, "Nothing waits on your answer." Entry (n) called the text sent 'the analysts' words' without saying
+    which analyst's; this is the correction. The message's own first line told the captain that nothing waits on the
+    answer and that the default is build, and it listed, as the main session's summary of the analysts' findings and
+    with no preference, what speaks for the file (the only exact form; about 0.7 on the baseline's values on the three
+    shape terms if the build passes the board's limits), what speaks against it (it aims at the baseline's level, not
+    above; the smaller count may cost on other terms, unpriced until row E50 is read) and what a 'no' means (no
+    copy-rows file). No answer has arrived at the time of this entry.
