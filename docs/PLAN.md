@@ -8878,3 +8878,27 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **So:** no outside-data row is opened on either board. Nothing changes in the files with the captain. With K24
     (entry (f)) this closes the outside-data push of 20 November on every board except the two parked lines (the GEO
     single-study bulk forms; the Task 1 extra atlases in their strict form), which one word from the captain reopens.
+- 2026-11-21 (h), the embryo: the captain orders the shelved second construction reopened (state at 08:03 UTC,
+  2026-11-21). Written by the AI assistant, which is recused on every choice about the embryo's occupancy term (entry
+  2026-11-20 (i)), states no preference and executes what fresh analysts fix.
+  - **What arrived.** The captain forwarded a side agent's note about the embryo's occupancy term. In substance the
+    note said: the row-order fix addresses one suspected cause only; the follow-up check found that the embryo's frame
+    also shifts between random samples of the same stage, so the term may stay partly luck; the analysts had described
+    another build, which gives the file the baseline copy's exact positions and which, by the scorer's code, should
+    then score the baseline's level on this term if the server draws its baseline the released way; it may give back
+    some shape gain; the analysts shelved it, the main agent is recused, and it is built only if the captain asks. The
+    captain's own words on it, verbatim: "reopen it [my ordeer]".
+  - **How the AI assistant reads the order (its reading, not the captain's words).** It is the ruling that reading A.2
+    of entry 2026-11-20 (s) said was needed before anything is built: the captain orders the second construction (the
+    investigator's Option A: the file takes the baseline copy's own rows and count) to be written and built. It names
+    this one construction. It is not read as covering anything else on the embryo, and the upload of any file stays
+    the captain's own act. Whether the order also settles the departure from the board's count rule and how it stands
+    beside the decision of 2026-11-02 on parity hedges is put to fresh analysts, who say whether one short question is
+    still needed.
+  - **What is started** (workflow `embryo-second-construction`; nothing run on data, nothing built for the test board
+    yet): a fresh analyst specifies the construction exactly from the public scorer and builder code and says whether
+    it can be built for the test board at all (the row-order option could not: it needed a count the test board does
+    not give); a cold challenger attacks the specification, the rules questions included; an engineer writes an
+    off-by-default builder option with a test-board guard, and a practice read if the analysts require one; a reviewer
+    checks the code. The exact-position file already handed over (`T2embryo_s2x`) is unchanged and unscored. No number
+    in the construction comes from a board score.
