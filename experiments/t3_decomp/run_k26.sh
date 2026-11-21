@@ -10,10 +10,11 @@
 #   tests     the new and the related tests, synthetic data only (exit 10 on a failure)
 #   features  TARGET-FREE: T1 contexts, detection deciles, the random draws; R/features.json (22 refused, 24 exists,
 #             20 other)
-#   stage0    the COUNTED DIAGNOSTIC on outside perturbations only; R/stage0.json; 27 the gate fails (STOP: no fold
-#             read; nothing after this step runs), 22 refused, 20 other
-#   pregate   TARGET-FREE: the fold tables and their drops; R/pregate.json; 25 the arm is dropped (STOP: nothing runs),
-#             22 refused, 24 exists, 20 other
+#   stage0    the COUNTED DIAGNOSTIC on outside perturbations only; R/stage0.json; 27 the gate fails (STOP: the
+#             reading of the stop is written into OUT, no fold is read, nothing after this step runs), 22 refused,
+#             20 other
+#   pregate   TARGET-FREE: the fold tables and their drops; R/pregate.json; 25 the arm is dropped (STOP: the reading
+#             of the stop is written into OUT, nothing runs), 22 refused, 24 exists, 20 other
 #   guard     the guard part (base arms only) in seven parallel parts, then the reproduction gate; 26 the gate fails
 #             (the VOID reading is written into OUT first; a rerun finishes 26 again and never reads twice), 30 a part
 #             did not exit 0, 22 refused, 20 other
@@ -27,7 +28,8 @@
 # EXTERNAL_DATA.md rows X013, X014, X015 and X017 do not each name K26). A call without two arguments writes
 # usage.exit (2); an unknown step 97. Each step writes $S/<STEP>.exit on every path and $S/<STEP>.head. Logs go to
 # R/logs/ and are never printed; their lines other than the script's step lines are counted into
-# R/exit/<part>.other_lines. Nothing is ever removed by this launcher. NUMPY_MADVISE_HUGEPAGE=0; TMPDIR under $S.
+# R/exit/<part>.other_lines. A stop's reading is made once (a rerun finds OUT/reading.json and finishes with the same
+# code; 43, 44 or 41 when that read is INCOMPLETE, finds a reading, or crashes). Nothing is ever removed. NUMPY_MADVISE_HUGEPAGE=0; TMPDIR under $S.
 set -u
 if [ "$#" -lt 2 ] || [ -z "$1" ] || [ -z "$2" ]; then
   mkdir -p "$HOME/v/scratch/k26" && echo 2 > "$HOME/v/scratch/k26/usage.exit"
@@ -128,15 +130,15 @@ parts() {  # $1 = guard|score: the seven parts at once; returns 1 when a part di
   return $bad
 }
 
-void_read() {  # the VOID reading after a failed reproduction gate, made once
+stop_read() {  # $1 = the step's finish (26, 25 or 27): the reading of a stop or a VOID gate, made once, then finish $1
   local rc=0
-  if [ -e "$OUT/reading.json" ]; then finish 26; fi
+  if [ -e "$OUT/reading.json" ]; then finish "$1"; fi
   $PY "$SCRIPT" read --runs "$R" --out "$OUT" --commit "$COMMIT" > /dev/null 2>&1 || rc=$?
-  echo $rc > "$S/void_read.exit"
+  echo $rc > "$S/stop_read.exit"
   if [ $rc = 3 ]; then finish 43; fi
   if [ $rc = 4 ]; then finish 44; fi
   if [ $rc != 0 ]; then finish 41; fi
-  finish 26
+  finish "$1"
 }
 
 rc=0
@@ -153,20 +155,20 @@ case "$STEP" in
     case $rc in 0) finish 0 ;; 2) finish 22 ;; 4) finish 24 ;; *) finish 20 ;; esac ;;
   stage0)
     $PY "$SCRIPT" stage0 --out "$R" --commit "$COMMIT" > "$R/logs/stage0.log" 2>&1 || rc=$?
-    case $rc in 0) finish 0 ;; 7) finish 27 ;; 2) finish 22 ;; *) finish 20 ;; esac ;;
+    case $rc in 0) finish 0 ;; 7) stop_read 27 ;; 2) finish 22 ;; *) finish 20 ;; esac ;;
   pregate)
     $PY "$SCRIPT" pregate --out "$R" --run-dir "$RUN_DIR" --commit "$COMMIT" > "$R/logs/pregate.log" 2>&1 || rc=$?
-    case $rc in 0) finish 0 ;; 5) finish 25 ;; 7) finish 27 ;; 2) finish 22 ;; 4) finish 24 ;; *) finish 20 ;; esac ;;
+    case $rc in 0) finish 0 ;; 5) stop_read 25 ;; 2) finish 22 ;; 4) finish 24 ;; *) finish 20 ;; esac ;;
   guard)
     if [ ! -e "$R/guard.json" ]; then
       parts guard || finish 30
       $PY "$SCRIPT" guard --runs "$R" --commit "$COMMIT" > "$R/logs/guard.log" 2>&1 || rc=$?
-      case $rc in 0) finish 0 ;; 6) void_read ;; 2) finish 22 ;; 3) finish 30 ;; *) finish 20 ;; esac
+      case $rc in 0) finish 0 ;; 6) stop_read 26 ;; 2) finish 22 ;; 3) finish 30 ;; *) finish 20 ;; esac
     fi
     gpass=$($PY -c 'import json, sys; g = json.load(open(sys.argv[1])); print("pass" if g.get("passes") is True else "fail")' \
       "$R/guard.json" 2> /dev/null) || gpass=unreadable
     if [ "$gpass" = pass ]; then finish 0; fi
-    if [ "$gpass" = fail ]; then void_read; fi
+    if [ "$gpass" = fail ]; then stop_read 26; fi
     finish 20 ;;
   run)
     parts score || finish 30

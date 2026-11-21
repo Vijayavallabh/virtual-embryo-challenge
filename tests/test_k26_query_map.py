@@ -612,3 +612,30 @@ def test_the_progress_lines_carry_no_figure(capsys):
     q.progress_log("score", "x2", "x2")("[x2] seed 7: floor 50.00, q_map 51.23")
     q.progress_log("guard", "plain", "g1")("whatever seed 3: 49.9")
     assert capsys.readouterr().out == "K26 x2 x2 seed 7: scored\nK26 guard plain g1 seed 3: scored\n"
+
+
+def test_a_stop_at_stage_zero_or_at_the_pregate_is_a_reading_with_no_try(tmp_path):
+    R = tmp_path / "runs"
+    R.mkdir()
+    k18.write_task_file(R / "features.json", {"plan": {}, "provenance": _prov()})
+    fsha = _sha(R / "features.json")
+    k18.write_task_file(R / "stage0.json", {"stage0": {"passes": False, "per_gene": {}}, "features_sha256": fsha,
+                                             "provenance": _prov()})
+    res = q.reading(R, {})
+    assert not res["void"] and res["stopped"] == "stage0" and res["tries_counted"] == 0
+    assert res["stage0_counted"] == 1 and res["outcome"].startswith("STOP at stage 0")
+    assert "stopped at stage0" in q.text(res)
+    k18.write_task_file(R / "pregate.json", {"pregate": {"runs": True}, "provenance": _prov()})
+    res = q.reading(R, {})
+    assert res["void"] and "after a stop at stage 0" in res["why"][0]
+    (R / "pregate.json").unlink()
+    (R / "stage0.json").unlink()
+    k18.write_task_file(R / "stage0.json", {"stage0": {"passes": True}, "features_sha256": fsha,
+                                             "provenance": _prov()})
+    assert q.reading(R, {})["incomplete"]
+    k18.write_task_file(R / "pregate.json", {"pregate": {"runs": False, "dropped": {"g": ["x"]}, "folds": {}},
+                                              "features_sha256": fsha, "stage0_sha256": _sha(R / "stage0.json"),
+                                              "provenance": _prov()})
+    res = q.reading(R, {})
+    assert not res["void"] and res["stopped"] == "pregate" and res["tries_counted"] == 0
+    assert res["outcome"].startswith("STOP at the pre-gate")

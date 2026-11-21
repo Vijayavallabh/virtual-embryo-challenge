@@ -150,12 +150,12 @@ def test_each_step_maps_the_scripts_exit_and_refuses_without_the_step_before(tmp
     assert (L.home / "v/scratch" / f"k26_{L.head[:7]}" / "tests.head").read_text().strip() == L.head
     for rc, want in ((2, 22), (4, 24), (1, 20), (0, 0)):
         assert _run(L, "features", L.head, rc=rc)[0] == want and _exit(L, "features") == str(want)
-    for rc, want in ((7, 27), (2, 22), (1, 20)):
-        assert _run(L, "stage0", L.head, rc=rc)[0] == want
+    for rc, want, read_rc in ((7, 27, 0), (7, 41, 1), (7, 43, 3), (2, 22, 0), (1, 20, 0)):
+        assert _run(L, "stage0", L.head, rc=rc, STUB_READ_RC=read_rc)[0] == want
         assert _run(L, "pregate", L.head, rc=0)[0] == 96  # stage 0 did not exit 0: nothing after it runs
     assert _run(L, "stage0", L.head, rc=0)[0] == 0
-    for rc, want in ((5, 25), (7, 27), (2, 22), (4, 24), (1, 20)):
-        assert _run(L, "pregate", L.head, rc=rc)[0] == want
+    for rc, want, read_rc in ((5, 25, 0), (5, 44, 4), (7, 20, 0), (2, 22, 0), (4, 24, 0), (1, 20, 0)):
+        assert _run(L, "pregate", L.head, rc=rc, STUB_READ_RC=read_rc)[0] == want
         assert _run(L, "guard", L.head, rc=0)[0] == 96
     assert _run(L, "pregate", L.head, rc=0)[0] == 0
     assert _run(L, "guard", L.head, rc=1)[0] == 30 and _exit(L, "guard") == "30"
@@ -185,7 +185,7 @@ def test_a_failed_gate_writes_the_void_reading_once(tmp_path):
     S = L.home / "v/scratch" / f"k26_{L.head[:7]}"
     # the parts exit 0 and the gate exits 6: the VOID read runs (exit 0) and the step finishes 26
     assert _run(L, "guard", L.head, rc=0, STUB_GUARD_RC=6, STUB_READ_RC=0)[0] == 26
-    assert (S / "void_read.exit").read_text().strip() == "0" and _exit(L, "guard") == "26"
+    assert (S / "stop_read.exit").read_text().strip() == "0" and _exit(L, "guard") == "26"
     assert _run(L, "run", L.head, rc=0)[0] == 96  # no scoring part after a failed gate
     # a failing gate whose void read crashed or was incomplete
     assert _run(L, "guard", L.head, rc=0, STUB_GUARD_RC=6, STUB_READ_RC=3)[0] == 43
@@ -200,3 +200,14 @@ def test_a_failed_gate_writes_the_void_reading_once(tmp_path):
     (out / "reading.json").write_text("{}")
     assert _run(L, "guard", L.head, rc=1, STUB_PRINT="fail", STUB_READ_RC=1)[0] == 26
     assert _run(L, "guard", L.head, rc=1)[0] == 20
+
+
+def test_a_stop_is_read_once(tmp_path):
+    L = _setup(tmp_path)
+    for step in ("tests", "features"):
+        assert _run(L, step, L.head, rc=0)[0] == 0
+    out = L.repo / "experiments/t3_decomp/results/k26_query_map"
+    out.mkdir(parents=True)
+    (out / "reading.json").write_text("{}")
+    # the stop's reading is there already: no second read (a read would crash here: 41)
+    assert _run(L, "stage0", L.head, rc=7, STUB_READ_RC=1)[0] == 27

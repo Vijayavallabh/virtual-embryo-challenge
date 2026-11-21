@@ -1079,39 +1079,66 @@ def reading_code() -> dict:
 
 
 def reading(runs: Path, refs: dict | None = None) -> dict:
-    """Apply the reading of row K26 to a run folder (the guard part read again, then the scoring part)."""
+    """Apply the reading of row K26 to a run folder: a STOP at stage 0 or at the pre-gate is a reading of its own (no
+    fold read, no try beyond stage 0); otherwise the guard part is read again, then the scoring part."""
     runs = Path(runs)
-    steps = ("features.json", "stage0.json", "pregate.json", GUARD_FILE)
-    miss = [f for f in steps if not (runs / f).exists()]
+    why: list[str] = []
+    sha, prov, body = {}, {}, {}
+
+    def load(*names) -> list[str]:
+        miss = [f for f in names if not (runs / f).exists()]
+        for f in names:
+            if f not in miss and f not in body:
+                body[f], sha[f] = k21._read_json(runs / f)
+                prov[f] = body[f]["provenance"]
+        return miss
+
+    miss = load("features.json", "stage0.json")
     if miss:
         return {"incomplete": True, "void": False, "missing": miss, "outcome": INCOMPLETE}
-    why: list[str] = []
-    sha, prov = {}, {}
-    body = {}
-    for f in steps:
-        body[f], sha[f] = k21._read_json(runs / f)
-        prov[f] = body[f]["provenance"]
-    s0, pre, g = body["stage0.json"], body["pregate.json"], body[GUARD_FILE]
-    if s0.get("features_sha256") != sha["features.json"] or pre.get("features_sha256") != sha["features.json"]:
-        why.append("stage0.json or pregate.json was made from another features.json")
+    feat, s0 = body["features.json"], body["stage0.json"]
+    s0res = s0.get("stage0") or {}
+    fplan = feat.get("plan") or {}
+    shown = (*QUERY.values(), *(fplan.get("q_rand") or {}).values())
+    common = {"stage0": s0res, "breadth": {gn: v for gn, v in ((feat.get("context_record") or {}).get("breadth")
+                                                               or {}).items() if gn in shown},
+              "types_used": (feat.get("context_record") or {}).get("types"),
+              "outside_left_out": fplan.get("outside_left_out")}
+    if s0.get("features_sha256") != sha["features.json"]:
+        why.append("stage0.json was made from another features.json")
+    later = [f for f in ("pregate.json", GUARD_FILE) if (runs / f).exists()]
+    if s0res.get("passes") is not True:
+        stop = {"incomplete": False, **common, "files_sha256": dict(sha), "provenance": dict(prov),
+                "tries_counted": 0, "stage0_counted": 1, "stopped": "stage0"}
+        if later or why:
+            return stop | {"void": True, "why": [*why, *(f"{f} exists after a stop at stage 0" for f in later)],
+                           "outcome": "void: the run went past the stop at stage 0, or its files disagree"}
+        return stop | {"void": False, "why": [], "outcome": "STOP at stage 0: the gate failed; no fold read, no file"}
+    miss = load("pregate.json")
+    if miss:
+        return {"incomplete": True, "void": False, "missing": miss, "outcome": INCOMPLETE}
+    pre = body["pregate.json"]
+    common["pregate"] = _pregate_report(pre.get("pregate") or {})
+    if pre.get("features_sha256") != sha["features.json"]:
+        why.append("pregate.json was made from another features.json")
     if pre.get("stage0_sha256") != sha["stage0.json"]:
         why.append("pregate.json was made from another stage0.json")
+    if not (pre.get("pregate") or {}).get("runs"):
+        stop = {"incomplete": False, **common, "files_sha256": dict(sha), "provenance": dict(prov),
+                "tries_counted": 0, "stage0_counted": 1, "stopped": "pregate"}
+        if (runs / GUARD_FILE).exists() or why:
+            return stop | {"void": True, "why": [*why] + (["guard.json exists after the pre-gate's drop"]
+                                                         if (runs / GUARD_FILE).exists() else []),
+                           "outcome": "void: the run went past the pre-gate's drop, or its files disagree"}
+        return stop | {"void": False, "why": [], "outcome": "STOP at the pre-gate: the arm is dropped with its "
+                                                            "controls; nothing runs, no try is counted, no file"}
+    miss = load(GUARD_FILE)
+    if miss:
+        return {"incomplete": True, "void": False, "missing": miss, "outcome": INCOMPLETE}
+    g = body[GUARD_FILE]
     if g.get("pregate_sha256") != sha["pregate.json"]:
         why.append("guard.json was made under another pregate.json")
-    s0res = s0.get("stage0") or {}
-    common = {"stage0": s0res, "pregate": _pregate_report(pre.get("pregate") or {}),
-              "guard_part": {k: g.get(k) for k in ("cells", "failed", "passes")},
-              "breadth": {g: v for g, v in ((body["features.json"].get("context_record") or {}).get("breadth")
-                                            or {}).items()
-                          if g in (*QUERY.values(), *((body["features.json"].get("plan") or {}).get("q_rand")
-                                                      or {}).values())},
-              "types_used": (body["features.json"].get("context_record") or {}).get("types"),
-              "outside_left_out": (body["features.json"].get("plan") or {}).get("outside_left_out")}
-    if s0res.get("passes") is not True or not (pre.get("pregate") or {}).get("runs"):
-        return {"incomplete": False, "void": True, **common, "files_sha256": sha, "provenance": prov,
-                "tries_counted": 0, "stage0_counted": 1,
-                "why": ["stage 0 did not pass or the pre-gate dropped the arm, yet a guard.json exists", *why],
-                "outcome": "void: the run went past a stop"}
+    common["guard_part"] = {k: g.get(k) for k in ("cells", "failed", "passes")}
     gmiss = [f for f in guard_files() if not (runs / f).exists()]
     if gmiss:
         return {"incomplete": True, "void": False, "missing": gmiss, "outcome": INCOMPLETE}
@@ -1213,6 +1240,8 @@ def text(res: dict) -> str:
         lines.append(f"  {k}: passes {v['passes']}; {k21._dist(v.get('distance'))}")
     if res["void"]:
         lines.append("VOID: " + "; ".join(res["why"]))
+    elif res.get("stopped"):
+        lines.append(f"stopped at {res['stopped']}: no fold was read")
     else:
         dec = res["decision"]
         lines.append(f"commit {res['commit']}, machine {res['machine']}.")
