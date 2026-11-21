@@ -2,7 +2,55 @@
 
 ## Current Objective
 
-- **State at 2026-11-21, 22:57 UTC (newest; it supersedes the bullets below where they differ).** Decision log 2026-11-21 (c) to (aa). Local main = origin/main. Nothing of ours is running on the DGX. **EIGHT SCORES ARE IN FOR
+- **State at 2026-11-21, 23:47 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+  2026-11-21 (c) to (bb); the next label is 2026-11-22 (a). Local main = origin/main. Standing by best headline per
+  board: T1 71.59, T3 62.30, heart 56.4, embryo 69.9 = 197.04. Only headlines are recorded; the main session gives no
+  design lean on any board (entry (t)).
+  - **WITH THE CAPTAIN, IN ORDER (all in `runs/manual_upload/`):** T1: `T1_s2rcC.h5ad` (31477ef7df5d), then the 2x
+    file `T1_s2rcB2.h5ad` (52897fe375b8a81afffa788592047c30361824148b00a8176514385060518837; row R20; built and handed
+    over, entry (bb)). Embryo: `T2embryo_s2x_cr.h5ad` (f20730da8308), then `T2embryo_s2.h5ad` (41982d8afd78). T3:
+    `T3_c1_s2.h5ad` (871833086642), `T3_c2_s2.h5ad` (47111ac1d07e), `T3_k23_s2.h5ad` (77ff0b947f7f), `T3_ck_s2.h5ad`
+    (e470aaeeab28) only if C2 and K23 each beat 62.30. Heart: nothing queued. When a score comes: headline only into
+    `results/manual_uploads.csv`, one log entry, the board's rule, the next file.
+  - **OPEN WITH THE CAPTAIN (plain text, each default no):** (1) lift the team's own bars (no number set from a score;
+    no per-metric reading) for a score-guided search of round steps, each fixed in the log before its own score: the
+    Rules page as screened on 18 Nov permits trying a parameter value, seeing its score and trying another 'however
+    many rounds it takes' and prohibits solving for a target property and building a submission from it (entry (aa));
+    never lifted: solving hidden properties, the levers closed after the 4 Nov exposure, the main session's recusals.
+    (2) T3's refused s1 (`T3_refused_s1.h5ad`, 0394575a11fc; built). (3) The heart's organ-cut file D. (4) T1's
+    no-outside-data file F (`T1_s2none.h5ad`, 55eaee547ff1).
+  - **RUNNING (two workflows):** `blind-round-2-engineering` (task wany2l7le): the practice reads of the candidate
+    round on branches `campaign/embryo-so-ohi` (row E51), `campaign/t1-ms-read` (row T65),
+    `campaign/heart-trend-forms` (row H29a) and the copy-rows file at the team's own size
+    (`campaign/embryo-copy-rows-size`, row E52). `moonshots-fix-1` (task wee4h40co): fix and re-review of five
+    moonshot kill tests on branches `campaign/moon-*-2` (T66 T1 blood, K25 T3 dispersion, H30 heart chord with its
+    gate row N56, E53 embryo geodesic, E54 embryo flow). Deferred, not started: K26 (T3 map; two blockers; a file
+    needs the A15 ruling) and H31 (heart bridge; four blockers; depends on H30's gate); their reviews are in
+    `lift8/fix_moon_t3_map.txt` and `lift8/fix_moon_heart_bridge.txt`.
+  - **READY TO PLACE AND RUN: T67, T1's per-gene timing** (`campaign/moon-t1-timing`,
+    485e3d35abfcb2af9470ffbbfd866456481bd5fc; review ready; hand-back in `lift8/moonshots_eng1.json`, job t1-timing;
+    row text saved as `lift8/t67_row.txt`, which has raw vertical bars: write 'abs D' so that it has eleven cells, and
+    add the rules the reviewer lists as left out). Two phases on `~/v/vec-campaign-d`: first a new N row for the late
+    labelling (the frozen labeller rerun on the atlas's E15.5 to E17.5 cells, controls from those stages) at commit
+    NROWC, then `bash experiments/t1_m1/timing.sh late-tests NROWC NROW` and `late NROWC NROW` (15 to 45 min); then
+    ONE commit ROWC with the late RECORD, the X002 register amendment (its line must hold the token
+    `feng_relabel_late`) and row T67; then `tests`, `pregate` (exit 4 = idle, pruned, no try), the five runs in
+    parallel (`cut chamber`, `cut whole`, `lib 1`, `lib 2`, `lib 3`; about two hours), `read`. Ten tries (T1 418 to
+    428) once the runs start. Exit files in `~/v/scratch/t67/`.
+  - **DGX facts (21 Nov 23:43 UTC):** the outside nuclei atlas (`data/external/jax_qiu2024`, 43 embryo files) and the
+    heart atlas's clean reduction are on `~/v/vec-campaign-d` and `~/v/vec-campaign`; torch 2.14, torchdiffeq and scvi
+    are in the campaign-d environment; the `rdata` package is MISSING in both environments (T66, H30 and H31 need it:
+    install with uv from the lock's external group while nothing runs there, and say so in the log).
+    `~/v/vec-campaign-d` is at 3d18841 (holds `runs/t1x2_3d18841_r1` and its archive); `~/v/vec-campaign` is at
+    59ad7fa; nothing of ours is running on the DGX.
+  - **For every hand-back:** read the task's output file, save it under `lift8/`, never the transcript; on a ready
+    review merge (keep both sides of the test list in `experiments/external/n54_step.sh`), run the related tests on
+    main, amend the register first where a read uses an outside source in a new way, place the row and a log entry in
+    one commit, sync the DGX checkout only when nothing runs in it, trace the launcher's refusal path, run, read in
+    the row's fixed words; only a pass leads to a build, and several would first need the captain's word (R1 for the
+    blood line; A15 for T3's map and the heart's outside data). **Tries:** T1 418, embryo 84, heart 80, T3 72.
+    Register: next row X018.
+- **State at 2026-11-21, 22:57 UTC (superseded by the bullet above where they differ).** Decision log 2026-11-21 (c) to (aa). Local main = origin/main. Nothing of ours is running on the DGX. **EIGHT SCORES ARE IN FOR
   THE DAY (entries (s) and (w)); only headlines are recorded; the pasted per-metric lines and ranks are recorded
   nowhere and used for nothing; the main session gives no design lean on any board (entry (t)).**
   - **Headlines (first, second upload of the day) and the next file by each pre-set rule:** T1: A 70.8, B 71.59 (the
