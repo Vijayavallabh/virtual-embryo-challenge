@@ -9575,3 +9575,60 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     not closed. So it exists under the challenger's rule and is handed over as the embryo's file after C. A copy-rows
     file at the team's own size, which the round did not propose and the captain's yes of entry (v) covers, is being
     specified by a fresh analyst.
+- 2026-11-21 (z), the moonshot round's outcome: eight kill tests go to engineers (state at 23:08 UTC, 2026-11-21). Written by the
+  AI assistant, which gives no design lean on any board (entry 2026-11-21 (t)); the judgements below are the
+  score-blind judges'.
+  - **The round** (workflow `moonshots-round-1`, the captain's order of entry 2026-11-21 (v); twelve agents: per board
+    two designers and a cold judge, all told to use no test score; hand-back in the session scratchpad
+    `lift8/moonshots_round1.json`). Twenty-three proposals; the judges kept two per board and struck the rest (closed
+    levers such as size, scope and composition; duplicates; ideas already read; kill tests that were not fair). Their
+    plain summaries, verbatim, follow.
+  - **T1, the judge's summary, verbatim:** "Of six proposals, two can run tonight on the existing harness without a
+    GPU. Both are for T1 and both can be built by 25 November if they pass. First: move the blood cells, which nothing
+    moves today, along the change of red-blood-cell nuclei in the JAX atlas between E8.5 and E15.5-E16.5. Chance it
+    passes its practice test: about 1 in 5; chance of 3 or more points at the test if it passes: about 7 in 100.
+    Second: let each gene move at its own pace, using how fast it is still changing in Feng's hearts after E14.5.
+    About 1 in 8 to pass; about 4 in 100 for 3 or more points if it passes. Both most likely fail against their
+    shuffled-gene controls; either file needs your ruling (the blood one amends your ruling R1), and I struck the
+    neural-network and learned-transfer ideas as too weakly identified to finish in time."
+  - **T3, the judge's summary, verbatim:** "Of the six moonshots, two survive and four are struck. The transport map
+    would bring back T3's closed composition and confuse genotype with slide. The scorer-optimised posterior repeats
+    exponent and shrinkage reads, and rests on outside tables that row K24 closed on this fold. The spatial field
+    revives pruned lines and cannot move a fitted field from E9.5 into the E8.75 frame. The duplicate gene-map design
+    is merged into survivor 2. First to run: a mean-preserving within-label spread transfer, released data only. It
+    must gain on the Mab21l2-truth fold and in the depth-matched world, because added noise has scored by depth
+    before. Pass about 0.08; given a pass, about 0.12 for a gain of 3 points or more. Second: a map from the
+    knocked-out gene's own wild-type co-expression in the released T1 files to its response, gated first on outside
+    tables alone and needing your A15 ruling for any file. Pass about 0.05; given a pass, about 0.15 for 3 points or
+    more. Honestly, the most likely outcome of both is no file, and the realistic size of a success is 0.5 to 2
+    points."
+  - **Heart, the judge's summary, verbatim:** "I struck the size idea because size is a closed lever. I also struck
+    the T1-trained translator: it needs T1 data on the heart, and its own designer expects it to fail. Two ideas
+    survive, and both pull the heart's expression toward legal E14.5 data (JAX embryos 54-56 and Feng's E14.5 hearts)
+    without changing cells, positions, size or depth. First comes a cheap check that reads no target: does the JAX
+    atlas's E8.75-to-E9.5 change agree with the MERFISH change on the panel genes? About 0.35 that it passes. If it
+    fails, the heart line ends at no cost. If it passes, the chord idea (H29, CPU, 30 tries) and the latent bridge
+    (H30, two GPU fits, 18 tries) each face a placebo bar in both practice worlds. Honest odds of a gain of three
+    board points or more at the test are about 1% for each idea, and about 2-4% of any real gain; most likely nothing
+    changes, and a pass would still need your yes on the outside-data question."
+  - **Embryo, the judge's summary, verbatim:** "Two of five moonshots survive. Both designer two's ideas are struck:
+    they crop the embryo's scope and size, which the post-exposure block closes, and one of their checks compared a
+    candidate with a practice truth before any row was written. Designer one's simulator idea is struck because its
+    fake truths are made from bracket cells, so it favours the current mixture by design. First to run is a smooth
+    deformation that carries both halves of the overlay file to one midpoint shape: about 12% to pass its test, and
+    about 2% overall to add 3 or more board points over the overlay already built. Second is a flow through all seven
+    released stages that picks which real cells go in: about 7% to pass, and under 1% overall for a 3-point gain. Each
+    costs about 3 hours on the DGX and could be built by 24 November; most likely neither passes."
+  - **Row labels.** The judges drafted rows under labels that collide with the candidate round's (E51, E52, H29a,
+    T65). The labels in force: T1 blood along the outside nuclei atlas T66; T1 per-gene timing T67; T3 within-label
+    dispersion K25; T3 gene-conditioned response map K26; heart late-anchor chord H30 (its target-free gate first);
+    heart latent bridge H31; embryo geodesic overlay E53; embryo multi-stage flow E54.
+  - **What is done.** Workflow `moonshots-engineering-1` (sixteen agents): per moonshot an engineer writes the kill
+    test exactly as its judge specified, on its own branch, and a reviewer checks it. Each kill test is a counted try:
+    the AI assistant places its row and a log entry in one commit before the read, amends the register row of any
+    outside source first (the outside nuclei atlas and the heart atlas's later stages are new uses of rows X003 and
+    X002), runs it on the DGX and reads it in its fixed words. Only a pass leads to a build path, and several passes
+    would still need the captain's word before any file: the blood line amends ruling R1; the heart lines and T3's map
+    use data across tasks or from outside on a board that has had none (question A15). The judges' own odds: each kill
+    test passes with a chance between about one in twenty and one in five, and a gain of three board points or more at
+    the test is about one or two in a hundred per moonshot. Most likely no file comes of them.
