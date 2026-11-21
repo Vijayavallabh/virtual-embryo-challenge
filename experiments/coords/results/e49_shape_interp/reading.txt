@@ -1,0 +1,25 @@
+Row E49 (run commit d76ccd5693fe670836f126bb4b925231c88a312d); the pre-run gate passed on all nine tasks (the floor and C0 under main within 0.01 of E47, run at 9967cf1, committed in d5ee9b5).
+Step 0 (target-free, test pair): F1 blocks 1|2,3; dropped before the read: none.
+Readings fixed in row E49, build main, merged over five truths (mean, SE, seeds ahead of 10):
+  E49a fgw_shape0x_sr (stretch_ratio): does not pass; clauses P1 holds, P2 holds, P3 holds, P4 fails, P5 holds, P6 holds
+    board +0.853 (SE 0.082, 10 ahead); gated shape_growth +0.0347; ungated S +0.0528; d2_shape +0.0865; occupancy_dice +0.0192; neighborhood_mmd -0.0006
+    test-like: board +0.680, gated shape_growth +0.0273
+    against E49d fgw_shape0x_sr_anti: ungated S +0.0997 (SE 0.0047, 10 ahead)
+    reported, deciding nothing: prefix board +0.866; multiplicative-gate board +0.490; per truth T2/E8.0.h5ad +0.557, T2/E8.25_late.h5ad +0.880, T2/E8.5.h5ad -0.588, T2/E7.5.h5ad -0.151, T2/E7.25.h5ad +3.565
+  E49b fgw_shape0x_sg (stretch_registered): does not pass; clauses P1 holds, P2 holds, P3 holds, P4 fails, P5 holds, P6 fails
+    board +0.624 (SE 0.068, 10 ahead); gated shape_growth +0.0257; ungated S +0.0390; d2_shape +0.0766; occupancy_dice +0.0013; neighborhood_mmd -0.0007
+    test-like: board +0.679, gated shape_growth +0.0276
+    against E49e fgw_shape0x_sg_anti: ungated S +0.0586 (SE 0.0054, 10 ahead)
+    against E49f fgw_shape0x_sg_rot: ungated S +0.0184 (SE 0.0051, 10 ahead)
+    unreadable (refused on some task-seed): fgw_shape0x_sg
+    reported, deciding nothing: prefix board +0.612; multiplicative-gate board +0.362; per truth T2/E8.0.h5ad +0.359, T2/E8.25_late.h5ad +0.775, T2/E8.5.h5ad -0.444, T2/E7.5.h5ad -0.134, T2/E7.25.h5ad +2.566
+  E49c fgw_shape0x_ov (overlay): does not pass; clauses P1 holds, P2 holds, P3 holds, P4 holds, P5 fails, P6 holds
+    board +2.461 (SE 0.091, 10 ahead); gated shape_growth +0.0389; ungated S +0.0535; d2_shape +0.0923; occupancy_dice +0.0146; neighborhood_mmd +0.0595
+    test-like: board +3.247, gated shape_growth +0.0623
+    against E49g fgw_shape0x_ov_rot: ungated S +0.0069 (SE 0.0044, 6 ahead)
+    reported, deciding nothing: prefix board +2.467; multiplicative-gate board +2.926; per truth T2/E8.0.h5ad +1.625, T2/E8.25_late.h5ad +4.181, T2/E8.5.h5ad +2.100, T2/E7.5.h5ad +0.837, T2/E7.25.h5ad +3.564
+Candidate files (the outcome-to-file rule fixed in the row):
+  no candidate file: the exact-position file and the series twin stand as handed over
+  copy_parity is offered beside a shape-only candidate only by E48's own reading and the captain's ruling of 2026-11-20 (m), as a separate file labelled unpriced under prefix (J1)
+Reported, deciding nothing: refused task-seeds fgw_shape0x_sr 0, fgw_shape0x_sr_anti 0, fgw_shape0x_sg 17, fgw_shape0x_sg_anti 0, fgw_shape0x_sg_rot 0, fgw_shape0x_ov 0, fgw_shape0x_ov_rot 0; F1 blocks per task half ['1|2,3'], late ['1|2,3'], new1 ['1|2,3'], new2 ['1|2,3'], e75 ['1|2|3'], e725 ['1|2,3'], x1 ['1|2|3'], x2 ['1|2|3'], x3 ['1|2|3']; DEEP/OTHER board split fgw_shape0x_sr +0.234/+1.040; fgw_shape0x_sg +0.156/+0.811; fgw_shape0x_ov +2.487/+2.464
+Each candidate goes to the captain as a priced question (all tries are diagnostics, J5). Nothing here shows E7.75's shape, the live gate, build, metric seed or LAPACK signs.
