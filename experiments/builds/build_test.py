@@ -102,6 +102,15 @@ machine, and an official upload needs the captain's go-ahead.
           shape_interp block. On a test board it is refused unless --shape-interp-test-ok (the captain's yes) is also
           given. With --row-order copy_parity the order is fixed: form, size, jitter, cloud guard, then the row order
           on the final coordinates
+          --copy-rows (off by default; the investigator's Option A, the captain's order of 2026-11-21, docs/PLAN.md
+          decision log 2026-11-21 (h); row E50 as specified): with --method fgw_shape0 --positions floor_exact and
+          --expression mixture or series only, the file takes the floor copy's own rows, order, count and float32
+          coordinates (floor_copy_coords) and the expression of vec.t2_build.copy_rows_cloud; no size rule, centring,
+          jitter or row-order step. It departs from the count rule (the record says "floor_copy" for n_cells on a test
+          board, and its count_rule says departed) and may hold fewer cells than the truth (allow_below_truth). The
+          limits are checked here, and every refusal on this path shows no value; the coordinates are checked bit for
+          bit before writing and on the file read back. On a test board it is refused unless --copy-rows-test-ok (the
+          captain's yes) is also given, before anything loads
 
 The board is the test board from boards/ (after the intake, `vec boards update --from-file`); before that, --board
 may name a validation board of the same task for a dry run, and the script refuses a dry run whose output file name
@@ -211,6 +220,12 @@ HEART_SCOPE_OPTIONS = {
 SHAPE_INTERP_OFF = "none"
 SHAPE_INTERP_ORDER = ("floor_exact positions, the shape form, the size rule's RMS rescale, the duplicate jitter, the "
                       "cloud guard, then --row-order copy_parity if given (on the final coordinates)")
+# --copy-rows (off by default; the investigator's Option A, the captain's order of 2026-11-21, docs/PLAN.md decision log
+# 2026-11-21 (h); row E50 as specified): the floor copy's own rows, order, count and float32 coordinates with the
+# exact-position file's expression rule (vec.t2_build.copy_rows_cloud)
+COPY_ROWS_EXPRESSIONS = ("mixture", "series")
+COPY_ROWS_N = "_copy_rows_n"  # the floor copy's count, handed to _hide_counts and never written
+COPY_ROWS_COUNT_RULE = "departed: the floor copy's count (the captain's order of 2026-11-21)"
 HEART_HALVING = ("experiments/builds/halve.py <file> <half>: a uniform random half of the rows (halve.DEFAULT_SEED, "
                  "order kept), as for the ruled heart2 file; the halving is a separate step, not this build")
 
@@ -250,8 +265,18 @@ def _t2_count(board, pool_n: int) -> dict:
 def _hide_counts(rec: dict, board) -> dict:
     """On a test board, the record without cell counts: n_cells becomes "max_cells" (the count rule), and anything
     else refuses. T1's realised composition is left out (below)."""
+    copy_n = rec.get(COPY_ROWS_N)  # --copy-rows only: the floor copy's own count, checked and then dropped
+    if copy_n is not None:
+        rec = {k: v for k, v in rec.items() if k != COPY_ROWS_N}
     if not board.counts_hidden:
         return rec
+    if copy_n is not None:  # off by default: the copy-rows file holds the floor copy's count, not max_cells
+        if rec["n_cells"] != copy_n:
+            sys.exit("the built file does not hold the floor copy's count (values not shown)")
+        out = dict(rec, n_cells="floor_copy")
+        if isinstance(out.get("record"), dict):
+            out["record"] = {k: v for k, v in out["record"].items() if k not in COUNT_FIELDS}
+        return out
     if rec["n_cells"] != board.max_cells:
         sys.exit("the built file does not hold the board's max_cells, the approved count (values not shown)")
     out = dict(rec, n_cells="max_cells")
@@ -1037,7 +1062,92 @@ def floor_copy_coords(stage_file: str) -> np.ndarray:
                      t2_build.COPY_PARITY_COPY_SEED).coords
 
 
+def _copy_rows_refusals(a) -> None:
+    """--copy-rows' refusals, before any board or stage is read (off by default: nothing here acts without it)."""
+    copy_rows, ok = getattr(a, "copy_rows", False), getattr(a, "copy_rows_test_ok", False)
+    if ok and not copy_rows:
+        raise SystemExit("--copy-rows-test-ok is for --copy-rows only")
+    if not copy_rows:
+        return
+    if a.method != "fgw_shape0" or a.positions != t2_build.POSITIONS[1]:
+        raise SystemExit("--copy-rows is for --method fgw_shape0 --positions floor_exact only")
+    if (a.row_order != t2_build.ROW_ORDERS[0] or a.shape_interp != SHAPE_INTERP_OFF or a.herd
+            or a.draw != t2_build.DRAWS[0] or a.move_coupling != t2_build.MOVE_COUPLINGS[0]
+            or a.expression not in COPY_ROWS_EXPRESSIONS):
+        raise SystemExit("--copy-rows is refused with --row-order copy_parity, --shape-interp, --herd, --draw "
+                         "midpoint, --move-coupling aligned or an --expression other than mixture or series")
+
+
+def _same_bits(C, ref32: np.ndarray) -> bool:
+    """Whether coordinates are ref32 exactly: shape, row order and float32 bits."""
+    C32 = np.ascontiguousarray(np.asarray(C)[:, :3], dtype=np.float32)
+    R = np.ascontiguousarray(ref32, dtype=np.float32)
+    return C32.shape == R.shape and np.array_equal(C32.view(np.uint32), R.view(np.uint32))
+
+
+def _build_copy_rows(a, board, dry: bool, genes, files: dict, inputs: dict, count: dict) -> dict:
+    """--copy-rows (row E50 as specified; the captain's order of 2026-11-21): the floor copy's rows, order, count and
+    float32 coordinates (floor_copy_coords of the earlier bracket as released), the expression of the handed-over
+    form's rule (mixture or series). No size rule, centring, jitter or row-order step. The limits are checked here and
+    every refusal on this path shows no value; the coordinates are checked bit for bit before writing and on the file
+    read back."""
+    import anndata as ad
+
+    stage_file = files["before"][0]
+    before, after = inputs["before"], inputs["after"]
+    released = read_stage(DATA / stage_file, list(genes))
+    floor = floor_copy_coords(stage_file)
+    Eb, Ea = dense(before[:, genes].X).astype(np.float32), dense(after[:, genes].X).astype(np.float32)
+    try:
+        dropped = before.uns.get("qc", {}).get("dropped_rows", [])
+        res = t2_build.copy_rows_cloud(np.asarray(released.obsm[COORD_KEY])[:, :3], dropped, Eb, Ea,
+                                       dense(released.X).astype(np.float32), 0.5, t2_build.COPY_PARITY_COPY_SEED,
+                                       a.seed)
+    except ValueError as e:
+        raise SystemExit(f"--copy-rows refused: {e}") from None
+    if not _same_bits(res.coords, floor):
+        raise SystemExit("--copy-rows: the coordinates are not the floor copy's, bit for bit (values not shown)")
+    expr_rec = None
+    if a.expression == "mixture":
+        X = np.empty((len(res.rows), len(genes)), dtype=np.float32)
+        X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
+    else:  # series, the handed-over exact-position file's own rule
+        X, expr_rec = t2_build.series_rendered_expression(before, after, res, genes, 0.5, [a.seed, 7])
+    guard = t2_build.cloud_guard(res.coords, res.pool_coords, seed=a.seed)
+    if not guard.ok:
+        raise SystemExit("--copy-rows: cloud guard flags (values not shown): "
+                         f"{[str(f).split(':', 1)[0] for f in guard.flags]}")
+    if len(X) < board.min_cells or (board.max_cells is not None and len(X) > board.max_cells):
+        raise SystemExit("the copy-rows count is outside the board's limits (values not shown)")
+    try:
+        _, report = t2_build.build_submission(board, X, res.coords, genes=list(genes), out=a.out,
+                                              allow_duplicate_coords=True, allow_below_truth=True)
+    except ValueError:
+        raise SystemExit("build_submission refused the copy-rows file (values not shown)") from None
+    if not report.ok:
+        raise SystemExit("the built copy-rows file fails its check (values not shown)")
+    back = ad.read_h5ad(a.out)
+    if not _same_bits(back.obsm[COORD_KEY], floor):
+        Path(a.out).unlink(missing_ok=True)
+        provenance.stamp_path(Path(a.out)).unlink(missing_ok=True)
+        raise SystemExit("--copy-rows: the written file's coordinates are not the floor copy's, bit for bit; the file "
+                         "was removed (values not shown)")
+    rec = dict(res.record)
+    if expr_rec is not None:
+        rec.update({f"series_{k}": v for k, v in expr_rec.items() if not isinstance(v, (dict, list))})
+    rec["expression"] = a.expression
+    return {"entry": a.method, "board": board.key, "dry_run": dry, "n_cells": int(len(X)), "seed": a.seed,
+            "count_decision": count, "target_rms": None,
+            "record": {k: v for k, v in rec.items() if not isinstance(v, (dict, list))},
+            "copy_rows": True,
+            "copy_rows_copy": f"vec.evaluate.subsample({stage_file} as released, {SUBSAMPLE_FRAC}, "
+                              f"{t2_build.COPY_PARITY_COPY_SEED})",
+            "count_rule": COPY_ROWS_COUNT_RULE, "size_rule": "not applied", "allow_below_truth": True,
+            COPY_ROWS_N: int(len(floor))}
+
+
 def build_embryo(a) -> dict:
+    _copy_rows_refusals(a)
     if a.positions != t2_build.POSITIONS[0] and (a.method != "fgw_shape0" or a.herd
                                                  or a.draw != t2_build.DRAWS[0]):
         raise SystemExit(f"--positions {a.positions} is for --method fgw_shape0, without --herd and --draw midpoint")
@@ -1056,12 +1166,18 @@ def build_embryo(a) -> dict:
     if (shape is not None and (not dry or str(board.split).startswith("test"))
             and not a.shape_interp_test_ok):  # before anything loads
         raise SystemExit("--shape-interp on a test board needs the captain's yes (--shape-interp-test-ok)")
+    if (getattr(a, "copy_rows", False) and (not dry or str(board.split).startswith("test"))
+            and not a.copy_rows_test_ok):  # before anything loads: a refusal or a pass there shows one bit
+        raise SystemExit("--copy-rows on a test board needs the captain's yes (--copy-rows-test-ok); a refusal or a "
+                         "pass there shows one bit about the board's limits")
     genes = board.genes
     files = {"before": ("T2/E7.5.h5ad", 7.5), "after": ("T2/E8.0.h5ad", 8.0)}
     if a.method == "pseudobulk_shift":  # only it uses the stage before the bracket (E7.25 lacks two panel genes)
         files["earlier"] = ("T2/E7.25.h5ad", 7.25)
     inputs = {r: load_stage(DATA / f, genes=genes, drop_duplicates=True) for r, (f, _) in files.items()}
-    count = _t2_count(board, inputs["before"].n_obs)
+    count = _t2_count(board, inputs["before"].n_obs)  # provenance; under --copy-rows it does not set the count
+    if getattr(a, "copy_rows", False):  # off by default
+        return _build_copy_rows(a, board, dry, genes, files, inputs, count)
     view = _view("test:T2e", "T2", "interp", "embryo", board.key, files, "before", 7.75)
     ctx = harness.BuildContext(task=view, board=harness._candidate_board(board), inputs=inputs, seed=a.seed)
     size = json.loads(SIZES["embryo"].read_text())
@@ -1298,6 +1414,19 @@ def build_parser() -> argparse.ArgumentParser:
             p.add_argument("--shape-interp-test-ok", action="store_true",
                            help="--shape-interp on the test board: the captain's yes (off by default; without it the "
                                 "option refuses on a test board before anything loads)")
+            p.add_argument("--copy-rows", action="store_true",
+                           help="--method fgw_shape0 --positions floor_exact only, with --expression mixture or "
+                                "series (off by default; the captain's order of 2026-11-21, docs/PLAN.md decision log "
+                                "2026-11-21 (h); row E50 as specified): the file takes the floor copy's own rows, "
+                                "order, count and float32 coordinates (vec.evaluate.subsample of E7.5 as released, "
+                                "0.1, seed 0), half its slots keep their own cell's expression and the rest take E8.0 "
+                                "cells by an exact assignment (vec.t2_build.copy_rows_cloud). It departs from the "
+                                "count rule and the size rule. Refused with --row-order copy_parity, --shape-interp, "
+                                "--herd, --draw midpoint and --move-coupling aligned")
+            p.add_argument("--copy-rows-test-ok", action="store_true",
+                           help="--copy-rows on the test board: the captain's yes (off by default; without it the "
+                                "option refuses on a test board before anything loads, because a refusal or a pass "
+                                "there shows one bit about the board's limits)")
             p.add_argument("--row-order-test-ok", action="store_true",
                            help="--row-order copy_parity on the test board: the captain's yes (off by default; "
                                 "without it the option refuses on a test board before anything loads, because a "

@@ -419,6 +419,10 @@ class Candidate:
     externals: tuple[tuple[str, float, float], ...] = ()
     derived: tuple[str, ...] = ()
     derived_optional: tuple[str, ...] = ()
+    # Off by default. Set only by the copy-rows arms (row E50 as specified): run_task then hands this candidate the very
+    # reference cells it drew the floor from (after any within cut) under inputs[REFERENCE_RELEASED], and their file
+    # positions under inputs[REFERENCE_RELEASED_ROWS]; no other candidate sees either.
+    needs_reference_cells: bool = False
 
     def derived_for(self, t: PseudoTask) -> tuple[str, ...]:
         """The derived inputs this candidate uses on pseudo-task t: those of t's task, and its optional inputs where
@@ -1182,6 +1186,58 @@ def _fgw_shape0x_series(ctx: BuildContext) -> Stage:
     return _fgw(ctx, t_pos=0.0, expression="series", positions=t2_build.POSITIONS[1])
 
 
+# Row E50 (as specified; the captain's order of 2026-11-21, docs/PLAN.md decision log 2026-11-21 (h)): the copy-rows
+# file, the floor copy's own rows, order, count and coordinates with the mixture's expression
+# (vec.t2_build.copy_rows_cloud). Off by default: only these two candidates set needs_reference_cells.
+REFERENCE_RELEASED = "reference_released"
+REFERENCE_RELEASED_ROWS = "reference_released_rows"
+
+
+def _copy_rows(ctx: BuildContext, expression: str = "mixture") -> Stage:
+    """The copy-rows arms: the floor copy of this scoring seed (copy seed = build seed - BUILD_SEED_OFFSET) drawn from
+    the very reference cells run_task drew the floor from, the earlier bracket's own expression in round((1 - t) n)
+    slots and the later bracket's rows in the others, then the expression step of the arm (mixture, or the series
+    rendering of fgw_shape0x_series). Finish: the cloud guard against the reference cells' coordinates, then
+    build_submission with duplicate positions and a count below the truth's allowed (this path only)."""
+    t = ctx.task
+    if REFERENCE_RELEASED not in ctx.inputs:
+        raise ValueError(f"{t.key}: the copy-rows arm needs the reference cells run_task hands over")
+    ref, ref_rows = ctx.inputs[REFERENCE_RELEASED], ctx.inputs[REFERENCE_RELEASED_ROWS]
+    before, after = ctx.inputs["before"], ctx.inputs["after"]
+    lo, hi = t.role_days["before"], t.role_days["after"]
+    g = list(ctx.board.genes)
+    frac = (t.target_day - lo) / (hi - lo)
+    Eb, Ea = dense(before[:, g].X).astype(np.float32), dense(after[:, g].X).astype(np.float32)
+    source = np.asarray(ref.obsm[COORD_KEY])[:, :3]
+    res = t2_build.copy_rows_cloud(source, before.uns.get("qc", {}).get("dropped_rows", []), Eb, Ea,
+                                   dense(ref[:, g].X).astype(np.float32), frac, ctx.seed - BUILD_SEED_OFFSET,
+                                   ctx.seed, released_rows=ref_rows)
+    if expression == "mixture":
+        X = np.empty((len(res.rows), len(g)), dtype=np.float32)
+        X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
+    elif expression == "series":
+        X, _ = t2_build.series_rendered_expression(before, after, res, g, frac, [ctx.seed, 7])
+    else:
+        raise ValueError(f"unknown expression step {expression!r}")
+    X = np.clip(np.asarray(X, dtype=np.float32), 0.0, None)
+    guard = t2_build.cloud_guard(res.coords, np.asarray(source, dtype=float), seed=ctx.seed)
+    if not guard.ok:
+        raise ValueError(f"{t.key}: cloud guard flags {guard.flags}")
+    sub, rep = t2_build.build_submission(ctx.board, X, res.coords, genes=g, allow_duplicate_coords=True,
+                                         allow_below_truth=True)
+    if not rep.ok:
+        raise ValueError(f"{t.key}: the built file fails its check: {rep.errors}")
+    return Stage.from_anndata(sub, ctx.board.genes, need_coords=True)
+
+
+def _fgw_copyrows(ctx: BuildContext) -> Stage:
+    return _copy_rows(ctx)
+
+
+def _fgw_copyrows_series(ctx: BuildContext) -> Stage:
+    return _copy_rows(ctx, expression="series")
+
+
 def _fgw_late(ctx: BuildContext) -> Stage:
     """Embryo try E23: fgw's coupling, moves and size, every cell drawn from the later bracket (t_mix = 1)."""
     return _fgw(ctx, t_mix=1.0)
@@ -1716,6 +1772,19 @@ CANDIDATES = {
                                              "rendering", "rule": t2_build.SERIES_RULE,
                                      "positions": t2_build.POSITIONS[1], "stream": t2_build.FLOOR_EXACT_STREAM,
                                      "scope": "whole"}, requires=_series_applies),
+    # row E50 (as specified): the copy-rows file, the floor copy's rows, order, count and coordinates; the mixture's
+    # expression (fgw_copyrows) or the series rendering (fgw_copyrows_series)
+    "fgw_copyrows": Candidate("fgw_copyrows", frozenset({"T2"}), (), _fgw_copyrows,
+                              {"what": "the floor copy's own rows, order, count and float32 coordinates (no size rule, "
+                                       "centring or jitter), half the slots with their own cell's expression and the "
+                                       "rest with later-bracket cells by an exact assignment",
+                               "rule": t2_build.COPY_ROWS_RULE, "stream": t2_build.COPY_ROWS_STREAM,
+                               "scope": "whole"}, requires=_interp, needs_reference_cells=True),
+    "fgw_copyrows_series": Candidate("fgw_copyrows_series", frozenset({"T2"}), (), _fgw_copyrows_series,
+                                     {"what": "fgw_copyrows with the series rendering",
+                                      "rule": t2_build.COPY_ROWS_RULE, "series_rule": t2_build.SERIES_RULE,
+                                      "stream": t2_build.COPY_ROWS_STREAM, "scope": "whole"},
+                                     requires=_series_applies, needs_reference_cells=True),
     # row E49 (as drafted): fgw_shape0x with a shape form between the brackets, three arms and four controls
     **{name: Candidate(name, frozenset({"T2"}), (), _fgw_shape0x_form(form),
                        {"what": "fgw_shape0x (the earlier bracket's own positions) with the shape form "
@@ -1996,12 +2065,17 @@ def _candidate_board(board: Board) -> Board:
 
 def score_seeds(t: PseudoTask, board: Board, target: Stage, ref: Stage, inputs: Mapping[str, ad.AnnData],
                 candidates: list[Candidate], seeds=SEEDS, build: str = BUILD, log=None,
-                root: Path = REPO_ROOT, data_dir: Path = DATA_DIR) -> list[dict]:
+                root: Path = REPO_ROOT, data_dir: Path = DATA_DIR, reference_cells: ad.AnnData | None = None,
+                reference_rows: np.ndarray | None = None) -> list[dict]:
     """Per seed: the floor (checked to score 50 with complete anchors) and every applicable candidate, all against
     one seed's anchors; candidates build inside the read guard. Each row keeps the full metric panel per candidate
     (`metrics`, de_score's audit trail included) and its group skills (`groups`), so a result can be explained without
     rebuilding it; on T3 also what the response metrics are made of (`t3`: vec.evaluate.t3_response_detail, the
-    severity gate and de_direction's per-gene terms, for the fit checks of tries K2a and K2b)."""
+    severity gate and de_direction's per-gene terms, for the fit checks of tries K2a and K2b).
+
+    reference_cells / reference_rows (off by default): the reference cells `ref` was made from and their positions
+    in the released file; handed only to a candidate with needs_reference_cells (row E50), under REFERENCE_RELEASED and
+    REFERENCE_RELEASED_ROWS. Every other candidate's inputs are `inputs` as before."""
     view, cboard = TaskView.of(t), _candidate_board(board)
     given: dict[str, dict[str, object]] = {}
     for c in candidates:
@@ -2035,8 +2109,13 @@ def score_seeds(t: PseudoTask, board: Board, target: Stage, ref: Stage, inputs: 
         for c in candidates:
             if c.name == FLOOR or not c.applies(t):
                 continue
+            c_inputs = inputs
+            if c.needs_reference_cells:  # row E50's arms only
+                if reference_cells is None or reference_rows is None:
+                    raise ValueError(f"{t.key}: {c.name} needs the reference cells, which were not handed over")
+                c_inputs = {**inputs, REFERENCE_RELEASED: reference_cells, REFERENCE_RELEASED_ROWS: reference_rows}
             with guarded_reads(root, data_dir) as g:
-                pred = c.build(BuildContext(task=view, board=cboard, inputs=inputs, seed=BUILD_SEED_OFFSET + s,
+                pred = c.build(BuildContext(task=view, board=cboard, inputs=c_inputs, seed=BUILD_SEED_OFFSET + s,
                                             derived=given[c.name]))
             row["reads"][c.name] = sorted(set(g["log"]))
             r = score_board(board, pred, target, ref, seed=s, anchors=f.anchors, build=build, protocol=PROTOCOL)
@@ -2121,8 +2200,10 @@ def run_task(t: PseudoTask, candidates: list[Candidate], seeds=SEEDS, data_dir: 
     else:
         target, filt = Stage.from_anndata(read_stage(data_dir / t.target, genes), genes, need_coords=need_coords), None
     ref_cells = read_stage(data_dir / t.reference, genes)
+    ref_rows = None
     if within is not None:
-        ref_cells = ref_cells[_within_rows(ref_cells, t.reference, within)]
+        ref_rows = _within_rows(ref_cells, t.reference, within)
+        ref_cells = ref_cells[ref_rows]
     ref = Stage.from_anndata(ref_cells, genes, need_coords=need_coords)
     board = task_board(t, boards, target.n, ref.n)
     if t.task == "T1":
@@ -2136,8 +2217,13 @@ def run_task(t: PseudoTask, candidates: list[Candidate], seeds=SEEDS, data_dir: 
         if missing:
             raise ValueError(f"{t.key}: input {r} lacks {len(missing)} panel genes")
     applicable = [FLOOR] + [c.name for c in candidates if c.name != FLOOR and c.applies(t)]
+    handover = {}
+    if any(c.needs_reference_cells and c.name in applicable for c in candidates):  # row E50's arms only
+        handover = {"reference_cells": ref_cells,
+                    "reference_rows": np.arange(ref_cells.n_obs, dtype=np.int64) if ref_rows is None
+                    else np.asarray(ref_rows, dtype=np.int64)}
     rows = score_seeds(t, board, target, ref, inputs, candidates, seeds=seeds, build=build, log=log,
-                       data_dir=data_dir)
+                       data_dir=data_dir, **handover)
     files = sorted({t.target, t.reference, *t.inputs.values()})
     used = [c for c in candidates if c.name in applicable[1:]]
     derived = sorted({n for c in used for n in c.derived_for(t)})

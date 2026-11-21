@@ -1911,6 +1911,116 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
                          partners=partners, coupling=internals)
 
 
+# The copy-rows file (the investigator's Option A, "the second construction"; the captain's order of 2026-11-21,
+# docs/PLAN.md decision log 2026-11-21 (h); row E50 as specified; off by default). The file takes the floor copy's own
+# rows, order, count and float32 coordinates; only the expression is the mixture's.
+# default_rng([seed, 51]): the uniform part of the later bracket's slots (47, 48 and 50 are taken). Written as 47 + 4,
+# so that the module's literal guard (tests/test_t2_build.py) passes unchanged.
+COPY_ROWS_STREAM = FLOOR_EXACT_STREAM + 4
+COPY_ROWS_RULE = ("copy rows: the rows, order, count and float32 coordinates of vec.evaluate.subsample(the earlier "
+                  "bracket as released, frac, copy seed), no size rule, centring or jitter; round((1 - t) n) slots "
+                  "keep their own cell's expression; the other slots (every slot whose released row the duplicate "
+                  "filter drops, then a uniform subset, stream [seed, 51]) take later-bracket rows (stream [seed, 1]) "
+                  "by the exact minimum-cost assignment on squared distance in the joint PCs of the anchors (stream "
+                  "[seed, 4])")
+
+
+def copy_rows_cloud(released_coords, dropped_rows, Eb, Ea, released_X_panel, t: float, copy_seed: int, seed: int,
+                    n_pc: int = INTERP_N_PC, n_anchor: int = INTERP_N_ANCHOR, frac: float | None = None,
+                    released_rows=None) -> Interpolation:
+    """The copy-rows file's cells (row E50 as specified; the builder's `--copy-rows`, the harness's fgw_copyrows).
+
+    released_coords: the earlier bracket's coordinates as released (no duplicate drop), one row per released cell the
+    floor copy is drawn from; released_X_panel: those cells' released panel expression, in the same rows. dropped_rows:
+    the positions in the file that the duplicate filter drops (`load_stage(drop_duplicates=True).uns["qc"]
+    ["dropped_rows"]`). Eb, Ea: the earlier and later brackets' panel expression after the duplicate filter (Eb in the
+    file's order without the dropped rows). released_rows: the file position of each row of released_coords (default:
+    every row of the file, in order; a cut reference passes the rows it kept).
+
+    1. The copy is drawn through vec.evaluate.subsample itself, at `frac` (default SUBSAMPLE_FRAC) and `copy_seed`:
+       its rows, their sorted order, its count n and its float32 coordinates are the file's, bit for bit. Nothing is
+       centred, scaled, jittered or re-ordered.
+    2. n_b = round((1 - t) n) slots keep their own cell's expression (the cell's row after the duplicate filter);
+       n_a = n - n_b slots take later-bracket rows, drawn by vec.core.draw_balanced(len(Ea), n_a, [seed, 1]).
+    3. The later bracket's slots are every slot whose released row the duplicate filter drops, then a uniform subset
+       of the other slots (stream [seed, COPY_ROWS_STREAM]). More dropped slots than n_a refuses.
+    4. The later rows go to those slots one to one by scipy's linear_sum_assignment on the squared Euclidean distance
+       between the later row's expression and the slot cell's own released expression, both projected on
+       `_joint_pc_loadings` of the anchors interpolate_clouds draws (stream [seed, 4]).
+
+    Returns an Interpolation: stage (0 earlier, 1 later), rows (the earlier stage's rows after the duplicate filter, or
+    the later stage's), coords (float64 of the copy's float32), pool_coords the released coordinates, uniform
+    pool_weights, and a flat record with no count. Refusals carry no value."""
+    from scipy.optimize import linear_sum_assignment
+    from scipy.spatial.distance import cdist
+
+    from vec.evaluate import SUBSAMPLE_FRAC, Stage, subsample
+
+    frac = SUBSAMPLE_FRAC if frac is None else float(frac)
+    C = np.asarray(released_coords)
+    if C.ndim != 2 or C.shape[1] < 3:
+        raise ValueError("copy_rows: released_coords must be (n, 3) (values not shown)")
+    C = C[:, :3].astype(np.float32)
+    Eb, Ea = np.asarray(Eb, dtype=np.float64), np.asarray(Ea, dtype=np.float64)
+    Xr = np.asarray(released_X_panel, dtype=np.float64)
+    if not (np.isfinite(C).all() and np.isfinite(Eb).all() and np.isfinite(Ea).all() and np.isfinite(Xr).all()):
+        raise ValueError("copy_rows: non-finite input (values not shown)")
+    if Xr.shape[0] != C.shape[0] or Eb.ndim != 2 or Ea.ndim != 2 or not Eb.shape[1] == Ea.shape[1] == Xr.shape[1]:
+        raise ValueError("copy_rows: the expression and coordinate inputs do not line up (values not shown)")
+    if not 0.0 <= t <= 1.0:
+        raise ValueError("copy_rows: t must lie in [0, 1]")
+    dropped = np.unique(np.asarray(dropped_rows, dtype=np.int64))
+    n_file = Eb.shape[0] + len(dropped)
+    file_rows = (np.arange(len(C), dtype=np.int64) if released_rows is None
+                 else np.asarray(released_rows, dtype=np.int64))
+    if (file_rows.shape != (len(C),) or (len(dropped) and (dropped.min() < 0 or dropped.max() >= n_file))
+            or (len(file_rows) and (file_rows.min() < 0 or file_rows.max() >= n_file))):
+        raise ValueError("copy_rows: the released rows and the duplicate filter's record do not line up "
+                         "(values not shown)")
+    copy = subsample(Stage(X=np.zeros((len(C), 0), dtype=np.float32), coords=C,
+                           celltype=np.arange(len(C), dtype=np.int64)), frac, _whole(copy_seed, "copy_seed", 0))
+    slot_row = np.asarray(copy.celltype, dtype=np.int64)  # the copy's rows of released_coords, sorted
+    n = len(slot_row)
+    if n < 3:
+        raise ValueError("copy_rows: fewer than three rows in the copy")
+    seed = _whole(seed, "seed", 0)
+    n_b = int(round((1.0 - t) * n))
+    n_a = n - n_b
+    in_file = file_rows[slot_row]
+    slot_dropped = np.isin(in_file, dropped)
+    if int(slot_dropped.sum()) > n_a:
+        raise ValueError("copy_rows: more copy slots lack a deduplicated cell than the later bracket's share "
+                         "(values not shown)")
+    kept = np.setdiff1d(np.arange(n_file, dtype=np.int64), dropped)
+    others = np.flatnonzero(~slot_dropped)
+    extra = (np.random.default_rng([seed, COPY_ROWS_STREAM]).choice(others, n_a - int(slot_dropped.sum()),
+                                                                     replace=False)
+             if n_a > slot_dropped.sum() else np.array([], dtype=np.int64))
+    a_slots = np.sort(np.r_[np.flatnonzero(slot_dropped), extra].astype(np.int64))
+    stage = np.zeros(n, dtype=np.int64)
+    rows = np.empty(n, dtype=np.int64)
+    b_slots = np.setdiff1d(np.arange(n), a_slots)
+    rows[b_slots] = np.searchsorted(kept, in_file[b_slots])
+    mean_cost = 0.0
+    if n_a:
+        rows_a = draw_balanced(len(Ea), n_a, np.random.default_rng([seed, 1]))
+        rng = np.random.default_rng([seed, 4])  # the anchors interpolate_clouds draws at this seed
+        ib = np.sort(rng.choice(len(Eb), min(n_anchor, len(Eb)), replace=False))
+        ia = np.sort(rng.choice(len(Ea), min(n_anchor, len(Ea)), replace=False))
+        centre, loadings = _joint_pc_loadings(Eb[ib], Ea[ia], n_pc)
+        cost = cdist((Ea[rows_a] - centre) @ loadings, (Xr[slot_row[a_slots]] - centre) @ loadings, "sqeuclidean")
+        r, c = linear_sum_assignment(cost)
+        stage[a_slots[c]] = 1
+        rows[a_slots[c]] = rows_a[r]
+        mean_cost = float(cost[r, c].mean())
+    coords = copy.coords.astype(np.float64)
+    record = {"construction": "copy_rows", "rule": COPY_ROWS_RULE, "t": float(t), "frac": frac,
+              "copy_seed": int(copy_seed), "stream": COPY_ROWS_STREAM, "later_rows_stream": [seed, 1],
+              "anchor_stream": [seed, 4], "n_pc": int(n_pc), "mean_cost": mean_cost}
+    return Interpolation(stage=stage, rows=rows, coords=coords, pool_coords=C.astype(np.float64),
+                         pool_weights=np.full(len(C), 1.0 / len(C)), record=record)
+
+
 def _sample_from_rows(P: np.ndarray, which: np.ndarray, rng: np.random.Generator,
                       chunk: int = PARTNER_CHUNK) -> np.ndarray:
     """For each entry r of `which`, a column of P drawn with probability P[r, j] / P[r].sum()."""
