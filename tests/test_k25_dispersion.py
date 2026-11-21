@@ -806,6 +806,17 @@ def test_a_wrong_commit_is_refused_with_an_exit_file_and_nothing_run(tmp_path):
     assert out.returncode == 99
 
 
+def test_the_launcher_at_head_refuses_without_the_row(tmp_path):
+    tries = (REPO / "experiments" / "harness" / "TRIES.md").read_text()
+    if re.search(r"^\| K25 .*`experiments/t3_decomp/k25_dispersion\.py`", tries, flags=re.M):
+        pytest.skip("the row is placed: this path would start the tests step itself")
+    head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()
+    out = _launch(tmp_path, "tests", head)
+    S = tmp_path / "v" / "scratch" / "k25"
+    assert out.returncode in (95, 98), out.stderr  # 98 only while the tree holds uncommitted changes
+    assert (S / "tests.exit").read_text().strip() == str(out.returncode) and not (S / "tests.log").exists()
+
+
 def test_the_launchers_pregate_passes_check(tmp_path):
     m = re.search(r"^PASSES_CHECK='([^']+)'$", LAUNCHER.read_text(), flags=re.M)
     assert m
