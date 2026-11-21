@@ -433,7 +433,8 @@ def test_too_few_genes_and_an_outlier_drop_their_table():
     out = np.where(s0.bulk != 1.0, np.exp(0.001 * np.log(s0.bulk)), 1.0)
     out[5] = 2.0  # one gene carries the SD: scaled to S*, its |ln| is far above 0.5
     pre = _drops(bulk=out)
-    assert "(s3)" in pre["dropped"]["bulk"] and pre["scaled"]["bulk"]["max_abs_ln"] > 0.5
+    # (s3) is checked before the scaled table is formed (the fourth review): no scaled figures, no arm figures
+    assert "(s3)" in pre["dropped"]["bulk"] and "bulk" not in pre["scaled"] and "x_bulk" not in pre["arms"]
 
 
 def test_k23s_product_bounds_drop_a_table(monkeypatch):
@@ -922,6 +923,63 @@ def test_a_nearly_constant_table_drops_on_s1_before_its_scaled_table_is_formed(f
     assert flat not in pre["scaled"] and f"x_{flat}" not in pre["arms"]
     arms = k24.active_arms(pre)
     assert arms == (SC3_ONLY if other == "sc3" else BULK_ONLY) and k24.try_count(arms) == 3
+
+
+@pytest.mark.parametrize("flat", ["bulk", "sc3"])
+@pytest.mark.parametrize("mean", [100.0, -100.0])
+def test_a_table_far_from_one_drops_on_s3_before_its_scaled_table_is_formed(flat, mean):
+    """Every gene's ln T near +100 or -100 with a small spread: the exponent is inside [1/8, 8], T ** e_T overflows
+    or underflows, and the rule drops the table on (s3). The fourth review's blocker: the pre-gate raised instead."""
+    other = "sc3" if flat == "bulk" else "bulk"
+    s0 = _synth()
+    T = np.exp(mean + np.random.default_rng(3).normal(0.0, k24.S_STAR / 7.9, s0.n))
+    e = k24.exponent(T)
+    assert k24.E_MIN <= e <= k24.E_MAX and e * float(np.max(np.abs(np.log(T)))) > 700.0
+    pre = _drops(**{flat: T})
+    assert "(s3)" in pre["dropped"][flat] and "(s1)" not in pre["dropped"][flat]
+    assert flat not in pre["scaled"] and f"x_{flat}" not in pre["arms"]
+    assert "joint" in pre["dropped"] and other not in pre["dropped"]
+    assert k24.try_count(k24.active_arms(pre)) == 3
+
+
+def test_the_joint_is_formed_through_logs_when_a_factor_alone_would_overflow():
+    """A large c (the two size-matched tables nearly cancel): sc3 ** (c e_sc3) overflows and bulk ** (c e_bulk)
+    underflows although J is small. The fourth review's blocker: the product was formed factor by factor and the
+    pre-gate raised. For ordinary tables the form as written is used, value for value."""
+    rng = np.random.default_rng(4)
+    n = 300
+    half = rng.random(n) < 0.5
+    z = rng.normal(0.0, 1e-6, n)
+    y = 0.6 * z + 0.8 * rng.normal(0.0, 1e-6, n)
+    sc3 = np.where(half, np.exp(0.05 + z), 1.0)
+    bulk = np.where(half, np.exp(-0.05 + y), 1.0)
+    e_s, e_b = k24.exponent(sc3), k24.exponent(bulk)
+    c = k24.joint_c(sc3, bulk, e_s, e_b)
+    assert c > 1000.0
+    consts = {"e_sc3": e_s, "e_bulk": e_b, "c": c}
+    with np.errstate(over="ignore", under="ignore", invalid="ignore"):
+        naive = sc3 ** (c * e_s) * bulk ** (c * e_b)
+    assert not np.all(np.isfinite(naive)) or np.any(naive == 0.0)
+    J = k24.k24_table("joint", {"sc3": sc3, "bulk": bulk}, consts)
+    assert np.all(np.isfinite(J)) and np.all(J > 0)
+    assert np.allclose(np.log(J), c * e_s * np.log(sc3) + c * e_b * np.log(bulk), rtol=1e-12, atol=1e-15)
+    assert math.isclose(float(np.std(np.log(J))), k24.S_STAR, rel_tol=1e-6)
+    # ordinary tables: the form as written, value for value
+    a = np.exp(rng.normal(0.0, 0.03, n))
+    b = np.exp(rng.normal(0.0, 0.02, n))
+    ea, eb = k24.exponent(a), k24.exponent(b)
+    cc = k24.joint_c(a, b, ea, eb)
+    got = k24.k24_table("joint", {"sc3": a, "bulk": b}, {"e_sc3": ea, "e_bulk": eb, "c": cc})
+    assert np.array_equal(got, a ** (cc * ea) * b ** (cc * eb))
+
+
+def test_a_share_that_is_not_a_number_drops_the_bulk_table_and_a_guards_list_reports_nothing():
+    n, U = 200, 14
+    for bad in ("x", {"a": 1}, [0.9], True):
+        why, f = _b4(n, U, [bad] + [0.8] * (n - 1))
+        assert _b4_fails(why) and any("not a number" in w for w in why), bad
+        assert f["n_g_source"] == "malformed" and f["agree_G"] is None
+    assert k24.somite_report([1, 2, 3]) == k24.somite_report(None)
 
 
 # ------------------------------------------------------------------------------------------------ (6) the rule

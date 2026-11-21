@@ -379,8 +379,14 @@ def k24_table(kind: str, tables: dict, consts: dict) -> np.ndarray:
         return np.asarray(tables["bulk"], dtype=np.float64) ** float(consts["e_bulk"])
     if kind == "joint":
         c = float(consts["c"])
-        return (np.asarray(tables["sc3"], dtype=np.float64) ** (c * float(consts["e_sc3"]))
-                * np.asarray(tables["bulk"], dtype=np.float64) ** (c * float(consts["e_bulk"])))
+        sc3 = np.asarray(tables["sc3"], dtype=np.float64)
+        blk = np.asarray(tables["bulk"], dtype=np.float64)
+        xs, xb = c * float(consts["e_sc3"]), c * float(consts["e_bulk"])
+        if max(abs(xs) * float(np.max(np.abs(np.log(sc3)))), abs(xb) * float(np.max(np.abs(np.log(blk))))) < 700.0:
+            return sc3 ** xs * blk ** xb   # each factor is finite: the form as written, value for value
+        # a factor alone would overflow or underflow although J is small (the fourth review's blocker: a large c
+        # when the two size-matched tables nearly cancel): the same product through the sum of the logs
+        return np.exp(xs * np.log(sc3) + xb * np.log(blk))
     raise RuntimeError(f"unknown kind {kind!r}")
 
 
@@ -505,7 +511,7 @@ def somite_report(guards: dict | None) -> dict:
     """Reported only: lines whose knockout median somite count is below the wild type's, and the median differences,
     where a unit's guard record carries G6's somite record; G12's shares where recorded."""
     below, diffs, shares, recorded = 0, {}, {}, 0
-    for unit, g in (guards or {}).items():
+    for unit, g in (guards if isinstance(guards, dict) else {}).items():
         stages = g if isinstance(g, dict) else {}
         for st, v in stages.items():
             if not isinstance(v, dict):
@@ -573,6 +579,9 @@ def bulk_drops(T, rec: dict) -> tuple[list[str], dict]:
         figs |= empty
     else:
         n_g, source, bad = lines_held(rec, T.size, U, share)
+        if any(x is not None and (isinstance(x, bool) or not isinstance(x, (int, float))) for x in share):
+            n_g, source = None, "malformed"
+            bad = f"line_agreement_by_study[{BULK_STUDY}] holds a value that is not a number"
         if bad is not None:
             why.append(f"(b4) {bad}: malformed")
             figs |= empty | {"n_g_source": source}
@@ -654,12 +663,15 @@ def pregate_k24(phi_m, loaded: dict, bases_by_world: dict, den, genes: list[str]
         repeat = None  # sc3 only: the repeat clause's reason, kept apart from every other drop
         if e is None:
             why.append("SD(ln T) is 0: no exponent")
-        elif e > E_MAX or e < E_MIN:
-            # (s1) first (the third review's blocker): an exponent outside [E_MIN, E_MAX] drops the table BEFORE
-            # T ** e_T is formed; for a nearly constant table the exponent is huge, T ** e_T overflows to inf or
-            # underflows to 0, and table_figures would raise where the rule says the table drops. The scaled table's
-            # figures and its arm figures are then not made; (s3) is computed from e_T and max |ln T| directly.
-            why.append(f"(s1) e_T {e:.4f} outside [{E_MIN}, {E_MAX}]")
+        elif e > E_MAX or e < E_MIN or e * float(np.max(np.abs(np.log(T)))) > MAX_ABS_LN_SCALED:
+            # (s1) and (s3) first (the third and fourth reviews' blockers): a table whose exponent is outside
+            # [E_MIN, E_MAX], or whose scaled values would exceed the (s3) bound, drops BEFORE T ** e_T is formed. For
+            # a nearly constant table the exponent is huge, and for a table far from 1 a modest exponent is enough:
+            # T ** e_T overflows to inf or underflows to 0, and table_figures would raise where the rule says the
+            # table drops. The scaled table's figures and its arm figures are then not made; (s3) is computed from
+            # e_T and max |ln T| directly (max |ln T ** e_T| = e_T max |ln T|).
+            if e > E_MAX or e < E_MIN:
+                why.append(f"(s1) e_T {e:.4f} outside [{E_MIN}, {E_MAX}]")
             mx = float(e * np.max(np.abs(np.log(T))))
             if mx > MAX_ABS_LN_SCALED:
                 why.append(f"(s3) max |ln T ** e_T| {mx:.4f} (> {MAX_ABS_LN_SCALED})")
