@@ -21,10 +21,15 @@ column, and refuses a whitelist naming an annotation, cluster or embedding colum
 major_trajectory are refused by name), and from meta/df_gene.csv gene_id and gene_short_name. JAX's own labels and the
 stats/*.npz files keyed by them are never read. An embryo outside ROW_EMBRYOS refuses before any file is opened.
 
-It runs once (`preflight`, all checked before any JAX file is opened): ledger row T66 in TRIES.md; X003's row in
-EXTERNAL_DATA.md amended to name this use (AMENDMENT_PHRASE); the committed yaml with sha256 YAML_SHA256 and status
-frozen, equal to its version at HEAD; a clean tree at the commit given by --commit; the output folder absent and inside
-the checkout's own data/ directory. It writes STARTED.json before the first JAX file is opened, then the direction file,
+It runs once (`preflight`, all checked before the output folder is made and before any count is read): ledger row T66
+in TRIES.md; X003's row in EXTERNAL_DATA.md amended to name this use (AMENDMENT_PHRASE) and every column read
+(AMENDMENT_COLUMNS, each in backticks); the committed yaml with sha256 YAML_SHA256 and status frozen, equal to its
+version at HEAD; a clean tree at the commit given by --commit; the output folder absent and inside the checkout's own
+data/ directory; and the inputs' format as far as it can be checked without reading a count (`check_inputs`): the rds
+reader imports, every input file of the row's embryos is in place and matches the JAX folder's MANIFEST.json, and the
+header lines of df_cell.csv and df_gene.csv hold every column read. What only the counts show (an rds that is not a
+dgCMatrix with row and column names, a count matrix gene missing from the gene table) is still checked after the folder
+is made. It writes STARTED.json before the first count matrix is opened, then the direction file,
 the per-embryo table and MANIFEST.json (inputs' and outputs' sha256, the yaml's sha256, the columns read, the embryos
 read, the gate, per-embryo counts, the sets' genes found and controls). It never removes anything; a folder left by a
 stopped run blocks a second run (a rerun is a new row).
@@ -38,6 +43,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import importlib
 import json
 import re
 import sys
@@ -73,6 +79,10 @@ CELL_WHITELIST = ("cell_id", "embryo_id", "day", "experimental_batch")
 GENE_COLUMNS = ("gene_id", "gene_short_name")
 # Named author columns refused whatever else the pattern finds (the row's whitelist check)
 REFUSED_COLUMNS = ("celltype_update", "major_trajectory")
+# X003's amendment names every column this module reads, each in backticks (the captain's terms are raw counts and stage
+# labels; the identifiers and the sequencing run are named so that the register covers every column read)
+AMENDMENT_COLUMNS = (*CELL_WHITELIST, *GENE_COLUMNS)
+RDS_READER = "rdata.parser"
 _EMBRYO = re.compile(r"^embryo_(\d+)$")
 
 
@@ -142,15 +152,61 @@ def scoring_config(cfg: Mapping) -> dict:
 
 
 def register_amended(path: Path | None = None) -> bool:
-    """X003's row in EXTERNAL_DATA.md names this use (AMENDMENT_PHRASE)."""
+    """X003's row in EXTERNAL_DATA.md names this use (AMENDMENT_PHRASE) and every column read (AMENDMENT_COLUMNS, each
+    in backticks)."""
     for line in Path(path or REGISTER).read_text(encoding="utf-8").splitlines():
         if line.startswith(f"| {REGISTER_ROW} |"):
-            return AMENDMENT_PHRASE in " ".join(line.split())
+            text = " ".join(line.split())
+            return AMENDMENT_PHRASE in text and all(f"`{c}`" in text for c in AMENDMENT_COLUMNS)
     return False
 
 
-def preflight(cfg_path: Path, commit: str, dst: Path) -> dict:
-    """Everything the run needs, checked before any JAX file is opened. Returns the gate the manifest records."""
+def input_paths(cfg: Mapping, src: Path) -> dict[str, Path]:
+    """The input files of the row's embryos: the cell table, the gene table and one count matrix per embryo."""
+    embryos = check_embryos(cfg["embryos"])
+    inp = cfg["inputs"]
+    wanted = sorted(n for e in ENDS for n in embryos[e])
+    return {"cells": src / inp["cells"], "genes": src / inp["genes"],
+            **{f"embryo_{n}": src / inp["counts"].format(n=n) for n in wanted}}
+
+
+def header_of(path: Path) -> list[str]:
+    """The header line of a csv file, and nothing past it."""
+    with open(path, newline="") as f:
+        return next(csv.reader(f), [])
+
+
+def check_inputs(cfg: Mapping, src: Path, importer=importlib.import_module, verify=None) -> dict:
+    """The inputs' format, checked before the output folder is made, reading no count and no cell row: the rds reader
+    imports; every input file of the row's embryos exists and matches the JAX folder's MANIFEST.json (`verify`, default
+    filterio.verify_manifest_output, which hashes the file's bytes); the header lines of df_cell.csv and df_gene.csv
+    hold every column read."""
+    verify = fio.verify_manifest_output if verify is None else verify
+    try:
+        importer(RDS_READER)
+    except ImportError as e:
+        raise Refused(f"the rds reader {RDS_READER} cannot be imported ({e}): sync the external dependency group "
+                      "before the run") from None
+    paths = input_paths(cfg, Path(src))
+    for k, p in paths.items():
+        if not p.is_file():
+            raise Refused(f"{k}: {_rel(p)} is not in place")
+        try:
+            verify(p)
+        except (ValueError, FileNotFoundError) as e:
+            raise Refused(f"{k}: {e}") from None
+    for k, need in (("cells", CELL_WHITELIST), ("genes", GENE_COLUMNS)):
+        header = header_of(paths[k])
+        missing = [c for c in need if c not in header]
+        if missing:
+            raise Refused(f"{paths[k].name}: columns {missing} are not in its header")
+    return {"inputs_checked": sorted(paths)}
+
+
+def preflight(cfg_path: Path, commit: str, dst: Path, src: Path | None = None, importer=importlib.import_module,
+              verify=None) -> dict:
+    """Everything the run needs, checked before the output folder is made and before any count is read (the inputs'
+    format by `check_inputs` on `src`, default the yaml's input folder). Returns the gate the manifest records."""
     if not fr.row_in_tries(ROW, TRIES):
         raise Refused(f"{ROW} has no row in experiments/harness/TRIES.md: a row is committed before its run")
     if not register_amended():
@@ -174,6 +230,7 @@ def preflight(cfg_path: Path, commit: str, dst: Path) -> dict:
         raise Refused(f"HEAD is {head}, not the run commit {commit}")
     if Path(dst).exists():
         raise Refused(f"{dst} exists: the reducer never writes over a folder (a rerun is a new row)")
+    check_inputs(cfg, fio.REPO / cfg["inputs"]["dir"] if src is None else Path(src), importer=importer, verify=verify)
     return {"row": ROW, "commit": head, "clean": True, "yaml_sha256": YAML_SHA256}
 
 
@@ -191,9 +248,10 @@ def check_columns(columns: Iterable[str]) -> tuple[str, ...]:
 
 
 def read_cells(path: str | Path, embryos: Iterable[int], columns: Sequence[str] = CELL_WHITELIST) -> dict:
-    """The whitelisted columns of df_cell, for the rows of `embryos` alone: each row's other fields are dropped as it
-    is parsed, rows of other embryos are dropped unread past their embryo_id, and a requested column outside the
-    whitelist refuses before the file is opened. Returns {column: values} and the rows dropped as other embryos."""
+    """The whitelisted columns of df_cell, for the rows of `embryos` alone. The csv parser splits every field of every
+    row (any csv parse does); only the whitelisted fields of the listed embryos' rows are kept, and every other field
+    and every row of another embryo is discarded unused. A requested column outside the whitelist refuses before the
+    file is opened. Returns {column: values} and the number of rows discarded as other embryos."""
     cols = check_columns(columns)
     want = {int(e) for e in embryos}
     with open(path, newline="") as f:
@@ -356,10 +414,8 @@ def reduce(cfg: Mapping, src: Path, gate: Mapping, loader=load_rds, verify=fio.v
     if not gate or gate.get("row") != ROW or gate.get("clean") is not True:
         raise Refused(f"no gate of row {ROW} on a clean tree: the reducer runs only through main(), after preflight")
     embryos = check_embryos(cfg["embryos"])
-    inp = cfg["inputs"]
     wanted = sorted(n for e in ENDS for n in embryos[e])
-    paths = {"cells": src / inp["cells"], "genes": src / inp["genes"],
-             **{f"embryo_{n}": src / inp["counts"].format(n=n) for n in wanted}}
+    paths = input_paths(cfg, src)
     inputs = {k: {"file": _rel(p), "sha256": verify(p).get("sha256")} for k, p in paths.items()}
     cells = read_cells(paths["cells"], wanted)
     col = cells["columns"]
@@ -461,7 +517,7 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--commit", required=True, help="the run commit (full hash): HEAD must be it")
     a = ap.parse_args(argv)
-    try:  # nothing of JAX's is opened in this block
+    try:  # no count and no cell row of JAX's is read in this block (check_inputs reads two header lines)
         cfg = load_config(CONFIG)
         dst = fr.output_dir_ok(fio.REPO / cfg["output"]["dir"])
         gate = preflight(CONFIG, a.commit, dst)

@@ -207,8 +207,10 @@ def test_the_permutation_keeps_values_bins_held_and_unmapped_genes(jr):
     order = idx[np.argsort(level[idx], kind="stable")]
     for b in np.array_split(order, 10):  # every value stays in its level bin
         assert np.array_equal(np.sort(p[b]), np.sort(d[b]))
-    assert np.array_equal(p, jr.permuted(d, level, held)) and jr.PERM_SEED == 20261122 and jr.PERM_BINS == 10
-    assert not np.array_equal(p, jr.permuted(d, level, held, seed=1))
+    # one seed, one permutation (the array holds NaN where d has no value, so NaN compares equal here)
+    assert np.array_equal(p, jr.permuted(d, level, held), equal_nan=True)
+    assert jr.PERM_SEED == 20261122 and jr.PERM_BINS == 10
+    assert not np.array_equal(p, jr.permuted(d, level, held, seed=1), equal_nan=True)
 
 
 def test_the_gene_map_uses_unique_symbols_only(jr):
@@ -221,13 +223,21 @@ def test_the_gene_map_uses_unique_symbols_only(jr):
 # (e) the pre-gate
 
 
-def _manifest(jr, entering=None, **change):
-    entering = entering or {n: 40 for e in jr.jb.ENDS for n in jr.jb.ROW_EMBRYOS[e]}
-    per = {str(n): {"erythroid_entering": k, "erythroid_assigned": k + 5, "experimental_batch": ["run_4"],
-                    "days": ["E8.5"]} for n, k in entering.items()}
+def _counts(jr, early=40, late=60):
+    """Assigned erythroid nuclei per embryo: 12 x 40 = 480 at the early end, 5 x 60 = 300 at the late end."""
+    return {n: (early if e == "early" else late) for e in jr.jb.ENDS for n in jr.jb.ROW_EMBRYOS[e]}
+
+
+def _manifest(jr, assigned=None, entering=None, **change):
+    """The pre-gate decides on erythroid_assigned (the specification's count); erythroid_entering (nuclei at the UMI
+    target) is reported only, set here below assigned by default."""
+    assigned = assigned or _counts(jr)
+    entering = entering if entering is not None else {n: max(k - 25, 0) for n, k in assigned.items()}
+    per = {str(n): {"erythroid_assigned": k, "erythroid_entering": entering[n], "experimental_batch": ["run_4"],
+                    "days": ["E8.5"]} for n, k in assigned.items()}
     man = {"config": {"sha256": jr.jb.YAML_SHA256}, "gate": {"row": "T66", "clean": True},
            "columns_read": list(jr.jb.CELL_WHITELIST), "authors_labels_read": False, "stats_npz_read": False,
-           "embryos_read": sorted(entering), "embryo_lists": {e: list(jr.jb.ROW_EMBRYOS[e]) for e in jr.jb.ENDS},
+           "embryos_read": sorted(assigned), "embryo_lists": {e: list(jr.jb.ROW_EMBRYOS[e]) for e in jr.jb.ENDS},
            "embryos_used": {e: list(jr.jb.ROW_EMBRYOS[e]) for e in jr.jb.ENDS}, "has_direction": True,
            "per_embryo": per}
     man.update(change)
@@ -244,31 +254,49 @@ def test_the_pregate_passes_and_reports(jr):
     d = np.r_[np.full(5, 0.1), np.ones(45)]
     r = jr.pregate_reading(_manifest(jr), d, _held(), [f"g{i}" for i in range(50)])
     assert r["passes"] and r["failed"] == [] and r["held_share"] < 0.5
-    assert r["ends"]["early"]["total"] == 480 and r["ends"]["late"]["embryos_at_floor"] == 5
+    assert r["ends"]["early"]["total"] == 480 and r["ends"]["late"]["total"] == 300
+    assert r["ends"]["late"]["embryos_at_floor"] == 5 and r["ends"]["late"]["entering_total"] == 175
     assert r["logf_summary"]["moved_genes"] == 45 and r["ends"]["early"]["experimental_batch"] == ["run_4"]
 
 
+def test_the_pregate_counts_assigned_nuclei_not_the_ones_at_the_umi_target(jr):
+    """The specification's pre-gate counts nuclei assigned to the erythroid group; the nuclei that reach the UMI
+    target and enter the direction are reported, never counted (blocker 3 of the review)."""
+    d = np.r_[np.full(5, 0.1), np.ones(45)]
+    few_entering = {n: 2 for e in jr.jb.ENDS for n in jr.jb.ROW_EMBRYOS[e]}
+    r = jr.pregate_reading(_manifest(jr, entering=few_entering), d, _held(), [f"g{i}" for i in range(50)])
+    assert r["passes"], r["failed"]
+    assert r["ends"]["late"]["entering_total"] == 10 and r["ends"]["late"]["total"] == 300
+    many_entering = {n: 500 for e in jr.jb.ENDS for n in jr.jb.ROW_EMBRYOS[e]}
+    r = jr.pregate_reading(_manifest(jr, assigned=_counts(jr, late=59), entering=many_entering), d, _held(),
+                           [f"g{i}" for i in range(50)])
+    assert not r["passes"] and r["failed"] == ["fewer than 300 assigned erythroid nuclei at the late end"]
+
+
 @pytest.mark.parametrize("case,part", [
-    ("few_late", "fewer than 300 erythroid nuclei enter at the late end"),
-    ("few_embryos", "fewer than 3 embryos"),
+    ("few_late", "fewer than 300 assigned erythroid nuclei at the late end"),
+    ("few_embryos", "fewer than 3 embryos with at least 30 assigned erythroid nuclei at the late end"),
     ("held", "R2's held genes"),
     ("idle", "R2's held genes"),
     ("embryo", "outside the row's lists"),
     ("column", "outside the whitelist"),
     ("yaml", "another yaml"),
+    ("no_direction", "wrote no direction"),
 ])
 def test_the_pregate_fails(jr, case, part):
-    entering = {n: 40 for e in jr.jb.ENDS for n in jr.jb.ROW_EMBRYOS[e]}
+    assigned = _counts(jr)
     d, man = np.ones(50), None
     if case == "few_late":
-        entering.update({59: 60, 60: 60, 61: 60, 62: 60, 63: 59})
+        assigned.update({59: 60, 60: 60, 61: 60, 62: 60, 63: 59})
     elif case == "few_embryos":
-        entering.update({59: 29, 60: 29, 61: 29, 62: 200, 63: 200})
+        assigned.update({59: 29, 60: 29, 61: 29, 62: 200, 63: 200})
     elif case == "held":
         d = np.r_[np.full(5, 3.0), np.ones(45)]  # 45 / 90 on held genes: not below 0.5
     elif case == "idle":
         d = np.zeros(50)
-    man = _manifest(jr, entering)
+    man = _manifest(jr, assigned)
+    if case == "no_direction":
+        man["has_direction"] = False
     if case == "embryo":
         man["embryos_read"] = [*man["embryos_read"], 22]
     elif case == "column":
@@ -277,14 +305,15 @@ def test_the_pregate_fails(jr, case, part):
         man["config"]["sha256"] = "0" * 64
     r = jr.pregate_reading(man, d, _held(), [f"g{i}" for i in range(50)])
     assert not r["passes"] and any(part in f for f in r["failed"]), r["failed"]
+    assert len(r["failed"]) == 1, r["failed"]  # the fixture fails on the case's own reason only
     assert "FAILS" in jr.pregate_outcome(r)
 
 
 def test_the_pregate_boundaries_that_pass(jr):
-    entering = {n: 23 for n in jr.jb.ROW_EMBRYOS["early"]}
-    entering.update({1: 30, 2: 30, 3: 30, 4: 26, 59: 30, 60: 30, 61: 30, 62: 210, 63: 0})
+    assigned = {n: 23 for n in jr.jb.ROW_EMBRYOS["early"]}
+    assigned.update({1: 30, 2: 30, 3: 30, 4: 26, 59: 30, 60: 30, 61: 30, 62: 210, 63: 0})
     d = np.r_[np.full(5, 2.999), np.ones(45)]
-    r = jr.pregate_reading(_manifest(jr, entering), d, _held(), [f"g{i}" for i in range(50)])
+    r = jr.pregate_reading(_manifest(jr, assigned), d, _held(), [f"g{i}" for i in range(50)])
     assert r["passes"], r["failed"]  # 300 at each end, three embryos at 30, the share just below 0.5
     assert r["ends"]["early"]["total"] == 300 == r["ends"]["late"]["total"] and r["held_share"] < 0.5
 
@@ -349,8 +378,8 @@ def _t64(gain=0.5):
     return {k: {s: 50.0 + s / 100 + gain for s in range(10)} for k in ("1", "2", "3")}
 
 
-def _pregate(passes=True, commit="c" * 40, sha=MSHA):
-    return {"reading": {"passes": passes}, "stamp": {"commit": commit}, "manifest_sha256": sha}
+def _pregate(passes=True, commit="c" * 40, sha=MSHA, clean=True):
+    return {"reading": {"passes": passes}, "stamp": {"commit": commit, "tree_clean": clean}, "manifest_sha256": sha}
 
 
 def _loaded(jr, cuts=(0.0, 0.0), libs=(1.0, 1.0, 1.0), perm=0.2, **kw):
@@ -401,10 +430,15 @@ def test_not_ahead_on_each_clause(jr, arm, ap, means, part):
 
 
 def test_the_boundaries_that_pass(jr):
-    arm = {"1": _p(0.3, 8), "2": _p(-5.0, 0), "3": _p(5.6, 8), "chamber": _p(-0.05), "whole": _p(-0.05)}
+    # values whose library means are exactly the float 0.3 (0.9 / 3), so each clause sits on its nominal boundary
+    arm = {"1": _p(0.5, 8), "2": _p(-0.5, 0), "3": _p(0.9, 8), "chamber": _p(-0.05), "whole": _p(-0.05)}
     ap = {"1": _p(0.0, 0), "2": _p(0.0, 0), "3": _p(0.9, 8)}
-    assert jr.statement(arm, ap, {"1": 50.5, "2": 50.5, "3": 0.0}, T64M)[:2] == (True, [])
+    ahead, failed, values = jr.statement(arm, ap, {"1": 50.5, "2": 50.5, "3": 0.0}, T64M)
+    assert values["library_mean_d"] == 0.3 == values["library_mean_arm_minus_perm"]
+    assert (ahead, failed) == (True, [])
     # library 2 behind on every seed and below T64 is allowed by the clauses as fixed
+    below = {**arm, "3": _p(0.9 - 1e-12, 8)}  # just under the boundary fails (i): no tolerance is added
+    assert jr.statement(below, ap, {"1": 50.5, "2": 50.5, "3": 0.0}, T64M)[1][0].startswith("(i)")
 
 
 def test_not_ahead_end_to_end_closes_the_line(jr):
@@ -433,9 +467,19 @@ def test_the_idle_case_is_named(jr):
                                   "held_set", "manifest", "manifest_now", "yaml", "column", "authors", "embryo",
                                   "pregate_missing", "pregate_failed", "pregate_commit", "pregate_manifest",
                                   "constants", "fraction", "stats", "route", "checks", "source", "t64_seed",
-                                  "perm_values"])
+                                  "perm_values", "held_not_blood", "pregate_unclean", "read_commit"])
 def test_every_void_reason_fires(jr, case):
     loaded, t64, pregate, sha, checks, source = _loaded(jr), _t64(), _pregate(), MSHA, OK, []
+    read_commit = "c" * 40
+    assert jr.t66_reading(loaded, _t62(), t64, checks, pregate, sha, source, read_commit)["outcome"] != "VOID"
+    if case == "held_not_blood":  # another R1-held label drawn: the arm would move Blood alone
+        for name in jr.COUNTED:
+            loaded["2"]["rows"][3]["records"][name].update(held_set=["Blood", "Macrophage"],
+                                                           uncovered_set=["Blood", "Macrophage"])
+    elif case == "pregate_unclean":
+        pregate = _pregate(clean=False)
+    elif case == "read_commit":
+        read_commit = "e" * 40
     if case == "missing_task":
         loaded["2"] = None
     elif case == "missing_seed":
@@ -496,7 +540,7 @@ def test_every_void_reason_fires(jr, case):
         del t64["2"][7]
     elif case == "perm_values":
         loaded["2"]["jax"]["perm_same_values"] = False
-    r = jr.t66_reading(loaded, _t62(), t64, checks, pregate, sha, source)
+    r = jr.t66_reading(loaded, _t62(), t64, checks, pregate, sha, source, read_commit)
     assert r["outcome"] == "VOID" and r["reasons"] and r["follows"] == jr.FOLLOWS_VOID, case
     lines = jr.outcome_lines(r)
     assert lines[0].startswith("Outcome: VOID") and not any(b in lines for b in jr.BESIDE)
@@ -519,6 +563,17 @@ def test_the_counts_and_constants(jr):
     assert jr.T62_TASKS == SCRIPT.parent / "results" / "t62_recomputed" / "tasks"
     assert jr.T64_TASKS == SCRIPT.parent / "results" / "t64_heldmom" / "tasks"
     assert all((jr.T62_TASKS / f).exists() and (jr.T64_TASKS / f).exists() for f in jr.task_files().values())
+
+
+def test_every_output_is_created_exclusively(jr, tmp_path):
+    """Two copies of one step: the later finisher stops and the first's file stays (the review's lesser point)."""
+    p = tmp_path / "lib1.json"
+    jr.write_new(p, "first")
+    with pytest.raises(FileExistsError):
+        jr.write_new(p, "second")
+    assert p.read_text() == "first"
+    text = SCRIPT.read_text()
+    assert ".write_text(" not in text and text.count("write_new(") == 7  # the helper and six outputs
 
 
 def test_the_source_guard(jr, tmp_path):
@@ -688,6 +743,15 @@ def _exit(home, name):
     return (home / "v" / "scratch" / "t66" / f"{name}.exit").read_text().strip()
 
 
+def _refused(home, name):
+    return (home / "v" / "scratch" / "t66" / f"{name}.refused").read_text().strip()
+
+
+def _no_record(home, name):
+    s = home / "v" / "scratch" / "t66"
+    return not (s / f"{name}.exit").exists() and not (s / f"{name}.head").exists()
+
+
 def _passed(home, head, *names):
     s = home / "v" / "scratch" / "t66"
     for n in names:
@@ -697,11 +761,13 @@ def _passed(home, head, *names):
 
 def test_the_launcher_refusals(tmp_path):
     repo, home, env, head = _repo(tmp_path)
-    assert _run(repo, env) == 2 and _exit(home, "usage") == "2"
+    assert _run(repo, env) == 2 and _refused(home, "usage") == "2"
     assert _run(repo, env, "cut", head) == 2
-    assert _run(repo, env, "bogus", head) == 97 and _exit(home, "bogus") == "97"
-    assert _run(repo, env, "tests", "f" * 40) == 95 and _exit(home, "tests") == "95"
-    assert _run(repo, env, "reduce", head) == 94 and _exit(home, "reduce") == "94"  # no tests.exit
+    assert _run(repo, env, "bogus", head) == 97 and _refused(home, "bogus") == "97"
+    assert _run(repo, env, "tests", "f" * 40) == 95 and _refused(home, "tests") == "95"
+    assert _no_record(home, "tests")  # a refusal writes no exit or head record
+    assert _run(repo, env, "reduce", head) == 94 and _refused(home, "reduce") == "94"  # no tests.exit
+    assert _no_record(home, "reduce")
     _passed(home, head, "tests")
     assert _run(repo, env, "reduce", head) == 93  # the relabelling's output is not in place
     (repo / "data" / "derived" / "feng_relabel_c").mkdir(parents=True)
@@ -710,7 +776,7 @@ def test_the_launcher_refusals(tmp_path):
     (repo / "data" / "external" / "jax_qiu2024").mkdir(parents=True)
     (repo / "data" / "external" / "jax_qiu2024" / "MANIFEST.json").write_text("{}")
     (repo / "data" / "derived" / "jax_blood").mkdir()
-    assert _run(repo, env, "reduce", head) == 91 and _exit(home, "reduce") == "91"  # never over a folder
+    assert _run(repo, env, "reduce", head) == 91 and _refused(home, "reduce") == "91"  # never over a folder
     assert _run(repo, env, "pregate", head) == 94
     _passed(home, head, "reduce")
     assert _run(repo, env, "pregate", head) == 93  # no reducer manifest
@@ -722,21 +788,47 @@ def test_the_launcher_refusals(tmp_path):
     assert _run(repo, env, "cut", "chamber", head) == 94  # the pre-gate has not exited 0
     (home / "v" / "scratch" / "t66" / "pregate.exit").write_text("3\n")
     (home / "v" / "scratch" / "t66" / "pregate.head").write_text(head + "\n")
-    assert _run(repo, env, "lib", "2", head) == 94 and _exit(home, "lib_2") == "94"  # a failed pre-gate stops all
+    assert _run(repo, env, "lib", "2", head) == 94 and _refused(home, "lib_2") == "94"  # a failed pre-gate stops all
     _passed(home, head, "pregate")
     (tasks / "T1_E9.5_E10.5_chamber.json").write_text("{}")
-    assert _run(repo, env, "cut", "chamber", head) == 91 and _exit(home, "cut_chamber") == "91"
+    assert _run(repo, env, "cut", "chamber", head) == 91 and _refused(home, "cut_chamber") == "91"
     assert _run(repo, env, "read", head) == 94
     _passed(home, head, "cut_chamber", "cut_whole", "lib_1", "lib_2", "lib_3")
+    # a second call of a step that succeeded is refused and leaves its record as it was (the review's lesser point)
+    assert _run(repo, env, "cut", "chamber", head) == 91 and _exit(home, "cut_chamber") == "0"
+    assert (home / "v" / "scratch" / "t66" / "cut_chamber.head").read_text().strip() == head
     (tasks.parent / "t66.json").write_text("{}")
-    assert _run(repo, env, "read", head) == 91 and _exit(home, "read") == "91"
+    assert _run(repo, env, "read", head) == 91 and _refused(home, "read") == "91"  # past the 94 check: records hold
     (repo / "stray.txt").write_text("x")
-    assert _run(repo, env, "read", head) == 98 and _exit(home, "read") == "98"
+    assert _run(repo, env, "read", head) == 98 and _refused(home, "read") == "98"
+    assert _no_record(home, "read")
+
+
+def test_a_step_that_runs_marks_itself_running_then_writes_its_exit(tmp_path):
+    """A fake `uv` on PATH stands in for the step's Python: the launcher writes 'running' and HEAD before the step
+    runs, so no later step can see an earlier exit 0 while it runs, then the step's own exit code."""
+    repo, home, env, head = _repo(tmp_path)
+    fake = tmp_path / "bin"
+    fake.mkdir()
+    seen = tmp_path / "seen.txt"
+    (fake / "uv").write_text(f'#!/usr/bin/env bash\ncat "$HOME/v/scratch/t66/tests.exit" "$HOME/v/scratch/t66/'
+                             f'tests.head" > "{seen}"\nexit 0\n')
+    (fake / "uv").chmod(0o755)
+    env = {**env, "PATH": f"{fake}:{env['PATH']}"}
+    s = home / "v" / "scratch" / "t66"
+    s.mkdir(parents=True)
+    (repo / "data" / "derived" / "feng_relabel_c").mkdir(parents=True)
+    (repo / "data" / "derived" / "feng_relabel_c" / "cd1_stats_relabel.npz").write_text("x")
+    (s / "tests.exit").write_text("1\n")  # an earlier failed run at another commit
+    (s / "tests.head").write_text("f" * 40 + "\n")
+    assert _run(repo, env, "tests", head) == 0
+    assert seen.read_text().split() == ["running", head]
+    assert _exit(home, "tests") == "0" and (s / "tests.head").read_text().strip() == head
 
 
 def test_the_launcher_refuses_without_the_row_and_on_another_heads_exit_file(tmp_path):
     repo, home, env, head = _repo(tmp_path, row="T64")
-    assert _run(repo, env, "tests", head) == 96 and _exit(home, "tests") == "96"
+    assert _run(repo, env, "tests", head) == 96 and _refused(home, "tests") == "96"
     repo2, home2, env2, head2 = _repo(tmp_path / "b")
     s = home2 / "v" / "scratch" / "t66"
     s.mkdir(parents=True)
@@ -747,7 +839,8 @@ def test_the_launcher_refuses_without_the_row_and_on_another_heads_exit_file(tmp
 
 def test_the_launcher_runs_the_tests_first_and_never_prints_a_log_or_removes_a_file():
     sh = LAUNCHER.read_text()
-    tests = sh.split("  tests)")[1].split(";;")[0]
+    tests = sh.split("  tests)\n")[1].split(";;")[0]  # the step body, not the line `  tests) PREV="" ;;`
+    assert "$PY -m pytest" in tests
     for f in ("test_jaxblood_read.py", "test_jax_blood.py", "test_t64_heldmom_read.py", "test_t62_recomputed_read.py",
               "test_t1_bets.py", "test_t1_scope.py", "test_core.py", "test_g_mom_verify.py",
               "test_t1_state_transport.py"):

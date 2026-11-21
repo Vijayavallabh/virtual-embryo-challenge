@@ -23,10 +23,12 @@ counted and not rerun: row T64's committed `m1rc_gmom_heldmom` per seed (experim
 It imports recomputed_read.py (T62) and heldmom_read.py (T64) and copies none of their arithmetic.
 
   pregate  Target-free: no T1 cell is loaded or scored and no truth is read. From the reducer's output (its manifest,
-           checked) and the T1 gene names alone: the erythroid nuclei entering the direction at each end and per
-           embryo; the share of the direction's squared norm on R2's held genes. Passes when each end has at least
-           MIN_END_NUCLEI such nuclei and at least MIN_EMBRYOS embryos with at least MIN_EMBRYO_NUCLEI each, and the
-           share is below MAX_HELD_SHARE. Reports, deciding nothing: the per-gene log f summary and each end's
+           checked) and the T1 gene names alone: the nuclei assigned to the recomputed erythroid group at each end and
+           per embryo (the specification's count, before the UMI floor); the share of the direction's squared norm on
+           R2's held genes. Passes when each end has at least MIN_END_NUCLEI assigned nuclei and at least MIN_EMBRYOS
+           embryos with at least MIN_EMBRYO_NUCLEI assigned nuclei each, the share is below MAX_HELD_SHARE, and the
+           reducer's record has none of manifest_problems (a direction among them). Reports, deciding nothing: the
+           nuclei entering the direction (at least the UMI target), the per-gene log f summary and each end's
            experimental_batch and day labels. Writes tasks/pregate.json and pregate.txt; prints the outcome words only;
            exits 0 when it passes and PREGATE_FAIL when it fails (then nothing is scored and no try is counted).
   run-cut  One E10.5 cut. Refused before anything loads unless row T66 is in TRIES.md, HEAD is --commit, the tree is
@@ -240,6 +242,13 @@ def log_factors(d: np.ndarray, held: np.ndarray) -> np.ndarray:
     return logf
 
 
+def write_new(path: Path, text: str) -> None:
+    """Exclusive create (mode 'x'): a second copy of a step that finishes later stops with FileExistsError and never
+    replaces the file the first wrote."""
+    with open(path, "x") as f:
+        f.write(text)
+
+
 def vector_sha(v: np.ndarray) -> str:
     return hashlib.sha256(np.ascontiguousarray(v, dtype=np.float64).tobytes()).hexdigest()
 
@@ -255,11 +264,13 @@ def pregate_reading(man: Mapping, d: np.ndarray, held: np.ndarray, genes: Sequen
     ends = {}
     for e in jb.ENDS:
         rows = {int(n): r for n, r in per.items() if int(n) in jb.ROW_EMBRYOS[e]}
+        assigned = {n: int(r.get("erythroid_assigned", 0)) for n, r in sorted(rows.items())}
         entering = {n: int(r.get("erythroid_entering", 0)) for n, r in sorted(rows.items())}
-        ends[e] = {"entering": entering, "assigned": {n: int(r.get("erythroid_assigned", 0))
-                                                      for n, r in sorted(rows.items())},
-                   "total": int(sum(entering.values())),
-                   "embryos_at_floor": int(sum(v >= MIN_EMBRYO_NUCLEI for v in entering.values())),
+        # the specification's count: nuclei assigned to the recomputed erythroid group (before the UMI floor)
+        ends[e] = {"assigned": assigned, "entering": entering,
+                   "total": int(sum(assigned.values())),
+                   "embryos_at_floor": int(sum(v >= MIN_EMBRYO_NUCLEI for v in assigned.values())),
+                   "entering_total": int(sum(entering.values())),
                    "experimental_batch": sorted({b for r in rows.values() for b in r.get("experimental_batch", [])}),
                    "days": sorted({x for r in rows.values() for x in r.get("days", [])})}
     fin = np.isfinite(d)
@@ -269,10 +280,10 @@ def pregate_reading(man: Mapping, d: np.ndarray, held: np.ndarray, genes: Sequen
     failed = [f"problem with the reducer's record: {x}" for x in manifest_problems(man)]
     for e in jb.ENDS:
         if ends[e]["total"] < MIN_END_NUCLEI:
-            failed.append(f"fewer than {MIN_END_NUCLEI} erythroid nuclei enter at the {e} end")
+            failed.append(f"fewer than {MIN_END_NUCLEI} assigned erythroid nuclei at the {e} end")
         if ends[e]["embryos_at_floor"] < MIN_EMBRYOS:
-            failed.append(f"fewer than {MIN_EMBRYOS} embryos with at least {MIN_EMBRYO_NUCLEI} erythroid nuclei at the "
-                          f"{e} end")
+            failed.append(f"fewer than {MIN_EMBRYOS} embryos with at least {MIN_EMBRYO_NUCLEI} assigned erythroid "
+                          f"nuclei at the {e} end")
     if not share < MAX_HELD_SHARE:
         failed.append(f"the share of the direction's squared norm on R2's held genes is not below {MAX_HELD_SHARE:g} "
                       "(the arm is near-idle)")
@@ -294,8 +305,9 @@ def pregate_text(res: Mapping) -> str:
     r = res["reading"]
     lines = [res["label"], pregate_outcome(r)]
     for e, v in r["ends"].items():
-        lines.append(f"{e} end: {v['total']} erythroid nuclei enter, {v['embryos_at_floor']} embryos at the floor; per "
-                     f"embryo {v['entering']} (assigned {v['assigned']}); "
+        lines.append(f"{e} end: {v['total']} assigned erythroid nuclei, {v['embryos_at_floor']} embryos at the floor; "
+                     f"per embryo {v['assigned']}; entering the direction (at least the UMI target) "
+                     f"{v['entering_total']}, per embryo {v['entering']}; "
                      f"experimental_batch {v['experimental_batch']}; "
                      f"days {v['days']}")
     s = r["logf_summary"]
@@ -334,8 +346,8 @@ def cmd_pregate(a) -> int:
            "yaml_sha256": (man.get("config") or {}).get("sha256"), "fraction": FRACTION, "clip": CLIP,
            "stamp": gv.stamp(started, [mpath, dpath, t1_scope.HELD_FLAT_GENES])}
     out.mkdir(parents=True, exist_ok=True)
-    (out / PREGATE_FILES[0]).write_text(json.dumps(res, indent=1, default=float) + "\n")
-    (out / PREGATE_FILES[1]).write_text(pregate_text(res))
+    write_new(out / PREGATE_FILES[0], json.dumps(res, indent=1, default=float) + "\n")
+    write_new(out / PREGATE_FILES[1], pregate_text(res))
     print("Pre-gate: passes" if reading["passes"] else f"Pre-gate: FAILS\n{FOLLOWS_PRUNED}")  # words only
     return 0 if reading["passes"] else PREGATE_FAIL
 
@@ -550,7 +562,7 @@ def cmd_run_cut(a) -> None:
                                        feng_dirs.RELABEL_CONFIG, rc.RECORD, ROOT / union["file"], mpath, dpath,
                                        jb.CONFIG])}
     out.mkdir(parents=True, exist_ok=True)
-    (out / CUT_FILES[a.cut]).write_text(json.dumps(res, indent=1, default=float) + "\n")
+    write_new(out / CUT_FILES[a.cut], json.dumps(res, indent=1, default=float) + "\n")
 
 
 def cmd_run_lib(a) -> None:
@@ -603,7 +615,7 @@ def cmd_run_lib(a) -> None:
                                        t1_scope.CHAMBER_CLASSES, ROOT / ext["file"], feng_dirs.RELABEL_CONFIG,
                                        rc.RECORD, ROOT / union["file"], mpath, dpath, jb.CONFIG])}
     out.mkdir(parents=True, exist_ok=True)
-    (out / name).write_text(json.dumps(res, indent=1, default=float) + "\n")
+    write_new(out / name, json.dumps(res, indent=1, default=float) + "\n")
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -626,11 +638,14 @@ def library_valid(r: Mapping) -> bool:
 
 def guards(loaded: Mapping[str, Mapping | None], t62: Mapping[str, Mapping[int, float]],
            t64: Mapping[str, Mapping[int, float]], checks: Mapping, pregate: Mapping | None, manifest_sha: str | None,
-           source_bad: Sequence[str], seeds: Sequence[int] = SEEDS) -> list[str]:
-    """Every void condition of row T66; an empty list means none fired."""
+           source_bad: Sequence[str], seeds: Sequence[int] = SEEDS, read_commit: str | None = None) -> list[str]:
+    """Every void condition of row T66; an empty list means none fired. `read_commit`, when given (the read passes its
+    own HEAD), must be the task files' commit."""
     reasons = []
     if pregate is None or (pregate.get("reading") or {}).get("passes") is not True:
         reasons.append("the pre-gate record is missing or did not pass")
+    if pregate is not None and (pregate.get("stamp") or {}).get("tree_clean") is not True:
+        reasons.append("the pre-gate's tree was not clean")
     commits = set()
     for k, r in loaded.items():
         if r is None:
@@ -690,12 +705,17 @@ def guards(loaded: Mapping[str, Mapping | None], t62: Mapping[str, Mapping[int, 
                     reasons.append(f"{k}: seed {x['seed']}: a non-Blood cell is not byte-equal in {name}")
                 if sorted(h.get("held_set") or []) != sorted(h.get("uncovered_set") or []) or "held_set" not in h:
                     reasons.append(f"{k}: seed {x['seed']}: the held set is not build_submission's uncovered set")
+                elif list(h.get("held_set") or []) != [BLOOD]:
+                    reasons.append(f"{k}: seed {x['seed']}: the held set drawn is {h.get('held_set')}, not Blood alone "
+                                   "(the arm moves Blood only, so it would not be the R1-held set)")
     if pregate is not None and commits and (pregate.get("stamp") or {}).get("commit") not in commits:
         reasons.append("the pre-gate ran at another commit than the task files")
     if pregate is not None and pregate.get("manifest_sha256") != manifest_sha:
         reasons.append("the pre-gate ran on another reducer manifest")
     if len(commits) > 1:
         reasons.append(f"the task files ran at more than one commit: {sorted(map(str, commits))}")
+    if read_commit is not None and commits and commits != {read_commit}:
+        reasons.append(f"the task files ran at another commit than the read's HEAD {read_commit}")
     reasons += [f"at the read: {x}" for x in checks.get("reasons", [])]
     reasons += [f"source: {x}" for x in source_bad]
     return reasons
@@ -737,9 +757,9 @@ def statement(arm: Mapping[str, Mapping], ap: Mapping[str, Mapping], arm_means: 
 
 def t66_reading(loaded: Mapping[str, Mapping | None], t62: Mapping[str, Mapping[int, float]],
                 t64: Mapping[str, Mapping[int, float]], checks: Mapping, pregate: Mapping | None,
-                manifest_sha: str | None, source_bad: Sequence[str] = ()) -> dict:
+                manifest_sha: str | None, source_bad: Sequence[str] = (), read_commit: str | None = None) -> dict:
     """Row T66's reading: the void conditions (the gate among them) first, then the statement."""
-    reasons = guards(loaded, t62, t64, checks, pregate, manifest_sha, source_bad)
+    reasons = guards(loaded, t62, t64, checks, pregate, manifest_sha, source_bad, read_commit=read_commit)
     if reasons:
         return {"outcome": "VOID", "reasons": reasons, "follows": FOLLOWS_VOID}
     arm = {k: paired(r["rows"], ARM, BASE) for k, r in loaded.items()}
@@ -815,12 +835,12 @@ def read(out: Path, commit: str) -> dict:
     manifest_sha = fio.sha256_file(mpath) if mpath.exists() else None
     checks = rc.relabel_checks(need_stats=False)  # the stats file's hash is in each task file, checked by `guards`
     bad = source_guard() + [f"recomputed_read.py: {x}" for x in rc.source_guard()]
-    reading = t66_reading(loaded, t62, t64, checks, pregate, manifest_sha, bad)
+    reading = t66_reading(loaded, t62, t64, checks, pregate, manifest_sha, bad, read_commit=started["commit"])
     res = {"label": LABEL, "row": ROW, "reading": reading, "tries": TRIES_COUNT}
     res["stamp"] = gv.stamp(started, [p for p in [*paths.values(), pg_path] if p.exists()])
     out.mkdir(parents=True, exist_ok=True)
-    (out / OUT_FILES[0]).write_text(json.dumps(res, indent=1, default=float) + "\n")
-    (out / OUT_FILES[1]).write_text(t66_text(res))
+    write_new(out / OUT_FILES[0], json.dumps(res, indent=1, default=float) + "\n")
+    write_new(out / OUT_FILES[1], t66_text(res))
     print("\n".join(outcome_lines(reading)) + f"\n(numbers in {out / OUT_FILES[1]})")
     return res
 

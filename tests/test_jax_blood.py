@@ -256,12 +256,17 @@ def test_the_yaml_hash_is_pinned():
 def gate_env(tmp_path, monkeypatch):
     tries, reg = tmp_path / "TRIES.md", tmp_path / "EXTERNAL_DATA.md"
     tries.write_text("| T66 (one row) | T1 | x |\n")
-    reg.write_text("| X003 | Qiu | ... amended: model input for the held Blood direction (row T66) |\n")
+    reg.write_text(f"| X003 | Qiu | ... {AMENDED} |\n")
     monkeypatch.setattr(jb, "TRIES", tries)
     monkeypatch.setattr(jb, "REGISTER", reg)
     monkeypatch.setattr(jb.fr, "committed_at_head", lambda p: Path(p).read_bytes())
     monkeypatch.setattr(jb.provenance, "git_state", lambda repo: ("c" * 40, []))
+    monkeypatch.setattr(jb, "check_inputs", lambda *a, **k: {"inputs_checked": []})
     return tries, reg
+
+
+AMENDED = ("amended for row T66: model input for the held Blood direction; reads the raw counts and, from df_cell, "
+           "`cell_id`, `embryo_id`, `day` and `experimental_batch`, and from df_gene `gene_id` and `gene_short_name`")
 
 
 def test_the_gate_passes_and_each_refusal_fires(tmp_path, gate_env, monkeypatch):
@@ -316,7 +321,111 @@ def test_the_register_check_reads_x003s_row_only(tmp_path):
     reg.write_text("| X003 | model input for the held\n Blood direction |\n")
     assert jb.register_amended(reg) is False  # one table row is one line
     reg.write_text("| X003 | now a model input for the held Blood direction of row T66 |\n")
+    assert jb.register_amended(reg) is False  # the phrase alone does not name the columns read
+    reg.write_text(f"| X003 | {AMENDED} |\n")
     assert jb.register_amended(reg) is True
+    for col in jb.AMENDMENT_COLUMNS:  # each column read must be named
+        reg.write_text(f"| X003 | {AMENDED.replace(f'`{col}`', col)} |\n")
+        assert jb.register_amended(reg) is False, col
+    assert set(jb.AMENDMENT_COLUMNS) == {"cell_id", "embryo_id", "day", "experimental_batch", "gene_id",
+                                         "gene_short_name"}
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# The inputs' format, checked before the output folder is made
+
+
+def _inputs_on_disk(tmp_path, cell_header=None, gene_header=None, skip=None):
+    src = tmp_path / "jax"
+    (src / "meta").mkdir(parents=True)
+    (src / "embryo").mkdir()
+    (src / "meta" / "df_cell.csv").write_text(",".join(cell_header or ["", "cell_id", "day", "embryo_id",
+                                                                       "celltype_update", "experimental_batch"])
+                                              + "\n0,a,E8.5,embryo_1,Blood,run_4\n")
+    (src / "meta" / "df_gene.csv").write_text(",".join(gene_header or ["", "gene_id", "gene_short_name"]) + "\n")
+    for e in jb.ENDS:
+        for n in jb.ROW_EMBRYOS[e]:
+            if n != skip:
+                (src / "embryo" / f"embryo_{n}_gene_count.rds").write_bytes(b"x")
+    return src
+
+
+def _ok(name):
+    return None
+
+
+def test_the_inputs_check_passes_and_reads_header_lines_only(tmp_path, monkeypatch):
+    src = _inputs_on_disk(tmp_path)
+    seen = []
+    got = jb.check_inputs(CFG, src, importer=_ok, verify=lambda p: seen.append(Path(p).name) or {"sha256": "s"})
+    assert len(got["inputs_checked"]) == 2 + 17 and len(seen) == 19 and "df_cell.csv" in seen
+    def header_only(f):
+        yield next(iter(f)).rstrip("\n").split(",")
+        pytest.fail("a row past the header was read")
+
+    monkeypatch.setattr(jb.csv, "reader", header_only)
+    jb.check_inputs(CFG, src, importer=_ok, verify=lambda p: {})  # only the header lines are taken
+
+
+@pytest.mark.parametrize("case,part", [
+    ("rdata", "cannot be imported"),
+    ("missing_rds", "embryo_61"),
+    ("manifest", "sha256"),
+    ("batch", "experimental_batch"),
+    ("cell_id", "cell_id"),
+    ("gene", "gene_short_name"),
+])
+def test_the_inputs_check_refuses(tmp_path, case, part):
+    importer, verify = _ok, (lambda p: {})
+    kw = {}
+    if case == "missing_rds":
+        kw["skip"] = 61
+    elif case == "batch":
+        kw["cell_header"] = ["", "cell_id", "day", "embryo_id"]
+    elif case == "cell_id":
+        kw["cell_header"] = ["", "day", "embryo_id", "experimental_batch"]
+    elif case == "gene":
+        kw["gene_header"] = ["", "gene_id", "symbol"]
+    src = _inputs_on_disk(tmp_path, **kw)
+    if case == "rdata":
+        def importer(name):
+            raise ModuleNotFoundError(f"No module named {name!r}")
+    elif case == "manifest":
+        def verify(p):
+            raise ValueError(f"{p} does not match the sha256 recorded")
+    with pytest.raises(jb.Refused, match=part):
+        jb.check_inputs(CFG, src, importer=importer, verify=verify)
+
+
+def test_a_format_failure_leaves_no_output_folder(tmp_path, monkeypatch):
+    """The checks run inside preflight, so main refuses before it makes the folder or writes STARTED.json."""
+    src = _inputs_on_disk(tmp_path, cell_header=["", "cell_id", "day", "embryo_id"])
+    tries, reg = tmp_path / "TRIES.md", tmp_path / "EXTERNAL_DATA.md"
+    tries.write_text("| T66 (one row) | T1 | x |\n")
+    reg.write_text(f"| X003 | Qiu | ... {AMENDED} |\n")
+    monkeypatch.setattr(jb, "TRIES", tries)
+    monkeypatch.setattr(jb, "REGISTER", reg)
+    monkeypatch.setattr(jb.fr, "committed_at_head", lambda p: Path(p).read_bytes())
+    monkeypatch.setattr(jb.provenance, "git_state", lambda repo: ("c" * 40, []))
+    dst = tmp_path / "data" / "derived" / "jax_blood"
+    monkeypatch.setattr(jb.fr, "output_dir_ok", lambda p: dst)
+    real_check = jb.check_inputs
+    monkeypatch.setattr(jb, "check_inputs", lambda cfg, s, **k: real_check(cfg, src, importer=_ok,
+                                                                            verify=lambda p: {}))
+    monkeypatch.setattr(jb, "reduce", lambda *a, **k: pytest.fail("nothing is reduced after a refusal"))
+    with pytest.raises(SystemExit, match="experimental_batch"):
+        jb.main(["--commit", "c" * 40])
+    assert not dst.exists() and not (dst / jb.STARTED).exists()
+
+
+def test_preflight_runs_the_inputs_check_on_the_yamls_input_folder(tmp_path, gate_env, monkeypatch):
+    called = []
+    monkeypatch.setattr(jb, "check_inputs", lambda cfg, src, **k: called.append(Path(src)) or {})
+    jb.preflight(jb.CONFIG, "c" * 40, tmp_path / "out")
+    assert called == [jb.fio.REPO / CFG["inputs"]["dir"]]
+    monkeypatch.setattr(jb, "check_inputs", lambda *a, **k: (_ for _ in ()).throw(jb.Refused("format")))
+    with pytest.raises(jb.Refused, match="format"):
+        jb.preflight(jb.CONFIG, "c" * 40, tmp_path / "out")
 
 
 def test_the_source_reads_no_label_keyed_file():
