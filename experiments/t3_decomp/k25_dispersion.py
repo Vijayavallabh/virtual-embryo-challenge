@@ -32,7 +32,9 @@ across genes within deciles of the reference's mean expression, vec.harness.t3_d
 seed PERM_SEED = 20261113, K21's). Inside one process k18's ARMS, build_arm and fold_factors, and k9's arm_built, are
 replaced by this try's and restored on exit, as K21 to K24 do; no existing file changes.
 
-  pregate --commit C --out DIR           the source-only pre-gate: DIR/pregate.json (no fold target read, no try)
+  pregate --commit C --out DIR           the source-only pre-gate: DIR/pregate.json (no fold target read, no try);
+                                         refused first (exit 6, no pregate.json) when a source's ratios miss a gene
+                                         of a reference they are mapped into
   run --commit C --world plain --task g1|g2 [--seeds 0-4] --out DIR    one plain part, seed files
   run --commit C --world dm [--workers 8 --threads 2] --out DIR        the depth-matched world, seed files
   run --commit C --world x2 [--seeds 0-4] --out DIR                    K9's x2 fold, seed files
@@ -41,7 +43,10 @@ replaced by this try's and restored on exit, as K21 to K24 do; no existing file 
 Exit codes: 0 done; 1 a crash (masked traceback; seed files written so far stay); 2 refused (no row, a dirty tree,
 HEAD not C, a pinned file off its sha256, pregate.json missing, failing or of another commit or machine, a pregate.json
 already there); 3 read: pregate.json missing (not a reading, nothing counted); 4 read: the reading exists already;
-5 pregate: the pre-gate fails (nothing runs, nothing counts).
+5 pregate: the pre-gate fails (nothing runs, nothing counts); 6 pregate: a source's ratios do not cover every gene of
+the references they are mapped into (the Mab21l2 source: WT E8.75's genes as the dm world loads them and the panel
+genes of g1's and g2's boards; the Gata4 source: the panel genes of x2's board): no pregate.json, nothing runs, nothing
+counts.
 The script prints step lines only ("K25 <part> seed <s>: scored", "wrote <path>", "K25 pregate: passes|fails",
 "K25 read: wrote <path>"), never a figure or a count.
 
@@ -132,7 +137,7 @@ K9_X2_SHA256 = "8be12f798aeab27e68c44fd54fe3106ee949d8d2b4e4694bd9b5db0bfb5458ba
 K18_TASKS = k21.K18_TASKS
 K18_SHA256 = dict(k21.K18_SHA256)
 
-EXIT_REFUSED, EXIT_INCOMPLETE, EXIT_EXISTS, EXIT_PREGATE_FAILS = 2, 3, 4, 5
+EXIT_REFUSED, EXIT_INCOMPLETE, EXIT_EXISTS, EXIT_PREGATE_FAILS, EXIT_UNCOVERED = 2, 3, 4, 5, 6
 MUTANT_STATE = next(ms for g, _, ms in GROUPS["T3"] if g == "mutant_state")  # [("mmd_u", 0.6), ("variogram", 0.4)]
 _DISP: dict = {}  # pregate.json's genes and ratios, loaded before any arm builds
 
@@ -434,14 +439,54 @@ def x2_candidates() -> list:
 # Preconditions
 
 
+# What the row must state, word for word (the rules this code fixes and that decide the reading). The script refuses
+# under a row that leaves any of them out, so the committed row and the code cannot part.
+ROW_MUST_STATE = (
+    # the estimator
+    "at least 50 cells in both source files",
+    "y = log1p(1e4 c / N), N each cell's total count over every gene of the file as loaded",
+    "OLS on ln N with an intercept, in each file separately",
+    "the sum of squared residuals over n - 2",
+    "a label is left out for a gene when either variance is 0",
+    "the lower weighted median, weighted by the knockout's cells in the label",
+    "n_g the knockout's cells in the qualifying labels where the gene is detected (count > 0) in at least 10% of the "
+    "label's knockout cells",
+    "w_g = n_g / (n_g + 200)",
+    "clipped to [0.5, 2]",
+    "a gene with no qualifying label has ln r_g = 0 exactly (r_g = 1)",
+    # the apply step
+    "c' = m + sqrt(r_g) (c - m)",
+    "default_rng(20261122), created fresh for every build",
+    "label-gene means equal to 1e-9 before rounding",
+    # the pre-gate
+    "at least 50 genes with abs(ln r_g) > ln 1.2 in each source",
+    "counted over every gene of the source's wild-type file, after the clip",
+    "exit 6, launcher 26",
+    # the arms, the control, the guards
+    "seed 20261113, 10 bins",
+    "within K17's tolerance (ten-seed mean within 0.1, every seed within 0.5)",
+    # the pass line
+    "AHEAD: paired mean > 0.3 with at least 8 of 10 seeds positive; BEHIND: mean < -0.3",
+    "gated: r2_gate, beta_gate, no_response",
+    "mutant-state skill up: the ten-seed mean of the paired difference in 0.6 mmd_u + 0.4 variogram skill is above 0",
+    # the void list and the count
+    "made on another pregate.json",
+    "two tries",
+)
+
+
 def row_present(path: Path | None = None) -> str:
-    """The K25 row naming this script must be in TRIES.md, exactly one row."""
+    """The K25 row naming this script must be in TRIES.md, exactly one row, and it must state every rule of
+    ROW_MUST_STATE word for word."""
     path = TRIES_MD if path is None else Path(path)
     rows = [ln for ln in Path(path).read_text().splitlines() if ln.startswith("| ") and ROW_SCRIPT in ln]
     ids = sorted({ln[2:].split(" ", 1)[0] for ln in rows})
     if ids != [ROW_LABEL]:
         refuse(f"row {ROW_LABEL} naming {ROW_SCRIPT} is not (alone) in {Path(path).name} ({ids}); the row is committed "
                "before any run")
+    unstated = [p for p in ROW_MUST_STATE if not any(p in ln for ln in rows)]
+    if unstated:
+        refuse(f"row {ROW_LABEL} does not state the rules the code fixes: {unstated}")
     return ids[0]
 
 
@@ -499,6 +544,27 @@ def source_ratio(source: str, data: Path) -> tuple[dict, dict]:
     return est, {"genes": genes, "r": [float(x) for x in est["r"]], "record": rec}
 
 
+def needed_genes(ratios: dict, panel: dict[str, list[str]]) -> dict[str, list[str]]:
+    """The genes each source's ratio is mapped into (k18.in_gene_order raises on a missing one): the Mab21l2 source
+    serves plain g1 and g2 (their boards' panel genes) and the dm world (WT E8.75's genes as build_context loads them,
+    load_stage(drop_duplicates=True), which are the Gata4 source's wild-type genes here); the Gata4 source serves x2
+    (its board's panel genes)."""
+    mab = [*panel["g1"], *panel["g2"], *ratios["gata4"]["genes"]]
+    return {"mab21l2": list(dict.fromkeys(mab)), "gata4": list(dict.fromkeys(panel["x2"]))}
+
+
+def panel_genes() -> dict[str, list[str]]:
+    """The panel genes of g1's, g2's and x2's boards, as vec.harness.run_task loads them (validation boards only)."""
+    boards = harness.load_boards()
+    return {**{n: list(boards[t.panel_board].genes) for n, t in TASKS.items()},
+            "x2": list(boards[X2_TASK.panel_board].genes)}
+
+
+def uncovered(ratios: dict, need: dict[str, list[str]]) -> list[str]:
+    """The sources whose ratio misses a gene it is mapped into."""
+    return [s for s in SOURCES if not set(need[s]) <= set(ratios[s]["genes"])]
+
+
 def cmd_pregate(a) -> None:
     st = preconditions(a.commit)
     out = Path(a.out)
@@ -511,6 +577,15 @@ def cmd_pregate(a) -> None:
         for s in SOURCES:
             est, ratios[s] = source_ratio(s, Path(a.data))
             figs[s] = pregate_figures(est) | {"record": ratios[s]["record"]}
+        short = uncovered(ratios, needed_genes(ratios, panel_genes()))
+    except Exception:  # noqa: BLE001
+        print(k18.masked(traceback.format_exc()), file=sys.stderr, end="", flush=True)
+        sys.exit(1)
+    if short:
+        print("K25 pregate: refused: a source's ratios miss a gene of a reference they are mapped into; no "
+              "pregate.json; nothing runs and nothing counts", flush=True)
+        sys.exit(EXIT_UNCOVERED)
+    try:
         passes = all(f["passes"] for f in figs.values())
         res = {"row": ROW_LABEL, "passes": passes, "figures": figs, "ratios": ratios,
                "constants": {"min_label_cells": MIN_LABEL_CELLS, "shrink": SHRINK, "detect": DETECT,

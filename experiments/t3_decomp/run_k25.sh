@@ -12,8 +12,10 @@
 # its two arguments writes usage.exit, 2; an unknown step 97; a TERM, INT or HUP signal 89). Nothing is ever removed.
 #   tests COMMIT    the unit tests (synthetic arrays only), 8 BLAS threads; exit 0 or 10
 #   pregate COMMIT  the source-only pre-gate (no fold target, no try) into runs/k25/pregate.json: 0 passes; 25 fails
-#                   (nothing runs, nothing counts; the script's exit 5); 22 the script refused (its exit 2); 20 any
-#                   other failure. A pregate.json already there is read again (passes 0, fails 25), never remade
+#                   (nothing runs, nothing counts; the script's exit 5); 26 a source's ratios miss a gene of a
+#                   reference they are mapped into (no pregate.json, nothing counts; the script's exit 6); 22 the
+#                   script refused (its exit 2); 20 any other failure. A pregate.json already there is read again
+#                   (passes 0, fails 25; 21 when its provenance commit is not COMMIT; 20 unreadable), never remade
 #   run COMMIT      seven parts in parallel: plain g1 and g2, each as seeds 0-4 and 5-9 (8 BLAS threads a process), the
 #                   depth-matched world (8 workers by 2 threads, 16 BLAS threads in its set-up, as rows K18 and K21 to
 #                   K24) and x2 as seeds 0-4 and 5-9 (8 threads each); each part's exit code in runs/k25/exit/<part>,
@@ -22,7 +24,8 @@
 #                   calling the step again at the same commit resumes)
 #   read COMMIT     the fixed reading into experiments/t3_decomp/results/k25_dispersion/ (output to /dev/null): 0 a
 #                   reading (whatever it says, VOID included), 44 a reading is there already (never overwritten),
-#                   43 not a reading (pregate.json missing), 41 a crash in the read
+#                   43 not a reading (pregate.json missing), 42 the script refused (its exit 2: no row, a row that
+#                   leaves out a rule the code fixes, another HEAD, a dirty tree, a pinned file off), 41 a crash
 # NUMPY_MADVISE_HUGEPAGE=0; TMPDIR under ~/v/scratch/k25.
 set -u
 S="$HOME/v/scratch/k25"
@@ -71,7 +74,7 @@ SCRIPT=experiments/t3_decomp/k25_dispersion.py
 R=runs/k25
 OUT=experiments/t3_decomp/results/k25_dispersion
 RUN_DIR=$HOME/v/virtual-embryo-challenge/runs/t3_decomp/gata4_20261028T122425Z  # read only; fixed, no override
-PASSES_CHECK='import json, sys; g = json.load(open(sys.argv[1])); print("pass" if g.get("passes") is True else "fail")'
+PASSES_CHECK='import json, sys; g = json.load(open(sys.argv[1])); c = (g.get("provenance") or {}).get("commit"); print("foreign" if c != sys.argv[2] else "pass" if g.get("passes") is True else "fail")'
 OK_LINE='^K25 (plain g[12]|x2) seed [0-9]+: (scored|present, skipped)$|^K25 x2: every seed present, skipped$|^wrote [^ ]+\.json|^\[rep[12] seed [0-9]+\] K18 depth-matched: [0-9]+ arms and the check, [0-9]+s$|^self-check passed '
 
 case "$STEP" in
@@ -84,9 +87,10 @@ case "$STEP" in
     finish 0 ;;
   pregate)
     if [ -e "$R/pregate.json" ]; then
-      got=$($PY -c "$PASSES_CHECK" "$R/pregate.json" 2> /dev/null) || got=unreadable
+      got=$($PY -c "$PASSES_CHECK" "$R/pregate.json" "$COMMIT" 2> /dev/null) || got=unreadable
       if [ "$got" = pass ]; then finish 0; fi
       if [ "$got" = fail ]; then finish 25; fi
+      if [ "$got" = foreign ]; then finish 21; fi
       finish 20
     fi
     mkdir -p "$R"
@@ -94,6 +98,7 @@ case "$STEP" in
     $PY "$SCRIPT" pregate --commit "$COMMIT" --out "$R" > "$S/pregate.log" 2>&1 || rc=$?
     if [ $rc = 0 ]; then finish 0; fi
     if [ $rc = 5 ]; then finish 25; fi
+    if [ $rc = 6 ]; then finish 26; fi
     if [ $rc = 2 ]; then finish 22; fi
     finish 20 ;;
   run)
@@ -138,5 +143,6 @@ case "$STEP" in
     if [ $rc = 0 ]; then finish 0; fi
     if [ $rc = 3 ]; then finish 43; fi
     if [ $rc = 4 ]; then finish 44; fi
+    if [ $rc = 2 ]; then finish 42; fi
     finish 41 ;;
 esac

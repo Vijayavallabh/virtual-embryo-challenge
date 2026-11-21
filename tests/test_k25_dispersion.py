@@ -24,6 +24,7 @@ from scipy import sparse
 from vec import harness
 from vec.adoption import SEEDS
 from vec.boards import Board
+from vec.evaluate import SEVERITY_GATED
 from vec.prep import load_stage, log1p_cp10k
 
 REPO = Path(__file__).resolve().parents[1]
@@ -36,6 +37,7 @@ import k21_factor_forms as k21  # noqa: E402
 import k25_dispersion as k25  # noqa: E402
 
 LAUNCHER = T3 / "run_k25.sh"
+ROW_FILE = T3 / "k25_row.txt"  # the row text handed to the main session, word for word
 
 
 def _sha(p: Path) -> str:
@@ -442,6 +444,112 @@ def test_the_source_estimator_runs_through_the_harmoniser_and_reads_no_target(da
         assert json.loads(json.dumps(rec)) == rec
 
 
+def test_the_dm_worlds_genes_are_the_gata4_sources_wild_type_genes():
+    # needed_genes takes the dm world's reference genes from the Gata4 source's wild type: the same file, loaded the
+    # same way (load_stage, duplicates dropped) as t3_decompose.build_context loads orth_diag's "wt"
+    import orth_diag as od
+
+    assert harness.K4_FOLDS[k25.SOURCES["gata4"]]["wt_file"] == od.WT_FILES["E8.75"]
+    src = (T3 / "t3_decompose.py").read_text()
+    assert 'wt_ad = load_stage(paths["wt"], drop_duplicates=True)' in src and "genes = list(wt_ad.var_names)" in src
+    mine = (T3 / "k25_dispersion.py").read_text()
+    assert 'wt = load_stage(Path(data) / fold["wt_file"], drop_duplicates=True)' in mine
+
+
+def test_needed_genes_and_uncovered():
+    ratios = {"mab21l2": {"genes": ["a", "b", "c", "d"]}, "gata4": {"genes": ["a", "b", "c"]}}
+    panel = {"g1": ["a", "b"], "g2": ["b", "c"], "x2": ["a", "c"]}
+    need = k25.needed_genes(ratios, panel)
+    assert need == {"mab21l2": ["a", "b", "c"], "gata4": ["a", "c"]}
+    assert k25.uncovered(ratios, need) == []
+    assert k25.uncovered(ratios, k25.needed_genes(ratios, panel | {"x2": ["a", "d"]})) == ["gata4"]
+    short = {"mab21l2": {"genes": ["a", "b"]}, "gata4": {"genes": ["a", "b", "c"]}}  # misses the dm world's "c"
+    assert k25.uncovered(short, k25.needed_genes(short, {"g1": ["a"], "g2": ["b"], "x2": ["a"]})) == ["mab21l2"]
+    p2 = {"mab21l2": {"genes": ["a", "b", "c"]}, "gata4": {"genes": ["a", "b"]}}
+    assert k25.uncovered(p2, k25.needed_genes(p2, {"g1": ["a", "z"], "g2": ["b"], "x2": ["a"]})) == ["mab21l2"]
+
+
+def _pregate_world(monkeypatch, genes: dict, panel: dict, big: int = 60) -> dict:
+    st = {"commit": "a" * 40, "tree_clean": True, "machine": "m"}
+    monkeypatch.setattr(k25, "preconditions", lambda commit: st)
+
+    def fake_source(s, data):
+        G = len(genes[s])
+        r = np.ones(G)
+        r[: min(big, G)] = 1.5
+        est = {"r": r, "ln_r": np.log(r), "n_g": np.full(G, 300.0), "labels_used": [0],
+               "has_label": np.ones(G, dtype=bool), "clipped": np.zeros(G, dtype=bool)}
+        return est, {"genes": list(genes[s]), "r": [float(x) for x in r], "record": {"files_sha256": {}}}
+
+    monkeypatch.setattr(k25, "source_ratio", fake_source)
+    monkeypatch.setattr(k25, "panel_genes", lambda: panel)
+    return st
+
+
+def test_the_pregate_refuses_at_no_try_when_a_reference_gene_is_not_covered(tmp_path, monkeypatch, capsys):
+    full = [f"G{j}" for j in range(80)]
+    out = tmp_path / "o"
+    # the dm world needs all 80 of WT E8.75's genes (the Gata4 source's); the Mab21l2 source holds 70
+    _pregate_world(monkeypatch, {"mab21l2": full[:70], "gata4": full}, {"g1": full[:60], "g2": full[:60],
+                                                                        "x2": full[:60]})
+    with pytest.raises(SystemExit) as e:
+        k25.main(["pregate", "--commit", "a" * 40, "--out", str(out)])
+    assert e.value.code == k25.EXIT_UNCOVERED == 6
+    assert not (out / "pregate.json").exists() and not (out / "pregate.json.prov.json").exists()
+    printed = capsys.readouterr().out
+    assert "refused" in printed and not re.search(r"\d", printed.replace("K25", ""))
+    # x2's panel not covered by the Gata4 source
+    _pregate_world(monkeypatch, {"mab21l2": full, "gata4": full[:50]}, {"g1": full[:40], "g2": full[:40],
+                                                                        "x2": full[40:60]})
+    with pytest.raises(SystemExit) as e:
+        k25.main(["pregate", "--commit", "a" * 40, "--out", str(out)])
+    assert e.value.code == k25.EXIT_UNCOVERED and not (out / "pregate.json").exists()
+    # covered: written, and its pass or fail is the 50-gene rule in each source
+    _pregate_world(monkeypatch, {"mab21l2": full, "gata4": full}, {"g1": full, "g2": full, "x2": full})
+    k25.main(["pregate", "--commit", "a" * 40, "--out", str(out)])
+    body = json.loads((out / "pregate.json").read_text())
+    assert body["passes"] is True and body["tries_if_run"] == 2
+    _pregate_world(monkeypatch, {"mab21l2": full, "gata4": full}, {"g1": full, "g2": full, "x2": full}, big=49)
+    with pytest.raises(SystemExit) as e:
+        k25.main(["pregate", "--commit", "a" * 40, "--out", str(tmp_path / "o49")])
+    assert e.value.code == k25.EXIT_PREGATE_FAILS
+    assert json.loads((tmp_path / "o49" / "pregate.json").read_text())["tries_if_run"] == 0
+
+
+def test_the_pregate_needs_fifty_genes_in_each_source(tmp_path, monkeypatch):
+    full = [f"G{j}" for j in range(80)]
+    st = _pregate_world(monkeypatch, {"mab21l2": full, "gata4": full}, {"g1": full, "g2": full, "x2": full})
+    fake = k25.source_ratio
+
+    def one_short(s, data):
+        est, rec = fake(s, data)
+        if s == "gata4":
+            est["r"][:] = 1.0
+        return est, rec
+
+    monkeypatch.setattr(k25, "source_ratio", one_short)
+    with pytest.raises(SystemExit) as e:
+        k25.main(["pregate", "--commit", st["commit"], "--out", str(tmp_path / "o")])
+    assert e.value.code == k25.EXIT_PREGATE_FAILS
+    body = json.loads((tmp_path / "o" / "pregate.json").read_text())
+    assert body["figures"]["mab21l2"]["passes"] and not body["figures"]["gata4"]["passes"] and not body["passes"]
+
+
+def test_panel_genes_reads_the_tasks_boards(monkeypatch):
+    class B:
+        def __init__(self, k):
+            self.genes = [f"{k}:x"]
+
+    class Boards(dict):
+        def __missing__(self, k):
+            return B(k)
+
+    monkeypatch.setattr(harness, "load_boards", lambda: Boards())
+    got = k25.panel_genes()
+    assert set(got) == {"g1", "g2", "x2"} and got["x2"] == [f"{k25.X2_TASK.panel_board}:x"]
+    assert got["g1"] == [f"{k25.TASKS['g1'].panel_board}:x"] and got["g2"] == [f"{k25.TASKS['g2'].panel_board}:x"]
+
+
 def _ctx(task, inputs, seed=harness.BUILD_SEED_OFFSET + 3):
     board = Board(key=f"pseudo:{task.key}", task="T3", genes=list(GENES), needs_coords=True, split="pseudo",
                   target_ko="gata4", min_cells=100, max_cells=900, truth_cells=120, ref_cells=150)
@@ -692,9 +800,64 @@ def test_read_never_overwrites_a_reading(tmp_path):
 # Preconditions
 
 
+def _row_text() -> str:
+    return ROW_FILE.read_text().strip()
+
+
+def test_the_handed_row_has_eleven_cells_no_inner_pipe_and_only_two_placeholders():
+    row = _row_text()
+    assert "\n" not in row and row.startswith("| K25 (") and row.endswith(" |")
+    cells = row[2:-2].split(" | ")
+    assert len(cells) == 11 and row.count("|") == 12
+    assert cells[1] == "T3" and cells[9] == "<this row's commit>" and cells[10] == "<outcome>"
+    assert re.findall(r"<[^>]*>", row) == ["<this row's commit>", "<outcome>"]
+    assert k25.ROW_SCRIPT in cells[2]
+
+
+def test_the_row_states_every_rule_the_code_fixes(tmp_path):
+    # the reviewer's blocker: the row states AHEAD, BEHIND, the gated states, "skill up", "in each source", the
+    # estimator's constants and the rounding seed; the script refuses under a row that leaves any of them out
+    row = _row_text()
+    for phrase in k25.ROW_MUST_STATE:
+        assert phrase in row, phrase
+    p = tmp_path / "TRIES.md"
+    p.write_text(f"# ledger\n\n{row}\n")
+    assert k25.row_present(p) == "K25"
+    for phrase in k25.ROW_MUST_STATE:
+        p.write_text(row.replace(phrase, "") + "\n")
+        with pytest.raises(SystemExit) as e:
+            k25.row_present(p)
+        assert e.value.code == k25.EXIT_REFUSED, phrase
+    # the first engineer's row text (no AHEAD definition, no gated states, no estimator constants) is refused
+    old = ("| K25 (one row) | T3 | `experiments/t3_decomp/k25_dispersion.py` | Pre-gate, source-only, before any score: "
+           "at least 50 genes with abs(ln r) > ln 1.2. PASS: AHEAD on x2 and in at least one dm and one plain cell |\n")
+    p.write_text(old)
+    with pytest.raises(SystemExit) as e:
+        k25.row_present(p)
+    assert e.value.code == k25.EXIT_REFUSED
+
+
+def test_the_rows_numbers_are_the_codes():
+    row = _row_text()
+    assert f"default_rng({k25.ROUND_SEED})" in row and f"seed {k25.PERM_SEED}, {k25.PERM_BINS} bins" in row
+    assert f"at least {k25.MIN_LABEL_CELLS} cells" in row and f"n_g / (n_g + {k25.SHRINK:.0f})" in row
+    assert f"at least {k25.DETECT:.0%} of" in row and f"[{k25.R_CLIP[0]}, {k25.R_CLIP[1]:.0f}]" in row
+    assert f"at least {k25.PREGATE_MIN_GENES} genes" in row and k25.MEAN_TOL == 1e-9 and "equal to 1e-9 before" in row
+    assert f"mean > {k25.MIN_GAIN} with at least {k25.MIN_AHEAD} of 10" in row and f"mean < -{k25.MIN_GAIN}" in row
+    assert f"plus {k25.MAX_EXTRA_GATED}" in row
+    assert f"mean within {k25.GUARD_MEAN}, every seed within {k25.GUARD_SEED}" in row
+    m = re.search(r"gated: ([a-z0-9_, ]+) \(severity states\)", row)
+    assert m and sorted(m.group(1).split(", ")) == sorted(SEVERITY_GATED)
+    ms = " + ".join(f"{w} {m}" for m, w in k25.MUTANT_STATE)
+    assert f"{ms} skill is above 0" in row and "two tries" in row and k25.TRIES == 2
+    for sha in (k25.K9_MODULE_SHA256, k25.K9_X2_SHA256, *k25.K18_SHA256.values()):
+        assert sha[:12] in row
+    assert f"exit {k25.EXIT_PREGATE_FAILS}, launcher 25" in row and f"exit {k25.EXIT_UNCOVERED}, launcher 26" in row
+
+
 def test_the_row_must_be_k25_and_alone(tmp_path):
     p = tmp_path / "TRIES.md"
-    p.write_text("| K25 (one row) | T3 | `experiments/t3_decomp/k25_dispersion.py` with |\n")
+    p.write_text(_row_text() + "\n")
     assert k25.row_present(p) == "K25"
     for text_ in ("", "| K26 (x) | T3 | `experiments/t3_decomp/k25_dispersion.py` |\n",
                   "| K25 (x) | T3 | `experiments/t3_decomp/k25_dispersion.py` |\n"
@@ -707,7 +870,7 @@ def test_the_row_must_be_k25_and_alone(tmp_path):
 
 def test_every_subcommand_refuses_another_commit_or_no_row(tmp_path, monkeypatch):
     monkeypatch.setattr(k25, "TRIES_MD", tmp_path / "TRIES.md")
-    (tmp_path / "TRIES.md").write_text("| K25 (one row) | T3 | `experiments/t3_decomp/k25_dispersion.py` |\n")
+    (tmp_path / "TRIES.md").write_text(_row_text() + "\n")
     monkeypatch.setattr(k18, "stamp", lambda: {"commit": "a" * 40, "tree_clean": True, "machine": "m"})
     for argv in (["pregate", "--out", str(tmp_path / "o")], ["run", "--world", "x2", "--out", str(tmp_path / "o")],
                  ["read", "--runs", str(tmp_path), "--out", str(tmp_path / "o2")]):
@@ -820,9 +983,30 @@ def test_the_launcher_at_head_refuses_without_the_row(tmp_path):
 def test_the_launchers_pregate_passes_check(tmp_path):
     m = re.search(r"^PASSES_CHECK='([^']+)'$", LAUNCHER.read_text(), flags=re.M)
     assert m
-    for body, want in (({"passes": True}, "pass"), ({"passes": False}, "fail"), ({}, "fail"),
-                       ({"passes": "true"}, "fail")):
+    c = "c" * 40
+    prov = {"provenance": {"commit": c}}
+    for body, want in (({"passes": True} | prov, "pass"), ({"passes": False} | prov, "fail"), (prov, "fail"),
+                       ({"passes": "true"} | prov, "fail"), ({"passes": True}, "foreign"),
+                       ({"passes": True, "provenance": {"commit": "d" * 40}}, "foreign"),
+                       ({"passes": False, "provenance": {"commit": "d" * 40}}, "foreign")):
         p = tmp_path / "p.json"
         p.write_text(json.dumps(body))
-        got = subprocess.run([sys.executable, "-I", "-B", "-c", m.group(1), str(p)], capture_output=True, text=True)
+        got = subprocess.run([sys.executable, "-I", "-B", "-c", m.group(1), str(p), c], capture_output=True,
+                             text=True)
         assert got.stdout.strip() == want, body
+
+
+def test_the_launcher_maps_each_script_exit():
+    sh = LAUNCHER.read_text()
+    pre = sh[sh.index("  pregate)\n    if"):sh.index("  run)\n    mkdir")]
+    assert '"$PASSES_CHECK" "$R/pregate.json" "$COMMIT"' in pre
+    assert 'if [ "$got" = foreign ]; then finish 21; fi' in pre
+    for rc, code in ((0, 0), (5, 25), (6, 26), (2, 22)):
+        assert f"if [ $rc = {rc} ]; then finish {code}; fi" in pre
+    assert pre.rstrip().endswith("finish 20 ;;")
+    rd = sh[sh.index("  read)\n    if"):]
+    for rc, code in ((0, 0), (3, 43), (4, 44), (2, 42)):
+        assert f"if [ $rc = {rc} ]; then finish {code}; fi" in rd
+    assert rd.rstrip().endswith("finish 41 ;;\nesac")
+    assert (k25.EXIT_REFUSED, k25.EXIT_INCOMPLETE, k25.EXIT_EXISTS, k25.EXIT_PREGATE_FAILS, k25.EXIT_UNCOVERED) == (
+        2, 3, 4, 5, 6)
