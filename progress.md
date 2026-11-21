@@ -2,6 +2,13 @@
 
 ## Current State
 
+- **2026-11-21, 00:06 UTC.** No new score. The embryo's shape-interpolation read (E49) is done: by its rule, no file.
+  The bulk whole-embryo guard was recalibrated for the bulk route by an independent decision made before any table was
+  read; the 73-line set now gives 14 knockout lines with 63 knockout and 64 wild-type embryos. The practice row for
+  the wider tables (K24) is still not placed: two of its clauses were restated on a cold check (they assumed 25
+  lines), and its code is in a third review round over degenerate-table cases. Single-study bulk sets from GEO are
+  parked. Tries: T1 418, embryo 83, heart 80, T3 66. What waits: `session-handoff.md`, first bullet.
+
 - **2026-11-20, 23:33 UTC.** Files are still with the captain on all four boards; no new score reported. The 73-line
   public knockout set is pinned by two readers (25 lines), its gene-id map is reviewed and pinned, and its first run
   is done: 12 lines pass every guard. One guard turned out to drop four in ten genuine whole-embryo control libraries
