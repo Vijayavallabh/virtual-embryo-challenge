@@ -8,6 +8,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import anndata
 import numpy as np
@@ -267,6 +268,27 @@ def test_the_flag_off_copy_rows_file_keeps_its_bytes_and_record(bt, monkeypatch,
     assert sorted(rec) == GOLDEN_CR_KEYS
     assert rec["size_rule"] == "not applied" and rec["target_rms"] is None and "copy_rows_size" not in rec
     assert rec["n_cells"] == "floor_copy" and rec["record"]["expression"] == "mixture"
+
+
+# The exact-position file P's command (--method fgw_shape0 --positions floor_exact --expression mixture) on the fixture
+# world with a synthetic size JSON (the bracket's own RMS) and a dry board, pinned with the builder of main before
+# --copy-rows-size existed (b1430aa, run from a copy of that file) and unchanged after it. The cloud guard, a check that
+# changes nothing it passes, is stubbed: this small synthetic world trips it.
+GOLDEN_P_SHA256 = "ca775cc85b5f3b3efd9d5fe7376369b889d1819ea948b1f38ddf6783f36f98ff"
+
+
+def test_the_exact_position_file_keeps_its_bytes(bt, monkeypatch, world, own_repo, tmp_path):
+    board = _board(world[3], key="T2:embryo:val_interp", split="val")
+    _fake(bt, monkeypatch, world, board, dry=True)
+    monkeypatch.setattr(bt.t2_build, "cloud_guard", lambda *a, **kw: SimpleNamespace(ok=True, flags=[]))
+    own = tb.rms_radius(np.asarray(world[1].obsm[COORD_KEY], dtype=np.float64)[:, :3])
+    p = tmp_path / "size_embryo.json"
+    p.write_text(json.dumps({"board": "embryo", "valid": True,
+                             "preregistered": {"z_mode": "raw", "valid": True, "pred_rms_full": own}}))
+    monkeypatch.setitem(bt.SIZES, "embryo", p)
+    out = tmp_path / "T2embryo_s2x.h5ad"
+    bt.main([*BASE, "--expression", "mixture", "--out", str(out)])
+    assert hashlib.sha256(out.read_bytes()).hexdigest() == GOLDEN_P_SHA256
 
 
 def test_the_size_flags_are_off_by_default(bt):
