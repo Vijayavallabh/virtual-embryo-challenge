@@ -38,6 +38,7 @@ def test_constants_are_the_fixed_ones():
     assert (cm.CONFIDENT, cm.MIN_CONF_SHARE, cm.SHARE_RATIO_MAX, cm.SPEARMAN_MARGIN, cm.MIN_CELLS, cm.MIN_UMI,
             cm.PSEUDOCOUNT, cm.N_HALF, cm.CLIP, cm.STAGE_MAX) == (0.6, 0.5, 2.0, 0.05, 100, 20, 10.0, 200,
                                                                   (0.25, 4.0), 9.5)
+    assert cm.BULK_WHOLE_MARGIN == 0.0   # bulk G5 only (decision 2026-11-21); SPEARMAN_MARGIN stays 0.05
 
 
 def test_log_ratio_on_hand_checked_numbers():

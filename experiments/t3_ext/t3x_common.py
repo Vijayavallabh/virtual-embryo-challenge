@@ -62,6 +62,7 @@ CONFIDENT = 0.6          # a cell's group call counts only with label_conf >= 0.
 MIN_CONF_SHARE = 0.5     # a (stage) drops if fewer than half of either arm's cells are called confidently
 SHARE_RATIO_MAX = 2.0    # a (group, stage) drops if its share of an arm's cells differs by more than 2x across arms
 SPEARMAN_MARGIN = 0.05   # the control group's best-matching reference group must be its own, ahead by 0.05
+BULK_WHOLE_MARGIN = 0.0  # bulk G5 only: rho(pb) must exceed every single group's rho, strictly (decision 2026-11-21)
 AUTHOR_AGREE = 0.5       # where author labels exist: >= half of the group's control calls agree with the dictionary
 MIN_CELLS = 100          # confident cells of the group in EACH arm at a stage (the frozen transfer's minimum)
 MIN_UMI = 20             # a gene with fewer summed UMIs in any arm of (group, stage) is NaN there (not measured)

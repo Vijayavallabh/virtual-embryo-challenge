@@ -768,9 +768,21 @@ independent reviewer re-derived every figure of this paragraph and found the com
   leave-one-out arm mean (log CPM, present panel genes) has a robust z under -3.5 AND lies more than 0.05 under the
   arm's median; the unit is refused when the mean Spearman within the controls is under the mean across the arms
   minus 0.05.
-- **G5 whole embryo**: pb = sum over groups of shares[g] * mu[g] (`t3x_tables.whole_den`); a control library whose
-  Spearman with pb does not exceed its best single-group Spearman by 0.05 is dropped; a control arm mean that fails
-  refuses the unit; knockout libraries are recorded only.
+- **G5 single-lineage check** (bulk; changed 2026-11-21, before any bulk table was read): pb = sum over groups of
+  shares[g] * mu[g] (`t3x_tables.whole_den`). A control library whose Spearman with pb is not strictly greater than its
+  Spearman with every single reference group (margin > 0, `t3x_common.BULK_WHOLE_MARGIN`) is dropped. A control arm mean
+  that fails refuses the unit. Knockout libraries are recorded only. The margin, the threshold and the best group are
+  recorded per library and for the control arm mean. G5 catches a library dominated by one or two lineages (a dissected
+  single tissue). It does not show that a library is a whole embryo. In the challenger's synthetic check (random group
+  profiles; not kept in the repository), partial embryos (head-off, trunk-heavy) and embryos mixed with a tissue the
+  reference lacks scored about like whole embryos at any margin; no test here shows it. Those
+  cases rest on the readers' record check (B6), the composition guard (G12) and the genotype guard (G9). G5 first used
+  SPEARMAN_MARGIN (0.05), a number borrowed from the single-cell group check. On E-MTAB-7322 (217 single whole E9.5
+  embryos) it cut one tight unimodal margin distribution at its median (controls: median 0.051, range 0.038 to 0.069)
+  and dropped 46 of 111 controls. Across all
+  libraries, the share failing was highest at the somite extremes (0.70 at 12 or fewer somites, 0.60 at 25 to 27, 0.78
+  at 28 or more). The single-cell route keeps SPEARMAN_MARGIN = 0.05
+  unchanged.
 - **G6 somites**, where recorded: non-overlapping arm ranges refuse; the median difference, the ranges and the
   overlap count are recorded; nothing is removed.
 - **G7 stage and design**: the E9.5 cap, the range refusal, same-stage arms (the pins).
@@ -1017,7 +1029,9 @@ assumed to repeat ENA_RUN with one FASTQ_URI each. The matrix's real header was 
 run is a column is checked by the header step. A 10x features file states no chromosome, so chrX and chrY panel genes
 other than the named sex genes are unknown: an imbalanced unit is refused. Trps1 was not added to the screen (see the
 hand-back). How the guards behave on real whole embryos (G5 against an E8.75 pseudo-bulk, G12 on a bulk profile) is
-unknown; E7.5 studies are expected to fail G5.
+unknown. Note (2026-11-21): No library known not to be a whole embryo has been measured, so there is no positive
+control. Whether an E7.5 or later-stage embryo, or a whole embryo carrying yolk sac, fails G5 at margin > 0 is unknown.
+The earlier expectation that E7.5 studies fail G5 was made for 0.05 and is withdrawn.
 
 ## Stage 9 round 3 (campaign/t3-ext-bulk-3, by the main session): the real tables, and two closures
 
