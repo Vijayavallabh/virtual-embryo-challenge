@@ -9711,3 +9711,19 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     row text handed back leaves out rules the code fixes; they are written into row T67 when it is placed.
   - **The judge's odds:** the kill test passes with about 0.12; given a pass, three board points or more at the test
     about 0.04; the most likely outcome is that the permuted control ties the arm.
+- 2026-11-21 (dd), row N57 is run (the late labelling is usable) and row T67 is placed before its run (state at 23:56 UTC,
+  2026-11-21). Written by the AI assistant, which gives no design lean; the kill test is its score-blind judge's.
+  - **N57.** A first launch at ea206dc ran nothing: the launcher's tests step stopped on one test that fails only on
+    the DGX checkout holding a real N55 marker. The launcher now deselects that test by name (119e4cd), and at that
+    commit the labelling ran: exit 0, usable; unassigned shares 0.050, 0.041 and 0.046 against a cap of 0.40; the
+    cardiomyocyte, endocardium and endothelium groups have 88 to 1201 cells per late stage, the epicardium 26 to 29,
+    under T67's minimum of 50, so the epicardium keeps the steady rate. The record is committed with this entry; the
+    statistics' sha256 is 6e15bbf97b973eddc057d6ef2dcaa4981d6317ef7e2e5d8a839bbc6cbbeb9043.
+  - **T67.** Placed in this commit, before its run, with the rules the reviewer found missing from the row text
+    written in as the code has them (the control's bins and seed, the void list, the late cell minimum, the unassigned
+    cap, the norm over held genes, the summed-means form of the third clause). Two counted arms on row T62's five
+    tasks; ten tries, T1 419 to 428, once the runs start; an idle pre-gate first, which prunes the row with no try.
+    Fixed statement: AHEAD only if the arm beats the practice analogue of R13's file on the chamber cut, the whole cut
+    and the libraries, beats its permuted control, and has at least six tenths of its gain in the two terms its reason
+    names; otherwise NOT AHEAD, which closes the line. AHEAD leads to one priced question to the captain, not to a
+    file.
