@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-- **State at 2026-11-21, 22:31 UTC (newest; it supersedes the bullets below where they differ).** Decision log 2026-11-21 (c) to (u). Local main = origin/main. Nothing of ours is running on the DGX. **FOUR SCORES CAME IN at
+- **State at 2026-11-21, 22:31 UTC (newest; it supersedes the bullets below where they differ).** Decision log 2026-11-21 (c) to (v). Local main = origin/main. Nothing of ours is running on the DGX. **FOUR SCORES CAME IN at
   22:31 UTC (entry (s)), one per board, reported by the captain as the first upload of the day; only the headlines are
   recorded (`results/manual_uploads.csv`); the paste's per-metric lines and ranks are recorded nowhere and are used
   for nothing.**
@@ -40,7 +40,18 @@
     reopen, by name, the embryo's and the heart's lists for new files designed without scores (this includes a
     copy-rows file at the team's own size, raised by a side agent's note that the main session may not act on). The
     main session's honest odds for 226: about one in a hundred or less (said to the captain).
-  - **Tries:** T1 418, embryo 84, heart 80, T3 72. **Next labels:** decision log 2026-11-21 (v) (or 2026-11-22 (a) after midnight UTC); register row X018.
+  - **THE CAPTAIN REOPENED BOTH LISTS AND ORDERED MOONSHOTS (entry 2026-11-21 (v)), verbatim: "yes, reopen both lists
+    and go ahead with wilder moonshot approached to drastically increase our score at all costs"** (answering: reopen
+    the embryo and heart lists for new files designed without scores, including a copy-positions file at our own
+    size). So the question of the bullet above is ANSWERED: embryo and heart proposals of the blind round may be
+    placed in the log and built; a copy-rows file at the team's own size may be specified by fresh analysts and built;
+    the main session's recusals, T1's exposed levers and the organisers' rules stand. **Also running:** workflow
+    `moonshots-round-1` (twelve agents; per board two score-blind designers and a cold judge; at most two moonshots
+    per board, each with a kill test on released data whose row comes first and counts as a try). When it hands back:
+    save to `lift8/`; for each surviving moonshot an engineer and a reviewer write the kill test; place its row and a
+    log entry in one commit; run on the DGX (GPUs 2 to 7 are ours); read it in its fixed words; only a pass leads to a
+    build path.
+  - **Tries:** T1 418, embryo 84, heart 80, T3 72. **Next labels:** decision log 2026-11-21 (w) (or 2026-11-22 (a) after midnight UTC); register row X018.
 - **State at 2026-11-21, 11:10 UTC (superseded by the bullet above where they differ).** Decision log 2026-11-21 (c) to (r). Local main = origin/main. No score line since 20 Nov 15:30 UTC. Nothing of ours is running on
   the DGX.
   - **THE EMBRYO HAS THREE FILES WITH THE CAPTAIN, IN THE ANALYSTS' ORDER (entry 2026-11-21 (l); the main session is
