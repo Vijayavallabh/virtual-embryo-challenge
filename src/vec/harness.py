@@ -1177,6 +1177,11 @@ SHAPE_CANDIDATES = {"fgw_shape0x_sr": "stretch_ratio", "fgw_shape0x_sg": "stretc
                     "fgw_shape0x_ov_rot": "overlay_rot"}
 
 
+# Row E53 (as specified; branch campaign/moon-embryo-geodesic): fgw_shape0x with the geodesic overlay (E53a) and its
+# rotated-start placebo (E53b), vec.shape_interp.GEODESIC_FORMS. Harness only; the builder offers neither.
+GEODESIC_CANDIDATES = {"fgw_shape0x_geo": "geodesic_overlay", "fgw_shape0x_geo_rot": "geodesic_overlay_rot"}
+
+
 def _fgw_shape0x_form(form: str) -> Callable[[BuildContext], Stage]:
     return lambda ctx: _fgw(ctx, t_pos=0.0, positions=t2_build.POSITIONS[1], shape_form=form)
 
@@ -1791,6 +1796,13 @@ CANDIDATES = {
                         "positions": t2_build.POSITIONS[1], "stream": t2_build.FLOOR_EXACT_STREAM, "shape_form": form,
                         "scope": "whole"}, requires=_interp)
        for name, form in SHAPE_CANDIDATES.items()},
+    # row E53 (as specified): fgw_shape0x with the LDDMM geodesic overlay, and its rotated-start placebo
+    **{name: Candidate(name, frozenset({"T2"}), (), _fgw_shape0x_form(form),
+                       {"what": "fgw_shape0x_ov's rows with positions on one LDDMM geodesic between the brackets "
+                                f"(vec.shape_interp {form}, vec.lddmm) applied before the size rule",
+                        "positions": t2_build.POSITIONS[1], "stream": t2_build.FLOOR_EXACT_STREAM, "shape_form": form,
+                        "scope": "whole"}, requires=_interp)
+       for name, form in GEODESIC_CANDIDATES.items()},
     # embryo tries E25a-E25c (experiments/harness/TRIES.md, registered before their run): the geometry that goes with
     # the series rendering, and the later bracket alone
     "fgw_aligned_series": Candidate("fgw_aligned_series", frozenset({"T2"}), (), _fgw_aligned_series,
