@@ -2,7 +2,8 @@
 
 ## Current Objective
 
-- **State at 2026-11-21, 09:20 UTC (newest; it supersedes the bullets below where they differ).** Decision log 2026-11-21 (c) to (o). Local main = origin/main. No score line since 20 Nov 15:30 UTC.
+- **State at 2026-11-21, 09:20 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+  2026-11-21 (c) to (o). Local main = origin/main. No score line since 20 Nov 15:30 UTC.
   - **THE EMBRYO'S ORDER RULE IS IN FORCE (entry 2026-11-21 (l), the analysts' rule; the main session is recused,
     executes it and states no preference): each embryo upload takes the first not yet uploaded of O, P, C.** O, the
     overlay file: `runs/manual_upload/T2embryo_s2x_ov.h5ad`, sha256
@@ -32,20 +33,22 @@
   - **The review of the main session's own record (entry 2026-11-21 (n)):** NOT READY on one blocker, the build
     launcher's gate; fixed at ef46975 (the reading must be a tracked file of the build commit, made at the run commit
     5fcf6b9ad187…; full-hash HEAD; builder code unchanged since the run commit; a build counts only with a stamp of
-    this commit, clean). The same reviewer verified the fix: READY, no blocker (entry (o); the launcher's code-unchanged check was widened on its lesser point). **THE CAPTAIN'S QUESTION WAS PUT AT 09:27 UTC as plain text, in the analysts'
-    words, default build** (count below the count rule, E7.5's own size instead of the pre-registered size): a 'no'
-    means no copy-positions file; no answer means built by the default; record the answer verbatim, or 'no answer by
-    <time>; built by the default', in the file's rules-note section and log entry. The earlier plan to hold the
-    question until the price tables existed was the main session's own timing and is withdrawn; the tables are
-    reported to the captain when they exist and decide nothing. In the next rules-note amendment also correct the
-    sentence that says the question goes 'when the file is ready'.
+    this commit, clean). The same reviewer verified the fix: READY, no blocker (entry (o); the launcher's
+    code-unchanged check was widened on its lesser point). **THE CAPTAIN'S QUESTION WAS PUT AT 09:27 UTC as plain
+    text, in the analysts' words, default build** (count below the count rule, E7.5's own size instead of the
+    pre-registered size): a 'no' means no copy-positions file; no answer means built by the default; record the answer
+    verbatim, or 'no answer by <time>; built by the default', in the file's rules-note section and log entry. The
+    earlier plan to hold the question until the price tables existed was the main session's own timing and is
+    withdrawn; the tables are reported to the captain when they exist and decide nothing. In the next rules-note
+    amendment also correct the sentence that says the question goes 'when the file is ready'.
   - **The heart check: do not pursue** (entry (j)). K1 then K2 stand; nothing is asked of the captain.
   - **Hand-backs in the session scratchpad `lift8/`:** `embryo_copy_rows.json` (first round),
     `embryo_copy_rows_fix.json` (fix round and order rule), `heart_frame_check.json`; scripts `e50_place.py`,
     `e50_chain.sh`.
   - **Launchers on this machine may hold no removal of a variable path** (a built-in safety check refuses the whole
     command): the two embryo build launchers delete nothing and take a run name whose folders must not exist.
-  - **Tries:** T1 418, embryo 83 (84 once E50's run step starts), heart 80, T3 72. **Next labels:** decision log 2026-11-21 (p); register row X018.
+  - **Tries:** T1 418, embryo 83 (84 once E50's run step starts), heart 80, T3 72. **Next labels:** decision log
+    2026-11-21 (p); register row X018.
 - **State at 2026-11-21, 08:42 UTC (superseded by the bullet above where they differ).** Decision log
   2026-11-21 (c) to (k). Local main = origin/main. No score line since 20 Nov 15:30 UTC.
   - **THE EMBRYO'S OVERLAY FILE IS BUILT (the captain's order of 21 Nov, verbatim "Build it", answering a one-question
