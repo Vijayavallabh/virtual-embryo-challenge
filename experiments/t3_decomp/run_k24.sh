@@ -20,7 +20,8 @@
 #   3. the pre-gate, target-free, before any scoring: R/pregate.json and $S/pregate.log (no score). Exit 22 when the
 #      script refuses (its exit 2: pins, listing, folders, bytes or records disagree, a missing or unpinned table,
 #      frozen files off their pins, `two` off K23's figures, K23's per-seed files missing; nothing counted), 25 when it
-#      drops both tables (its exit 5: nothing runs, nothing counted), 20 any other failure;
+#      leaves no try (its exit 5: both tables dropped, or bulk dropped and sc3 a repeat of the named form; nothing
+#      runs, nothing counted), 20 any other failure;
 #   4. the GUARD PART: barred_form and x_e2 only, both worlds, ten seeds, in five parallel parts as step 6 (into
 #      R/guard/; exit 30 if a part did not exit 0), then the guard check (R/guard.json): its exit 6 (a guard failed)
 #      reads the run into OUT (a VOID reading that counts the failed guard arms only) and finishes 26; its exit 2

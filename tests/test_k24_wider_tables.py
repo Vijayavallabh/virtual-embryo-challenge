@@ -904,6 +904,26 @@ def test_the_exponent_of_a_table_that_is_not_constant_is_unchanged_by_the_consta
         np.std(1.5 * np.log(two) + 2.5 * np.log(two[::-1])))
 
 
+@pytest.mark.parametrize("flat", ["bulk", "sc3"])
+@pytest.mark.parametrize("v,d", [(1.2, 1e-6), (4.0, 1e-3), (0.25, 1e-12), (1.2, 2.220446049250313e-16)])
+def test_a_nearly_constant_table_drops_on_s1_before_its_scaled_table_is_formed(flat, v, d):
+    """A table of one value with one gene a hair off it has a tiny log SD and a huge finite exponent: the rule drops
+    it on (s1). The third review's blocker: the code formed T ** e_T first, which overflowed or underflowed, and the
+    pre-gate raised instead of dropping. Now (s1) is checked before T ** e_T is formed."""
+    other = "sc3" if flat == "bulk" else "bulk"
+    s0 = _synth()
+    T = np.full(s0.n, v)
+    T[7] = v + d
+    if float(np.ptp(np.log(T))) == 0.0:   # the hair vanished in rounding: the constant-table case, tested above
+        pytest.skip("not representable")
+    pre = _drops(**{flat: T})
+    assert pre["e"][flat] > k24.E_MAX and "(s1)" in pre["dropped"][flat]
+    assert "joint" in pre["dropped"] and other not in pre["dropped"]
+    assert flat not in pre["scaled"] and f"x_{flat}" not in pre["arms"]
+    arms = k24.active_arms(pre)
+    assert arms == (SC3_ONLY if other == "sc3" else BULK_ONLY) and k24.try_count(arms) == 3
+
+
 # ------------------------------------------------------------------------------------------------ (6) the rule
 
 
@@ -1645,9 +1665,8 @@ def test_4_the_fallback_n_g_u_is_used_and_recorded_and_a_malformed_field_drops_w
     _, f = _b4(n, U, shares)  # no lines_held_by_study in the manifest
     assert f["n_g_source"] == "fallback U (the manifest records no lines_held_by_study)"
     assert f["n_g_histogram"] == {"14": n} and f["E0"] == float(n * k24.chance_agreement(14))
-    _, f = _b4(n, U, shares, lines_held_by_study={"OTHER": [3] * n})  # none for MGP-DMDD
-    assert f["n_g_source"].startswith("fallback U (lines_held_by_study records nothing for MGP-DMDD")
     bad = {"not a mapping": [U] * n, "one per gene": {"MGP-DMDD": [U] * (n - 1)},
+           "none for MGP-DMDD": {"OTHER": [3] * n},   # the fourth review's point 1: a contradiction, not a fallback
            "not an integer": {"MGP-DMDD": [float(U)] * n}, "a bool": {"MGP-DMDD": [True] * n},
            "outside": {"MGP-DMDD": [U + 1] * n}, "negative": {"MGP-DMDD": [-1] + [U] * (n - 1)},
            "0 lines": {"MGP-DMDD": [0] + [U] * (n - 1)}}

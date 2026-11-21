@@ -475,15 +475,19 @@ def chance_agreement(n: int) -> Fraction:
 def lines_held(rec: dict, size: int, U: int, share: list) -> tuple[list[int] | None, str, str | None]:
     """(n_g per gene in the table's gene order, its source, the reason it is malformed or None). n_g comes from the
     manifest's lines_held_by_study[MGP-DMDD] when it is there: one integer per gene, 0 <= n_g <= U, and n_g >= 1
-    wherever the gene has an agreement value; anything else is malformed (the caller drops the bulk table). When the
-    manifest records no lines_held_by_study, or records none for MGP-DMDD, n_g = U for every gene ('fallback U')."""
+    wherever the gene has an agreement value; anything else, a field that records nothing for MGP-DMDD included, is
+    malformed (the caller drops the bulk table). Only when the manifest records no lines_held_by_study at all (a table
+    built before combine.py recorded it) is n_g = U for every gene ('fallback U')."""
     field = rec.get("lines_held_by_study")
     if field is None:
         return [U] * size, "fallback U (the manifest records no lines_held_by_study)", None
     if not isinstance(field, dict):
         return None, "malformed", "lines_held_by_study is not a mapping of study to counts"
     if BULK_STUDY not in field:
-        return [U] * size, f"fallback U (lines_held_by_study records nothing for {BULK_STUDY})", None
+        # combine.py writes this field and line_agreement_by_study under one condition, and (b4) reaches n_g only when
+        # an agreement value exists for the study: a field that then records nothing for it contradicts the manifest
+        return None, "malformed", (f"lines_held_by_study records nothing for {BULK_STUDY} although "
+                                   "line_agreement_by_study does")
     v = field[BULK_STUDY]
     if not isinstance(v, list) or len(v) != size:
         return None, "malformed", f"lines_held_by_study[{BULK_STUDY}] is not one count per gene of the table"
@@ -650,6 +654,15 @@ def pregate_k24(phi_m, loaded: dict, bases_by_world: dict, den, genes: list[str]
         repeat = None  # sc3 only: the repeat clause's reason, kept apart from every other drop
         if e is None:
             why.append("SD(ln T) is 0: no exponent")
+        elif e > E_MAX or e < E_MIN:
+            # (s1) first (the third review's blocker): an exponent outside [E_MIN, E_MAX] drops the table BEFORE
+            # T ** e_T is formed; for a nearly constant table the exponent is huge, T ** e_T overflows to inf or
+            # underflows to 0, and table_figures would raise where the rule says the table drops. The scaled table's
+            # figures and its arm figures are then not made; (s3) is computed from e_T and max |ln T| directly.
+            why.append(f"(s1) e_T {e:.4f} outside [{E_MIN}, {E_MAX}]")
+            mx = float(e * np.max(np.abs(np.log(T))))
+            if mx > MAX_ABS_LN_SCALED:
+                why.append(f"(s3) max |ln T ** e_T| {mx:.4f} (> {MAX_ABS_LN_SCALED})")
         else:
             Te = T ** e
             sf = ext.table_figures(phi_m, Te, den)
@@ -657,8 +670,6 @@ def pregate_k24(phi_m, loaded: dict, bases_by_world: dict, den, genes: list[str]
             out["scaled"][key] = sf
             if not _close(sf["sd_ln"], S_STAR):
                 raise Refused(f"{key}: SD(ln T ** e_T) {sf['sd_ln']!r} is not S* (relative {REL_TOL}): refused")
-            if e > E_MAX or e < E_MIN:
-                why.append(f"(s1) e_T {e:.4f} outside [{E_MIN}, {E_MAX}]")
             if sf["max_abs_ln"] > MAX_ABS_LN_SCALED:
                 why.append(f"(s3) max |ln T ** e_T| {sf['max_abs_ln']:.4f} (> {MAX_ABS_LN_SCALED})")
             scaled[key] = Te
