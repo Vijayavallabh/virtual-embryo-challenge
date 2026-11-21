@@ -1197,8 +1197,9 @@ def _copy_rows(ctx: BuildContext, expression: str = "mixture") -> Stage:
     """The copy-rows arms: the floor copy of this scoring seed (copy seed = build seed - BUILD_SEED_OFFSET) drawn from
     the very reference cells run_task drew the floor from, the earlier bracket's own expression in round((1 - t) n)
     slots and the later bracket's rows in the others, then the expression step of the arm (mixture, or the series
-    rendering of fgw_shape0x_series). Finish: the cloud guard against the reference cells' coordinates, then
-    build_submission with duplicate positions and a count below the truth's allowed (this path only)."""
+    rendering of fgw_shape0x_series). Finish: build_submission with duplicate positions and a count below the
+    truth's allowed (this path only); no cloud guard, because the coordinates are the floor copy's by construction
+    and reading (i) of row E50 checks them bit for bit."""
     t = ctx.task
     if REFERENCE_RELEASED not in ctx.inputs:
         raise ValueError(f"{t.key}: the copy-rows arm needs the reference cells run_task hands over")
@@ -1220,9 +1221,6 @@ def _copy_rows(ctx: BuildContext, expression: str = "mixture") -> Stage:
     else:
         raise ValueError(f"unknown expression step {expression!r}")
     X = np.clip(np.asarray(X, dtype=np.float32), 0.0, None)
-    guard = t2_build.cloud_guard(res.coords, np.asarray(source, dtype=float), seed=ctx.seed)
-    if not guard.ok:
-        raise ValueError(f"{t.key}: cloud guard flags {guard.flags}")
     sub, rep = t2_build.build_submission(ctx.board, X, res.coords, genes=g, allow_duplicate_coords=True,
                                          allow_below_truth=True)
     if not rep.ok:
@@ -1776,8 +1774,9 @@ CANDIDATES = {
     # expression (fgw_copyrows) or the series rendering (fgw_copyrows_series)
     "fgw_copyrows": Candidate("fgw_copyrows", frozenset({"T2"}), (), _fgw_copyrows,
                               {"what": "the floor copy's own rows, order, count and float32 coordinates (no size rule, "
-                                       "centring or jitter), half the slots with their own cell's expression and the "
-                                       "rest with later-bracket cells by an exact assignment",
+                                       "centring or jitter), round((1 - t) n) slots (half at t = 0.5) with their own "
+                                       "cell's expression and the rest with later-bracket cells by an exact "
+                                       "assignment",
                                "rule": t2_build.COPY_ROWS_RULE, "stream": t2_build.COPY_ROWS_STREAM,
                                "scope": "whole"}, requires=_interp, needs_reference_cells=True),
     "fgw_copyrows_series": Candidate("fgw_copyrows_series", frozenset({"T2"}), (), _fgw_copyrows_series,

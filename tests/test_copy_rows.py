@@ -286,6 +286,38 @@ def test_series_passes_the_stage_and_rows_through_unchanged(stages, monkeypatch)
     assert seen["before"] is deduped and seen["after"] is after and seen["t"] == 0.5 and seen["seed"] == [SEED, 7]
 
 
+@pytest.mark.parametrize("target_day", [7.75, 7.625, 7.875])
+def test_the_arm_splits_at_the_tasks_own_t(stages, target_day):
+    """Row E50, the analyst's decision (b): round((1 - t) n) slots keep their own cell's expression, t the task's own
+    time fraction as fgw_shape0x uses it (half at t = 0.5); the rule texts say the same."""
+    rel, deduped, after, panel = stages
+    ctx = replace(_ctx(stages), task=replace(VIEW, target_day=target_day))
+    st = CANDIDATES["fgw_copyrows"].build(ctx)
+    t = (target_day - 7.5) / (8.0 - 7.5)
+    Xr = np.asarray(rel[:, panel].X.toarray(), np.float32)
+    idx = _copy_index(rel.n_obs, SEED - harness.BUILD_SEED_OFFSET)
+    own = sum(np.array_equal(st.X[i], Xr[idx[i]]) for i in range(len(idx)))
+    assert own == int(round((1 - t) * len(idx)))
+    assert "round((1 - t) n)" in tb.COPY_ROWS_RULE
+    assert "round((1 - t) n) slots (half at t = 0.5)" in CANDIDATES["fgw_copyrows"].params["what"]
+
+
+@pytest.mark.parametrize("name", ["fgw_copyrows", "fgw_copyrows_series"])
+def test_the_arms_call_no_cloud_guard(stages, monkeypatch, name):
+    """Row E50, the analyst's decision: no cloud guard on the copy-rows path (reading (i) checks the coordinates bit
+    for bit); a patched guard that raises is never reached."""
+    def never(*a, **kw):
+        raise AssertionError("the cloud guard ran on the copy-rows path")
+
+    monkeypatch.setattr(tb, "cloud_guard", never)
+    if name.endswith("series"):
+        monkeypatch.setattr(tb, "series_rendered_expression",
+                            lambda before, after, interp, genes, t, seed, **kw: (
+                                np.full((len(interp.rows), len(genes)), 0.5, np.float32), {}))
+    st = CANDIDATES[name].build(_ctx(stages))
+    assert len(st.coords) > 0
+
+
 def test_without_the_handover_the_arm_refuses(stages):
     rel, deduped, after, panel = stages
     ctx = harness.BuildContext(task=VIEW, board=_board(panel), inputs={"before": deduped, "after": after}, seed=SEED)

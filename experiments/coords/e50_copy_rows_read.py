@@ -4,17 +4,19 @@ copy-rows file, the investigator's Option A ("the second construction"), on the 
 order of 2026-11-21 ("reopen it [my ordeer]", docs/PLAN.md decision log 2026-11-21 (h)); specified by fresh analysts;
 the main session is recused on this lever (decision log 2026-11-20 (i)). No number here comes from a test score.
 
-Arm. The harness candidate ARM (fgw_copyrows_series, the series form: the exact-position file handed over is
-fgw_shape0x_series; if the main session finds from that file's committed build record that it is the mixture form, it
-sets HANDED_OVER_EXPRESSION to "mixture" in the row's commit, and the arm is fgw_copyrows). Only that arm counts. Per
-task and scoring seed s: the rows, order, count and raw float32 coordinates of the bake floor copy
-vec.evaluate.subsample(ref, 0.1, s), drawn from the very reference cells the harness's floor uses (vec.t2_build.
-copy_rows_cloud, vec.harness._copy_rows). Controls: the floor, fgw_shape0x, fgw_shape0x_series.
+Arm. The harness candidate ARM, fgw_copyrows (the mixture form: the handed-over exact-position file T2embryo_s2x.h5ad
+is fgw_shape0x, built with --expression mixture, experiments/builds/results/embryo2_2dccfee.txt). Only that arm runs and
+counts; fgw_copyrows_series is not run. Per task and scoring seed s: the rows, order, count and raw float32 coordinates
+of the bake floor copy vec.evaluate.subsample(ref, 0.1, s), drawn from the very reference cells the harness's floor
+uses (vec.t2_build.copy_rows_cloud, vec.harness._copy_rows). int(round((1 - t) n)) slots keep their own cell's
+expression, t the task's time fraction as fgw_shape0x uses it (0.5 at the test pair, where the builder fixes 0.5).
+Controls: the floor, fgw_shape0x, fgw_shape0x_series.
 
 Path. harness.run_task on each task of nine_tasks.all_tasks(), seeds 0-9, bake protocol, build seed BUILD_SEED_OFFSET
 + seed, under build "main" and under "prefix". A refusal of the arm (more dropped slots than the later bracket's
-share, a count outside the task board's limits, the cloud guard) is caught and recorded by category; fgw_shape0x's
-file of that seed stands in so the run goes on, and that task-seed is left out of every reading.
+share, a count outside the task board's limits, a copy of fewer than three rows) is caught and recorded by category;
+fgw_shape0x's file of that seed stands in so the run goes on, and that task-seed is left out of every reading. Any
+other error of the arm is raised and voids the run.
 
 Steps (each refuses unless row E50 is in TRIES.md, the tree is clean and HEAD is the run commit):
   gate --task NAME --commit SHA  the floor scores 50, and fgw_shape0x and fgw_shape0x_series under main reproduce
@@ -30,16 +32,19 @@ file or test anchor, and prints no count.
 
 Readings, fixed in row E50 before any output (applied by `reading`):
   (i)   on every task-seed where the arm builds, its d2_shape, occupancy_dice and scale_log_ratio equal the floor's
-        exactly under main and under prefix; any inequality voids the construction and no test file is built;
-  (ii)  refusals listed per task-seed; a task refused at every seed prices nothing;
+        exactly under main and under prefix and its coordinates equal the floor copy's bit for bit; any inequality
+        voids the construction and no test file is built;
+  (ii)  refusals (count outside the task board's limits; dropped slots over the E8.0 share; a copy of fewer than three
+        rows) listed per task-seed; a task refused at every seed prices nothing;
   (iii) paired arm minus fgw_shape0x, per task and merged over the five truths, both builds: board score, each group,
         each metric, seeds ahead, SE, mean gain over gain tasks and mean loss over loss tasks, worst and best task; the
         same against fgw_shape0x_series as a secondary table;
   (iv)  per task, the arm's neighborhood_mmd skill and its shape group gated and ungated (where the assumed gate
         bites).
 Outcome: if (i) holds, the test file is built under the captain's order with (iii) and (iv) beside it; (iii) and (iv)
-decide nothing. Void: a missing task, seed or arm; mixed commits or an unclean tree; a gate miss; files differing
-between the two builds' scoring; a refusal that differs between the builds; a test board.
+decide nothing. Void: a missing task, seed or arm; an arm error outside the listed refusals; mixed commits or an
+unclean tree; a gate miss; files differing between the two builds' scoring; a refusal that differs between the builds;
+a test board.
 """
 
 from __future__ import annotations
@@ -74,7 +79,9 @@ from vec.provenance import repo_state  # noqa: E402
 
 ROW_IDS = ("E50",)
 TRIES = REPO / "experiments" / "harness" / "TRIES.md"
-HANDED_OVER_EXPRESSION = "series"  # the exact-position file handed over is fgw_shape0x_series (see the docstring)
+# the handed-over T2embryo_s2x.h5ad (sha256 a03611a3...) is fgw_shape0x, built with --expression mixture
+# (experiments/builds/results/embryo2_2dccfee.txt; build_all.sh set embryo2)
+HANDED_OVER_EXPRESSION = "mixture"
 ARMS_BY_EXPRESSION = {"series": "fgw_copyrows_series", "mixture": "fgw_copyrows"}
 ARM = ARMS_BY_EXPRESSION[HANDED_OVER_EXPRESSION]
 PRIMARY, SECONDARY = "fgw_shape0x", "fgw_shape0x_series"
@@ -98,7 +105,7 @@ SCRIPT = "experiments/coords/e50_copy_rows_read.py"
 RUNS = REPO / "runs" / "e50"
 RESULTS = REPO / "experiments" / "coords" / "results" / "e50_copy_rows"
 REFUSALS = (("later bracket's share", "dropped_over_share"), ("cells outside [", "count_outside_limits"),
-            ("cloud guard flags", "cloud_guard"), ("copy_rows:", "copy_rows_input"))
+            ("fewer than three rows in the copy", "copy_too_small"))
 
 
 # ------------------------------------------------------------------------------------------------ checks

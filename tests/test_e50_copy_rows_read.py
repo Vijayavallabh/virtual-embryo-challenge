@@ -4,6 +4,7 @@ data, runs a task or opens a result."""
 
 from __future__ import annotations
 
+import dataclasses
 import os
 import subprocess
 import sys
@@ -107,9 +108,28 @@ def test_refusal_categories():
     assert e50.refusal_category("copy_rows: more copy slots lack a deduplicated cell than the later bracket's share "
                                 "(values not shown)") == "dropped_over_share"
     assert e50.refusal_category("pseudo: 9 cells outside [10, 20]") == "count_outside_limits"
-    assert e50.refusal_category("syn: cloud guard flags ['rms']") == "cloud_guard"
-    assert e50.refusal_category("copy_rows: non-finite input (values not shown)") == "copy_rows_input"
+    assert e50.refusal_category("syn: cloud guard flags ['rms']") is None
+    assert e50.refusal_category("copy_rows: non-finite input (values not shown)") is None
+    assert e50.refusal_category("copy_rows: fewer than three rows in the copy") == "copy_too_small"
+    assert e50.refusal_category("copy_rows: the released rows and the duplicate filter's record do not line up "
+                                "(values not shown)") is None
     assert e50.refusal_category("something else") is None
+    # the analyst's decision: the row's three refusals and no other (an arm error outside them voids the run)
+    assert {cat for _, cat in e50.REFUSALS} == {"dropped_over_share", "count_outside_limits", "copy_too_small"}
+
+
+def test_a_refusal_outside_the_list_raises():
+    """An arm error outside the listed refusals is raised (the run is void as a missing arm), never recorded."""
+    seen = {"stage": {}, "file": {}, "refused": {}, "board": type("B", (), {"split": "val", "key": "T2:embryo:val"})()}
+
+    def bad(ctx):
+        raise ValueError("copy_rows: non-finite input (values not shown)")
+
+    arm = e50.guarded(dataclasses.replace(e50.harness.CANDIDATES[e50.ARM], build=bad), seen)
+    ctx = type("C", (), {"seed": e50.harness.BUILD_SEED_OFFSET + 3})()
+    with pytest.raises(ValueError, match="non-finite"):
+        arm.build(ctx)
+    assert seen["refused"] == {}
 
 
 # ------------------------------------------------------------------------------------------------ reading (iii), (iv)
@@ -214,7 +234,11 @@ def test_same_bits():
 
 
 def test_only_the_arm_of_the_handed_over_form_runs():
+    # the handed-over T2embryo_s2x.h5ad is fgw_shape0x built with --expression mixture (embryo2_2dccfee.txt)
+    assert e50.HANDED_OVER_EXPRESSION == "mixture" and e50.ARM == "fgw_copyrows"
     assert e50.ARM == e50.ARMS_BY_EXPRESSION[e50.HANDED_OVER_EXPRESSION]
+    assert e50.PRIMARY == "fgw_shape0x" and "fgw_copyrows_series" not in [
+        c.name for c in e50.candidates({"stage": {}, "file": {}, "refused": {}})]
     assert set(e50.ARMS_BY_EXPRESSION.values()) == {"fgw_copyrows", "fgw_copyrows_series"}
     assert [c.name for c in e50.candidates({"stage": {}, "file": {}, "refused": {}})] == [
         "floor", "fgw_shape0x", "fgw_shape0x_series", e50.ARM]
@@ -256,5 +280,6 @@ def test_the_launcher_has_no_unsafe_parameter_message_and_parses():
     text = SH.read_text()
     assert ":?" not in text
     assert subprocess.run(["bash", "-n", str(SH)], capture_output=True).returncode == 0
-    for f in ("tests/test_copy_rows.py", "tests/test_copy_rows_build.py", "tests/test_e50_copy_rows_read.py"):
+    for f in ("tests/test_copy_rows.py", "tests/test_copy_rows_build.py", "tests/test_e50_copy_rows_read.py",
+              "tests/test_harness.py", "tests/test_hidden_counts.py"):  # the review's lesser point 5
         assert f in text and (REPO / f).exists()

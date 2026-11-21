@@ -174,6 +174,21 @@ def test_the_test_build_is_the_floor_copy_and_its_record_holds_no_count(bt, monk
         assert own == int(round(0.5 * len(floor)))
 
 
+@pytest.mark.parametrize("expression", ["mixture", "series"])
+def test_the_builder_path_calls_no_cloud_guard(bt, monkeypatch, world, own_repo, tmp_path, expression):
+    """Row E50, the analyst's decision: the builder's copy-rows path has no cloud guard (the coordinates are checked
+    bit for bit instead); a patched guard that raises is never reached and the file is written."""
+    def never(*a, **kw):
+        raise AssertionError("the cloud guard ran on the copy-rows path")
+
+    _fake(bt, monkeypatch, world, _board(world[3]))
+    monkeypatch.setattr(bt.t2_build, "cloud_guard", never)
+    out = tmp_path / OUT
+    bt.main([*BASE, "--expression", expression, "--copy-rows", "--copy-rows-test-ok", "--out", str(out)])
+    assert out.exists()
+    np.testing.assert_array_equal(_bits(anndata.read_h5ad(out).obsm[COORD_KEY]), _bits(_floor(bt)))
+
+
 def test_the_own_limits_check_and_the_wrapped_refusal_show_no_value(bt, monkeypatch, world, own_repo, tmp_path):
     panel = world[3]
     out = tmp_path / OUT

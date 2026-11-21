@@ -1113,10 +1113,6 @@ def _build_copy_rows(a, board, dry: bool, genes, files: dict, inputs: dict, coun
         X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
     else:  # series, the handed-over exact-position file's own rule
         X, expr_rec = t2_build.series_rendered_expression(before, after, res, genes, 0.5, [a.seed, 7])
-    guard = t2_build.cloud_guard(res.coords, res.pool_coords, seed=a.seed)
-    if not guard.ok:
-        raise SystemExit("--copy-rows: cloud guard flags (values not shown): "
-                         f"{[str(f).split(':', 1)[0] for f in guard.flags]}")
     if len(X) < board.min_cells or (board.max_cells is not None and len(X) > board.max_cells):
         raise SystemExit("the copy-rows count is outside the board's limits (values not shown)")
     try:

@@ -93,7 +93,7 @@ case "$STEP" in
     $PY -m pytest -q -p no:cacheprovider -o pythonpath=src --basetemp="$S/tmp/pytest" \
       tests/test_copy_rows.py tests/test_copy_rows_build.py tests/test_e50_copy_rows_read.py \
       tests/test_e47_floor_exact.py tests/test_t2_build.py tests/test_occupancy_frame.py \
-      tests/test_shape_interp_build.py > "$S/tests.log" 2>&1
+      tests/test_shape_interp_build.py tests/test_harness.py tests/test_hidden_counts.py > "$S/tests.log" 2>&1
     finish $? ;;
   gate)
     parallel gate
