@@ -2,6 +2,15 @@
 
 ## Current State
 
+- **2026-11-21, 09:20 UTC.** No new score. The embryo's upload order is fixed by fresh analysts and committed
+  (decision log (l)): the overlay file, then the positions file, then the copy-positions file if it comes to exist; no
+  file waits on another's score; the list is closed at three. The overlay file (the captain's "Build it") is built and
+  reviewed. The copy-positions file (the captain's "reopen it"): specified, challenged ('build as amended'), coded,
+  reviewed twice (the second review ready after a fix round settled the split, the cloud guard and the arm), merged at
+  91e6e48; its practice row E50 is placed (5fcf6b9) and running on the DGX since 09:17 UTC; its test-board build
+  launcher is committed (f139c28) and waits for the read. The heart check returned 'do not pursue'. Tries: T1 418,
+  embryo 83 (84 once E50's run step starts), heart 80, T3 72. What waits: `session-handoff.md`, first bullet.
+
 - **2026-11-21, 08:42 UTC.** No new score. Three things since 00:54. (1) The captain ordered the embryo's shelved
   second construction reopened ("reopen it [my ordeer]", about 08:00 UTC): analysts specified it, a challenger passed
   it with changes, an engineer built it and its reviewer is running. (2) The captain's instruction "Proceed with

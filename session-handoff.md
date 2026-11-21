@@ -2,7 +2,47 @@
 
 ## Current Objective
 
-- **State at 2026-11-21, 08:42 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+- **State at 2026-11-21, 09:20 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+  2026-11-21 (c) to (m). Local main = origin/main (f139c28 or later). No score line since 20 Nov 15:30 UTC.
+  - **THE EMBRYO'S ORDER RULE IS IN FORCE (entry 2026-11-21 (l), the analysts' rule; the main session is recused,
+    executes it and states no preference): each embryo upload takes the first not yet uploaded of O, P, C.** O, the
+    overlay file: `runs/manual_upload/T2embryo_s2x_ov.h5ad`, sha256
+    1cfc91be3a20bfdd1a4f7bcfebd7316e1143c6d4048e578c1f30bcfbe1e0e1ea (the captain's "Build it"; row R19; built and
+    reviewed, entries (j), (k)). P, the positions file: `runs/manual_upload/T2embryo_s2x.h5ad`, sha256
+    a03611a343faf1d37edf06ce0e2bccc86cce6f14d3580b823864e5faf3ba03f9. C, the copy-positions file: not built; it exists
+    only if row E50's reading (i) holds and the test-board build passes. Board T2:embryo:test_interp; data-used text
+    for each: "Released challenge data only. No outside data." No file waits on another's headline; a headline is used
+    for the final mark (highest headline, earliest on a tie) and for nothing else: no differencing, no per-term value
+    tabulated or compared, no new file from a score. The embryo's list is closed at these three; a fourth needs the
+    captain's own named order.
+  - **ROW E50 IS RUNNING ON THE DGX (the copy-positions file's practice read; one try, embryo 83 to 84 once its run
+    step starts).** Run commit 5fcf6b9ad187e2c5377900426f6dd749c4a1f9d9 (the row's commit); worktree
+    `~/v/scratch/e50-wt`; chain `~/v/scratch/e50_chain.sh` started 09:17 UTC (steps tests, gate, run, read; log
+    `~/v/scratch/e50/chain.log`, exit `~/v/scratch/e50/chain.exit`; a local background waiter is polling). DO NOT sync
+    or check out `~/v/vec-campaign` while it runs (the worktree shares its repository, environment and data). **When
+    the chain ends:** exit 0: copy `experiments/coords/results/e50_copy_rows/reading.json` and `reading.txt` from the
+    worktree, commit them with the row's outcome in the reading's fixed words, update the totals line (embryo 84). A
+    gate exit of 3: stop, report, count nothing. Any other exit after the run step started: the try counts and the
+    outcome is void, recorded by hand. If reading (i) HOLDS: sync `~/v/vec-campaign` to the new commit, trace the
+    refusal path of `experiments/builds/embryo_copy_rows.sh`, run it (`bash experiments/builds/embryo_copy_rows.sh
+    <commit> r1`; exit files in `~/v/scratch/embcr/r1/`; a non-zero CR step means no file and its reason is not read),
+    copy the file to `runs/manual_upload/T2embryo_s2x_cr.h5ad`, write the build record and the file's own rules-note
+    section. **Then put the analysts' one question to the captain, once, with E50's price tables (iii) and (iv):** the
+    file takes the copy's cell count (below the count rule) and E7.5's own size (not the pre-registered size); default
+    build; no preference from the main session. Hand over with path, sha256, board and the data-used text. If reading
+    (i) FAILS or the run is void: no file; O and P stand; tell the captain plainly.
+  - **Running besides:** an Agent-tool reviewer on the main session's own record of commits 5fcf6b9 and f139c28 (row
+    E50 as placed, entries (l) and (m), the specification file, the build launcher, the chain). A blocker there is
+    fixed before the test-board build; the practice read itself was reviewed twice by the workflow's reviewers.
+  - **The heart check: do not pursue** (entry (j)). K1 then K2 stand; nothing is asked of the captain.
+  - **Hand-backs in the session scratchpad `lift8/`:** `embryo_copy_rows.json` (first round),
+    `embryo_copy_rows_fix.json` (fix round and order rule), `heart_frame_check.json`; scripts `e50_place.py`,
+    `e50_chain.sh`.
+  - **Launchers on this machine may hold no removal of a variable path** (a built-in safety check refuses the whole
+    command): the two embryo build launchers delete nothing and take a run name whose folders must not exist.
+  - **Tries:** T1 418, embryo 83 (84 once E50's run step starts), heart 80, T3 72. **Next labels:** decision log
+    2026-11-21 (n); register row X018.
+- **State at 2026-11-21, 08:42 UTC (superseded by the bullet above where they differ).** Decision log
   2026-11-21 (c) to (k). Local main = origin/main. No score line since 20 Nov 15:30 UTC.
   - **THE EMBRYO'S OVERLAY FILE IS BUILT (the captain's order of 21 Nov, verbatim "Build it", answering a one-question
     dialog on a forwarded side-agent note; entry 2026-11-21 (j), ruling row R19, the rules-note amendment of
