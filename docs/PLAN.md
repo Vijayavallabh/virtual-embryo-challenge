@@ -9220,3 +9220,34 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     shape terms if the build passes the board's limits), what speaks against it (it aims at the baseline's level, not
     above; the smaller count may cost on other terms, unpriced until row E50 is read) and what a 'no' means (no
     copy-rows file). No answer has arrived at the time of this entry.
+- 2026-11-21 (p), row E50 is read: its reading (i) holds, so the copy-rows file is built for the test board (state at
+  11:05 UTC, 2026-11-21). Written by the AI assistant, which is recused on the embryo's occupancy term and states no
+  preference. Only the row's fixed statements are quoted.
+  - **The run.** On the DGX, in a detached worktree at the row's commit 5fcf6b9 (clean): the launcher's tests, exit 0;
+    the pre-run gate on all nine tasks, exit 0 (the floor at 50, and the two exact-position forms reproducing row
+    E47's committed scores); nine run tasks, exit 0, from 09:53 to 11:03 UTC, with no unexpected log line; the read,
+    exit 0. The try is counted from the start of the run step: embryo 83 to 84.
+  - **The reading, in its fixed words.** (i) HOLDS: on all 90 task-seeds the arm's d2_shape, occupancy_dice and
+    scale_log_ratio equal the floor's exactly under main and under prefix, and its coordinates equal the floor copy's
+    bit for bit. (ii) No refusal. Outcome: "build: (i) holds; the test file is built under the captain's order, with
+    (iii) and (iv) beside it (they decide nothing)".
+  - **The price tables, which by the row decide nothing.** (iii), deciding nothing: arm minus fgw_shape0x, merged over
+    five truths, board -2.6994 under main (SE 0.1819, 0 of 10 seeds ahead; 1 gain task, mean +0.4814; 8 loss tasks,
+    mean -2.9261; worst late, best x1) and -2.7392 under prefix (SE 0.1806, 0 ahead); groups under main:
+    expression_change -0.0065, cell_state +0.0018, shape_growth -0.0654, local_organisation -0.0378; skills under
+    main: scale_log_ratio -0.1439, neighborhood_mmd -0.0378, occupancy_dice -0.0156, d2_shape +0.0002, de_score
+    -0.0066, de_direction -0.0065, mmd_u +0.0025, variogram +0.0007; against fgw_shape0x_series the board is -2.8785
+    under main and -2.9200 under prefix. (iv), deciding nothing: the assumed gate bites on e725 (7 seeds; shape group
+    0.4679 gated against 0.5000 ungated) and on x1 (10 seeds; 0.2867 against 0.5000), and on no other task. In plain
+    words: on practice the copy-rows form scores about 2.7 board points below the exact-position form, behind in every
+    seed and on eight of the nine tasks; most of that is the scale term (the pre-registered size is not applied, as
+    the construction requires) and the neighbourhood term. Practice cannot price what the file is for, the removal of
+    the file's own frame and coin luck on the shape terms at the test: on practice the exact-position form already
+    sits at the floor's level there (the first analyst's point 1). The figures go to the captain with the file.
+  - **The captain's question** (count rule and pre-registered size; put at 09:27 UTC; default build): no answer at the
+    time of this entry. By the analysts' words the test build follows the default. A 'no' at any time before an upload
+    still means the file is not uploaded; the upload is the captain's own act.
+  - **Next.** The test-board build: `experiments/builds/embryo_copy_rows.sh` at this entry's commit on the DGX
+    campaign checkout (its gate requires this committed reading, made at the run commit, and unchanged builder code);
+    the build is read by exit codes, one sha256 and the stamps' commit and clean fields only. A copy-rows build step
+    that exits non-zero means no file, and its reason is not read.
