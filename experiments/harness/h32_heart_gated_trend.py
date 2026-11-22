@@ -342,7 +342,8 @@ def arm_vectors(b: dict, chords: dict, basis: dict) -> tuple[dict[str, dict[str,
             p = h28.derangement(lvl, k, bins=N_BINS, seed=P_SEED + j)
             out[name][k] = g[p]
             fixed[name] = int((p == np.arange(len(p))).sum())
-        rec[k] = {"gated": True, "eligible": int(s["E"].sum()), "kept": int(s["M"].sum()), "flipped": int(s["Fl"].sum()),
+        rec[k] = {"gated": True, "eligible": int(s["E"].sum()), "kept": int(s["M"].sum()),
+                  "flipped": int(s["Fl"].sum()),
                   "f_complement": bool(np.array_equal(s["Fl"] | s["M"], s["E"]) and not np.any(s["Fl"] & s["M"])),
                   "R": r, "P_fixed_points": fixed, "kept_bin_counts": bin_counts(s["M"], s["E"], lvl)}
     return out, rec
@@ -819,7 +820,8 @@ def outcome(st: dict | None, void: bool) -> str:
 
 
 FOLLOWS = {
-    "VOID": "VOID: {why}. No figure exists under row H32 and there is no rerun under it; the heart file in force stands.",
+    "VOID": ("VOID: {why}. No figure exists under row H32 and there is no rerun under it; the heart file in force "
+             "stands."),
     "AHEAD": ("AHEAD: S1 to S6 hold in both worlds on fold E10.5 (one truth; an in-sample diagnostic). What follows: "
               "one priced question to the captain with the file in force as the default: gain and loss per term, the "
               "practice value as a range from 0 (J6: test budget over practice 1.33 and 4), both readings if mixed, "
@@ -829,8 +831,8 @@ FOLLOWS = {
                   "note to the captain; the line is closed; no rerun under another row; the heart file in force "
                   "stands."),
 }
-L0 = ("Try H32 (run commit {commit}). A labelled in-sample diagnostic on one truth (E10.5, two backtests merged seed by "
-      "seed); every figure is a practice reading on released stages and none is to be read beside a test score. "
+L0 = ("Try H32 (run commit {commit}). A labelled in-sample diagnostic on one truth (E10.5, two backtests merged "
+      "seed by seed); every figure is a practice reading on released stages and none is to be read beside a test score. "
       "Nothing is built and no file, rule, scope, size, count or depth changes. {bypass}.")
 J5 = "J5: seed se about 0.01 to 0.04 on one truth (row H28), so the read is a labelled diagnostic."
 J6 = ("J6: the trend's budget at the test ({t:g} day) over the practice budgets ({b}) is 1.33 and 4: any gain is shown "
@@ -844,7 +846,8 @@ def follows(res: dict) -> str:
     return FOLLOWS[o]
 
 
-def reading(parts, h27_parts, h28_parts, sha: dict, commit: str | None, gate_ok: bool, g0: dict | None = None) -> dict:
+def reading(parts, h27_parts, h28_parts, sha: dict, commit: str | None, gate_ok: bool,
+            g0: dict | None = None) -> dict:
     try:
         why, dist = void_reasons(parts, h27_parts, h28_parts, sha, commit, gate_ok)
     except (KeyError, TypeError, ValueError, IndexError) as e:  # a malformed part

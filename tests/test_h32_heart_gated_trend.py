@@ -195,8 +195,9 @@ def test_every_arm_has_the_controls_cells_coordinates_and_the_checks_hold(h32, s
     assert c["chord_lineages"] == {"CM": "CM", "Endothelial": "Endo"}
     for k in ("CM", "Endothelial"):
         s = c["sets"][k]
-        assert s["gated"] and s["f_complement"] and all(r["inside_E"] and r["bin_counts_match"] for r in s["R"].values())
-    for name, st in out.items():
+        assert s["gated"] and s["f_complement"]
+        assert all(r["inside_E"] and r["bin_counts_match"] for r in s["R"].values())
+    for st in out.values():
         np.testing.assert_array_equal(st.coords, out[h32.CONTROL].coords)
     assert not np.array_equal(out[h32.G].X, out[h32.U].X)
     assert not np.array_equal(out[h32.G].X, out[h32.F].X)
