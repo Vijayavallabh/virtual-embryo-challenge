@@ -63,7 +63,7 @@ exponent 1.0, the product's figures, the pinned frozen hashes, the K22 reading's
 cell number. `inputs.factor` stays the frozen loader's record of phi_M; the factor applied is the one `outside_build`
 names, as `inputs.factor_note` says.
 
-  VEC_T3_EXT_TABLES=~/v/vec-ext/t3/tables uv run --frozen --no-sync python -I -B \\
+  VEC_T3_EXT_TABLES=~/v/vec-ext/t3/tables_two_study uv run --frozen --no-sync python -I -B \\
       experiments/t3_decomp/build_outside_form.py build DECISIONS.json --form xall-s1 --wt data/raw/T2/E8.75.h5ad \\
       --run-dir runs/t3_decomp/gata4_<STAMP> --board T3:bcatenin --seed 1000001 --out runs/<folder>/T3_xall_s1.h5ad
 """

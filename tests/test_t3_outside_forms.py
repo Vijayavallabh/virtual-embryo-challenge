@@ -639,7 +639,7 @@ def test_the_cli_s_form_refusal_exit_code(world, tmp_path, lst, monkeypatch):
 
 def test_the_constants_of_the_launchers():
     sh = (T3 / "build_outside_form.sh").read_text()
-    assert "VEC_T3_EXT_TABLES=\"$TABLES\"" in sh and "TABLES=$HOME/v/vec-ext/t3/tables" in sh
+    assert "VEC_T3_EXT_TABLES=\"$TABLES\"" in sh and "TABLES=$HOME/v/vec-ext/t3/tables_two_study  #" in sh
     assert "if [ $b = 4 ]; then return 3; fi" in sh and "finish 46" in sh
     for b, (_, _, sha) in bo.BASES.items():
         assert f"[{b}]={sha}" in sh
