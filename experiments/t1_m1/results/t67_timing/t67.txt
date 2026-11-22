@@ -1,0 +1,29 @@
+try T67, a labelled in-sample diagnostic, never an adoption result: the per-gene Hermite timing of the recomputed Feng direction from Feng's post-window slope (m1rc_timing_gmom) against m1rc_gmom (T62's candidate) and against its timing-permuted control, on row T62's five tasks; every task scores one truth (E10.5) over one day; the practice arm carries the test's gene profile at the practice size
+Outcome: NOT AHEAD: this closes 'per-gene Hermite timing from Feng's post-window slope' on T1
+(i) against m1rc_gmom: fails; (ii) against the permuted control: fails; (iii) the gain's share in de_recovery plus direction: fails
+What follows: nothing is built; the line is closed on T1
+m1rc_timing_gmom - m1rc_gmom
+  chamber: -0.05 points, sd 0.05, ahead 1 of 10, per seed -0.14 to +0.00; by group: de_recovery -0.07, direction -0.00, distribution +0.00, covariance +0.02
+  whole: -0.01 points, sd 0.06, ahead 5 of 10, per seed -0.09 to +0.07; by group: de_recovery -0.03, direction -0.00, distribution +0.01, covariance +0.02
+  1: -0.05 points, sd 0.07, ahead 3 of 10, per seed -0.16 to +0.06; by group: de_recovery -0.03, direction -0.01, distribution -0.02, covariance +0.00
+  2: +0.02 points, sd 0.14, ahead 5 of 10, per seed -0.23 to +0.32; by group: de_recovery +0.02, direction +0.01, distribution -0.02, covariance +0.01
+  3: -0.04 points, sd 0.06, ahead 4 of 10, per seed -0.14 to +0.02; by group: de_recovery -0.01, direction -0.00, distribution -0.03, covariance +0.00
+m1rc_timing_gmom - m1rc_timing_perm_gmom
+  chamber: -0.02 points, sd 0.04, ahead 4 of 10, per seed -0.07 to +0.03; by group: de_recovery -0.05, direction +0.01, distribution +0.00, covariance +0.02
+  whole: -0.02 points, sd 0.04, ahead 2 of 10, per seed -0.08 to +0.04; by group: de_recovery -0.06, direction +0.01, distribution +0.01, covariance +0.02
+  1: -0.02 points, sd 0.07, ahead 5 of 10, per seed -0.11 to +0.09; by group: de_recovery -0.01, direction +0.00, distribution -0.02, covariance +0.01
+  2: +0.04 points, sd 0.13, ahead 7 of 10, per seed -0.19 to +0.29; by group: de_recovery +0.03, direction +0.01, distribution -0.01, covariance +0.01
+  3: -0.02 points, sd 0.07, ahead 3 of 10, per seed -0.11 to +0.10; by group: de_recovery -0.02, direction +0.01, distribution -0.02, covariance +0.01
+reported: m1rc_timing_perm_gmom - m1rc_gmom
+  chamber: -0.03 points, sd 0.05, ahead 3 of 10, per seed -0.11 to +0.04; by group: de_recovery -0.01, direction -0.01, distribution -0.00, covariance -0.00
+  whole: +0.01 points, sd 0.04, ahead 7 of 10, per seed -0.06 to +0.07; by group: de_recovery +0.03, direction -0.01, distribution -0.00, covariance -0.00
+  1: -0.03 points, sd 0.07, ahead 3 of 10, per seed -0.16 to +0.10; by group: de_recovery -0.02, direction -0.01, distribution +0.00, covariance -0.00
+  2: -0.02 points, sd 0.12, ahead 3 of 10, per seed -0.22 to +0.22; by group: de_recovery -0.01, direction -0.00, distribution -0.00, covariance -0.01
+  3: -0.02 points, sd 0.09, ahead 5 of 10, per seed -0.16 to +0.10; by group: de_recovery +0.00, direction -0.01, distribution -0.00, covariance -0.01
+(i) parts {'chamber': False, 'whole': False, 'library_mean': False, 'library_3_seeds': False, 'no_library_below_floor': True}, library mean -0.03; (ii) parts {'chamber': False, 'library_mean': False}, library mean -0.00; (iii) share nan of a summed gain -0.14
+Mean scores: chamber: m1rc_gmom 52.00, m1rc_timing_gmom 51.95, m1rc_timing_perm_gmom 51.98; whole: m1rc_gmom 46.16, m1rc_timing_gmom 46.15, m1rc_timing_perm_gmom 46.17; 1: copy_last 44.66, m1rc_gmom 74.81, m1rc_timing_gmom 74.76, m1rc_timing_perm_gmom 74.78; 2: copy_last 46.72, m1rc_gmom 89.37, m1rc_timing_gmom 89.39, m1rc_timing_perm_gmom 89.35; 3: copy_last 49.56, m1rc_gmom 73.95, m1rc_timing_gmom 73.90, m1rc_timing_perm_gmom 73.93
+Libraries with inverted anchors (reported only): none
+Pre-gate (target-free): {'CM': {'idle_ratio': 0.14140645483512576, 'perm_idle_ratio': 0.1516249024882667, 'fallback_share': 0.29308430085815246, 'group_ok': True}, 'Endocardium': {'idle_ratio': 0.12981626302162885, 'perm_idle_ratio': 0.13601177934254136, 'fallback_share': 0.32855460205283527, 'group_ok': True}, 'Endothelium': {'idle_ratio': 0.12608254026371452, 'perm_idle_ratio': 0.12901283079309592, 'fallback_share': 0.34228504122497055, 'group_ok': True}, 'Epicardium': {'idle_ratio': 0.0, 'perm_idle_ratio': 0.0, 'fallback_share': 1.0, 'group_ok': False}}
+J6 range (0 to the chamber cut's gain; the test's gap is twice every task's, and the practice arm carries the test's gene profile, so mid-window curvature is unpriced): -0.05 to +0.00
+Tries counted: 10
+Commit 6c011467fba75ef842705ff6f518fee5cf6ba578, tree clean True, UTC 2026-11-22T00:32:39Z

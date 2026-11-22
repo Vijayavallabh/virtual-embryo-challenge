@@ -1,0 +1,6 @@
+T67's target-free pre-gate (no T1 cell, no truth; it counts no try): idle no; steady-rate identity True
+CM (labels of CM): ||w_scaled - 0.4 D|| / ||0.4 D|| 0.1414 (control 0.1516); fallback share 0.293; late-cell minimum met True; cells per stage {'E14.5': 1767, 'E15.5': 1201, 'E16.5': 935, 'E17.5': 911}
+Endocardium (labels of Endocardium): ||w_scaled - 0.4 D|| / ||0.4 D|| 0.1298 (control 0.1360); fallback share 0.329; late-cell minimum met True; cells per stage {'E14.5': 84, 'E15.5': 89, 'E16.5': 88, 'E17.5': 123}
+Endothelium (labels of Endothelium): ||w_scaled - 0.4 D|| / ||0.4 D|| 0.1261 (control 0.1290); fallback share 0.342; late-cell minimum met True; cells per stage {'E14.5': 135, 'E15.5': 161, 'E16.5': 154, 'E17.5': 245}
+Epicardium (labels of Epicardium): ||w_scaled - 0.4 D|| / ||0.4 D|| 0.0000 (control 0.0000); fallback share 1.000; late-cell minimum met False; cells per stage {'E14.5': 32, 'E15.5': 29, 'E16.5': 28, 'E17.5': 26}
+Commit 6c011467fba75ef842705ff6f518fee5cf6ba578, tree clean True, UTC 2026-11-22T00:02:37Z

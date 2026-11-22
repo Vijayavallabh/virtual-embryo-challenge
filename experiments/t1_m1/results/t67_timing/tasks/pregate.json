@@ -1,0 +1,171 @@
+{
+ "label": "T67's pre-gate",
+ "row": "T67",
+ "bar": 0.05,
+ "groups": {
+  "CM": {
+   "idle_ratio": 0.14140645483512576,
+   "perm_idle_ratio": 0.1516249024882667,
+   "fallback_share": 0.29308430085815246,
+   "group_ok": true,
+   "genes": 29715,
+   "cells": {
+    "E14.5": 1767,
+    "E15.5": 1201,
+    "E16.5": 935,
+    "E17.5": 911
+   },
+   "source_group": "CM"
+  },
+  "Endocardium": {
+   "idle_ratio": 0.12981626302162885,
+   "perm_idle_ratio": 0.13601177934254136,
+   "fallback_share": 0.32855460205283527,
+   "group_ok": true,
+   "genes": 29715,
+   "cells": {
+    "E14.5": 84,
+    "E15.5": 89,
+    "E16.5": 88,
+    "E17.5": 123
+   },
+   "source_group": "Endocardium"
+  },
+  "Endothelium": {
+   "idle_ratio": 0.12608254026371452,
+   "perm_idle_ratio": 0.12901283079309592,
+   "fallback_share": 0.34228504122497055,
+   "group_ok": true,
+   "genes": 29715,
+   "cells": {
+    "E14.5": 135,
+    "E15.5": 161,
+    "E16.5": 154,
+    "E17.5": 245
+   },
+   "source_group": "Endothelium"
+  },
+  "Epicardium": {
+   "idle_ratio": 0.0,
+   "perm_idle_ratio": 0.0,
+   "fallback_share": 1.0,
+   "group_ok": false,
+   "genes": 29715,
+   "cells": {
+    "E14.5": 32,
+    "E15.5": 29,
+    "E16.5": 28,
+    "E17.5": 26
+   },
+   "source_group": "Epicardium"
+  }
+ },
+ "idle": false,
+ "steady_identity": true,
+ "direction_sha256": {
+  "m1rc_gmom": {
+   "CM": "8b5815c7ed08db16ad7897d1ac74fa08e188207f27a10e2205a6d5a2b70cc0ca",
+   "Endocardium": "2a37805b2f1745895a367242dfc1c739ff508f0846c3eb1902b9e7f63a0626b1",
+   "Endothelium": "f45475aff95f8da38f656de63c9ffb343e514fed58774a05654ed7b40432dc88",
+   "Epicardium": "925c1f6f7a68e22c20b6bf26b94c9d1484056bea74c0a7336147fbce595d257c"
+  },
+  "m1rc_timing_gmom": {
+   "CM": "a4d8145fe22964c1c88524a192c9de8b3035c2c6b5383fbe482fb70027fcd036",
+   "Endocardium": "b4e44233419491d8059fb6df17a1ed962b9efb999cefaf96d672c3cd493000ab",
+   "Endothelium": "67148817e1be790f061c94434e6f55f34850dd0abe3f11eab212a7baa0fac9cc",
+   "Epicardium": "925c1f6f7a68e22c20b6bf26b94c9d1484056bea74c0a7336147fbce595d257c"
+  },
+  "m1rc_timing_perm_gmom": {
+   "CM": "65cf54d3fa44e8e0aceb9de4152569427699c5d3d64e14456eb5247c1cd2c322",
+   "Endocardium": "14ffc1d3afc5c87744e9ccbe23a58f6efbe0e71bc7bf6814ce047301753701e1",
+   "Endothelium": "b3f6afcb02151b99424fc1c91ec8c5ad839d6ab6b80e1b4762d57a22a7c37978",
+   "Epicardium": "925c1f6f7a68e22c20b6bf26b94c9d1484056bea74c0a7336147fbce595d257c"
+  },
+  "m1rc_timing_steady": {
+   "CM": "8b5815c7ed08db16ad7897d1ac74fa08e188207f27a10e2205a6d5a2b70cc0ca",
+   "Endocardium": "2a37805b2f1745895a367242dfc1c739ff508f0846c3eb1902b9e7f63a0626b1",
+   "Endothelium": "f45475aff95f8da38f656de63c9ffb343e514fed58774a05654ed7b40432dc88",
+   "Epicardium": "925c1f6f7a68e22c20b6bf26b94c9d1484056bea74c0a7336147fbce595d257c"
+  }
+ },
+ "relabel": {
+  "file": "data/derived/feng_relabel_c/cd1_stats_relabel.npz",
+  "sha256": "36d1f7edcbbf3d7a80c68b51d5624a94bb753668079fe3d69aed720c71baa7e9",
+  "stats_sha256_hashed": "36d1f7edcbbf3d7a80c68b51d5624a94bb753668079fe3d69aed720c71baa7e9",
+  "yaml_sha256": "883e74c2c1ef5f01d5244555f8b3dcae24255568c731a6d53ee2788b7b677b49",
+  "route": "recomputed",
+  "record_route": "recomputed",
+  "authors_labels_read": false,
+  "with_direction": [
+   "CM",
+   "Endocardium",
+   "Endothelium",
+   "Epicardium"
+  ],
+  "fallbacks": {
+   "CM": {
+    "own": true,
+    "fired": false,
+    "takes": "CM"
+   },
+   "Endocardium": {
+    "own": true,
+    "fired": false,
+    "takes": "Endocardium"
+   },
+   "Endothelium": {
+    "own": true,
+    "fired": false,
+    "takes": "Endothelium"
+   },
+   "Epicardium": {
+    "own": true,
+    "fired": false,
+    "takes": "Epicardium"
+   }
+  },
+  "relabel_gate": {
+   "row": "N54",
+   "ruling": "2026-11-19 (u)",
+   "commit": "7efef2826bb165aff729fd4ecd8f90c94eda7ffc",
+   "clean": true,
+   "config_at_head": true,
+   "n55": {
+    "outcome": "changed",
+    "setting": {
+     "min_score": 0.3,
+     "min_margin": 0.25
+    },
+    "commit": "cae44f793d1a134b219471df6f9bc941d913c82a",
+    "ruling": "2026-11-19 (w)"
+   }
+  },
+  "epicardium_directed": true,
+  "with_direction_epi_held": [
+   "CM",
+   "Endocardium",
+   "Endothelium"
+  ]
+ },
+ "late": {
+  "stats_sha256": "6e15bbf97b973eddc057d6ef2dcaa4981d6317ef7e2e5d8a839bbc6cbbeb9043",
+  "stats_sha256_hashed": "6e15bbf97b973eddc057d6ef2dcaa4981d6317ef7e2e5d8a839bbc6cbbeb9043",
+  "yaml_sha256": "883e74c2c1ef5f01d5244555f8b3dcae24255568c731a6d53ee2788b7b677b49",
+  "authors_labels_read": false,
+  "late_row": "N57",
+  "usable": true
+ },
+ "stamp": {
+  "commit": "6c011467fba75ef842705ff6f518fee5cf6ba578",
+  "tree_clean": true,
+  "utc": "2026-11-22T00:02:37Z",
+  "inputs": {
+   "data/derived/feng_relabel_c/cd1_stats_relabel.npz": "36d1f7edcbbf3d7a80c68b51d5624a94bb753668079fe3d69aed720c71baa7e9",
+   "data/derived/feng_relabel_late/cd1_stats_relabel_late.npz": "6e15bbf97b973eddc057d6ef2dcaa4981d6317ef7e2e5d8a839bbc6cbbeb9043",
+   "data/derived/feng_relabel_late/MANIFEST.json": "0ef7edf43e113c84ff892a8e5f49f97ccae58d876c8fae8ba50d87468e4a6d1a",
+   "experiments/external/feng_relabel.yaml": "883e74c2c1ef5f01d5244555f8b3dcae24255568c731a6d53ee2788b7b677b49",
+   "experiments/external/results/feng_relabel/MANIFEST.json": "2a3e7200299bf2da05223a60bb910bbda8fcd1785375548e28aafdd006c93cad",
+   "experiments/external/results/feng_relabel_late/MANIFEST.json": "0ef7edf43e113c84ff892a8e5f49f97ccae58d876c8fae8ba50d87468e4a6d1a"
+  }
+ }
+}

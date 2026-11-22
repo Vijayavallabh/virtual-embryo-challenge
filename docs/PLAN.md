@@ -9795,3 +9795,27 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     second reading of its data windows); with them E52's launcher fix and its re-review, and a screen of the licence
     of the outside nuclei atlas's portal copy, which row H30's code requires the register to call confirmed. Those
     rows are placed when the answers are back. K26 and H31 stay deferred.
+- 2026-11-22 (c), row T67 is read (NOT AHEAD: the line is closed); the first four reads of entry (b) are running
+  (state at 00:36 UTC, 2026-11-22). Written by the AI assistant; the outcome is quoted from the read's own text and
+  nothing is added to it.
+  - **T67** (T1's per-gene timing; run commit 6c01146 on `~/v/vec-campaign-d`; the five runs 00:02 to 00:32 UTC; the
+    read exit 0). In the read's fixed words: "NOT AHEAD: this closes 'per-gene Hermite timing from Feng's post-window
+    slope' on T1"; "(i) against m1rc_gmom: fails; (ii) against the permuted control: fails; (iii) the gain's share in
+    de_recovery plus direction: fails"; "What follows: nothing is built; the line is closed on T1". The arm minus the
+    practice analogue of R13's file is -0.05 points on the chamber cut (1 of 10 seeds ahead) and -0.01 on the whole
+    cut. Ten tries, T1 419 to 428, counted since 00:02 UTC. No question goes to the captain and no file changes. The
+    result files are committed with this entry, copied from the DGX and checked against its sha256.
+  - **Running, each at the row commit d0f0d6e (entry (b)), each started after a traced refusal of its launcher under a
+    throwaway home folder (a wrong commit: exit 95 or 99, an exit record written, nothing real made).** T66 in the
+    detached worktree `~/v/scratch/t66-wt` of `~/v/vec-campaign-d`'s repository, with its own environment (`uv sync
+    --frozen --group external`) and the checkout's data linked; chain `~/v/scratch/t66_chain.sh`, exit file
+    `~/v/scratch/t66/chain.exit` (3 means its target-free pre-gate pruned it, no try). E51 and E53 in the detached
+    worktrees `~/v/scratch/e51-wt` and `~/v/scratch/e53-wt` of `~/v/vec-campaign`'s repository (their scripts put
+    their own source first and use that checkout's environment and data); E53 on GPUs 2 and 7 only, because GPUs 3 to
+    6 hold another job's memory. H29a in `~/v/vec-campaign` itself, moved to the row commit while nothing ran there.
+    The last three run through `~/v/scratch/steps_chain.sh`, which only calls a launcher's steps in order; exit files
+    `~/v/scratch/e51/chain.exit`, `~/v/scratch/e53/chain.exit`, `~/v/scratch/h29a/chain.exit`. All four started at
+    00:35 UTC.
+  - **Counts.** T65's chamber run started at 00:30 UTC (its second launch), so T1 429 to 438 are counted; H29a's run
+    step started at 00:35 UTC, so heart 81 to 88 are counted. Totals: T1 438, embryo 84, heart 88, T3 72. T66, E51 and
+    E53 count from their run steps, and not at all if their gates stop them first.
