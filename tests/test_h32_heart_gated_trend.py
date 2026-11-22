@@ -284,7 +284,7 @@ def test_the_read_says_ahead_only_when_s1_to_s6_hold(h32):
     assert res["outcome"] == "NOT AHEAD" and not res["statements"]["both"]["S4"]
     # G behind U: S5 fails; G not ahead of F: S6 fails
     res = h32.reading(_parts(h32, score={**AHEAD_SCORES, "U": 1.6, "F": 1.6}, de={"G": 0.01}, group={"G": 0.04}),
-                      h27p, h28p, SHA, "f" * 40, True)
+                      h27p, _refs(h32, u_shift=1.2)[1], SHA, "f" * 40, True)
     st = res["statements"]["both"]
     assert res["outcome"] == "NOT AHEAD" and not st["S5"] and not st["S6"] and st["S1"]
     txt = h32.text(res)
