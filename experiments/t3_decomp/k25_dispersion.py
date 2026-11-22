@@ -453,7 +453,7 @@ ROW_MUST_STATE = (
     "label's knockout cells",
     "w_g = n_g / (n_g + 200)",
     "clipped to [0.5, 2]",
-    "a gene with no qualifying label has ln r_g = 0 exactly (r_g = 1)",
+    "a gene with no label left has ln r_g = 0 exactly (r_g = 1)",
     # the apply step
     "c' = m + sqrt(r_g) (c - m)",
     "default_rng(20261122), created fresh for every build",
