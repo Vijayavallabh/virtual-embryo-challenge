@@ -522,6 +522,43 @@ def test_the_gate_step_ends_with_gate_all_and_a_d_s_miss_gives_3_and_refuses_run
         assert (S / "run.exit").read_text().strip() == "96"
 
 
+def test_a_step_killed_before_its_end_leaves_running_and_the_next_step_is_refused(tmp_path):
+    """Re-review blocker: tests.exit 0 and tests.head at another commit; a tests step at RUN is killed before it
+    finishes (the stand-in pytest kills the launcher's shell); tests.exit then says "running", never the stale 0, and
+    gate is refused with 96."""
+    from conftest import git_env
+
+    repo, head, home, S, bin_ = _fake_e52_checkout(tmp_path)
+    old = "e" * 40
+    (S / "tests.exit").write_text("0\n")
+    (S / "tests.head").write_text(old + "\n")  # passed, but at another commit
+    uv = bin_ / "uv"  # the tests step's pytest kills the launcher's shell before finish writes its exit
+    uv.write_text('#!/bin/sh\nshift 4\ncase "$*" in *"-m pytest"*) kill -9 "$PPID"; exit 1 ;; esac\n'
+                  f'exec "{sys.executable}" "$@"\n')
+    env = {**git_env(), "HOME": str(home), "PATH": f"{bin_}:{os.environ['PATH']}", "FAKE_GATE_ALL": "0",
+           "GIT_CEILING_DIRECTORIES": str(tmp_path)}
+
+    def step(name):
+        return subprocess.run(["bash", "experiments/coords/run_e52.sh", name, head], cwd=repo, env=env,
+                              capture_output=True, text=True, timeout=120)
+
+    r = step("tests")
+    assert r.returncode == -9, (r.returncode, r.stderr)  # killed, so finish never ran
+    assert (S / "tests.head").read_text().strip() == head
+    assert (S / "tests.exit").read_text().strip() == "running"
+    r = step("gate")
+    assert r.returncode == 96 and "step tests has not exited 0" in r.stderr
+    assert (S / "gate.exit").read_text().strip() == "96"
+    assert not (repo / "runs" / "e52" / "exit").exists()  # no task gate ran
+
+
+def test_the_launcher_marks_its_exit_file_running_before_its_head_file():
+    text = SH.read_text()
+    i, j, k = (text.index('finish 99'), text.index('echo running > "$S/$STEP.exit"'),
+               text.index('git rev-parse HEAD > "$S/$STEP.head"'))
+    assert i < j < k
+
+
 def test_the_launcher_lists_the_e50_test_files_and_the_build_launcher_lists_the_read_tests():
     """Lesser point 3."""
     assert "tests/test_shape_interp_build.py" in SH.read_text()

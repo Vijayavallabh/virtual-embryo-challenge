@@ -36,15 +36,16 @@ The script prints only "<task> seed <s> done", "wrote <path>", "gate <task> pass
 reads no test board, test file, test anchor or size file, and prints no count.
 
 Readings, fixed in row E52 before any output (applied by `reading`); raw values from the in-memory builds:
-  (i)   on every task-seed where the arm builds, under main and under prefix: its X bytes equal fgw_copyrows's; its
-        coordinates equal float32(rescale_to_rms(float64 floor copy, T)) bit for bit, with T computed by this read on
-        the task's own role stages, and their RMS is within 1e-6 relative of T; its prefix parity on the matched rows
-        at the scored count and metric seed equals the floor's; its d2_shape is within 1e-6 of the floor's; its
-        canonical frame is within 1e-5 of the floor's up to a proper flip; its occupancy_dice equals the floor's except
-        by at most 4v over (the arm's plus the truth's occupied voxels), plus 1e-4, v the matched rows whose voxel
-        changes, maximised over the four proper flips; its de_score, de_direction, mmd_u and variogram, as the scorer
-        reports them, equal fgw_copyrows's exactly (its X bytes compared raw); any failure voids the construction and
-        no test file is built;
+  (i)   on every task-seed where the arm builds, under main and under prefix, each shape quantity computed under that
+        build: its X bytes equal fgw_copyrows's; its coordinates equal float32(rescale_to_rms(float64 floor copy, T))
+        bit for bit, with T computed by the read on the task's own role stages, and their RMS is within 1e-6 relative
+        of T; its prefix parity on the matched rows at the scored count and metric seed equals the floor's; its
+        d2_shape is within 1e-6 of the floor's; its canonical frame is within 1e-5 of the floor's up to a proper flip;
+        its occupancy_dice equals the floor's except by at most 4v over (the arm's plus the truth's occupied voxels on
+        the scorer's grid of 16 a side over [-3, 3), the smallest over the four proper flips), plus 1e-4, with v the
+        matched rows whose voxel changes, maximised over the four proper flips; its de_score, de_direction, mmd_u and
+        variogram, as the scorer reports them, equal fgw_copyrows's exactly (its X bytes compared raw); any failure
+        voids the construction and no test file is built;
   (ii)  refusals in E50's three categories, equal to fgw_copyrows's at every task-seed;
   (iii) paired arm minus fgw_shape0x and arm minus fgw_copyrows, per task, merged over the five truths and over the
         test-like four, both builds: board, each group, each metric, seeds ahead, SE, mean gain and mean loss, worst

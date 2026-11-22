@@ -1746,7 +1746,9 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     `vec.shape_interp.ALL_FORMS`, applied to the exact-position cloud in the before stage's normalised frame before the
     size rule, so the size rule's RMS is set after it (`vec.shape_interp.apply_form`; the guard's source cloud is mapped
     alike). Rows, order, count and every random stream of the default are unchanged; stream 47's candidate draw still
-    runs. Left at None, the result is bit-identical to a call without it.
+    runs. Left at None, the result is bit-identical to a call without it. Row E53 (as specified) adds the harness-only
+    forms `vec.shape_interp.GEODESIC_FORMS`, which also take every cell's joint PCs (`_joint_pc_loadings` of the
+    coupling's anchors).
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -1776,7 +1778,7 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     if shape_form is not None:
         from vec import shape_interp
 
-        if shape_form not in shape_interp.ALL_FORMS:
+        if shape_form not in shape_interp.ALL_FORMS and shape_form not in shape_interp.GEODESIC_FORMS:
             raise ValueError(f"shape_form must be one of {shape_interp.ALL_FORMS}, got {shape_form!r}")
         if positions != POSITIONS[1]:
             raise ValueError("shape_form acts on the exact-position cloud: pass positions='floor_exact'")
@@ -1839,8 +1841,12 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         Z = np.vstack([Zb[rows_b], at_a])[perm]
     shaped = None
     if shape_form is not None:  # E49: the form on the exact-position cloud, before the size rule
+        extra = {}
+        if shape_form in shape_interp.GEODESIC_FORMS:  # row E53: every cell's joint PCs, for the fit's data term
+            centre, loadings = _joint_pc_loadings(Eb[ib], Ea[ia], n_pc)
+            extra = {"features": ((Eb - centre) @ loadings, (Ea - centre) @ loadings)}
         shaped = shape_interp.apply_form(shape_form, Z=Z, Zb=Zb, Za=Za, t=float(t), R=R, seed=seed, rows_b=rows_b,
-                                         rows_a=rows_a, perm=perm, t_mix=tm)
+                                         rows_a=rows_a, perm=perm, t_mix=tm, **extra)
         Z = shaped.Z
     zc = Z.mean(0)
     scale = target_rms / rms_radius(Z)

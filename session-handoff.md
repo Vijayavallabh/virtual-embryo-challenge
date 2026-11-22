@@ -19,29 +19,37 @@
     never lifted: solving hidden properties, the levers closed after the 4 Nov exposure, the main session's recusals.
     (2) T3's refused s1 (`T3_refused_s1.h5ad`, 0394575a11fc; built). (3) The heart's organ-cut file D. (4) T1's
     no-outside-data file F (`T1_s2none.h5ad`, 55eaee547ff1).
-  - **RUNNING (two workflows):** `blind-round-2-engineering` (task wany2l7le): the practice reads of the candidate
-    round on branches `campaign/embryo-so-ohi` (row E51), `campaign/t1-ms-read` (row T65),
-    `campaign/heart-trend-forms` (row H29a) and the copy-rows file at the team's own size
-    (`campaign/embryo-copy-rows-size`, row E52). `moonshots-fix-1` (task wee4h40co): fix and re-review of five
-    moonshot kill tests on branches `campaign/moon-*-2` (T66 T1 blood, K25 T3 dispersion, H30 heart chord with its
-    gate row N56, E53 embryo geodesic, E54 embryo flow). Deferred, not started: K26 (T3 map; two blockers; a file
-    needs the A15 ruling) and H31 (heart bridge; four blockers; depends on H30's gate); their reviews are in
-    `lift8/fix_moon_t3_map.txt` and `lift8/fix_moon_heart_bridge.txt`.
-  - **T67 (T1's per-gene timing) IS IN ITS FIRST STEP (entry 2026-11-21 (cc)).** Merged to main at c64b2bb. Row N57
-    (the late labelling, target-free, no try) and the X002 register amendment are committed at NROWC =
-    ea206dc7d8a1859fd024486fe890011ad6f4adff; `~/v/vec-campaign-d` is at that commit and MUST NOT be synced while the
-    chain runs. Running since 23:50 UTC on 21 Nov: `timing.sh late-tests NROWC N57`, then `late NROWC N57` (15 to 45
-    min); log `~/v/scratch/t67/latechain.log`, exit `~/v/scratch/t67/latechain.exit` (0 done; 3 the labelling stopped:
-    the line ends, T67 is not run, no try); a local background waiter is polling. **When it exits 0:** copy the record
-    `experiments/external/results/feng_relabel_late/MANIFEST.json` from that checkout (it is written there,
-    untracked), read the late statistics' sha256 from it, fill row N57's outcome, place row T67 (text in
-    `lift8/t67_row.txt`, cells 0 to 10 only; fill the stats sha256, the branch and commit; add the rules the reviewer
-    listed as left out: the control's bins and seed, the void list as coded, the late cell minimum, the unassigned
-    cap) in ONE commit with the record = ROWC; sync; then `timing.sh tests ROWC`, `pregate ROWC` (exit 4 = idle,
-    pruned, no try), the five runs in parallel (`cut chamber ROWC`, `cut whole ROWC`, `lib 1 ROWC`, `lib 2 ROWC`, `lib
-    3 ROWC`; about two hours; ten tries, T1 418 to 428, once they start), `read ROWC`; copy
-    `experiments/t1_m1/results/t67_timing/` back and commit with the outcome in the read's fixed words. AHEAD would
-    lead to one priced question to the captain, not to a file.
+  - **RUNNING at 23:58 UTC (2026-11-21); the decision log is at 2026-11-21 (dd), next label 2026-11-22 (a).** (1) ROW
+    T67's CHAIN on the DGX: `~/v/vec-campaign-d` at ROWC = 6c011467fba75ef842705ff6f518fee5cf6ba578 (do not sync or
+    rsync that checkout while it runs); `~/v/scratch/t67_chain.sh` started 23:56 UTC; log
+    `~/v/scratch/t67/chain3.log`, exit `~/v/scratch/t67/chain3.exit` (0 = read done; 4 = the idle pre-gate pruned the
+    row, no try; else the failing step); a local waiter polls. On exit 0: copy `experiments/t1_m1/results/t67_timing/`
+    back, commit with the outcome in the read's fixed words (t67.txt), fill row T67's last cell and the totals line
+    (T1 428), log entry; AHEAD = one priced question to the captain, no file. Row N57 is run (the late labelling is
+    usable; record committed). (2) Workflow `moonshots-fix-1` (task wee4h40co): fix and re-review of T66, K25, H30
+    (gate row N56), E53, E54 on branches `campaign/moon-*-2`. (3) Workflow `blind-round-2-fix` (task wlgdeo580): fix
+    and re-review of E51 (`campaign/embryo-so-ohi-2`; one specification point decided by a fresh analyst), H29a
+    (`campaign/heart-trend-forms-2`), E52 the copy-rows file at the team's own size
+    (`campaign/embryo-copy-rows-size-2`; the analysts' verdict is build as amended, placed after C). Hand-backs of the
+    first engineering rounds: `lift8/blind_eng.json`, `lift8/moonshots_eng1.json`. Deferred: K26, H31.
+  - **ROW T65 IS RUNNING TOO (00:08 UTC, 22 Nov; entry 2026-11-22 (a); next log label 2026-11-22 (b)).** Row placed at
+    ROWC65 = 34567906a651f08316f5689003bcfa1c4e57e430; tries T1 429 to 438 once its first run starts (T67 took 419 to
+    428: its pre-gate passed and its five runs started at 00:02 UTC; the totals line says T1 428). The commit was
+    pushed into the DGX repository as branch ref `t65-run` (the running checkout untouched); worktree
+    `~/v/scratch/t65-wt` with `data/raw`, `data/derived`, `data/external` linked to the checkout's; chain
+    `~/v/scratch/t65_chain.sh` (tests, cut_chamber, cut_whole, lib_1, lib_2, lib_3, sequential), log
+    `~/v/scratch/t65/chain.log`, exit `~/v/scratch/t65/chain.exit`; a local waiter polls. **When it exits 0:** copy
+    the five task files from `~/v/scratch/t65-wt/experiments/t1_m1/results/t65_ms/tasks/` back UNOPENED, commit them,
+    push that commit to the DGX ref, `git checkout --detach` it in the worktree, then `bash
+    experiments/t1_m1/t65_ms.sh read 34567906…` (with UV_PROJECT_ENVIRONMENT set to the checkout's `.venv`); read only
+    `read.exit` and `read.out`; copy `t65.json` and `t65.txt` back and commit with the outcome in its fixed words;
+    fill row T65's last cell and the totals line (T1 438). AHEAD = question Q-MS to the captain, then the builder
+    option; anything else ends MS.
+  - **Local disk (22 Nov 00:06 UTC):** / 42 GB free, /mnt/md0 82 GB free. The repository's `.claude/worktrees` holds
+    191 GB of agents' worktrees (several with their own environment of about 0.8 GB); nothing was deleted. The old
+    disk watchdog ended (exit 144, not a low-disk trip); a new report-only one is running (wakes below 8 GB on / or 25
+    GB on /mnt/md0). Deleting old worktrees needs the captain's yes and a look at each first (some hold unmerged
+    work).
   - **DGX facts (21 Nov 23:43 UTC):** the outside nuclei atlas (`data/external/jax_qiu2024`, 43 embryo files) and the
     heart atlas's clean reduction are on `~/v/vec-campaign-d` and `~/v/vec-campaign`; torch 2.14, torchdiffeq and scvi
     are in the campaign-d environment; the `rdata` package is MISSING in both environments (T66, H30 and H31 need it:

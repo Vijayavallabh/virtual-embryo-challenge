@@ -20,7 +20,9 @@
 #                  refuses to overwrite either file
 # COMMIT is the run commit (full hash): the row's commit. Each step refuses on an unclean tree (exit 98) or another
 # HEAD (exit 99), runs with 8 BLAS threads a process and NUMPY_MADVISE_HUGEPAGE=0, and writes
-# ~/v/scratch/e52/<STEP>.exit on every path (a call without its two arguments writes usage.exit, 2; an unknown step 97)
+# ~/v/scratch/e52/<STEP>.exit on every path (a call without its two arguments writes usage.exit, 2; an unknown step 97;
+# once past the HEAD check it first writes the word "running" there and then <STEP>.head, so a step that dies before
+# its end leaves "running", never an earlier call's 0; a poller waits for a number and for <STEP>.head == COMMIT)
 # and one exit file per task under runs/e52/exit/ (gate-all's in runs/e52/exit/gate-all). The script prints only
 # "<task> seed <s> done", "wrote <path>" and "gate <task> pass|fail" (gate-all: "gate all pass|fail"); any other log
 # line is counted, never printed: per task in runs/e52/exit/<step>-<task>.other_lines. Nothing here deletes anything.
@@ -62,6 +64,9 @@ if [ "$(git rev-parse HEAD)" != "$COMMIT" ]; then
   echo "refused: HEAD is not $COMMIT" >&2
   finish 99
 fi
+# The step is now under way: its exit file says "running" (overwritten, nothing deleted) before its head file moves to
+# COMMIT, so neither the next step nor a poller reads a 0 left by an earlier call at another commit if this one dies.
+echo running > "$S/$STEP.exit"
 git rev-parse HEAD > "$S/$STEP.head"
 SCRIPT=experiments/coords/e52_copy_rows_sized_read.py
 R=runs/e52

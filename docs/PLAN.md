@@ -9711,3 +9711,36 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     row text handed back leaves out rules the code fixes; they are written into row T67 when it is placed.
   - **The judge's odds:** the kill test passes with about 0.12; given a pass, three board points or more at the test
     about 0.04; the most likely outcome is that the permuted control ties the arm.
+- 2026-11-21 (dd), row N57 is run (the late labelling is usable) and row T67 is placed before its run (state at 23:56 UTC,
+  2026-11-21). Written by the AI assistant, which gives no design lean; the kill test is its score-blind judge's.
+  - **N57.** A first launch at ea206dc ran nothing: the launcher's tests step stopped on one test that fails only on
+    the DGX checkout holding a real N55 marker. The launcher now deselects that test by name (119e4cd), and at that
+    commit the labelling ran: exit 0, usable; unassigned shares 0.050, 0.041 and 0.046 against a cap of 0.40; the
+    cardiomyocyte, endocardium and endothelium groups have 88 to 1201 cells per late stage, the epicardium 26 to 29,
+    under T67's minimum of 50, so the epicardium keeps the steady rate. The record is committed with this entry; the
+    statistics' sha256 is 6e15bbf97b973eddc057d6ef2dcaa4981d6317ef7e2e5d8a839bbc6cbbeb9043.
+  - **T67.** Placed in this commit, before its run, with the rules the reviewer found missing from the row text
+    written in as the code has them (the control's bins and seed, the void list, the late cell minimum, the unassigned
+    cap, the norm over held genes, the summed-means form of the third clause). Two counted arms on row T62's five
+    tasks; ten tries, T1 419 to 428, once the runs start; an idle pre-gate first, which prunes the row with no try.
+    Fixed statement: AHEAD only if the arm beats the practice analogue of R13's file on the chamber cut, the whole cut
+    and the libraries, beats its permuted control, and has at least six tenths of its gain in the two terms its reason
+    names; otherwise NOT AHEAD, which closes the line. AHEAD leads to one priced question to the captain, not to a
+    file.
+- 2026-11-22 (a), row T67's runs have started (ten tries counted); row T65 is placed before its run (state at 00:06 UTC,
+  2026-11-22). Written by the AI assistant, which gives no design lean; both reads are their score-blind analysts'.
+  - **T67** (T1's per-gene timing; run commit 6c01146 on `~/v/vec-campaign-d`): the launcher's tests passed, the idle
+    pre-gate passed (the timing changes the direction by five per cent or more in at least one group, so the row is
+    not pruned), and the five runs started at 00:02 UTC. The ten tries are counted from that moment: T1 419 to 428.
+    The read follows when the runs end.
+  - **T65** (candidate MS of the score-blind round, decision log 2026-11-21 (y): R13's file with the released
+    per-category momentum added on the direction-group cells; `campaign/t1-ms-read`, b012eff, review ready, merged to
+    main; on merged main its tests and the related read tests pass, 270 passed, the step script's guard passes, the
+    linter is clean). Its row is placed in this commit, before its run: two counted arms, the momentum and its
+    permuted placebo, on row T62's five tasks; ten tries, T1 429 to 438, once its first run starts. Fixed statement,
+    from the round's challenger: AHEAD only if the chamber mean is above +0.3 with at least 8 of 10 seeds above 0, the
+    whole-cut mean is above 0, at least two libraries are valid with none below -0.3, and the momentum beats its
+    placebo on the chamber cut in at least 8 of 10 seeds with a positive mean; otherwise MS ends with no question, no
+    build and no rerun. It runs in a detached worktree of the DGX checkout's repository, because row T67's chain holds
+    the checkout itself; the commit reaches that repository by a push to a new branch ref, which leaves the checkout's
+    working tree and HEAD untouched.
