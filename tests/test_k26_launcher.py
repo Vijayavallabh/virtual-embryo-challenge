@@ -21,6 +21,8 @@ REGISTER = "".join(f"| {x} | source | ... | K26: per-gene units as map labels |\
 
 # a stub uv: the gate check and the read take their own exit status; the guard.json one-liner prints STUB_PRINT
 STUB = """#!/bin/sh
+[ -n "${STUB_ARGS:-}" ] && echo "$*" >> "$STUB_ARGS"
+[ -n "${STUB_SNOOP:-}" ] && cat "$STUB_SNOOP" > "$STUB_SNOOP.seen" 2>/dev/null
 case " $* " in
   *" guard --runs "*) exit "${STUB_GUARD_RC:-${STUB_RC:-1}}" ;;
   *" read --runs "*) exit "${STUB_READ_RC:-${STUB_RC:-1}}" ;;
@@ -72,8 +74,17 @@ def _run(L, *args, rc=1, trace=False, **stub) -> tuple[int, str]:
     return r.returncode, r.stderr
 
 
+def _scratch(L, head=None) -> Path:
+    return L.home / "v" / "scratch" / "k26" / (head or L.head)[:7]
+
+
 def _exit(L, step, head=None) -> str:
-    return (L.home / "v" / "scratch" / f"k26_{(head or L.head)[:7]}" / f"{step}.exit").read_text().strip()
+    return (_scratch(L, head) / f"{step}.exit").read_text().strip()
+
+
+def _refused(L, step, head=None) -> str:
+    """A refused call's own exit file; the step's .exit is never written by a refusal."""
+    return (_scratch(L, head) / f"{step}.refused.exit").read_text().strip()
 
 
 def test_the_launcher_parses_and_never_removes_anything():
@@ -89,16 +100,18 @@ def test_usage_and_unknown_steps(tmp_path):
     assert code == 2 and "usage: run_k26.sh" in err
     assert (L.home / "v/scratch/k26/usage.exit").read_text().strip() == "2"
     code, _ = _run(L, "bogus", L.head)
-    assert code == 97 and _exit(L, "bogus") == "97"
+    assert code == 97 and _refused(L, "unknown") == "97" and not (_scratch(L) / "bogus.exit").exists()
 
 
 def test_each_refusal_before_the_tests(tmp_path):
     L = _setup(tmp_path)
     code, err = _run(L, "tests", "0" * 40)
-    assert code == 99 and "HEAD is not" in err and _exit(L, "tests", "0" * 40) == "99"
+    assert code == 99 and "HEAD is not" in err and _refused(L, "tests", "0" * 40) == "99"
+    assert not (_scratch(L, "0" * 40) / "tests.exit").exists() and not (_scratch(L, "0" * 40) / "tests.head").exists()
     (L.repo / "EXTERNAL_DATA.md").write_text("changed\n")
     code, err = _run(L, "tests", L.head)
-    assert code == 98 and "not clean" in err and _exit(L, "tests") == "98"
+    assert code == 98 and "not clean" in err and _refused(L, "tests") == "98"
+    assert not (_scratch(L) / "tests.exit").exists()
     _git(L.repo, "checkout", "--", "EXTERNAL_DATA.md")
     # no row naming the script, and a row of another label
     for text in ("| K25 | `experiments/t3_decomp/k26_query_map.py` |\n", "| K26 | another script |\n"):
@@ -106,7 +119,7 @@ def test_each_refusal_before_the_tests(tmp_path):
         _git(L.repo, "commit", "-q", "-am", "row")
         h = _git(L.repo, "rev-parse", "HEAD")
         code, err = _run(L, "tests", h)
-        assert code == 95 and "no TRIES.md row K26" in err and _exit(L, "tests", h) == "95"
+        assert code == 95 and "no TRIES.md row K26" in err and _refused(L, "tests", h) == "95"
         _git(L.repo, "revert", "--no-edit", "HEAD")
     h = _git(L.repo, "rev-parse", "HEAD")
     # an outside folder missing, then a symlink, then the reference statistics missing
@@ -144,10 +157,11 @@ def test_each_refusal_before_the_tests(tmp_path):
 def test_each_step_maps_the_scripts_exit_and_refuses_without_the_step_before(tmp_path):
     L = _setup(tmp_path)
     code, err = _run(L, "features", L.head, rc=0)
-    assert code == 96 and "step tests has not exited 0" in err and _exit(L, "features") == "96"
+    assert code == 96 and "step tests has not exited 0" in err and _refused(L, "features") == "96"
+    assert not (_scratch(L) / "features.exit").exists()
     assert _run(L, "tests", L.head, rc=1)[0] == 10 and _exit(L, "tests") == "10"
     assert _run(L, "tests", L.head, rc=0)[0] == 0
-    assert (L.home / "v/scratch" / f"k26_{L.head[:7]}" / "tests.head").read_text().strip() == L.head
+    assert (_scratch(L) / "tests.head").read_text().strip() == L.head
     for rc, want in ((2, 22), (4, 24), (1, 20), (0, 0)):
         assert _run(L, "features", L.head, rc=rc)[0] == want and _exit(L, "features") == str(want)
     for rc, want, read_rc in ((7, 27, 0), (7, 41, 1), (7, 43, 3), (2, 22, 0), (1, 20, 0)):
@@ -182,7 +196,7 @@ def test_a_failed_gate_writes_the_void_reading_once(tmp_path):
     L = _setup(tmp_path)
     for step in ("tests", "features", "stage0", "pregate"):
         assert _run(L, step, L.head, rc=0)[0] == 0
-    S = L.home / "v/scratch" / f"k26_{L.head[:7]}"
+    S = _scratch(L)
     # the parts exit 0 and the gate exits 6: the VOID read runs (exit 0) and the step finishes 26
     assert _run(L, "guard", L.head, rc=0, STUB_GUARD_RC=6, STUB_READ_RC=0)[0] == 26
     assert (S / "stop_read.exit").read_text().strip() == "0" and _exit(L, "guard") == "26"
@@ -211,3 +225,43 @@ def test_a_stop_is_read_once(tmp_path):
     (out / "reading.json").write_text("{}")
     # the stop's reading is there already: no second read (a read would crash here: 41)
     assert _run(L, "stage0", L.head, rc=7, STUB_READ_RC=1)[0] == 27
+
+
+def test_a_passing_call_marks_running_first_and_a_refusal_never_touches_a_finished_exit(tmp_path):
+    L = _setup(tmp_path)
+    S = _scratch(L)
+    # the step writes "running" over its own exit file before it runs, and its head file
+    snoop = S / "tests.exit"
+    assert _run(L, "tests", L.head, rc=0, STUB_SNOOP=snoop)[0] == 0
+    assert (S / "tests.exit.seen").read_text().strip() == "running" and _exit(L, "tests") == "0"
+    assert _run(L, "features", L.head, rc=0)[0] == 0 and _exit(L, "features") == "0"
+    # refused calls: a dirty tree, another HEAD, the step before not done; each finished exit stays as it was
+    (L.repo / "EXTERNAL_DATA.md").write_text("changed\n")
+    assert _run(L, "tests", L.head, rc=0)[0] == 98 and _refused(L, "tests") == "98"
+    assert _run(L, "features", L.head, rc=0)[0] == 98 and _refused(L, "features") == "98"
+    assert _exit(L, "tests") == "0" and _exit(L, "features") == "0"
+    _git(L.repo, "checkout", "--", "EXTERNAL_DATA.md")
+    assert _run(L, "pregate", L.head, rc=0)[0] == 96 and not (S / "pregate.exit").exists()
+    assert _exit(L, "features") == "0"
+    # a failing rerun of a finished step does write its own exit (it ran), and the next step then refuses
+    assert _run(L, "features", L.head, rc=1)[0] == 20 and _exit(L, "features") == "20"
+    assert _run(L, "stage0", L.head, rc=0)[0] == 96
+
+
+def test_the_steps_pass_this_folders_own_data_and_run_the_listed_tests(tmp_path):
+    L = _setup(tmp_path)
+    args = tmp_path / "args.txt"
+    for step in ("tests", "features", "stage0", "pregate"):
+        assert _run(L, step, L.head, rc=0, STUB_ARGS=args)[0] == 0
+    lines = args.read_text().splitlines()
+    data = f"--data {L.repo}/data/raw"
+    assert any(" features " in ln and data in ln for ln in lines)
+    assert any(" pregate " in ln and data in ln for ln in lines)
+    tests_line = next(ln for ln in lines if "pytest" in ln)
+    for f in ("tests/test_k26_query_map.py", "tests/test_k26_context_map.py", "tests/test_k26_launcher.py",
+              "tests/test_k24_wider_tables.py", "tests/test_k22_outside_forms.py", "tests/test_k18_built_files.py"):
+        assert f in tests_line
+    assert all((REPO / f).is_file() for f in tests_line.split() if f.startswith("tests/"))
+    assert _run(L, "guard", L.head, rc=0, STUB_ARGS=args)[0] == 0
+    runs = [ln for ln in args.read_text().splitlines() if " run --part guard " in ln]
+    assert len(runs) == 7 and all(data in ln for ln in runs)

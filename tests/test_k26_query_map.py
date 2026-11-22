@@ -233,8 +233,13 @@ def test_the_pregate_keeps_a_fresh_table_sized_to_s_star():
         v = pre["folds"][f]
         assert float(np.std(np.log(v["table"]))) == pytest.approx(k24.S_STAR, rel=1e-12)
         assert float(np.std(np.log(v["table_rand"]))) == pytest.approx(k24.S_STAR, rel=1e-12)
-        assert v["figures"]["genes_ne_1"] >= q.MIN_MOVED and set(v["corr"]) == {"two", "sc3", "bulk", "mean",
-                                                                                 "barred"}
+        assert v["figures"]["genes_ne_1"] >= q.MIN_MOVED
+    # the barred factor is read on the g fold only: x2's pre-gate never compares its table with phi_M, built from the
+    # file x2 is scored against
+    assert set(pre["folds"]["g"]["corr"]) == {"two", "sc3", "bulk", "mean", "barred"}
+    assert set(pre["folds"]["x2"]["corr"]) == {"two", "sc3", "bulk", "mean"}
+    assert pre["folds"]["x2"]["compared"] == ["two", "sc3", "bulk", "mean"]
+    assert set(pre["folds"]["x2"]["left_out"]) == {"barred"} and pre["folds"]["g"]["left_out"] == {}
     assert pre["folds"]["g"]["train"] == sorted([*outside, "Mab21l2"]) and pre["folds"]["g"]["rand_gene"] == "rg"
 
 
@@ -256,6 +261,24 @@ def test_the_pregate_drops_a_disguised_closed_table_and_with_it_the_whole_arm():
         pre = q.pregate_all(ctx, outside, frozen, {"g": "rg", "x2": "rx"}, c, pm)
         assert not pre["runs"] and pre["tries_if_run"] == 0 and "g" in pre["dropped"]
         assert any(key in w for w in pre["dropped"]["g"])
+
+
+def test_x2s_pregate_never_reads_the_barred_factor():
+    """Row K26: the barred factor (phi_M) is built from T3/E9.5_mab21l2_ko.h5ad, x2's target file. x2's pre-gate is
+    target-free: phi_M never enters it (None would crash any use), and a phi_M equal to x2's own predicted table drops
+    nothing on x2."""
+    ctx, outside, frozen, closed, _ = _pg_inputs()
+    assert q.PREGATE_TABLES == {"g": ("two", "sc3", "bulk", "mean", "barred"), "x2": ("two", "sc3", "bulk", "mean")}
+    train = q.fold_training("x2", outside, frozen)
+    v = q.pregate_fold("x2", ctx, train, "rx", closed, None)
+    assert not v["dropped"] and "barred" not in v["corr"]
+    names = sorted(train)
+    m = cmap.fit_map(np.vstack([ctx[g] for g in names]), np.vstack([train[g] for g in names]))
+    twin = np.exp(m.predict(ctx["Mab21l2"]) * 3.0)  # x2's own table at another size: corr 1 if it were read
+    v = q.pregate_fold("x2", ctx, train, "rx", closed, twin)
+    assert not v["dropped"] and "barred" not in v["corr"]
+    with pytest.raises(RuntimeError, match="unknown fold"):
+        q.pregate_fold("x3", ctx, train, "rx", closed, twin)
 
 
 def test_the_pregate_drops_a_table_that_moves_too_few_genes_or_has_no_size():
@@ -506,16 +529,23 @@ def test_the_reading_fails_a_folder_without_a_gain(tmp_path):
     assert not res["void"] and not res["decision"]["passes"] and res["outcome"].startswith("FAIL")
 
 
-def test_a_failed_reproduction_gate_is_void_and_counts_the_failed_base(tmp_path):
+def test_a_failed_reproduction_gate_is_void_and_counts_the_three_tries(tmp_path):
+    """Row K26: "a void counts": a VOID reading counts the three tries (q_map, q_rand, q_perm), never the bases."""
+    assert q.VOID_TRIES == q.MAX_TRIES == 3
     R, refs = _run_folder(tmp_path, guard_pass=False)
     res = q.reading(R, refs)
-    assert res["void"] and res["tries_counted"] == 1 and "reproduction gate failed" in res["why"][0]
+    assert res["void"] and res["tries_counted"] == 3 and "reproduction gate failed" in res["why"][0]
+    body = json.loads((R / "guard.json").read_text())
+    body["failed"] = [q.BASE, q.BASE_X]
+    (R / "guard.json").write_text(json.dumps(body))
+    res = q.reading(R, refs)
+    assert res["void"] and res["tries_counted"] == 3
 
 
 def test_mixed_commits_or_a_base_off_the_guard_part_void_the_reading(tmp_path):
     R, refs = _run_folder(tmp_path / "a", commit_of={"x2/seed_3.json": "d" * 40})
     res = q.reading(R, refs)
-    assert res["void"] and any("different commits" in w for w in res["why"])
+    assert res["void"] and any("different commits" in w for w in res["why"]) and res["tries_counted"] == 3
     R, refs = _run_folder(tmp_path / "b", shifts={**GOOD, ("plain", "g1"): {q.ARM: 1.0, q.BASE: 0.2}})
     res = q.reading(R, refs)
     assert res["void"] and any("off the guard part's" in w for w in res["why"])
@@ -627,7 +657,7 @@ def test_a_stop_at_stage_zero_or_at_the_pregate_is_a_reading_with_no_try(tmp_pat
     assert "stopped at stage0" in q.text(res)
     k18.write_task_file(R / "pregate.json", {"pregate": {"runs": True}, "provenance": _prov()})
     res = q.reading(R, {})
-    assert res["void"] and "after a stop at stage 0" in res["why"][0]
+    assert res["void"] and "after a stop at stage 0" in res["why"][0] and res["tries_counted"] == 3
     (R / "pregate.json").unlink()
     (R / "stage0.json").unlink()
     k18.write_task_file(R / "stage0.json", {"stage0": {"passes": True}, "features_sha256": fsha,
@@ -639,3 +669,6 @@ def test_a_stop_at_stage_zero_or_at_the_pregate_is_a_reading_with_no_try(tmp_pat
     res = q.reading(R, {})
     assert not res["void"] and res["stopped"] == "pregate" and res["tries_counted"] == 0
     assert res["outcome"].startswith("STOP at the pre-gate")
+    (R / "guard.json").write_text("{}")
+    res = q.reading(R, {})
+    assert res["void"] and res["tries_counted"] == 3 and "after the pre-gate's drop" in res["why"][-1]

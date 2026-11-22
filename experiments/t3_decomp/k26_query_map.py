@@ -18,10 +18,16 @@ Steps (each with --commit, the full hash of the run commit, which must be HEAD; 
                       map against the LOO mean table and against its own random queries; R/stage0.json. Exit 7 when the
                       gate fails (stop: no fold read). Never recomputed over an existing stage0.json (its verdict is
                       read again)
-  pregate --out R     TARGET-FREE, after a passing stage 0: each fold's predicted table (Gata4 for g1/g2, fitted without
+  pregate --out R     TARGET-FREE (no fold's predicted table is compared with a table built from that fold's own target
+                      file), after a passing stage 0: each fold's predicted table (Gata4 for g1/g2, fitted without
                       Gata4; Mab21l2 for x2, fitted without Mab21l2), sized to S* by K24's exponent, must change >= 100
-                      genes and correlate < 0.9 with ln two, ln sc3, ln bulk, their mean and ln of the barred factor;
-                      else the arm and its controls drop (exit 5, nothing runs); R/pregate.json
+                      genes and correlate < 0.9 with ln two, ln sc3, ln bulk and their mean (outside knockouts only)
+                      and, on the g fold only, with ln of the barred factor. The barred factor (phi_M) is built from
+                      T3/E9.5_mab21l2_ko.h5ad, the file x2 is scored against, so x2's pre-gate leaves it out
+                      (PREGATE_TABLES). Else the arm and its controls drop (exit 5, nothing runs); R/pregate.json.
+                      Each fold's map is trained with the OTHER fold's released knockout table as one label (the
+                      specification's "fitted without" the fold's own gene), and a drop in either fold drops the arm
+                      everywhere: that cross-fold dependence is stated in the row, not hidden
   run --part guard|score --world plain --task g1|g2 [--seeds] | --world dm [--workers --threads] | --world x2
                       the guard part (base arms only: barred_form in the g-cells, xko_base on x2) or a scoring part
                       (base, q_map, q_rand, q_perm); a scoring part refuses without a passing guard.json of this commit
@@ -80,8 +86,13 @@ PERM_SEED = ext.PERM_SEED  # 20261113, q_perm's permutation within reference mea
 QUERY = {"g": "Gata4", "x2": "Mab21l2"}  # each fold's knocked-out gene: g1/g2 (both worlds) and x2
 FOLDS = ("g", "x2")
 MIN_MOVED = 100  # the pre-gate: the sized table changes at least this many genes
-MAX_CORR = 0.9  # the pre-gate: corr with each closed table, their mean and the barred factor below this
+MAX_CORR = 0.9  # the pre-gate: corr with each closed table, their mean and (g fold only) the barred factor below this
 CLOSED = ("two", "sc3", "bulk")
+# The tables each fold's pre-gate compares its predicted table with. two, sc3 and bulk are outside knockouts only (no
+# fold's target enters them). The barred factor is built from T3/E9.5_mab21l2_ko.h5ad, x2's target file: x2 leaves it
+# out, so the step stays target-free (row K26).
+PREGATE_TABLES = {"g": (*CLOSED, "mean", "barred"), "x2": (*CLOSED, "mean")}
+PREGATE_LEFT_OUT = {"g": {}, "x2": {"barred": "built from T3/E9.5_mab21l2_ko.h5ad, the file x2 is scored against"}}
 
 STREAM = k18.STREAM
 BASE = k18.BARRED  # "barred_form": the g-cells' base
@@ -99,6 +110,7 @@ DE_TERMS = ("de_score", "de_direction")
 MIN_GAIN, MIN_AHEAD = k7.MIN_GAIN, k7.MIN_AHEAD  # 0.3 and 8 of 10
 MAX_EXTRA_GATED = 1
 MAX_TRIES = 3
+VOID_TRIES = MAX_TRIES  # row K26: "a void counts": every VOID reading counts the three tries, whatever voided it
 K18_SHA256 = dict(k21.K18_SHA256)
 K9_X2 = HERE / "results" / "k9_residual" / "tasks" / "x2.json"
 K9_X2_SHA256 = "8be12f798aeab27e68c44fd54fe3106ee949d8d2b4e4694bd9b5db0bfb5458ba"
@@ -468,8 +480,11 @@ def fold_training(fold: str, outside: dict[str, np.ndarray], frozen: dict[str, n
 def pregate_fold(fold: str, ctx: dict[str, np.ndarray], train: dict[str, np.ndarray], rand_gene: str,
                  closed: dict[str, np.ndarray], phi_m: np.ndarray) -> dict:
     """One fold: the map fitted on `train`, evaluated at the fold's query (the arm) and at its q_rand gene, each sized;
-    the drops (fewer than MIN_MOVED genes changed; corr >= MAX_CORR with a closed table, their mean or phi_M; no
-    exponent; the control unmakeable)."""
+    the drops (fewer than MIN_MOVED genes changed; corr >= MAX_CORR with a table of PREGATE_TABLES[fold]: the closed
+    tables, their mean and, on the g fold only, phi_M; no exponent; the control unmakeable). phi_M is never read on
+    x2's fold: it is built from x2's own target file."""
+    if fold not in PREGATE_TABLES:
+        raise RuntimeError(f"unknown fold {fold!r}")
     names = sorted(train)
     m = cmap.fit_map(np.vstack([ctx[g] for g in names]), np.vstack([train[g] for g in names]))
     arm, e = sized(m.predict(ctx[QUERY[fold]]))
@@ -485,13 +500,17 @@ def pregate_fold(fold: str, ctx: dict[str, np.ndarray], train: dict[str, np.ndar
         if figs["genes_ne_1"] < MIN_MOVED:
             why.append(f"the sized table changes fewer than {MIN_MOVED} genes")
         mean_closed = np.exp(np.mean(np.vstack([np.log(closed[k]) for k in CLOSED]), 0))
-        for k, T in (*((k, closed[k]) for k in CLOSED), ("mean", mean_closed), ("barred", phi_m)):
-            c = ext.corr_between(arm, T)
+        avail = {**{k: closed[k] for k in CLOSED}, "mean": mean_closed}
+        if "barred" in PREGATE_TABLES[fold]:
+            avail["barred"] = phi_m
+        for k in PREGATE_TABLES[fold]:
+            c = ext.corr_between(arm, avail[k])
             corr[k] = c
             if c is None or c >= MAX_CORR:
                 why.append(f"corr with {k} {'undefined' if c is None else 'at or above the bar'}")
     return {"train": names, "n_train": len(names), "rank": m.rank, "lambda": m.lam, "query": QUERY[fold],
-            "rand_gene": rand_gene, "e": e, "e_rand": er, "figures": figs, "corr": corr, "dropped": why,
+            "rand_gene": rand_gene, "e": e, "e_rand": er, "figures": figs, "compared": list(PREGATE_TABLES[fold]),
+            "left_out": dict(PREGATE_LEFT_OUT[fold]), "corr": corr, "dropped": why,
             "table": None if arm is None else [float(x) for x in arm],
             "table_rand": None if rnd is None else [float(x) for x in rnd]}
 
@@ -1111,8 +1130,10 @@ def reading(runs: Path, refs: dict | None = None) -> dict:
         stop = {"incomplete": False, **common, "files_sha256": dict(sha), "provenance": dict(prov),
                 "tries_counted": 0, "stage0_counted": 1, "stopped": "stage0"}
         if later or why:
-            return stop | {"void": True, "why": [*why, *(f"{f} exists after a stop at stage 0" for f in later)],
-                           "outcome": "void: the run went past the stop at stage 0, or its files disagree"}
+            return stop | {"void": True, "tries_counted": VOID_TRIES,
+                           "why": [*why, *(f"{f} exists after a stop at stage 0" for f in later)],
+                           "outcome": "void: the run went past the stop at stage 0, or its files disagree; the three "
+                                      "tries count"}
         return stop | {"void": False, "why": [], "outcome": "STOP at stage 0: the gate failed; no fold read, no file"}
     miss = load("pregate.json")
     if miss:
@@ -1127,9 +1148,11 @@ def reading(runs: Path, refs: dict | None = None) -> dict:
         stop = {"incomplete": False, **common, "files_sha256": dict(sha), "provenance": dict(prov),
                 "tries_counted": 0, "stage0_counted": 1, "stopped": "pregate"}
         if (runs / GUARD_FILE).exists() or why:
-            return stop | {"void": True, "why": [*why] + (["guard.json exists after the pre-gate's drop"]
-                                                         if (runs / GUARD_FILE).exists() else []),
-                           "outcome": "void: the run went past the pre-gate's drop, or its files disagree"}
+            return stop | {"void": True, "tries_counted": VOID_TRIES,
+                           "why": [*why] + (["guard.json exists after the pre-gate's drop"]
+                                            if (runs / GUARD_FILE).exists() else []),
+                           "outcome": "void: the run went past the pre-gate's drop, or its files disagree; the three "
+                                      "tries count"}
         return stop | {"void": False, "why": [], "outcome": "STOP at the pre-gate: the arm is dropped with its "
                                                             "controls; nothing runs, no try is counted, no file"}
     miss = load(GUARD_FILE)
@@ -1153,10 +1176,11 @@ def reading(runs: Path, refs: dict | None = None) -> dict:
     prov |= gprov
     if g.get("passes") is not True:
         failed = [x for x in (g.get("failed") or []) if x in (BASE, BASE_X)]
+        # row K26: "a void counts": the three tries, though the gate runs the bases only and stops before any try
         return {"incomplete": False, "void": True, **common, "files_sha256": sha, "provenance": prov,
-                "tries_counted": len(failed) or 1, "stage0_counted": 1,
+                "tries_counted": VOID_TRIES, "stage0_counted": 1,
                 "why": [f"the reproduction gate failed: {failed or 'unrecorded'}", *why],
-                "outcome": "void: the reproduction gate failed before any try; no file"}
+                "outcome": "void: the reproduction gate failed before any try; no file; the three tries count"}
     missing = [f for f in score_files() if not (runs / f).exists()]
     if missing:
         return {"incomplete": True, "void": False, "missing": missing, "outcome": INCOMPLETE}
@@ -1195,7 +1219,8 @@ def reading(runs: Path, refs: dict | None = None) -> dict:
             "dm_check_u3d_report_only": check, "tries_counted": MAX_TRIES, "stage0_counted": 1,
             "cells": {f"{c[0]} {c[1]}": v for c, v in per.items()}}
     if why:
-        return base | {"void": True, "why": why, "outcome": "void: no file; T3's built and listed files unchanged"}
+        return base | {"void": True, "tries_counted": VOID_TRIES, "why": why,
+                       "outcome": "void: no file; the three tries count; T3's built and listed files unchanged"}
     dec = decide(per)
     return base | {"void": False, "why": [], "commit": next(iter(commits)), "machine": next(iter(machines)),
                    "decision": dec, "outcome": dec["outcome"]}
@@ -1206,7 +1231,7 @@ def _pregate_report(pre: dict) -> dict:
     out = {"runs": pre.get("runs"), "dropped": pre.get("dropped"), "folds": {}}
     for f, v in (pre.get("folds") or {}).items():
         out["folds"][f] = {k: v.get(k) for k in ("train", "n_train", "rank", "lambda", "query", "rand_gene", "e",
-                                                 "e_rand", "figures", "corr", "dropped")}
+                                                 "e_rand", "figures", "compared", "left_out", "corr", "dropped")}
     return out
 
 
