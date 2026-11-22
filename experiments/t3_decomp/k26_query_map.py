@@ -1107,8 +1107,8 @@ def reading(runs: Path, refs: dict | None = None) -> dict:
     """Apply the reading of row K26 to a run folder: a STOP at stage 0 or at the pre-gate is a reading of its own (no
     fold read; no try beyond stage 0 at a stage-0 stop, the three tries at a pre-gate stop, PREGATE_STOP_TRIES, since
     the pre-gate compares with a table built from x2's target); otherwise the guard part is read again, then the
-    scoring part. Every VOID reading counts the three tries (VOID_TRIES; row K26, "a void counts"), a failed reproduction gate
-    included."""
+    scoring part. Every VOID reading counts the three tries (VOID_TRIES; row K26, "a void counts"), a failed
+    reproduction gate included."""
     runs = Path(runs)
     why: list[str] = []
     sha, prov, body = {}, {}, {}
