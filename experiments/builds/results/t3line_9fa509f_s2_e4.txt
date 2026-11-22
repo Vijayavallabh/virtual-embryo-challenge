@@ -1,0 +1,32 @@
+The T3 search line (ruling row R22; docs/S2_RULES.md, "T3's search line, the outside-table exponent on row K23's file";
+decision log 2026-11-22 (x) and (dd)): the E = 4.0 file. BUILT; it is uploaded only on the line's own condition
+=================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-22 in the detached worktree ~/v/scratch/k26-wt (its own environment) at
+commit 9fa509fc4d253bcbd7ac866970a4bdeea749c17b (clean tree), the third launch, with the reviewed launcher that reads the two-study tables folder:
+`bash experiments/t3_decomp/build_outside_form.sh --table-exponent 4.0 --captain-ruling R22 9fa509fc4d253bcbd7ac866970a4bdeea749c17b s2 xall`
+Exit records: tests 0, identity-s1 0, identity-s2 0, the K23 file at exponent 2.0 0, the E = 4.0 file a 0 and b 0,
+all 0. The guard passed (a guard failure would have ended the run at 47 with nothing built).
+  identity-s1   the barred s1                       3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2
+  identity-s2   the barred s2 (the base B)           1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f
+  E = 2.0       row K23's file on s2, reproduced     77ff0b947f7f409c9ce171bdc59a44de3d3c2ef2f3e5a7332011a459ce9ee9c3
+  E = 4.0  a    xall-s2.h5ad (--captain-ruling R22)  9934f1b104fafed0514cff7bb1dec3f5e362e6a5068ae32711cbfc67f62b90f1
+  E = 4.0  b    the same sha256: the two builds agree byte for byte
+Stamps (the commit and clean fields only): all five say 9fa509fc4d25 and clean True.
+
+Copied to runs/manual_upload/T3_k23_s2_e4.h5ad and checked against this sha256.
+
+Two earlier launches built nothing: at 9a10157 the launch command did not put the build tool on the path (the tests
+step ended 127); at de7050b the launcher still named the folder that held the two-study tables before 2026-11-21, and
+the builder refused a table whose bytes did not match its pin (decision log 2026-11-22 (y), (aa), (dd)).
+
+The line's rule, fixed before the K23 file is uploaded: if the K23 file's headline is strictly above B's, this file
+is the next T3 file of the line; otherwise (a tie included) the line ends with no new file; if the K23 file is never
+uploaded the line never starts. It takes the first T3 slot free after C1, C2, the K23 file, CK on its condition and
+the refused s1. It is never rebuilt, re-seeded or changed after a score.
+
+Read by exit codes, sha256 and the stamps' commit and clean fields only (AGENTS.md): no build log, file size, cell
+count or sidecar record was read. Nothing was uploaded: an upload is the captain's own act.
+Data used: released challenge data (wild-type E8.75 cells, the released Mab21l2 knockout) and GEO GSE204906 and
+GSE277839 as knockout-over-control changes on the panel genes. No beta-catenin or Gata4 perturbation data from
+outside the release.

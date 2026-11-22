@@ -10677,3 +10677,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     atlas's gene table showed every one of the fourteen marker sets with at least two genes present under one symbol
     (the reducer's own floor), all five guard genes among them. The T3 line's E = 4.0 build, third launch, in
     `~/v/scratch/k26-wt` at 9fa509f with the fixed launcher.
+- 2026-11-22 (ff), the T3 search line's E = 4.0 file is built (state at 03:23 UTC, 2026-11-22). Written by the AI
+  assistant; the line and its rule are entry (x)'s, with the folder note of entry (dd).
+  - **The builds** (third launch; `experiments/t3_decomp/build_outside_form.sh --table-exponent 4.0 --captain-ruling
+    R22` at commit 9fa509f in `~/v/scratch/k26-wt`). Every exit record is 0. The identity steps reproduce the barred
+    s1 and the barred s2 byte for byte, and the step at exponent 2.0 reproduces row K23's file (77ff0b947f7f...). The
+    guard from released wild-type data and the pinned table passed. The E = 4.0 file was built twice and the two
+    builds agree byte for byte: sha256 9934f1b104fafed0514cff7bb1dec3f5e362e6a5068ae32711cbfc67f62b90f1, copied to
+    `runs/manual_upload/T3_k23_s2_e4.h5ad` and checked. Record: `experiments/builds/results/t3line_9fa509f_s2_e4.txt`
+    and `.SHA256SUMS`. Read by exit codes, sha256 and the stamps' commit and clean fields only; the sidecar is not
+    opened.
+  - **When it is uploaded.** Only by the line's rule: if the K23 file's headline is strictly above B's, in the first
+    T3 slot free after C1, C2, the K23 file, CK on its condition and the refused s1; otherwise never. The K23 file has
+    not been uploaded. Data used: released challenge data and GEO GSE204906 and GSE277839 as knockout-over-control
+    changes on the panel genes; no beta-catenin or Gata4 perturbation data from outside the release.
