@@ -9819,3 +9819,19 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Counts.** T65's chamber run started at 00:30 UTC (its second launch), so T1 429 to 438 are counted; H29a's run
     step started at 00:35 UTC, so heart 81 to 88 are counted. Totals: T1 438, embryo 84, heart 88, T3 72. T66, E51 and
     E53 count from their run steps, and not at all if their gates stop them first.
+- 2026-11-22 (d), row H29a is read: neither heart trend candidate qualifies (state at 00:48 UTC, 2026-11-22). Written
+  by the AI assistant, which is recused on the heart's scope and size and adds nothing to the read's own words.
+  - **H29a** (the heart's trend step on row H27's forms A and B, the practice reads the heart's order rule fixed for
+    candidates H-T1 and H-T1B before any of their scores; run commit d0f0d6e on `~/v/vec-campaign`; the run 00:35 to
+    00:45 UTC; tests, run and read each exit 0). In the read's fixed words: "OUTCOME H-T1: NOT QUALIFIED", "H-T1 NOT
+    QUALIFIED under row H29a (fails S1, S2): the file is skipped and the next file moves up. No priced question; no
+    rerun under this row."; "OUTCOME H-T1B: NOT QUALIFIED", "H-T1B NOT QUALIFIED under row H29a (fails S1, S3, H-T1's
+    S2 on the whole pool): the file is skipped and the next file moves up. No priced question; no rerun under this
+    row."
+  - **The reading's own lines beside the outcome** (practice, one truth, both gates at distance 0.000; no
+    interpretation is added). Form A, the whole pool: S1 FALSE (trend minus the copy: +1.14 in the truth as released,
+    10 of 10 seeds; +0.29 in the thinned truths, 10 of 10; the bar is a mean above +0.3 in both worlds); S2 FALSE
+    (trend minus its placebo: +0.69 as released; -0.19 in the thinned truths, 0 of 10); S3 TRUE. Form B, the half
+    trim: S1 FALSE (+0.84 and +0.25); S2 TRUE (+0.88 and +0.40, 10 of 10 in both); S3 FALSE (de_direction below 0 in
+    the thinned truths). Eight tries, heart 81 to 88, counted since 00:35 UTC. No file is built, no question goes to
+    the captain, and nothing is rerun under this row. The heart's file in force is unchanged.
