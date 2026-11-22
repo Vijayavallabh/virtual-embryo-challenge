@@ -10330,3 +10330,34 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     row's commit, on main's present text). The AI assistant writes them at placement with the engineer's wording. By
     H32's specification the open filter question does not stop its practice read and goes into the captain's question
     if a file is ever proposed.
+- 2026-11-22 (r), the organ cut's practice read (row H29b) is a READ; the nuclei atlas's filter question is answered
+  (state at 02:23 UTC, 2026-11-22). Written by the AI assistant, which is recused on the heart's scope and size and
+  adds nothing to the read's own words.
+  - **H29b** (the heart's organ-cut file D, ordered coded and read by the captain, ruling row R21; run commit e3cc0e4
+    in `~/v/scratch/h29b-wt`). The target-free gate: "GATE PASS: D is a new form (its overlap with C's pool and with
+    B's pool is below 0.90); the run may follow at this commit." The run 01:58 to 02:19 UTC and the read each exit 0.
+    In the read's fixed words: "OUTCOME H29b: READ" "H29b READ: the figures go to fresh analysts, not the main
+    session, who write the captain's question; the read builds nothing, and file D enters the heart's order only if
+    its two DGX builds give one sha256 and pass the format check and the captain says yes to it by name." Nine tries,
+    heart 89 to 97, counted from the start of the run step. The two reading files are committed with this entry.
+  - **What follows, by the row.** Fresh score-blind analysts write the captain's question from the reading; the main
+    session passes it on unchanged and gives no lean. File D is built twice on the DGX at this entry's commit
+    (`experiments/builds/heart_organ.sh`); it enters the heart's order only if the two builds give one sha256 and pass
+    the format check and the captain says yes to it by name. Nothing is uploaded by the main session.
+  - **Said plainly:** while copying the files the AI assistant printed the first fourteen lines of reading.txt to find
+    the outcome line, and those lines include the read's first headline line (the practice analogue's own-world E10.5
+    transition). The row sends the figures to fresh analysts, not to the main session. Nothing is drawn from that line
+    here: no figure is restated, no lean follows, and the recusal stands.
+  - **Screen: the nuclei atlas's quality filter and experiments (register row X003; asked by candidate C1A, bearing on
+    rows T66, T68, H30 and H32).** The quality thresholds are fixed numbers; doublet removal used models fitted per
+    experiment over all embryos of that experiment. By the paper's embryo table (embryo, day, somite and experiment
+    columns only), no experiment that holds a permitted embryo holds an embryo labelled E9.75 to E13.5: run_4 holds
+    embryos 1 to 12 alone; run_15 holds 13 to 22 with 23 and 24 (day label E9.5, 25 and 26 somites, litter names
+    reading E9.75; the register drops them as boundary litters); run_18 holds 54 and 55 with 53 (E14.0) and an E14.5
+    embryo the authors removed; the later runs hold later embryos only. By C1A's specification ("a model fitted on
+    pooled nuclei that included E10.5-E13.5 embryos? A yes stops C1A") the answer is no and C1A does not stop. What
+    stays on record, and goes into the captain's question for any file that reads embryos 13 to 22: run_15's doublet
+    models also saw the two boundary embryos. Row T68, which is running, reads embryos 1 to 12 and 59 to 63 only
+    (run_4, run_20, run_21 and run_26), so nothing of this touches it.
+  - **Counts.** Row T68's pre-gate passed at 02:15 UTC and its ten arms count from the start of its runs: T1 439 to
+    448. Totals: T1 448, embryo 87, heart 97, T3 74.
