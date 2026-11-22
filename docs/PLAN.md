@@ -10762,3 +10762,19 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     twice with one sha256, and the captain's own naming is what puts it on the board; the captain reopened the
     embryo's list for new files on 2026-11-21 (entry (v)). So the two files are built now, as the heart's file D and
     the search lines' files were built before any upload, and nothing is uploaded without the captain's word.
+- 2026-11-22 (kk), the embryo's two overlay candidates are built (state at 04:28 UTC, 2026-11-22). Written by the AI
+  assistant, which is recused on these terms and states no view.
+  - **The builds** (`experiments/builds/embryo_so_ohi.sh` at commit 93f832e, the DGX worktree `~/v/scratch/e52b-wt`,
+    run r1). Every step exit 0: the gate took both passes from the committed reading's own fields; the two
+    validation-board dry runs ran; the positions file, the overlay file and the series file each reproduced its
+    committed bytes; each candidate was built twice and each pair agrees byte for byte; the seven identity booleans
+    are all True. SO, `T2embryo_s2xs_ov.h5ad`, sha256
+    77062082d97555961901c811d8a1aaf9b5b2403417c19a6988c816ff553f1165; O_hi, `T2embryo_s2x_ovhi.h5ad`, sha256
+    7e4d1eaafc40080d9d9c461d4b9396f0cee6353686538e79fb92ca31d1d2deeb. Both are copied to `runs/manual_upload/` and
+    checked. Record: `experiments/builds/results/embsohi_93f832e_r1.txt` and `.SHA256SUMS`. Read by exit codes,
+    sha256, the identity booleans and the stamps' commit and clean fields only.
+  - **The question** (`experiments/coords/results/e51_so_ohi/question_for_the_captain.md`) now carries the two sha256;
+    the analysts' line that neither file was built yet is replaced by a marked line of the main session's saying they
+    now are. Nothing else in the text is changed. The two files exist for the embryo's order rule; each is uploaded
+    only on the captain's own naming (for O_hi, covering the depth line). Data used: released challenge data only; no
+    outside data.

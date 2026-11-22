@@ -1,0 +1,31 @@
+The embryo's two candidates of row E51, SO and O_hi (specified by a score-blind challenger; docs/PLAN.md decision log
+2026-11-22 (ii), (jj)): the set embsohi, run r1. BUILT; each is uploaded only on the captain's own naming
+=================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-22 in the detached worktree ~/v/scratch/e52b-wt (its own environment) at
+commit 93f832e640c18d14923d574cb072f5695532bd48 (clean tree), launched at 04:23 UTC and finished by 04:27 UTC:
+`bash experiments/builds/embryo_so_ohi.sh 93f832e640c18d14923d574cb072f5695532bd48 r1`
+Step exit codes: gate 0 (the committed reading's own fields say both arms pass), tests 0, V 0 (the two
+validation-board dry runs), D 0, O 0, S 0, SOa 0, SOb 0, OHa 0, OHb 0, identity 0, done 0.
+  D     the positions file P reproduces its committed bytes   a03611a343faf1d37edf06ce0e2bccc86cce6f14d3580b823864e5faf3ba03f9
+  O     the overlay file O reproduces its committed bytes     1cfc91be3a20bfdd1a4f7bcfebd7316e1143c6d4048e578c1f30bcfbe1e0e1ea
+  S     the series file s2xs reproduces its committed bytes   bc50d012cd2c9481cd18c1f5bcf5b01093e22fd16ac65582a5c9f34321f13115
+  SOa   T2embryo_s2xs_ov.h5ad                                 77062082d97555961901c811d8a1aaf9b5b2403417c19a6988c816ff553f1165
+  SOb   the same sha256: the two builds agree byte for byte
+  OHa   T2embryo_s2x_ovhi.h5ad                                7e4d1eaafc40080d9d9c461d4b9396f0cee6353686538e79fb92ca31d1d2deeb
+  OHb   the same sha256: the two builds agree byte for byte
+Identity booleans (the launcher's own check, against O and s2xs as built in this same run): SO's coordinates equal O's
+bit for bit and its X, obs_names and var_names equal s2xs's; O_hi's coordinates, obs_names and var_names equal O's:
+all seven True.
+Stamps (the commit and clean fields only): all seven say 93f832e640c1 and clean True.
+
+Copied to runs/manual_upload/T2embryo_s2xs_ov.h5ad and runs/manual_upload/T2embryo_s2x_ovhi.h5ad and checked against
+these sha256.
+
+By the embryo's order rule (decision log 2026-11-21 (y)) their places are SO, then T2embryo_s2, then O_hi, after P, C
+and the sized copy-rows file. SO needs the captain's own named order; O_hi needs the captain's named order covering
+the embryo's depth line. Nothing is rebuilt, re-seeded or changed after a score.
+
+Read by exit codes, sha256, the identity booleans and the stamps' commit and clean fields only (AGENTS.md): no build
+log, file size, cell count or sidecar record was read. Nothing was uploaded: an upload is the captain's own act.
+Data used: released challenge data only; no outside data.

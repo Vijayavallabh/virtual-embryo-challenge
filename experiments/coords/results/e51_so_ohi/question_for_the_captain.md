@@ -22,8 +22,8 @@ At the test (E7.75, which is not a practice stage):
 
 Price: a file that scores lower does not replace the board's best, so a miss costs one upload slot (at most two a day; the window closes 26 Nov 11:59 UTC). The embryo's order rule puts these after P, C and the sized copy-rows file. Among themselves the order is SO, then T2embryo_s2 (an earlier embryo file built on 13 Nov), then O_hi. You may use fewer, none, or another order.
 
-Neither file is built yet. Each sha256 is filled in once its two builds agree and its checks hold.
-Files: SO = T2embryo_s2xs_ov, sha256 [__________]; O_hi = T2embryo_s2x_ovhi, sha256 [__________]. Data used: released challenge data only; no outside data.
+[Added by the main session on 2026-11-22: both files were built after this text was written; for each, two builds agree byte for byte and the identity checks hold. The line that stood here said neither was built yet.]
+Files: SO = T2embryo_s2xs_ov, sha256 77062082d97555961901c811d8a1aaf9b5b2403417c19a6988c816ff553f1165 (`runs/manual_upload/T2embryo_s2xs_ov.h5ad`); O_hi = T2embryo_s2x_ovhi, sha256 7e4d1eaafc40080d9d9c461d4b9396f0cee6353686538e79fb92ca31d1d2deeb (`runs/manual_upload/T2embryo_s2x_ovhi.h5ad`). Data used: released challenge data only; no outside data.
 
 1. Do you name SO? Yes / No (default: No)
 2. Do you name O_hi? A yes also lifts the embryo's depth line (the deeper expression), which the ledger had closed for files, for this one file only. Yes / No (default: No)
