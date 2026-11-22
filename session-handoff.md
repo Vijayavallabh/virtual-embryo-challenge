@@ -32,17 +32,24 @@
     (`campaign/heart-trend-forms-2`), E52 the copy-rows file at the team's own size
     (`campaign/embryo-copy-rows-size-2`; the analysts' verdict is build as amended, placed after C). Hand-backs of the
     first engineering rounds: `lift8/blind_eng.json`, `lift8/moonshots_eng1.json`. Deferred: K26, H31.
-  - **ROW T65 (T1's released momentum on the direction cells, candidate MS) IS MERGED AND WAITS FOR ITS ROW:**
-    `campaign/t1-ms-read` (b012eff, review ready) is merged to main; its tests are running locally in the background.
-    Row text: `lift8/t65_row.txt` (eleven cells; fill BRANCH, HEAD and the try range: ten tries, 429 to 438 if T67's
-    runs started, 419 to 428 if T67 was pruned). It needs the checkout that holds the relabelling's output. Either run
-    it in `~/v/vec-campaign-d` after T67's chain has finished (sync then), or now in a separate worktree: push the
-    commit into the DGX repository without touching its working tree (`git push` over ssh to a new branch ref of
-    `~/v/vec-campaign-d`), `git worktree add --detach ~/v/scratch/t65-wt <commit>`, make `data/` there with links to
-    the checkout's `data/raw`, `data/derived` and `data/external`, set UV_PROJECT_ENVIRONMENT to the checkout's
-    `.venv`, trace the launcher's refusal path, then `bash experiments/t1_m1/t65_ms.sh tests ROWC`, `cut_chamber`,
-    `cut_whole`, `lib_1`, `lib_2`, `lib_3` in order; then commit the five task files unopened and run `read ROWC` at
-    that descendant commit. Only AHEAD leads to a question (Q-MS) and then to the builder option.
+  - **ROW T65 IS RUNNING TOO (00:08 UTC, 22 Nov; entry 2026-11-22 (a); next log label 2026-11-22 (b)).** Row placed at
+    ROWC65 = 34567906a651f08316f5689003bcfa1c4e57e430; tries T1 429 to 438 once its first run starts (T67 took 419 to
+    428: its pre-gate passed and its five runs started at 00:02 UTC; the totals line says T1 428). The commit was
+    pushed into the DGX repository as branch ref `t65-run` (the running checkout untouched); worktree
+    `~/v/scratch/t65-wt` with `data/raw`, `data/derived`, `data/external` linked to the checkout's; chain
+    `~/v/scratch/t65_chain.sh` (tests, cut_chamber, cut_whole, lib_1, lib_2, lib_3, sequential), log
+    `~/v/scratch/t65/chain.log`, exit `~/v/scratch/t65/chain.exit`; a local waiter polls. **When it exits 0:** copy
+    the five task files from `~/v/scratch/t65-wt/experiments/t1_m1/results/t65_ms/tasks/` back UNOPENED, commit them,
+    push that commit to the DGX ref, `git checkout --detach` it in the worktree, then `bash
+    experiments/t1_m1/t65_ms.sh read 34567906…` (with UV_PROJECT_ENVIRONMENT set to the checkout's `.venv`); read only
+    `read.exit` and `read.out`; copy `t65.json` and `t65.txt` back and commit with the outcome in its fixed words;
+    fill row T65's last cell and the totals line (T1 438). AHEAD = question Q-MS to the captain, then the builder
+    option; anything else ends MS.
+  - **Local disk (22 Nov 00:06 UTC):** / 42 GB free, /mnt/md0 82 GB free. The repository's `.claude/worktrees` holds
+    191 GB of agents' worktrees (several with their own environment of about 0.8 GB); nothing was deleted. The old
+    disk watchdog ended (exit 144, not a low-disk trip); a new report-only one is running (wakes below 8 GB on / or 25
+    GB on /mnt/md0). Deleting old worktrees needs the captain's yes and a look at each first (some hold unmerged
+    work).
   - **DGX facts (21 Nov 23:43 UTC):** the outside nuclei atlas (`data/external/jax_qiu2024`, 43 embryo files) and the
     heart atlas's clean reduction are on `~/v/vec-campaign-d` and `~/v/vec-campaign`; torch 2.14, torchdiffeq and scvi
     are in the campaign-d environment; the `rdata` package is MISSING in both environments (T66, H30 and H31 need it:
