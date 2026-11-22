@@ -957,7 +957,9 @@ def test_the_register_must_carry_the_required_wording_in_both_outside_sources(h3
     assert h30.register_names_row(p) == ["X002", "X003"]
     p.write_text(f"| X002 | Feng. {amend} (stages E9.5, E14.5) |\n| X003 | Qiu; {amend}; {lic} |\n")
     assert h30.register_names_row(p) == []
-    assert h30.register_names_row(h30.REGISTER) == ["X002", "X003"]  # today neither carries it
+    # the committed register: both rows carry their wording since the amendments of 2026-11-22 (placed with rows
+    # N56 and H30, before the gate); until then this line read ["X002", "X003"]
+    assert h30.register_names_row(h30.REGISTER) == []
 
 
 def test_the_gate_provenance_must_be_a_strict_ancestor(h30):

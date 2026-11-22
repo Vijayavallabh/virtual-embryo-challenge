@@ -9896,3 +9896,37 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     in the DGX checkout `~/v/vec-campaign-c` itself; H30 in a detached worktree with its own environment (its script
     does not put its own source first, and its second half runs at a later commit); E54 and E52 in detached worktrees
     of `~/v/vec-campaign`.
+- 2026-11-22 (f), rows E53 and T66 stopped before any score; a slip in placing the second batch is corrected (state at
+  00:58 UTC, 2026-11-22). Written by the AI assistant; the outcomes are the rows' own rules and nothing is added to
+  them.
+  - **E53** (embryo, geodesic overlay; run commit d0f0d6e in `~/v/scratch/e53-wt`): its target-free gate fails on the
+    test pair. Clause g1: the data term at t = 1 is 0.59 to 0.65 of its value at the rigid start in all ten draws; the
+    row asks for at most 0.5 in at least 8 of 10. Clauses g2 and g3 hold. The row's rule: "If any test-pair clause
+    fails, nothing runs and nothing counts." No try, no score, no file; the gate's record is committed with this
+    entry. No other row is opened for it by the AI assistant.
+  - **T66** (T1, the held Blood cells along the outside nuclei atlas; run commit d0f0d6e in `~/v/scratch/t66-wt`): the
+    reducer refused after its preflight: "25033 genes of the count matrices are not in the gene table". Nothing was
+    computed after that: no direction, no pre-gate, no T1 cell read, no score, no try. The gene table lists 24,552
+    genes; the count matrices carry those and 25,033 more. To describe the stop the AI assistant read that table's
+    header and the category counts of its `gene_type` and `chr` columns (no count, no cell, no model input); the
+    register lists only `gene_id` and `gene_short_name` as read by the reducer, so this is said here. By row T66 a
+    rerun is a new row. A fresh score-blind analyst fixes the rule for matrix genes outside the table, an engineer
+    writes the corrected read as row T68 and a reviewer checks it (workflow t1-blood-rerun-row, three agents); the row
+    is placed only when the review says ready.
+  - **The AI assistant's slip in entry (e), corrected.** The second batch's commit (a99f203) was made although one
+    test failed: the commit command was not tied to the test run's result. The test
+    (`test_the_register_must_carry_the_required_wording_in_both_outside_sources`) ended with an assertion that the
+    repository's own register did not yet carry row H30's wording, true when it was written and false, as intended,
+    once the amendment was committed. That last line now asserts the amended state. Nothing had run. The test file
+    therefore differs from 88bb2cf by that one assertion; the script and the launcher are byte for byte 88bb2cf's. Row
+    H30 runs with this commit as its ROW (rows N56 and H30 are unchanged since a99f203). Every test file that the four
+    launchers run was then run here with the rows and the register as committed: 822 passed and 4 skipped (the torch
+    tests, which run on the DGX), the linter clean. Rule from now on, also written into the engineers' brief: no test
+    asserts today's state of the repository's own ledger or register.
+  - **Places on the DGX.** K25 runs in its own detached worktree `~/v/scratch/k25-wt` (of `~/v/vec-campaign-c`'s
+    repository) with its own environment and the checkout's data linked, not in the checkout itself: the checkout
+    holds row K24's two reading files untracked, a checkout of the new commit would have had to overwrite them, and
+    they are left as they are. E54 and E52 run in detached worktrees of `~/v/vec-campaign`'s repository at a99f203;
+    H30 in its own worktree with its own environment at this commit.
+  - **Counts.** Rows E53 and T66 counted nothing. Totals stay T1 438, embryo 84, heart 88, T3 72. E51 is at its
+    reproduction gate and T65 at its first run.
