@@ -2,7 +2,27 @@
 
 ## Current Objective
 
-- **State at 2026-11-22, 04:29 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-22, 11:05 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-22 (nn); the next label is 2026-11-22 (oo). Local main = origin/main at a6648c1 or one notes commit after
+  it. Tries: T1 463, embryo 88, heart 97, T3 74. No score pasted today. Nothing runs on the DGX.
+  - **T1'S THIRD SEARCH LINE IS IN FORCE (entry (nn); committed and pushed at 11:04 UTC on 22 Nov, eleven minutes
+    after the captain's "yes" of 10:53 UTC, entry (mm)).** The atlas step on file C's command with the correction held
+    at 1.0: `T1_s2rcCm20.h5ad` (multiplier 2.0), then `T1_s2rcCm25.h5ad` (2.5). It starts only if A and C are both
+    uploaded and C's headline is strictly above A's; turn order line 1, then line 2, then this line, unless the
+    captain says otherwise; it is void if C's headline was returned before the entry was committed (the captain was
+    asked to hold C until told; the captain is told now). The captain was also told plainly that under this order the
+    line may get no slot and that the order is the captain's to change.
+  - **ITS BUILDER (workflow wqigydnt0; hand-back to `lift8/`):** branch `campaign/t1-line-3`; the builder takes
+    `--g-mom-damping 1.0 --feng-fraction-mult 2.0` and `... 2.5` only with `--captain-ruling R22` (row R22's first
+    cell names both); launcher `experiments/builds/t1_c_line.sh <COMMIT> <RUN>` with identity steps D, A, B, C and the
+    2.0 file. On a ready review: merge (keep both sides of the tests list), tests, commit, deliver to
+    `v/vec-campaign-d`, check out in `~/v/scratch/t1line-wt`, dry-run trace, launch with PATH exported, waiter on
+    every step's exit; on done 0 copy `Cm20a/T1_s2rcCm20.h5ad` and `Cm25a/T1_s2rcCm25.h5ad` to `runs/manual_upload/`,
+    record as `experiments/builds/results/t1cline_<c7>_<RUN>.*`, and ADD EACH FILE'S sha256 TO ENTRY (nn)'S LINE BY A
+    NEW LOG ENTRY BEFORE ITS SCORE (the line's fifth condition).
+  - **THE SIX OTHER QUESTIONS ARE STILL OPEN** (SO, O_hi, MS, file D, T1 line 1's step back, the heart line's
+    exception): the captain's "yes" answered the combined-line question only.
+- **State at 2026-11-22, 04:29 UTC (superseded by the bullet above where they differ).** Decision log through
   - **THE CAPTAIN ORDERED A THIRD T1 SEARCH LINE FROM FILE C ("yes", entry (mm)); C'S UPLOAD WAITS UNTIL THE LINE IS
     LOGGED.** Read as the answer to that one question only; the six others stay open. Steps: (1) a score-blind
     designer and a cold challenger write the line (workflow; hand-back to `lift8/`); (2) the main session writes the

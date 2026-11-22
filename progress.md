@@ -2,6 +2,12 @@
 
 ## Current State
 
+- **2026-11-22, 11:05 UTC.** No new score. On a forwarded note the captain was asked one question and ordered a third
+  T1 search line that starts from file C (both changes). A score-blind designer and a cold challenger wrote it (the
+  atlas step at 2.0 then 2.5 with the correction held at 1.0); it was logged at 11:04 UTC, before file C's score, and
+  its builder change is with an engineer and a reviewer. Six earlier questions remain with the captain. Decision log
+  2026-11-22 (ll) to (nn).
+
 - **2026-11-22, 04:29 UTC.** No new score. The embryo overlay read (row E51) passed both candidates, SO and O_hi;
   fresh analysts wrote the captain's question and both files were built twice with one sha256 each. Every read started
   in this session is now recorded and nothing runs. Six questions are with the captain (SO, O_hi, MS, file D, T1's
