@@ -2,7 +2,40 @@
 
 ## Current Objective
 
-- **State at 2026-11-22, 01:20 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-22, 01:32 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-22 (k); the next label is 2026-11-22 (l). Local main = origin/main at f8c46dd. Tries: T1 438, embryo 84,
+  heart 88, T3 74. No new score yet today.
+  - **THE CAPTAIN ANSWERED THE THREE OPEN QUESTIONS (entry (j), ruling row R22, rules amended, hash 93b6335f replaced
+    by the one in `docs/S2_RULES.sha256`), verbatim: "yes to all three, go ahead".** (1) A SCORE-GUIDED SEARCH OF
+    ROUND STEPS MAY RUN, inside a fixed framework: one open setting per line, round steps on its existing scale, every
+    file named in the log before its own score, the next upload named by headline comparisons only (strictly better
+    than the line's best, else the line ends), nothing fitted from score sizes, no per-metric value read, closed
+    levers outside (sizes, scope, cell numbers; T1 composition, depth, advance draw), two uploads a board a day. THE
+    FIRST LINE IS FIXED (before the 2.0 file's score): T1's atlas step, 2.5 if the 2.0 file strictly beats the line's
+    best headline, then 3.0 if 2.5 does; it ends at the first file that does not, and at 3.0. Files `T1_s2rcB25.h5ad`
+    and `T1_s2rcB30.h5ad` need the builder change (workflow w9wob19fo: branch `campaign/t1-fraction-line`; launcher
+    `experiments/builds/t1_fraction_line.sh`), then two identical builds each on `~/v/vec-campaign-d` (nothing runs in
+    that checkout itself; T65 runs in its own worktree). Other lines: the same workflow's designers and cold
+    challengers per board; write each final rule text into the log BEFORE any of its files is scored; I design none.
+    (2) T3'S REFUSED s1 IS RE-ADMITTED: `runs/manual_upload/T3_refused_s1.h5ad`, sha256
+    0394575a11fcd4f915e0daf4972e5a783b6b89efa065ed4f85fe2445cbbb1545; first T3 slot free after C1, C2, K23 and CK (on
+    its condition); Data used: released challenge data only, no Gata4 validation file, no outside data. (3) T1'S FILE
+    F MAY GO: `runs/manual_upload/T1_s2none.h5ad`, sha256
+    55eaee547ff18d7477da5b730c34e7de9ab74f85cc12fd01a9eff6450367611c; first free T1 slot by entry 2026-11-20 (r); Data
+    used: released challenge data only, no outside data. T1 order from here by the rules on record: F, C, the 2.0
+    file, then the line's 2.5 and 3.0 on their conditions; MS, T68 and rc18 only on their own paths.
+  - **H30 SECOND START (entry (k)).** The reader is corrected by a judge of record's rule (unlisted matrix rows enter
+    nothing), reviewed ready, merged; rows N56 and H30 now name e5ba8d9 on `campaign/moon-heart-chord-4`; ROW =
+    f8c46dd06e20a65397190eb8a4c2f41b7d9a0e73; worktree `~/v/scratch/h30b-wt` with its own environment; chain `h30b`
+    (tests, gate, tables), exit `~/v/scratch/h30b/chain.exit` (3 = gate FAIL or VOID, the row ends). On 0: copy
+    `runs/h30/gate/gate.json`, `gate.txt` and `runs/h30/tables/tables_sha256.json` from the worktree into
+    `experiments/harness/results/h30_heart_late_chord/` (gate files under `gate/`), commit those three files and
+    NOTHING else as RUN, push to the DGX repository, `git checkout --detach RUN` in the worktree, then `bash
+    experiments/harness/run_h30.sh run ROW RUN` and `read ROW RUN` (a second small chain). H31's fix round runs
+    (workflow wf1u3dl54, branch `campaign/moon-heart-bridge-2`).
+  - **STILL AS IN THE 01:20 BULLET:** T65, E51, E54, E52 (`e52b`) run on the DGX; workflows for T68 (wcust43nx), the
+    organ cut (wseung8we), K26 and rc18 (w7y2lvts0), the outside-data design round (wfiigl10k).
+- **State at 2026-11-22, 01:20 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-22 (h); the next label is 2026-11-22 (i). Local main = origin/main at 2c3d568. Tries: T1 438, embryo 84,
   heart 88, T3 74. No new score. Upload queue unchanged (T1: C, then the 2x file; embryo: the copy-positions file,
   then `T2embryo_s2`; T3: C1, C2, K23, CK on barred s2; heart: nothing queued).
