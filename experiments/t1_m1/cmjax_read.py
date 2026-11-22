@@ -3,9 +3,11 @@
 skeletal-guarded single-nucleus atlas direction", read on row T62's five practice tasks.
 
 The recomputed Feng step moves the cardiomyocyte group along Feng's E9.5 -> E14.5 direction (`feng_dirs.
-recomputed_directions`). This read replaces that group's entry, and only it, by the per-gene mean of Feng's direction and
+recomputed_directions`). This read replaces that group's entry, and only it, by the per-gene mean of Feng's direction
+and
 the nuclei-atlas CM direction of experiments/external/jax_cm.py (row T71's reducer, practice ends: embryos 1-12 and
-59-63), rescaled to Feng's RMS over the non-held finite genes, so the step's size is unchanged and only which genes move,
+59-63), rescaled to Feng's RMS over the non-held finite genes, so the step's size is unchanged and only which genes
+move,
 and by how much, changes (`blend`). Endocardium, Endothelium and Epicardium keep Feng's direction byte for byte.
 
 The bases (gates, not counted): `m1rc_gmom` (row T62's candidate at 1/5 of the bracket) and `m1rc_gmom_x2` (row T63's
@@ -31,7 +33,8 @@ byte for byte (tested). Each run checks the non-CM rows per seed and arm and sto
            passes only if all hold: (a) at least MIN_END_NUCLEI CM nuclei enter at each end; (b) at the late end the
            share of r_cm nuclei whose skm score is at least the yaml's purity_score is at most MAX_SKM_SHARE; (c)
            Spearman(D_jax, D_feng_CM) over genes finite in both with Feng mean CP10k at least FENG_MIN_CP at either end
-           lies in [SPEARMAN_LOW, SPEARMAN_HIGH]; (d) the share of D_jax's squared norm on T1 genes on R2's held genes is
+           lies in [SPEARMAN_LOW, SPEARMAN_HIGH]; (d) the share of D_jax's squared norm on T1 genes on R2's held genes
+           is
            below MAX_HELD_SHARE; and the reducer's record is the row's. Reported only: each end's mean CP10k of the five
            skm genes in JAX CM nuclei beside Feng's E14.5 CM mean of them, nuclei per embryo, day labels. Exits 0 on a
            pass and PREGATE_FAIL on a failure (nothing is scored and no try is counted).
@@ -131,8 +134,8 @@ BANNED_PREFIX = "n5" + "4"
 
 FOLLOWS_AHEAD = ("What follows: one priced question to the captain for each fraction read AHEAD ({fractions}) and for "
                  "that fraction only; its default is no change. Nothing is built or changed by this read.")
-FOLLOWS_END = ("What follows: NOT AHEAD at both fractions closes 'JAX nuclei CM co-direction' on T1. No question goes to "
-               "the captain, nothing is built, and nothing is rerun under another row.")
+FOLLOWS_END = ("What follows: NOT AHEAD at both fractions closes 'JAX nuclei CM co-direction' on T1. No question goes "
+               "to the captain, nothing is built, and nothing is rerun under another row.")
 FOLLOWS_VOID = ("What follows: the tries still count; nothing is rerun under row T71, no question goes to the captain "
                 "and nothing is built.")
 FOLLOWS_PRUNED = "What follows: nothing is scored and no try is counted under row T71; the line closes at the pre-gate."
@@ -308,7 +311,8 @@ def arm_directions(directions: Mapping, d_cm: np.ndarray) -> dict:
 
 
 def jax_cm_inputs(directions: Mapping, arrays: Mapping, genes: Sequence[str], held_m1: Sequence[str]) -> dict:
-    """D_jax and the early level on `genes`; the arm's and the placebo's CM entries; the fields the task file records."""
+    """D_jax and the early level on `genes`; the arm's and the placebo's CM entries; the fields the task file
+    records."""
     free = ~np.isin(np.asarray(genes, dtype=str), list(held_m1))
     d_feng = np.asarray(directions[CM], dtype=np.float64)
     d_jax = on_t1(arrays, genes)

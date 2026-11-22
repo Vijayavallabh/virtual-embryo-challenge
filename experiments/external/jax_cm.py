@@ -51,7 +51,7 @@ import csv
 import importlib
 import json
 import sys
-from collections.abc import Iterable, Mapping, Sequence
+from collections.abc import Iterable, Mapping
 from pathlib import Path
 
 import numpy as np
