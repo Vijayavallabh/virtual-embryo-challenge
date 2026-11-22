@@ -1,0 +1,160 @@
+# Row T71 (experiments/harness/TRIES.md): the recomputed cardiomyocyte group of JAX/Qiu 2024 nuclei (register row
+# X003), guarded against skeletal-muscle nuclei, read by experiments/external/jax_cm.py, which writes
+# data/derived/jax_cm_t71_<mode>/ and its MANIFEST.json. Fixed and hashed before the run: the row carries this file's
+# sha256 (jax_cm.YAML_SHA256 holds the same value; the reducer and the read refuse any other file). Nothing here was set
+# from any JAX value: no JAX cell, count, label or figure was opened to write it. A change after the run is a new row.
+#
+# Written to the final entry of a score-blind round's specification (candidate C1A, 2026-11-22). Its gene rule is its
+# own, fixed here, and is the rule of row T68's reducer (jax_blood.gene_universe, imported): the gene universe is the
+# gene table's genes.
+#
+# What the reducer reads, and nothing else (X003 as amended for this row, before any run):
+#   - data/external/jax_qiu2024/embryo/embryo_<n>_gene_count.rds for the embryos of the mode's lists alone (raw counts,
+#     genes x nuclei), each checked against that folder's MANIFEST.json;
+#   - meta/df_cell.csv: the columns of jax_cm.CELL_WHITELIST alone (cell_id, embryo_id, day; experimental_batch is not
+#     read), by jax_blood's reader, which refuses any other column and any annotation, cluster or embedding column;
+#   - meta/df_gene.csv: gene_id and gene_short_name.
+# The stats/*.npz files of that folder, the authors' types, LPM labels, clusters and embeddings are never read.
+
+version: 1
+row: T71
+status: frozen
+
+# The gene universe is the gene table's genes: a count-matrix row id that meta/df_gene.csv does not list (exact gene_id
+# match) is removed when the matrix is loaded, before anything else: library sizes, the UMI floor, CP10k, the scores,
+# the controls and every mean use table genes only. The dropped count and each end's share of the listed nuclei's UMIs
+# on dropped genes are recorded and gate nothing. A symbol the gene table holds twice gets no value.
+gene_universe: gene_table
+
+inputs:
+  dir: data/external/jax_qiu2024
+  counts: embryo/embryo_{n}_gene_count.rds
+  cells: meta/df_cell.csv
+  genes: meta/df_gene.csv
+
+# Two modes, the code's lists (jax_cm.ROW_EMBRYOS; any other list refuses, and embryos 23-58 always refuse).
+# practice: early end embryos 1-12 (run_4, labelled E8.5, 0-12 somites; T1 only), late end 59-63 (E15.5-E16.5), row
+#   T66's and T68's late list, so no new practice embryo is read.
+# test: early end embryos 13-22 (E8.75-E9.5), late end 59-63; run only after the captain's ruling naming the row.
+embryos:
+  practice:
+    early: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    late: [59, 60, 61, 62, 63]
+  test:
+    early: [13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
+    late: [59, 60, 61, 62, 63]
+
+output:
+  practice: data/derived/jax_cm_t71_practice
+  test: data/derived/jax_cm_t71_test
+  direction: jax_cm_direction.npz   # per JAX table gene: gene_id, symbol, m_early, m_late, log_ratio, direction
+  embryos: jax_cm_embryos.csv       # per embryo: end, day label, nuclei read, CM assigned, CM with skm >= 0.3, entering
+
+# ------------------------------------------------------------------ the CM group (N54's machinery)
+# feng_relabel.log1p_cp10k, control_sets, set_score and assign, with N54's settings; the controls' gene means per end,
+# averaged over the two ends with equal weight. The sets are N54's as in experiments/external/feng_relabel.yaml (the
+# same genes, the same sources, the same `excluded` and `dropped` genes; the quotations stay in that file under
+# `sources`), plus one competing class skm (label r_skm). tests/test_jax_cm.py checks every set against N54's yaml.
+score:
+  normalisation: log1p_cp10k
+  control_bins: 25
+  control_per_gene: 10
+  control_seed: 20261119
+  min_genes_found: 2
+
+assign:
+  min_score: 0.3
+  min_margin: 0.25
+  split_margin: 0.1
+  unassigned: r_unassigned
+  ec_split: {class: ec, plus: endo_split, minus: vasc_split, plus_label: r_endocardial_ec,
+             minus_label: r_vascular_ec, ambiguous_label: r_ec_ambiguous}
+
+cm_label: r_cm
+skm_set: skm
+purity_score: 0.3   # a r_cm nucleus whose skm score is at least this counts against the pre-gate's purity clause
+
+sets:
+  cm:
+    role: target
+    label: r_cm
+    genes: {Myl7: released_e95, Tnnt2: released_e95, Actc1: released_e95, Nppa: released_e95, Myh6: released_e95,
+            Myl2: released_e95, Myl4: released_e95}
+  ec:
+    role: target
+    label: r_ec
+    genes: {Cdh5: released_e95, Pecam1: released_e95, Kdr: released_e95, Emcn: released_e95, Tek: released_e95,
+            Sox18: released_e95}
+  epi:
+    role: target
+    label: r_epicardial
+    genes: {Wt1: released_e95, Upk3b: released_e95, Upk1b: released_e95}
+  endo_split:
+    role: split
+    genes: {Npr3: released_e95, Nfatc1: released_e95, Cdh11: released_e95}
+  vasc_split:
+    role: split
+    genes: {Cldn5: released_e95, Sox17: released_e95}
+    excluded: {Lyve1: N54 leaves it out by name}
+  blood:
+    role: competing
+    label: r_blood
+    genes: {Hba-x: released_e95, Hbb-y: released_e95, Gata1: released_e95, Hba-a1: lit_E, Hbb-bs: lit_E,
+            Alas2: lit_E}
+  neural_crest:
+    role: competing
+    label: r_neural_crest
+    genes: {Sox10: released_e95, Foxd3: released_e95, Tfap2a: released_e95, Dlx2: released_e95, Dlx5: released_e95,
+            Plp1: lit_A}
+  hepatic:
+    role: competing
+    label: r_hepatic
+    genes: {Afp: released_e95, Ttr: released_e95, Alb: released_e95}
+  mesenchyme:
+    role: competing
+    label: r_mesenchyme
+    genes: {Tbx1: released_e95, Fgf10: released_e95, Postn: released_e95, Col1a1: released_e95, Col1a2: lit_B,
+            Col3a1: lit_D, Dcn: lit_C}
+  epithelial:
+    role: competing
+    label: r_epithelial
+    genes: {Nkx2-1: released_e95, Shh: released_e95, Cdh1: released_e95}
+  mural:
+    role: competing
+    label: r_mural
+    genes: {Myh11: lit_D, Pdgfrb: lit_A, Rgs5: lit_C, Kcnj8: lit_C, Cspg4: lit_A}
+  immune:
+    role: competing
+    label: r_immune
+    genes: {Ptprc: lit_D, C1qb: lit_G, Lyz2: lit_H, Cd68: lit_A}
+  lymphatic:
+    role: competing
+    label: r_lymphatic
+    genes: {Prox1: lit_J, Flt4: lit_J}
+  skm:
+    role: competing   # fast skeletal muscle: keeps whole-embryo myonuclei out of r_cm
+    label: r_skm
+    genes: {Tnnt3: X010_T71, Tnni2: X010_T71, Mylpf: X010_T71, Myl1: X010_T71, Tnnc2: X010_T71}
+
+dropped: [Phox2b, Fcer1g, Pdpn]
+
+# Source ids (the sentences are quoted in experiments/external/feng_relabel.yaml for released_e95 and lit_A to lit_J).
+# X010_T71: the published adult or postnatal mouse statement naming at least two of Tnnt3, Tnni2, Mylpf, Myl1 and
+# Tnnc2 as skeletal (fast) muscle markers, registered as an amendment of X010 for row T71 before the run, gene symbols
+# only, from a source not built on mouse E9.5-E13.5 data and not Feng 2022 or Qiu 2024; jax_cm.preflight refuses unless
+# X010's register row holds that amendment (jax_cm.SKM_PHRASE and at least two of the five genes in backticks).
+sources: [released_e95, lit_A, lit_B, lit_C, lit_D, lit_E, lit_G, lit_H, lit_J, X010_T71]
+
+# ------------------------------------------------------------------ the direction
+# Each r_cm nucleus with at least umi_target UMIs on table genes is downsampled to exactly umi_target (without
+# replacement, default_rng([downsample_seed, embryo]) over the embryo's nuclei sorted by name); fewer: left out. An
+# embryo enters its end only with at least min_embryo_nuclei such nuclei, and an end needs at least min_end_embryos such
+# embryos. Mean CP10k per embryo, then the equal-weight mean per end. log_ratio = log((m_late + eps) / (m_early + eps));
+# direction = log_ratio x bracket_days / Delta, Delta = the mean day label of the late end's contributing embryos minus
+# that of the early end's (Feng's E9.5 -> E14.5 bracket is five days).
+umi_target: 400
+downsample_seed: 20261123
+min_embryo_nuclei: 30
+min_end_embryos: 3
+eps: 0.5
+bracket_days: 5.0
