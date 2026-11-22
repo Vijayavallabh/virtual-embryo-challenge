@@ -10613,3 +10613,26 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     built.
   - **Until the captain answers** nothing is written or built for MS: the order rule allows the builder option only on
     the captain's yes. Its place on a yes is after the files of entry 2026-11-20 (r)'s list, before rc18.
+- 2026-11-22 (cc), row T71 (T1 candidate C1A) is placed before its run (state at 03:13 UTC, 2026-11-22). Written by
+  the AI assistant, which designed none of it and gives no lean on it.
+  - **C1A** (the outside-data round's T1 candidate: the cardiomyocyte direction blended with a direction from the
+    nuclei atlas of row X003, RMS-matched, with a placebo that permutes the residual and a skeletal-muscle guard; a
+    score-blind round's specification, the cold challenger's final entry governing). `campaign/t1-cm-nuclei`, 6e79b6c:
+    reviewed ready, no blocker; merged. `src/vec/` and the builder are untouched. The reviewer's wording for one row
+    sentence is applied (the reducer re-implements only end_direction).
+  - **The point left open by the review is settled without a design choice.** The specification lists five guard genes
+    and asks for a published adult statement naming at least two; the labeller's rule wants a quoted source for each
+    gene. The first screen found a statement naming three (Oe, Ojima and Muroya 2021); a second screen found one
+    naming the other two (Moriggi et al. 2021). Both are registered under X010 with their quotations and what could
+    not be confirmed (the mice's exact age; in the second, the label sits in a diet-effect sentence at protein level).
+    All five genes stay as the specification lists them and the settings file keeps its pinned sha256.
+  - **The screens the row asks for** are in entries (q) and (r): no embryo of 13 to 22 converts to after E9.5 and
+    embryos 59 to 63 are labelled E15.5 to E16.5; the nuclei atlas's doublet models were fitted per experiment and no
+    experiment mixes a permitted embryo with one labelled inside the window, so the specification's stop does not
+    fire; run_15 also held the boundary embryos 23 and 24, which is carried into any question about a file. The
+    practice read uses embryos 1 to 12 and 59 to 63 only, the lists row T68 already read.
+  - **Placed in this commit:** row T71 with X003's and X010's amendments. Twenty tries (four counted arms on each of
+    row T62's five tasks), T1 464 to 483, counted only if its target-free pre-gate passes; a pre-gate failure exits 3,
+    scores nothing and closes the line. An AHEAD reading goes to the captain as one priced question; a test-mode run
+    needs the captain's ruling naming the row. It runs in a detached worktree of `~/v/vec-campaign-d`'s repository
+    (`~/v/scratch/t71-wt`) with its own environment.
