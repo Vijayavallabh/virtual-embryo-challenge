@@ -2,7 +2,45 @@
 
 ## Current Objective
 
-- **State at 2026-11-22, 02:58 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-22, 03:22 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-22 (ee); the next label is 2026-11-22 (ff). Local main = origin/main at 11b0e26 or one notes commit after
+  it. Tries: T1 463 (483 if row T71's pre-gate passes), embryo 88, heart 97, T3 74. No new score yet today.
+  - **FOUR QUESTIONS ARE WITH THE CAPTAIN (act only on the captain's own words; no lean from me on any).** (1) T1 line
+    1, a step back (1.75, 1.25), to be fixed before the 2.0 file's score; default the rule stays. (2) The heart search
+    line's named exception; recused. (3) File D (organ cut), `runs/manual_upload/T2heart_organ_half.h5ad`, sha256
+    1b4342c151c19dfc827d4b7a310c6a0fa8908f1e369836ebffb22c27c93b4f00; default no; recused. (4) **Q-MS (entry (bb)):**
+    row T65 read MS AHEAD on practice; does the captain name MS? On a yes ONLY: an engineer writes the builder option
+    (R13's file with the released per-category momentum added on the direction-group cells before the atlas step, arm
+    'all'), a reviewer passes it, a dry run is traced, the file is built twice in a checkout where the default command
+    first rebuilds ad8f24c7; its place is after entry 2026-11-20 (r)'s list, before rc18. With no answer nothing is
+    written or built.
+  - **HANDED OVER TODAY, WAITING FOR THE CAPTAIN'S UPLOADS.** Embryo: `runs/manual_upload/T2embryo_s2x_crs.h5ad`
+    (323f2acc32f731819b1a3cc0da32478a51d9e9a10f13dbd940773b113b5644fa), after C, with the analysts' note. T1 line 2's
+    next file: `runs/manual_upload/T1_s2rcA15.h5ad`
+    (e2334137b54d98b04e9dece90213987e61fe9aa15a3fb8d85e6c262d8fb5ba75), after the queued T1 files and after line 1's
+    next file; `T1_s2rcA20.h5ad` (372713686782be273a52427140eab652517e35b679f54fc2a969484dee730218) only if A15
+    strictly beats the line's best. T1 line 1's `T1_s2rcB25.h5ad` and `T1_s2rcB30.h5ad` wait on the 2.0 file's
+    headline.
+  - **CLOSED SINCE 03:00.** T68 NOT AHEAD (the blood line on T1 closes). E54's counted gate failed (embryo 88). H32's
+    gate failed earlier. C2A stopped.
+  - **RUNNING ON THE DGX (a waiter on each).** rc18's read chain (row T69; `~/v/scratch/t69chain2/chain.exit`;
+    worktree `~/v/scratch/t69-wt` at 54e5a7f). Row T71 (C1A; `~/v/scratch/t71/chain.exit`; worktree
+    `~/v/scratch/t71-wt` at aa93a69; 3 = pruned by its target-free pre-gate, no try; on a read: copy
+    `experiments/t1_m1/results/t71_cmjax/` back, the read's fixed words, totals T1 483). The T3 line's E = 4.0 build,
+    third launch (`~/v/scratch/t3outside_9fa509f_s2_e4.0/all.exit`; worktree `~/v/scratch/k26-wt` at 9fa509f; 47 = the
+    guard failed and the line ends at 2.0; 50 to 52 = the K23 file did not reproduce): on 0 read `SHA256SUMS` and
+    `stamps`, copy `runs/t3_outside_form_9fa509f_s2_e4.0/a/xall-s2.h5ad` to `runs/manual_upload/T3_k23_s2_e4.h5ad`,
+    record as `experiments/builds/results/t3line_9fa509f_s2_e4.*`; never open the sidecar. E51 (embryo overlay reads;
+    run since 01:28; on its reading the embryo's order rule decides SO and O_hi; I am recused on their terms: fixed
+    words only, figures to fresh analysts).
+  - **FOR EACH READ THAT COMES BACK AHEAD (T69, T71):** one priced question to the captain in the read's and the row's
+    own statements, no lean; nothing is built before the captain's yes. T69's builder draft sits on the old branch
+    `campaign/t1-rc18` and must be ported and reviewed afresh.
+  - **KNOWN, NOT YET FIXED.** `experiments/t3_decomp/build_combination.sh`, `run_k22.sh` and `run_k23.sh` still name
+    the old tables folder; each needs the reviewed fix of entry (dd) before any new launch. Four tests of
+    `tests/test_t3_combination_build.py` fail when that file runs after certain launcher test files in one process and
+    pass alone.
+- **State at 2026-11-22, 02:58 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-22 (y); the next label is 2026-11-22 (z), then (aa). Local main = origin/main at de7050b or one notes commit
   after it. Tries: T1 448 (463 once row T69's runs have started: check `~/v/scratch/t69chain2/chain.log` and update
   the totals line), embryo 87, heart 97, T3 74. No new score yet today.

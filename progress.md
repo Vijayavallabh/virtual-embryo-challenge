@@ -2,6 +2,14 @@
 
 ## Current State
 
+- **2026-11-22, 03:22 UTC.** No new score. The multi-seed T1 read (row T65) came back AHEAD on practice, so one priced
+  question went to the captain; nothing is built before the answer. The blood rerun (T68) was not ahead and that line
+  closed; the embryo flow read (E54) failed its counted gate. T1's damping files were built and the damping 1.5 file
+  was handed over as that line's next file. The T3 line's build stopped twice (a missing tool path, then a moved
+  tables folder); the launcher was fixed and reviewed and the build runs again. Row T71 (the nuclei-blend T1
+  candidate) was placed with two published marker statements and started. Tries: T1 463, embryo 88, heart 97, T3 74.
+  Decision log 2026-11-22 (z) to (ee).
+
 - **2026-11-22, 02:58 UTC.** No new score. The heart's sign-gated trend (row H32) stopped at its target-free gate, so
   no outside-data heart candidate reached a counted read. The embryo's copy-rows file at the team's size passed its
   condition (row E52) and was built twice with one sha256; fresh analysts are writing its price note. The T3 search
