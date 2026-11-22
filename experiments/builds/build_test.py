@@ -71,8 +71,16 @@ machine, and an official upload needs the captain's go-ahead.
           refused without that flag, with any other row, unless row R22 is the captain's order naming the option,
           with --feng-fraction-mult other than 1.0, with --released-bet, on any other command or seed and on a dry
           run. Its record's t1_candidate field names row R22; --g-mom-damping 1.0 (candidate A) needs no ruling, as
-          before
-  heart   B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
+          before.
+          --g-mom-damping 1.0 --feng-fraction-mult 2.0 or 2.5 --captain-ruling R22 (row R22, the third T1 search line
+          of docs/PLAN.md decision log 2026-11-22): file C's command with the direction step at 2.0 or 2.5 times the
+          calendar fraction, g_mom's damping held at 1.0, nothing else changed; refused without that flag, with any
+          other row, unless row R22's first cell is the captain's order naming the combined option
+          (`--g-mom-damping 1.0 --feng-fraction-mult 2.0` or `... 2.5`; the bare multiplier's option does not count),
+          with --released-bet, on any other command or seed and on a dry run. The pair is tested before the
+          multiplier's own routing; every other pair of the two values is taken or refused as before. Its record's
+          t1_candidate field names row R22
+  heart  B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
           procedure: --entry s1 = scope hypothesis H1; s2_trim = the s2 of docs/S2_RULES.md (H2 as a trim to half
           E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`). --trend
           (both heart files since the captain's ruling of 2026-11-13, docs/PLAN.md decision log (w); row H11 of
@@ -570,7 +578,8 @@ def _bet_refusals(a) -> None:
     bet = getattr(a, "released_bet", None)
     if bet is None:
         ruling = getattr(a, "captain_ruling", None)
-        if ruling is not None and (_ruled_fraction_ordered(a) or _ruled_damping_ordered(a)):  # rows R20, R22:
+        if ruling is not None and (_ruled_fraction_ordered(a) or _ruled_damping_ordered(a)  # rows R20, R22:
+                                   or _ruled_line3_ordered(a)):
             return  # _t1_candidate refused every other use
         if ruling is not None or getattr(a, "bet_strength", None) is not None:
             sys.exit("--captain-ruling and --bet-strength go with --released-bet only")
@@ -630,6 +639,18 @@ T1_R22_DAMPING_OPTIONS = {1.5: "`--g-mom-damping 1.5`", 2.0: "`--g-mom-damping 2
 G_MOM_DAMPING_ORDER_R22 = ("experiments/harness/TRIES.md row {row}, the captain's order of 2026-11-22 (docs/PLAN.md "
                            "decision log 2026-11-22), the second T1 search line: g_mom's within-type damping at "
                            "{v:.1f}, nothing else changed")
+# Row R22's third T1 search line (the line added in docs/PLAN.md decision log 2026-11-22): the direction at 2.0 and at
+# 2.5 x the calendar fraction on file C's command, g_mom's within-type damping held at 1.0 (candidate A's value).
+# Kept apart from FENG_FRACTION_MULTS_RULED, whose 2.0 (row R20's file) and 2.5 (the first line's) are taken at damping
+# 0.5 only: each pair is taken only with --captain-ruling R22, and only while row R22's first cell names the combined
+# option exactly; the bare multiplier's option, which the first line's 2.5 names, never orders the pair.
+G_MOM_DAMPING_LINE3 = G_MOM_DAMPINGS[1]
+FENG_FRACTION_MULTS_LINE3 = (2.0, 2.5)
+T1_R22_LINE3_OPTIONS = {2.0: "`--g-mom-damping 1.0 --feng-fraction-mult 2.0`",
+                        2.5: "`--g-mom-damping 1.0 --feng-fraction-mult 2.5`"}
+T1_LINE3_ORDER_R22 = ("experiments/harness/TRIES.md row {row}, the captain's order of 2026-11-22 (docs/PLAN.md "
+                      "decision log 2026-11-22), the third T1 search line: on file C's command, g_mom's within-type "
+                      "damping held at 1.0 and the direction at {v:.1f} x the calendar fraction, nothing else changed")
 
 
 def _captain_order_names(row: str, option: str, path: Path | None = None) -> bool:
@@ -663,6 +684,47 @@ def _ruled_damping_ordered(a) -> bool:
             and getattr(a, "feng_fraction_mult", None) in (None, FENG_FRACTION_MULTS[0])
             and getattr(a, "released_bet", None) is None and getattr(a, "bet_strength", None) is None
             and _captain_order_names(T1_R22_ROW, T1_R22_DAMPING_OPTIONS[damping]))
+
+
+def _is_line3(a) -> bool:
+    """Whether the command gives the third line's pair: --g-mom-damping 1.0 with --feng-fraction-mult 2.0 or 2.5."""
+    return (getattr(a, "g_mom_damping", None) == G_MOM_DAMPING_LINE3
+            and getattr(a, "feng_fraction_mult", None) in T1_R22_LINE3_OPTIONS)
+
+
+def _ruled_line3_ordered(a) -> bool:
+    """The commands row R22's third line orders, as _t1_candidate holds them: --g-mom-damping 1.0 with
+    --feng-fraction-mult 2.0 or 2.5 and --captain-ruling R22, no --released-bet or --bet-strength, and row R22 the
+    captain's order naming the combined option."""
+    return (_is_line3(a) and getattr(a, "captain_ruling", None) == T1_R22_ROW
+            and getattr(a, "released_bet", None) is None and getattr(a, "bet_strength", None) is None
+            and _captain_order_names(T1_R22_ROW, T1_R22_LINE3_OPTIONS[a.feng_fraction_mult]))
+
+
+def _t1_ruled_line3(a, mult: float) -> dict:
+    """--g-mom-damping 1.0 with --feng-fraction-mult 2.0 or 2.5 (row R22's third T1 search line): refused before
+    anything is read without --captain-ruling R22, with any other row, unless row R22 is the captain's order naming the
+    combined option, with --released-bet or --bet-strength, and on any command but T1_CANDIDATE_COMMAND at the default
+    seed on the test board. Returns the record's candidate values, naming the row."""
+    row, option = T1_R22_ROW, T1_R22_LINE3_OPTIONS[mult]
+    ruling = getattr(a, "captain_ruling", None)
+    pair = f"--g-mom-damping {G_MOM_DAMPING_LINE3:g} with --feng-fraction-mult {mult:g}"
+    if ruling is None:
+        sys.exit(f"{pair} is the captain's order of row {row} alone and needs --captain-ruling {row}")
+    if ruling != row:
+        sys.exit(f"{pair} is refused with --captain-ruling {ruling}: only row {row} orders it")
+    if not _captain_order_names(row, option):
+        sys.exit(f"{pair} is refused: experiments/harness/TRIES.md has no single row {row} whose first cell is the "
+                 f"captain's order (\"ruling, no run\") naming {option} and `--captain-ruling {row}`")
+    if getattr(a, "released_bet", None) is not None or getattr(a, "bet_strength", None) is not None:
+        sys.exit(f"{pair} is refused with --released-bet and --bet-strength: row {row}'s line is one file with one "
+                 "change")
+    if (getattr(a, "feng_groups", FENG_GROUPS_DEFAULT) != "recomputed" or a.seed != harness.BUILD_SEED_OFFSET + 1
+            or a.board is not None):
+        sys.exit(f"{pair} changes T1's recomputed last file only: it needs the command {T1_CANDIDATE_COMMAND} at the "
+                 f"default seed on the test board (row {row})")
+    return {"g_mom_damping": float(G_MOM_DAMPING_LINE3), "feng_fraction_mult": float(mult), "captain_ruling": row,
+            "order": T1_LINE3_ORDER_R22.format(row=row, v=float(mult))}
 
 
 def _t1_ruled_damping(a, damping: float) -> dict:
@@ -733,10 +795,14 @@ def _t1_candidate(a) -> dict | None:
     first upload's), with a seed other than the default and on a dry run. Returns None when neither is given (today's
     file and record), else the two values as the record names them. --feng-fraction-mult 2.0 is row R20's file alone,
     2.5 and 3.0 row R22's line alone (_t1_ruled); --g-mom-damping 1.5 and 2.0 row R22's second T1 line alone
-    (_t1_ruled_damping); with the flag --captain-ruling, any other value is refused here or by _bet_refusals."""
+    (_t1_ruled_damping); --g-mom-damping 1.0 with --feng-fraction-mult 2.0 or 2.5 row R22's third T1 line alone
+    (_t1_ruled_line3, tested before the multiplier's own routing, which keeps every other pair as before); with the
+    flag --captain-ruling, any other value is refused here or by _bet_refusals."""
     damping, mult = getattr(a, "g_mom_damping", None), getattr(a, "feng_fraction_mult", None)
     if damping is None and mult is None:
         return None
+    if _is_line3(a):
+        return _t1_ruled_line3(a, mult)
     if mult in FENG_FRACTION_MULTS_RULED:
         return _t1_ruled(a, mult)
     if damping in T1_R22_DAMPING_OPTIONS:
@@ -1636,7 +1702,9 @@ def build_parser() -> argparse.ArgumentParser:
                                 f"2026-11-21) and needs --captain-ruling {T1_R20_ROW}, with no other change; "
                                 f"{FENG_FRACTION_MULTS_R22[0]:g} and {FENG_FRACTION_MULTS_R22[1]:g} are row "
                                 f"{T1_R22_ROW}'s first search line (the captain's order of 2026-11-22) and need "
-                                f"--captain-ruling {T1_R22_ROW}, with no other change")
+                                f"--captain-ruling {T1_R22_ROW}, with no other change; with --g-mom-damping 1.0, "
+                                f"{FENG_FRACTION_MULTS_LINE3[0]:g} and {FENG_FRACTION_MULTS_LINE3[1]:g} are row "
+                                f"{T1_R22_ROW}'s third search line and need --captain-ruling {T1_R22_ROW}")
             p.add_argument("--released-bet", choices=tuple(RELEASED_BETS), default=None,
                            help="try T61 of experiments/harness/TRIES.md (off by default): a variant of T1's last file "
                                 "(--feng-groups none only) that changes which cells are drawn: share_trend (the "
@@ -1653,7 +1721,10 @@ def build_parser() -> argparse.ArgumentParser:
                                 f"{FENG_FRACTION_MULTS_R22[0]:g} or {FENG_FRACTION_MULTS_R22[1]:g}: {T1_R22_ROW}, the "
                                 "captain's order for the first search line; with --g-mom-damping "
                                 f"{G_MOM_DAMPINGS_R22[0]:g} or {G_MOM_DAMPINGS_R22[1]:g}: {T1_R22_ROW}, the captain's "
-                                "order for the second T1 search line")
+                                "order for the second T1 search line; with --g-mom-damping 1.0 and "
+                                f"--feng-fraction-mult {FENG_FRACTION_MULTS_LINE3[0]:g} or "
+                                f"{FENG_FRACTION_MULTS_LINE3[1]:g}: {T1_R22_ROW}, the captain's order for the third "
+                                "T1 search line")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim", "core_trim", "organ_scope"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "
