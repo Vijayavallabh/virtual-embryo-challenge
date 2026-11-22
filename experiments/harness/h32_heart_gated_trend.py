@@ -832,8 +832,8 @@ FOLLOWS = {
                   "stands."),
 }
 L0 = ("Try H32 (run commit {commit}). A labelled in-sample diagnostic on one truth (E10.5, two backtests merged "
-      "seed by seed); every figure is a practice reading on released stages and none is to be read beside a test score. "
-      "Nothing is built and no file, rule, scope, size, count or depth changes. {bypass}.")
+      "seed by seed); every figure is a practice reading on released stages and none is to be read beside a test "
+      "score. Nothing is built and no file, rule, scope, size, count or depth changes. {bypass}.")
 J5 = "J5: seed se about 0.01 to 0.04 on one truth (row H28), so the read is a labelled diagnostic."
 J6 = ("J6: the trend's budget at the test ({t:g} day) over the practice budgets ({b}) is 1.33 and 4: any gain is shown "
       "as a range from zero to its practice value.")
