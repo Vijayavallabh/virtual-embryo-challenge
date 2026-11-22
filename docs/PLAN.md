@@ -10001,3 +10001,23 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     library runs follow one after another. E51: at its reproduction gate (six of nine tasks done). E54: its tests exit
     0 on the DGX with the torch tests; the fits are running on GPUs 2 and 7. The organ-cut file's code and the rerun
     of T66 as row T68 are with their engineers.
+- 2026-11-22 (i), what was started on the captain's order of entry (g), and one stray edit put right (state at 01:18
+  UTC, 2026-11-22). Written by the AI assistant, which gives no design lean.
+  - **Started, each with score-blind agents and a blocker standard fixed up front.** (1) The organ-cut file D: two
+    engineers in turn (the builder side; then the practice read with its target-free gate, the launchers and row
+    H29b), two reviewers, one fix round if needed. (2) The corrected rerun of T66 as row T68: an analyst fixes the
+    rule for the atlas's matrix genes outside its gene table, an engineer writes the row's code, a reviewer checks it.
+    (3) The reader of rows N56 and H30: the same three roles for the heart chord's gate. (4) The two parked
+    outside-data candidates: K26's fix round (T3, a query-gene response map) and the first build of rc18 (T1, the
+    atlas direction over E9.5 to E18; rows N58 and T69). (5) One more design round on outside data, per board a fresh
+    designer and a cold challenger, at most two candidates each, no web access, every new source marked unverified
+    until a screening agent has checked it; "no further candidate" is a valid answer. H31 (the heart bridge) waits for
+    the gene rule of (3) and then gets its own fix round.
+  - **A stray edit in the main checkout, put right.** The analyst of (3), an agent without a worktree of its own,
+    drafted its code change in the main checkout's two heart chord files before handing back (the files changed at
+    01:14 UTC; the engineer's worktree was made at 01:15). Nothing was committed. The draft is kept as a patch in the
+    session's scratch folder and the two files are restored to the committed state; the engineer works to the
+    analyst's written decision in its own worktree. From now on an agent that only decides is told that it changes no
+    file anywhere, and the main checkout's state is looked at after each such stage.
+  - **Second start of E52** (01:12 UTC) at 2c3d568 in the DGX worktree `~/v/scratch/e52b-wt`, with the per-machine
+    pins of entry (h).
