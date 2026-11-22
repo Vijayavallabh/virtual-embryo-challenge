@@ -9744,3 +9744,54 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     build and no rerun. It runs in a detached worktree of the DGX checkout's repository, because row T67's chain holds
     the checkout itself; the commit reaches that repository by a push to a new branch ref, which leaves the checkout's
     working tree and HEAD untouched.
+- 2026-11-22 (b), both fix rounds are back: seven reads are review-ready and merged; four rows are placed before their
+  runs (T66, E51, E53, H29a); row T65's first launch refused and is relaunched (state at 00:31 UTC, 2026-11-22).
+  Written by the AI assistant, which gives no design lean; each read is its score-blind judge's or challenger's.
+  - **Hand-backs.** Moonshot fix round (ten agents): T66 (T1, the held Blood cells moved along the outside nuclei
+    atlas), K25 (T3, within-label dispersion), H30 with its gate row N56 (heart, a late-anchor chord), E53 (embryo,
+    geodesic overlay) and E54 (embryo, multi-stage flow): each re-review says ready, no blocker. Candidate fix round
+    (seven agents): E51 (embryo, the overlay with the series expression and the overlay at the deeper depth) and H29a
+    (heart, the trend step on forms A and B) are ready; E52 (embryo, copy-positions at the team's own size) is not
+    ready on one launcher point (a step killed part way could leave an earlier exit 0 standing beside the new commit)
+    and went back with the reviewer's fix.
+  - **Merged to main**, both sides of the step script's test list kept: the five moonshot branches and the two ready
+    candidate branches. On merged main 752 tests pass and 5 are skipped (the torch tests, which run on the DGX), the
+    step script's guard passes and the linter is clean. One pin tripped on the merge and was corrected: E51's test
+    pins the 63 harness candidates older than its row, and with row E53's geodesic pair merged beside it the count was
+    65. Recomputed with that pair left out, the digest is the pinned one, so no older candidate changed; the test now
+    leaves out, by name, the registries of rows merged beside it (commit 1d4b854).
+  - **T65: the first launch refused and is relaunched; the fault was the AI assistant's.** It ran from a detached
+    worktree with the checkout's environment. That environment's package path names the checkout's own source (commit
+    6c01146), so the run step's commit check saw the checkout's commit, not the row's, and refused before anything
+    loaded ("HEAD is not the run commit given by --commit"; the chamber step exited 1 after two seconds; no task file,
+    no score, no try). The package source is byte for byte the same at the two commits, so nothing wrong could have
+    been computed. The worktree now has its own environment from the locked versions (68 packages, each at the
+    checkout's version); it imports its own source and sees its own commit, clean. The second chain started at 00:20
+    UTC. From now on a read whose script does not put its own checkout's source first runs in a real checkout or in a
+    worktree with its own environment.
+  - **Register, before any run.** X003 is amended for T66: model input for the held Blood direction, practice only,
+    embryos 1-12 and 59-63, raw counts, the stage label, two identifiers, the gene table's two name columns, and
+    `experimental_batch` for reporting only. That column is one beyond the words of the captain's approval of
+    2026-11-19 ("raw counts and stage labels"); naming it is the AI assistant's reading (a run identifier, no
+    annotation of what a cell is) and is said to the captain in the next report. X005 is amended: torch (E53's
+    registration, E54's flow), torchdiffeq (E54), torchcfm installed and not imported; licences as the installed
+    packages declare them. The R-data reader was added to the environment of the DGX checkout `~/v/vec-campaign` from
+    the lock (`uv sync --frozen --inexact --group external --group gpu`: one package added, none removed, nothing
+    running there).
+  - **Rows placed in this commit, each before its run.** Their texts are the engineers', checked by the reviewers
+    against the code, with the blanks filled, T66's run place corrected and pronouns for the captain removed. **T66**:
+    ten tries (T1 439 to 448 after T65's ten; none if its target-free pre-gate fails); AHEAD only if all four clauses
+    of its statement hold, which leads to one priced question (amend R1 for Blood, default keep R1); NOT AHEAD closes
+    the line. **E51**: two tries (embryo 85 and 86); SO and O_hi each pass only on their three clauses; a pass only
+    puts the question to the captain. **E53**: two tries (embryo 87 and 88; none if its target-free gate fails on the
+    test pair); it passes only if (a) to (f) hold, and then the candidate is fixed in this log before any score and
+    goes to the captain as a priced question. Its J7 dry run reports and decides nothing: the engineer asked whether
+    it should stop the run, and the specification's own words (dry-run and quote) are kept, which is no lean of the AI
+    assistant's. **H29a**: eight tries (heart 81 to 88); H-T1 qualifies only on S1 to S3 on form A, H-T1B only on S1
+    to S3 on form B with H-T1's S2; a qualified file is built twice and goes to the captain by name.
+  - **Open points sent to fresh score-blind analysts** (workflow open-points-round, up to twelve agents), because the
+    engineers left them to the main session and the main session makes no design call: K25 (which total the estimator
+    divides by; the wording of the pooled build path), E54 (how a slot is filled), H30 (a per-source minimum, and a
+    second reading of its data windows); with them E52's launcher fix and its re-review, and a screen of the licence
+    of the outside nuclei atlas's portal copy, which row H30's code requires the register to call confirmed. Those
+    rows are placed when the answers are back. K26 and H31 stay deferred.
