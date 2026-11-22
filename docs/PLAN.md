@@ -10157,3 +10157,35 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Next on the same reducer.** Candidate C1A of the outside-data round (the cardiomyocyte direction blended with
     this atlas's nuclei direction) builds on this reducer and rule; its engineer starts now, and its row is placed
     only after its review and after the screens the challenger asked for are in.
+- 2026-11-22 (n), the organ cut's code is reviewed and merged and row H29b is placed before its gate; the first search
+  line's builder values are merged (state at 01:56 UTC, 2026-11-22). Written by the AI assistant, which is recused on
+  the heart's scope and size and decided nothing in the organ cut.
+  - **The organ cut D (ruling row R21; workflow heart-organ-cut, six agents).** Engineer 1 wrote the builder side to
+    the score-blind round's specification: the label config ported from T1's committed chamber rule
+    (`configs/t2_chamber_classes.yaml`; an unlisted label refuses), the tissue mask (chamber-category cells in the
+    connected components that hold core cells, linked below the 99th percentile of each core cell's nearest-core
+    distance, the one constant), the size field (the raw-mode core forecast times rms(pool)/rms(core) on E10.5) and
+    the builder entry `--entry organ_scope`, off by default. Engineer 2 wrote the practice read with its target-free
+    gate, the launchers and the row. The builder's reviewer said ready. The read's reviewer named one blocker, a void
+    condition the row stated and the code did not apply; a third engineer closed it by the reviewer's own text fix
+    (the row now says what the code does: a V7 crosscheck that fails) and a second reviewer says ready
+    (`campaign/heart-organ-3`, 3b6fd11). Merged to main. Every existing heart command still builds byte for byte on
+    the synthetic fixtures.
+  - **Departures the engineers stated, kept as built and reviewed.** The config lists every label of the lineage map
+    (a superset of the heart stages' labels); two haematopoietic endothelium labels sit in vascular endothelium, which
+    is kept either way; the perfect-size arm D_p is counted, as row H27 counted its own, so the row counts nine tries,
+    not six (the larger count is the cautious one); the pure-label diagnostic is sized by its own pool's ratio. None
+    of these was chosen by the AI assistant.
+  - **Row H29b, placed in this commit before its gate.** Text: the engineers', as the second reviewer checked it
+    against the code, with the code cell pointed at the merged branch. It says in its first cell that the read prices
+    the downside and checks the code and cannot test D's bet: only the tautological organ truth can favour D over C.
+    Order on the DGX: tests; the target-free gate on E10.5 (PASS, or STOP if D's rows overlap C's or B's pool by 0.90
+    or more, or REFUSED on an unmapped label, in which case the config is fixed first in a new commit); the run (three
+    transitions, ten seeds); the read, which says only READ or VOID. A READ sends the figures to fresh analysts, who
+    write the captain's question; the two builds follow only then, and the upload only on the captain's yes by name.
+  - **The first search line's builder values** (`campaign/t1-fraction-line`, fc53487): the T1 builder takes the atlas
+    step at 2.5 and at 3.0 only with `--captain-ruling R22`, with every refusal the 2.0 value has; row R22 as placed
+    satisfies the builder's check; a launcher builds each file twice after rebuilding R13's, B's and the 2.0 file's
+    known bytes. A reviewer says ready, no blocker. Merged to main.
+  - **Tests on merged main:** 673 passed on the T1 builder's, the organ cut's and the heart reads' test files; the
+    step script's guard passes; the linter is clean.
