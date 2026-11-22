@@ -10100,3 +10100,34 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the tables and, if the gate says PASS, the counted read run from a new worktree with its own environment.
   - **Same fact, other reads.** H31 (the heart bridge) reads the same files and takes this rule in its own fix round.
     Row T68 (T1) takes its own analyst's rule for its reducer.
+- 2026-11-22 (l), the heart chord's gate N56 is VOID: row H30 ends without a counted read, and the heart bridge H31
+  behind the same gate ends with it; what the outside-data design round returned (state at 01:34 UTC, 2026-11-22).
+  Written by the AI assistant; the gate's outcome is its own words.
+  - **N56** (target-free, not a try; ROW f8c46dd in `~/v/scratch/h30b-wt`; tests exit 0; the gate exit 3). In its own
+    words: "OUTCOME: VOID"; "gate VOID: the classifier's balanced accuracy on held-out MERFISH is below 0.8; H30 ends,
+    no counted read runs, nothing is asked." The balanced accuracy is 0.746. Its other lines, which would not have
+    passed either: CM rho +0.261 against a line of 0.35; Endo +0.070 against 0.25; Epi and Hep not evaluable. By the
+    rows, H30 ends: no table, no counted read, no try, no question. The gate's two files are committed with this
+    entry.
+  - **H31** (the heart bridge) stands behind the same gate by its specification, so it cannot run; its fix round,
+    started under entry (i), was stopped (two agents, a few minutes in). Nothing of it is merged. No other gate is
+    written for either row by the AI assistant: a new gate would be a new design.
+  - **The outside-data design round (workflow outside-data-round-2, eight agents; hand-back in the scratch folder
+    `lift8/outside_round2.json`).** The challengers' final lists, in their words to the captain. T1, two long shots on
+    data already on the team's machines: C1A, the cardiomyocyte direction blended with a second, single-nucleus atlas
+    direction at unchanged size, with a guard against skeletal-muscle nuclei (their odds of a pass about 1 in 10);
+    C2A, atrial cells moved by the heart atlas's atrial direction and ventricular cells by its ventricular one, after
+    a screen of how the atlas's zone column was made (about 1 in 14). T3: nothing (the one proposal, an outside
+    developmental-clock table, was struck: about 2 in 100, and its practice test rewards the opposite direction).
+    Heart: one, H32, the trend step kept only for genes whose outside late change points the same way, on the file in
+    force, with its own target-free gate (about 1 in 25, worth under half a heart point; it does not depend on N56's
+    outcome by its specification, which was fixed before that outcome existed). Embryo: nothing (the one proposal, an
+    outside gastrulation atlas to clean the series factor, was struck: its practice test cannot tell the atlas's
+    information from simply weakening the factor, and its legality is open).
+  - **What is done with them.** C2A and H32 go to engineers now; C1A follows when the rerun of T66 (row T68) is
+    reviewed, because it builds on that reducer and its gene rule. Screens asked by the challengers go to screening
+    agents: each atlas embryo's day label and somite count; one published adult statement naming fast skeletal-muscle
+    marker genes, by symbol only; how the heart atlas's zone column was made; and, from the outside nuclei atlas's
+    methods on quality filtering only, whether its nucleus filter was fitted on nuclei pooled with in-window embryos.
+    That last answer bears on every use of that atlas (T66, T68, C1A, H32) and is recorded in the register whichever
+    way it falls.
