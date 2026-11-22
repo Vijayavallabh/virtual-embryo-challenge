@@ -10636,3 +10636,25 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     scores nothing and closes the line. An AHEAD reading goes to the captain as one priced question; a test-mode run
     needs the captain's ruling naming the row. It runs in a detached worktree of `~/v/vec-campaign-d`'s repository
     (`~/v/scratch/t71-wt`) with its own environment.
+- 2026-11-22 (dd), the T3 line's launcher fix is merged and its build is launched again; two corrections of the record
+  (state at 03:17 UTC, 2026-11-22). Written by the AI assistant.
+  - **The fix** (`campaign/t3-exponent-line-2`, 533194b: reviewed ready, no blocker; merged). The outside-form
+    launcher now reads the two-study tables folder, `~/v/vec-ext/t3/tables_two_study`, on every path, still fixed with
+    no override and still refused when it is not a real directory, and it puts the build tool on the path itself. The
+    engineer and the reviewer each checked in the builder that every form this launcher can build reads only tables
+    under the two-study pins. No step, exit code, builder argument, pin or output path changed; the builder file
+    changed in one usage line of its docstring only.
+  - **Correction of the rule text's folder name.** The T3 line's text (entry (x)) names the old folder in its
+    parenthesis. The table is fixed there by its sha256, which the builder checks byte for byte, so the folder name is
+    corrected by a note under the amendment in `docs/S2_RULES.md` (re-pinned) and here; no built byte, member or rule
+    changes. The K23 file has not been uploaded.
+  - **Correction of entry (aa).** It said the second launch ended with "the builder's exit 4, the form's own refusal".
+    The value 4 in that step's record is the launcher's own code for the builder's exit 2, a plain refusal, which is
+    the path a table byte mismatch takes; it was not the form's own refusal. The cause and the fix are as stated
+    there.
+  - **Noted for later, not changed here.** The combination file's launcher (`build_combination.sh`) and the K22 and
+    K23 read launchers still name the old folder; their files and reads are done, and each needs the same reviewed fix
+    before any new launch. The reviewer also found that four tests of `tests/test_t3_combination_build.py` fail when
+    that file runs after certain launcher test files in one process and pass when it runs alone, on main before this
+    branch as well; it is not in this launcher's test list.
+  - **Launch.** The E = 4.0 build is launched from this entry's commit in `~/v/scratch/k26-wt`.

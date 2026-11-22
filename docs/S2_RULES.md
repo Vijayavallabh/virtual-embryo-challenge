@@ -2018,3 +2018,10 @@ table exponents 0, 2 and 4 were tried on B and the best headline was kept. Data 
 (wild-type E8.75 cells, the released Mab21l2 knockout) and GEO GSE204906 and GSE277839 as knockout-over-control
 changes on the panel genes. No beta-catenin or Gata4 perturbation data from outside the release. Every upload is the
 captain's own act.
+
+**Correction of 2026-11-22 (decision log 2026-11-22 (dd)), made before the K23 file is uploaded.** The text above
+names `~/v/vec-ext/t3/tables` as the tables folder. That folder held the two-study tables when row K23's file was
+built; since row K24 (2026-11-21) it holds K24's wider tables, and the two-study tables that rows K22 and K23 read sit
+in `~/v/vec-ext/t3/tables_two_study`. The reviewed launcher reads them there. The table is fixed in the text by its
+sha256 (`all`, 9490f524e40e...), which the builder checks byte for byte before it reads a value, so this correction
+changes no built byte, no member of the line and no rule.
