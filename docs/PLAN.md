@@ -10189,3 +10189,69 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     known bytes. A reviewer says ready, no blocker. Merged to main.
   - **Tests on merged main:** 673 passed on the T1 builder's, the organ cut's and the heart reads' test files; the
     step script's guard passes; the linter is clean.
+- 2026-11-22 (o), the search lines the score-blind round kept, and two questions put to the captain (state at 01:59
+  UTC, 2026-11-22). Written by the AI assistant, which designed none of the lines; the rule texts are the cold
+  challengers', verbatim.
+  - **The round** (workflow score-search-lines, ten agents: per board a fresh designer and a cold challenger, all told
+    to use no test score and to read the rules only from the team's screened record; hand-back in the scratch folder
+    `lift8/search_lines.json`).
+  - **T1 line 2, in force (rules amended; row R22's first cell now names its two options).** The challenger's text,
+    verbatim: T1 line 2 (under ruling row R22, a score-guided search of round steps; fixed before any score of its new
+    files): g_mom's within-type damping, on R13's command `build_test.py t1 --g-mom --base lib3 --feng-groups
+    recomputed`, with nothing else changed (default seed 1000001, fraction multiplier at its default 1.0). The line's
+    files: R13's file (damping 0.5, sha256 ad8f24c71c90...), candidate A (`--g-mom-damping 1.0`, sha256
+    76865826f5a3741c7585f81c4241048ca1a95b5791ebb3c8feb1f2b536678ce4), `build_test.py t1 --g-mom --base lib3
+    --feng-groups recomputed --g-mom-damping 1.5 --captain-ruling R22 --out <O>/T1_s2rcA15.h5ad` (damping 1.5) and the
+    same with `--g-mom-damping 2.0` and `T1_s2rcA20.h5ad` (damping 2.0). The rule: the line's best is the highest
+    headline among the line's uploaded files, starting from R13's file. If A's headline is strictly above R13's, the
+    next file of the line is T1_s2rcA15; otherwise the line ends with no new upload. If T1_s2rcA15's headline is
+    strictly above the line's best, the next file is T1_s2rcA20; otherwise the line ends. The line ends after
+    T1_s2rcA20 in any case. Ties do not beat. Only the headlines of the team's own T1 uploads, as the captain reports
+    them, are compared. No size of a difference, no per-metric value and no interpolated value is read, and no value
+    is fitted from the sizes of scores. No property of a hidden sample is inferred or bounded from these scores, in
+    code, text or reasoning. C's headline and line 1's headlines do not enter this line. Order: the files already
+    queued (C on its condition, the 2.0 file, F) keep their places. When line 1 and this line each have a next file,
+    line 1's goes first, unless the captain says otherwise. A file counts only after the builder takes 1.5 and 2.0
+    under `--captain-ruling R22` alone, an independent reviewer has passed the change, and the default command and
+    `--g-mom-damping 1.0` have reproduced R13's and A's bytes on ~/v/vec-campaign-d. It must then be built twice there
+    from one clean commit with one sha256 and pass the format check. A file not ready by 2026-11-25 12:00 UTC drops
+    and the line ends. No free T1 slot before 2026-11-26 11:59 UTC also ends the line. No value between the half steps
+    and none above 2.0 is tried. No file is rebuilt, re-seeded or changed after a score. The method report says which
+    dampings were tried and that the best headline was kept. Data used: as R13's file (released challenge data and the
+    outside heart atlas on recomputed groups, register row X002). Each upload is the captain's own act. **Applied now,
+    by the rule's first branch and headlines only:** candidate A's headline (70.8) is strictly above R13's file's
+    (70.60), so the line's next file is `T1_s2rcA15.h5ad` and the line's best is A's. The line's files stay on the 1.0
+    fraction, so they raise the board's mark only by passing the board's best headline (71.59, candidate B); that is a
+    statement of two headlines and nothing is inferred from it. The challenger's odds of an organiser's objection:
+    about 1 in 15, the strongest argument being that this setting's practice gain was recorded as tracking the truth's
+    depth. The builder change is with an engineer and a reviewer.
+  - **T3 line, not yet in force.** The challenger's line is the outside-table exponent on row K23's file: if that
+    file's headline is strictly above base B's, one more file with the exponent at 4.0, after a guard on released
+    data, and then the line ends. The challenger wrote it for the 2.0-exponent base; the base in force under the T3
+    rule is the barred s2, and the queued file is `T3_k23_s2.h5ad`. A fresh analyst is re-basing the text; it is
+    written here, and into the rules, before the K23 file's headline is returned, or the line is void by its own first
+    clause.
+  - **Heart line, not in force.** The challenger kept one line in a narrowed form, the trend step's strength on the
+    full trim C (0.5, then 1.0 only if 0.5 beats C's headline), and struck the designer's form that picked the base by
+    headline (scores would then choose a closed-lever scope). It rests on the captain's exception for C's scope and
+    size and the record ties the step partly to the heart's closed depth, so it runs only on the captain's own named
+    exception for the two files. The challenger's question, put to the captain unchanged: "Heart search line: two new
+    files on the full trim C's scope and size, with the trend step at strength 0.5 and then, only if 0.5 beats C's
+    headline, 1.0. Practice ties the step's effect partly to count noise and the heart's closed depth. The line costs
+    up to two heart slots after the queued files and about 5 to 7 hours of code and review. If a file misses, C's
+    headline stands. Do you name an exception for these two files on C's scope and size? (Yes, both files / No)" The
+    AI assistant is recused on the heart's scope and size and adds no view.
+  - **Embryo: no line.** All eight proposals were struck; the challenger ruled on the shape forms because the AI
+    assistant is recused there. No embryo setting of an existing command has an untried round step, and sizes, cell
+    numbers and scope stay closed.
+  - **A forwarded side note on T1's first line** (a side agent's, with no words of the captain's added): the line only
+    climbs, so if the 2.0 file scores lower it ends without trying 1.75 or 1.25. The note is right about the rule as
+    the AI assistant wrote it in entry (j). The AI assistant adds no step of its own after the fact and gives no lean;
+    the question put to the captain: "Task 1 search, a step back? As written the line only climbs (2.5, then 3.0) and
+    ends if the 2.0 file does not beat the 1.5 file. A step back would add 1.75 (and 1.25) as files to try in that
+    case. It has to be fixed before the 2.0 file's score. Cost: about an hour of builder work and review and up to two
+    Task 1 slots; quarter steps are finer than the scale the candidates used, which departs from one condition of the
+    rule check of 2026-11-21 (a round step on the existing scale). Default if the captain says nothing: the rule stays
+    as written."
+  - **Counts.** Row E52's gate passed and its run step started at 01:54 UTC: one try, embryo 87. Totals: T1 438,
+    embryo 87, heart 88, T3 74.

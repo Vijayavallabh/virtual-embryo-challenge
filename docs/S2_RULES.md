@@ -1940,3 +1940,40 @@ score is read as a headline only and decides nothing beyond the board's standing
 `experiments/builds/results/t1none_385ff58.txt`), built on 2026-11-19: the first upload's design with the outside
 atlas's step taken out. Data used: released challenge data only; no outside data. Every upload is the captain's own
 act.
+
+## Amendment of 2026-11-22: T1's second search line, g_mom's within-type damping (row R22; decision log 2026-11-22 (o))
+
+Added under the amendment above, "a score-guided search of round steps may run", before any score of its new files.
+The line was proposed by a fresh designer blind to test scores and amended by a cold challenger, who checked it
+against the recorded text of the Rules page and the closed levers; the text below is the challenger's, verbatim. The
+AI assistant designed none of it.
+
+T1 line 2 (under ruling row R22, a score-guided search of round steps; fixed before any score of its new files):
+g_mom's within-type damping, on R13's command `build_test.py t1 --g-mom --base lib3 --feng-groups recomputed`, with
+nothing else changed (default seed 1000001, fraction multiplier at its default 1.0). The line's files: R13's file
+(damping 0.5, sha256 ad8f24c71c90...), candidate A (`--g-mom-damping 1.0`, sha256
+76865826f5a3741c7585f81c4241048ca1a95b5791ebb3c8feb1f2b536678ce4), `build_test.py t1 --g-mom --base lib3 --feng-groups
+recomputed --g-mom-damping 1.5 --captain-ruling R22 --out <O>/T1_s2rcA15.h5ad` (damping 1.5) and the same with
+`--g-mom-damping 2.0` and `T1_s2rcA20.h5ad` (damping 2.0). The rule: the line's best is the highest headline among the
+line's uploaded files, starting from R13's file. If A's headline is strictly above R13's, the next file of the line is
+T1_s2rcA15; otherwise the line ends with no new upload. If T1_s2rcA15's headline is strictly above the line's best,
+the next file is T1_s2rcA20; otherwise the line ends. The line ends after T1_s2rcA20 in any case. Ties do not beat.
+Only the headlines of the team's own T1 uploads, as the captain reports them, are compared. No size of a difference,
+no per-metric value and no interpolated value is read, and no value is fitted from the sizes of scores. No property of
+a hidden sample is inferred or bounded from these scores, in code, text or reasoning. C's headline and line 1's
+headlines do not enter this line. Order: the files already queued (C on its condition, the 2.0 file, F) keep their
+places. When line 1 and this line each have a next file, line 1's goes first, unless the captain says otherwise. A
+file counts only after the builder takes 1.5 and 2.0 under `--captain-ruling R22` alone, an independent reviewer has
+passed the change, and the default command and `--g-mom-damping 1.0` have reproduced R13's and A's bytes on
+~/v/vec-campaign-d. It must then be built twice there from one clean commit with one sha256 and pass the format check.
+A file not ready by 2026-11-25 12:00 UTC drops and the line ends. No free T1 slot before 2026-11-26 11:59 UTC also
+ends the line. No value between the half steps and none above 2.0 is tried. No file is rebuilt, re-seeded or changed
+after a score. The method report says which dampings were tried and that the best headline was kept. Data used: as
+R13's file (released challenge data and the outside heart atlas on recomputed groups, register row X002). Each upload
+is the captain's own act.
+
+**Other boards.** The embryo gets no line (its challenger struck all eight proposals: no setting of an existing
+command has a round step that is not already queued as a single file, and sizes, cell numbers and scope stay closed).
+The heart's one line, the trend step's strength on the full trim, needs the captain's own named exception for two
+files and is not in force without it. T3's one line, the outside-table exponent on row K23's file, is being re-based
+onto the base in force and is added here before that file's headline, or it is void.
