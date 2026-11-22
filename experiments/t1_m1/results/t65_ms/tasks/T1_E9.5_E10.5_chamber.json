@@ -1,0 +1,3035 @@
+{
+ "label": "try T65, a labelled in-sample diagnostic, never an adoption result: candidate MS of the T1 order list after decision log 2026-11-20 (r), R13's file with B0's released per-category momentum added on the direction-group cells before the atlas step (arm 'all'), by its practice analogue m1rc_gmom_mom and the permuted placebo m1rc_gmom_momperm against m1rc_gmom (row T62's) on T62's five tasks; every task scores one truth (E10.5) over one day, the test spans two",
+ "row": "T65",
+ "task": "T1/E9.5->E10.5:chamber",
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "rows": [
+  {
+   "seed": 0,
+   "floor": 50.0,
+   "arms": {
+    "m1rc_gmom": {
+     "score": 51.64598467628713,
+     "groups": {
+      "de_recovery": 0.479487333053842,
+      "direction": 0.624191767859959,
+      "distribution": 0.5121173469387755,
+      "covariance": 0.4345243372639419
+     },
+     "metrics": {
+      "variance_ratio": 0.756,
+      "mmd_u": 0.10425,
+      "variogram": 0.006597,
+      "energy_distance": 2.99554,
+      "pb_rel_err": 0.2601,
+      "de_score": -0.0685,
+      "de_direction": 0.315,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9696
+     }
+    },
+    "m1rc_gmom_mom": {
+     "score": 52.431470121772726,
+     "groups": {
+      "de_recovery": 0.48999326764183854,
+      "direction": 0.6261667457680746,
+      "distribution": 0.5210641908755116,
+      "covariance": 0.44477720301297763
+     },
+     "metrics": {
+      "variance_ratio": 0.762,
+      "mmd_u": 0.10075,
+      "variogram": 0.006337,
+      "energy_distance": 2.87994,
+      "pb_rel_err": 0.256,
+      "de_score": -0.0327,
+      "de_direction": 0.319,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9703
+     }
+    },
+    "m1rc_gmom_momperm": {
+     "score": 51.52968295326615,
+     "groups": {
+      "de_recovery": 0.47274874520224386,
+      "direction": 0.6231108312342569,
+      "distribution": 0.5122178606476938,
+      "covariance": 0.43833288614614085
+     },
+     "metrics": {
+      "variance_ratio": 0.764,
+      "mmd_u": 0.10421,
+      "variogram": 0.006499,
+      "energy_distance": 2.98409,
+      "pb_rel_err": 0.2608,
+      "de_score": -0.0923,
+      "de_direction": 0.3128,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9692
+     }
+    }
+   },
+   "sha256": {
+    "m1rc_gmom": "79789b28b47f57d496173d2daf502176930461e960fbf6d7f25777f219f6ebfa",
+    "m1rc_gmom_mom": "545f9efb671290f4fe6ab4b4ab203d74ca09ff2b671fa694321426af1d09199e",
+    "m1rc_gmom_momperm": "f444c11db3e4d1e79b1d6a316d22f073667bba9ad85fc012f1ed12d8a6090830"
+   },
+   "covered": {
+    "m1rc_gmom_mom": {
+     "covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "builder_covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "covered_cells": 4985,
+     "covered_cells_changed": 4985,
+     "non_covered_equal": true,
+     "shift": [
+      {
+       "type": "cm",
+       "n_target": 3291,
+       "n_start": 3819,
+       "n_ref": 5263,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "status": "shifted",
+       "n_up": 369,
+       "n_down": 215,
+       "mean_abs_log_f": 0.011295424972670717,
+       "max_abs_log_f": 0.6507216799333772,
+       "median_depth_scale": 0.9949938071158837
+      },
+      {
+       "type": "endocardium",
+       "n_target": 972,
+       "n_start": 1139,
+       "n_ref": 1555,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "status": "shifted",
+       "n_up": 439,
+       "n_down": 503,
+       "mean_abs_log_f": 0.014525129024732011,
+       "max_abs_log_f": 0.894103588104943,
+       "median_depth_scale": 0.9850260384821785
+      },
+      {
+       "type": "epicardium",
+       "n_target": 552,
+       "n_start": 1119,
+       "n_ref": 883,
+       "start_cells": "stand-in JCF",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      },
+      {
+       "type": "vascular_endothelium",
+       "n_target": 170,
+       "n_start": 1139,
+       "n_ref": 271,
+       "start_cells": "stand-in Endothelium",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      }
+     ],
+     "perm": null
+    },
+    "m1rc_gmom_momperm": {
+     "covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "builder_covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "covered_cells": 4985,
+     "covered_cells_changed": 4985,
+     "non_covered_equal": true,
+     "shift": [
+      {
+       "type": "cm",
+       "n_target": 3291,
+       "n_start": 3819,
+       "n_ref": 5263,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "filter": {
+        "seed": 20261110,
+        "bins": 10,
+        "free_genes": 32222,
+        "sum_abs_before": 364.67279524267417,
+        "sum_abs_after": 364.6727952426741,
+        "same_values": true,
+        "moved_genes": 27150
+       },
+       "status": "shifted",
+       "n_up": 369,
+       "n_down": 215,
+       "mean_abs_log_f": 0.011295424972670717,
+       "max_abs_log_f": 0.6507216799333772,
+       "median_depth_scale": 0.9939996191933812
+      },
+      {
+       "type": "endocardium",
+       "n_target": 972,
+       "n_start": 1139,
+       "n_ref": 1555,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "filter": {
+        "seed": 20261110,
+        "bins": 10,
+        "free_genes": 32222,
+        "sum_abs_before": 468.943790563473,
+        "sum_abs_after": 468.943790563473,
+        "same_values": true,
+        "moved_genes": 24651
+       },
+       "status": "shifted",
+       "n_up": 439,
+       "n_down": 503,
+       "mean_abs_log_f": 0.014525129024732011,
+       "max_abs_log_f": 0.894103588104943,
+       "median_depth_scale": 0.9954503829546186
+      },
+      {
+       "type": "epicardium",
+       "n_target": 552,
+       "n_start": 1119,
+       "n_ref": 883,
+       "start_cells": "stand-in JCF",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      },
+      {
+       "type": "vascular_endothelium",
+       "n_target": 170,
+       "n_start": 1139,
+       "n_ref": 271,
+       "start_cells": "stand-in Endothelium",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      }
+     ],
+     "perm": [
+      {
+       "seed": 20261110,
+       "bins": 10,
+       "free_genes": 32222,
+       "sum_abs_before": 364.67279524267417,
+       "sum_abs_after": 364.6727952426741,
+       "same_values": true,
+       "moved_genes": 27150
+      },
+      {
+       "seed": 20261110,
+       "bins": 10,
+       "free_genes": 32222,
+       "sum_abs_before": 468.943790563473,
+       "sum_abs_after": 468.943790563473,
+       "same_values": true,
+       "moved_genes": 24651
+      }
+     ]
+    }
+   },
+   "seconds": 205.0
+  },
+  {
+   "seed": 1,
+   "floor": 50.0,
+   "arms": {
+    "m1rc_gmom": {
+     "score": 51.33969873271933,
+     "groups": {
+      "de_recovery": 0.4760965421211418,
+      "direction": 0.6142403347020996,
+      "distribution": 0.5124814335681088,
+      "covariance": 0.43534169025475133
+     },
+     "metrics": {
+      "variance_ratio": 0.739,
+      "mmd_u": 0.10565,
+      "variogram": 0.007173,
+      "energy_distance": 3.12109,
+      "pb_rel_err": 0.2708,
+      "de_score": -0.0824,
+      "de_direction": 0.2949,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9681
+     }
+    },
+    "m1rc_gmom_mom": {
+     "score": 51.96236670350359,
+     "groups": {
+      "de_recovery": 0.4777318507306282,
+      "direction": 0.6168689698101463,
+      "distribution": 0.5223931623931625,
+      "covariance": 0.4462775659094677
+     },
+     "metrics": {
+      "variance_ratio": 0.745,
+      "mmd_u": 0.10169,
+      "variogram": 0.00687,
+      "energy_distance": 3.00027,
+      "pb_rel_err": 0.2665,
+      "de_score": -0.0765,
+      "de_direction": 0.3004,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9688
+     }
+    },
+    "m1rc_gmom_momperm": {
+     "score": 51.16625411061335,
+     "groups": {
+      "de_recovery": 0.46733868671336637,
+      "direction": 0.6120117338273893,
+      "distribution": 0.512579671251258,
+      "covariance": 0.440255172977836
+     },
+     "metrics": {
+      "variance_ratio": 0.747,
+      "mmd_u": 0.10561,
+      "variogram": 0.007035,
+      "energy_distance": 3.11211,
+      "pb_rel_err": 0.2715,
+      "de_score": -0.1147,
+      "de_direction": 0.2902,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9677
+     }
+    }
+   },
+   "sha256": {
+    "m1rc_gmom": "455c761efb33d26b6a7f14a13ce678907ecddb7301c88f8955f1ee01a6ff9d0a",
+    "m1rc_gmom_mom": "fdedf3db60e3447f38b662d3ce9ffddd84e8dd9d54439bc8b68ea14dc95cb95f",
+    "m1rc_gmom_momperm": "30602cce5bda153b2d9b2b2571696252cda77f355ce21d9d94da70e68876cb68"
+   },
+   "covered": {
+    "m1rc_gmom_mom": {
+     "covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "builder_covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "covered_cells": 4985,
+     "covered_cells_changed": 4985,
+     "non_covered_equal": true,
+     "shift": [
+      {
+       "type": "cm",
+       "n_target": 3291,
+       "n_start": 3819,
+       "n_ref": 5263,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "status": "shifted",
+       "n_up": 369,
+       "n_down": 215,
+       "mean_abs_log_f": 0.011295424972670717,
+       "max_abs_log_f": 0.6507216799333772,
+       "median_depth_scale": 0.9949647253872905
+      },
+      {
+       "type": "endocardium",
+       "n_target": 972,
+       "n_start": 1139,
+       "n_ref": 1555,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "status": "shifted",
+       "n_up": 439,
+       "n_down": 503,
+       "mean_abs_log_f": 0.014525129024732011,
+       "max_abs_log_f": 0.894103588104943,
+       "median_depth_scale": 0.9851703453628504
+      },
+      {
+       "type": "epicardium",
+       "n_target": 552,
+       "n_start": 1119,
+       "n_ref": 883,
+       "start_cells": "stand-in JCF",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      },
+      {
+       "type": "vascular_endothelium",
+       "n_target": 170,
+       "n_start": 1139,
+       "n_ref": 271,
+       "start_cells": "stand-in Endothelium",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      }
+     ],
+     "perm": null
+    },
+    "m1rc_gmom_momperm": {
+     "covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "builder_covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "covered_cells": 4985,
+     "covered_cells_changed": 4985,
+     "non_covered_equal": true,
+     "shift": [
+      {
+       "type": "cm",
+       "n_target": 3291,
+       "n_start": 3819,
+       "n_ref": 5263,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "filter": {
+        "seed": 20261110,
+        "bins": 10,
+        "free_genes": 32222,
+        "sum_abs_before": 364.67279524267417,
+        "sum_abs_after": 364.6727952426741,
+        "same_values": true,
+        "moved_genes": 27150
+       },
+       "status": "shifted",
+       "n_up": 369,
+       "n_down": 215,
+       "mean_abs_log_f": 0.011295424972670717,
+       "max_abs_log_f": 0.6507216799333772,
+       "median_depth_scale": 0.9940258449737801
+      },
+      {
+       "type": "endocardium",
+       "n_target": 972,
+       "n_start": 1139,
+       "n_ref": 1555,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "filter": {
+        "seed": 20261110,
+        "bins": 10,
+        "free_genes": 32222,
+        "sum_abs_before": 468.943790563473,
+        "sum_abs_after": 468.943790563473,
+        "same_values": true,
+        "moved_genes": 24651
+       },
+       "status": "shifted",
+       "n_up": 439,
+       "n_down": 503,
+       "mean_abs_log_f": 0.014525129024732011,
+       "max_abs_log_f": 0.894103588104943,
+       "median_depth_scale": 0.9955179657468501
+      },
+      {
+       "type": "epicardium",
+       "n_target": 552,
+       "n_start": 1119,
+       "n_ref": 883,
+       "start_cells": "stand-in JCF",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      },
+      {
+       "type": "vascular_endothelium",
+       "n_target": 170,
+       "n_start": 1139,
+       "n_ref": 271,
+       "start_cells": "stand-in Endothelium",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      }
+     ],
+     "perm": [
+      {
+       "seed": 20261110,
+       "bins": 10,
+       "free_genes": 32222,
+       "sum_abs_before": 364.67279524267417,
+       "sum_abs_after": 364.6727952426741,
+       "same_values": true,
+       "moved_genes": 27150
+      },
+      {
+       "seed": 20261110,
+       "bins": 10,
+       "free_genes": 32222,
+       "sum_abs_before": 468.943790563473,
+       "sum_abs_after": 468.943790563473,
+       "same_values": true,
+       "moved_genes": 24651
+      }
+     ]
+    }
+   },
+   "seconds": 209.1
+  },
+  {
+   "seed": 2,
+   "floor": 50.0,
+   "arms": {
+    "m1rc_gmom": {
+     "score": 52.464786229837514,
+     "groups": {
+      "de_recovery": 0.4869326799673317,
+      "direction": 0.629912400546492,
+      "distribution": 0.5179765886287626,
+      "covariance": 0.4502180779064521
+     },
+     "metrics": {
+      "variance_ratio": 0.741,
+      "mmd_u": 0.1083,
+      "variogram": 0.007508,
+      "energy_distance": 3.16074,
+      "pb_rel_err": 0.2712,
+      "de_score": -0.0448,
+      "de_direction": 0.3233,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9687
+     }
+    },
+    "m1rc_gmom_mom": {
+     "score": 53.22525729453746,
+     "groups": {
+      "de_recovery": 0.4950183845332701,
+      "direction": 0.6326580030672371,
+      "distribution": 0.5271592681889093,
+      "covariance": 0.4609284779428747
+     },
+     "metrics": {
+      "variance_ratio": 0.747,
+      "mmd_u": 0.10455,
+      "variogram": 0.007199,
+      "energy_distance": 3.03969,
+      "pb_rel_err": 0.2668,
+      "de_score": -0.0168,
+      "de_direction": 0.3287,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9694
+     }
+    },
+    "m1rc_gmom_momperm": {
+     "score": 52.41752235762904,
+     "groups": {
+      "de_recovery": 0.4829880800833237,
+      "direction": 0.6281455361436127,
+      "distribution": 0.5182895654194748,
+      "covariance": 0.4545247494685697
+     },
+     "metrics": {
+      "variance_ratio": 0.748,
+      "mmd_u": 0.10817,
+      "variogram": 0.007382,
+      "energy_distance": 3.1481,
+      "pb_rel_err": 0.2719,
+      "de_score": -0.0588,
+      "de_direction": 0.3198,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9683
+     }
+    }
+   },
+   "sha256": {
+    "m1rc_gmom": "7241b57197d744fa8541b90258892551dc1f3dbea51ccd4a76cbbe81619975e3",
+    "m1rc_gmom_mom": "43133bba0d5c911cfe15903e808bb9c78056658a7d84f32fa33799924a7ef792",
+    "m1rc_gmom_momperm": "ba4883e1134a26280b3bea5728b0e5817af192b1cea51b918a44b5a5d4fd12f8"
+   },
+   "covered": {
+    "m1rc_gmom_mom": {
+     "covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "builder_covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "covered_cells": 4985,
+     "covered_cells_changed": 4985,
+     "non_covered_equal": true,
+     "shift": [
+      {
+       "type": "cm",
+       "n_target": 3291,
+       "n_start": 3819,
+       "n_ref": 5263,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "status": "shifted",
+       "n_up": 369,
+       "n_down": 215,
+       "mean_abs_log_f": 0.011295424972670717,
+       "max_abs_log_f": 0.6507216799333772,
+       "median_depth_scale": 0.99508826456179
+      },
+      {
+       "type": "endocardium",
+       "n_target": 972,
+       "n_start": 1139,
+       "n_ref": 1555,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "status": "shifted",
+       "n_up": 439,
+       "n_down": 503,
+       "mean_abs_log_f": 0.014525129024732011,
+       "max_abs_log_f": 0.894103588104943,
+       "median_depth_scale": 0.9852801199188893
+      },
+      {
+       "type": "epicardium",
+       "n_target": 552,
+       "n_start": 1119,
+       "n_ref": 883,
+       "start_cells": "stand-in JCF",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      },
+      {
+       "type": "vascular_endothelium",
+       "n_target": 170,
+       "n_start": 1139,
+       "n_ref": 271,
+       "start_cells": "stand-in Endothelium",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      }
+     ],
+     "perm": null
+    },
+    "m1rc_gmom_momperm": {
+     "covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "builder_covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "covered_cells": 4985,
+     "covered_cells_changed": 4985,
+     "non_covered_equal": true,
+     "shift": [
+      {
+       "type": "cm",
+       "n_target": 3291,
+       "n_start": 3819,
+       "n_ref": 5263,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "filter": {
+        "seed": 20261110,
+        "bins": 10,
+        "free_genes": 32222,
+        "sum_abs_before": 364.67279524267417,
+        "sum_abs_after": 364.6727952426741,
+        "same_values": true,
+        "moved_genes": 27150
+       },
+       "status": "shifted",
+       "n_up": 369,
+       "n_down": 215,
+       "mean_abs_log_f": 0.011295424972670717,
+       "max_abs_log_f": 0.6507216799333772,
+       "median_depth_scale": 0.9940144407750807
+      },
+      {
+       "type": "endocardium",
+       "n_target": 972,
+       "n_start": 1139,
+       "n_ref": 1555,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "filter": {
+        "seed": 20261110,
+        "bins": 10,
+        "free_genes": 32222,
+        "sum_abs_before": 468.943790563473,
+        "sum_abs_after": 468.943790563473,
+        "same_values": true,
+        "moved_genes": 24651
+       },
+       "status": "shifted",
+       "n_up": 439,
+       "n_down": 503,
+       "mean_abs_log_f": 0.014525129024732011,
+       "max_abs_log_f": 0.894103588104943,
+       "median_depth_scale": 0.9955045260522519
+      },
+      {
+       "type": "epicardium",
+       "n_target": 552,
+       "n_start": 1119,
+       "n_ref": 883,
+       "start_cells": "stand-in JCF",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      },
+      {
+       "type": "vascular_endothelium",
+       "n_target": 170,
+       "n_start": 1139,
+       "n_ref": 271,
+       "start_cells": "stand-in Endothelium",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      }
+     ],
+     "perm": [
+      {
+       "seed": 20261110,
+       "bins": 10,
+       "free_genes": 32222,
+       "sum_abs_before": 364.67279524267417,
+       "sum_abs_after": 364.6727952426741,
+       "same_values": true,
+       "moved_genes": 27150
+      },
+      {
+       "seed": 20261110,
+       "bins": 10,
+       "free_genes": 32222,
+       "sum_abs_before": 468.943790563473,
+       "sum_abs_after": 468.943790563473,
+       "same_values": true,
+       "moved_genes": 24651
+      }
+     ]
+    }
+   },
+   "seconds": 218.7
+  },
+  {
+   "seed": 3,
+   "floor": 50.0,
+   "arms": {
+    "m1rc_gmom": {
+     "score": 52.5764644663404,
+     "groups": {
+      "de_recovery": 0.48868527856352234,
+      "direction": 0.6283826806749443,
+      "distribution": 0.5202037947997189,
+      "covariance": 0.4521825820693584
+     },
+     "metrics": {
+      "variance_ratio": 0.74,
+      "mmd_u": 0.11403,
+      "variogram": 0.007916,
+      "energy_distance": 3.32861,
+      "pb_rel_err": 0.2783,
+      "de_score": -0.0368,
+      "de_direction": 0.3226,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9664
+     }
+    },
+    "m1rc_gmom_mom": {
+     "score": 53.160438932269216,
+     "groups": {
+      "de_recovery": 0.49427789526060456,
+      "direction": 0.6288331342094783,
+      "distribution": 0.5282547611614111,
+      "covariance": 0.4617510180337405
+     },
+     "metrics": {
+      "variance_ratio": 0.746,
+      "mmd_u": 0.11056,
+      "variogram": 0.007625,
+      "energy_distance": 3.2162,
+      "pb_rel_err": 0.2743,
+      "de_score": -0.0184,
+      "de_direction": 0.3235,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.967
+     }
+    },
+    "m1rc_gmom_momperm": {
+     "score": 52.3438420229424,
+     "groups": {
+      "de_recovery": 0.4778425831278937,
+      "direction": 0.6266867756786791,
+      "distribution": 0.5204095083263763,
+      "covariance": 0.45591614014933945
+     },
+     "metrics": {
+      "variance_ratio": 0.747,
+      "mmd_u": 0.11394,
+      "variogram": 0.007801,
+      "energy_distance": 3.31493,
+      "pb_rel_err": 0.2789,
+      "de_score": -0.0737,
+      "de_direction": 0.3192,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.966
+     }
+    }
+   },
+   "sha256": {
+    "m1rc_gmom": "00f68ea2c4b579962486aa0a00598485f096c719911c970807170d2eb3525850",
+    "m1rc_gmom_mom": "261f45be2a5b88966f17dac07695fb1473253fcde7d29a3766a9a463800bd989",
+    "m1rc_gmom_momperm": "c0a468b600fb095f9883b712b05f131c2bc30159ab127e7435f6a3904b8bd8ba"
+   },
+   "covered": {
+    "m1rc_gmom_mom": {
+     "covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "builder_covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "covered_cells": 4985,
+     "covered_cells_changed": 4985,
+     "non_covered_equal": true,
+     "shift": [
+      {
+       "type": "cm",
+       "n_target": 3291,
+       "n_start": 3819,
+       "n_ref": 5263,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "status": "shifted",
+       "n_up": 369,
+       "n_down": 215,
+       "mean_abs_log_f": 0.011295424972670717,
+       "max_abs_log_f": 0.6507216799333772,
+       "median_depth_scale": 0.9951303419843903
+      },
+      {
+       "type": "endocardium",
+       "n_target": 972,
+       "n_start": 1139,
+       "n_ref": 1555,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "status": "shifted",
+       "n_up": 439,
+       "n_down": 503,
+       "mean_abs_log_f": 0.014525129024732011,
+       "max_abs_log_f": 0.894103588104943,
+       "median_depth_scale": 0.9852602059785627
+      },
+      {
+       "type": "epicardium",
+       "n_target": 552,
+       "n_start": 1119,
+       "n_ref": 883,
+       "start_cells": "stand-in JCF",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      },
+      {
+       "type": "vascular_endothelium",
+       "n_target": 170,
+       "n_start": 1139,
+       "n_ref": 271,
+       "start_cells": "stand-in Endothelium",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      }
+     ],
+     "perm": null
+    },
+    "m1rc_gmom_momperm": {
+     "covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "builder_covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "covered_cells": 4985,
+     "covered_cells_changed": 4985,
+     "non_covered_equal": true,
+     "shift": [
+      {
+       "type": "cm",
+       "n_target": 3291,
+       "n_start": 3819,
+       "n_ref": 5263,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "filter": {
+        "seed": 20261110,
+        "bins": 10,
+        "free_genes": 32222,
+        "sum_abs_before": 364.67279524267417,
+        "sum_abs_after": 364.6727952426741,
+        "same_values": true,
+        "moved_genes": 27150
+       },
+       "status": "shifted",
+       "n_up": 369,
+       "n_down": 215,
+       "mean_abs_log_f": 0.011295424972670717,
+       "max_abs_log_f": 0.6507216799333772,
+       "median_depth_scale": 0.9939935929716726
+      },
+      {
+       "type": "endocardium",
+       "n_target": 972,
+       "n_start": 1139,
+       "n_ref": 1555,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "filter": {
+        "seed": 20261110,
+        "bins": 10,
+        "free_genes": 32222,
+        "sum_abs_before": 468.943790563473,
+        "sum_abs_after": 468.943790563473,
+        "same_values": true,
+        "moved_genes": 24651
+       },
+       "status": "shifted",
+       "n_up": 439,
+       "n_down": 503,
+       "mean_abs_log_f": 0.014525129024732011,
+       "max_abs_log_f": 0.894103588104943,
+       "median_depth_scale": 0.9955327874539346
+      },
+      {
+       "type": "epicardium",
+       "n_target": 552,
+       "n_start": 1119,
+       "n_ref": 883,
+       "start_cells": "stand-in JCF",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      },
+      {
+       "type": "vascular_endothelium",
+       "n_target": 170,
+       "n_start": 1139,
+       "n_ref": 271,
+       "start_cells": "stand-in Endothelium",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      }
+     ],
+     "perm": [
+      {
+       "seed": 20261110,
+       "bins": 10,
+       "free_genes": 32222,
+       "sum_abs_before": 364.67279524267417,
+       "sum_abs_after": 364.6727952426741,
+       "same_values": true,
+       "moved_genes": 27150
+      },
+      {
+       "seed": 20261110,
+       "bins": 10,
+       "free_genes": 32222,
+       "sum_abs_before": 468.943790563473,
+       "sum_abs_after": 468.943790563473,
+       "same_values": true,
+       "moved_genes": 24651
+      }
+     ]
+    }
+   },
+   "seconds": 211.7
+  },
+  {
+   "seed": 4,
+   "floor": 50.0,
+   "arms": {
+    "m1rc_gmom": {
+     "score": 51.21519608808116,
+     "groups": {
+      "de_recovery": 0.48810892586989413,
+      "direction": 0.6241578440808471,
+      "distribution": 0.49097087378640775,
+      "covariance": 0.43397003128602013
+     },
+     "metrics": {
+      "variance_ratio": 0.746,
+      "mmd_u": 0.10888,
+      "variogram": 0.007082,
+      "energy_distance": 2.9495,
+      "pb_rel_err": 0.2617,
+      "de_score": -0.0393,
+      "de_direction": 0.3096,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9705
+     }
+    },
+    "m1rc_gmom_mom": {
+     "score": 52.07459951771809,
+     "groups": {
+      "de_recovery": 0.5,
+      "direction": 0.6282392831193992,
+      "distribution": 0.49958014324524574,
+      "covariance": 0.44406065711878684
+     },
+     "metrics": {
+      "variance_ratio": 0.751,
+      "mmd_u": 0.10533,
+      "variogram": 0.006806,
+      "energy_distance": 2.83559,
+      "pb_rel_err": 0.2574,
+      "de_score": 0.0,
+      "de_direction": 0.3177,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9712
+     }
+    },
+    "m1rc_gmom_momperm": {
+     "score": 51.1042342835241,
+     "groups": {
+      "de_recovery": 0.48331236143567624,
+      "direction": 0.6218635128655905,
+      "distribution": 0.49082791419974764,
+      "covariance": 0.43750000000000006
+     },
+     "metrics": {
+      "variance_ratio": 0.753,
+      "mmd_u": 0.10894,
+      "variogram": 0.006984,
+      "energy_distance": 2.94102,
+      "pb_rel_err": 0.2624,
+      "de_score": -0.0557,
+      "de_direction": 0.305,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.97
+     }
+    }
+   },
+   "sha256": {
+    "m1rc_gmom": "0cc2e1a7c9cb781c559004793003c58c6ce83b28d8fccc9fd374036e94728e49",
+    "m1rc_gmom_mom": "63f2f5cf70c6ff2b60d1475c477d327642c84e58c973b93ac3cded9db72263dd",
+    "m1rc_gmom_momperm": "b0f32372551b53bab5226e5f2c892db6090bf030fb2477b77d8be6d7eca277fe"
+   },
+   "covered": {
+    "m1rc_gmom_mom": {
+     "covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "builder_covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "covered_cells": 4985,
+     "covered_cells_changed": 4985,
+     "non_covered_equal": true,
+     "shift": [
+      {
+       "type": "cm",
+       "n_target": 3291,
+       "n_start": 3819,
+       "n_ref": 5263,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "status": "shifted",
+       "n_up": 369,
+       "n_down": 215,
+       "mean_abs_log_f": 0.011295424972670717,
+       "max_abs_log_f": 0.6507216799333772,
+       "median_depth_scale": 0.9950178788470454
+      },
+      {
+       "type": "endocardium",
+       "n_target": 972,
+       "n_start": 1139,
+       "n_ref": 1555,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "status": "shifted",
+       "n_up": 439,
+       "n_down": 503,
+       "mean_abs_log_f": 0.014525129024732011,
+       "max_abs_log_f": 0.894103588104943,
+       "median_depth_scale": 0.9850212196775796
+      },
+      {
+       "type": "epicardium",
+       "n_target": 552,
+       "n_start": 1119,
+       "n_ref": 883,
+       "start_cells": "stand-in JCF",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      },
+      {
+       "type": "vascular_endothelium",
+       "n_target": 170,
+       "n_start": 1139,
+       "n_ref": 271,
+       "start_cells": "stand-in Endothelium",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      }
+     ],
+     "perm": null
+    },
+    "m1rc_gmom_momperm": {
+     "covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "builder_covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "covered_cells": 4985,
+     "covered_cells_changed": 4985,
+     "non_covered_equal": true,
+     "shift": [
+      {
+       "type": "cm",
+       "n_target": 3291,
+       "n_start": 3819,
+       "n_ref": 5263,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "filter": {
+        "seed": 20261110,
+        "bins": 10,
+        "free_genes": 32222,
+        "sum_abs_before": 364.67279524267417,
+        "sum_abs_after": 364.6727952426741,
+        "same_values": true,
+        "moved_genes": 27150
+       },
+       "status": "shifted",
+       "n_up": 369,
+       "n_down": 215,
+       "mean_abs_log_f": 0.011295424972670717,
+       "max_abs_log_f": 0.6507216799333772,
+       "median_depth_scale": 0.9939935929716726
+      },
+      {
+       "type": "endocardium",
+       "n_target": 972,
+       "n_start": 1139,
+       "n_ref": 1555,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "filter": {
+        "seed": 20261110,
+        "bins": 10,
+        "free_genes": 32222,
+        "sum_abs_before": 468.943790563473,
+        "sum_abs_after": 468.943790563473,
+        "same_values": true,
+        "moved_genes": 24651
+       },
+       "status": "shifted",
+       "n_up": 439,
+       "n_down": 503,
+       "mean_abs_log_f": 0.014525129024732011,
+       "max_abs_log_f": 0.894103588104943,
+       "median_depth_scale": 0.99554687586504
+      },
+      {
+       "type": "epicardium",
+       "n_target": 552,
+       "n_start": 1119,
+       "n_ref": 883,
+       "start_cells": "stand-in JCF",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      },
+      {
+       "type": "vascular_endothelium",
+       "n_target": 170,
+       "n_start": 1139,
+       "n_ref": 271,
+       "start_cells": "stand-in Endothelium",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      }
+     ],
+     "perm": [
+      {
+       "seed": 20261110,
+       "bins": 10,
+       "free_genes": 32222,
+       "sum_abs_before": 364.67279524267417,
+       "sum_abs_after": 364.6727952426741,
+       "same_values": true,
+       "moved_genes": 27150
+      },
+      {
+       "seed": 20261110,
+       "bins": 10,
+       "free_genes": 32222,
+       "sum_abs_before": 468.943790563473,
+       "sum_abs_after": 468.943790563473,
+       "same_values": true,
+       "moved_genes": 24651
+      }
+     ]
+    }
+   },
+   "seconds": 209.0
+  },
+  {
+   "seed": 5,
+   "floor": 50.0,
+   "arms": {
+    "m1rc_gmom": {
+     "score": 51.19775713582981,
+     "groups": {
+      "de_recovery": 0.4660930601154761,
+      "direction": 0.6126367141395861,
+      "distribution": 0.5174731182795699,
+      "covariance": 0.43526596155330816
+     },
+     "metrics": {
+      "variance_ratio": 0.742,
+      "mmd_u": 0.10233,
+      "variogram": 0.00756,
+      "energy_distance": 3.25409,
+      "pb_rel_err": 0.2694,
+      "de_score": -0.1198,
+      "de_direction": 0.2863,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9682
+     }
+    },
+    "m1rc_gmom_mom": {
+     "score": 52.01721334002488,
+     "groups": {
+      "de_recovery": 0.47744404499594106,
+      "direction": 0.6155427306506444,
+      "distribution": 0.5263557648488532,
+      "covariance": 0.4450935501697324
+     },
+     "metrics": {
+      "variance_ratio": 0.748,
+      "mmd_u": 0.09894,
+      "variogram": 0.007274,
+      "energy_distance": 3.14026,
+      "pb_rel_err": 0.2652,
+      "de_score": -0.0778,
+      "de_direction": 0.2923,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9689
+     }
+    },
+    "m1rc_gmom_momperm": {
+     "score": 51.113779880029384,
+     "groups": {
+      "de_recovery": 0.46064335664335665,
+      "direction": 0.6119144922980194,
+      "distribution": 0.5176277263220794,
+      "covariance": 0.43855009334163036
+     },
+     "metrics": {
+      "variance_ratio": 0.75,
+      "mmd_u": 0.10227,
+      "variogram": 0.007463,
+      "energy_distance": 3.24361,
+      "pb_rel_err": 0.2701,
+      "de_score": -0.1407,
+      "de_direction": 0.2848,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9677
+     }
+    }
+   },
+   "sha256": {
+    "m1rc_gmom": "c321e5a8f8c7a6ae302a18810791aa00da495f6e90436b3e5e0d36d06391dce0",
+    "m1rc_gmom_mom": "624143cd97bc6b50b21fd8051c031b8ee326c87f0eb80436a7b37fdbb7f801c4",
+    "m1rc_gmom_momperm": "4651fd2aa7f2cd8246b69d4e6cc9a926516a47941583d729213af2b7ffe74c38"
+   },
+   "covered": {
+    "m1rc_gmom_mom": {
+     "covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "builder_covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "covered_cells": 4985,
+     "covered_cells_changed": 4985,
+     "non_covered_equal": true,
+     "shift": [
+      {
+       "type": "cm",
+       "n_target": 3291,
+       "n_start": 3819,
+       "n_ref": 5263,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "status": "shifted",
+       "n_up": 369,
+       "n_down": 215,
+       "mean_abs_log_f": 0.011295424972670717,
+       "max_abs_log_f": 0.6507216799333772,
+       "median_depth_scale": 0.9952229023442883
+      },
+      {
+       "type": "endocardium",
+       "n_target": 972,
+       "n_start": 1139,
+       "n_ref": 1555,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "status": "shifted",
+       "n_up": 439,
+       "n_down": 503,
+       "mean_abs_log_f": 0.014525129024732011,
+       "max_abs_log_f": 0.894103588104943,
+       "median_depth_scale": 0.9850508629442056
+      },
+      {
+       "type": "epicardium",
+       "n_target": 552,
+       "n_start": 1119,
+       "n_ref": 883,
+       "start_cells": "stand-in JCF",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      },
+      {
+       "type": "vascular_endothelium",
+       "n_target": 170,
+       "n_start": 1139,
+       "n_ref": 271,
+       "start_cells": "stand-in Endothelium",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      }
+     ],
+     "perm": null
+    },
+    "m1rc_gmom_momperm": {
+     "covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "builder_covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "covered_cells": 4985,
+     "covered_cells_changed": 4985,
+     "non_covered_equal": true,
+     "shift": [
+      {
+       "type": "cm",
+       "n_target": 3291,
+       "n_start": 3819,
+       "n_ref": 5263,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "filter": {
+        "seed": 20261110,
+        "bins": 10,
+        "free_genes": 32222,
+        "sum_abs_before": 364.67279524267417,
+        "sum_abs_after": 364.6727952426741,
+        "same_values": true,
+        "moved_genes": 27150
+       },
+       "status": "shifted",
+       "n_up": 369,
+       "n_down": 215,
+       "mean_abs_log_f": 0.011295424972670717,
+       "max_abs_log_f": 0.6507216799333772,
+       "median_depth_scale": 0.9940231434578658
+      },
+      {
+       "type": "endocardium",
+       "n_target": 972,
+       "n_start": 1139,
+       "n_ref": 1555,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "filter": {
+        "seed": 20261110,
+        "bins": 10,
+        "free_genes": 32222,
+        "sum_abs_before": 468.943790563473,
+        "sum_abs_after": 468.943790563473,
+        "same_values": true,
+        "moved_genes": 24651
+       },
+       "status": "shifted",
+       "n_up": 439,
+       "n_down": 503,
+       "mean_abs_log_f": 0.014525129024732011,
+       "max_abs_log_f": 0.894103588104943,
+       "median_depth_scale": 0.9955221178338485
+      },
+      {
+       "type": "epicardium",
+       "n_target": 552,
+       "n_start": 1119,
+       "n_ref": 883,
+       "start_cells": "stand-in JCF",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      },
+      {
+       "type": "vascular_endothelium",
+       "n_target": 170,
+       "n_start": 1139,
+       "n_ref": 271,
+       "start_cells": "stand-in Endothelium",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      }
+     ],
+     "perm": [
+      {
+       "seed": 20261110,
+       "bins": 10,
+       "free_genes": 32222,
+       "sum_abs_before": 364.67279524267417,
+       "sum_abs_after": 364.6727952426741,
+       "same_values": true,
+       "moved_genes": 27150
+      },
+      {
+       "seed": 20261110,
+       "bins": 10,
+       "free_genes": 32222,
+       "sum_abs_before": 468.943790563473,
+       "sum_abs_after": 468.943790563473,
+       "same_values": true,
+       "moved_genes": 24651
+      }
+     ]
+    }
+   },
+   "seconds": 205.0
+  },
+  {
+   "seed": 6,
+   "floor": 50.0,
+   "arms": {
+    "m1rc_gmom": {
+     "score": 53.39478087865417,
+     "groups": {
+      "de_recovery": 0.5009112046754226,
+      "direction": 0.6357079179836291,
+      "distribution": 0.5311537897668963,
+      "covariance": 0.4522344559585492
+     },
+     "metrics": {
+      "variance_ratio": 0.747,
+      "mmd_u": 0.10111,
+      "variogram": 0.007007,
+      "energy_distance": 2.9849,
+      "pb_rel_err": 0.2642,
+      "de_score": 0.0029,
+      "de_direction": 0.3349,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9697
+     }
+    },
+    "m1rc_gmom_mom": {
+     "score": 54.23616179229137,
+     "groups": {
+      "de_recovery": 0.5122750642673521,
+      "direction": 0.6383983071539026,
+      "distribution": 0.5403161662358322,
+      "covariance": 0.462992125984252
+     },
+     "metrics": {
+      "variance_ratio": 0.753,
+      "mmd_u": 0.09764,
+      "variogram": 0.00672,
+      "energy_distance": 2.87048,
+      "pb_rel_err": 0.2601,
+      "de_score": 0.0382,
+      "de_direction": 0.3401,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9703
+     }
+    },
+    "m1rc_gmom_momperm": {
+     "score": 53.391194698419355,
+     "groups": {
+      "de_recovery": 0.49815636522717327,
+      "direction": 0.6342686180965473,
+      "distribution": 0.5316214233308877,
+      "covariance": 0.45659637076998527
+     },
+     "metrics": {
+      "variance_ratio": 0.755,
+      "mmd_u": 0.10093,
+      "variogram": 0.006889,
+      "energy_distance": 2.9717,
+      "pb_rel_err": 0.2649,
+      "de_score": -0.0059,
+      "de_direction": 0.3321,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9693
+     }
+    }
+   },
+   "sha256": {
+    "m1rc_gmom": "565e5a5b34f89bd0e8aa38e44fba16784681ba877b5d1c9a2bcb223e5cb3a39f",
+    "m1rc_gmom_mom": "aab3e6ea76905a8ffc86810cf69a863b3736d459f06981e60d0ca22eae02f701",
+    "m1rc_gmom_momperm": "ba46acc4471856d90a601b9e399857c0b382ff0b2a219215125dfbef5356eb92"
+   },
+   "covered": {
+    "m1rc_gmom_mom": {
+     "covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "builder_covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "covered_cells": 4985,
+     "covered_cells_changed": 4985,
+     "non_covered_equal": true,
+     "shift": [
+      {
+       "type": "cm",
+       "n_target": 3291,
+       "n_start": 3819,
+       "n_ref": 5263,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "status": "shifted",
+       "n_up": 369,
+       "n_down": 215,
+       "mean_abs_log_f": 0.011295424972670717,
+       "max_abs_log_f": 0.6507216799333772,
+       "median_depth_scale": 0.9951732645569403
+      },
+      {
+       "type": "endocardium",
+       "n_target": 972,
+       "n_start": 1139,
+       "n_ref": 1555,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "status": "shifted",
+       "n_up": 439,
+       "n_down": 503,
+       "mean_abs_log_f": 0.014525129024732011,
+       "max_abs_log_f": 0.894103588104943,
+       "median_depth_scale": 0.9852065918084978
+      },
+      {
+       "type": "epicardium",
+       "n_target": 552,
+       "n_start": 1119,
+       "n_ref": 883,
+       "start_cells": "stand-in JCF",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      },
+      {
+       "type": "vascular_endothelium",
+       "n_target": 170,
+       "n_start": 1139,
+       "n_ref": 271,
+       "start_cells": "stand-in Endothelium",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      }
+     ],
+     "perm": null
+    },
+    "m1rc_gmom_momperm": {
+     "covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "builder_covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "covered_cells": 4985,
+     "covered_cells_changed": 4985,
+     "non_covered_equal": true,
+     "shift": [
+      {
+       "type": "cm",
+       "n_target": 3291,
+       "n_start": 3819,
+       "n_ref": 5263,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "filter": {
+        "seed": 20261110,
+        "bins": 10,
+        "free_genes": 32222,
+        "sum_abs_before": 364.67279524267417,
+        "sum_abs_after": 364.6727952426741,
+        "same_values": true,
+        "moved_genes": 27150
+       },
+       "status": "shifted",
+       "n_up": 369,
+       "n_down": 215,
+       "mean_abs_log_f": 0.011295424972670717,
+       "max_abs_log_f": 0.6507216799333772,
+       "median_depth_scale": 0.9940115898695866
+      },
+      {
+       "type": "endocardium",
+       "n_target": 972,
+       "n_start": 1139,
+       "n_ref": 1555,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "filter": {
+        "seed": 20261110,
+        "bins": 10,
+        "free_genes": 32222,
+        "sum_abs_before": 468.943790563473,
+        "sum_abs_after": 468.943790563473,
+        "same_values": true,
+        "moved_genes": 24651
+       },
+       "status": "shifted",
+       "n_up": 439,
+       "n_down": 503,
+       "mean_abs_log_f": 0.014525129024732011,
+       "max_abs_log_f": 0.894103588104943,
+       "median_depth_scale": 0.9954363708338875
+      },
+      {
+       "type": "epicardium",
+       "n_target": 552,
+       "n_start": 1119,
+       "n_ref": 883,
+       "start_cells": "stand-in JCF",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      },
+      {
+       "type": "vascular_endothelium",
+       "n_target": 170,
+       "n_start": 1139,
+       "n_ref": 271,
+       "start_cells": "stand-in Endothelium",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      }
+     ],
+     "perm": [
+      {
+       "seed": 20261110,
+       "bins": 10,
+       "free_genes": 32222,
+       "sum_abs_before": 364.67279524267417,
+       "sum_abs_after": 364.6727952426741,
+       "same_values": true,
+       "moved_genes": 27150
+      },
+      {
+       "seed": 20261110,
+       "bins": 10,
+       "free_genes": 32222,
+       "sum_abs_before": 468.943790563473,
+       "sum_abs_after": 468.943790563473,
+       "same_values": true,
+       "moved_genes": 24651
+      }
+     ]
+    }
+   },
+   "seconds": 201.5
+  },
+  {
+   "seed": 7,
+   "floor": 50.0,
+   "arms": {
+    "m1rc_gmom": {
+     "score": 51.91067695775836,
+     "groups": {
+      "de_recovery": 0.48282737329560066,
+      "direction": 0.6257470521725085,
+      "distribution": 0.5165837070622444,
+      "covariance": 0.4349402554594149
+     },
+     "metrics": {
+      "variance_ratio": 0.751,
+      "mmd_u": 0.10435,
+      "variogram": 0.007099,
+      "energy_distance": 3.09943,
+      "pb_rel_err": 0.2645,
+      "de_score": -0.0534,
+      "de_direction": 0.3114,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9697
+     }
+    },
+    "m1rc_gmom_mom": {
+     "score": 52.48331072277852,
+     "groups": {
+      "de_recovery": 0.48655129950093984,
+      "direction": 0.627013029052359,
+      "distribution": 0.5249399038461539,
+      "covariance": 0.4448002696780718
+     },
+     "metrics": {
+      "variance_ratio": 0.757,
+      "mmd_u": 0.10112,
+      "variogram": 0.00683,
+      "energy_distance": 2.98981,
+      "pb_rel_err": 0.2605,
+      "de_score": -0.0415,
+      "de_direction": 0.3139,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9703
+     }
+    },
+    "m1rc_gmom_momperm": {
+     "score": 51.87617058275471,
+     "groups": {
+      "de_recovery": 0.4800792990982925,
+      "direction": 0.6236818803831602,
+      "distribution": 0.5168893929680951,
+      "covariance": 0.4387729653337767
+     },
+     "metrics": {
+      "variance_ratio": 0.758,
+      "mmd_u": 0.10423,
+      "variogram": 0.006993,
+      "energy_distance": 3.09185,
+      "pb_rel_err": 0.2652,
+      "de_score": -0.0623,
+      "de_direction": 0.3073,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9693
+     }
+    }
+   },
+   "sha256": {
+    "m1rc_gmom": "07691de446a02cb9960ed3f40aaf7ad2aeb7e784a994614109caf2cbc7145e9a",
+    "m1rc_gmom_mom": "a927b9fe62e3f4f0f16a3c92627446c668678b5209174e9fccb461da13773085",
+    "m1rc_gmom_momperm": "91890922979e03345a6efe98495d1d27d9811d876f633780953e5431ccdd4920"
+   },
+   "covered": {
+    "m1rc_gmom_mom": {
+     "covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "builder_covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "covered_cells": 4985,
+     "covered_cells_changed": 4985,
+     "non_covered_equal": true,
+     "shift": [
+      {
+       "type": "cm",
+       "n_target": 3291,
+       "n_start": 3819,
+       "n_ref": 5263,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "status": "shifted",
+       "n_up": 369,
+       "n_down": 215,
+       "mean_abs_log_f": 0.011295424972670717,
+       "max_abs_log_f": 0.6507216799333772,
+       "median_depth_scale": 0.9951211578126401
+      },
+      {
+       "type": "endocardium",
+       "n_target": 972,
+       "n_start": 1139,
+       "n_ref": 1555,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "status": "shifted",
+       "n_up": 439,
+       "n_down": 503,
+       "mean_abs_log_f": 0.014525129024732011,
+       "max_abs_log_f": 0.894103588104943,
+       "median_depth_scale": 0.9852602059785627
+      },
+      {
+       "type": "epicardium",
+       "n_target": 552,
+       "n_start": 1119,
+       "n_ref": 883,
+       "start_cells": "stand-in JCF",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      },
+      {
+       "type": "vascular_endothelium",
+       "n_target": 170,
+       "n_start": 1139,
+       "n_ref": 271,
+       "start_cells": "stand-in Endothelium",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      }
+     ],
+     "perm": null
+    },
+    "m1rc_gmom_momperm": {
+     "covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "builder_covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "covered_cells": 4985,
+     "covered_cells_changed": 4985,
+     "non_covered_equal": true,
+     "shift": [
+      {
+       "type": "cm",
+       "n_target": 3291,
+       "n_start": 3819,
+       "n_ref": 5263,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "filter": {
+        "seed": 20261110,
+        "bins": 10,
+        "free_genes": 32222,
+        "sum_abs_before": 364.67279524267417,
+        "sum_abs_after": 364.6727952426741,
+        "same_values": true,
+        "moved_genes": 27150
+       },
+       "status": "shifted",
+       "n_up": 369,
+       "n_down": 215,
+       "mean_abs_log_f": 0.011295424972670717,
+       "max_abs_log_f": 0.6507216799333772,
+       "median_depth_scale": 0.9940134258531952
+      },
+      {
+       "type": "endocardium",
+       "n_target": 972,
+       "n_start": 1139,
+       "n_ref": 1555,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "filter": {
+        "seed": 20261110,
+        "bins": 10,
+        "free_genes": 32222,
+        "sum_abs_before": 468.943790563473,
+        "sum_abs_after": 468.943790563473,
+        "same_values": true,
+        "moved_genes": 24651
+       },
+       "status": "shifted",
+       "n_up": 439,
+       "n_down": 503,
+       "mean_abs_log_f": 0.014525129024732011,
+       "max_abs_log_f": 0.894103588104943,
+       "median_depth_scale": 0.9954503829546186
+      },
+      {
+       "type": "epicardium",
+       "n_target": 552,
+       "n_start": 1119,
+       "n_ref": 883,
+       "start_cells": "stand-in JCF",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      },
+      {
+       "type": "vascular_endothelium",
+       "n_target": 170,
+       "n_start": 1139,
+       "n_ref": 271,
+       "start_cells": "stand-in Endothelium",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      }
+     ],
+     "perm": [
+      {
+       "seed": 20261110,
+       "bins": 10,
+       "free_genes": 32222,
+       "sum_abs_before": 364.67279524267417,
+       "sum_abs_after": 364.6727952426741,
+       "same_values": true,
+       "moved_genes": 27150
+      },
+      {
+       "seed": 20261110,
+       "bins": 10,
+       "free_genes": 32222,
+       "sum_abs_before": 468.943790563473,
+       "sum_abs_after": 468.943790563473,
+       "same_values": true,
+       "moved_genes": 24651
+      }
+     ]
+    }
+   },
+   "seconds": 207.2
+  },
+  {
+   "seed": 8,
+   "floor": 50.0,
+   "arms": {
+    "m1rc_gmom": {
+     "score": 52.671221040660576,
+     "groups": {
+      "de_recovery": 0.49813192476165935,
+      "direction": 0.625846006847679,
+      "distribution": 0.5162304727125178,
+      "covariance": 0.4542429284525791
+     },
+     "metrics": {
+      "variance_ratio": 0.747,
+      "mmd_u": 0.10131,
+      "variogram": 0.00654,
+      "energy_distance": 3.04142,
+      "pb_rel_err": 0.2587,
+      "de_score": -0.0058,
+      "de_direction": 0.3161,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9701
+     }
+    },
+    "m1rc_gmom_mom": {
+     "score": 53.383879246902936,
+     "groups": {
+      "de_recovery": 0.5047320670974479,
+      "direction": 0.6270943034944949,
+      "distribution": 0.5257774563487964,
+      "covariance": 0.4657448145820239
+     },
+     "metrics": {
+      "variance_ratio": 0.753,
+      "mmd_u": 0.09773,
+      "variogram": 0.006258,
+      "energy_distance": 2.92409,
+      "pb_rel_err": 0.2543,
+      "de_score": 0.0145,
+      "de_direction": 0.3186,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9708
+     }
+    },
+    "m1rc_gmom_momperm": {
+     "score": 52.57748683967471,
+     "groups": {
+      "de_recovery": 0.49257914516848206,
+      "direction": 0.6246026700572156,
+      "distribution": 0.5162828446789084,
+      "covariance": 0.45797280593325096
+     },
+     "metrics": {
+      "variance_ratio": 0.755,
+      "mmd_u": 0.10129,
+      "variogram": 0.006447,
+      "energy_distance": 3.02938,
+      "pb_rel_err": 0.2595,
+      "de_score": -0.0233,
+      "de_direction": 0.3136,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9697
+     }
+    }
+   },
+   "sha256": {
+    "m1rc_gmom": "c6e9c957e40e9a0cc9cc429a2e306b5b69145e0bae1fd23f6d3c0c3670408fdb",
+    "m1rc_gmom_mom": "79eb6516f2b0ba4dda759fefe552133ed258dca542fef80af379bec4b57e66b7",
+    "m1rc_gmom_momperm": "80ed0870c16bccb9aed4205e058c9f2f64cca607236d2ee07550a5e63ed609ec"
+   },
+   "covered": {
+    "m1rc_gmom_mom": {
+     "covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "builder_covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "covered_cells": 4985,
+     "covered_cells_changed": 4985,
+     "non_covered_equal": true,
+     "shift": [
+      {
+       "type": "cm",
+       "n_target": 3291,
+       "n_start": 3819,
+       "n_ref": 5263,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "status": "shifted",
+       "n_up": 369,
+       "n_down": 215,
+       "mean_abs_log_f": 0.011295424972670717,
+       "max_abs_log_f": 0.6507216799333772,
+       "median_depth_scale": 0.9950178788470454
+      },
+      {
+       "type": "endocardium",
+       "n_target": 972,
+       "n_start": 1139,
+       "n_ref": 1555,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "status": "shifted",
+       "n_up": 439,
+       "n_down": 503,
+       "mean_abs_log_f": 0.014525129024732011,
+       "max_abs_log_f": 0.894103588104943,
+       "median_depth_scale": 0.9847525515835753
+      },
+      {
+       "type": "epicardium",
+       "n_target": 552,
+       "n_start": 1119,
+       "n_ref": 883,
+       "start_cells": "stand-in JCF",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      },
+      {
+       "type": "vascular_endothelium",
+       "n_target": 170,
+       "n_start": 1139,
+       "n_ref": 271,
+       "start_cells": "stand-in Endothelium",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      }
+     ],
+     "perm": null
+    },
+    "m1rc_gmom_momperm": {
+     "covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "builder_covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "covered_cells": 4985,
+     "covered_cells_changed": 4985,
+     "non_covered_equal": true,
+     "shift": [
+      {
+       "type": "cm",
+       "n_target": 3291,
+       "n_start": 3819,
+       "n_ref": 5263,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "filter": {
+        "seed": 20261110,
+        "bins": 10,
+        "free_genes": 32222,
+        "sum_abs_before": 364.67279524267417,
+        "sum_abs_after": 364.6727952426741,
+        "same_values": true,
+        "moved_genes": 27150
+       },
+       "status": "shifted",
+       "n_up": 369,
+       "n_down": 215,
+       "mean_abs_log_f": 0.011295424972670717,
+       "max_abs_log_f": 0.6507216799333772,
+       "median_depth_scale": 0.9940231434578658
+      },
+      {
+       "type": "endocardium",
+       "n_target": 972,
+       "n_start": 1139,
+       "n_ref": 1555,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "filter": {
+        "seed": 20261110,
+        "bins": 10,
+        "free_genes": 32222,
+        "sum_abs_before": 468.943790563473,
+        "sum_abs_after": 468.943790563473,
+        "same_values": true,
+        "moved_genes": 24651
+       },
+       "status": "shifted",
+       "n_up": 439,
+       "n_down": 503,
+       "mean_abs_log_f": 0.014525129024732011,
+       "max_abs_log_f": 0.894103588104943,
+       "median_depth_scale": 0.9955489785672887
+      },
+      {
+       "type": "epicardium",
+       "n_target": 552,
+       "n_start": 1119,
+       "n_ref": 883,
+       "start_cells": "stand-in JCF",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      },
+      {
+       "type": "vascular_endothelium",
+       "n_target": 170,
+       "n_start": 1139,
+       "n_ref": 271,
+       "start_cells": "stand-in Endothelium",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      }
+     ],
+     "perm": [
+      {
+       "seed": 20261110,
+       "bins": 10,
+       "free_genes": 32222,
+       "sum_abs_before": 364.67279524267417,
+       "sum_abs_after": 364.6727952426741,
+       "same_values": true,
+       "moved_genes": 27150
+      },
+      {
+       "seed": 20261110,
+       "bins": 10,
+       "free_genes": 32222,
+       "sum_abs_before": 468.943790563473,
+       "sum_abs_after": 468.943790563473,
+       "same_values": true,
+       "moved_genes": 24651
+      }
+     ]
+    }
+   },
+   "seconds": 210.3
+  },
+  {
+   "seed": 9,
+   "floor": 50.0,
+   "arms": {
+    "m1rc_gmom": {
+     "score": 51.620178559936846,
+     "groups": {
+      "de_recovery": 0.4770447303198395,
+      "direction": 0.6176703018808283,
+      "distribution": 0.5154560293817588,
+      "covariance": 0.43943109367336924
+     },
+     "metrics": {
+      "variance_ratio": 0.747,
+      "mmd_u": 0.09964,
+      "variogram": 0.007067,
+      "energy_distance": 3.07918,
+      "pb_rel_err": 0.2589,
+      "de_score": -0.0778,
+      "de_direction": 0.2978,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9706
+     }
+    },
+    "m1rc_gmom_mom": {
+     "score": 52.378271294371494,
+     "groups": {
+      "de_recovery": 0.4856130233675737,
+      "direction": 0.6208594804988482,
+      "distribution": 0.5240910741144132,
+      "covariance": 0.4496863237139272
+     },
+     "metrics": {
+      "variance_ratio": 0.753,
+      "mmd_u": 0.09641,
+      "variogram": 0.006788,
+      "energy_distance": 2.97039,
+      "pb_rel_err": 0.255,
+      "de_score": -0.0479,
+      "de_direction": 0.3043,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9712
+     }
+    },
+    "m1rc_gmom_momperm": {
+     "score": 51.540414395290455,
+     "groups": {
+      "de_recovery": 0.4703828697777261,
+      "direction": 0.6175238998182824,
+      "distribution": 0.5156664625433762,
+      "covariance": 0.44363756395444787
+     },
+     "metrics": {
+      "variance_ratio": 0.755,
+      "mmd_u": 0.09956,
+      "variogram": 0.006951,
+      "energy_distance": 3.06976,
+      "pb_rel_err": 0.2596,
+      "de_score": -0.1018,
+      "de_direction": 0.2975,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9702
+     }
+    }
+   },
+   "sha256": {
+    "m1rc_gmom": "a3a1d44dd1d7a7634898d879888cb5810181fb9c036acc3677d07880fb2b6f03",
+    "m1rc_gmom_mom": "6f29abbae303881fd3d9e746abe629d1f8cf53cc5d11759377969b02bebb9721",
+    "m1rc_gmom_momperm": "4e212c0aa6d103367107e37aefc8b2896e6f7f8b86a7eeba61d589ac37494745"
+   },
+   "covered": {
+    "m1rc_gmom_mom": {
+     "covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "builder_covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "covered_cells": 4985,
+     "covered_cells_changed": 4985,
+     "non_covered_equal": true,
+     "shift": [
+      {
+       "type": "cm",
+       "n_target": 3291,
+       "n_start": 3819,
+       "n_ref": 5263,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "status": "shifted",
+       "n_up": 369,
+       "n_down": 215,
+       "mean_abs_log_f": 0.011295424972670717,
+       "max_abs_log_f": 0.6507216799333772,
+       "median_depth_scale": 0.9950419035080594
+      },
+      {
+       "type": "endocardium",
+       "n_target": 972,
+       "n_start": 1139,
+       "n_ref": 1555,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "status": "shifted",
+       "n_up": 439,
+       "n_down": 503,
+       "mean_abs_log_f": 0.014525129024732011,
+       "max_abs_log_f": 0.894103588104943,
+       "median_depth_scale": 0.9849588748588473
+      },
+      {
+       "type": "epicardium",
+       "n_target": 552,
+       "n_start": 1119,
+       "n_ref": 883,
+       "start_cells": "stand-in JCF",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      },
+      {
+       "type": "vascular_endothelium",
+       "n_target": 170,
+       "n_start": 1139,
+       "n_ref": 271,
+       "start_cells": "stand-in Endothelium",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      }
+     ],
+     "perm": null
+    },
+    "m1rc_gmom_momperm": {
+     "covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "builder_covered_set": [
+      "AVC-CM",
+      "BEC",
+      "Endocardium",
+      "IFT-CM",
+      "OFT/RV-CM",
+      "Proepicardium",
+      "SV-CM",
+      "V-CM"
+     ],
+     "covered_cells": 4985,
+     "covered_cells_changed": 4985,
+     "non_covered_equal": true,
+     "shift": [
+      {
+       "type": "cm",
+       "n_target": 3291,
+       "n_start": 3819,
+       "n_ref": 5263,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "filter": {
+        "seed": 20261110,
+        "bins": 10,
+        "free_genes": 32222,
+        "sum_abs_before": 364.67279524267417,
+        "sum_abs_after": 364.6727952426741,
+        "same_values": true,
+        "moved_genes": 27150
+       },
+       "status": "shifted",
+       "n_up": 369,
+       "n_down": 215,
+       "mean_abs_log_f": 0.011295424972670717,
+       "max_abs_log_f": 0.6507216799333772,
+       "median_depth_scale": 0.9940370396907459
+      },
+      {
+       "type": "endocardium",
+       "n_target": 972,
+       "n_start": 1139,
+       "n_ref": 1555,
+       "start_cells": "own",
+       "ref_cells": "own",
+       "filter": {
+        "seed": 20261110,
+        "bins": 10,
+        "free_genes": 32222,
+        "sum_abs_before": 468.943790563473,
+        "sum_abs_after": 468.943790563473,
+        "same_values": true,
+        "moved_genes": 24651
+       },
+       "status": "shifted",
+       "n_up": 439,
+       "n_down": 503,
+       "mean_abs_log_f": 0.014525129024732011,
+       "max_abs_log_f": 0.894103588104943,
+       "median_depth_scale": 0.995468291249846
+      },
+      {
+       "type": "epicardium",
+       "n_target": 552,
+       "n_start": 1119,
+       "n_ref": 883,
+       "start_cells": "stand-in JCF",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      },
+      {
+       "type": "vascular_endothelium",
+       "n_target": 170,
+       "n_start": 1139,
+       "n_ref": 271,
+       "start_cells": "stand-in Endothelium",
+       "ref_cells": "own",
+       "status": "skipped: stand-in cells at a stage (identity, not development)",
+       "n_up": 0,
+       "n_down": 0,
+       "mean_abs_log_f": 0.0,
+       "max_abs_log_f": 0.0,
+       "median_depth_scale": 1.0
+      }
+     ],
+     "perm": [
+      {
+       "seed": 20261110,
+       "bins": 10,
+       "free_genes": 32222,
+       "sum_abs_before": 364.67279524267417,
+       "sum_abs_after": 364.6727952426741,
+       "same_values": true,
+       "moved_genes": 27150
+      },
+      {
+       "seed": 20261110,
+       "bins": 10,
+       "free_genes": 32222,
+       "sum_abs_before": 468.943790563473,
+       "sum_abs_after": 468.943790563473,
+       "same_values": true,
+       "moved_genes": 24651
+      }
+     ]
+    }
+   },
+   "seconds": 207.6
+  }
+ ],
+ "fraction": 0.2,
+ "relabel": {
+  "file": "/home/prachh/v/scratch/t65-wt/data/derived/feng_relabel_c/cd1_stats_relabel.npz",
+  "sha256": "36d1f7edcbbf3d7a80c68b51d5624a94bb753668079fe3d69aed720c71baa7e9",
+  "stats_sha256_hashed": "36d1f7edcbbf3d7a80c68b51d5624a94bb753668079fe3d69aed720c71baa7e9",
+  "yaml_sha256": "883e74c2c1ef5f01d5244555f8b3dcae24255568c731a6d53ee2788b7b677b49",
+  "route": "recomputed",
+  "record_route": "recomputed",
+  "authors_labels_read": false,
+  "with_direction": [
+   "CM",
+   "Endocardium",
+   "Endothelium",
+   "Epicardium"
+  ],
+  "fallbacks": {
+   "CM": {
+    "own": true,
+    "fired": false,
+    "takes": "CM"
+   },
+   "Endocardium": {
+    "own": true,
+    "fired": false,
+    "takes": "Endocardium"
+   },
+   "Endothelium": {
+    "own": true,
+    "fired": false,
+    "takes": "Endothelium"
+   },
+   "Epicardium": {
+    "own": true,
+    "fired": false,
+    "takes": "Epicardium"
+   }
+  },
+  "relabel_gate": {
+   "row": "N54",
+   "ruling": "2026-11-19 (u)",
+   "commit": "7efef2826bb165aff729fd4ecd8f90c94eda7ffc",
+   "clean": true,
+   "config_at_head": true,
+   "n55": {
+    "outcome": "changed",
+    "setting": {
+     "min_score": 0.3,
+     "min_margin": 0.25
+    },
+    "commit": "cae44f793d1a134b219471df6f9bc941d913c82a",
+    "ruling": "2026-11-19 (w)"
+   }
+  },
+  "epicardium_directed": true,
+  "with_direction_epi_held": [
+   "CM",
+   "Endocardium",
+   "Endothelium"
+  ]
+ },
+ "damping": 0.5,
+ "momentum_stream": 1,
+ "direction_stream": 2,
+ "perm_seed": 20261110,
+ "perm_bins": 10,
+ "shift_rows": {
+  "m1rc_gmom_mom": [
+   {
+    "type": "cm",
+    "n_target": 3291,
+    "n_start": 3819,
+    "n_ref": 5263,
+    "start_cells": "own",
+    "ref_cells": "own",
+    "status": "shifted",
+    "n_up": 369,
+    "n_down": 215,
+    "mean_abs_log_f": 0.011295424972670717,
+    "max_abs_log_f": 0.6507216799333772,
+    "median_depth_scale": 0.9949938071158837
+   },
+   {
+    "type": "endocardium",
+    "n_target": 972,
+    "n_start": 1139,
+    "n_ref": 1555,
+    "start_cells": "own",
+    "ref_cells": "own",
+    "status": "shifted",
+    "n_up": 439,
+    "n_down": 503,
+    "mean_abs_log_f": 0.014525129024732011,
+    "max_abs_log_f": 0.894103588104943,
+    "median_depth_scale": 0.9850260384821785
+   },
+   {
+    "type": "epicardium",
+    "n_target": 552,
+    "n_start": 1119,
+    "n_ref": 883,
+    "start_cells": "stand-in JCF",
+    "ref_cells": "own",
+    "status": "skipped: stand-in cells at a stage (identity, not development)",
+    "n_up": 0,
+    "n_down": 0,
+    "mean_abs_log_f": 0.0,
+    "max_abs_log_f": 0.0,
+    "median_depth_scale": 1.0
+   },
+   {
+    "type": "vascular_endothelium",
+    "n_target": 170,
+    "n_start": 1139,
+    "n_ref": 271,
+    "start_cells": "stand-in Endothelium",
+    "ref_cells": "own",
+    "status": "skipped: stand-in cells at a stage (identity, not development)",
+    "n_up": 0,
+    "n_down": 0,
+    "mean_abs_log_f": 0.0,
+    "max_abs_log_f": 0.0,
+    "median_depth_scale": 1.0
+   }
+  ],
+  "m1rc_gmom_momperm": [
+   {
+    "type": "cm",
+    "n_target": 3291,
+    "n_start": 3819,
+    "n_ref": 5263,
+    "start_cells": "own",
+    "ref_cells": "own",
+    "filter": {
+     "seed": 20261110,
+     "bins": 10,
+     "free_genes": 32222,
+     "sum_abs_before": 364.67279524267417,
+     "sum_abs_after": 364.6727952426741,
+     "same_values": true,
+     "moved_genes": 27150
+    },
+    "status": "shifted",
+    "n_up": 369,
+    "n_down": 215,
+    "mean_abs_log_f": 0.011295424972670717,
+    "max_abs_log_f": 0.6507216799333772,
+    "median_depth_scale": 0.9939996191933812
+   },
+   {
+    "type": "endocardium",
+    "n_target": 972,
+    "n_start": 1139,
+    "n_ref": 1555,
+    "start_cells": "own",
+    "ref_cells": "own",
+    "filter": {
+     "seed": 20261110,
+     "bins": 10,
+     "free_genes": 32222,
+     "sum_abs_before": 468.943790563473,
+     "sum_abs_after": 468.943790563473,
+     "same_values": true,
+     "moved_genes": 24651
+    },
+    "status": "shifted",
+    "n_up": 439,
+    "n_down": 503,
+    "mean_abs_log_f": 0.014525129024732011,
+    "max_abs_log_f": 0.894103588104943,
+    "median_depth_scale": 0.9954503829546186
+   },
+   {
+    "type": "epicardium",
+    "n_target": 552,
+    "n_start": 1119,
+    "n_ref": 883,
+    "start_cells": "stand-in JCF",
+    "ref_cells": "own",
+    "status": "skipped: stand-in cells at a stage (identity, not development)",
+    "n_up": 0,
+    "n_down": 0,
+    "mean_abs_log_f": 0.0,
+    "max_abs_log_f": 0.0,
+    "median_depth_scale": 1.0
+   },
+   {
+    "type": "vascular_endothelium",
+    "n_target": 170,
+    "n_start": 1139,
+    "n_ref": 271,
+    "start_cells": "stand-in Endothelium",
+    "ref_cells": "own",
+    "status": "skipped: stand-in cells at a stage (identity, not development)",
+    "n_up": 0,
+    "n_down": 0,
+    "mean_abs_log_f": 0.0,
+    "max_abs_log_f": 0.0,
+    "median_depth_scale": 1.0
+   }
+  ]
+ },
+ "constants": {
+  "edit_categories": [
+   "cm",
+   "endocardium"
+  ],
+  "held_m1_genes": 63,
+  "momentum_eps": 0.5,
+  "momentum_min_cells": 20
+ },
+ "stamp": {
+  "commit": "34567906a651f08316f5689003bcfa1c4e57e430",
+  "tree_clean": true,
+  "utc": "2026-11-22T01:08:50Z",
+  "inputs": {
+   "/home/prachh/v/scratch/t65-wt/data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+   "/home/prachh/v/scratch/t65-wt/data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+   "/home/prachh/v/scratch/t65-wt/data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+   "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c",
+   "configs/t1_chamber_classes.yaml": "fa627bb9d6f29f4b6ac9eac8f7897cfb2de66b39b4967df0c7465c7ed6664970",
+   "/home/prachh/v/scratch/t65-wt/data/derived/feng_relabel_c/cd1_stats_relabel.npz": "36d1f7edcbbf3d7a80c68b51d5624a94bb753668079fe3d69aed720c71baa7e9",
+   "experiments/external/feng_relabel.yaml": "883e74c2c1ef5f01d5244555f8b3dcae24255568c731a6d53ee2788b7b677b49",
+   "experiments/external/results/feng_relabel/MANIFEST.json": "2a3e7200299bf2da05223a60bb910bbda8fcd1785375548e28aafdd006c93cad",
+   "experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv": "c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841"
+  }
+ }
+}
