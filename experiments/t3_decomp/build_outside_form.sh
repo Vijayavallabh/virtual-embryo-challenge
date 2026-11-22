@@ -29,9 +29,11 @@
 # HEAD_SHA: the full commit the checkout must be at (it holds the committed K22 reading, TABLES.sha256 and the filled
 # pins). BASE: s1, s1x1.5, s1x2.0 or s2, the base B of decision log 2026-11-20 (q), fixed there; nothing here chooses
 # it. KIND, KIND2: the one or two forms K22's reading names, in its order (xall or xunrel); nothing here chooses them,
-# and the builder refuses a kind the reading does not name. The tables folder is fixed below (~/v/vec-ext/t3/tables)
-# and passed only through VEC_T3_EXT_TABLES. The scratch folder S (~/v/scratch/t3outside_<first 7 of
-# HEAD_SHA>_<BASE>) is made first, so every finish below writes $S/all.exit. Steps, in order, stopping at the first
+# and the builder refuses a kind the reading does not name. The tables folder is fixed below
+# (~/v/vec-ext/t3/tables_two_study: the two-study tables rows K22 and K23 read, whose bytes the builder pins through
+# outside_forms.py's K22 pins; ~/v/vec-ext/t3/tables holds row K24's wider tables since 2026-11-21) and passed only
+# through VEC_T3_EXT_TABLES. uv is put on the path here ($HOME/.local/bin). The scratch folder S
+# (~/v/scratch/t3outside_<first 7 of HEAD_SHA>_<BASE>) is made first, so every finish below writes $S/all.exit. Steps, in order, stopping at the first
 # failure:
 #   0. BASE one of the four and each KIND one of the two, no KIND twice (exit 2);
 #   1. HEAD and a clean tree (exit 97, 98), the tables folder a real directory (96), and no output folder yet (95);
@@ -125,8 +127,9 @@ O=runs/t3_outside_form_${HEAD_SHA:0:7}_$BASE
 if [ -n "$EXP" ]; then O=${O}_e$EXP; fi
 DEC=experiments/t3_decomp/results/gata4/gata4_decisions.json
 RUN_DIR=$HOME/v/virtual-embryo-challenge/runs/t3_decomp/gata4_20261028T122425Z  # read only; fixed, no override
-TABLES=$HOME/v/vec-ext/t3/tables  # combine.py's --out; fixed, no override
+TABLES=$HOME/v/vec-ext/t3/tables_two_study  # the two-study tables K22 and K23 read; fixed, no override
 WT=data/raw/T2/E8.75.h5ad
+export PATH=$HOME/.local/bin:$PATH  # uv, before its first use
 export NUMPY_MADVISE_HUGEPAGE=0 TMPDIR="$S/tmp" VEC_T3_EXT_TABLES="$TABLES"
 PY="uv run --frozen --no-sync python -I -B"
 threads() { export OMP_NUM_THREADS=$1 OPENBLAS_NUM_THREADS=$1 MKL_NUM_THREADS=$1; }

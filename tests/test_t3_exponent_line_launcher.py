@@ -54,6 +54,26 @@ def test_the_known_hash_is_the_build_record_s():
     assert "[s1]=3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2" in _sh()
 
 
+def test_the_tables_folder_is_the_two_study_folder_passed_only_through_the_variable():
+    """The forms this launcher builds read the two-study tables under outside_forms.py's K22 pins; since row K24
+    ~/v/vec-ext/t3/tables holds the wider tables, so the launcher names tables_two_study, fixed, with no override."""
+    sh = _sh()
+    code = [line.split("#")[0] for line in sh.splitlines()]
+    sets = [line for line in code if re.match(r"\s*TABLES=", line)]
+    assert sets == ["TABLES=$HOME/v/vec-ext/t3/tables_two_study  "]
+    assert 'VEC_T3_EXT_TABLES="$TABLES"' in sh
+    assert sum("VEC_T3_EXT_TABLES" in line for line in code) == 1
+    assert not any(re.search(r"vec-ext/t3/tables(?!_two_study)", line) for line in code)
+    assert '{ [ -d "$TABLES" ] && [ ! -L "$TABLES" ]; } ||' in sh and "finish 96" in sh
+
+
+def test_uv_is_put_on_the_path_before_its_first_use():
+    code = [line.split("#")[0] for line in _sh().splitlines()]
+    path_at = code.index("export PATH=$HOME/.local/bin:$PATH  ")
+    first_uv = min(i for i, line in enumerate(code) if re.search(r"(^|[\s\"=])uv\s", line))
+    assert path_at < first_uv
+
+
 def test_build_and_check_output_goes_to_dev_null():
     lines = _sh().splitlines()
     for i, line in enumerate(lines):
@@ -96,11 +116,13 @@ def _git(repo: Path, env: dict, *argv: str) -> str:
                           cwd=repo, env=env, capture_output=True, text=True, check=True).stdout.strip()
 
 
-def _repo(tmp_path: Path, tries: str = ROW, tables: bool = True) -> tuple[Path, dict, str]:
+def _repo(tmp_path: Path, tries: str = ROW, tables: bool = True, wider: bool = False) -> tuple[Path, dict, str]:
     env = _env(tmp_path)
     home = tmp_path / "home"
     home.mkdir(exist_ok=True)
     if tables:
+        (home / "v" / "vec-ext" / "t3" / "tables_two_study").mkdir(parents=True)
+    if wider:  # row K24's wider tables' folder, which this launcher never reads
         (home / "v" / "vec-ext" / "t3" / "tables").mkdir(parents=True)
     repo = tmp_path / "repo"
     (repo / "experiments" / "t3_decomp").mkdir(parents=True)
@@ -176,6 +198,21 @@ def test_a_missing_tables_folder_is_refused(tmp_path):
     _refused(tmp_path, head, 96)
 
 
+def test_a_missing_two_study_folder_is_refused_while_the_wider_folder_exists(tmp_path):
+    repo, env, head = _repo(tmp_path, tables=False, wider=True)
+    out = _run(repo, env, *_ruled(head))
+    assert out.returncode == 96 and "tables_two_study is not a real directory" in out.stderr
+    _refused(tmp_path, head, 96)
+
+
+def test_a_symlinked_two_study_folder_is_refused(tmp_path):
+    repo, env, head = _repo(tmp_path, tables=False, wider=True)
+    t3 = tmp_path / "home" / "v" / "vec-ext" / "t3"
+    (t3 / "tables_two_study").symlink_to(t3 / "tables")
+    assert _run(repo, env, *_ruled(head)).returncode == 96
+    _refused(tmp_path, head, 96)
+
+
 @pytest.mark.parametrize("tries", [
     "",
     ROW + ROW,
@@ -229,6 +266,21 @@ def test_a_passing_gate_writes_running_then_the_head_then_runs(tmp_path):
     assert not (s / "refused.exit").exists()
     o = repo / "runs" / f"t3_outside_form_{head[:7]}_s2_e4.0"
     assert sorted(p.name for p in o.iterdir()) == ["a", "b", "gate"] and not any(o.rglob("*.h5ad"))
+
+
+def test_a_launch_without_uv_on_the_path_reaches_the_tests_step_through_home_local_bin(tmp_path):
+    """The launch command sets no path: uv is found in $HOME/.local/bin (the stand-in, which fails), so the run stops
+    at the tests step with 10, never 127 for a missing tool."""
+    repo, env, head = _repo(tmp_path)
+    stand = str(tmp_path / "bin")
+    env["PATH"] = ":".join(p for p in env["PATH"].split(":") if p != stand)
+    local = tmp_path / "home" / ".local" / "bin"
+    local.mkdir(parents=True)
+    (tmp_path / "bin" / "uv").rename(local / "uv")
+    out = _run(repo, env, *_ruled(head))
+    assert out.returncode == 10, out.stderr
+    assert (tmp_path / "home" / "seen").read_text().split() == ["running", head]
+    assert (_s(tmp_path, head) / "tests.exit").read_text().strip() == "1"
 
 
 def test_without_the_ruling_a_refusal_writes_all_exit_as_before(tmp_path):
