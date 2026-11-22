@@ -653,7 +653,8 @@ def _t1_ruled_damping(a, damping: float) -> dict:
     """--g-mom-damping 1.5 or 2.0 (row R22's second T1 search line): refused before anything is read without
     --captain-ruling R22, with any other row, unless row R22 is the captain's order naming the option, with
     --released-bet or --bet-strength, with --feng-fraction-mult other than 1.0, and on any command but
-    T1_CANDIDATE_COMMAND at the default seed on the test board. Returns the record's candidate values, naming the row."""
+    T1_CANDIDATE_COMMAND at the default seed on the test board. Returns the record's candidate values, naming the
+    row."""
     row, option = T1_R22_ROW, T1_R22_DAMPING_OPTIONS[damping]
     mult, ruling = getattr(a, "feng_fraction_mult", None), getattr(a, "captain_ruling", None)
     if ruling is None:
