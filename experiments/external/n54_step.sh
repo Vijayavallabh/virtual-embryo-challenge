@@ -59,7 +59,8 @@ case "$STEP" in
       tests/test_embryo_copy_rows_sized_launcher.py tests/test_e52_copy_rows_sized_read.py \
       tests/test_t1_fraction2_build.py tests/test_t1_fraction2_launcher.py \
       tests/test_t1_fraction_line_build.py tests/test_t1_fraction_line_launcher.py \
-      tests/test_t1_timing.py tests/test_t1_rc18.py tests/test_jaxblood_read.py tests/test_jax_blood.py tests/test_k25_dispersion.py \
+      tests/test_t1_timing.py tests/test_t1_rc18.py tests/test_jaxblood_read.py tests/test_jax_blood.py \
+      tests/test_k25_dispersion.py tests/test_t1_damping_line_build.py tests/test_t1_damping_line_launcher.py \
       tests/test_git_helpers.py experiments/external/test_filters.py
     finish $? ;;
   identity)
