@@ -75,7 +75,7 @@ def test_the_launcher_reproduces_three_files_then_builds_each_line_file_twice():
 def test_the_known_hashes_are_the_recorded_ones():
     """The three identity hashes are the ones the earlier launcher and its run record hold (no build here)."""
     x2 = (REPO / "experiments" / "builds" / "results" / "t1x2_3d18841.SHA256SUMS").read_text().split()
-    assert dict(zip(x2[1::2], x2[0::2])) == {"D/T1_s2rc.h5ad": R13_SHA, "B/T1_s2rcB.h5ad": B_SHA,
+    assert dict(zip(x2[1::2], x2[0::2], strict=True)) == {"D/T1_s2rc.h5ad": R13_SHA, "B/T1_s2rcB.h5ad": B_SHA,
                                              "X2a/T1_s2rcB2.h5ad": X2_SHA, "X2b/T1_s2rcB2.h5ad": X2_SHA}
     old = (REPO / "experiments" / "builds" / "t1_fraction2.sh").read_text()
     assert f"R13_SHA={R13_SHA}" in old and f"B_SHA={B_SHA}" in old

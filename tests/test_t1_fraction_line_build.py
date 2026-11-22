@@ -47,8 +47,9 @@ R20_BEFORE = ("c2d8d6a2916f5442e18a8ba9fef44f26ddc64c6c1f4a3656deacea7788b3d7d2"
 # Synthetic ruling rows in the form the builder checks (first cell: the captain's order, "ruling, no run", the options)
 ROW_R20 = ("| R20 (the captain's order of a day; ruling, no run, not a try; the builder is to take "
            "`--feng-fraction-mult 2.0` only with `--captain-ruling R20`) | T1 | a file |")
-ROW_R22 = ("| R22 (the captain's order of a later day: a search line; ruling, no run, not a try; the builder is to take "
-           "`--feng-fraction-mult 2.5` and `--feng-fraction-mult 3.0` only with `--captain-ruling R22`) | T1 | a line |")
+ROW_R22 = ("| R22 (the captain's order of a later day: a search line; ruling, no run, not a try; the builder is to "
+           "take `--feng-fraction-mult 2.5` and `--feng-fraction-mult 3.0` only with `--captain-ruling R22`) | T1 | "
+           "a line |")
 
 
 def _sha(p: Path) -> str:
