@@ -2098,6 +2098,39 @@ CANDIDATES = {
 }
 
 
+# Row E51 (the score-blind challenger's specification, job_embryo_so_ohi): the overlay file's positions (fgw_shape0x_ov,
+# E49c) with another expression step. Two new names only; no existing candidate, option or default changes.
+SO_OHI_CANDIDATES = {"fgw_shape0x_series_ov": "series", "fgw_shape0x_ov_hi": "render_hi"}
+
+
+def _fgw_shape0x_series_ov(ctx: BuildContext) -> Stage:
+    """Embryo candidate SO (row E51): fgw_shape0x_ov's positions with fgw_shape0x_series' expression (the series
+    rendering, stream [seed, 7])."""
+    return _fgw(ctx, t_pos=0.0, expression="series", positions="floor_exact", shape_form="overlay")
+
+
+def _fgw_shape0x_ov_hi(ctx: BuildContext) -> Stage:
+    """Embryo candidate O_hi (row E51): fgw_shape0x_ov's positions with the depth top-up render_hi (tries E19c, E24b)
+    in place of the mixture."""
+    return _fgw(ctx, t_pos=0.0, expression="render_hi", positions="floor_exact", shape_form="overlay")
+
+
+CANDIDATES.update({
+    "fgw_shape0x_series_ov": Candidate("fgw_shape0x_series_ov", frozenset({"T2"}), (), _fgw_shape0x_series_ov,
+                                       {"what": "fgw_shape0x_ov (the overlay form on the earlier bracket's own "
+                                                "positions) with the series rendering of fgw_shape0x_series",
+                                        "rule": t2_build.SERIES_RULE, "positions": "floor_exact",
+                                        "stream": t2_build.FLOOR_EXACT_STREAM, "shape_form": "overlay",
+                                        "expression": "series", "scope": "whole"}, requires=_series_applies),
+    "fgw_shape0x_ov_hi": Candidate("fgw_shape0x_ov_hi", frozenset({"T2"}), (), _fgw_shape0x_ov_hi,
+                                   {"what": "fgw_shape0x_ov (the overlay form on the earlier bracket's own positions) "
+                                            "with every cell topped up to the deeper bracket's depth (render_hi)",
+                                    "rule": t2_build.RENDER_RULE, "positions": "floor_exact",
+                                    "stream": t2_build.FLOOR_EXACT_STREAM, "shape_form": "overlay",
+                                    "expression": "render_hi", "scope": "whole"}, requires=_interp),
+})
+
+
 # ------------------------------------------------------------------------------------------------ read guard
 _GUARD: dict | None = None  # the active guard's rules and log, if a candidate is building
 _HOOKED = False
