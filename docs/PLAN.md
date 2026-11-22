@@ -10389,3 +10389,22 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Where they run.** rc18 in a detached worktree of `~/v/vec-campaign-d`'s repository (`~/v/scratch/t69-wt`, its
     own environment, row N54's output linked); H32 in one of `~/v/vec-campaign`'s (`~/v/scratch/h32-wt`, its own
     environment with the outside-data group).
+- 2026-11-22 (t), the organ-cut file D is built and its question is with the captain (state at 02:33 UTC, 2026-11-22).
+  Written by the AI assistant, which is recused on the heart's scope and size and states no preference.
+  - **The builds** (`experiments/builds/heart_organ.sh` at commit 72b9662, the commit that holds row H29b's reading;
+    the DGX worktree `~/v/scratch/h29b-wt`; run d1). Every step exit 0: the launcher's gate (the reading is tracked,
+    not void, its gate said PASS, and the build code is byte for byte the code the reading ran), the tests, the
+    identity step (the full trim and its half reproduce set heart3's bytes), file D twice. The two builds agree byte
+    for byte. The upload file is the half, `T2heart_organ_half.h5ad`, sha256
+    1b4342c151c19dfc827d4b7a310c6a0fa8908f1e369836ebffb22c27c93b4f00; it is copied to `runs/manual_upload/` and
+    checked. Record: `experiments/builds/results/heartorgan_72b9662_d1.txt` and `.SHA256SUMS`. Read by exit codes,
+    sha256 and the stamps' commit and clean fields only.
+  - **The question** was written by a fresh score-blind analyst from the committed reading and corrected by a cold
+    checker, who verified all twenty figures against reading.json and added what the first text left out (what the bet
+    is, the round's reason for calling D a long shot, the unpriced items, that the figures are no forecast of the test
+    score). It is committed as `experiments/harness/results/h29b_heart_organ/question_for_the_captain.md`; the main
+    session filled in the sha256 line only and passes it on unchanged. Options: "Yes, upload file D" or "No, leave C
+    in force"; with no answer there is no upload and C stays in force.
+  - **Order.** By the heart's order rule file D enters only on the captain's yes to it by name. Nothing is uploaded by
+    the main session. Data used: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside
+    data.

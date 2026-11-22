@@ -1,0 +1,22 @@
+The heart's organ-cut file D (ruling row R21; its practice read is row H29b; docs/S2_RULES.md, amendment of
+2026-11-22): the set heartorgan, run d1. BUILT; it enters the heart's order only on the captain's yes to it by name
+====================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-22 in the detached worktree ~/v/scratch/h29b-wt (its own environment) at
+commit 72b966226774b485843f67bd426d002c5c622291 (clean tree), launched at 02:25 UTC and finished by 02:29 UTC:
+`bash experiments/builds/heart_organ.sh 72b966226774b485843f67bd426d002c5c622291 d1`
+Step exit codes: gate 0, tests 0, C 0, Da 0, Db 0, done 0.
+  C   the identity step: the full trim by its committed default command, then its half; both reproduce the bytes of
+      set heart3 (341058344dbd..., 04cde6361c04...)
+  Da  T2heart_organ.h5ad       76e21cd2c754362c043ec32ca863a1e1b7f2cfde549e0366d6104354bfffe18b
+      T2heart_organ_half.h5ad  1b4342c151c19dfc827d4b7a310c6a0fa8908f1e369836ebffb22c27c93b4f00
+  Db  the same two sha256: the two builds agree byte for byte, file and half
+Stamps (the commit and clean fields only): C, Da and Db each say 72b966226774 and clean True.
+
+The upload file is the half, T2heart_organ_half.h5ad, sha256
+1b4342c151c19dfc827d4b7a310c6a0fa8908f1e369836ebffb22c27c93b4f00
+copied to runs/manual_upload/T2heart_organ_half.h5ad and checked against that sha256.
+
+Read by exit codes, sha256 and the stamps' commit and clean fields only (AGENTS.md): no build log, file size, cell
+count or sidecar record was read. Nothing was uploaded: an upload is the captain's own act.
+Data used: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data.
