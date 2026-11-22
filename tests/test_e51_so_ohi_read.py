@@ -30,8 +30,9 @@ METRICS = (*e51.EXPR_METRICS, *e51.POS_METRICS, e51.NBHD)
 HI_EXPR = 0.47
 SKILLS = {  # expression skills and position skills per file, as the construction makes them equal
     harness.FLOOR: (0.30, 0.30), e51.FGW: (0.40, 0.40), e51.SERIES: (0.45, 0.42), e51.OV: (0.41, 0.55),
-    e51.SO: (0.45, 0.55), e51.OHI: (HI_EXPR, 0.55)}
-SCORES = {harness.FLOOR: 50.0, e51.FGW: 51.0, e51.SERIES: 52.0, e51.OV: 53.0, e51.SO: 54.0, e51.OHI: 54.0}
+    e51.SO: (0.45, 0.55), e51.OHI: (HI_EXPR, 0.55), e51.HI: (HI_EXPR, 0.50)}
+SCORES = {harness.FLOOR: 50.0, e51.FGW: 51.0, e51.SERIES: 52.0, e51.OV: 53.0, e51.SO: 54.0, e51.OHI: 54.0,
+          e51.HI: 52.5}
 
 
 def _skills(name):
@@ -65,8 +66,10 @@ def _recs(fn=None):
     return {t: [_rec(t, s, **((fn or (lambda *_: {}))(t, s))) for s in e51.SEEDS] for t in TASKS}
 
 
-def _hi(value=HI_EXPR):
-    return {t.key: {m: np.full(10, value) for m in e51.EXPR_METRICS} for t in TASKS.values()}
+def _hi(value=HI_EXPR, board=SCORES[e51.HI]):
+    """The committed fgw_shape0_hi figures, synthetic: expression skills and board scores per seed."""
+    return {t.key: {**{m: np.full(10, value) for m in e51.EXPR_METRICS}, "board": np.full(10, board)}
+            for t in TASKS.values()}
 
 
 def _read(recs, why=(), hi=None, why_hi=()):
@@ -144,6 +147,21 @@ def test_the_constants():
     assert e51.EXPR_METRICS == ("de_score", "de_direction", "mmd_u", "variogram")
     assert set(e51.GROUP_NAMES) == {"expression_change", "cell_state", "shape_growth", "local_organisation"}
     assert e51.HI == "fgw_shape0_hi" and e51.E49_RUN_COMMIT == "d76ccd5"
+    assert e51.RUN_NAMES == ("fgw", "fgw_shape0x_series", "fgw_shape0x_ov", "fgw_shape0_hi", "fgw_shape0x_series_ov",
+                             "fgw_shape0x_ov_hi")
+    assert e51.HI_REF == ("fgw_shape0_hi",) and e51.CONTROLS == ("fgw_shape0x_series", "fgw_shape0x_ov")
+    assert e51.REPORTED == ("fgw",)
+
+
+def test_the_run_includes_fgw_shape0_hi_uncounted():
+    assert e51.HI in e51.RUN_NAMES and e51.HI not in e51.ARMS and e51.HI not in e51.GATE_RUN
+    assert e51.HI not in e51.CONTROLS and e51.HI not in e51.REPORTED
+    assert e51.HI_TIE_TOL == e51.GATE_TOL == 0.01
+    # the run step refuses a task where an arm does not apply: fgw_shape0_hi applies wherever O_hi does (E24, E28)
+    hi, ohi = harness.CANDIDATES[e51.HI], harness.CANDIDATES[e51.OHI]
+    assert hi.requires is ohi.requires and hi.tasks == ohi.tasks and hi.derived == ohi.derived == ()
+    assert all(hi.applies(t) for t in TASKS.values())
+    assert [c.name for c in e51.candidates({})] == [harness.FLOOR, *e51.RUN_NAMES]
 
 
 def test_has_row(tmp_path):
@@ -302,18 +320,103 @@ def test_ohi_void_on_positions_off_the_overlay(build):
         assert not _read(_recs(_skill_off(build, e51.OHI, [m], 5e-7)))["arms"][e51.OHI]["void"]
 
 
-def test_ohi_void_on_expression_off_the_committed_fgw_shape0_hi_under_main():
-    res = _read(_recs(_skill_off("main", e51.OHI, ["variogram"], 2e-9)))
-    assert res["arms"][e51.OHI]["void"] and "committed fgw_shape0_hi" in res["arms"][e51.OHI]["why"][0]
-    assert not _read(_recs(_skill_off("main", e51.OHI, ["variogram"], 5e-10)))["arms"][e51.OHI]["void"]
-    # the committed figure is a main run: the prefix build's expression is not compared with it
-    assert not _read(_recs(_skill_off("prefix", e51.OHI, ["variogram"], 1e-3)))["arms"][e51.OHI]["void"]
+def _only_ohi_void(res):
+    assert not res["void"] and res["why"] == [] and res["arms"][e51.OHI]["void"]
+    assert not res["arms"][e51.SO]["void"] and res["arms"][e51.SO]["passes"]
+
+
+@pytest.mark.parametrize("build", ["main", "prefix"])
+def test_ohi_void_on_expression_off_the_same_run_fgw_shape0_hi(build):
+    assert not _read(_recs())["arms"][e51.OHI]["void"]  # O_hi's skills equal the same-run fgw_shape0_hi's
+    for m in e51.EXPR_METRICS:
+        res = _read(_recs(_skill_off(build, e51.OHI, [m], 2e-9)))
+        _only_ohi_void(res)
+        assert res["arms"][e51.OHI]["why"] == [
+            f"x2 seed 4: fgw_shape0x_ov_hi's expression skills differ from the same-run fgw_shape0_hi's ({build})"]
+        assert not _read(_recs(_skill_off(build, e51.OHI, [m], 5e-10)))["arms"][e51.OHI]["void"]
+    # the same-run reference moving voids O_hi just the same
+    _only_ohi_void(_read(_recs(_skill_off(build, e51.HI, ["variogram"], 2e-9))))
+
+
+def test_ohi_not_void_when_only_the_committed_expression_differs():
+    res = _read(_recs(), hi=_hi(value=HI_EXPR + 1e-3))
+    hi = res["arms"][e51.OHI]
+    assert not res["void"] and not hi["void"] and hi["passes"]
+    rep = hi["reported_deciding_nothing"]
+    assert rep["expr_vs_committed_hi"]["overall"] == pytest.approx(1e-3)
+    assert rep["expr_vs_committed_hi"]["per_task"] == pytest.approx({t: 1e-3 for t in TASKS})
+    assert rep["hi_board_vs_committed"] == {t: {"seed": 0.0, "mean": 0.0} for t in TASKS}
+    assert "expr_vs_committed_hi" not in res["arms"][e51.SO]["reported_deciding_nothing"]
+    assert "committed fgw_shape0_hi" in e51.text(res)
+    # the comparison with the committed skills is under main only: the prefix build's skills do not enter it
+    res = _read(_recs(lambda t, s: {"skills": {("prefix", n): {m: 0.9 for m in e51.EXPR_METRICS}
+                                               for n in (e51.OHI, e51.HI)}}))
+    assert not res["arms"][e51.OHI]["void"]
+    assert res["arms"][e51.OHI]["reported_deciding_nothing"]["expr_vs_committed_hi"]["overall"] == 0.0
+
+
+def _hi_board(by_seed):
+    """The run's fgw_shape0_hi board (both builds) moved by by_seed(seed) from the committed score."""
+    return lambda t, s: {"scores": {e51.HI: SCORES[e51.HI] + by_seed(s)}}
+
+
+def test_the_hi_board_tie():
+    for d in (0.009, -0.009):
+        res = _read(_recs(_hi_board(lambda s, d=d: d)))
+        assert not res["arms"][e51.OHI]["void"]
+        assert res["arms"][e51.OHI]["reported_deciding_nothing"]["hi_board_vs_committed"]["x3"] == pytest.approx(
+            {"seed": 0.009, "mean": 0.009})
+    # one seed 0.011 off, the ten-seed mean within 0.01
+    res = _read(_recs(_hi_board(lambda s: 0.011 if s == 3 else 0.0)))
+    _only_ohi_void(res)
+    assert len(res["arms"][e51.OHI]["why"]) == 9 and all("in a seed" in w for w in res["arms"][e51.OHI]["why"])
+    # every seed 0.011 off the same way: void on the mean as well
+    res = _read(_recs(_hi_board(lambda s: -0.011)))
+    _only_ohi_void(res)
+    assert "half: the same-run fgw_shape0_hi is 0.0110 off its committed score in the ten-seed mean" in res["arms"][
+        e51.OHI]["why"]
+    # one task directly (a mean off by more than 0.01 always has a seed off by more than 0.01, so both are named)
+    rs = [_rec("x1", s) for s in e51.SEEDS]
+    assert e51.hi_tie_problems("x1", "k", rs, {"k": {"board": np.full(10, SCORES[e51.HI] - 0.0105)}}) == [
+        "x1: the same-run fgw_shape0_hi is 0.0105 off its committed score in a seed",
+        "x1: the same-run fgw_shape0_hi is 0.0105 off its committed score in the ten-seed mean"]
+    off = np.full(10, SCORES[e51.HI]) + np.array([0.0] * 9 + [0.0099])
+    assert e51.hi_tie_problems("x1", "k", rs, {"k": {"board": off}}) == []
+    # a committed task missing, its board missing, of another length, or the committed files refused
     hi = _hi()
     hi.pop(TASKS["x3"].key)
     res = _read(_recs(), hi=hi)
-    assert res["arms"][e51.OHI]["void"] and "x3: no committed fgw_shape0_hi" in res["arms"][e51.OHI]["why"]
-    res = _read(_recs(), why_hi=["a dirty committed file"])
-    assert res["arms"][e51.OHI]["void"] and not res["arms"][e51.SO]["void"]
+    _only_ohi_void(res)
+    assert res["arms"][e51.OHI]["why"] == ["x3: no committed fgw_shape0_hi"]
+    hi = _hi()
+    hi[TASKS["half"].key].pop("board")
+    _only_ohi_void(_read(_recs(), hi=hi))
+    hi = _hi()
+    hi[TASKS["e75"].key]["board"] = np.full(9, SCORES[e51.HI])
+    res = _read(_recs(), hi=hi)
+    _only_ohi_void(res)
+    assert res["arms"][e51.OHI]["why"] == ["e75: the committed fgw_shape0_hi is of another length"]
+    _only_ohi_void(_read(_recs(), why_hi=["a dirty committed file"]))
+
+
+def test_the_hi_board_tie_reads_build_main_only():
+    recs = _recs()
+    for rs in recs.values():
+        for r in rs:
+            r["builds"]["prefix"]["rows"][0]["scores"][e51.HI] = 60.0
+    assert not _read(recs)["arms"][e51.OHI]["void"]
+
+
+@pytest.mark.parametrize("build", ["main", "prefix"])
+def test_a_missing_fgw_shape0_hi_voids_ohi_only(build):
+    recs = _recs()
+    row = recs["new1"][6]["builds"][build]["rows"][0]
+    for k in ("scores", "groups", "skills"):
+        row[k].pop(e51.HI)
+    res = _read(recs)
+    _only_ohi_void(res)
+    assert res["arms"][e51.OHI]["why"] == [f"new1 seed 6: build {build} lacks fgw_shape0_hi"]
+    assert "O_hi: void" in res["outcome"] and "SO: passes" in res["outcome"]
 
 
 def test_a_missing_arm_voids_that_arm_only():
@@ -390,7 +493,8 @@ def test_the_e49_figure_and_its_refusals(tmp_path):
 
 def _task_file(d: Path, key: str, value: float, clean=True, seeds=e51.SEEDS, arm=e51.HI):
     d.mkdir(parents=True, exist_ok=True)
-    rows = [{"seed": s, "skills": {arm: {m: value + s for m in METRICS}}} for s in seeds]
+    rows = [{"seed": s, "skills": {arm: {m: value + s for m in METRICS}}, "scores": {arm: 50.0 + value + s}}
+            for s in reversed(seeds)]  # stored out of seed order: read back in seed order
     (d / f"T2e_{key.replace('/', '_')}.json").write_text(json.dumps(
         {"task": {"key": key}, "build": "main", "protocol": "bake", "provenance": {"tree_clean": clean},
          "rows": rows}))
@@ -404,6 +508,7 @@ def test_committed_hi_reads_main_bake_runs_and_refuses_others(tmp_path):
     hi, why = e51.committed_hi(((a, "x"), (b, "y")))
     assert why == [] and set(hi) == {"k1", "k2"}
     assert hi["k2"]["mmd_u"] == pytest.approx(0.2 + np.arange(10))
+    assert hi["k2"]["board"] == pytest.approx(50.2 + np.arange(10)) and set(hi["k1"]) == {*e51.EXPR_METRICS, "board"}
     _task_file(b, "k3", 0.3, clean=False)
     _task_file(tmp_path / "c", "k1", 0.1)
     hi, why = e51.committed_hi(((a, "x"), (b, "y"), (tmp_path / "c", "z")))
@@ -414,6 +519,7 @@ def test_the_committed_figures_cover_the_nine_tasks():
     """Keys and provenance only: no committed value is compared with anything here."""
     hi, why = e51.committed_hi()
     assert why == [] and set(hi) == {t.key for t in TASKS.values()}
+    assert all(set(v) == {*e51.EXPR_METRICS, "board"} and len(v["board"]) == 10 for v in hi.values())
     r = json.loads((e51.E49_DIR / "reading.json").read_text())
     assert r["void"] is False and r["commit"].startswith(e51.E49_RUN_COMMIT)
     assert all(e51.OV in r["tasks"][n] and "mean" in r["tasks"][n][e51.OV]["board"] for n in TASKS)

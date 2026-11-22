@@ -7,7 +7,9 @@ Arms (harness candidates, vec.harness.SO_OHI_CANDIDATES), both counted:
   SO    fgw_shape0x_series_ov  the overlay form's positions (E49c) with the series expression (E47b)
   O_hi  fgw_shape0x_ov_hi      the overlay form's positions with the depth top-up render_hi (E19c, E24b)
 Controls, rescored and not counted: fgw_shape0x_series (E47b) and fgw_shape0x_ov (E49c). Reported only: fgw (for the
-increment over the best of fgw, fgw_shape0x_series and fgw_shape0x_ov) and the floor.
+increment over the best of fgw, fgw_shape0x_series and fgw_shape0x_ov) and the floor. fgw_shape0_hi (E24b; committed
+by E24 on half, late, new1, new2, e75, e725 and by E28 on x1, x2, x3) is run in the same call as O_hi's expression
+reference, not counted, and decides only O_hi's void.
 
 Path. harness.run_task on each task of nine_tasks.all_tasks(), seeds 0-9, bake protocol, build seed
 BUILD_SEED_OFFSET + seed, under build "main" (primary) and "prefix" (reported only). No refusal is caught: an arm that
@@ -42,12 +44,20 @@ mean_s D_s. The test-like series is the same over half, late, new1, new2 (three 
 Void, for both arms: a missing task or seed; a control or reported arm missing; another run commit or an unclean
 tree; a gate file missing or failing; a test board. Void for SO only: SO missing; its four expression skills (de_score,
 de_direction, mmd_u, variogram) off fgw_shape0x_series' by more than 1e-9; its d2_shape, occupancy_dice or
-scale_log_ratio skill off fgw_shape0x_ov's by more than 1e-6. Void for O_hi only: O_hi missing; its d2_shape,
-occupancy_dice or scale_log_ratio skill off fgw_shape0x_ov's by more than 1e-6; its four expression skills under main
-off the committed fgw_shape0_hi's (E24 for six tasks, E28 for x1, x2, x3) by more than 1e-9.
-Reported, deciding nothing: SO's merged and per-truth means against both controls, neighborhood_mmd per task, and the
-per-truth increment over the best of fgw, fgw_shape0x_series and fgw_shape0x_ov; O_hi's per-truth means, the
-DEEP/OTHER split and the same increment; every group's merged mean; the prefix build's board.
+scale_log_ratio skill off fgw_shape0x_ov's by more than 1e-6. Void for O_hi only (SO's read stands): O_hi missing;
+fgw_shape0_hi missing in any task, seed or build; O_hi's d2_shape, occupancy_dice or scale_log_ratio skill off
+fgw_shape0x_ov's by more than 1e-6; O_hi's four expression skills (de_score, de_direction, mmd_u, variogram) off the
+same run's fgw_shape0_hi's by more than 1e-9 in any task, seed or build (same drawn rows, same render_hi path, same
+process and thread count); the same run's fgw_shape0_hi board score under main off its committed score (E24 for half,
+late, new1, new2, e75, e725; E28 for x1, x2, x3) by more than 0.01 board points in any seed or in the ten-seed mean,
+or that committed score missing (rule 9 J7, nine_tasks.TOL: the rendered arms move by up to about 1e-3 between runs
+with the BLAS thread count, so the specification's cross-run 1e-9 on expression skills is replaced by these two
+checks, a departure from the specification). fgw_shape0_hi is not in the pre-run gate.
+Reported, deciding nothing: merged and per-truth means against both controls, neighborhood_mmd per task, the DEEP/OTHER
+split, the per-truth increment over the best of fgw, fgw_shape0x_series and fgw_shape0x_ov, and, under main, the
+largest difference between O_hi's four expression skills and the committed fgw_shape0_hi's (E24, E28), per task and
+overall (with the same-run fgw_shape0_hi's worst-seed and mean distance from its committed board score); every group's
+merged mean; the prefix build's board.
 """
 
 from __future__ import annotations
@@ -90,7 +100,9 @@ LABEL = {SO: "SO", OHI: "O_hi"}
 CONTROL = {SO: SERIES, OHI: OV}  # the control each arm's pass rule reads against
 CONTROLS = (SERIES, OV)
 REPORTED = (FGW,)
-RUN_NAMES = (FGW, SERIES, OV, SO, OHI)  # with the floor, in each run_task call
+HI = "fgw_shape0_hi"
+HI_REF = (HI,)  # O_hi's expression reference: run, not counted, voids O_hi only
+RUN_NAMES = (FGW, SERIES, OV, HI, SO, OHI)  # with the floor, in each run_task call
 BEST_OF = (FGW, SERIES, OV)
 GATE_RUN = (harness.FLOOR, C0, SERIES, OV)
 BUILDS = ("main", "prefix")
@@ -103,12 +115,12 @@ NBHD = "neighborhood_mmd"
 EXPR_TOL, POS_TOL = 1e-9, 1e-6
 BAR, AHEAD = 0.3, 8
 GATE_TOL = 0.01  # board points (rule 9 J7; nine_tasks.TOL)
+HI_TIE_TOL = GATE_TOL  # the same-run fgw_shape0_hi against its committed board score, per seed and ten-seed mean
 FLOOR_SCORE = 50.0
 E47_DIR = REPO / "experiments" / "harness" / "results" / "e47_floor_exact"
 E47_RUN_COMMIT, E47_FILES_COMMIT = "9967cf1", "d5ee9b5"
 E49_DIR = REPO / "experiments" / "coords" / "results" / "e49_shape_interp"
 E49_RUN_COMMIT, E49_FILES_COMMIT = "d76ccd5", "53ba6cc"
-HI = "fgw_shape0_hi"
 HI_DIRS = ((REPO / "experiments" / "harness" / "results" / "e24_pricing" / "tasks", "802a0dd"),
            (REPO / "experiments" / "harness" / "results" / "e28_nine_tasks" / "tasks", "9702014"))
 BASES = (E49_FILES_COMMIT,)
@@ -214,7 +226,8 @@ def e49_ov_mean(name: str, path: Path | None = None) -> tuple[float | None, list
 
 
 def committed_hi(dirs=None) -> tuple[dict[str, dict[str, np.ndarray]], list[str]]:
-    """Task key -> metric -> the committed fgw_shape0_hi expression skills per seed (E24's six tasks, E28's three)."""
+    """Task key -> metric -> the committed fgw_shape0_hi expression skills per seed (E24's six tasks, E28's three),
+    and 'board' -> its committed board score per seed, in seed order."""
     out: dict[str, dict[str, np.ndarray]] = {}
     why: list[str] = []
     for d, _ in (HI_DIRS if dirs is None else dirs):
@@ -231,6 +244,7 @@ def committed_hi(dirs=None) -> tuple[dict[str, dict[str, np.ndarray]], list[str]
             if key in out:
                 why.append(f"{key}: {HI} committed twice")
             out[key] = {m: np.array([x["skills"][HI][m] for x in rows], float) for m in EXPR_METRICS}
+            out[key]["board"] = np.array([x["scores"][HI] for x in rows], float)
     return out, why
 
 
@@ -397,6 +411,39 @@ def _has(row: dict, n: str) -> bool:
     return all(n in row.get(k, {}) for k in ("scores", "skills", "groups"))
 
 
+def _hi_boards(rs: list[dict], ref: dict | None) -> tuple[np.ndarray, np.ndarray] | None:
+    """Under main, the same-run fgw_shape0_hi's board per seed and its committed one, or None where either is
+    missing (a missing run arm is voided elsewhere)."""
+    if ref is None or "board" not in ref:
+        return None
+    rows = [r["builds"].get("main", {}).get("rows", [{}])[0] for r in rs]
+    if not all(HI in x.get("scores", {}) for x in rows):
+        return None
+    s, o = np.array([x["scores"][HI] for x in rows], float), np.asarray(ref["board"], float)
+    return (s, o) if s.shape == o.shape else None
+
+
+def hi_tie_problems(task: str, key: str, rs: list[dict], hi: dict) -> list[str]:
+    """O_hi's link to the committed record: under main, the same-run fgw_shape0_hi's board within HI_TIE_TOL of its
+    committed score (E24, E28) in every seed and in the ten-seed mean (rule 9 J7, nine_tasks.TOL). Voids O_hi only."""
+    ref = hi.get(key)
+    if ref is None or "board" not in ref:
+        return [f"{task}: no committed {HI}"]
+    if not all(_has(r["builds"].get("main", {}).get("rows", [{}])[0], HI) for r in rs):
+        return []  # the missing arm already voids O_hi
+    pair = _hi_boards(rs, ref)
+    if pair is None:
+        return [f"{task}: the committed {HI} is of another length"]
+    s, o = pair
+    why = []
+    d_seed, d_mean = float(np.abs(s - o).max()), abs(float(s.mean() - o.mean()))
+    if not d_seed <= HI_TIE_TOL:
+        why.append(f"{task}: the same-run {HI} is {d_seed:.4f} off its committed score in a seed")
+    if not d_mean <= HI_TIE_TOL:
+        why.append(f"{task}: the same-run {HI} is {d_mean:.4f} off its committed score in the ten-seed mean")
+    return why
+
+
 def check_run(recs: dict[str, list[dict]], why_in: list[str], commit: str,
               hi: dict[str, dict[str, np.ndarray]], why_hi: list[str]) -> tuple[list[str], dict[str, list[str]]]:
     """The void conditions: (reasons that void both arms, reasons per arm)."""
@@ -440,17 +487,16 @@ def check_run(recs: dict[str, list[dict]], why_in: list[str], commit: str,
                         arm_why[SO].append(f"{tag}: {SO}'s expression skills differ from {SERIES}'s ({b})")
                     if not max(abs(sk[SO][m] - sk[OV][m]) for m in POS_METRICS) <= POS_TOL:
                         arm_why[SO].append(f"{tag}: {SO}'s position skills differ from {OV}'s ({b})")
+                if not _has(row, HI):  # O_hi's expression reference: its absence voids O_hi only
+                    arm_why[OHI].append(f"{tag}: build {b} lacks {HI}")
                 if not _has(row, OHI):
                     arm_why[OHI].append(f"{tag}: build {b} lacks {OHI}")
                     continue
                 if not max(abs(sk[OHI][m] - sk[OV][m]) for m in POS_METRICS) <= POS_TOL:
                     arm_why[OHI].append(f"{tag}: {OHI}'s position skills differ from {OV}'s ({b})")
-                if b == "main":
-                    ref = hi.get(key)
-                    if ref is None:
-                        arm_why[OHI].append(f"{task}: no committed {HI}")
-                    elif not max(abs(sk[OHI][m] - ref[m][SEEDS.index(r["seed"])]) for m in EXPR_METRICS) <= EXPR_TOL:
-                        arm_why[OHI].append(f"{tag}: {OHI}'s expression skills differ from the committed {HI}'s")
+                if _has(row, HI) and not max(abs(sk[OHI][m] - sk[HI][m]) for m in EXPR_METRICS) <= EXPR_TOL:
+                    arm_why[OHI].append(f"{tag}: {OHI}'s expression skills differ from the same-run {HI}'s ({b})")
+        arm_why[OHI].extend(hi_tie_problems(task, key, rs, hi))
     arm_why = {a: sorted(set(v), key=v.index) for a, v in arm_why.items()}
     return why, arm_why
 
@@ -500,7 +546,34 @@ def increment_over_best(recs, groups, arm: str) -> dict:
     return out
 
 
-def arm_reading(recs, groups, tl_groups, arm: str) -> dict:
+def expr_vs_committed_hi(recs, hi: dict) -> dict:
+    """Reported, deciding nothing: under main, per task and overall, the largest |O_hi's expression skill minus the
+    committed fgw_shape0_hi's| over seeds and the four expression metrics."""
+    tasks = nt.all_tasks()
+    per = {}
+    for t, rs in recs.items():
+        ref = hi.get(tasks[t].key)
+        if ref is None:
+            continue
+        per[t] = float(max(np.abs(series(rs, OHI, f"skill:{m}") - np.asarray(ref[m], float)).max()
+                           for m in EXPR_METRICS))
+    return {"per_task": per, "overall": max(per.values()) if per else None}
+
+
+def hi_board_vs_committed(recs, hi: dict) -> dict:
+    """Per task, the same-run fgw_shape0_hi's worst-seed and ten-seed-mean distance from its committed board score
+    under main (the deciding values of the tie, shown)."""
+    tasks = nt.all_tasks()
+    out = {}
+    for t, rs in recs.items():
+        pair = _hi_boards(rs, hi.get(tasks[t].key))
+        if pair is not None:
+            s, o = pair
+            out[t] = {"seed": float(np.abs(s - o).max()), "mean": abs(float(s.mean() - o.mean()))}
+    return out
+
+
+def arm_reading(recs, groups, tl_groups, arm: str, hi: dict | None = None) -> dict:
     ctl = CONTROL[arm]
     full = merged_D(recs, groups, arm, ctl, "board")
     tl = merged_D(recs, tl_groups, arm, ctl, "board")
@@ -534,7 +607,9 @@ def arm_reading(recs, groups, tl_groups, arm: str) -> dict:
             "reported_deciding_nothing": {
                 "behind_on_e49_p4_groups": [g for g in P4_GROUPS_E49 if behind(grp[g])],
                 "against": against, "per_task": per_task, "deep_other": split,
-                "increment_over_best": increment_over_best(recs, groups, arm)}}
+                "increment_over_best": increment_over_best(recs, groups, arm),
+                **({"expr_vs_committed_hi": expr_vs_committed_hi(recs, hi or {}),
+                    "hi_board_vs_committed": hi_board_vs_committed(recs, hi or {})} if arm == OHI else {})}}
 
 
 def outcome(arms: dict) -> str:
@@ -564,7 +639,7 @@ def reading(recs: dict[str, list[dict]], why_in: list[str], commit: str,
     groups = e47.truths(tasks)
     tl_groups = e47.truths({n: tasks[n] for n in TEST_LIKE})
     arms = {a: ({"void": True, "why": arm_why[a], "label": LABEL[a]} if arm_why[a]
-                else {"void": False, **arm_reading(recs, groups, tl_groups, a)}) for a in ARMS}
+                else {"void": False, **arm_reading(recs, groups, tl_groups, a, hi)}) for a in ARMS}
     return {"void": False, "why": [], "commit": commit, "truths": groups, "test_like_truths": tl_groups,
             "arms": arms, "outcome": outcome(arms),
             "gate": {"e47_run_commit": E47_RUN_COMMIT, "e47_files_commit": E47_FILES_COMMIT,
@@ -601,6 +676,14 @@ def text(res: dict) -> str:
         L.append("      neighborhood_mmd skill per task: " + ", ".join(f"{t} {v[NBHD]:.3f}"
                                                                      for t, v in rep["per_task"].items()))
         L.append("      behind on E49's three P4 groups: " + (", ".join(rep["behind_on_e49_p4_groups"]) or "none"))
+        if "expr_vs_committed_hi" in rep:
+            e = rep["expr_vs_committed_hi"]
+            L.append(f"      largest |expression skill - committed {HI}'s| (main): overall "
+                     + ("none" if e["overall"] is None else f"{e['overall']:.2e}") + "; "
+                     + ", ".join(f"{t} {v:.2e}" for t, v in e["per_task"].items()))
+            L.append(f"      same-run {HI} board against its committed score (main), worst seed/mean: "
+                     + ", ".join(f"{t} {v['seed']:.4f}/{v['mean']:.4f}"
+                                 for t, v in rep["hi_board_vs_committed"].items()))
     L.append(f"Outcome: {res['outcome']}.")
     L.append("A fail means no file; a pass only puts the question to the captain. Nothing here shows E7.75's depth or "
              "profile, the overlay's geometry at the test pair, the live gate, scorer build or metric seed.")
