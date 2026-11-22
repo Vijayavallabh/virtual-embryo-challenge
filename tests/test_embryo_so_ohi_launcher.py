@@ -52,7 +52,7 @@ def test_the_commands_are_the_committed_ones_and_the_specifications():
     # P's and O's commands are embryo_overlay.sh's; s2xs's is set embryo3's of build_all.sh
     ov = (REPO / "experiments/builds/embryo_overlay.sh").read_text()
     assert f'BASE_ARGS="{BASE}"' in ov and f'OV_ARGS="{OVERLAY}"' in ov
-    ba = " ".join((REPO / "experiments/builds/build_all.sh").read_text().split())
+    ba = " ".join((REPO / "experiments/builds/build_all.sh").read_text().replace("\\\n", " ").split())
     assert f"build_test.py embryo {SERIES} --out $O/builds/T2embryo_s2xs.h5ad" in ba
     for k, sha in SHAS.items():
         assert f"{k}_SHA={sha}" in sh and f'[ "$got" = "${k}_SHA" ]' in sh
