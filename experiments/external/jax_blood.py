@@ -39,11 +39,11 @@ version at HEAD; a clean tree at the commit given by --commit; the output folder
 data/ directory; and the inputs' format as far as it can be checked without reading a count (`check_inputs`): the rds
 reader imports, every input file of the row's embryos is in place and matches the JAX folder's MANIFEST.json, and the
 header lines of df_cell.csv and df_gene.csv hold every column read. What only the counts show (an rds that is not a
-dgCMatrix with row and column names, a duplicated matrix row id, a table gene missing from a matrix) is still checked after the folder
-is made. It writes STARTED.json before the first count matrix is opened, then the direction file,
-the per-embryo table and MANIFEST.json (inputs' and outputs' sha256, the yaml's sha256, the columns read, the embryos
-read, the gate, the gene universe's record, per-embryo counts, the sets' genes found and controls). It never removes anything; a folder left by a
-stopped run blocks a second run (a rerun is a new row).
+dgCMatrix with row and column names, a duplicated matrix row id, a table gene missing from a matrix) is still checked
+after the folder is made. It writes STARTED.json before the first count matrix is opened, then the direction file, the
+per-embryo table and MANIFEST.json (inputs' and outputs' sha256, the yaml's sha256, the columns read, the embryos read,
+the gate, the gene universe's record, per-embryo counts, the sets' genes found and controls). It never removes
+anything; a folder left by a stopped run blocks a second run (a rerun is a new row).
 
 Run (DGX campaign checkout, repo root, through experiments/t1_m1/jaxblood.sh's `reduce` step; rdata from the external
 dependency group):

@@ -235,7 +235,8 @@ def _manifest(jr, assigned=None, entering=None, **change):
     entering = entering if entering is not None else {n: max(k - 25, 0) for n, k in assigned.items()}
     per = {str(n): {"erythroid_assigned": k, "erythroid_entering": entering[n], "experimental_batch": ["run_4"],
                     "days": ["E8.5"]} for n, k in assigned.items()}
-    man = {"config": {"sha256": jr.jb.YAML_SHA256}, "gate": {"row": "T68", "clean": True}, "gene_universe": "gene_table",
+    man = {"config": {"sha256": jr.jb.YAML_SHA256}, "gate": {"row": "T68", "clean": True},
+           "gene_universe": "gene_table",
            "columns_read": list(jr.jb.CELL_WHITELIST), "authors_labels_read": False, "stats_npz_read": False,
            "embryos_read": sorted(assigned), "embryo_lists": {e: list(jr.jb.ROW_EMBRYOS[e]) for e in jr.jb.ENDS},
            "embryos_used": {e: list(jr.jb.ROW_EMBRYOS[e]) for e in jr.jb.ENDS}, "has_direction": True,
