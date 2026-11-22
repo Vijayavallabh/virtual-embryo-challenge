@@ -10131,3 +10131,29 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     methods on quality filtering only, whether its nucleus filter was fitted on nuclei pooled with in-window embryos.
     That last answer bears on every use of that atlas (T66, T68, C1A, H32) and is recorded in the register whichever
     way it falls.
+- 2026-11-22 (m), row T68, the rerun of T66, is placed before its run (state at 01:37 UTC, 2026-11-22). Written by the
+  AI assistant, which decided nothing in it.
+  - **The rule, a fresh score-blind analyst's as judge of record.** The reducer's gene universe is the atlas's gene
+    table: a count-matrix gene whose id the table does not list (25,033 beside the table's 24,552) is removed at load,
+    by exact id, and enters nothing afterwards: no marker score, no control bin, no gene mean, no 400-UMI floor or
+    downsampling, no CP10k denominator. The mapping to T1's genes stays through the table's unique symbols. The
+    analyst's reasons are of validity only: the specification asks for a common depth before the means, which needs
+    one universe for the downsampling and the means; a gene outside the table can never be mapped to T1; and its share
+    of counts differs between the atlas's runs, which would add nearly the same offset to every gene's direction, an
+    artefact the permuted control could not tell from signal. The record keeps the universe's name, the gene counts, a
+    hash of the left-out ids and each embryo's share of counts on them (reported only). No pre-gate clause, void
+    condition or statement changes; the table's `gene_type` and `chr` columns are not read.
+  - **The code** (`campaign/moon-t1-blood-3`, bf9668d, three commits; the settings file's new sha256 d46bd682...,
+    status frozen, pinned in the code and in the row). The row id the code requires is T68 everywhere; the reducer's
+    output folder, the results folder and the launcher's scratch folder have new names, so nothing left by row T66 is
+    reused or can block it. A reviewer says ready, no blocker, and showed by a mutation that the tests catch a
+    universe that leaks. Merged to main; the six files on main are byte for byte bf9668d's.
+  - **Placed in this commit, before its run:** row T68, the engineer's text as the reviewer compared it word by word
+    with row T66's (every change one the decision named). Ten tries, T1 439 to 448, only if its target-free pre-gate
+    passes. Its statement is row T66's: AHEAD only if all four clauses hold, which leads to one priced question (amend
+    R1 for Blood by this direction, default keep R1); NOT AHEAD closes the line. The register's X003 line names the
+    row and the gene rule. It runs in a detached worktree of `~/v/vec-campaign-d`'s repository with its own
+    environment and the checkout's data linked.
+  - **Next on the same reducer.** Candidate C1A of the outside-data round (the cardiomyocyte direction blended with
+    this atlas's nuclei direction) builds on this reducer and rule; its engineer starts now, and its row is placed
+    only after its review and after the screens the challenger asked for are in.
