@@ -9930,3 +9930,41 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     H30 in its own worktree with its own environment at this commit.
   - **Counts.** Rows E53 and T66 counted nothing. Totals stay T1 438, embryo 84, heart 88, T3 72. E51 is at its
     reproduction gate and T65 at its first run.
+- 2026-11-22 (g), the captain orders the heart's organ-cut file started and outside datasets used as widely as
+  possible (state at 01:02 UTC, 2026-11-22). Written by the AI assistant, which is recused on the heart's scope and
+  size and states no preference.
+  - **The captain's words**, added to a forwarded side-agent note, verbatim: "yes and go ahead with all the external
+    datasets as much as possible". The note is a side agent's, not the main session's. It said that three heart
+    uploads differing mainly in trim had headlines 49.5 with no trim, 54.1 with the half trim and 56.4 with the full
+    trim; that the two heart files then being coded add an expression step to the no-trim and half-trim forms and are
+    unlikely to pass 56.4; that the organ cut "may push further in the direction that paid off"; and it ended "If you
+    want it, say yes soon. It needs about a day of code, done by 25 Nov."
+  - **What the yes covers, as the AI assistant reads it.** The question open with the captain since 2026-11-21 with a
+    default of no, in the blind round's words (entry 2026-11-21 (y)): "Heart: may the organ-cut file (a new scope and
+    size: E10.5's heart tissue by label, joined to the core) be coded, read and, if you approve the read's figures,
+    uploaded?" So file D of the heart's order rule is coded and read. This is the captain's own named exception on the
+    heart's scope and size for this one file. The upload still takes the order rule's three conditions: the gate
+    passes and the read is not void; two builds from one clean commit give one sha256 and pass the format check; and
+    the captain says yes to the file by name, on a question with the read's figures written by analysts other than the
+    main session.
+  - **"go ahead with all the external datasets as much as possible"** renews the approval of outside sources in bulk
+    (decision log 2026-11-20 (g) and (y)). Each source still gets its register row or amendment before it enters a
+    model, and no organiser rule is lifted: the held-out windows stand, and nothing from or like the held-out knockout
+    is used. The AI assistant reads it as covering the practice reads already placed on outside data (H30 on the
+    heart, the rerun of T66 on T1), the two deferred moonshots that use outside data (K26 on T3, H31 on the heart),
+    T1's atlas-to-E18 candidate, and one more score-blind round on what other outside data could carry. It does not
+    read it as the say-so to upload row H30's file or any T2 file built with an outside atlas: that stays one priced
+    question per file under A15.
+  - **What the AI assistant does not do.** It gives no lean on the organ cut. The note's argument from the three
+    headlines is the side agent's. The blind round's own words on D stand beside it unchanged: a long shot; practice
+    cannot test its premise; its nearest released analogue, E10.5, collected under the same wording, is about half
+    non-heart by label. No number, threshold or label choice of D comes from any score: its specification is the
+    score-blind designer's and challenger's of 2026-11-21, handed to the engineers verbatim.
+  - **What is executed.** Score-blind engineers write D to that specification (the label config ported from T1's
+    committed chamber rule; the tissue mask; the size field; the builder entry, off by default, with byte-for-byte
+    regression tests for every existing heart file; the practice script extending row H27's; the launchers), and a
+    reviewer holds it to a blocker standard fixed up front. Then the target-free gate on E10.5 (its stops are fixed in
+    the specification), row H29b committed before the read, the read, and only then the two builds. The order rule's
+    hard stop stands: D drops if it is not built, read and reviewed by 2026-11-25 12:00 UTC. H-T1 and H-T1B, the two
+    files before D in that order, did not qualify (entry (d)); D is the list's last file.
+  - **Recorded in** ruling row R21 of the ledger and in an amendment of `docs/S2_RULES.md` (its hash re-pinned).
