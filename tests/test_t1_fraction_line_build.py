@@ -216,7 +216,9 @@ def test_the_two_values_give_two_files_and_3_is_3_0(bt, rc4, ledger, tmp_path):
     (["--captain-ruling", "R2"], "refused with --captain-ruling R2: only row R22"),
     (["--captain-ruling", "r22"], "refused with --captain-ruling r22: only row R22"),
     (["--captain-ruling", "T63"], "refused with --captain-ruling T63: only row R22"),
-    (["--captain-ruling", "R22", "--g-mom-damping", "1.0"], "with --g-mom-damping other than 0.5"),
+    # damping 1.0 with 2.5 is the third line's pair, refused here only for want of its order in this ledger, and
+    # 3.0 with damping 1.0 is refused as before (both in tests/test_t1_line3_build.py)
+    (["--captain-ruling", "R22", "--g-mom-damping", "1.5"], "with --g-mom-damping other than 0.5"),
     (["--captain-ruling", "R22", "--g-mom-damping", "0.75"], "with --g-mom-damping other than 0.5"),
     (["--captain-ruling", "R22", "--bet-strength", "0.5"], "with --released-bet and --bet-strength"),
     (["--captain-ruling", "R22", "--released-bet", "share_trend", "--bet-strength", "0.5"],
