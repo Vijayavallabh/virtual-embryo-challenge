@@ -9835,3 +9835,64 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     trim: S1 FALSE (+0.84 and +0.25); S2 TRUE (+0.88 and +0.40, 10 of 10 in both); S3 FALSE (de_direction below 0 in
     the thinned truths). Eight tries, heart 81 to 88, counted since 00:35 UTC. No file is built, no question goes to
     the captain, and nothing is rerun under this row. The heart's file in force is unchanged.
+- 2026-11-22 (e), the open points are decided by fresh score-blind analysts; rows K25, N56 with H30, E54 and E52 are
+  placed before their runs (state at 00:48 UTC, 2026-11-22). Written by the AI assistant, which made none of the
+  design decisions below and applied two text fixes the reviewers prescribed.
+  - **K25 (T3, within-label dispersion).** The analyst kept the estimator's depth total as built (each cell's total
+    over every gene of the file: the specification names no panel, the ratio serves several panels, and a small
+    panel's total moves with the knockout's own effect). Three wording points, no value or rule changed: "a gene with
+    no label left" replaces "no qualifying label" (the row now matches the code; one required phrase changed with it);
+    the pooled build path is fixed further (each source's label is its own term; a gene with no label left in either
+    source has ln r = 0); the row no longer suggests that the rounding noise is paired between the arm and its
+    control. An engineer applied them (`campaign/moon-t3-dispersion-3`, 2eafb3c) and a reviewer says ready. The row's
+    count, T3 72 to 74, matches the ledger's total of 72.
+  - **E54 (embryo, multi-stage flow).** The analyst confirmed the slot reading as built (each slot keeps the control's
+    coordinates, bracket and file position; only the real cell in it changes): it is the one reading under which the
+    shape check at 1e-9 is a real check. One row sentence was corrected to what the code does (the fit, the gates and
+    the run refuse and the read voids while the register does not name the two libraries; the tests step does not read
+    the register). No code changed; a reviewer says ready. The script's own docstring still carries the old sentence;
+    it is a comment, the decision said no code change, and it is left. If the first fit fails in the solver, any
+    change of tolerance or precision goes into the row before the gate runs, decided on the failure alone (the
+    analyst's instruction).
+  - **H30 with its gate N56 (heart, late-anchor chord).** The analyst changed one rule on validity grounds: an outside
+    source enters a lineage's chord only with at least 200 kept cells of that lineage at each of its anchors (as
+    built, one cell was enough, so a near-single-cell mean could have been half of an average). 200 is the gate's own
+    per-platform count, so no new constant enters. Two row sentences that claimed more refusals than the code makes
+    were corrected. An engineer applied it (`campaign/moon-heart-chord-3`, 88bb2cf: one condition, its docstrings, the
+    rewritten tests, both rows). The reviewer's one blocker was text: both rows still named the branch
+    `campaign/moon-heart-chord-2`, which does not hold that commit. The reviewer's fix (the branch name in four
+    places, hash kept) is applied here by the AI assistant, and the rows are rechecked by the script's own parsers.
+    The analyst's own reading of the data windows: every outside sample the gate and the tables read lies outside the
+    heart board's window (JAX embryos 13 to 22 at E8.75 to E9.5 and 54 to 56 at E14.25 to E14.75; Feng at E9.5 and
+    E14.5; each checked in code), and no author type, label, cluster or embedding is read. One doubt is stated in the
+    register and not resolved: both atlases' cells are the authors' quality-passed sets, and whether that filtering
+    was learned together with in-window cells is not known. The file in force that the row names, C, is checked
+    against row R16's rule (6): the highest headline of C, B and A is C's.
+  - **E52 (embryo, copy-positions at the team's own size).** The launcher's blocker is closed: a step now marks its
+    exit file as running before it writes its head, so a step killed part way cannot leave an earlier 0 standing
+    (`campaign/embryo-copy-rows-size-3`, 42db549, main merged in; its harness lines and row E54's were added at the
+    same place and both are kept). The reviewer's one remaining blocker was text: the row named the older code commit.
+    The reviewer's fix is applied here by the AI assistant: the row names main's merge f95f3fc4618b and both older
+    hashes. By its row, if reading (i) holds the test file is built under the captain's order of 2026-11-21.
+  - **Licence (register row X003).** A screening agent read the portal only (no paper, no scientific content): the
+    CELLxGENE Discover copy of the outside nuclei atlas is under CC BY 4.0 by the portal's contributor agreement, a
+    portal-wide statement; the collection's own metadata names no licence; the lab's download server, where the team's
+    files came from, states none. The register says exactly that. Whether the portal's licence covers the lab server's
+    files is a question for any file that would use them, and none is built.
+  - **Register, before any run.** X002 and X003 each carry a T2-heart amendment for row H30: practice read only, on
+    the captain's approval of new outside uses in bulk (2026-11-20), which goes beyond the Task 1 approval of
+    2026-11-19; the stages and columns read; the open question on the authors' cell filtering; and that a T2 file with
+    an outside atlas needs the captain's ruling under A15 first.
+  - **Merged and tested.** `campaign/moon-t3-dispersion-3`, `campaign/moon-heart-chord-3` and
+    `campaign/embryo-copy-rows-size-3` are merged to main without conflict; the tests of the four reads and of the
+    modules they share pass on merged main at f95f3fc (822 passed, 4 skipped: the torch tests, which run on the DGX),
+    with the step script's guard and the linter.
+  - **Rows placed in this commit, each before its run.** K25: two tries (T3 73 and 74), none if its source-only
+    pre-gate fails or refuses; PASS only on (a) to (e); a file only by the captain's ruling. N56: a target-free gate,
+    not a try; FAIL or VOID ends H30. H30: thirty tries (heart 89 to 118, after H29a's eight) only if the gate says
+    PASS; only PASS leads to one priced question. E54: the gate E54a counts once it runs (embryo, after E51's and
+    E53's), then two more tries if it passes; a pass fixes the candidate here before any score. E52: one try, counted
+    when its run step starts; if (i) holds the file is built twice and handed over at its place after C. Places: K25
+    in the DGX checkout `~/v/vec-campaign-c` itself; H30 in a detached worktree with its own environment (its script
+    does not put its own source first, and its second half runs at a later commit); E54 and E52 in detached worktrees
+    of `~/v/vec-campaign`.
