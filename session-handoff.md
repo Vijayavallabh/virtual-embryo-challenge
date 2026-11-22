@@ -3,6 +3,12 @@
 ## Current Objective
 
 - **State at 2026-11-22, 04:29 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  - **A SEVENTH QUESTION (entry (ll), from a forwarded side note with no instruction of the captain's):** does the
+    captain order a third T1 search line that starts from file C (both changes)? On a yes: a score-blind designer and
+    a cold challenger write the line under the R22 framework (one setting stepped from C's command), it goes into the
+    log and `docs/S2_RULES.md` BEFORE C's score (C's upload waits until then), then a builder change with review and
+    two builds per file. With no answer there is no combined line. The decision log now runs through 2026-11-22 (ll);
+    the next label is (mm).
   2026-11-22 (kk); the next label is 2026-11-22 (ll). Local main = origin/main at a233119 or one notes commit after
   it. Tries: T1 463, embryo 88, heart 97, T3 74. No new score yet today. NOTHING RUNS on the DGX and no agent is out.
   Every read started in this session is recorded.

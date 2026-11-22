@@ -10778,3 +10778,27 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     now are. Nothing else in the text is changed. The two files exist for the embryo's order rule; each is uploaded
     only on the captain's own naming (for O_hi, covering the depth line). Data used: released challenge data only; no
     outside data.
+- 2026-11-22 (ll), a forwarded side-agent note on T1's two search lines; one question goes to the captain and nothing
+  is changed (state at 09:06 UTC, 2026-11-22). Written by the AI assistant, which designs no line and gives no lean.
+  - **The note** came with the captain's words "Here is a note offered by a side agent" and no instruction. It says
+    that T1's two search lines each step their own setting from R13's file and never combine: line 1's files keep the
+    old correction, line 2's files keep the 1.0 atlas step, only file C carries both changes, and a combined line
+    would need the captain's order before the scores it rests on.
+  - **Checked against the record: its statements hold.** Line 1 steps `--feng-fraction-mult` on R13's command and line
+    2 steps `--g-mom-damping` on R13's command (entries (j) and (o)); file C is `--g-mom-damping 1.0
+    --feng-fraction-mult 1.5` and is queued because A and B each returned a headline strictly above R13's (entry
+    2026-11-20 (n)); the builder refuses the new dampings with a fraction other than 1.0 and the new fractions with a
+    damping other than 0.5. The earlier score-blind round that wrote line 2 named C as lying on a different command
+    and left it outside. The framework's rule text gives further lines to fresh score-blind analysts; the AI assistant
+    designs none, and a round opened only to produce this one line would be its own steering. So a line on C's command
+    starts from the captain's order or not at all.
+  - **The question as put to the captain, with no lean:** Task 1: do you order a third search line that starts from
+    file C? C is the one queued file with both changes (atlas step 1.5 and within-type correction 1.0). The line would
+    step one setting from C's command, for example the atlas step to 2.0 with the correction at 1.0; which setting and
+    which steps is for fresh score-blind analysts under the same framework, not for the main session. What it could
+    gain is not known before C's own score. Cost: about an hour of design and cold challenge; a builder change with
+    review, since the builder refuses these combinations today, and two builds per file (two to three hours); one Task
+    1 slot per file from a queue that already holds F, C and the 2.0 file with up to five more on their rules. Timing:
+    so that the line's rule is fixed before the score it rests on, it should be in the log before C's score; on a yes,
+    C's upload waits until the line is logged (about an hour). Yes / No. With no answer there is no combined line.
+  - **Until the captain answers** nothing is designed, written or built for it, and the queue is unchanged.
