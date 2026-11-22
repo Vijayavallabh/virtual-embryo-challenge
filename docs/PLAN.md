@@ -10691,3 +10691,16 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     T3 slot free after C1, C2, the K23 file, CK on its condition and the refused s1; otherwise never. The K23 file has
     not been uploaded. Data used: released challenge data and GEO GSE204906 and GSE277839 as knockout-over-control
     changes on the panel genes; no beta-catenin or Gata4 perturbation data from outside the release.
+- 2026-11-22 (gg), row T69 is read: rc18 stops (state at 03:25 UTC, 2026-11-22). Written by the AI assistant; the
+  outcome is the read's own statement and nothing is added to it.
+  - **T69** (T1 candidate rc18 of the T1 order rule: the outside heart atlas's direction over E9.5 to E18; run commit
+    54e5a7f in `~/v/scratch/t69-wt`; every step exit 0; fifteen tries, T1 449 to 463). In the read's fixed words:
+    "Outcome: STOP: library 3's rc18 minus m1rc_gmom is below -0.3; this ends rc18 (the atlas direction over E9.5 to
+    E18) on T1" "Parts: chamber fails; whole fails; two_valid_libraries holds; no_valid_library_below_floor fails;
+    beats_both_controls fails" "What follows: nothing is built; no question, no rerun under another row" rc18 minus
+    its base is below zero on all five tasks (-0.54, -0.58, -0.99, -0.50 and -0.58). No question goes to the captain,
+    nothing is built, nothing is rerun; the builder draft on the old branch `campaign/t1-rc18` is left unmerged. The
+    seven result files are committed with this entry.
+  - **The T1 order list after this.** Of the two candidates the order rule of entry 2026-11-21 (y) added, MS is AHEAD
+    on practice and waits on the captain's answer to Q-MS (entry (bb)); rc18 has ended. Totals unchanged: T1 463,
+    embryo 88, heart 97, T3 74.

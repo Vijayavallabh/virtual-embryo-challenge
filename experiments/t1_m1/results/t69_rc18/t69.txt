@@ -1,0 +1,41 @@
+try T69, a labelled in-sample diagnostic, never an adoption result: T1 candidate rc18, the outside atlas's direction over E9.5 to E18 at 1/8.5 (rc18), against m1rc_gmom (T62's candidate, R13's practice analogue), against its size control (rc18_sm) and its permuted control (rc18_perm), on row T62's five tasks; every task scores one truth (E10.5) over one day; the test spans two
+Outcome: STOP: library 3's rc18 minus m1rc_gmom is below -0.3; this ends rc18 (the atlas direction over E9.5 to E18) on T1
+Parts: chamber fails; whole fails; two_valid_libraries holds; no_valid_library_below_floor fails; beats_both_controls fails
+What follows: nothing is built; no question, no rerun under another row
+rc18 - m1rc_gmom
+  chamber: -0.54 points, sd 0.07, ahead 0 of 10, per seed -0.66 to -0.45; by group: de_recovery -0.13, direction -0.13, distribution -0.16, covariance -0.13
+  whole: -0.58 points, sd 0.07, ahead 0 of 10, per seed -0.66 to -0.46; by group: de_recovery -0.15, direction -0.12, distribution -0.18, covariance -0.12
+  1: -0.99 points, sd 0.23, ahead 0 of 10, per seed -1.35 to -0.65; by group: de_recovery -0.66, direction -0.15, distribution -0.08, covariance -0.10
+  2: -0.50 points, sd 0.35, ahead 1 of 10, per seed -1.03 to +0.02; by group: de_recovery -0.38, direction -0.09, distribution +0.11, covariance -0.14
+  3: -0.58 points, sd 0.15, ahead 0 of 10, per seed -0.83 to -0.31; by group: de_recovery -0.07, direction -0.15, distribution -0.17, covariance -0.18
+reported: rc18 - rc18_sm
+  chamber: -0.10 points, sd 0.06, ahead 1 of 10, per seed -0.17 to +0.00; by group: de_recovery +0.08, direction -0.05, distribution -0.07, covariance -0.06
+  whole: -0.21 points, sd 0.05, ahead 0 of 10, per seed -0.30 to -0.13; by group: de_recovery +0.02, direction -0.05, distribution -0.11, covariance -0.07
+  1: -0.35 points, sd 0.16, ahead 0 of 10, per seed -0.55 to -0.13; by group: de_recovery -0.24, direction -0.05, distribution -0.01, covariance -0.04
+  2: -0.27 points, sd 0.35, ahead 2 of 10, per seed -0.96 to +0.19; by group: de_recovery -0.23, direction -0.04, distribution +0.06, covariance -0.07
+  3: +0.07 points, sd 0.15, ahead 7 of 10, per seed -0.17 to +0.32; by group: de_recovery +0.16, direction -0.03, distribution -0.02, covariance -0.05
+reported: rc18 - rc18_perm
+  chamber: +0.24 points, sd 0.09, ahead 10 of 10, per seed +0.12 to +0.41; by group: de_recovery +0.27, direction +0.01, distribution -0.01, covariance -0.03
+  whole: +0.10 points, sd 0.08, ahead 8 of 10, per seed -0.01 to +0.25; by group: de_recovery +0.20, direction -0.00, distribution -0.06, covariance -0.04
+  1: -0.02 points, sd 0.19, ahead 5 of 10, per seed -0.27 to +0.27; by group: de_recovery +0.01, direction -0.02, distribution +0.03, covariance -0.03
+  2: -0.25 points, sd 0.35, ahead 3 of 10, per seed -0.99 to +0.07; by group: de_recovery -0.20, direction -0.03, distribution +0.03, covariance -0.05
+  3: +0.43 points, sd 0.08, ahead 10 of 10, per seed +0.28 to +0.53; by group: de_recovery +0.31, direction +0.02, distribution +0.07, covariance +0.02
+reported: rc18_sm - m1rc_gmom
+  chamber: -0.44 points, sd 0.07, ahead 0 of 10, per seed -0.52 to -0.31; by group: de_recovery -0.21, direction -0.08, distribution -0.08, covariance -0.07
+  whole: -0.37 points, sd 0.07, ahead 0 of 10, per seed -0.48 to -0.28; by group: de_recovery -0.17, direction -0.07, distribution -0.07, covariance -0.06
+  1: -0.64 points, sd 0.15, ahead 0 of 10, per seed -0.90 to -0.40; by group: de_recovery -0.41, direction -0.10, distribution -0.07, covariance -0.06
+  2: -0.22 points, sd 0.20, ahead 1 of 10, per seed -0.55 to +0.08; by group: de_recovery -0.15, direction -0.05, distribution +0.05, covariance -0.07
+  3: -0.65 points, sd 0.13, ahead 0 of 10, per seed -0.90 to -0.46; by group: de_recovery -0.23, direction -0.13, distribution -0.15, covariance -0.14
+reported: rc18_perm - m1rc_gmom
+  chamber: -0.78 points, sd 0.12, ahead 0 of 10, per seed -1.03 to -0.64; by group: de_recovery -0.40, direction -0.13, distribution -0.15, covariance -0.10
+  whole: -0.68 points, sd 0.10, ahead 0 of 10, per seed -0.89 to -0.58; by group: de_recovery -0.35, direction -0.12, distribution -0.12, covariance -0.09
+  1: -0.97 points, sd 0.17, ahead 0 of 10, per seed -1.31 to -0.78; by group: de_recovery -0.66, direction -0.13, distribution -0.12, covariance -0.07
+  2: -0.25 points, sd 0.33, ahead 2 of 10, per seed -0.82 to +0.11; by group: de_recovery -0.17, direction -0.06, distribution +0.07, covariance -0.09
+  3: -1.00 points, sd 0.15, ahead 0 of 10, per seed -1.17 to -0.71; by group: de_recovery -0.39, direction -0.18, distribution -0.24, covariance -0.20
+Chamber cut: rc18 above both controls on 1 of 10 seeds (above rc18_sm 1, above rc18_perm 10)
+Valid libraries: 1, 2, 3; below -0.3: 1, 2, 3; library 3 stop: fired
+Mean scores: chamber: m1rc_gmom 52.00, rc18 51.46, rc18_sm 51.56, rc18_perm 51.22; whole: m1rc_gmom 46.16, rc18 45.58, rc18_sm 45.79, rc18_perm 45.48; 1: copy_last 44.66, m1rc_gmom 74.81, rc18 73.82, rc18_sm 74.17, rc18_perm 73.84; 2: copy_last 46.72, m1rc_gmom 89.37, rc18 88.87, rc18_sm 89.14, rc18_perm 89.12; 3: copy_last 49.56, m1rc_gmom 73.95, rc18 73.37, rc18_sm 73.30, rc18_perm 72.94
+Applied step sizes per group (target-free): {'CM': {'m1rc_gmom': 4.254949746917478, 'rc18': 3.6730927770230313, 'rc18_sm': 3.6730927770230317, 'rc18_perm': 3.2680919937887913, 'moved_genes': 29652}, 'Endocardium': {'m1rc_gmom': 5.2034018896149625, 'rc18': 3.368504360885253, 'rc18_sm': 3.368504360885253, 'rc18_perm': 3.731021402510327, 'moved_genes': 29652}, 'Endothelium': {'m1rc_gmom': 4.758833189526221, 'rc18': 3.444826486162264, 'rc18_sm': 3.444826486162264, 'rc18_perm': 3.4452611739911108, 'moved_genes': 29652}, 'Epicardium': {'m1rc_gmom': 7.044403212956421, 'rc18': 5.652626727118422, 'rc18_sm': 5.652626727118422, 'rc18_perm': 5.640572732252486, 'moved_genes': 29652}}
+J6 range (horizon ratio 2; 0 to the chamber cut's gain): -0.54 to +0.00
+Tries counted: 15
+Commit 54e5a7f4314479bc3df1c76d4c85b7c3a25466d8, tree clean True, UTC 2026-11-22T03:22:15Z
