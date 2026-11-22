@@ -112,11 +112,17 @@ def _canon(x):
     return repr(x)
 
 
+LATER_ROWS = ("GEODESIC_CANDIDATES",)  # harness registries of rows merged after this pin was made
+
+
 def _old_registry_digest() -> tuple[int, str]:
     """Every candidate but the two new ones: name, roles, params, the builder's and the condition's qualified names
-    and the builder's bytecode. Pinned on main before the arms were added."""
+    and the builder's bytecode. Pinned on main before the arms were added. Candidates of rows merged into main beside
+    this one (LATER_ROWS: row E53's geodesic pair, which its own tests hold) are left out too, so the pin still says
+    that no candidate older than this row changed."""
     h = hashlib.sha256()
-    names = sorted(set(harness.CANDIDATES) - set(getattr(harness, "SO_OHI_CANDIDATES", {})))
+    later = set().union(*(set(getattr(harness, k, {})) for k in ("SO_OHI_CANDIDATES", *LATER_ROWS)))
+    names = sorted(set(harness.CANDIDATES) - later)
     for n in names:
         c = harness.CANDIDATES[n]
         b = c.build
