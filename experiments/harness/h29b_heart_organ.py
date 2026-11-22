@@ -163,7 +163,8 @@ def run_provenance() -> dict:
     """The commit and cleanliness of this checkout (from the script's own location, never the working folder)."""
     def git(*a):
         return subprocess.run(["git", "-C", str(HERE), *a], capture_output=True, text=True).stdout.strip()
-    return {"commit": git("rev-parse", "HEAD"), "tree_clean": git("status", "--porcelain", "--untracked-files=no") == "",
+    return {"commit": git("rev-parse", "HEAD"),
+            "tree_clean": git("status", "--porcelain", "--untracked-files=no") == "",
             "utc": time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())}
 
 
@@ -225,7 +226,8 @@ def gate_text(g: dict) -> str:
     if g["verdict"] == REFUSED:
         return GATE_LINES[REFUSED] + " Unmapped: " + ", ".join(f"{k} ({v})" for k, v in g["unmapped"].items()) + "\n"
     return (f"Row {ROW}'s target-free gate (commit {g['commit']}; E10.5 only, the test's reference input; no target, "
-            f"no score; not a try). D's pool share of E10.5 {g['pool_share']:.4f}; its core share {g['core_share']:.4f}; "
+            f"no score; not a try). D's pool share of E10.5 {g['pool_share']:.4f}; its core share "
+            f"{g['core_share']:.4f}; "
             f"L {g['link_length']:.4f} (the {g['link_percentile']:g}th percentile of the core's nearest-core "
             f"distances, stored units); Jaccard overlap of D's rows with C's pool {g['jaccard_C']:.4f} and with B's "
             f"pool {g['jaccard_B']:.4f} (stop at {GATE_STOP_JACCARD:.2f}). Beside them: the pure-label pool's share "
@@ -392,7 +394,8 @@ def run_transition(key: str, seeds, out: Path, data_dir: Path, commit: str | Non
                 stages, rs, draws[pool] = build_pool_arms(pool, ctx_of(pool), targets)
                 preds.update(stages)
                 recs.update(rs)
-        row = {"seed": s, "build_seed": harness.BUILD_SEED_OFFSET + s, "n_cells": {a: int(p.n) for a, p in preds.items()},
+        row = {"seed": s, "build_seed": harness.BUILD_SEED_OFFSET + s,
+               "n_cells": {a: int(p.n) for a, p in preds.items()},
                "size_records": recs, "draws": draws, "scores": {}, "skills": {}, "groups": {}}
         for q, truth in truths.items():
             board = replace(base_board, truth_cells=truth.n)
@@ -681,7 +684,8 @@ def text(res: dict) -> str:
         lines.append(gate_text(res["gate"]).strip())
     for k in TASK_KEYS:
         r, sh = res["ratios"][k], res["pools_short"][k]
-        lines.append(f"{k}: ratio rms(pool)/rms(core) on the reference stage: D {r['organ']:.4f}, label {r['label']:.4f}; "
+        lines.append(f"{k}: ratio rms(pool)/rms(core) on the reference stage: D {r['organ']:.4f}, label "
+                     f"{r['label']:.4f}; "
                      + "; ".join(f"{p} pool {v['pool_cells']} rows, drawn {v['drawn']}, short in {v['short_in_seeds']} "
                                  f"of 10 seeds (rows repeated with jitter, at least {v['repeated_rows_at_least']})"
                                  for p, v in sh.items()))

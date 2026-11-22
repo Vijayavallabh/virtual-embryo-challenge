@@ -50,7 +50,8 @@ case "${args[0]}" in
     spec=""; for a in "${args[@]:1}"; do [ "$a" = --out ] && break; spec="$spec $a"; done
     echo "built$spec $noise" > "$out"
     clean=True; [ -n "${STUB_DIRTY:-}" ] && clean=False
-    python3 -I -B -c 'import json,sys; json.dump({"commit": sys.argv[2], "clean": sys.argv[3] == "True"}, open(sys.argv[1], "w"))' "$out.stamp.json" "$(git rev-parse HEAD)" "$clean"
+    python3 -I -B -c 'import json,sys; json.dump({"commit": sys.argv[2], "clean": sys.argv[3] == "True"},
+      open(sys.argv[1], "w"))' "$out.stamp.json" "$(git rev-parse HEAD)" "$clean"
     exit 0 ;;
   experiments/builds/halve.py)
     { echo "half of"; cat "${args[1]}"; } > "${args[2]}"; exit 0 ;;
@@ -138,7 +139,8 @@ def test_the_read_launcher_refusals_never_touch_a_finished_exit(tmp_path, read_r
     assert _rlaunch(tmp_path, "build", head)[0] == 97 and f("unknown.refused.exit") == "97"
     assert _rlaunch(tmp_path, "a/b", head)[0] == 97 and not (S / "a").exists()
     for step in ("gate", "run", "read"):  # before the step before it: 96, its own exit file never written
-        assert _rlaunch(tmp_path, step, head)[0] == 96 and f(f"{step}.refused.exit") == "96" and f(f"{step}.exit") is None
+        assert _rlaunch(tmp_path, step, head)[0] == 96
+        assert f(f"{step}.refused.exit") == "96" and f(f"{step}.exit") is None
     code, out, _ = _rlaunch(tmp_path, "tests", "d" * 40)
     assert code == 99 and f("tests.refused.exit") == "99" and f("tests.exit") is None and out == ""
     assert _rlaunch(tmp_path, "tests", head[:12])[0] == 99
@@ -254,13 +256,14 @@ def test_the_build_launcher_end_to_end_with_stand_ins(tmp_path, build_repo):
     for step in ("gate", "tests", "C", "Da", "Db", "done"):
         assert _bexit(tmp_path, "r1", step) == "0", step
     S = tmp_path / "home" / "v" / "scratch" / "heartorgan" / "r1"
-    O = repo / "runs" / f"heartorgan_{head[:7]}_r1"
+    rel = Path("runs") / f"heartorgan_{head[:7]}_r1"
+    out_dir = repo / rel
     assert (S / "head").read_text().strip() == head
     assert (S / "stamps").read_text().splitlines() == [f"C/T2heart_s2core {head} True",
                                                        f"Da/T2heart_organ {head} True",
                                                        f"Db/T2heart_organ {head} True"]
     sums = (S / "SHA256SUMS").read_text()
-    assert sums == (O / "SHA256SUMS").read_text()
+    assert sums == (out_dir / "SHA256SUMS").read_text()
     assert [ln.split()[1] for ln in sums.splitlines()] == [
         "C/T2heart_s2core.h5ad", "C/T2heart_s2core_half.h5ad", "Da/T2heart_organ.h5ad", "Da/T2heart_organ_half.h5ad",
         "Db/T2heart_organ.h5ad", "Db/T2heart_organ_half.h5ad"]
@@ -268,9 +271,9 @@ def test_the_build_launcher_end_to_end_with_stand_ins(tmp_path, build_repo):
     builds = [c for c in calls if "build_test.py" in c]
     assert builds == [
         f"run --frozen --no-sync python -I -B experiments/builds/build_test.py heart --entry core_trim --expression "
-        f"copy --z-mode raw --out {O.relative_to(repo)}/C/T2heart_s2core.h5ad",
+        f"copy --z-mode raw --out {rel}/C/T2heart_s2core.h5ad",
         *(f"run --frozen --no-sync python -I -B experiments/builds/build_test.py heart --entry organ_scope "
-          f"--expression copy --z-mode raw --out {O.relative_to(repo)}/{d}/T2heart_organ.h5ad" for d in ("Da", "Db"))]
+          f"--expression copy --z-mode raw --out {rel}/{d}/T2heart_organ.h5ad" for d in ("Da", "Db"))]
     halves = [c for c in calls if "experiments/builds/halve.py" in c]
     assert len(halves) == 3 and all("--seed" not in c for c in halves)  # halve.py's default seed, 1000001
     checks = [c for c in calls if " vec check " in c]
@@ -288,7 +291,8 @@ def test_the_build_launcher_stops_unless_the_full_trim_gives_set_heart3(tmp_path
 
 def test_the_build_launcher_fails_on_a_build_a_stamp_or_two_different_files(tmp_path, build_repo):
     _, _, _, head, _ = build_repo
-    assert _blaunch(tmp_path, head, "b1", extra={"STUB_BUILD_EXIT": "1"})[0] == 11 and _bexit(tmp_path, "b1", "C") == "11"
+    assert _blaunch(tmp_path, head, "b1", extra={"STUB_BUILD_EXIT": "1"})[0] == 11
+    assert _bexit(tmp_path, "b1", "C") == "11"
     assert _blaunch(tmp_path, head, "b2", extra={"STUB_CHECK_EXIT": "1"})[0] == 13
     assert _blaunch(tmp_path, head, "b3", extra={"STUB_DIRTY": "1"})[0] == 15
     assert _blaunch(tmp_path, head, "b4", extra={"STUB_PYTEST_EXIT": "1"})[0] == 10

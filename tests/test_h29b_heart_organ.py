@@ -183,7 +183,8 @@ def test_the_organ_arms_sizes_draw_and_half(h29b, synth):
         assert draw["pool_cells"] == int(masks[pool].sum()) and draw["drawn"] == mod.BOARD.max_cells
         assert draw["short"] == (mod.BOARD.max_cells > masks[pool].sum())
         # the draw before the size step and the half: harness._copy on the same context, then the same half rows
-        raw = harness._copy(mod._ctx({**inputs, "ref": whole[masks[pool]].copy()}, seed=harness.BUILD_SEED_OFFSET + seed))
+        raw = harness._copy(mod._ctx({**inputs, "ref": whole[masks[pool]].copy()},
+                                     seed=harness.BUILD_SEED_OFFSET + seed))
         rows = h29b.h25.kept_rows(raw.n, seed, 1)
         np.testing.assert_array_equal(stages[f"{pool}:f"].X, np.asarray(raw.X)[rows])
     assert set(st) == set(h29b.COUNTED)
