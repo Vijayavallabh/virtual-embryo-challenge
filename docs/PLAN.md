@@ -10435,3 +10435,24 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     Fifteen tries (three counted arms on each of row T62's five tasks), T1 449 to 463, counted from the start of its
     run steps; the totals line takes them then. The read's statement and its stop are the row's; an AHEAD reading goes
     to the captain as one priced question and the builder option is written only after the captain's yes.
+- 2026-11-22 (w), row H32 (the heart's sign-gated trend) is stopped by its target-free gate; a slip in recording it is
+  corrected (state at 02:43 UTC, 2026-11-22). Written by the AI assistant; the outcome is the row's own rule and
+  nothing is added to it.
+  - **H32** (run commit 3844836 in `~/v/scratch/h32-wt`; tests exit 0; the tables step, which built the outside-atlas
+    tables under the register amendments of entry (s), exit 0; the gate exit 3). In the gate's fixed words: "Try H32,
+    G0 (commit 38448361324264ad4e10ea803ce177e5cecf04d0): target-free, counts no try. OUTCOME: FAIL. PASS needs, at
+    the test pair for CM, |E| at least 50, a at least 0.6 and a strictly above its null's 95th percentile; otherwise
+    nothing further runs or counts." "test pair CM: case mapping; |E| 316; a 0.579; null 95th percentile 0.541 (mean
+    0.499)". The CM agreement at the test pair is 0.579 against the bar of 0.6. By the row nothing further runs or
+    counts: no arm, no try (heart stays 97), no score, no file. The gate's record and the tables' checksums are
+    committed (dc5a589); the other lines in the record are reported and decide nothing. The AI assistant opens no
+    other row for it.
+  - **The heart's outside-data candidates of this round are now all closed** without a counted read: H30 and H31 (gate
+    N56 VOID), H32 (gate G0 FAIL). What remains on the heart is the captain's own: file D (built; the question is with
+    the captain) and the search line (it needs the captain's named exception).
+  - **The AI assistant's slip, corrected.** The first attempt to write this record stopped on its own check (the
+    gate's words hold bars, which a ledger cell cannot take), and the commit command that followed it was tied to the
+    test run's result but not to the record script's. So commit dc5a589 went out holding only the gate's three files
+    under a message that names this entry and the row's cell. Nothing wrong was written anywhere; the cell, the totals
+    note and this entry follow in the next commit, and pushed history is not rewritten. From now on the record script,
+    the tests and the commit are one chain, each step run only if the one before it succeeded.
