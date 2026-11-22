@@ -1,0 +1,560 @@
+{
+ "label": "try T68, a labelled in-sample diagnostic, never an adoption result: the drawn Blood cells moved along the recomputed erythroid direction of JAX/Qiu 2024 nuclei (m1rc_gmom_jaxblood) and its permuted control (m1rc_gmom_jaxperm) against m1rc_gmom (row T62's) on T62's five tasks; every task scores one truth (E10.5) over one day",
+ "row": "T68",
+ "reading": {
+  "outcome": "NOT AHEAD",
+  "ahead": false,
+  "failed": [
+   "(iii) the arm is at or above row T64's m1rc_gmom_heldmom on fewer than 2 of 3 libraries"
+  ],
+  "values": {
+   "library_mean_d": 0.9703970712163997,
+   "library_mean_arm_minus_perm": 0.7689009037636448,
+   "libraries_at_or_above_t64": []
+  },
+  "tasks": {
+   "arm_minus_base": {
+    "chamber": {
+     "change": "m1rc_gmom_jaxblood",
+     "base": "m1rc_gmom",
+     "mean": 0.05219917803321437,
+     "sd": 0.021004355644545107,
+     "ahead": 10,
+     "of": 10,
+     "range": [
+      0.016565847412131518,
+      0.08004099322233316
+     ],
+     "groups": {
+      "de_recovery": 0.015298179883238006,
+      "direction": 0.013410818596556741,
+      "distribution": 0.014964706466996547,
+      "covariance": 0.008525473086419155
+     },
+     "behind": 0
+    },
+    "whole": {
+     "change": "m1rc_gmom_jaxblood",
+     "base": "m1rc_gmom",
+     "mean": 0.03938284948277158,
+     "sd": 0.01663645093791983,
+     "ahead": 10,
+     "of": 10,
+     "range": [
+      0.021786917804192285,
+      0.07256295025711523
+     ],
+     "groups": {
+      "de_recovery": 0.013382204338844572,
+      "direction": 0.011020682281732419,
+      "distribution": 0.008202974540352792,
+      "covariance": 0.006776988321843258
+     },
+     "behind": 0
+    },
+    "1": {
+     "change": "m1rc_gmom_jaxblood",
+     "base": "m1rc_gmom",
+     "mean": 1.1639195282089587,
+     "sd": 0.2334522693989545,
+     "ahead": 10,
+     "of": 10,
+     "range": [
+      0.7840481861066451,
+      1.5260409383420352
+     ],
+     "groups": {
+      "de_recovery": 0.2533652166087985,
+      "direction": 0.16565604242486182,
+      "distribution": 0.6494197810099671,
+      "covariance": 0.09547848816533211
+     },
+     "behind": 0
+    },
+    "2": {
+     "change": "m1rc_gmom_jaxblood",
+     "base": "m1rc_gmom",
+     "mean": 1.2613606102606938,
+     "sd": 0.2824635454347949,
+     "ahead": 10,
+     "of": 10,
+     "range": [
+      0.7214501273618765,
+      1.6574761131720095
+     ],
+     "groups": {
+      "de_recovery": 0.18836183301930792,
+      "direction": 0.16246829026641346,
+      "distribution": 0.6769242542828585,
+      "covariance": 0.2336062326921151
+     },
+     "behind": 0
+    },
+    "3": {
+     "change": "m1rc_gmom_jaxblood",
+     "base": "m1rc_gmom",
+     "mean": 0.48591107517954696,
+     "sd": 0.12394344708063033,
+     "ahead": 10,
+     "of": 10,
+     "range": [
+      0.319809466613421,
+      0.7101334762894425
+     ],
+     "groups": {
+      "de_recovery": 0.12405488598040636,
+      "direction": 0.08569121685578496,
+      "distribution": 0.19518765114182846,
+      "covariance": 0.08097732120153367
+     },
+     "behind": 0
+    }
+   },
+   "perm_minus_base": {
+    "chamber": {
+     "change": "m1rc_gmom_jaxperm",
+     "base": "m1rc_gmom",
+     "mean": 0.008251908295545007,
+     "sd": 0.02136079088479816,
+     "ahead": 8,
+     "of": 10,
+     "range": [
+      -0.0343716973191448,
+      0.03654920550520302
+     ],
+     "groups": {
+      "de_recovery": 0.0004317944436350863,
+      "direction": -0.0007354149435820356,
+      "distribution": 0.004133604572855443,
+      "covariance": 0.004421924222637097
+     },
+     "behind": 2
+    },
+    "whole": {
+     "change": "m1rc_gmom_jaxperm",
+     "base": "m1rc_gmom",
+     "mean": 0.003877386410162842,
+     "sd": 0.01630198106660932,
+     "ahead": 7,
+     "of": 10,
+     "range": [
+      -0.018654883480770934,
+      0.028775503830743787
+     ],
+     "groups": {
+      "de_recovery": -0.002050731616677487,
+      "direction": -0.0017764714977297482,
+      "distribution": 0.0036284986430715205,
+      "covariance": 0.004076090881498851
+     },
+     "behind": 3
+    },
+    "1": {
+     "change": "m1rc_gmom_jaxperm",
+     "base": "m1rc_gmom",
+     "mean": 0.2929314288384134,
+     "sd": 0.20734663284674895,
+     "ahead": 9,
+     "of": 10,
+     "range": [
+      -0.19739995830258295,
+      0.5086643886418045
+     ],
+     "groups": {
+      "de_recovery": 0.03598496803205481,
+      "direction": 0.03315176951827953,
+      "distribution": 0.13568023597863588,
+      "covariance": 0.08811445530943773
+     },
+     "behind": 1
+    },
+    "2": {
+     "change": "m1rc_gmom_jaxperm",
+     "base": "m1rc_gmom",
+     "mean": 0.13632771519615544,
+     "sd": 0.2682267911955005,
+     "ahead": 7,
+     "of": 10,
+     "range": [
+      -0.33931204534478354,
+      0.53795568730186
+     ],
+     "groups": {
+      "de_recovery": -0.12422069639981131,
+      "direction": -0.003948105205742458,
+      "distribution": 0.07873184205355921,
+      "covariance": 0.18576467474815295
+     },
+     "behind": 3
+    },
+    "3": {
+     "change": "m1rc_gmom_jaxperm",
+     "base": "m1rc_gmom",
+     "mean": 0.17522935832369627,
+     "sd": 0.07928378292247713,
+     "ahead": 10,
+     "of": 10,
+     "range": [
+      0.048904898031779,
+      0.31381669996859785
+     ],
+     "groups": {
+      "de_recovery": 0.08726635247468223,
+      "direction": 0.014076467651649716,
+      "distribution": 0.031112302883917198,
+      "covariance": 0.04277423531345104
+     },
+     "behind": 0
+    }
+   },
+   "arm_minus_perm": {
+    "chamber": {
+     "change": "m1rc_gmom_jaxblood",
+     "base": "m1rc_gmom_jaxperm",
+     "mean": 0.04394726973766936,
+     "sd": 0.01614845770152681,
+     "ahead": 10,
+     "of": 10,
+     "range": [
+      0.026568911566094755,
+      0.06958670528828748
+     ],
+     "groups": {
+      "de_recovery": 0.014866385439602918,
+      "direction": 0.014146233540138775,
+      "distribution": 0.010831101894141104,
+      "covariance": 0.004103548863782058
+     },
+     "behind": 0
+    },
+    "whole": {
+     "change": "m1rc_gmom_jaxblood",
+     "base": "m1rc_gmom_jaxperm",
+     "mean": 0.03550546307260873,
+     "sd": 0.01725403586653702,
+     "ahead": 10,
+     "of": 10,
+     "range": [
+      0.019635965328504312,
+      0.06180438353698747
+     ],
+     "groups": {
+      "de_recovery": 0.015432935955522059,
+      "direction": 0.012797153779462165,
+      "distribution": 0.004574475897281272,
+      "covariance": 0.0027008974403444075
+     },
+     "behind": 0
+    },
+    "1": {
+     "change": "m1rc_gmom_jaxblood",
+     "base": "m1rc_gmom_jaxperm",
+     "mean": 0.8709880993705454,
+     "sd": 0.23149548439273965,
+     "ahead": 10,
+     "of": 10,
+     "range": [
+      0.6281316935548347,
+      1.284357801003651
+     ],
+     "groups": {
+      "de_recovery": 0.2173802485767437,
+      "direction": 0.1325042729065823,
+      "distribution": 0.5137395450313312,
+      "covariance": 0.007364032855894376
+     },
+     "behind": 0
+    },
+    "2": {
+     "change": "m1rc_gmom_jaxblood",
+     "base": "m1rc_gmom_jaxperm",
+     "mean": 1.1250328950645383,
+     "sd": 0.3743545204501001,
+     "ahead": 10,
+     "of": 10,
+     "range": [
+      0.5455807233290244,
+      1.996788158516793
+     ],
+     "groups": {
+      "de_recovery": 0.31258252941911924,
+      "direction": 0.16641639547215592,
+      "distribution": 0.5981924122292993,
+      "covariance": 0.047841557943962165
+     },
+     "behind": 0
+    },
+    "3": {
+     "change": "m1rc_gmom_jaxblood",
+     "base": "m1rc_gmom_jaxperm",
+     "mean": 0.3106817168558507,
+     "sd": 0.11888071076341261,
+     "ahead": 10,
+     "of": 10,
+     "range": [
+      0.11991118523469879,
+      0.4753690851347301
+     ],
+     "groups": {
+      "de_recovery": 0.03678853350572414,
+      "direction": 0.07161474920413524,
+      "distribution": 0.16407534825791126,
+      "covariance": 0.03820308588808263
+     },
+     "behind": 0
+    }
+   }
+  },
+  "mean_scores": {
+   "chamber": {
+    "m1rc_gmom": 52.00367447661053,
+    "m1rc_gmom_jaxblood": 52.05587365464375,
+    "m1rc_gmom_jaxperm": 52.011926384906076
+   },
+   "whole": {
+    "m1rc_gmom": 46.160269003437136,
+    "m1rc_gmom_jaxblood": 46.19965185291991,
+    "m1rc_gmom_jaxperm": 46.1641463898473
+   },
+   "1": {
+    "m1rc_gmom": 74.8118600238186,
+    "m1rc_gmom_jaxblood": 75.97577955202756,
+    "m1rc_gmom_jaxperm": 75.10479145265703
+   },
+   "2": {
+    "m1rc_gmom": 89.36654892652898,
+    "m1rc_gmom_jaxblood": 90.62790953678969,
+    "m1rc_gmom_jaxperm": 89.50287664172515
+   },
+   "3": {
+    "m1rc_gmom": 73.94635890676676,
+    "m1rc_gmom_jaxblood": 74.43226998194632,
+    "m1rc_gmom_jaxperm": 74.12158826509047
+   }
+  },
+  "t64_means": {
+   "1": 76.78595910132314,
+   "2": 91.07105632731924,
+   "3": 74.57098761227789
+  },
+  "valid_libraries": [
+   "1",
+   "2",
+   "3"
+  ],
+  "idle_tasks": [],
+  "blood_drawn": {
+   "chamber": [
+    133,
+    133,
+    133,
+    133,
+    133,
+    133,
+    133,
+    133,
+    133,
+    133
+   ],
+   "whole": [
+    133,
+    133,
+    133,
+    133,
+    133,
+    133,
+    133,
+    133,
+    133,
+    133
+   ],
+   "1": [
+    1594,
+    1594,
+    1594,
+    1594,
+    1594,
+    1594,
+    1594,
+    1594,
+    1594,
+    1594
+   ],
+   "2": [
+    2061,
+    2061,
+    2061,
+    2061,
+    2061,
+    2061,
+    2061,
+    2061,
+    2061,
+    2061
+   ],
+   "3": [
+    907,
+    907,
+    907,
+    907,
+    907,
+    907,
+    907,
+    907,
+    907,
+    907
+   ]
+  },
+  "blood_changed": {
+   "chamber": {
+    "m1rc_gmom_jaxblood": [
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133
+    ],
+    "m1rc_gmom_jaxperm": [
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133
+    ]
+   },
+   "whole": {
+    "m1rc_gmom_jaxblood": [
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133
+    ],
+    "m1rc_gmom_jaxperm": [
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133,
+     133
+    ]
+   },
+   "1": {
+    "m1rc_gmom_jaxblood": [
+     1594,
+     1594,
+     1594,
+     1594,
+     1594,
+     1594,
+     1594,
+     1594,
+     1594,
+     1594
+    ],
+    "m1rc_gmom_jaxperm": [
+     1594,
+     1594,
+     1594,
+     1594,
+     1594,
+     1594,
+     1594,
+     1594,
+     1594,
+     1594
+    ]
+   },
+   "2": {
+    "m1rc_gmom_jaxblood": [
+     2061,
+     2061,
+     2061,
+     2061,
+     2061,
+     2061,
+     2061,
+     2061,
+     2061,
+     2061
+    ],
+    "m1rc_gmom_jaxperm": [
+     2061,
+     2061,
+     2061,
+     2061,
+     2061,
+     2061,
+     2061,
+     2061,
+     2061,
+     2061
+    ]
+   },
+   "3": {
+    "m1rc_gmom_jaxblood": [
+     907,
+     907,
+     907,
+     907,
+     907,
+     907,
+     907,
+     907,
+     907,
+     907
+    ],
+    "m1rc_gmom_jaxperm": [
+     907,
+     907,
+     907,
+     907,
+     907,
+     907,
+     907,
+     907,
+     907,
+     907
+    ]
+   }
+  },
+  "beside": [
+   "J2: the October readout already compared JAX's blood direction with the E10.5 truth, so this read carries no forecast weight.",
+   "The arm moves the expression of the drawn Blood cells only; R1 is the captain's ruling, and only his ruling naming R1 puts the arm in a file. Macrophage and Early VIC, held at the test, are unpriced here."
+  ],
+  "follows": "What follows: NOT AHEAD closes 'JAX erythroid direction on the held Blood cells' on T1. No question goes to the captain, nothing is built, and nothing is rerun under another row."
+ },
+ "tries": 10,
+ "stamp": {
+  "commit": "cd3c021c26ca2e6949009586e192ffc161880c35",
+  "tree_clean": true,
+  "utc": "2026-11-22T02:57:28Z",
+  "inputs": {
+   "experiments/t1_m1/results/t68_jaxblood/tasks/T1_E9.5_E10.5_chamber.json": "7a7b84bf46ae83f6cf12fbe68a07bd5387ebeaea0de51c49139e2525245f35eb",
+   "experiments/t1_m1/results/t68_jaxblood/tasks/T1_E9.5_E10.5.json": "758b9afa4eed99d03d2f70cd924c2c6f0862525146ab513b6b5cb86249bed1b2",
+   "experiments/t1_m1/results/t68_jaxblood/tasks/lib1.json": "22e13b9bc6f7aa916fda03dad81b1b7f99e65c23e76594a77b8eaac99aea3c06",
+   "experiments/t1_m1/results/t68_jaxblood/tasks/lib2.json": "d1dbe0978b28f7808fc5c6dce39c58fb4586e6e05fdd5254b5bb01b09c0da113",
+   "experiments/t1_m1/results/t68_jaxblood/tasks/lib3.json": "a5abd485b370c76392106d05f0643aa05228310ea5998c333fded2f66423514b",
+   "experiments/t1_m1/results/t68_jaxblood/tasks/pregate.json": "da2cc8e40eb0f8e215e9d0d90e46f95a63f8b6a31bb131d5c2d709792ab8c9b4"
+  }
+ }
+}

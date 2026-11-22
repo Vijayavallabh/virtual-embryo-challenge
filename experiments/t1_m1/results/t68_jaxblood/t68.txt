@@ -1,0 +1,38 @@
+try T68, a labelled in-sample diagnostic, never an adoption result: the drawn Blood cells moved along the recomputed erythroid direction of JAX/Qiu 2024 nuclei (m1rc_gmom_jaxblood) and its permuted control (m1rc_gmom_jaxperm) against m1rc_gmom (row T62's) on T62's five tasks; every task scores one truth (E10.5) over one day
+Outcome: NOT AHEAD ((iii) the arm is at or above row T64's m1rc_gmom_heldmom on fewer than 2 of 3 libraries)
+J2: the October readout already compared JAX's blood direction with the E10.5 truth, so this read carries no forecast weight.
+The arm moves the expression of the drawn Blood cells only; R1 is the captain's ruling, and only his ruling naming R1 puts the arm in a file. Macrophage and Early VIC, held at the test, are unpriced here.
+What follows: NOT AHEAD closes 'JAX erythroid direction on the held Blood cells' on T1. No question goes to the captain, nothing is built, and nothing is rerun under another row.
+Clause values: library mean of the arm minus m1rc_gmom +0.97; library mean of the arm minus m1rc_gmom_jaxperm +0.77; libraries at or above row T64's m1rc_gmom_heldmom: none
+m1rc_gmom_jaxblood - m1rc_gmom, paired per seed on the same draw:
+  chamber: +0.05 points, sd 0.02, ahead 10 behind 0 of 10, per seed +0.02 to +0.08; by group: de_recovery +0.02, direction +0.01, distribution +0.01, covariance +0.01
+  whole: +0.04 points, sd 0.02, ahead 10 behind 0 of 10, per seed +0.02 to +0.07; by group: de_recovery +0.01, direction +0.01, distribution +0.01, covariance +0.01
+  1: +1.16 points, sd 0.23, ahead 10 behind 0 of 10, per seed +0.78 to +1.53; by group: de_recovery +0.25, direction +0.17, distribution +0.65, covariance +0.10
+  2: +1.26 points, sd 0.28, ahead 10 behind 0 of 10, per seed +0.72 to +1.66; by group: de_recovery +0.19, direction +0.16, distribution +0.68, covariance +0.23
+  3: +0.49 points, sd 0.12, ahead 10 behind 0 of 10, per seed +0.32 to +0.71; by group: de_recovery +0.12, direction +0.09, distribution +0.20, covariance +0.08
+m1rc_gmom_jaxperm - m1rc_gmom, paired per seed on the same draw:
+  chamber: +0.01 points, sd 0.02, ahead 8 behind 2 of 10, per seed -0.03 to +0.04; by group: de_recovery +0.00, direction -0.00, distribution +0.00, covariance +0.00
+  whole: +0.00 points, sd 0.02, ahead 7 behind 3 of 10, per seed -0.02 to +0.03; by group: de_recovery -0.00, direction -0.00, distribution +0.00, covariance +0.00
+  1: +0.29 points, sd 0.21, ahead 9 behind 1 of 10, per seed -0.20 to +0.51; by group: de_recovery +0.04, direction +0.03, distribution +0.14, covariance +0.09
+  2: +0.14 points, sd 0.27, ahead 7 behind 3 of 10, per seed -0.34 to +0.54; by group: de_recovery -0.12, direction -0.00, distribution +0.08, covariance +0.19
+  3: +0.18 points, sd 0.08, ahead 10 behind 0 of 10, per seed +0.05 to +0.31; by group: de_recovery +0.09, direction +0.01, distribution +0.03, covariance +0.04
+m1rc_gmom_jaxblood - m1rc_gmom_jaxperm, paired per seed on the same draw:
+  chamber: +0.04 points, sd 0.02, ahead 10 behind 0 of 10, per seed +0.03 to +0.07; by group: de_recovery +0.01, direction +0.01, distribution +0.01, covariance +0.00
+  whole: +0.04 points, sd 0.02, ahead 10 behind 0 of 10, per seed +0.02 to +0.06; by group: de_recovery +0.02, direction +0.01, distribution +0.00, covariance +0.00
+  1: +0.87 points, sd 0.23, ahead 10 behind 0 of 10, per seed +0.63 to +1.28; by group: de_recovery +0.22, direction +0.13, distribution +0.51, covariance +0.01
+  2: +1.13 points, sd 0.37, ahead 10 behind 0 of 10, per seed +0.55 to +2.00; by group: de_recovery +0.31, direction +0.17, distribution +0.60, covariance +0.05
+  3: +0.31 points, sd 0.12, ahead 10 behind 0 of 10, per seed +0.12 to +0.48; by group: de_recovery +0.04, direction +0.07, distribution +0.16, covariance +0.04
+Mean scores (reported, deciding nothing beyond clause (iii)):
+  chamber: m1rc_gmom 52.00, m1rc_gmom_jaxblood 52.06, m1rc_gmom_jaxperm 52.01
+  whole: m1rc_gmom 46.16, m1rc_gmom_jaxblood 46.20, m1rc_gmom_jaxperm 46.16
+  1: m1rc_gmom 74.81, m1rc_gmom_jaxblood 75.98, m1rc_gmom_jaxperm 75.10; row T64's m1rc_gmom_heldmom 76.79
+  2: m1rc_gmom 89.37, m1rc_gmom_jaxblood 90.63, m1rc_gmom_jaxperm 89.50; row T64's m1rc_gmom_heldmom 91.07
+  3: m1rc_gmom 73.95, m1rc_gmom_jaxblood 74.43, m1rc_gmom_jaxperm 74.12; row T64's m1rc_gmom_heldmom 74.57
+  chamber: Blood cells drawn per seed [133, 133, 133, 133, 133, 133, 133, 133, 133, 133]; changed per seed {'m1rc_gmom_jaxblood': [133, 133, 133, 133, 133, 133, 133, 133, 133, 133], 'm1rc_gmom_jaxperm': [133, 133, 133, 133, 133, 133, 133, 133, 133, 133]}
+  whole: Blood cells drawn per seed [133, 133, 133, 133, 133, 133, 133, 133, 133, 133]; changed per seed {'m1rc_gmom_jaxblood': [133, 133, 133, 133, 133, 133, 133, 133, 133, 133], 'm1rc_gmom_jaxperm': [133, 133, 133, 133, 133, 133, 133, 133, 133, 133]}
+  1: Blood cells drawn per seed [1594, 1594, 1594, 1594, 1594, 1594, 1594, 1594, 1594, 1594]; changed per seed {'m1rc_gmom_jaxblood': [1594, 1594, 1594, 1594, 1594, 1594, 1594, 1594, 1594, 1594], 'm1rc_gmom_jaxperm': [1594, 1594, 1594, 1594, 1594, 1594, 1594, 1594, 1594, 1594]}
+  2: Blood cells drawn per seed [2061, 2061, 2061, 2061, 2061, 2061, 2061, 2061, 2061, 2061]; changed per seed {'m1rc_gmom_jaxblood': [2061, 2061, 2061, 2061, 2061, 2061, 2061, 2061, 2061, 2061], 'm1rc_gmom_jaxperm': [2061, 2061, 2061, 2061, 2061, 2061, 2061, 2061, 2061, 2061]}
+  3: Blood cells drawn per seed [907, 907, 907, 907, 907, 907, 907, 907, 907, 907]; changed per seed {'m1rc_gmom_jaxblood': [907, 907, 907, 907, 907, 907, 907, 907, 907, 907], 'm1rc_gmom_jaxperm': [907, 907, 907, 907, 907, 907, 907, 907, 907, 907]}
+Libraries without inverted anchors (reported only): 1, 2, 3
+Tries counted: 10 (two counted arms on five tasks; the row numbers them)
+Commit cd3c021c26ca2e6949009586e192ffc161880c35, tree clean True, UTC 2026-11-22T02:57:28Z

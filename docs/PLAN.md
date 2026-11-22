@@ -10540,3 +10540,23 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     (290 passed). Nothing was built and no file exists from that launch; its scratch and output folders are left as
     they are, and since the launcher never reuses a folder the build is launched again from this entry's commit, with
     the path set in the launch command.
+- 2026-11-22 (z), row T68 is read (NOT AHEAD); the sized embryo file's note is ready; row T69's arms are counted
+  (state at 03:00 UTC, 2026-11-22). Written by the AI assistant; the outcome is the read's own statement and nothing
+  is added to it.
+  - **T68** (T1, the held Blood cells moved along the outside nuclei atlas's direction; the rerun of row T66; run
+    commit cd3c021 in `~/v/scratch/t68-wt`; every step exit 0; ten tries, T1 439 to 448). In the read's fixed words:
+    "Outcome: NOT AHEAD ((iii) the arm is at or above row T64's m1rc_gmom_heldmom on fewer than 2 of 3 libraries)"
+    "What follows: NOT AHEAD closes 'JAX erythroid direction on the held Blood cells' on T1. No question goes to the
+    captain, nothing is built, and nothing is rerun under another row." Beside it: "Clause values: library mean of the
+    arm minus m1rc_gmom +0.97; library mean of the arm minus m1rc_gmom_jaxperm +0.77; libraries at or above row T64's
+    m1rc_gmom_heldmom: none" The arm is ahead of its base and of its permuted control on every task and seed, and
+    below row T64's comparator on all three libraries, which is the clause that decides. No question goes to the
+    captain, nothing is built, nothing is rerun. The nine result files are committed with this entry.
+  - **The sized embryo file's note** (`experiments/coords/results/e52_copy_rows_sized/note_for_the_captain.md`):
+    written by a fresh score-blind analyst from row E52's reading and corrected by a cold checker, who verified every
+    figure and replaced two sentences that went past the row's own words. The main session changed nothing in it and
+    hands it to the captain with the file (`runs/manual_upload/T2embryo_s2x_crs.h5ad`, sha256
+    323f2acc32f731819b1a3cc0da32478a51d9e9a10f13dbd940773b113b5644fa; Task 2 embryo; after C; released challenge data
+    only).
+  - **Counts.** Row T69's five runs started at 02:44 UTC, so its fifteen arms count: T1 449 to 463. Totals: T1 463,
+    embryo 87, heart 97, T3 74.

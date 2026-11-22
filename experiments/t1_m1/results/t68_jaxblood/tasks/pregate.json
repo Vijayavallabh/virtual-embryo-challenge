@@ -1,0 +1,236 @@
+{
+ "label": "try T68, a labelled in-sample diagnostic, never an adoption result: the drawn Blood cells moved along the recomputed erythroid direction of JAX/Qiu 2024 nuclei (m1rc_gmom_jaxblood) and its permuted control (m1rc_gmom_jaxperm) against m1rc_gmom (row T62's) on T62's five tasks; every task scores one truth (E10.5) over one day",
+ "row": "T68",
+ "reading": {
+  "passes": true,
+  "failed": [],
+  "ends": {
+   "early": {
+    "assigned": {
+     "1": 144,
+     "2": 9,
+     "3": 14,
+     "4": 22,
+     "5": 4,
+     "6": 2,
+     "7": 78,
+     "8": 341,
+     "9": 1248,
+     "10": 2775,
+     "11": 4355,
+     "12": 3908
+    },
+    "entering": {
+     "1": 144,
+     "2": 9,
+     "3": 14,
+     "4": 22,
+     "5": 4,
+     "6": 2,
+     "7": 78,
+     "8": 341,
+     "9": 1248,
+     "10": 2775,
+     "11": 4355,
+     "12": 3908
+    },
+    "total": 12900,
+    "embryos_at_floor": 7,
+    "entering_total": 12900,
+    "experimental_batch": [
+     "run_4"
+    ],
+    "days": [
+     "E8.5"
+    ]
+   },
+   "late": {
+    "assigned": {
+     "59": 1692,
+     "60": 823,
+     "61": 580,
+     "62": 484,
+     "63": 486
+    },
+    "entering": {
+     "59": 1692,
+     "60": 823,
+     "61": 580,
+     "62": 484,
+     "63": 486
+    },
+    "total": 4065,
+    "embryos_at_floor": 5,
+    "entering_total": 4065,
+    "experimental_batch": [
+     "run_20",
+     "run_21",
+     "run_26"
+    ],
+    "days": [
+     "E15.5",
+     "E15.75",
+     "E16.0",
+     "E16.25",
+     "E16.5"
+    ]
+   }
+  },
+  "held_share": 0.026344283507533844,
+  "logf_summary": {
+   "mapped_genes": 22638,
+   "moved_genes": 22592,
+   "held_genes": 63,
+   "quantiles": {
+    "0.0": -0.4785331275833762,
+    "0.05": -0.06263060829772171,
+    "0.25": -0.008692808514859068,
+    "0.5": 0.0,
+    "0.75": 0.0050973839194577725,
+    "0.95": 0.06148608026493106,
+    "1.0": 0.5426067380264075
+   },
+   "n_up": 634,
+   "n_down": 384,
+   "n_clipped": 0,
+   "top_up": [
+    [
+     "March3",
+     0.5426067380264075
+    ],
+    [
+     "Pcdh9",
+     0.3889990082092781
+    ],
+    [
+     "Nfib",
+     0.3778267380874019
+    ],
+    [
+     "Cadm2",
+     0.3777298561793526
+    ],
+    [
+     "Specc1",
+     0.36250869394099466
+    ],
+    [
+     "Nlgn1",
+     0.35836716779101546
+    ],
+    [
+     "Nrxn3",
+     0.35208844820549934
+    ],
+    [
+     "Atp2b4",
+     0.35099380693068244
+    ],
+    [
+     "Nrxn1",
+     0.3418942252518732
+    ],
+    [
+     "Slc4a1",
+     0.33950070083823763
+    ],
+    [
+     "Itga4",
+     0.3338257647975226
+    ],
+    [
+     "Dennd4a",
+     0.33228871782959735
+    ],
+    [
+     "Rhd",
+     0.3317726922118264
+    ],
+    [
+     "Kel",
+     0.32889906356356885
+    ],
+    [
+     "Csmd1",
+     0.3258047679677585
+    ]
+   ],
+   "top_down": [
+    [
+     "Prtg",
+     -0.4785331275833762
+    ],
+    [
+     "Greb1l",
+     -0.2923404630617045
+    ],
+    [
+     "Nr6a1",
+     -0.28750617792661004
+    ],
+    [
+     "Greb1",
+     -0.28589086703902533
+    ],
+    [
+     "Pkm",
+     -0.2729996198333329
+    ],
+    [
+     "Hmga2",
+     -0.27233855028921694
+    ],
+    [
+     "Tmem132c",
+     -0.26844637866403137
+    ],
+    [
+     "Igf2bp1",
+     -0.26038774098328116
+    ],
+    [
+     "Ldha",
+     -0.25299395890812876
+    ],
+    [
+     "Lef1",
+     -0.23306742589146767
+    ],
+    [
+     "Npm1",
+     -0.22632260607541224
+    ],
+    [
+     "Lin28b",
+     -0.2251305584360948
+    ],
+    [
+     "Ror2",
+     -0.22501171222958793
+    ],
+    [
+     "Eno1",
+     -0.21830262280866455
+    ],
+    [
+     "Hspd1",
+     -0.20904273950399108
+    ]
+   ]
+  }
+ },
+ "manifest_sha256": "f70aedf6dbc19978e70bd704039158864a68cb032148d31e2a12b22f9dee0784",
+ "yaml_sha256": "d46bd682712b2a6db4581c50f2236099fd8bd35c993346e48c2d4fd1dedb75ab",
+ "fraction": 0.13333333333333333,
+ "clip": 1.0986122886681098,
+ "stamp": {
+  "commit": "cd3c021c26ca2e6949009586e192ffc161880c35",
+  "tree_clean": true,
+  "utc": "2026-11-22T02:15:32Z",
+  "inputs": {
+   "data/derived/jax_blood_t68/MANIFEST.json": "f70aedf6dbc19978e70bd704039158864a68cb032148d31e2a12b22f9dee0784",
+   "data/derived/jax_blood_t68/jax_blood_direction.npz": "e8167668574d14b0232a919aee335faf2efcc017d77209a5fa696be66b575cd6",
+   "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c"
+  }
+ }
+}
