@@ -2,7 +2,46 @@
 
 ## Current Objective
 
-- **State at 2026-11-22, 01:32 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-22, 02:01 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-22 (o); the next label is 2026-11-22 (p). Local main = origin/main at 95dd312. Tries: T1 438, embryo 87,
+  heart 88, T3 74. No new score yet today.
+  - **TWO QUESTIONS ARE WITH THE CAPTAIN (plain text; act only on the captain's own words).** (1) T1's first search
+    line, a step back (1.75, and 1.25) if the 2.0 file does not beat 1.5? It must be fixed before the 2.0 file's
+    score; default: the rule stays (climb only). I give no lean. (2) The heart search line (the trend step at 0.5,
+    then 1.0, on the full trim C): needs the captain's own named exception for the two files; the challenger's
+    question was passed on unchanged; I am recused. Also said to the captain: by entry 2026-11-20 (r) file F takes the
+    first free T1 slot (so F, C, then the 2.0 file), or the captain may keep C then the 2.0 file today.
+  - **CLOSED SINCE 01:32: gate N56 VOID (classifier balanced accuracy 0.746 below 0.8) -> rows H30 and H31 end, no try
+    (entry (l)).**
+  - **RUNNING ON THE DGX (a waiter on each).** T65 (libraries one after another, to about 03:50 UTC; exit
+    `~/v/scratch/t65/chain2.exit`; then commit the five task files UNOPENED, push, checkout in the worktree,
+    `t65_ms.sh read`). T68 (T66's rerun; worktree `~/v/scratch/t68-wt` at cd3c021; `~/v/scratch/t68/chain.exit`; 3 =
+    pruned). E51 (run step since 01:28; `e51/chain.exit`). E54 (fits; `e54/chain.exit`). E52 second start (run step
+    since 01:54; `e52b/chain.exit`; if reading (i) holds: `experiments/builds/embryo_copy_rows_sized.sh` twice, hand
+    over after C). H29b, the organ cut's read (worktree `~/v/scratch/h29b-wt` at e3cc0e4, own env; `h29b/chain.exit`;
+    gate 3 = STOP, 4 = REFUSED on an unmapped label: then fix `configs/t2_chamber_classes.yaml` in a new commit; on
+    READ: copy `experiments/harness/results/h29b_heart_organ/` back, commit as B, have FRESH ANALYSTS write the
+    captain's question with the figures, then `experiments/builds/heart_organ.sh B <RUN>`). T1 line builds (worktree
+    `~/v/scratch/t1line-wt` at e3cc0e4, own env; `bash experiments/builds/t1_fraction_line.sh <commit> r1`; exits in
+    `~/v/scratch/t1line/r1/`; on `done.exit` 0 copy `SHA256SUMS` and the stamps into `experiments/builds/results/`,
+    copy the 2.5 and 3.0 files to `runs/manual_upload/T1_s2rcB25.h5ad` and `T1_s2rcB30.h5ad`, check sha256, record;
+    they are uploaded only on the line's conditions).
+  - **WORKFLOWS RUNNING.** wen60aw6i: C2A (row T70, `campaign/t1-cm-segments`) and H32
+    (`campaign/heart-trend-sign-gate`) builds, plus four screens (zone provenance; embryo day and somite table;
+    skeletal-muscle marker statement; the nuclei atlas's quality-filter question, which bears on every X003 use:
+    record its answer in the register whichever way it falls and tell the captain). wn2g89uiu: T1 line 2's builder
+    (`campaign/t1-damping-line`, cut from the fraction-line branch; row R22 already names its options), the T3 line
+    (re-based onto barred s2 first; write its text into the log and the rules BEFORE the K23 file's headline, add
+    `--table-exponent 4.0` to row R22's first cell then), C1A (row T71, `campaign/t1-cm-nuclei`). w2b0b518u: K26
+    second fix round (`campaign/moon-t3-map-3`; the pre-gate counted; register rows X013, X014, X015, X017 must each
+    name K26 before a run). wkbcxkeij: rc18 without its builder part (`campaign/t1-rc18-2`; rows N58 then T69; X002
+    must hold the token `feng_relabel_e18`).
+  - **SEARCH LINES IN FORCE (entries (j), (o); rules amended; hash in `docs/S2_RULES.sha256`).** T1 line 1: 2.5 if the
+    2.0 file strictly beats the line's best, then 3.0; ends at the first file that does not. T1 line 2: A's headline
+    is above R13's, so the next file is `T1_s2rcA15.h5ad` (damping 1.5), then `T1_s2rcA20.h5ad` only if A15 strictly
+    beats the line's best (A's); line 1's next file goes first; drop date 25 Nov 12:00 UTC. Embryo: none. Heart: none
+    without the captain's named exception. T3: pending its re-base.
+- **State at 2026-11-22, 01:32 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-22 (k); the next label is 2026-11-22 (l). Local main = origin/main at f8c46dd. Tries: T1 438, embryo 84,
   heart 88, T3 74. No new score yet today.
   - **THE CAPTAIN ANSWERED THE THREE OPEN QUESTIONS (entry (j), ruling row R22, rules amended, hash 93b6335f replaced

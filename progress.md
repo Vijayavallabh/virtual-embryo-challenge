@@ -2,6 +2,14 @@
 
 ## Current State
 
+- **2026-11-22, 02:01 UTC.** No new score. The heart chord's gate N56 came back VOID, so rows H30 and H31 ended
+  without a counted read. Started on the DGX: T68 (T66's rerun on the gene table's genes), the organ cut's read (row
+  H29b, with its target-free gate), and the builds of the first search line's 2.5 and 3.0 files. The outside-data
+  design round kept three candidates (T1's C1A and C2A, the heart's H32) and the search-line round kept T1's second
+  line (damping), a T3 line (being re-based) and a heart line that needs the captain's named exception. Two questions
+  are with the captain: a step back for T1's first line, and the heart line's exception. Tries: T1 438, embryo 87,
+  heart 88, T3 74. Decision log 2026-11-22 (l) to (o).
+
 - **2026-11-22, 01:32 UTC.** No new score. The captain answered the three open questions with yes (decision log
   2026-11-22 (j), ruling row R22): a score-guided search of round steps may run inside a fixed framework, with T1's
   atlas line fixed at 2.5 and 3.0 before the 2.0 file's score; T3's refused s1 is re-admitted after the queued files;
