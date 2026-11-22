@@ -10704,3 +10704,16 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **The T1 order list after this.** Of the two candidates the order rule of entry 2026-11-21 (y) added, MS is AHEAD
     on practice and waits on the captain's answer to Q-MS (entry (bb)); rc18 has ended. Totals unchanged: T1 463,
     embryo 88, heart 97, T3 74.
+- 2026-11-22 (hh), row T71 (C1A) is stopped by its target-free pre-gate (state at 03:41 UTC, 2026-11-22). Written by
+  the AI assistant; the outcome is the row's own rule and nothing is added to it.
+  - **T71** (T1 candidate C1A, the cardiomyocyte direction blended with a nuclei-atlas direction; run commit aa93a69
+    in `~/v/scratch/t71-wt`; tests and the reducer exit 0; the pre-gate exit 3). In the pre-gate's fixed words:
+    "Pre-gate: FAILS ((b) the late end's share of r_cm nuclei with an skm score at the purity bar is not at most 0.1)"
+    "What follows: nothing is scored and no try is counted under row T71; the line closes at the pre-gate." The
+    guard's value is 0.223 against the bar of 0.10: at the late end more than a fifth of the nuclei the marker scores
+    call cardiomyocyte also score as skeletal muscle. No task ran, nothing is scored, no try counts (T1 stays 463), no
+    file. The pre-gate's two record files are committed with this entry. The AI assistant opens no other row for it.
+  - **The outside-data round's candidates are now all closed.** T1: C2A stopped on the zone screen; C1A stopped at
+    this pre-gate; the blood rerun (T68) was not ahead. Heart: H30 and H31 ended at gate N56, H32 at gate G0. Embryo
+    and T3: the round proposed none. What the round leaves in the register is the screens' facts on the two atlases
+    (entries (q) and (r)).

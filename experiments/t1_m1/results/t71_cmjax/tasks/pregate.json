@@ -1,0 +1,173 @@
+{
+ "label": "try T71, a labelled in-sample diagnostic, never an adoption result: the CM group's recomputed Feng direction blended with the JAX/Qiu 2024 nuclei CM direction (RMS-matched) and its residual-permuting placebo, at 1/5 and 2/5, against m1rc_gmom (row T62's) and m1rc_gmom_x2 (row T63's) on T62's five tasks; every task scores one truth (E10.5) over one day",
+ "row": "T71",
+ "reading": {
+  "passes": false,
+  "failed": [
+   "(b) the late end's share of r_cm nuclei with an skm score at the purity bar is not at most 0.1"
+  ],
+  "ends": {
+   "early": {
+    "assigned": {
+     "1": 150,
+     "2": 265,
+     "3": 66,
+     "4": 155,
+     "5": 150,
+     "6": 3,
+     "7": 490,
+     "8": 608,
+     "9": 70,
+     "10": 558,
+     "11": 277,
+     "12": 525
+    },
+    "entering": {
+     "1": 150,
+     "2": 265,
+     "3": 66,
+     "4": 155,
+     "5": 150,
+     "6": 3,
+     "7": 490,
+     "8": 608,
+     "9": 70,
+     "10": 558,
+     "11": 277,
+     "12": 525
+    },
+    "skm_high": {
+     "1": 1,
+     "2": 3,
+     "3": 1,
+     "4": 3,
+     "5": 3,
+     "6": 0,
+     "7": 12,
+     "8": 15,
+     "9": 2,
+     "10": 8,
+     "11": 9,
+     "12": 6
+    },
+    "days": {
+     "1": "E8.5",
+     "2": "E8.5",
+     "3": "E8.5",
+     "4": "E8.5",
+     "5": "E8.5",
+     "6": "E8.5",
+     "7": "E8.5",
+     "8": "E8.5",
+     "9": "E8.5",
+     "10": "E8.5",
+     "11": "E8.5",
+     "12": "E8.5"
+    },
+    "contributing": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "entering_total": 3314,
+    "skm_share": 0.018993066023515224
+   },
+   "late": {
+    "assigned": {
+     "59": 619,
+     "60": 548,
+     "61": 861,
+     "62": 679,
+     "63": 1141
+    },
+    "entering": {
+     "59": 619,
+     "60": 548,
+     "61": 861,
+     "62": 679,
+     "63": 1141
+    },
+    "skm_high": {
+     "59": 171,
+     "60": 128,
+     "61": 180,
+     "62": 132,
+     "63": 248
+    },
+    "days": {
+     "59": "E15.5",
+     "60": "E15.75",
+     "61": "E16.0",
+     "62": "E16.25",
+     "63": "E16.5"
+    },
+    "contributing": [
+     59,
+     60,
+     61,
+     62,
+     63
+    ],
+    "entering_total": 3848,
+    "skm_share": 0.22323284823284822
+   }
+  },
+  "late_skm_share": 0.22323284823284822,
+  "spearman": 0.4636554961509848,
+  "spearman_genes": 1535,
+  "held_share": 0.0054682158546538835,
+  "delta_days": 7.5,
+  "end_left_out_umi_share": {
+   "early": 0.059430787066118256,
+   "late": 0.05758155488793812
+  },
+  "skm_means": {
+   "Tnnt3": {
+    "jax_early": 0.019753856097273013,
+    "jax_late": 0.1834445308483478,
+    "feng_e14_5": 0.048236848361775976
+   },
+   "Tnni2": {
+    "jax_early": 0.03349704726592087,
+    "jax_late": 0.19255889876746393,
+    "feng_e14_5": 0.26607989706085305
+   },
+   "Mylpf": {
+    "jax_early": 0.023527772352960327,
+    "jax_late": 0.4947151011389163,
+    "feng_e14_5": 0.12019957041121412
+   },
+   "Myl1": {
+    "jax_early": 0.40914300663173103,
+    "jax_late": 2.013486550335565,
+    "feng_e14_5": 1.724130755037444
+   },
+   "Tnnc2": {
+    "jax_early": 0.0,
+    "jax_late": 0.0730649968391002,
+    "feng_e14_5": 0.0008721908703565916
+   }
+  }
+ },
+ "manifest_sha256": "d7f62aefd2a8fef21d728f580a32e30a80b2598c20496d53c7fbd2f9b488706c",
+ "yaml_sha256": "3b618b06b129c6889ddbaa5a2178933ea7985e58028e576431a53cbba3e7e411",
+ "stamp": {
+  "commit": "aa93a6964b447fa59ebb823d7d1e665317278365",
+  "tree_clean": true,
+  "utc": "2026-11-22T03:38:18Z",
+  "inputs": {
+   "data/derived/jax_cm_t71_practice/MANIFEST.json": "d7f62aefd2a8fef21d728f580a32e30a80b2598c20496d53c7fbd2f9b488706c",
+   "data/derived/jax_cm_t71_practice/jax_cm_direction.npz": "20e0e53554ef006ea90276b380eecc1708d01c724b44561f278e399f518fc6d4",
+   "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c",
+   "/home/prachh/v/scratch/t71-wt/data/derived/feng_relabel_c/cd1_stats_relabel.npz": "36d1f7edcbbf3d7a80c68b51d5624a94bb753668079fe3d69aed720c71baa7e9"
+  }
+ }
+}
