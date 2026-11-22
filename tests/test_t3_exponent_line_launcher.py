@@ -183,8 +183,8 @@ def test_a_missing_tables_folder_is_refused(tmp_path):
     ROW.replace("(the captain's order", "(the captain's ruling"),
     ROW.replace("ruling, no run", "a run"),
     ROW.replace("`--captain-ruling R22`", "the flag"),
-    ROW.replace("; and the T3 outside-form builder `--table-exponent 4.0`, each only with `--captain-ruling R22`) | T1 | x",
-                ") | T1 | `--table-exponent 4.0`"),
+    ROW.replace("; and the T3 outside-form builder `--table-exponent 4.0`, each only with "
+                "`--captain-ruling R22`) | T1 | x", ") | T1 | `--table-exponent 4.0`"),
     ROW.replace("| R22 (", "| R22b ("),
 ])
 def test_a_ledger_row_that_does_not_name_the_option_is_refused(tmp_path, tries):

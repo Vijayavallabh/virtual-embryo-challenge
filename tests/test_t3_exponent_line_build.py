@@ -154,9 +154,11 @@ def test_the_guard_by_hand():
     (ROW.replace("ruling, no run", "a run"), False),
     (ROW.replace(SENTENCE, SENTENCE.replace("`--table-exponent 4.0`", "--table-exponent 4.0")).replace(
         T1_PART, "the builder"), False),  # the option without backticks
-    (ROW.replace(f"; {T1_PART}; {SENTENCE}) | T1 | x |", ") | T1 | `--table-exponent 4.0` with `--captain-ruling R22` |"),
+    (ROW.replace(f"; {T1_PART}; {SENTENCE}) | T1 | x |",
+                 ") | T1 | `--table-exponent 4.0` with `--captain-ruling R22` |"),
      False),  # the option only in a later cell
-    (ROW.replace(T1_PART, "the T1 values").replace("each only with `--captain-ruling R22`", "each only with a flag"),
+    (ROW.replace(T1_PART, "the T1 values").replace("each only with `--captain-ruling R22`",
+                                                   "each only with a flag"),
      False),  # no `--captain-ruling R22` in the first cell
     (ROW.replace("| R22 (", "| R22b ("), False),
 ])
