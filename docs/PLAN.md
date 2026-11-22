@@ -10717,3 +10717,26 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     this pre-gate; the blood rerun (T68) was not ahead. Heart: H30 and H31 ended at gate N56, H32 at gate G0. Embryo
     and T3: the round proposed none. What the round leaves in the register is the screens' facts on the two atlases
     (entries (q) and (r)).
+- 2026-11-22 (ii), row E51 is read: both embryo overlay candidates pass, and by the read each question goes to the
+  captain (state at 04:07 UTC, 2026-11-22). Written by the AI assistant, which is recused on the embryo's shape forms
+  and occupancy term, read the outcome line only and states no view.
+  - **E51** (embryo: SO, the overlay with the series expression, `T2embryo_s2xs_ov`; and O_hi, the overlay topped up
+    to the deeper bracket's depth, `T2embryo_s2x_ovhi`; run commit d0f0d6e in `~/v/scratch/e51-wt`; tests exit 0; the
+    reproduction gate exit 0 on all nine tasks; the run 01:28 to 04:04 UTC, exit 0; the read exit 0; two tries, embryo
+    85 and 86). In the read's fixed words: "Outcome: SO: passes; the question goes to the captain; O_hi: passes; the
+    question goes to the captain; both go to the captain; the read does not pick between them." The two reading files
+    are committed with this entry.
+  - **What follows, by the row, the specification and the embryo's order rule (entry 2026-11-21 (y)).** A pass only
+    puts the question to the captain. Fresh score-blind analysts write it from the committed reading, with the figures
+    and what each file depends on at the test; the main session passes it on unchanged. SO needs the captain's own
+    named order; O_hi needs the captain's named order covering the embryo's depth line as well, which the ledger had
+    closed and the campaign rule lifted for tries only. The order rule's place for them: SO, then `T2embryo_s2`, then
+    O_hi; the read picks neither.
+  - **The test files.** By the specification no builder code is new: each file is one existing command of
+    `build_test.py embryo` (floor-exact positions, the overlay form, the series or the deeper-depth expression), built
+    twice to one sha256 from a clean stamped commit, after a validation-board dry run and after the default command
+    reproduces the positions file, with identity checks that print booleans only (SO: coordinates equal O's file bit
+    for bit, expression and names equal the series file's; O_hi: coordinates and names equal O's). There is no
+    launcher for these builds yet; an engineer writes one on the pattern of `embryo_overlay.sh` and a reviewer checks
+    it before any launch. A file exists for the order rule only when its builds agree, its checks hold and its sha256
+    is committed; nothing is uploaded by the main session.

@@ -1,0 +1,28 @@
+Row E51 (run commit d0f0d6e54c5af45b3cd4038fc41354a73358e46c); the pre-run gate passed on all nine tasks.
+Readings fixed in row E51, build main (mean, SE, seeds ahead of 10):
+  SO fgw_shape0x_series_ov: PASSES; clauses (a) holds, (b) holds, (c) holds
+    merged_board against fgw_shape0x_series: +2.240 (SE 0.089, 10 ahead)
+    test_like_board against fgw_shape0x_series: +3.147 (SE 0.065, 10 ahead)
+    groups: expression_change +0.0000 (0 seeds behind); cell_state +0.0000 (0 seeds behind); shape_growth +0.0453 (0 seeds behind); local_organisation +0.0443 (0 seeds behind)
+    reported, deciding nothing:
+      against fgw_shape0x_series: merged +2.240, test-like +3.147, prefix +2.248; per truth T2/E8.0.h5ad +1.539, T2/E8.25_late.h5ad +4.022, T2/E8.5.h5ad +1.721, T2/E7.5.h5ad +0.148, T2/E7.25.h5ad +3.768
+      against fgw_shape0x_ov: merged -0.043, test-like +3.111, prefix -0.038; per truth T2/E8.0.h5ad +5.458, T2/E8.25_late.h5ad +3.846, T2/E8.5.h5ad -0.839, T2/E7.5.h5ad -2.305, T2/E7.25.h5ad -6.373
+      increment over the best of fgw, fgw_shape0x_series, fgw_shape0x_ov per truth: T2/E8.0.h5ad +1.539 (fgw_shape0x_series), T2/E8.25_late.h5ad +3.846 (fgw_shape0x_ov), T2/E8.5.h5ad -0.894 (fgw), T2/E7.5.h5ad -2.305 (fgw_shape0x_ov), T2/E7.25.h5ad -7.076 (fgw)
+      DEEP/OTHER board against fgw_shape0x_series: +2.235/+2.263
+      neighborhood_mmd skill per task: half 0.795, late 0.913, new1 0.861, new2 0.788, e75 0.606, e725 0.497, x1 0.416, x2 0.656, x3 0.590
+      behind on E49's three P4 groups: none
+  O_hi fgw_shape0x_ov_hi: PASSES; clauses (a) holds, (b) holds, (c) holds
+    merged_board against fgw_shape0x_ov: +1.059 (SE 0.041, 10 ahead)
+    test_like_board against fgw_shape0x_ov: +1.838 (SE 0.026, 10 ahead)
+    groups: expression_change -0.0009 (6 seeds behind); cell_state +0.0154 (0 seeds behind); shape_growth +0.0048 (0 seeds behind); local_organisation +0.0230 (0 seeds behind)
+    reported, deciding nothing:
+      against fgw_shape0x_series: merged +3.341, test-like +1.874, prefix +3.350; per truth T2/E8.0.h5ad -1.241, T2/E8.25_late.h5ad +3.138, T2/E8.5.h5ad +4.068, T2/E7.5.h5ad +1.523, T2/E7.25.h5ad +9.218
+      against fgw_shape0x_ov: merged +1.059, test-like +1.838, prefix +1.064; per truth T2/E8.0.h5ad +2.678, T2/E8.25_late.h5ad +2.962, T2/E8.5.h5ad +1.508, T2/E7.5.h5ad -0.930, T2/E7.25.h5ad -0.923
+      increment over the best of fgw, fgw_shape0x_series, fgw_shape0x_ov per truth: T2/E8.0.h5ad -1.241 (fgw_shape0x_series), T2/E8.25_late.h5ad +2.962 (fgw_shape0x_ov), T2/E8.5.h5ad +1.453 (fgw), T2/E7.5.h5ad -0.930 (fgw_shape0x_ov), T2/E7.25.h5ad -1.626 (fgw)
+      DEEP/OTHER board against fgw_shape0x_ov: +2.400/-0.149
+      neighborhood_mmd skill per task: half 0.738, late 0.892, new1 0.841, new2 0.787, e75 0.656, e725 0.581, x1 0.419, x2 0.709, x3 0.693
+      behind on E49's three P4 groups: none
+      largest |expression skill - committed fgw_shape0_hi's| (main): overall 5.41e-05; half 3.16e-05, late 5.41e-05, new1 0.00e+00, new2 0.00e+00, e75 0.00e+00, e725 0.00e+00, x1 0.00e+00, x2 0.00e+00, x3 0.00e+00
+      same-run fgw_shape0_hi board against its committed score (main), worst seed/mean: half 0.0005/0.0000, late 0.0008/0.0001, new1 0.0000/0.0000, new2 0.0000/0.0000, e75 0.0000/0.0000, e725 0.0000/0.0000, x1 0.0000/0.0000, x2 0.0000/0.0000, x3 0.0000/0.0000
+Outcome: SO: passes; the question goes to the captain; O_hi: passes; the question goes to the captain; both go to the captain; the read does not pick between them.
+A fail means no file; a pass only puts the question to the captain. Nothing here shows E7.75's depth or profile, the overlay's geometry at the test pair, the live gate, scorer build or metric seed.
