@@ -1,0 +1,27 @@
+T1's second search line, g_mom's within-type damping (ruling row R22; docs/S2_RULES.md, "T1's second search line";
+decision log 2026-11-22 (o)): the set t1damp, run r1. BUILT; each file is uploaded only on the line's own condition
+=================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-22 in the detached worktree ~/v/scratch/t1line-wt (its own environment,
+row N54's relabelling output linked) at commit 9a10157b31485628b474551a4a10b8a32914009a (clean tree):
+`bash experiments/builds/t1_damping_line.sh 9a10157b31485628b474551a4a10b8a32914009a r1`
+Step exit codes: gate 0, tests 0, D 0, A 0, X15a 0, X15b 0, X20a 0, X20b 0, done 0.
+  D     the default command reproduces R13's file             ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f
+  A     `--g-mom-damping 1.0` reproduces candidate A          76865826f5a3741c7585f81c4241048ca1a95b5791ebb3c8feb1f2b536678ce4
+  X15a  T1_s2rcA15.h5ad (damping 1.5, --captain-ruling R22)   e2334137b54d98b04e9dece90213987e61fe9aa15a3fb8d85e6c262d8fb5ba75
+  X15b  the same sha256: the two builds agree byte for byte
+  X20a  T1_s2rcA20.h5ad (damping 2.0, --captain-ruling R22)   372713686782be273a52427140eab652517e35b679f54fc2a969484dee730218
+  X20b  the same sha256: the two builds agree byte for byte
+Stamps (the commit and clean fields only): all six say 9a10157b3148 and clean True.
+
+Copied to runs/manual_upload/T1_s2rcA15.h5ad and runs/manual_upload/T1_s2rcA20.h5ad and checked against these sha256.
+
+The line's rule, fixed before any of these files' scores (decision log 2026-11-22 (o)): A's headline is strictly above
+R13's, so the line's next file is T1_s2rcA15; T1_s2rcA20 follows only if T1_s2rcA15's headline is strictly above the
+line's best; the line ends after T1_s2rcA20 in any case. The files already queued keep their places, and when line 1
+and this line each have a next file, line 1's goes first, unless the captain says otherwise. Nothing is rebuilt,
+re-seeded or changed after a score.
+
+Read by exit codes, sha256 and the stamps' commit and clean fields only (AGENTS.md): no build log, file size, cell
+count or sidecar record was read. Nothing was uploaded: an upload is the captain's own act.
+Data used: as R13's file (released challenge data and the outside heart atlas on recomputed groups, register row X002).

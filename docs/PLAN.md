@@ -10658,3 +10658,22 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     that file runs after certain launcher test files in one process and pass when it runs alone, on main before this
     branch as well; it is not in this launcher's test list.
   - **Launch.** The E = 4.0 build is launched from this entry's commit in `~/v/scratch/k26-wt`.
+- 2026-11-22 (ee), the two files of T1's second search line are built; rows T71 and the T3 line's build are started
+  (state at 03:21 UTC, 2026-11-22). Written by the AI assistant; the line and its rule are entry (o)'s, unchanged.
+  - **The builds** (`experiments/builds/t1_damping_line.sh` at commit 9a10157, the DGX worktree
+    `~/v/scratch/t1line-wt`, run r1). Every step exit 0. The two identity steps reproduce R13's file and candidate A
+    byte for byte. `T1_s2rcA15.h5ad` (damping 1.5), sha256
+    e2334137b54d98b04e9dece90213987e61fe9aa15a3fb8d85e6c262d8fb5ba75, and `T1_s2rcA20.h5ad` (damping 2.0), sha256
+    372713686782be273a52427140eab652517e35b679f54fc2a969484dee730218, were each built twice and each pair agrees byte
+    for byte. Both are copied to `runs/manual_upload/` and checked. Record:
+    `experiments/builds/results/t1damp_9a10157_r1.txt` and `.SHA256SUMS`. Read by exit codes, sha256 and the stamps'
+    commit and clean fields only.
+  - **When they are uploaded.** By the line's rule A's headline is strictly above R13's, so `T1_s2rcA15.h5ad` is the
+    line's next file and is handed over now; it takes a T1 slot after the files already queued and after line 1's next
+    file when there is one, unless the captain says otherwise. `T1_s2rcA20.h5ad` follows only if the damping 1.5
+    file's headline is strictly above the line's best. Data used: as R13's file (released challenge data and the
+    outside heart atlas on recomputed groups, register row X002).
+  - **Started.** Row T71 (C1A) in `~/v/scratch/t71-wt` at aa93a69: before the launch, a count-only check of the
+    atlas's gene table showed every one of the fourteen marker sets with at least two genes present under one symbol
+    (the reducer's own floor), all five guard genes among them. The T3 line's E = 4.0 build, third launch, in
+    `~/v/scratch/k26-wt` at 9fa509f with the fixed launcher.
