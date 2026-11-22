@@ -3,12 +3,15 @@
 ## Current Objective
 
 - **State at 2026-11-22, 04:29 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
-  - **A SEVENTH QUESTION (entry (ll), from a forwarded side note with no instruction of the captain's):** does the
-    captain order a third T1 search line that starts from file C (both changes)? On a yes: a score-blind designer and
-    a cold challenger write the line under the R22 framework (one setting stepped from C's command), it goes into the
-    log and `docs/S2_RULES.md` BEFORE C's score (C's upload waits until then), then a builder change with review and
-    two builds per file. With no answer there is no combined line. The decision log now runs through 2026-11-22 (ll);
-    the next label is (mm).
+  - **THE CAPTAIN ORDERED A THIRD T1 SEARCH LINE FROM FILE C ("yes", entry (mm)); C'S UPLOAD WAITS UNTIL THE LINE IS
+    LOGGED.** Read as the answer to that one question only; the six others stay open. Steps: (1) a score-blind
+    designer and a cold challenger write the line (workflow; hand-back to `lift8/`); (2) the main session writes the
+    challenger's final text into the log and `docs/S2_RULES.md` (re-pinned) BEFORE C's score and tells the captain
+    that C may go up; (3) an engineer and a reviewer make the builder take the line's files under `--captain-ruling
+    R22` (row R22's first cell names the options before any build) with a launcher whose identity steps reproduce
+    R13's and C's bytes (C: 31477ef7df5d5374a74a8249c570217020c593916ab4d3780049b7b3f87b0620); (4) two builds per file
+    in `~/v/scratch/t1line-wt`; (5) record and hand over by the line's rule. The decision log runs through 2026-11-22
+    (mm); the next label is (nn).
   2026-11-22 (kk); the next label is 2026-11-22 (ll). Local main = origin/main at a233119 or one notes commit after
   it. Tries: T1 463, embryo 88, heart 97, T3 74. No new score yet today. NOTHING RUNS on the DGX and no agent is out.
   Every read started in this session is recorded.

@@ -10802,3 +10802,18 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     so that the line's rule is fixed before the score it rests on, it should be in the log before C's score; on a yes,
     C's upload waits until the line is logged (about an hour). Yes / No. With no answer there is no combined line.
   - **Until the captain answers** nothing is designed, written or built for it, and the queue is unchanged.
+- 2026-11-22 (mm), the captain orders a third T1 search line that starts from file C (state at 10:53 UTC, 2026-11-22).
+  Written by the AI assistant, which designs no line and gives no lean.
+  - **The captain's word.** To the question of entry (ll), put in plain text and ending "Yes / No. With no answer
+    there is no combined line", the captain answered, verbatim: "yes".
+  - **The AI assistant's reading (its own).** The word answers that one question, the only one that message asked. It
+    is not read as an answer to the six other open questions, which the message only listed as unchanged: SO, O_hi,
+    MS, the heart's file D, T1 line 1's step back and the heart search line's exception. Four of those are items the
+    AI assistant is recused on or that touch a line the ledger closed, and each needs the captain's own word naming
+    it.
+  - **What follows.** A fresh designer blind to test scores writes the line under the framework of entry (j) (one open
+    setting stepped from C's command in round steps on the scale already used, files named before their own scores,
+    headline comparisons only, closed levers outside), and a cold challenger checks it against the recorded rule text
+    and writes the final text. The line goes into this log and into `docs/S2_RULES.md` before C's score; the captain
+    is asked to hold C's upload until then. After that an engineer and a reviewer make the builder take the line's
+    files under the ruling, and each file is built twice. The other queued T1 files keep their places.
