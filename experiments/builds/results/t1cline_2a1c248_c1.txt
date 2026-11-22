@@ -1,0 +1,31 @@
+T1's third search line, the atlas step on file C's command (ruling row R22; the captain's order of 2026-11-22;
+docs/S2_RULES.md, "T1's third search line"; decision log 2026-11-22 (nn)): the set t1cline, run c1. BUILT; each file
+is uploaded only on the line's own condition
+=================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-22 in the detached worktree ~/v/scratch/t1line-wt (its own environment,
+row N54's relabelling output linked) at commit 2a1c248ade4c65753c8eb971b63f95a358380cb7 (clean tree), launched at 11:26 UTC and finished by 12:07 UTC:
+`bash experiments/builds/t1_c_line.sh 2a1c248ade4c65753c8eb971b63f95a358380cb7 c1`
+Step exit codes: gate 0, tests 0, D 0, A 0, B 0, C 0, X2 0, Cm20a 0, Cm20b 0, Cm25a 0, Cm25b 0, done 0.
+  D      the default command reproduces R13's file      ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f
+  A      `--g-mom-damping 1.0` reproduces candidate A   76865826f5a3741c7585f81c4241048ca1a95b5791ebb3c8feb1f2b536678ce4
+  B      `--feng-fraction-mult 1.5` reproduces B        c7240cb6a7f7ee93d037f437832efbaad004f1fbe608d80072f8efd5d20a0062
+  C      both options reproduce candidate C             31477ef7df5d5374a74a8249c570217020c593916ab4d3780049b7b3f87b0620
+  X2     row R20's command reproduces the 2.0 file      52897fe375b8a81afffa788592047c30361824148b00a8176514385060518837
+  Cm20a  T1_s2rcCm20.h5ad (damping 1.0, multiplier 2.0, --captain-ruling R22)  acce5f5f7097269bffebbfd583833e4c9c1c5ae77f1d5294dde6d13e197f863e
+  Cm20b  the same sha256: the two builds agree byte for byte
+  Cm25a  T1_s2rcCm25.h5ad (damping 1.0, multiplier 2.5, --captain-ruling R22)  c5fb96a64075b6fbfb2f3066604d622ea8b89ac3a5e4f8a99d0fea7d93011dfd
+  Cm25b  the same sha256: the two builds agree byte for byte
+Stamps (the commit and clean fields only): all nine say 2a1c248ade4c and clean True.
+
+Copied to runs/manual_upload/T1_s2rcCm20.h5ad and runs/manual_upload/T1_s2rcCm25.h5ad and checked against these sha256.
+
+The line's rule, fixed before file C's headline (decision log 2026-11-22 (nn)): if A and C have both been uploaded and
+C's headline is strictly above A's, the next file of the line is T1_s2rcCm20; T1_s2rcCm25 follows only if
+T1_s2rcCm20's headline is strictly above the line's best; otherwise the line ends. When more than one line has a next
+file, line 1's goes first, then line 2's, then this line's, unless the captain says otherwise. Nothing is rebuilt,
+re-seeded or changed after a score.
+
+Read by exit codes, sha256 and the stamps' commit and clean fields only (AGENTS.md): no build log, file size, cell
+count or sidecar record was read. Nothing was uploaded: an upload is the captain's own act.
+Data used: as R13's file (released challenge data and the outside heart atlas on recomputed groups, register row X002).

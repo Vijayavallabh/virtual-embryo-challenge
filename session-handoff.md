@@ -12,14 +12,13 @@
     captain says otherwise; it is void if C's headline was returned before the entry was committed (the captain was
     asked to hold C until told; the captain is told now). The captain was also told plainly that under this order the
     line may get no slot and that the order is the captain's to change.
-  - **ITS BUILDER (workflow wqigydnt0; hand-back to `lift8/`):** branch `campaign/t1-line-3`; the builder takes
-    `--g-mom-damping 1.0 --feng-fraction-mult 2.0` and `... 2.5` only with `--captain-ruling R22` (row R22's first
-    cell names both); launcher `experiments/builds/t1_c_line.sh <COMMIT> <RUN>` with identity steps D, A, B, C and the
-    2.0 file. On a ready review: merge (keep both sides of the tests list), tests, commit, deliver to
-    `v/vec-campaign-d`, check out in `~/v/scratch/t1line-wt`, dry-run trace, launch with PATH exported, waiter on
-    every step's exit; on done 0 copy `Cm20a/T1_s2rcCm20.h5ad` and `Cm25a/T1_s2rcCm25.h5ad` to `runs/manual_upload/`,
-    record as `experiments/builds/results/t1cline_<c7>_<RUN>.*`, and ADD EACH FILE'S sha256 TO ENTRY (nn)'S LINE BY A
-    NEW LOG ENTRY BEFORE ITS SCORE (the line's fifth condition).
+  - **ITS TWO FILES ARE BUILT AND COUNT (entries (oo), (pp); state at 12:09 UTC):**
+    `runs/manual_upload/T1_s2rcCm20.h5ad` (acce5f5f7097269bffebbfd583833e4c9c1c5ae77f1d5294dde6d13e197f863e) and
+    `T1_s2rcCm25.h5ad` (c5fb96a64075b6fbfb2f3066604d622ea8b89ac3a5e4f8a99d0fea7d93011dfd); the builder change is
+    merged after an independent review; both sha256 are in entry (nn). They are uploaded only by the line's rule (Cm20
+    if C's headline is strictly above A's; Cm25 if Cm20 strictly beats the line's best), last in the turn order unless
+    the captain says otherwise. The decision log runs through 2026-11-22 (pp); the next label is (qq). Nothing runs on
+    the DGX.
   - **THE SIX OTHER QUESTIONS ARE STILL OPEN** (SO, O_hi, MS, file D, T1 line 1's step back, the heart line's
     exception): the captain's "yes" answered the combined-line question only.
 - **State at 2026-11-22, 04:29 UTC (superseded by the bullet above where they differ).** Decision log through

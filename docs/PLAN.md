@@ -10884,6 +10884,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     Next: an engineer and a reviewer make the builder take the two combined options under the ruling, with a launcher
     whose identity steps reproduce R13's, A's, B's, C's and the 2.0 file's bytes; each new file is built twice and its
     sha256 is added here before its score.
+  - **Added to this entry on 2026-11-22 at 12:09 UTC, before any score of the two new files (the line's fifth
+    condition; see entry (pp)):** `T1_s2rcCm20.h5ad` sha256
+    acce5f5f7097269bffebbfd583833e4c9c1c5ae77f1d5294dde6d13e197f863e; `T1_s2rcCm25.h5ad` sha256
+    c5fb96a64075b6fbfb2f3066604d622ea8b89ac3a5e4f8a99d0fea7d93011dfd.
 - 2026-11-22 (oo), T1 line 3's builder change is reviewed and merged (state at 11:25 UTC, 2026-11-22). Written by the
   AI assistant, which designed none of it.
   - **The change** (`campaign/t1-line-3`, aeac4a1: an engineer, then an independent reviewer; ready, no blocker;
@@ -10898,3 +10902,22 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     R13's, A's, B's, C's and the 2.0 file's committed bytes, then each new file twice. The line's first three
     conditions (entry (nn)) are met by this entry except the identity steps, which the launch shows; the fourth and
     fifth follow from the builds, and each new file's sha256 is added to this log before its score.
+- 2026-11-22 (pp), the two files of T1's third search line are built and their sha256 are in entry (nn) (state at
+  12:09 UTC, 2026-11-22). Written by the AI assistant; the line and its rule are entry (nn)'s, unchanged.
+  - **The builds** (`experiments/builds/t1_c_line.sh` at commit 2a1c248, the DGX worktree `~/v/scratch/t1line-wt`, run
+    c1; 11:26 to 12:07 UTC). Every step exit 0. The five identity steps reproduce R13's file, A, B, C and row R20's
+    2.0 file byte for byte. `T1_s2rcCm20.h5ad` (damping 1.0, multiplier 2.0), sha256
+    acce5f5f7097269bffebbfd583833e4c9c1c5ae77f1d5294dde6d13e197f863e, and `T1_s2rcCm25.h5ad` (damping 1.0, multiplier
+    2.5), sha256 c5fb96a64075b6fbfb2f3066604d622ea8b89ac3a5e4f8a99d0fea7d93011dfd, were each built twice and each pair
+    agrees byte for byte. Both are copied to `runs/manual_upload/` and checked. Record:
+    `experiments/builds/results/t1cline_2a1c248_c1.txt` and `.SHA256SUMS`. Read by exit codes, sha256 and the stamps'
+    commit and clean fields only.
+  - **The line's five conditions.** The builder takes the two combined options only under the ruling (entry (oo)); an
+    independent reviewer passed the change; the identity steps reproduce the five committed files at one clean commit
+    on the DGX; each new file was built twice with one sha256 and passed the format check; and both sha256 are added
+    to entry (nn) by a dated line, before any score of either file. So both files count for the line.
+  - **When they are uploaded.** Only by the line's rule: `T1_s2rcCm20.h5ad` if A and C have both been uploaded and C's
+    headline is strictly above A's; `T1_s2rcCm25.h5ad` only if that file's headline is strictly above the line's best.
+    Turn order when more than one line has a next file: line 1, then line 2, then this line, unless the captain says
+    otherwise. Data used: as R13's file (released challenge data and the outside heart atlas on recomputed groups,
+    register row X002).
