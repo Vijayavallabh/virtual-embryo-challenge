@@ -29,7 +29,8 @@ test file.
         writes a part that names the labels and holds no row (the read is then void). Prints only
         "<task> seed <s> (<sec> s) done" and "wrote <path>".
   read  refused unless row H29b is in TRIES.md, the tree is clean and HEAD is --commit, and with an existing reading;
-        applies the void conditions and the fixed statements; prints only "OUTCOME H29b: READ" or "OUTCOME H29b: VOID"
+        applies the void conditions (V3 among them: a truth, control pool or forecast size different from row
+        H27's committed parts, or a V7 crosscheck that fails) and the fixed statements; prints only "OUTCOME H29b: READ" or "OUTCOME H29b: VOID"
         and the fixed what-follows line; writes the numbers to reading.json and reading.txt.
 """
 
