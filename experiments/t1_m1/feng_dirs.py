@@ -281,6 +281,146 @@ def bracket_stats(st: dict, bracket: tuple[str, str]) -> dict:
     return {k: (v[keep] if k != "genes" and np.shape(v)[:1] == (rows,) else v) for k, v in st.items()}
 
 
+# ------------------------------------------------------------------ the E9.5 -> E18 chord (rc18; off by default)
+# T1 candidate rc18 (ledger rows N58 and T69): the recomputed groups' direction
+# over Feng's E9.5 -> E18 (the stage label "E18" read as day 18.0, row N20b), from the statistics of
+# experiments/external/feng_relabel_e18.py (row N54's E9.5 and E14.5 rows copied unchanged, then E18's rows labelled
+# with N54's control sets). Nothing here runs unless asked for; every function above is unchanged. Row T69's read uses
+# `e18_late_term`. No builder option exists: by the T1 order rule (decision log 2026-11-21 (y)) one is written only
+# after an AHEAD reading of T69 and the captain's yes; `recomputed_e18_directions` is the chord it would take.
+E18_BRACKET = ("E9.5", "E18")
+E18_BRACKET_DAYS = (9.5, 18.0)
+E18_LATE = ("E14.5", "E18")  # G, the late-maturation term rc18 adds to F (E9.5 -> E14.5): log ratios add exactly
+
+
+def _e18():
+    import feng_relabel_e18
+
+    return feng_relabel_e18
+
+
+def e18_stats_path() -> Path:
+    m = _e18()
+    return REPO / m.E18_DIR / m.STATS
+
+
+def e18_record_matches(man_path: Path) -> bool:
+    """The E18 labelling's manifest is committed at HEAD as its RECORD, byte for byte."""
+    import feng_relabel
+
+    head = feng_relabel.committed_at_head(_e18().RECORD)
+    return head is not None and head == Path(man_path).read_bytes()
+
+
+def check_e18(path: Path | None = None, require_record: bool = True) -> tuple[dict, dict]:
+    """The E18 statistics file's checks, all before it is read: listed with a matching sha256 in its manifest,
+    written by feng_relabel_e18 (source) from the frozen settings (sha256 and status), labelling E18 alone with N54's
+    rows copied (stages, stages_copied, N54's statistics sha256), the copied rows identical byte for byte, the
+    authors' labels not read, usable and not stopped, a clean gate of an N row, committed labeller code, and its
+    manifest committed at HEAD as the labelling's RECORD (`require_record`). Returns the manifest entry and the
+    manifest."""
+    m = _e18()
+    path = e18_stats_path() if path is None else Path(path)
+    entry = fio.verify_manifest_output(path)
+    man_path = next(d / "MANIFEST.json" for d in Path(path).resolve().parents if (d / "MANIFEST.json").exists())
+    man = yaml.safe_load(man_path.read_text())  # JSON is YAML
+    gate = man.get("gate") or {}
+    problems = []
+    if man.get("source") != m.SOURCE:
+        problems.append(f"manifest source {man.get('source')!r}, not {m.SOURCE!r}")
+    if (man.get("config") or {}).get("sha256") != m.YAML_SHA256 or (man.get("config") or {}).get("status") != "frozen":
+        problems.append("not written from the frozen settings file")
+    if man.get("stages") != list(m.STAGES) or man.get("stages_copied") != list(m.COPIED_STAGES):
+        problems.append(f"stages {man.get('stages')} and copied {man.get('stages_copied')}")
+    if (man.get("n54_stats") or {}).get("sha256") != m.N54_STATS_SHA256:
+        problems.append("its copied rows are not row N54's statistics")
+    if (man.get("copied_rows") or {}).get("identical") is not True:
+        problems.append("its copied rows were not identical to row N54's")
+    if man.get("authors_labels_read") is not False:
+        problems.append("authors_labels_read is not false")
+    if man.get("stopped") or man.get("usable") is not True or entry.get("usable") is not True:
+        problems.append("it stopped or failed the yaml's unassigned cap (usable not true)")
+    if gate.get("clean") is not True or not m.N_ROW.fullmatch(str(gate.get("row"))):
+        problems.append("no clean gate of an N row")
+    if (man.get("provenance") or {}).get("git_uncommitted"):
+        problems.append("written by uncommitted labeller code")
+    if problems:
+        raise ValueError(f"{path}: the E18 labelling's file is refused: {'; '.join(problems)}")
+    if require_record and not e18_record_matches(man_path):
+        raise ValueError(f"{path}: the E18 labelling's manifest is not committed at HEAD as its RECORD (byte for byte)")
+    return entry, man
+
+
+def e18_bundle(genes, cfg: dict | None = None, e18_path: Path | None = None) -> dict:
+    """What rc18 needs, through every check: row R13's recomputed directions F and record (`recomputed_directions`, row
+    N54's file and RECORD); the E18 file (`check_e18`), its E9.5 and E14.5 rows identical to N54's file byte for byte;
+    the readout's settings with the recomputed group map; and the combined statistics. Refused when a recomputed group
+    fell back under N54 (nothing stands in for a group at E18)."""
+    cfg = cfg or load_config()
+    F, ext = recomputed_directions(genes, cfg)
+    if any(v.get("fired") for v in (ext.get("fallbacks") or {}).values()):
+        raise ValueError(f"a recomputed group fell back under row N54 ({ext.get('fallbacks')}): rc18 takes no "
+                         "fallback, so nothing stands in for it at E18")
+    m = _e18()
+    path = e18_stats_path() if e18_path is None else Path(e18_path)
+    entry, man = check_e18(path)
+    n54_path = recomputed_stats_path()
+    if fio.sha256_file(n54_path) != m.N54_STATS_SHA256:
+        raise ValueError(f"row N54's statistics file's sha256 is not {m.N54_STATS_SHA256}")
+    same = m.copied_rows_identical(m.load_raw(path), m.load_raw(n54_path))
+    if not same["identical"]:
+        raise ValueError(f"the E18 file's E9.5 and E14.5 rows are not row N54's byte for byte: {same}")
+    st = dl.load_stats(path)
+    check_recomputed_keys(st)
+    rcfg = load_relabel_config()
+    return {"F": F, "ext": ext, "stats": st, "cfg": groups_config(cfg, rcfg), "entry": entry, "manifest": man,
+            "path": path, "identical": same}
+
+
+def chord_directions(bundle: dict, genes, bracket: tuple[str, str]) -> tuple[dict[str, np.ndarray], dict]:
+    """Per recomputed group of row R13's directions, the log ratio across `bracket` from the bracket's own rows
+    (`bracket_stats`, which refuses a bracket end with no row). Refused unless exactly R13's groups get one: a group
+    with fewer than min_cells_ext cells at an end has no row to stand on, and nothing stands in."""
+    out, cells, _ = directions_from_stats(bracket_stats(bundle["stats"], bracket), genes, bundle["cfg"], bracket)
+    out = {g: v for g, v in out.items() if g in bundle["cfg"]["external_labels"]}
+    if set(out) != set(bundle["F"]):
+        raise ValueError(f"the bracket {list(bracket)} gives directions for {sorted(out)}, not row R13's "
+                         f"{sorted(bundle['F'])}: a group with no row at an end is refused, and nothing stands in")
+    return out, cells
+
+
+def recomputed_e18_directions(genes, cfg: dict | None = None, e18_path: Path | None = None
+                              ) -> tuple[dict[str, np.ndarray], dict]:
+    """rc18's direction: per recomputed group of row R13, the log ratio of mean CP10k across E9.5 -> E18 (the readout's
+    pseudocount) from the E18 file (N54's rows, then E18's), through `e18_bundle`'s checks. The record is row R13's
+    with the bracket E9.5 -> E18, the E18 file, its sha256, its gate and its cells."""
+    b = e18_bundle(genes, cfg, e18_path)
+    out, cells = chord_directions(b, genes, E18_BRACKET)
+    m = _e18()
+    try:
+        shown = str(Path(b["path"]).resolve().relative_to(REPO))
+    except ValueError:
+        shown = str(b["path"])
+    record = {**b["ext"], "bracket": list(E18_BRACKET), "bracket_days": list(E18_BRACKET_DAYS),
+              "e18": {"file": shown, "sha256": b["entry"]["sha256"], "source": m.SOURCE,
+                      "gate": b["manifest"].get("gate"), "groups": cells, "copied_rows_identical": True,
+                      "n54_stats_sha256": m.N54_STATS_SHA256}}
+    return out, record
+
+
+def e18_late_term(genes, cfg: dict | None = None, e18_path: Path | None = None) -> dict:
+    """For rc18's permuted control (row T15's procedure): per recomputed group of row R13, G (the log ratio across
+    E14.5 -> E18) and the basis of its expression bins (the group's mean CP10k averaged over E14.5 and E18,
+    `direction_halves`' mean_cp), with F, D18 (E9.5 -> E18) and the bundle's record fields."""
+    b = e18_bundle(genes, cfg, e18_path)
+    d18, cells18 = chord_directions(b, genes, E18_BRACKET)
+    g, cells_g = chord_directions(b, genes, E18_LATE)
+    halves = direction_halves(bracket_stats(b["stats"], E18_LATE), genes, b["cfg"], E18_LATE, groups=set(g))
+    return {"F": b["F"], "D18": d18, "G": g, "basis": {k: halves[k]["mean_cp"] for k in g}, "ext": b["ext"],
+            "e18_sha256": b["entry"]["sha256"], "e18_gate": b["manifest"].get("gate"),
+            "cells": {"E9.5->E18": cells18, "E14.5->E18": cells_g}, "identical": b["identical"]}
+
+
 def direction_halves(st: dict, genes, cfg: dict, bracket: tuple[str, str] = BRACKET,
                      groups=None) -> dict[str, dict[str, np.ndarray]]:
     """Per group with a direction across `bracket` (or among `groups`), on `genes`' order (NaN where unmapped): the log
