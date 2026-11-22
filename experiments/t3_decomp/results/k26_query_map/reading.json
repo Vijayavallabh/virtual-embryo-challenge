@@ -1,0 +1,226 @@
+{
+ "incomplete": false,
+ "stage0": {
+  "per_gene": {
+   "Adamts3": {
+    "n_train": 16,
+    "rho_map": -0.3148852156366895,
+    "rho_mean": -0.26066413247579534,
+    "rho_rand": -0.24846011044786062,
+    "rank": 2
+   },
+   "Ccdc6": {
+    "n_train": 16,
+    "rho_map": 0.41050364100905556,
+    "rho_mean": 0.4597165722781929,
+    "rho_rand": 0.3827306535077083,
+    "rank": 2
+   },
+   "Dnmt3a": {
+    "n_train": 16,
+    "rho_map": -0.37828990237264587,
+    "rho_mean": -0.0022428389699886645,
+    "rho_rand": 0.10152640290716916,
+    "rank": 2
+   },
+   "Dnmt3b": {
+    "n_train": 16,
+    "rho_map": -0.14608857940685635,
+    "rho_mean": 0.10367461504308298,
+    "rho_rand": 0.11922155929266409,
+    "rank": 2
+   },
+   "Fryl": {
+    "n_train": 16,
+    "rho_map": 0.5974383588863778,
+    "rho_mean": 0.5433541004832025,
+    "rho_rand": 0.4163526201520712,
+    "rank": 2
+   },
+   "H13": {
+    "n_train": 16,
+    "rho_map": 0.1624484296865004,
+    "rho_mean": 0.3738027983586213,
+    "rho_rand": 0.2521618558257763,
+    "rank": 2
+   },
+   "Kmt2d": {
+    "n_train": 16,
+    "rho_map": 0.04910610208610656,
+    "rho_mean": 0.019725880492306943,
+    "rho_rand": 0.03426851736278374,
+    "rank": 2
+   },
+   "Morc2a": {
+    "n_train": 16,
+    "rho_map": 0.2233696890028883,
+    "rho_mean": 0.2147111737222729,
+    "rho_rand": 0.17894858283741505,
+    "rank": 2
+   },
+   "Nadk2": {
+    "n_train": 16,
+    "rho_map": 0.27985219630203506,
+    "rho_mean": 0.29145057328771484,
+    "rho_rand": 0.24089158538063343,
+    "rank": 2
+   },
+   "Otud7b": {
+    "n_train": 16,
+    "rho_map": 0.5772427060000715,
+    "rho_mean": 0.4376147378962836,
+    "rho_rand": 0.3293745210076239,
+    "rank": 2
+   },
+   "Pdzk1": {
+    "n_train": 16,
+    "rho_map": 0.023865087042232745,
+    "rho_mean": 0.11348426074214127,
+    "rho_rand": 0.10578480705264179,
+    "rank": 2
+   },
+   "Psph": {
+    "n_train": 16,
+    "rho_map": 0.42806962727553394,
+    "rho_mean": 0.4352219277019427,
+    "rho_rand": 0.3829624028510466,
+    "rank": 2
+   },
+   "Sh3pxd2a": {
+    "n_train": 16,
+    "rho_map": 0.273651257691369,
+    "rho_mean": 0.19883447505646004,
+    "rho_rand": 0.2016872814774519,
+    "rank": 2
+   },
+   "Smg9": {
+    "n_train": 16,
+    "rho_map": 0.4396199131539296,
+    "rho_mean": 0.3877489691458801,
+    "rho_rand": 0.34972657964264753,
+    "rank": 2
+   },
+   "Ssr2": {
+    "n_train": 16,
+    "rho_map": -0.057755749180084595,
+    "rho_mean": 0.04802377040399485,
+    "rho_rand": 0.12977587832052534,
+    "rank": 2
+   },
+   "Tial1": {
+    "n_train": 16,
+    "rho_map": 0.11422584487507903,
+    "rho_mean": 0.1100664535336841,
+    "rho_rand": 0.06400947630716869,
+    "rank": 2
+   },
+   "Usb1": {
+    "n_train": 16,
+    "rho_map": 0.11959663822238807,
+    "rho_mean": 0.15356756115658574,
+    "rho_rand": 0.1322333667814982,
+    "rank": 2
+   }
+  },
+  "n_held": 17,
+  "share_needed": "2/3",
+  "margin_needed": 0.05,
+  "vs_mean": {
+   "wins": 7,
+   "median_margin": -0.011598376985679781,
+   "share_ok": false,
+   "margin_ok": false
+  },
+  "vs_rand": {
+   "wins": 10,
+   "median_margin": 0.027772987501347268,
+   "share_ok": false,
+   "margin_ok": false
+  },
+  "passes": false
+ },
+ "breadth": {
+  "Arpc5": {
+   "detection": 0.6173324666115116,
+   "mean_abs_raw_corr": 0.013068034236955312
+  },
+  "Gata4": {
+   "detection": 0.5118780286018201,
+   "mean_abs_raw_corr": 0.024933571882961268
+  },
+  "Mab21l2": {
+   "detection": 0.13048103061103888,
+   "mean_abs_raw_corr": 0.015855491062779253
+  },
+  "Tsen54": {
+   "detection": 0.15855099869991726,
+   "mean_abs_raw_corr": 0.005326371104272342
+  }
+ },
+ "types_used": {
+  "AVC-CM": 924,
+  "BEC": 271,
+  "Blood": 479,
+  "EXEM": 863,
+  "Endocardium": 1555,
+  "Endothelium": 1139,
+  "Epithelium": 233,
+  "Foregut": 3276,
+  "Hepatocyte": 1190,
+  "IFT-CM": 1639,
+  "JCF": 1119,
+  "LV-CM": 344,
+  "NCC": 334,
+  "NCC-derived": 621,
+  "Neural Tube": 773,
+  "OFT/RV-CM": 3006,
+  "Paraxial Mesoderm": 934,
+  "Pericardium": 1642,
+  "Proepicardium": 883,
+  "RV-CM": 442,
+  "ST": 879,
+  "SV-CM": 1583,
+  "Surface Ectoderm": 1977,
+  "V-CM": 1144,
+  "aPHM": 226,
+  "aSHF": 1872,
+  "pPHM": 1194,
+  "pSHF": 3302
+ },
+ "outside_left_out": {
+  "Cyp11a1": "absent from T1 or under the detection floor"
+ },
+ "files_sha256": {
+  "features.json": "8235c8f979d2b968abd8bf14e9c9393c08248a7b667c941e6fb825e925ce546b",
+  "stage0.json": "2c60913a07c9453683d47dec20db4a4a857e97aec5f0518f278323456c17d762"
+ },
+ "provenance": {
+  "features.json": {
+   "commit": "0ab580cd2941fde65b4cd7d1be5b5d46c1fad1c6",
+   "tree_clean": true,
+   "machine": "p01r10srv05",
+   "utc": "2026-11-22 02:12:31"
+  },
+  "stage0.json": {
+   "commit": "0ab580cd2941fde65b4cd7d1be5b5d46c1fad1c6",
+   "tree_clean": true,
+   "machine": "p01r10srv05",
+   "utc": "2026-11-22 02:12:56"
+  }
+ },
+ "tries_counted": 0,
+ "stage0_counted": 1,
+ "stopped": "stage0",
+ "void": false,
+ "why": [],
+ "outcome": "STOP at stage 0: the gate failed; no fold read, no file",
+ "reading_code": {
+  "script": "experiments/t3_decomp/k26_query_map.py",
+  "script_sha256": "c97e5085a7096bdca8685c2ffe15272baa3f0a3a327614095c3693baebc99969",
+  "context_map_sha256": "4b183a9b5a3cb7b16e3ed0cae68a4d51fbbfb061a824decbc2425bb368fda2cf",
+  "commit": "0ab580cd2941fde65b4cd7d1be5b5d46c1fad1c6",
+  "tree_clean": true,
+  "machine": "p01r10srv05"
+ },
+ "row": "K26"
+}

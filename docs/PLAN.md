@@ -10281,3 +10281,52 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     suggested sentence on the count. Counts: stage 0 is one diagnostic on outside tables only; then three tries (T3 75
     to 77) from the start of the pre-gate step; a stop at stage 0 counts no try. It runs in a detached worktree of
     `~/v/vec-campaign-c`'s repository with its own environment.
+- 2026-11-22 (q), row K26 stopped at its stage 0; three of four screening answers are in and one T1 candidate stops on
+  its own rule (state at 02:18 UTC, 2026-11-22). Written by the AI assistant; the outcomes are the rows' and the
+  specifications' own rules.
+  - **K26** (T3, the query-gene response map; run commit 0ab580c in `~/v/scratch/k26-wt`; tests and features exit 0;
+    stage 0 exit 27). In the read's fixed words: "Try K26: STOP at stage 0: the gate failed; no fold read, no file."
+    "tries counted: 0 (and stage 0, a counted diagnostic: 1)". Stage 0 is the diagnostic on outside tables only (each
+    of 17 outside genes left out in turn): against the leave-one-out mean the map wins on 7 of 17 with a median margin
+    of -0.012; against random queries on 10 of 17 with +0.028; the bars are a share of 2/3 and a margin of 0.05. No
+    pre-gate ran, no fold was read, no try counts (T3 stays 74), no file. The two reading files are committed with
+    this entry. The AI assistant opens no other row for it.
+  - **Screen: how the heart atlas's zone column was made (asked by candidate C2A's specification).** Each CD1 sample
+    (one stage, one zone) carried its own MULTI-seq barcode; by the series' barcode table the CD1 samples from E9.5 to
+    P3, the in-window ones among them, went into one pooled library, and the authors assigned cells to samples with
+    deMULTIplex 1.0.2. C2A's specification had written: if demultiplexing was a fitted step on libraries that also
+    held E10.5 to E13.5 cells, "it is a transformation learned with protected cells, and the line stops". **C2A
+    stops:** no row on main, no run, no try; its branch `campaign/t1-cm-segments` (ca7f72d) stays unmerged and its
+    review's one blocker is moot.
+  - **What the same answer says about the stage column (the AI assistant's note, a compliance fact and no design
+    lean).** The per-cell stage label of that atlas is the output of the same demultiplexing step. Register row X002
+    has said since 2026-11-19 that the authors' quality control and their zone demultiplexing were made on the full
+    dataset and cannot be undone; it now also says that the stage column comes from that step, and names the step.
+    Every atlas-based T1 file reads that stage column (to drop the in-window cells and to form the E9.5 to E14.5
+    direction). The AI assistant's reading: this is the residual already on record, with its mechanism named; the step
+    is fitted on barcode counts and reads no gene expression, and no in-window expression value enters a file. A
+    stricter reader could apply C2A's own sentence to the stage column as well; the T1 file without outside data (file
+    F) is the one that does not depend on the reading. No approval and no file is changed by this entry; the captain
+    is told in the next report.
+  - **Screen: the nuclei atlas's embryo table (asked by C1A and H32).** The lab's public sample sheet (embryo id, day
+    label, somite count; no cell-level file) gives embryos 1 to 12 the label E8.5 with 0 to 12 somites, 13 and 14
+    E8.75 with 14 and 15, 15 to 17 E9.0 with 16 to 18, 18 to 21 E9.25 with 20 to 23, 22 E9.5 with 24, and embryos 54
+    to 56 and 59 to 63 the labels E14.25 to E16.5 with no somite count. By the specifications' three rules no embryo
+    is dropped and no candidate stops; the screen notes that embryos 13 and 14 sit on the boundary label E8.75 of the
+    heart's interpolation window (the bracket itself is allowed).
+  - **Screen: a published adult statement of fast skeletal-muscle marker genes (asked by C1A).** Found: Oe, Ojima and
+    Muroya 2021, Physiological Genomics 53(2):69-83 (PMID 33459151), whose abstract names three of the five genes as
+    fast-type-specific myofibrillar genes in single myofibres of postnatal mice; the mice's exact age is not confirmed
+    (the full text was not reachable). C1A does not stop on it; the source is registered when C1A's row is placed.
+  - **Screen: the nuclei atlas's quality filter (asked by C1A; it bears on rows T66, T68, H30 and H32 too): not yet
+    resolved.** From the paper's Methods paragraphs on filtering and doublet removal only: the quality thresholds are
+    fixed numbers applied to every nucleus, but doublet removal used models fitted separately on each of the 15
+    experiments, each over all embryos of that experiment. Whether an experiment mixed permitted embryos with E10.5 to
+    E13.5 embryos is not said there. A further screen (embryo-level tables only) is finding which embryos share an
+    experiment; by C1A's specification a yes stops C1A. Row T68 is running under the register's stated open question;
+    its reading is practice only and no file follows without the captain's ruling.
+  - **H32** (heart, the trend step gated by the sign of the outside late change; `campaign/heart-trend-sign-gate`):
+    its review names one blocker, a placement matter (the two register amendments must be committed at or before the
+    row's commit, on main's present text). The AI assistant writes them at placement with the engineer's wording. By
+    H32's specification the open filter question does not stop its practice read and goes into the captain's question
+    if a file is ever proposed.

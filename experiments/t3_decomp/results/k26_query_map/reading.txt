@@ -1,0 +1,28 @@
+Try K26: STOP at stage 0: the gate failed; no fold read, no file.
+tries counted: 0 (and stage 0, a counted diagnostic: 1)
+stage 0: passes False; held-out 17; vs mean {'wins': 7, 'median_margin': -0.011598376985679781, 'share_ok': False, 'margin_ok': False}; vs random queries {'wins': 10, 'median_margin': 0.027772987501347268, 'share_ok': False, 'margin_ok': False}
+  Adamts3: rho map -0.3149, LOO mean -0.2607, random -0.2485
+  Ccdc6: rho map 0.4105, LOO mean 0.4597, random 0.3827
+  Dnmt3a: rho map -0.3783, LOO mean -0.002243, random 0.1015
+  Dnmt3b: rho map -0.1461, LOO mean 0.1037, random 0.1192
+  Fryl: rho map 0.5974, LOO mean 0.5434, random 0.4164
+  H13: rho map 0.1624, LOO mean 0.3738, random 0.2522
+  Kmt2d: rho map 0.04911, LOO mean 0.01973, random 0.03427
+  Morc2a: rho map 0.2234, LOO mean 0.2147, random 0.1789
+  Nadk2: rho map 0.2799, LOO mean 0.2915, random 0.2409
+  Otud7b: rho map 0.5772, LOO mean 0.4376, random 0.3294
+  Pdzk1: rho map 0.02387, LOO mean 0.1135, random 0.1058
+  Psph: rho map 0.4281, LOO mean 0.4352, random 0.383
+  Sh3pxd2a: rho map 0.2737, LOO mean 0.1988, random 0.2017
+  Smg9: rho map 0.4396, LOO mean 0.3877, random 0.3497
+  Ssr2: rho map -0.05776, LOO mean 0.04802, random 0.1298
+  Tial1: rho map 0.1142, LOO mean 0.1101, random 0.06401
+  Usb1: rho map 0.1196, LOO mean 0.1536, random 0.1322
+pre-gate: runs None; dropped none
+breadth of the queries' profiles (measured from T1): {'Arpc5': {'detection': 0.6173324666115116, 'mean_abs_raw_corr': 0.013068034236955312}, 'Gata4': {'detection': 0.5118780286018201, 'mean_abs_raw_corr': 0.024933571882961268}, 'Mab21l2': {'detection': 0.13048103061103888, 'mean_abs_raw_corr': 0.015855491062779253}, 'Tsen54': {'detection': 0.15855099869991726, 'mean_abs_raw_corr': 0.005326371104272342}}
+outside genes left out: {'Cyp11a1': 'absent from T1 or under the detection floor'}
+reproduction gate: passes None, failed none
+stopped at stage0: no fold was read
+reported, deciding nothing: the tables below.
+task files: features.json 8235c8f979d2, stage0.json 2c60913a07c9
+read by experiments/t3_decomp/k26_query_map.py c97e5085a709 (context_map 4b183a9b5a3c) at commit 0ab580cd2941fde65b4cd7d1be5b5d46c1fad1c6, clean True, machine p01r10srv05
