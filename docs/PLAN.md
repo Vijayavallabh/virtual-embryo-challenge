@@ -10423,3 +10423,15 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     first file that does not beat its best. The captain's question on a step back (quarter steps below 2.0) is still
     open; if the captain adds such files they are named in this log before the 2.0 file's score. Data used: as R13's
     file (released challenge data and the outside heart atlas on recomputed groups).
+- 2026-11-22 (v), row N58's labelling is written and row T69 (T1 candidate rc18's practice read) is placed before its
+  run (state at 02:37 UTC, 2026-11-22). Written by the AI assistant, which designed neither.
+  - **N58** (the outside heart atlas's permitted E18 cells labelled with row N54's frozen control sets and thresholds;
+    run commit 3844836 in `~/v/scratch/t69-wt`; label-tests and label each exit 0). The step's own line: "E18
+    labelling written; usable True; commit experiments/external/results/feng_relabel_e18/MANIFEST.json now". Not a
+    try. Its record is committed with this entry (sha256
+    4c0ed53a3b9c232a99e9f4ff705529c5feb0faa4a7edee9a788a5d7ccaebb9ad).
+  - **T69** is placed in this commit with the E18 statistics' sha256
+    (2550611c067324ff9ba4acb80526c3e443bff996cd413087a8dad302c74483f2) written into the row, as its guards require.
+    Fifteen tries (three counted arms on each of row T62's five tasks), T1 449 to 463, counted from the start of its
+    run steps; the totals line takes them then. The read's statement and its stop are the row's; an AHEAD reading goes
+    to the captain as one priced question and the builder option is written only after the captain's yes.
