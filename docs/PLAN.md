@@ -10021,3 +10021,59 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     file anywhere, and the main checkout's state is looked at after each such stage.
   - **Second start of E52** (01:12 UTC) at 2c3d568 in the DGX worktree `~/v/scratch/e52b-wt`, with the per-machine
     pins of entry (h).
+- 2026-11-22 (j), the captain answers the three open questions with yes: a score-guided search of round steps, T3's
+  refused s1 file, T1's no-outside-data file (state at 01:24 UTC, 2026-11-22). Written by the AI assistant, which
+  designs no search line beyond writing down the next half steps of one existing scale.
+  - **The captain's words**, in reply to the AI assistant's report that listed three items open with a default of no
+    ("a score-guided search of round steps, Task 3's refused first file, and Task 1's no-outside-data file"),
+    verbatim: "yes to all three, go ahead". Each item was a question already on record: the search in entry 2026-11-21
+    (aa); the refused s1 in the T3 order rule of entry 2026-11-21 (y); file F as question QF of entry 2026-11-20 (r).
+    So this is read as three specific answers, not as a general go-ahead, and it lifts nothing that those three
+    questions did not ask.
+  - **The score-guided search (ruling row R22; rules amended).** The team's own bar that no number is set from a score
+    is lifted for searches in round steps and for nothing else. The framework, fixed now: (1) A search line is one
+    open setting of one existing file's command, moved in round steps on the scale its candidates already use, with
+    nothing else in the command changed. (2) Every file of a line is named, command and value, in the decision log
+    before its own score; a line's files may be built in advance; no file is rebuilt, re-seeded, resized or changed
+    after a score. (3) The rule that names the next upload reads only the headlines of the team's own uploads on that
+    board, as the captain reports them: it compares them, keeps the best, steps on in the direction that improved and
+    ends the line at the first file that does not strictly beat the line's best. No value is fitted from the sizes of
+    scores; no per-metric value is read, recorded, compared or quoted; no property of a hidden sample is inferred or
+    bounded from a score, in code, in text or in reasoning. (4) The levers closed after the exposure of 2026-11-04 are
+    outside every line: sizes, scope and cell numbers on every board, and T1's composition, depth and advance draw; a
+    file on one of them needs the captain's own named exception, file by file. (5) At most two official uploads a
+    board a day until 2026-11-26 11:59 UTC; files already queued keep their places unless the captain says otherwise.
+    (6) The method report says plainly which values were tried and that the best headline was kept.
+  - **The first line, fixed before the 2.0 file's score:** T1's atlas step, the outside heart atlas's direction step
+    as a multiple of the calendar fraction 2/5, on R13's command with nothing else changed. On record: 1.0 (R13's
+    file), 1.5 (candidate B), 2.0 (row R20's file, not uploaded and not scored when this is written). Fixed now,
+    before the 2.0 file's score: if the 2.0 file's headline is strictly above the line's best headline so far, the
+    next file of the line is `--feng-fraction-mult 2.5 --captain-ruling R22`; if the 2.5 file's headline is strictly
+    above the line's best, the next is `--feng-fraction-mult 3.0 --captain-ruling R22`; the line ends at the first
+    file that does not strictly beat the line's best headline, and in any case at 3.0. No value between the half steps
+    is tried, and none is computed from the sizes of headlines. At 2.5 the step is the atlas's whole E9.5-to-E14.5
+    change and at 3.0 it goes past it. Writing these two values down is not a design choice of the AI assistant's:
+    they are the next half steps of the scale the candidates already used, and the cold check of entry 2026-11-21 (aa)
+    asked that any further strength be named before the 2.0 file's score. An engineer adds the two values to the
+    builder under `--captain-ruling R22`, a reviewer checks it, and each file is built twice before its turn.
+  - **Other lines.** A round of fresh analysts blind to scores proposes, per board, which other open settings get a
+    line and with which round steps; a cold challenger checks each line against the recorded text of the Rules page
+    (the team's screened record only; the page itself is not opened) and against the closed levers. Each line is
+    written here before any of its files is scored. The heart's scope and size and every other closed lever are
+    outside the search: a further heart trim would need the captain's own named exception, file by file, on a question
+    the AI assistant does not write.
+  - **T3's refused s1 (rules amended).** `runs/manual_upload/T3_refused_s1.h5ad`, sha256
+    0394575a11fcd4f915e0daf4972e5a783b6b89efa065ed4f85fe2445cbbb1545, the reference-listed bytes. It takes the first
+    T3 slot free after the last uploadable queued file (C1, C2, row K23's file, CK on its condition), waits on no
+    score, and ends T3's list. Data used: released challenge data only; no Gata4 validation file; no outside data.
+  - **T1's file F (rules amended).** `runs/manual_upload/T1_s2none.h5ad`, sha256
+    55eaee547ff18d7477da5b730c34e7de9ab74f85cc12fd01a9eff6450367611c, the bytes on record. The answer is read as
+    'Upload it' to QF. By entry 2026-11-20 (r) it takes the first free T1 slot, its score is a headline only and it
+    decides nothing beyond the standing file. Data used: released challenge data only; no outside data. The T1 order
+    from here, by the rules on record: F in the first free slot; C; then row R20's 2.0 file after C; then the line's
+    2.5 and 3.0 on their conditions; MS, T68 and rc18 only on their own paths. Which slot the captain gives to which
+    file is the captain's own act.
+  - **What stays, whatever is lifted.** The organisers' rules (scores choose, never compute; the held-out windows;
+    nothing from or like the held-out knockout); headlines only, no per-metric value read or recorded; the levers
+    closed after 2026-11-04; the AI assistant's recusals and its giving no design lean; two uploads a board a day on
+    the captain's word; every upload the captain's own act.
