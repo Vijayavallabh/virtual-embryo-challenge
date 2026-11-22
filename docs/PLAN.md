@@ -10518,3 +10518,25 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     of its five muscle guard genes, and the labeller's rule wants a quoted source for each. A second literature screen
     is looking for the other two; if none is found a fresh analyst decides between the specification's list and that
     rule. The AI assistant decides neither.
+- 2026-11-22 (y), the embryo's copy-rows file at the team's size is built; a launch slip on the T3 line's build is
+  corrected (state at 02:57 UTC, 2026-11-22). Written by the AI assistant, which is recused on the embryo's shape and
+  size terms and states no view of the file.
+  - **The builds** (`experiments/builds/embryo_copy_rows_sized.sh` at commit 9b04926, branch `campaign/e52-build`: row
+    E52's run commit plus its reading; the DGX worktree `~/v/scratch/e52b-wt` with its own environment; run s1). Every
+    step exit 0: the gate, the tests, the positions file and the copy-rows file reproduce their committed bytes, the
+    sized file twice, the identity check (same expression, cell names and gene names as C; coordinates equal C's
+    rescaled to the pre-registered size, bit for bit), the hash list. The two builds agree byte for byte:
+    `T2embryo_s2x_crs.h5ad`, sha256 323f2acc32f731819b1a3cc0da32478a51d9e9a10f13dbd940773b113b5644fa, copied to
+    `runs/manual_upload/` and checked. Record: `experiments/builds/results/embcrs_9b04926_s1.txt` and `.SHA256SUMS`.
+    Read by exit codes, sha256, the identity booleans and the stamps' commit and clean fields only.
+  - **Hand-over.** By the captain's order of 2026-11-21 (entry (v)) the price of such a file is stated when it is
+    handed over, and by entry 2026-11-22 (e) its place is after C. The main session is recused on this lever, so a
+    fresh score-blind analyst writes the note from the committed reading and a cold checker verifies it (workflow
+    sized-copy-rows-note); the main session passes it on unchanged. Data used: released challenge data only; no
+    outside data. Each upload is the captain's own act.
+  - **The AI assistant's launch slip on the T3 line's build.** The first launch at commit 9a10157 ended at the
+    launcher's tests step with exit 127: the launch command did not put the build tool on the path, which this older
+    launcher, unlike the newer ones, does not do itself. The same test list passes by hand on the DGX in that folder
+    (290 passed). Nothing was built and no file exists from that launch; its scratch and output folders are left as
+    they are, and since the launcher never reuses a folder the build is launched again from this entry's commit, with
+    the path set in the launch command.

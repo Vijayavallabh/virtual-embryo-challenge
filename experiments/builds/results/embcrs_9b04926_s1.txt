@@ -1,0 +1,22 @@
+The embryo's copy-rows file at the team's pre-registered size, C_s (practice row E52; the captain's order of
+2026-11-21, docs/PLAN.md decision log 2026-11-21 (v)): the set embcrs, run s1. BUILT
+=================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-22 in the detached worktree ~/v/scratch/e52b-wt (its own environment)
+at commit 9b04926ae1433a6aa84914dd5495469ccc2b328a (clean tree; branch campaign/e52-build: row E52's run commit
+2c3d568e7633 plus its two reading files, so the build's code is byte for byte the code the reading ran), launched at
+02:47 UTC and finished by 02:51 UTC:
+`bash experiments/builds/embryo_copy_rows_sized.sh 9b04926ae1433a6aa84914dd5495469ccc2b328a s1 2c3d568e7633ed5d6b4bcf3181d5f7a6d07c8f89`
+Step exit codes: gate 0, tests 0, D 0, CR 0, CSa 0, CSb 0, identity 0, done 0.
+  D    the positions file P by its command reproduces set embryo2's bytes   a03611a343faf1d37edf06ce0e2bccc86cce6f14d3580b823864e5faf3ba03f9
+  CR   the copy-rows file C by its command reproduces C's committed bytes    f20730da83084702c50c43d4d4aaa98be8ee801ea443472792172804fea4228e
+  CSa  T2embryo_s2x_crs.h5ad                                                 323f2acc32f731819b1a3cc0da32478a51d9e9a10f13dbd940773b113b5644fa
+  CSb  the same sha256: the two builds agree byte for byte
+Identity booleans (the launcher's own check): the size record is valid and raw-mode; C_s's X, obs_names and var_names
+equal C's; its coordinates equal float32(rescale_to_rms(float64 of C's coordinates, target)) bit for bit: all True.
+Stamps (the commit and clean fields only): D, CR, CSa and CSb each say 9b04926ae143 and clean True.
+
+Copied to runs/manual_upload/T2embryo_s2x_crs.h5ad and checked against this sha256.
+
+Read by exit codes, sha256, the identity booleans and the stamps' commit and clean fields only (AGENTS.md): no build
+log, file size, cell count or sidecar record was read. Nothing was uploaded: an upload is the captain's own act.
