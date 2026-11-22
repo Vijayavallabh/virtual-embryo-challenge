@@ -17,7 +17,8 @@
 #                  exit 95, if either exists); its two printed lines in read.out
 # COMMIT is row H29b's run commit (full hash). A call refused before its step runs (usage 2, unknown step 97, earlier
 # step not done 96, the step already exited 0 at this COMMIT 94, no row H29b 93, unclean tree 98, another HEAD 99)
-# writes ~/v/scratch/h29b/<STEP>.refused.exit only (usage.refused.exit without a step), so a refusal never touches a
+# writes ~/v/scratch/h29b/<STEP>.refused.exit only (usage.refused.exit without a step, unknown.refused.exit for an
+# unknown step), so a refusal never touches a
 # finished step's exit. A step that passes its checks first overwrites ~/v/scratch/h29b/<STEP>.exit with the word
 # running, then writes <STEP>.head, then runs, then writes its exit code there, so a step killed part way leaves a
 # non-zero exit file beside its new .head and the next step refuses (96). 8 BLAS threads a process,
@@ -41,7 +42,8 @@ case "$STEP" in
   read) PREV="run" ;;
   *)
     echo "unknown step $STEP" >&2
-    refuse 97 ;;
+    echo 97 > "$S/unknown.refused.exit"
+    exit 97 ;;
 esac
 if [ -n "$PREV" ]; then
   if [ "$(cat "$S/$PREV.exit" 2>/dev/null)" != 0 ] || [ "$(cat "$S/$PREV.head" 2>/dev/null)" != "$COMMIT" ]; then
