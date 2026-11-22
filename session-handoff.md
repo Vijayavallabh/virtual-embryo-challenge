@@ -2,7 +2,22 @@
 
 ## Current Objective
 
-- **State at 2026-11-22, 03:42 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-22, 04:09 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-22 (ii); the next label is 2026-11-22 (jj). Local main = origin/main at c4465e9 or one notes commit after
+  it. Tries: T1 463, embryo 88, heart 97, T3 74. No new score yet today. Nothing runs on the DGX. The four questions
+  with the captain and the two handed-over files are as in the bullets below.
+  - **ROW E51 IS READ (entry (ii)): SO passes and O_hi passes; by the read each question goes to the captain and the
+    read picks neither.** I am recused on these terms and read the outcome line only. Workflow ww3hcck7v (hand-back to
+    `lift8/`): (1) a fresh analyst and a cold checker write the captain's question from the reading, with one marked
+    sha256 blank per file: pass the checker's final text on unchanged, the blanks filled once the builds agree; (2) an
+    engineer and a reviewer write the build launcher `experiments/builds/embryo_so_ohi.sh` on branch
+    `campaign/embryo-so-ohi-build` (no builder code is new). On a ready review: merge, commit, deliver to
+    `v/vec-campaign`, dry-run trace, launch in a detached worktree with its own environment and `data/raw` linked,
+    PATH exported; on done 0 copy both files to `runs/manual_upload/` (`T2embryo_s2xs_ov.h5ad`,
+    `T2embryo_s2x_ovhi.h5ad`), record under `experiments/builds/results/`, fill the blanks. SO needs the captain's
+    named order; O_hi needs the captain's named order covering the embryo's depth line. Their places by the order
+    rule: SO, then `T2embryo_s2`, then O_hi. Data used: released challenge data only.
+- **State at 2026-11-22, 03:42 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-22 (hh); the next label is 2026-11-22 (ii). Local main = origin/main at 05e395c or one notes commit after
   it. Tries: T1 463, embryo 88, heart 97, T3 74. No new score yet today. The four questions of the bullet below are
   still with the captain, and the two files handed over today still wait for their uploads.
