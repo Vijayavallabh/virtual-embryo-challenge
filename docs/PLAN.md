@@ -9727,3 +9727,20 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     and the libraries, beats its permuted control, and has at least six tenths of its gain in the two terms its reason
     names; otherwise NOT AHEAD, which closes the line. AHEAD leads to one priced question to the captain, not to a
     file.
+- 2026-11-22 (a), row T67's runs have started (ten tries counted); row T65 is placed before its run (state at 00:06 UTC,
+  2026-11-22). Written by the AI assistant, which gives no design lean; both reads are their score-blind analysts'.
+  - **T67** (T1's per-gene timing; run commit 6c01146 on `~/v/vec-campaign-d`): the launcher's tests passed, the idle
+    pre-gate passed (the timing changes the direction by five per cent or more in at least one group, so the row is
+    not pruned), and the five runs started at 00:02 UTC. The ten tries are counted from that moment: T1 419 to 428.
+    The read follows when the runs end.
+  - **T65** (candidate MS of the score-blind round, decision log 2026-11-21 (y): R13's file with the released
+    per-category momentum added on the direction-group cells; `campaign/t1-ms-read`, b012eff, review ready, merged to
+    main; on merged main its tests and the related read tests pass, 270 passed, the step script's guard passes, the
+    linter is clean). Its row is placed in this commit, before its run: two counted arms, the momentum and its
+    permuted placebo, on row T62's five tasks; ten tries, T1 429 to 438, once its first run starts. Fixed statement,
+    from the round's challenger: AHEAD only if the chamber mean is above +0.3 with at least 8 of 10 seeds above 0, the
+    whole-cut mean is above 0, at least two libraries are valid with none below -0.3, and the momentum beats its
+    placebo on the chamber cut in at least 8 of 10 seeds with a positive mean; otherwise MS ends with no question, no
+    build and no rerun. It runs in a detached worktree of the DGX checkout's repository, because row T67's chain holds
+    the checkout itself; the commit reaches that repository by a push to a new branch ref, which leaves the checkout's
+    working tree and HEAD untouched.
