@@ -235,18 +235,111 @@ def test_gene_matching_by_symbol(h30, tmp_path):
                   "chr": ["1", "2", "3", "4"]}).to_csv(p, index=False)
     ids = h30.jax_gene_symbols(p)
     panel = ["Nppa", "Myl7", "Tnnt2", "Hand1"]
-    syms = h30.symbols_of_rows(["E1", "E2", "E3", "E4"], ids, panel)
-    cols = h30.panel_columns(syms, panel)
+    syms, rec = h30.symbols_of_rows(["E1", "E2", "E3", "E4"], ids)
+    assert rec == {"rows": 4, "listed": 4, "unlisted": 0}
+    cols = h30.panel_columns(syms, panel, ids)
     assert cols == {"Nppa": 3, "Tnnt2": 1}  # Myl7 is held twice: not used
-    assert h30.symbols_of_rows(["Nppa", "Xyz"], ids, panel) == ["Nppa", "Xyz"]
+    # row names that are symbols are never matched as symbols: refused, since no row is a table gene ID
+    with pytest.raises(ValueError, match="none of the count matrix's row names"):
+        h30.symbols_of_rows(["Nppa", "Xyz"], ids)
     with pytest.raises(ValueError):
-        h30.symbols_of_rows(["Q1", "Q2"], ids, panel)
+        h30.symbols_of_rows(["Q1", "Q2"], ids)
     C = sparse.csr_matrix(np.array([[1, 2, 3, 4], [5, 0, 0, 8]]))
     P, carried = h30.to_panel(C, cols, panel)
     assert carried.tolist() == [True, False, True, False]
     np.testing.assert_array_equal(P.toarray(), [[4, 0, 2, 0], [8, 0, 0, 0]])
     with pytest.raises(ValueError):
         h30.to_panel(sparse.csr_matrix(np.array([[1, 1, 1, 1.5]])), cols, panel)
+
+
+# A gene table as JAX's is laid out ("", gene_id, gene_type, gene_short_name, chr): Myl7 held by two IDs.
+_TABLE = {"": ["0", "1", "2", "3", "4"], "gene_id": ["ENSG1", "ENSG2", "ENSG3", "ENSG4", "ENSG5"],
+          "gene_type": ["protein_coding"] * 5, "gene_short_name": ["Nppa", "Myl7", "Myl7", "Tnnt2", "Hand1"],
+          "chr": ["1", "2", "3", "4", "5"]}
+_PANEL = ["Nppa", "Myl7", "Tnnt2", "Hand1", "Gata4"]
+# matrix rows: three table IDs (ENSG3, Myl7's second ID, absent), then three rows the table does not list: an ID
+# outside it, a panel symbol given as a row name, and a version-suffixed table ID (no stripping)
+_ROWS = ["ENSG1", "ENSG2", "ENSG4", "ENSGX9", "Gata4", "ENSG5.2"]
+# genes x cells: cell 0 has 6 listed panel counts and 300 unlisted ones; cell 1 has 30 and 300
+_X = np.array([[4, 20], [50, 7], [2, 10], [100, 100], [100, 100], [100, 100]])
+
+
+def _fake_rds(h30, monkeypatch, matrices: dict[str, tuple[np.ndarray, list[str]]]):
+    """Each rds path's name -> (genes x cells counts, row names); the manifest check and the rds parser replaced."""
+    monkeypatch.setattr(h30.fio, "verify_manifest_output", lambda p: None)
+    monkeypatch.setattr(h30, "_parse_rds", lambda p: Path(p).name)
+    monkeypatch.setattr(h30.feng2022_geo, "r_class", lambda obj: "dgCMatrix")
+    monkeypatch.setattr(h30.feng2022_geo, "dgc_matrix",
+                        lambda obj: (sparse.csc_matrix(matrices[obj][0]), list(matrices[obj][1]), None))
+
+
+def test_rows_the_gene_table_does_not_list(h30, tmp_path, monkeypatch):
+    root = tmp_path / "jax"
+    (root / "meta").mkdir(parents=True)
+    pd.DataFrame(_TABLE).to_csv(root / "meta" / "df_gene.csv", index=False)
+    pd.DataFrame({"cell_id": ["a", "b"], "embryo_id": ["embryo_13", "embryo_22"], "day": ["E8.75", "E9.5"]}).to_csv(
+        root / "meta" / "df_cell.csv", index=False)
+    ids = h30.jax_gene_symbols(root / "meta" / "df_gene.csv")
+
+    # (1) exact ID matching; unlisted rows get no symbol and are never matched in their own right
+    syms, rec = h30.symbols_of_rows(_ROWS, ids)
+    assert syms == ["Nppa", "Myl7", "Tnnt2", None, None, None]
+    assert rec == {"rows": 6, "listed": 3, "unlisted": 3}
+    cols = h30.panel_columns(syms, _PANEL, ids)
+    # Myl7: the table gives it two IDs, so dropped though the matrix holds only one; Hand1: its row is "ENSG5.2";
+    # Gata4: a row name, not a table ID
+    assert cols == {"Nppa": 0, "Tnnt2": 2}
+    assert h30.symbols_of_rows(["ensg1", "ENSG4"], ids)[0] == [None, "Tnnt2"]  # no case folding
+    with pytest.raises(ValueError, match="not unique"):
+        h30.symbols_of_rows(["ENSG1", "ENSG1", "ENSG4"], ids)
+    with pytest.raises(ValueError, match="none of"):
+        h30.symbols_of_rows(["Nppa", "Tnnt2", "ENSGX9"], ids)
+    dup = tmp_path / "dup.csv"
+    pd.DataFrame({**_TABLE, "gene_id": ["ENSG1", "ENSG2", "ENSG3", "ENSG1", "ENSG5"]}).to_csv(dup, index=False)
+    with pytest.raises(ValueError, match="more than once"):
+        h30.jax_gene_symbols(dup)
+    # Feng is unchanged: by symbol from its own list, a symbol held twice dropped
+    assert h30.panel_columns(["Myl7", "Nppa", "Nppa", "Gata4"], _PANEL) == {"Myl7": 0, "Gata4": 3}
+
+    # the reader end to end: the same counts with and without the unlisted rows give the same panel counts
+    listed_only = (_X[:3], _ROWS[:3])
+    _fake_rds(h30, monkeypatch, {"embryo_13_gene_count.rds": (_X, _ROWS),
+                                 "embryo_22_gene_count.rds": listed_only})
+    out, carried, jrec = h30.read_jax(root, (13, 22), _PANEL)
+    assert carried.tolist() == [True, False, True, False, False]
+    assert jrec["matrix_rows"] == {"13": {"rows": 6, "listed": 3, "unlisted": 3},
+                                   "22": {"rows": 3, "listed": 3, "unlisted": 0}}
+    np.testing.assert_array_equal(out[13].toarray(), [[4, 0, 2, 0, 0], [20, 0, 10, 0, 0]])
+    np.testing.assert_array_equal(out[13].toarray(), out[22].toarray())
+    gi = np.flatnonzero(carried)
+    P = out[13][:, gi]
+
+    # (2) the panel library: 6 (rejected) and 30 (kept); the unlisted rows' 300 counts add nothing
+    class Model:
+        classes_ = np.array(["CM"])
+
+        def predict_proba(self, F):
+            return np.ones((F.shape[0], 1))
+    lin, keep = h30.classify(Model(), P)
+    assert keep.tolist() == [False, True] and lin.tolist() == ["CM", "CM"]
+
+    # (3) CP10k totals are the panel library over the carried genes
+    np.testing.assert_allclose(h30.mean_cp10k(P), [(4 / 6 + 20 / 30) / 2 * 1e4, (2 / 6 + 10 / 30) / 2 * 1e4])
+    np.testing.assert_allclose(h30.log1p_cp10k(P).toarray(),
+                               np.log1p([[4 / 6 * 1e4, 2 / 6 * 1e4], [20 / 30 * 1e4, 10 / 30 * 1e4]]), rtol=1e-6)
+
+    # (4) the chord: NaN where JAX carries no gene, then taken from the other source where it holds it
+    late = sparse.csr_matrix(np.array([[8, 0, 2, 0, 0], [40, 0, 10, 0, 0]]))
+    dj = h30.source_chord(out[13], late, carried)
+    assert np.isnan(dj).tolist() == [False, True, False, True, True]
+    feng = np.array([0.1, 0.2, 0.3, np.nan, 0.5])
+    np.testing.assert_allclose(h30.combine([dj, feng], 5), [(dj[0] + 0.1) / 2, 0.2, (dj[2] + 0.3) / 2, 0.0, 0.5])
+
+    # every embryo must carry the same panel genes
+    _fake_rds(h30, monkeypatch, {"embryo_13_gene_count.rds": (_X, _ROWS),
+                                 "embryo_22_gene_count.rds": (_X[:2], _ROWS[:2])})
+    with pytest.raises(ValueError, match="different panel genes"):
+        h30.read_jax(root, (13, 22), _PANEL)
 
 
 # ------------------------------------------------------------------------------------------------ the steps' wiring
@@ -290,7 +383,8 @@ class _World:
             out[n] = C.tocsr()
         days = {n: h for n, h in ((13, 8.75), (14, 8.75), (22, 9.5), (54, 14.25), (55, 14.333), (56, 14.75))
                 if n in embryos}
-        return out, carried, {"embryos": sorted(embryos), "days": {str(k): v for k, v in days.items()}}
+        return out, carried, {"embryos": sorted(embryos), "days": {str(k): v for k, v in days.items()},
+                              "matrix_rows": {str(n): {"rows": 170, "listed": 160, "unlisted": 10} for n in embryos}}
 
     def read_feng(self, root, stages, panel, refused=frozenset()):
         assert not set(stages) & set(refused)
@@ -1083,3 +1177,36 @@ def test_the_launcher_refusal_paths_under_a_temporary_home(tmp_path):
         "build.refused.exit", "gate.exit", "gate.head", "gate.refused.exit", "read.refused.exit", "run.exit",
         "run.head", "run.refused.exit", "run.run", "tables.exit", "tables.head", "tests.exit", "tests.head",
         "tests.refused.exit", "tmp", "usage.refused.exit"]
+
+
+def test_a_start_at_a_new_commit_never_reads_an_earlier_starts_exit(tmp_path):
+    """A scratch folder left by a start at another commit (tests exit 0, gate exit 1): while the new start's step runs,
+    its exit file says "running", never the earlier start's code. Traced in a throwaway repository with a stand-in
+    `uv` that only records what the scratch folder holds; nothing of this checkout runs."""
+    repo = tmp_path / "repo"
+    (repo / "experiments" / "harness").mkdir(parents=True)
+    (repo / "experiments" / "harness" / "run_h30.sh").write_bytes(LAUNCHER.read_bytes())
+    env = {k: v for k, v in os.environ.items() if k not in ("GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE")}
+    env.update(HOME=str(tmp_path), GIT_CEILING_DIRECTORIES=str(tmp_path))
+    git = ["git", "-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false"]
+    for argv in (["init", "-q"], ["add", "-A"], ["commit", "-q", "-m", "x"]):
+        subprocess.run([*git, *argv], cwd=repo, env=env, check=True, capture_output=True)
+    head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, env=env, capture_output=True, text=True,
+                          check=True).stdout.strip()
+    s = tmp_path / "v" / "scratch" / "h30"
+    s.mkdir(parents=True)
+    old = "1" * 40
+    for step, code in (("tests", "0"), ("gate", "1")):
+        (s / f"{step}.exit").write_text(code + "\n")
+        (s / f"{step}.head").write_text(old + "\n")
+    bin_ = tmp_path / "bin"
+    bin_.mkdir()
+    (bin_ / "uv").write_text(f'#!/usr/bin/env bash\ncat "{s}/tests.exit" "{s}/tests.head" > "{tmp_path}/seen"\n')
+    (bin_ / "uv").chmod(0o755)
+    env["PATH"] = f"{bin_}{os.pathsep}{env['PATH']}"
+    run = subprocess.run(["bash", "experiments/harness/run_h30.sh", "tests", head], cwd=repo, env=env,
+                         capture_output=True, text=True)
+    assert run.returncode == 0, run.stderr
+    assert (tmp_path / "seen").read_text().split() == ["running", head]  # during the step: not the old 0
+    assert (s / "tests.exit").read_text().strip() == "0" and (s / "tests.head").read_text().strip() == head
+    assert (s / "gate.exit").read_text().strip() == "1"  # untouched until the gate itself starts
