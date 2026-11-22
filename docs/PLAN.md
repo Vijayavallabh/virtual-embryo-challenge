@@ -10580,3 +10580,36 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     its parenthesis; the table is fixed there by its sha256, and the folder name is corrected in the log and the rules
     when the fix is merged. The K23 file has not been uploaded.
   - **Counts.** T1 463, embryo 88, heart 97, T3 74.
+- 2026-11-22 (bb), row T65 is read: MS is AHEAD on practice, and one priced question goes to the captain (state at
+  03:10 UTC, 2026-11-22). Written by the AI assistant, which gives no lean on the candidate.
+  - **T65** (T1 candidate MS of the T1 order rule, entry 2026-11-21 (y): R13's file with the released per-category
+    momentum added on the direction-group cells before the atlas step; ten tries, T1 429 to 438, counted on 2026-11-22
+    at 00:30 UTC). The five runs ended at 03:06 UTC, each exit 0. The task files were committed unopened on a branch
+    cut at the row's commit (`campaign/t65-read`, 53f6c78) and the read ran once there, so its code is the runs' code;
+    the branch is merged here. In the read's fixed words: "Outcome: MS is AHEAD" "MS changes M1's design as ruled (the
+    direction in place of momentum on the direction-group cells, decision log 2026-10-19 (c)): only the captain's
+    ruling naming the arm puts it in a file." "J6: the momentum's fit spans one day on every practice task and the
+    test's two (horizon ratio 2), so any gain is reported as 0 to the practice value." "What follows: one priced
+    question to the captain. Only on his yes is the builder option written, reviewed and dry-run traced, and the file
+    built twice with one sha256 in a campaign checkout where the default command first rebuilds ad8f24c7. Nothing is
+    built or changed by this read."
+  - **The reading's lines beside the outcome** (practice, one truth; no interpretation is added). MS minus its base,
+    paired per seed: chamber cut +0.73, whole cut +0.70, libraries +0.86, +0.73 and +1.29, each 10 of 10 seeds ahead.
+    MS minus its permuted placebo: +0.83, +0.72, +1.11, +0.84 and +1.48, each 10 of 10. "J6 range (0 to the chamber
+    cut's mean of m1rc_gmom_mom - m1rc_gmom; a negative mean is reported as [mean, 0]): +0.00 to +0.73"
+  - **The question as put to the captain (Q-MS), the AI assistant's wording from the read's and the row's own
+    statements, with no lean:** Task 1: do you name the momentum file MS, so that it is built and queued? MS is the 1x
+    atlas file (R13's) with one change: the released per-cell-type trend is added on the cells that also take the
+    atlas direction; by the ruling of 2026-10-19 those cells take the direction in place of that trend, so only the
+    captain's ruling naming MS puts it in a file. Practice read (row T65, one truth, E10.5, one day ahead; not a test
+    score): MS beat its base on every one of five tasks and every seed, by +0.70 to +1.29 points (chamber cut +0.73,
+    whole cut +0.70, libraries +0.86, +0.73 and +1.29), and beat its shuffled control by +0.72 to +1.48. What practice
+    cannot show: the fit spans one day in practice and two at the test, so by the read's own rule the gain at the test
+    is reported as anywhere from 0 to the practice value (0 to +0.73); it rests on the E9.5-to-E10.5 trend holding on
+    to E12.5 in a dissected heart, which no released pair can check; and it pushes partly along the same axis as the
+    stronger-atlas files, so it is not an independent bet. Cost of a yes: a builder change with review and a traced
+    dry run (some hours), two builds, and one T1 slot after the files already queued; MS sits on R13's file, so it
+    raises the board's mark only if its headline passes the board's best. Yes, name MS / No. With no answer nothing is
+    built.
+  - **Until the captain answers** nothing is written or built for MS: the order rule allows the builder option only on
+    the captain's yes. Its place on a yes is after the files of entry 2026-11-20 (r)'s list, before rc18.
