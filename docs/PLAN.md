@@ -10817,3 +10817,70 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     and writes the final text. The line goes into this log and into `docs/S2_RULES.md` before C's score; the captain
     is asked to hold C's upload until then. After that an engineer and a reviewer make the builder take the line's
     files under the ruling, and each file is built twice. The other queued T1 files keep their places.
+- 2026-11-22 (nn), T1's third search line is in force before file C's headline (state at 11:03 UTC, 2026-11-22).
+  Written by the AI assistant, which designed none of it and gives no lean on it.
+  - **The line's rule text** (a fresh designer blind to test scores, then a cold challenger whose amended text this
+    is, verbatim): T1 line 3 (under ruling row R22, a score-guided search of round steps; fixed before any score of
+    its new files and before file C's headline is returned): the outside heart atlas's direction step as a multiple of
+    the calendar fraction 2/5, stepped on file C's command `build_test.py t1 --g-mom --base lib3 --feng-groups
+    recomputed --g-mom-damping 1.0 --feng-fraction-mult 1.5`, with nothing else changed (default seed 1000001, board
+    T1:test, g_mom's within-type damping held at 1.0 in every file of the line). The line's files, each named here
+    before its own score: candidate A (`--g-mom-damping 1.0`, damping 1.0, multiplier 1.0, `T1_s2rcA.h5ad`, sha256
+    76865826f5a3741c7585f81c4241048ca1a95b5791ebb3c8feb1f2b536678ce4); candidate C (damping 1.0, multiplier 1.5,
+    `T1_s2rcC.h5ad`, sha256 31477ef7df5d5374a74a8249c570217020c593916ab4d3780049b7b3f87b0620); `build_test.py t1
+    --g-mom --base lib3 --feng-groups recomputed --g-mom-damping 1.0 --feng-fraction-mult 2.0 --captain-ruling R22
+    --out <O>/T1_s2rcCm20.h5ad` (damping 1.0, multiplier 2.0); and the same with `--feng-fraction-mult 2.5` and
+    `T1_s2rcCm25.h5ad` (damping 1.0, multiplier 2.5). Neither new file is row R20's 2.0 file (T1_s2rcB2, damping 0.5)
+    or line 1's 2.5 file (T1_s2rcB25, damping 0.5); the "m" in their names stands for the multiplier, not the damping.
+    The rule: the line's best is the highest headline among the line's uploaded files, starting from A's and C's. If A
+    and C have both been uploaded and C's headline is strictly above A's, the next file of the line is T1_s2rcCm20.
+    Otherwise the line ends with no new upload: that includes C level with or below A (nothing below multiplier 1.0 is
+    on the scale), and C or A never uploaded. If T1_s2rcCm20's headline is strictly above the line's best, the next
+    file is T1_s2rcCm25; otherwise the line ends. The line ends after T1_s2rcCm25 in any case. Ties do not beat. Only
+    the headlines of the team's own T1 uploads of A, C, T1_s2rcCm20 and T1_s2rcCm25, as the captain reports them, are
+    compared. The headlines of the first upload, R13's file, B, line 1's files (T1_s2rcB2, T1_s2rcB25, T1_s2rcB30),
+    line 2's new files (T1_s2rcA15, T1_s2rcA20) and any other T1 file do not enter this line, and this line's new
+    files' headlines enter no other line. A is one upload: its headline serves line 2 and this line, and it is counted
+    once on the board. No size of a difference, no per-metric value and no interpolated value is read, and no value is
+    fitted from the sizes of scores. No property of a hidden sample is inferred or bounded from these scores, in code,
+    text or reasoning. Order: every T1 file queued by an earlier decision-log entry (F, C, the 2.0 file of row R20,
+    and any file an earlier entry queues on its own condition) keeps its place, and lines 1 and 2 keep theirs. When
+    more than one line has a next file ready, line 1's goes first, then line 2's, then this line's, unless the captain
+    says otherwise. So this line's file takes a slot only when no earlier-queued file and no next file of line 1 or
+    line 2 is ready for it, and the line may get no upload at all. A new file counts only after five conditions are
+    met. First, the builder takes `--g-mom-damping 1.0 --feng-fraction-mult 2.0` and `--g-mom-damping 1.0
+    --feng-fraction-mult 2.5` only with `--captain-ruling R22` (refused without it and with R20 or any other row), and
+    only while row R22's first cell names each of the two combined options in backticks with `--captain-ruling R22`.
+    Second, an independent reviewer has passed the change. Third, on ~/v/vec-campaign-d, at one clean commit holding
+    the reviewed change, the default command, A's, B's and C's commands and row R20's command reproduce R13's
+    (ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f), A's (76865826f5a3...), B's (c7240cb6a7f7...),
+    C's (31477ef7df5d...) and the 2.0 file's (52897fe375b8...) bytes. Fourth, the file has been built twice there from
+    that commit with one sha256 and has passed the format check. Fifth, its sha256 has been added to this entry before
+    its score. A file not ready by 2026-11-25 12:00 UTC drops and the line ends. No free T1 slot before 2026-11-26
+    11:59 UTC also ends the line. No value between the half steps and none above 2.5 is tried on this command, and the
+    damping is not moved in this line. No file is rebuilt, re-seeded or changed after a score. The method report says
+    that on file C's command (g_mom's damping at 1.0) the multipliers 1.0 and 1.5 and each of 2.0 and 2.5 that was
+    uploaded were tried, names any file built and not uploaded, and says that the best headline was kept. Data used:
+    as R13's file (released challenge data and the outside heart atlas on recomputed groups, register row X002). Each
+    upload is the captain's own act. The line is void unless this entry is committed to the decision log before C's
+    headline is returned.
+  - **What the challenger changed and found.** The designer's setting stands: the atlas step on C's command, the
+    correction held at 1.0, upward in half steps, two new files at most. Amended: the file names (Cm20 and Cm25, so
+    that nobody reads them as correction values); a contradiction about line 2's files (candidate A is one upload that
+    serves line 2 and this line and is counted once); every earlier-queued file keeps its place and the turn order is
+    line 1, then line 2, then this line, so this line may get no upload at all unless the captain says otherwise; the
+    identity checks also reproduce B's and the 2.0 file's bytes; each new file's sha256 goes into this entry before
+    its score. On practice the record gives no reason to prefer either setting on expected gain; the challenger adds a
+    caution the record does hold: both changes push the same score term, so the step's turn may come earlier at the
+    higher correction, and where it falls follows the truth's depth, which is closed. The rule's gate is a headline in
+    every case.
+  - **Said plainly about what the two agents saw.** Both report that ledger cells open to them (rows T62, T63 and R15)
+    quote the first upload's published T1 total and a sentence comparing R13's file with it term by term. Both say
+    they used, repeated and computed nothing from it, and nothing of it is in the rule: its only use of scores is
+    headline comparisons that have not happened yet. Those cells are older record; briefs for score-blind agents now
+    name them as not to be read.
+  - **In force with this commit.** Row R22's first cell names the two combined options; the rules note is amended and
+    re-pinned. File C has not been uploaded, so no headline of it exists; the captain is told that C may now go up.
+    Next: an engineer and a reviewer make the builder take the two combined options under the ruling, with a launcher
+    whose identity steps reproduce R13's, A's, B's, C's and the 2.0 file's bytes; each new file is built twice and its
+    sha256 is added here before its score.
