@@ -18,16 +18,18 @@ Steps (each with --commit, the full hash of the run commit, which must be HEAD; 
                       map against the LOO mean table and against its own random queries; R/stage0.json. Exit 7 when the
                       gate fails (stop: no fold read). Never recomputed over an existing stage0.json (its verdict is
                       read again)
-  pregate --out R     TARGET-FREE (no fold's predicted table is compared with a table built from that fold's own target
-                      file), after a passing stage 0: each fold's predicted table (Gata4 for g1/g2, fitted without
-                      Gata4; Mab21l2 for x2, fitted without Mab21l2), sized to S* by K24's exponent, must change >= 100
-                      genes and correlate < 0.9 with ln two, ln sc3, ln bulk and their mean (outside knockouts only)
-                      and, on the g fold only, with ln of the barred factor. The barred factor (phi_M) is built from
-                      T3/E9.5_mab21l2_ko.h5ad, the file x2 is scored against, so x2's pre-gate leaves it out
-                      (PREGATE_TABLES). Else the arm and its controls drop (exit 5, nothing runs); R/pregate.json.
-                      Each fold's map is trained with the OTHER fold's released knockout table as one label (the
-                      specification's "fitted without" the fold's own gene), and a drop in either fold drops the arm
-                      everywhere: that cross-fold dependence is stated in the row, not hidden
+  pregate --out R     A COUNTED STEP (not target-free: a drop counts the three tries, PREGATE_STOP_TRIES), after a
+                      passing stage 0: each fold's predicted table (Gata4 for g1/g2, fitted without Gata4; Mab21l2 for
+                      x2, fitted without Mab21l2), sized to S* by K24's exponent, must change >= 100 genes and
+                      correlate < 0.9 with ln two, ln sc3, ln bulk and their mean (outside knockouts only) and, on the
+                      g fold only, with ln of the barred factor, as the specification words it. The barred factor
+                      (phi_M) is built from T3/E9.5_mab21l2_ko.h5ad, the file x2 is scored against: on the g fold the
+                      pre-gate compares a predicted table with it, and a drop in either fold drops the arm and both
+                      controls in all five cells, x2 included. That is a reading that compares a predictor with a fold
+                      target (AGENTS.md rule 3), so the step is a try and a stop there counts. x2's own pre-gate leaves
+                      phi_M out (PREGATE_TABLES). Else the arm and its controls drop (exit 5, nothing runs);
+                      R/pregate.json. Each fold's map is also trained with the OTHER fold's released knockout table as
+                      one label (the specification's "fitted without" the fold's own gene)
   run --part guard|score --world plain --task g1|g2 [--seeds] | --world dm [--workers --threads] | --world x2
                       the guard part (base arms only: barred_form in the g-cells, xko_base on x2) or a scoring part
                       (base, q_map, q_rand, q_perm); a scoring part refuses without a passing guard.json of this commit
@@ -89,8 +91,10 @@ MIN_MOVED = 100  # the pre-gate: the sized table changes at least this many gene
 MAX_CORR = 0.9  # the pre-gate: corr with each closed table, their mean and (g fold only) the barred factor below this
 CLOSED = ("two", "sc3", "bulk")
 # The tables each fold's pre-gate compares its predicted table with. two, sc3 and bulk are outside knockouts only (no
-# fold's target enters them). The barred factor is built from T3/E9.5_mab21l2_ko.h5ad, x2's target file: x2 leaves it
-# out, so the step stays target-free (row K26).
+# fold's target enters them). The barred factor is built from T3/E9.5_mab21l2_ko.h5ad, x2's target file: the g fold
+# compares with it as the specification words it, x2's own pre-gate leaves it out. Because a g-fold drop on it stops x2
+# too, the pre-gate is a counted step: a stop there counts the three tries (PREGATE_STOP_TRIES; row K26, AGENTS.md
+# rule 3).
 PREGATE_TABLES = {"g": (*CLOSED, "mean", "barred"), "x2": (*CLOSED, "mean")}
 PREGATE_LEFT_OUT = {"g": {}, "x2": {"barred": "built from T3/E9.5_mab21l2_ko.h5ad, the file x2 is scored against"}}
 
@@ -111,6 +115,7 @@ MIN_GAIN, MIN_AHEAD = k7.MIN_GAIN, k7.MIN_AHEAD  # 0.3 and 8 of 10
 MAX_EXTRA_GATED = 1
 MAX_TRIES = 3
 VOID_TRIES = MAX_TRIES  # row K26: "a void counts": every VOID reading counts the three tries, whatever voided it
+PREGATE_STOP_TRIES = MAX_TRIES  # row K26: the pre-gate reads a table built from x2's target: a stop there counts 3
 K18_SHA256 = dict(k21.K18_SHA256)
 K9_X2 = HERE / "results" / "k9_residual" / "tasks" / "x2.json"
 K9_X2_SHA256 = "8be12f798aeab27e68c44fd54fe3106ee949d8d2b4e4694bd9b5db0bfb5458ba"
@@ -457,7 +462,7 @@ def cmd_stage0(a) -> None:
 
 
 # ---------------------------------------------------------------------------------------------------------------------
-# The pre-gate (target-free)
+# The pre-gate (a counted step: a stop counts the three tries)
 
 
 def sized(log_table) -> tuple[np.ndarray | None, float | None]:
@@ -518,9 +523,10 @@ def pregate_fold(fold: str, ctx: dict[str, np.ndarray], train: dict[str, np.ndar
 def pregate_all(ctx, outside, frozen, q_rand: dict[str, str], closed, phi_m) -> dict:
     folds = {f: pregate_fold(f, ctx, fold_training(f, outside, frozen), q_rand[f], closed, phi_m) for f in FOLDS}
     dropped = {f: v["dropped"] for f, v in folds.items() if v["dropped"]}
-    # the arm is one try across all five cells: a drop in either fold drops it, with both controls, everywhere
+    # the arm is one try across all five cells: a drop in either fold drops it, with both controls, everywhere; the step
+    # is counted (it compares with a table built from x2's target), so a drop counts the three tries as a run does
     return {"folds": folds, "dropped": dropped, "runs": not dropped,
-            "tries_if_run": len(TRY_ARMS) if not dropped else 0}
+            "tries_counted": len(TRY_ARMS) if not dropped else PREGATE_STOP_TRIES}
 
 
 def cmd_pregate(a) -> None:
@@ -1099,8 +1105,10 @@ def reading_code() -> dict:
 
 def reading(runs: Path, refs: dict | None = None) -> dict:
     """Apply the reading of row K26 to a run folder: a STOP at stage 0 or at the pre-gate is a reading of its own (no
-    fold read, no try beyond stage 0); otherwise the guard part is read again, then the scoring part. Every VOID
-    reading counts the three tries (VOID_TRIES; row K26, "a void counts"), a failed reproduction gate included."""
+    fold read; no try beyond stage 0 at a stage-0 stop, the three tries at a pre-gate stop, PREGATE_STOP_TRIES, since
+    the pre-gate compares with a table built from x2's target); otherwise the guard part is read again, then the
+    scoring part. Every VOID reading counts the three tries (VOID_TRIES; row K26, "a void counts"), a failed reproduction gate
+    included."""
     runs = Path(runs)
     why: list[str] = []
     sha, prov, body = {}, {}, {}
@@ -1147,7 +1155,7 @@ def reading(runs: Path, refs: dict | None = None) -> dict:
         why.append("pregate.json was made from another stage0.json")
     if not (pre.get("pregate") or {}).get("runs"):
         stop = {"incomplete": False, **common, "files_sha256": dict(sha), "provenance": dict(prov),
-                "tries_counted": 0, "stage0_counted": 1, "stopped": "pregate"}
+                "tries_counted": PREGATE_STOP_TRIES, "stage0_counted": 1, "stopped": "pregate"}
         if (runs / GUARD_FILE).exists() or why:
             return stop | {"void": True, "tries_counted": VOID_TRIES,
                            "why": [*why] + (["guard.json exists after the pre-gate's drop"]
@@ -1155,7 +1163,8 @@ def reading(runs: Path, refs: dict | None = None) -> dict:
                            "outcome": "void: the run went past the pre-gate's drop, or its files disagree; the three "
                                       "tries count"}
         return stop | {"void": False, "why": [], "outcome": "STOP at the pre-gate: the arm is dropped with its "
-                                                            "controls; nothing runs, no try is counted, no file"}
+                                                            "controls; nothing runs, no file; the pre-gate is a "
+                                                            "counted step, so the three tries count"}
     miss = load(GUARD_FILE)
     if miss:
         return {"incomplete": True, "void": False, "missing": miss, "outcome": INCOMPLETE}

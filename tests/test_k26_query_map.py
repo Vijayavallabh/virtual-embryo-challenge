@@ -228,7 +228,7 @@ def test_the_fold_training_leaves_out_the_folds_own_gene():
 def test_the_pregate_keeps_a_fresh_table_sized_to_s_star():
     ctx, outside, frozen, closed, phi_m = _pg_inputs()
     pre = q.pregate_all(ctx, outside, frozen, {"g": "rg", "x2": "rx"}, closed, phi_m)
-    assert pre["runs"] and pre["tries_if_run"] == 3 and not pre["dropped"]
+    assert pre["runs"] and pre["tries_counted"] == 3 and not pre["dropped"]
     for f in q.FOLDS:
         v = pre["folds"][f]
         assert float(np.std(np.log(v["table"]))) == pytest.approx(k24.S_STAR, rel=1e-12)
@@ -259,14 +259,14 @@ def test_the_pregate_drops_a_disguised_closed_table_and_with_it_the_whole_arm():
         else:
             c["sc3"] = copy
         pre = q.pregate_all(ctx, outside, frozen, {"g": "rg", "x2": "rx"}, c, pm)
-        assert not pre["runs"] and pre["tries_if_run"] == 0 and "g" in pre["dropped"]
+        assert not pre["runs"] and pre["tries_counted"] == 3 and "g" in pre["dropped"]  # a drop counts (row K26)
         assert any(key in w for w in pre["dropped"]["g"])
 
 
 def test_x2s_pregate_never_reads_the_barred_factor():
-    """Row K26: the barred factor (phi_M) is built from T3/E9.5_mab21l2_ko.h5ad, x2's target file. x2's pre-gate is
-    target-free: phi_M never enters it (None would crash any use), and a phi_M equal to x2's own predicted table drops
-    nothing on x2."""
+    """Row K26: the barred factor (phi_M) is built from T3/E9.5_mab21l2_ko.h5ad, x2's target file. x2's own pre-gate
+    leaves it out: phi_M never enters it (None would crash any use), and a phi_M equal to x2's own predicted table drops
+    nothing on x2. (The g fold still compares with it, so the pre-gate is a counted step: a drop counts three.)"""
     ctx, outside, frozen, closed, _ = _pg_inputs()
     assert q.PREGATE_TABLES == {"g": ("two", "sc3", "bulk", "mean", "barred"), "x2": ("two", "sc3", "bulk", "mean")}
     train = q.fold_training("x2", outside, frozen)
@@ -644,7 +644,7 @@ def test_the_progress_lines_carry_no_figure(capsys):
     assert capsys.readouterr().out == "K26 x2 x2 seed 7: scored\nK26 guard plain g1 seed 3: scored\n"
 
 
-def test_a_stop_at_stage_zero_or_at_the_pregate_is_a_reading_with_no_try(tmp_path):
+def test_a_stop_at_stage_zero_counts_no_try_and_a_stop_at_the_pregate_counts_three(tmp_path):
     R = tmp_path / "runs"
     R.mkdir()
     k18.write_task_file(R / "features.json", {"plan": {}, "provenance": _prov()})
@@ -667,8 +667,12 @@ def test_a_stop_at_stage_zero_or_at_the_pregate_is_a_reading_with_no_try(tmp_pat
                                               "features_sha256": fsha, "stage0_sha256": _sha(R / "stage0.json"),
                                               "provenance": _prov()})
     res = q.reading(R, {})
-    assert not res["void"] and res["stopped"] == "pregate" and res["tries_counted"] == 0
-    assert res["outcome"].startswith("STOP at the pre-gate")
+    # row K26: the pre-gate compares with a table built from x2's target file, so it is a counted step: its stop
+    # counts the three tries (and stage 0 once)
+    assert not res["void"] and res["stopped"] == "pregate" and res["tries_counted"] == 3 == q.PREGATE_STOP_TRIES
+    assert res["stage0_counted"] == 1
+    assert res["outcome"].startswith("STOP at the pre-gate") and "the three tries count" in res["outcome"]
+    assert "tries counted: 3" in q.text(res)
     (R / "guard.json").write_text("{}")
     res = q.reading(R, {})
     assert res["void"] and res["tries_counted"] == 3 and "after the pre-gate's drop" in res["why"][-1]

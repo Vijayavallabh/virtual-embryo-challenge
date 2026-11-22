@@ -14,13 +14,13 @@
 #   stage0    the COUNTED DIAGNOSTIC on outside perturbations only; R/stage0.json; 27 the gate fails (STOP: the
 #             reading of the stop is written into OUT, no fold is read, nothing after this step runs), 22 refused,
 #             20 other
-#   pregate   TARGET-FREE (no fold's table is compared with a table built from that fold's own target file; x2 leaves
-#             the barred factor out): the fold tables and their drops; R/pregate.json; 25 the arm is dropped (STOP:
-#             the reading of the stop is written into OUT, nothing runs, no try counts), 22 refused, 24 exists,
-#             20 other
+#   pregate   a COUNTED STEP (the g fold compares its table with ln of the barred factor, built from the file x2 is
+#             scored against, and a drop there stops x2 too; x2's own pre-gate leaves that factor out): the fold
+#             tables and their drops; R/pregate.json; 25 the arm is dropped (STOP: the reading of the stop is written
+#             into OUT, nothing runs, the three tries count), 22 refused, 24 exists, 20 other
 #   guard     the guard part (base arms only) in seven parallel parts, then the reproduction gate; 26 the gate fails
-#             (the VOID reading, which counts the three tries, is written into OUT first; a rerun finishes 26 again
-#             and never reads twice), 30 a part did not exit 0, 22 refused, 20 other
+#             (the VOID reading, which counts the three tries, is written into OUT first; a rerun at this COMMIT
+#             finishes 26 again and never reads twice), 30 a part did not exit 0, 22 refused, 20 other
 #   run       the scoring parts in seven parallel parts (plain g1 and g2 as seeds 0-4 and 5-9, dm with 8 workers by 2
 #             threads, x2 as seeds 0-4 and 5-9); a seed whose file exists is skipped, so a killed run resumes; 30 a
 #             part did not exit 0
@@ -35,10 +35,11 @@
 # with the word running, then writes $S/<STEP>.head, runs, and writes its exit code to $S/<STEP>.exit (a TERM, INT or
 # HUP signal writes 89), so a step killed part way never leaves an earlier call's 0. $S is
 # $HOME/v/scratch/k26/<first 7 of COMMIT>. Logs go to R/logs/ and are never printed; their lines other than the
-# script's step lines are counted into R/exit/<log name>.other_lines. A stop's reading is made once (a rerun finds
-# OUT/reading.json and finishes with the same code; 43, 44 or 41 when that read is INCOMPLETE, finds a reading, or
-# crashes). Nothing is ever removed. 8 BLAS threads a process (16 in the dm set-up), NUMPY_MADVISE_HUGEPAGE=0, TMPDIR
-# under $S.
+# script's step lines are counted into R/exit/<log name>.other_lines. A stop's reading is made once: a rerun that finds
+# OUT/reading.json made at this COMMIT (its reading_code.commit) finishes with the same code without reading again;
+# one made at another commit, naming none, or unreadable finishes 44 (never taken as this run's, never read over);
+# 43, 44 or 41 when the stop's read is INCOMPLETE, finds a reading, or crashes. Nothing is ever removed. 8 BLAS
+# threads a process (16 in the dm set-up), NUMPY_MADVISE_HUGEPAGE=0, TMPDIR under $S.
 set -u
 if [ "$#" -lt 2 ] || [ -z "$1" ] || [ -z "$2" ]; then
   mkdir -p "$HOME/v/scratch/k26" && echo 2 > "$HOME/v/scratch/k26/usage.exit"
@@ -152,8 +153,13 @@ parts() {  # $1 = guard|score: the seven parts at once; returns 1 when a part di
 }
 
 stop_read() {  # $1 = the step's finish (26, 25 or 27): the reading of a stop or a VOID gate, made once, then finish $1
-  local rc=0
-  if [ -e "$OUT/reading.json" ]; then finish "$1"; fi
+  local rc=0 got
+  if [ -e "$OUT/reading.json" ]; then  # skipped only when the reading there is this commit's; any other gives 44
+    got=$($PY -c 'import json, sys; r = json.load(open(sys.argv[1])); print("same" if (r.get("reading_code") or {}).get("commit") == sys.argv[2] else "other")' \
+      "$OUT/reading.json" "$COMMIT" 2> /dev/null) || got=unreadable
+    if [ "$got" = same ]; then finish "$1"; fi
+    finish 44
+  fi
   $PY "$SCRIPT" read --runs "$R" --out "$OUT" --commit "$COMMIT" > /dev/null 2>&1 || rc=$?
   echo $rc > "$S/stop_read.exit"
   if [ $rc = 3 ]; then finish 43; fi

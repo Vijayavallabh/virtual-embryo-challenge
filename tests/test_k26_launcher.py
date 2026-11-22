@@ -4,9 +4,11 @@ Python step of the try runs; no data of any kind is read."""
 
 from __future__ import annotations
 
+import json
 import os
 import re
 import subprocess
+import sys
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -19,13 +21,16 @@ REGISTER = "".join(f"| {x} | source | ... | K26: per-gene units as map labels |\
                                                                                            "X017"))
 
 
-# a stub uv: the gate check and the read take their own exit status; the guard.json one-liner prints STUB_PRINT
+# a stub uv: the gate check and the read take their own exit status; the guard.json one-liner prints STUB_PRINT; the
+# stop's check of an existing reading's commit runs for real (python -I -B -c ..., the stub drops `run --frozen
+# --no-sync python`)
 STUB = """#!/bin/sh
 [ -n "${STUB_ARGS:-}" ] && echo "$*" >> "$STUB_ARGS"
 [ -n "${STUB_SNOOP:-}" ] && cat "$STUB_SNOOP" > "$STUB_SNOOP.seen" 2>/dev/null
 case " $* " in
   *" guard --runs "*) exit "${STUB_GUARD_RC:-${STUB_RC:-1}}" ;;
   *" read --runs "*) exit "${STUB_READ_RC:-${STUB_RC:-1}}" ;;
+  *" -c "*reading_code*) shift 4; exec "$STUB_PY" "$@" ;;
   *" -c "*) [ -n "${STUB_PRINT:-}" ] && echo "$STUB_PRINT"; exit 0 ;;
 esac
 exit "${STUB_RC:-1}"
@@ -68,6 +73,7 @@ def _setup(tmp_path: Path) -> SimpleNamespace:
 
 def _run(L, *args, rc=1, trace=False, **stub) -> tuple[int, str]:
     env = {**_env(), "HOME": str(L.home), "PATH": f"{L.bin}:{os.environ['PATH']}", "STUB_RC": str(rc),
+           "STUB_PY": sys.executable,
            "GIT_CEILING_DIRECTORIES": str(L.repo.parent), **{k: str(v) for k, v in stub.items()}}
     cmd = ["bash", *(["-x"] if trace else []), "experiments/t3_decomp/run_k26.sh", *args]
     r = subprocess.run(cmd, cwd=L.repo, env=env, capture_output=True, text=True, timeout=60)
@@ -80,6 +86,15 @@ def _scratch(L, head=None) -> Path:
 
 def _exit(L, step, head=None) -> str:
     return (_scratch(L, head) / f"{step}.exit").read_text().strip()
+
+
+def _reading(L, commit) -> Path:
+    """A reading in OUT whose reading_code names `commit` (as cmd_read writes it)."""
+    out = L.repo / "experiments/t3_decomp/results/k26_query_map"
+    out.mkdir(parents=True, exist_ok=True)
+    p = out / "reading.json"
+    p.write_text(json.dumps({"outcome": "x", "reading_code": {"commit": commit}}))
+    return p
 
 
 def _refused(L, step, head=None) -> str:
@@ -204,15 +219,15 @@ def test_a_failed_gate_writes_the_void_reading_once(tmp_path):
     # a failing gate whose void read crashed or was incomplete
     assert _run(L, "guard", L.head, rc=0, STUB_GUARD_RC=6, STUB_READ_RC=3)[0] == 43
     assert _run(L, "guard", L.head, rc=0, STUB_GUARD_RC=6, STUB_READ_RC=1)[0] == 41
-    # a rerun over a recorded guard.json: pass -> 0; fail with a reading already there -> 26 without a second read;
-    # unreadable -> 20
+    # a rerun over a recorded guard.json: pass -> 0; fail with this commit's reading already there -> 26 without a
+    # second read; fail with another commit's reading there -> 44; unreadable -> 20
     R = L.repo / f"runs/k26_{L.head[:7]}"
     (R / "guard.json").write_text("{}")
     assert _run(L, "guard", L.head, rc=1, STUB_PRINT="pass")[0] == 0
-    out = L.repo / "experiments/t3_decomp/results/k26_query_map"
-    out.mkdir(parents=True)
-    (out / "reading.json").write_text("{}")
+    _reading(L, L.head)
     assert _run(L, "guard", L.head, rc=1, STUB_PRINT="fail", STUB_READ_RC=1)[0] == 26
+    _reading(L, "f" * 40)
+    assert _run(L, "guard", L.head, rc=1, STUB_PRINT="fail", STUB_READ_RC=0)[0] == 44 and _exit(L, "guard") == "44"
     assert _run(L, "guard", L.head, rc=1)[0] == 20
 
 
@@ -220,11 +235,21 @@ def test_a_stop_is_read_once(tmp_path):
     L = _setup(tmp_path)
     for step in ("tests", "features"):
         assert _run(L, step, L.head, rc=0)[0] == 0
-    out = L.repo / "experiments/t3_decomp/results/k26_query_map"
-    out.mkdir(parents=True)
-    (out / "reading.json").write_text("{}")
-    # the stop's reading is there already: no second read (a read would crash here: 41)
-    assert _run(L, "stage0", L.head, rc=7, STUB_READ_RC=1)[0] == 27
+    # this commit's reading of the stop is there already: no second read (a read would crash here: 41)
+    p = _reading(L, L.head)
+    assert _run(L, "stage0", L.head, rc=7, STUB_READ_RC=1)[0] == 27 and _exit(L, "stage0") == "27"
+    # another commit's reading, one naming no commit, or an unreadable one: never taken as this run's and never read
+    # over (a read would pass here: 0); the step finishes 44
+    for body in (json.dumps({"reading_code": {"commit": "f" * 40}}), "{}", json.dumps({"reading_code": None}),
+                 "not json"):
+        p.write_text(body)
+        assert _run(L, "stage0", L.head, rc=7, STUB_READ_RC=0)[0] == 44 and _exit(L, "stage0") == "44"
+        assert _run(L, "pregate", L.head, rc=0)[0] == 96  # nothing after the stop
+    # the same at the pre-gate's stop
+    assert _run(L, "stage0", L.head, rc=0)[0] == 0
+    assert _run(L, "pregate", L.head, rc=5, STUB_READ_RC=0)[0] == 44 and _exit(L, "pregate") == "44"
+    _reading(L, L.head)
+    assert _run(L, "pregate", L.head, rc=5, STUB_READ_RC=1)[0] == 25 and _exit(L, "pregate") == "25"
 
 
 def test_a_passing_call_marks_running_first_and_a_refusal_never_touches_a_finished_exit(tmp_path):
