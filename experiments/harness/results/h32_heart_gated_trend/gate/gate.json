@@ -1,0 +1,96 @@
+{
+ "axis": "h32-heart-gated-trend:gate",
+ "row": "H32",
+ "outcome": "FAIL",
+ "test_pair": {
+  "CM": {
+   "lineage": "CM",
+   "n": 316,
+   "a": 0.5791139240506329,
+   "kept": 183,
+   "null_p95": 0.5411392405063291,
+   "null_mean": 0.4992215189873418,
+   "case": "mapping",
+   "chord": true
+  },
+  "Endo": {
+   "lineage": "Endo",
+   "n": 335,
+   "a": 0.6059701492537314,
+   "kept": 203,
+   "null_p95": 0.5104477611940299,
+   "null_mean": 0.4711044776119403,
+   "case": "mapping",
+   "chord": true
+  }
+ },
+ "backtests": {
+  "T2h/<=E9.5->E10.5": {
+   "CM": {
+    "lineage": "CM",
+    "n": 316,
+    "a": 0.5348101265822784,
+    "kept": 169,
+    "null_p95": 0.5098101265822782,
+    "null_mean": 0.4700253164556963,
+    "case": "mapping",
+    "chord": true
+   },
+   "Endo": {
+    "lineage": "Endo",
+    "n": 335,
+    "a": 0.5432835820895522,
+    "kept": 182,
+    "null_p95": 0.5074626865671642,
+    "null_mean": 0.4708477611940298,
+    "case": "mapping",
+    "chord": true
+   }
+  },
+  "T2h/<=E8.75->E10.5": {
+   "CM": {
+    "lineage": "CM",
+    "n": 346,
+    "a": 0.523121387283237,
+    "kept": 181,
+    "null_p95": 0.5173410404624278,
+    "null_mean": 0.4773872832369942,
+    "case": "mapping",
+    "chord": true
+   },
+   "Endo": {
+    "lineage": "Endo",
+    "n": 351,
+    "a": 0.5413105413105413,
+    "kept": 190,
+    "null_p95": 0.5185185185185185,
+    "null_mean": 0.47917948717948716,
+    "case": "mapping",
+    "chord": true
+   }
+  }
+ },
+ "test_table_sha256": "02cd001408f99ecd2bd128a71232f78f51be736e35f6b6dc9e2539162c07ab61",
+ "tables_origin": {
+  "commit": "38448361324264ad4e10ea803ce177e5cecf04d0",
+  "reused_from_row_H30": false,
+  "test_table": "e95.json"
+ },
+ "n56_outcome_reported": "VOID",
+ "fixed": {
+  "t_d": 0.25,
+  "min_genes": 50,
+  "min_a": 0.6,
+  "perm": 1000,
+  "bins": 10,
+  "seed": 20261122
+ },
+ "note": "target-free: compares no predictor with a fold target; counts no try",
+ "source": "experiments/harness/h32_heart_gated_trend.py (try H32)",
+ "provenance": {
+  "commit": "38448361324264ad4e10ea803ce177e5cecf04d0",
+  "tree_clean": true,
+  "utc": "2026-11-22 02:38:11",
+  "commit_at_start": "38448361324264ad4e10ea803ce177e5cecf04d0"
+ }
+}

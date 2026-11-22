@@ -1,0 +1,9 @@
+Try H32, G0 (commit 38448361324264ad4e10ea803ce177e5cecf04d0): target-free, counts no try. OUTCOME: FAIL. PASS needs, at the test pair for CM, |E| at least 50, a at least 0.6 and a strictly above its null's 95th percentile; otherwise nothing further runs or counts.
+test pair CM: case mapping; |E| 316; a 0.579; null 95th percentile 0.541 (mean 0.499)
+test pair Endo: case mapping; |E| 335; a 0.606; null 95th percentile 0.510 (mean 0.471)
+backtest T2h/<=E9.5->E10.5 (reported, decides nothing) CM: case mapping; |E| 316; a 0.535; null 95th percentile 0.510 (mean 0.470)
+backtest T2h/<=E9.5->E10.5 (reported, decides nothing) Endo: case mapping; |E| 335; a 0.543; null 95th percentile 0.507 (mean 0.471)
+backtest T2h/<=E8.75->E10.5 (reported, decides nothing) CM: case mapping; |E| 346; a 0.523; null 95th percentile 0.517 (mean 0.477)
+backtest T2h/<=E8.75->E10.5 (reported, decides nothing) Endo: case mapping; |E| 351; a 0.541; null 95th percentile 0.519 (mean 0.479)
+Row N56's committed outcome, reported beside G0 (decides nothing): VOID.
+Tables reused from row H30: False.
