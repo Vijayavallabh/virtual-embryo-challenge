@@ -1,0 +1,121 @@
+# Row T66 (experiments/harness/TRIES.md): the recomputed erythroid group of JAX/Qiu 2024 (register row X003), read by
+# experiments/external/jax_blood.py, which writes data/derived/jax_blood/ and its MANIFEST.json. Fixed and hashed
+# before the run: the row carries this file's sha256 (jax_blood.YAML_SHA256 holds the same value; the reducer and the
+# read refuse any other file). Nothing here was set from any JAX value: no JAX cell, count, label or figure was opened
+# to write it. A change after the run is a new ledger row.
+#
+# What the reducer reads, and nothing else (X003 as amended for this row, before any run):
+#   - data/external/jax_qiu2024/embryo/embryo_<n>_gene_count.rds for the embryos listed under `embryos` alone (raw
+#     counts, genes x nuclei), each checked against that folder's MANIFEST.json;
+#   - meta/df_cell.csv: the columns of jax_blood.CELL_WHITELIST alone (cell_id, embryo_id, day, experimental_batch),
+#     by a reader that refuses any other column and refuses a whitelist naming an annotation, cluster or embedding
+#     column (celltype_update and major_trajectory are named in the code's refusal list). Rows of other embryos are
+#     dropped as they are parsed;
+#   - meta/df_gene.csv: gene_id and gene_short_name (a gene table, no cells).
+# The stats/*.npz files of that folder (per-label sufficient statistics keyed by the authors' labels) are never read.
+
+version: 1
+row: T66
+status: frozen
+
+inputs:
+  dir: data/external/jax_qiu2024        # experiments/external/jax_qiu2024.py's output, checked against its manifest
+  counts: embryo/embryo_{n}_gene_count.rds
+  cells: meta/df_cell.csv
+  genes: meta/df_gene.csv
+
+# The row's embryo lists (practice; the test's lists are another file under another row). Early end: run_4, labelled
+# E8.5, somite-staged 0-12 (X003). Late end: E15.5-E16.5, clear of the window under the strict rule. Embryos 13-22 lie
+# inside the practice window and never enter; 23-53 are not on disk or are dropped in committed code; 54-58 are
+# excluded by the row. The code holds the same lists (jax_blood.ROW_EMBRYOS) and refuses any other.
+embryos:
+  early: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  late: [59, 60, 61, 62, 63]
+
+output:
+  dir: data/derived/jax_blood         # inside the checkout's own data/ (feng_relabel.output_dir_ok)
+  direction: jax_blood_direction.npz  # per JAX gene: gene_id, symbol, m_early, m_late, direction; per embryo: means
+  embryos: jax_blood_embryos.csv      # per embryo: end, day labels, batches, nuclei read, assigned erythroid, entering
+
+# ------------------------------------------------------------------ the erythroid group (N54's machinery)
+# Per-nucleus marker scores as feng_relabel scores Feng's cells (feng_relabel.log1p_cp10k, control_sets, set_score,
+# assign; the controls' gene means per end, then averaged over the two ends with equal weight, as gene_means does over
+# stages). The sets are N54's (experiments/external/feng_relabel.yaml) restricted to the genes N54 sourced to the
+# released T1 E9.5 label means (source released_e95: a panel gene joins a class if its highest released E9.5 mean over
+# the class's labels is at least 0.3 and at least twice its highest mean over every other E9.5 label); the classes
+# with no such gene (mural, immune, lymphatic) are left out. The erythroid class is N54's blood set: Hba-x, Hbb-y,
+# Gata1. The thresholds are N54's as frozen after row N55. tests/test_jax_blood.py checks every set against N54's yaml.
+score:
+  normalisation: log1p_cp10k
+  control_bins: 25
+  control_per_gene: 10
+  control_seed: 20261119
+  min_genes_found: 2          # a set with fewer of its genes in JAX's unique symbols stops the run
+
+assign:
+  min_score: 0.3
+  min_margin: 0.25
+  split_margin: 0.1
+  unassigned: r_unassigned
+  ec_split: {class: ec, plus: endo_split, minus: vasc_split, plus_label: r_endocardial_ec,
+             minus_label: r_vascular_ec, ambiguous_label: r_ec_ambiguous}
+
+erythroid_label: r_blood
+
+sets:
+  cm:
+    role: competing
+    label: r_cm
+    genes: {Myl7: released_e95, Tnnt2: released_e95, Actc1: released_e95, Nppa: released_e95, Myh6: released_e95,
+            Myl2: released_e95, Myl4: released_e95}
+  ec:
+    role: competing
+    label: r_ec
+    genes: {Cdh5: released_e95, Pecam1: released_e95, Kdr: released_e95, Emcn: released_e95, Tek: released_e95,
+            Sox18: released_e95}
+  epi:
+    role: competing
+    label: r_epicardial
+    genes: {Wt1: released_e95, Upk3b: released_e95, Upk1b: released_e95}
+  endo_split:
+    role: split
+    genes: {Npr3: released_e95, Nfatc1: released_e95, Cdh11: released_e95}
+  vasc_split:
+    role: split
+    genes: {Cldn5: released_e95, Sox17: released_e95}
+    excluded: {Lyve1: N54 leaves it out by name}
+  blood:
+    role: target
+    label: r_blood
+    genes: {Hba-x: released_e95, Hbb-y: released_e95, Gata1: released_e95}
+  neural_crest:
+    role: competing
+    label: r_neural_crest
+    genes: {Sox10: released_e95, Foxd3: released_e95, Tfap2a: released_e95, Dlx2: released_e95, Dlx5: released_e95}
+  hepatic:
+    role: competing
+    label: r_hepatic
+    genes: {Afp: released_e95, Ttr: released_e95, Alb: released_e95}
+  mesenchyme:
+    role: competing
+    label: r_mesenchyme
+    genes: {Tbx1: released_e95, Fgf10: released_e95, Postn: released_e95, Col1a1: released_e95}
+  epithelial:
+    role: competing
+    label: r_epithelial
+    genes: {Nkx2-1: released_e95, Shh: released_e95, Cdh1: released_e95}
+
+# Never a control gene, as in N54: every gene N54's yaml names (its literature-sourced members, its dropped genes) that
+# is not a member above, besides the released-data panel (feng_relabel.panel_genes) and every member above.
+dropped: [Plp1, Hba-a1, Hbb-bs, Alas2, Col1a2, Col3a1, Dcn, Myh11, Pdgfrb, Rgs5, Kcnj8, Cspg4, Ptprc, C1qb, Lyz2, Cd68,
+          Prox1, Flt4, Phox2b, Fcer1g, Pdpn]
+
+# ------------------------------------------------------------------ the direction
+# Each assigned erythroid nucleus with at least umi_target UMIs is downsampled to exactly umi_target UMIs (without
+# replacement, numpy default_rng([downsample_seed, embryo]) over the embryo's nuclei sorted by name); a nucleus with
+# fewer is left out. Per embryo with at least min_embryo_nuclei such nuclei: the mean CP10k over them. Per end: the
+# mean over its embryos, equal weight per embryo. The direction per gene: log((m_late + eps) / (m_early + eps)).
+umi_target: 400
+downsample_seed: 20261122
+min_embryo_nuclei: 30
+eps: 0.5
