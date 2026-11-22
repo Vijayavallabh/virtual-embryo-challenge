@@ -10740,3 +10740,25 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     launcher for these builds yet; an engineer writes one on the pattern of `embryo_overlay.sh` and a reviewer checks
     it before any launch. A file exists for the order rule only when its builds agree, its checks hold and its sha256
     is committed; nothing is uploaded by the main session.
+- 2026-11-22 (jj), the embryo's two overlay candidates: the question is written and the build launcher is merged
+  (state at 04:21 UTC, 2026-11-22). Written by the AI assistant, which is recused on these terms, designed neither and
+  states no view.
+  - **The question** (`experiments/coords/results/e51_so_ohi/question_for_the_captain.md`): written by a fresh
+    score-blind analyst from row E51's reading and corrected by a cold checker, who verified every figure and restored
+    what the first text had softened (the earlier finding on the series factor, the judged odds of O_hi's world beside
+    SO's, the narrower statement on O's neighbourhood gain) and removed an unsourced line on waiting files. It asks
+    two things: does the captain name SO; does the captain name O_hi, which also lifts the embryo's depth line for
+    that one file. With no answer neither is uploaded. The main session passes it on unchanged and fills the two
+    sha256 blanks once the builds agree.
+  - **The launcher** (`experiments/builds/embryo_so_ohi.sh`, branch `campaign/embryo-so-ohi-build`, 8a9b51f: reviewed
+    ready, no blocker; merged; the builder and `src/` are untouched). Its gate builds a candidate only if the
+    committed reading's own fields say that arm passes; it then runs the specification's validation-board dry runs,
+    reproduces the positions file, the overlay file and the series file from their committed commands (each must give
+    its committed sha256), builds each candidate twice by the specification's command, and prints identity booleans
+    only.
+  - **On the build flag.** The specification's commands carry `--shape-interp-test-ok`, recorded as the captain's yes
+    of 2026-11-21 for the overlay file. The AI assistant's reading, a matter of the order rule and not of design: a
+    test build is not an upload; by the embryo's order rule (entry 2026-11-21 (y)) a file exists only once it is built
+    twice with one sha256, and the captain's own naming is what puts it on the board; the captain reopened the
+    embryo's list for new files on 2026-11-21 (entry (v)). So the two files are built now, as the heart's file D and
+    the search lines' files were built before any upload, and nothing is uploaded without the captain's word.
