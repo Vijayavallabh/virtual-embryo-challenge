@@ -10077,3 +10077,26 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     nothing from or like the held-out knockout); headlines only, no per-metric value read or recorded; the levers
     closed after 2026-11-04; the AI assistant's recusals and its giving no design lean; two uploads a board a day on
     the captain's word; every upload the captain's own act.
+- 2026-11-22 (k), the heart chord's reader is corrected and reviewed; rows N56 and H30 name the corrected code before
+  the gate's second start (state at 01:27 UTC, 2026-11-22). Written by the AI assistant, which decided nothing in it.
+  - **The rule, a fresh score-blind analyst's as judge of record.** A row of the outside nuclei atlas's count matrices
+    whose gene id the atlas's gene table does not list gets no symbol and enters nothing: not the panel, not the panel
+    library that keeps a cell (at least 30 counts), not the CP10k of the classifier or the means, not a chord. A row
+    takes a symbol only when its name equals a table gene id exactly; a symbol the table gives to two ids is dropped;
+    the reader fails closed on duplicate ids, on row names that are not unique and when no row is a table id; the
+    fallback that took row names as symbols is gone. The analyst's finding on the rows' wording: no change, because
+    rows N56 and H30 already say "matched by symbol through JAX's gene table" and confine the library and the
+    normalisation to "the genes JAX carries"; an unlisted row has no symbol through that table. The table's
+    `gene_type` and `chr` columns are not read. No bar, constant, seed, embryo list, stage list or statement changed.
+  - **The code.** An engineer implemented it with tests on a synthetic mixed matrix (`campaign/moon-heart-chord-4`,
+    e5ba8d9: the reader; and the launcher now marks a starting step as running before it records its commit, so the
+    exit file left by the first start cannot be read as the second start's). Each embryo's counts of rows, listed rows
+    and unlisted rows are recorded in the gate's record and the tables. A reviewer says ready, no blocker. Merged to
+    main; the three H30 files on main are byte for byte e5ba8d9's.
+  - **The rows.** Rows N56 and H30 are changed in this commit in two things only, checked by a string comparison
+    against the rows as placed: the code commit they name (e5ba8d9 for 88bb2cf, in two places each) and its branch.
+    Their rules, bars and words are as placed in entry (e). No gate reading existed when they were changed: the first
+    start crashed in the reader before anything was read (entry (h)). This commit is the second start's ROW; the gate,
+    the tables and, if the gate says PASS, the counted read run from a new worktree with its own environment.
+  - **Same fact, other reads.** H31 (the heart bridge) reads the same files and takes this rule in its own fix round.
+    Row T68 (T1) takes its own analyst's rule for its reducer.
