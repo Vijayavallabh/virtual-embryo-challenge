@@ -168,7 +168,7 @@ def test_the_default_damping_given_explicitly_builds_the_same_r20_file(bt, rc4, 
 # ------------------------------------------------------------------ refusals, before anything is read
 
 
-NUMBERS_ALLOWED = {"0.5", "1", "1.5", "2", "3", "20"}  # the option's values, lib3 and the row's ID: no data
+NUMBERS_ALLOWED = {"0.5", "1", "1.5", "2", "2.5", "3", "20", "22"}  # the options' values, lib3, the rows' IDs
 
 
 def _refused(bt, monkeypatch, tmp_path, argv: list[str], match: str) -> str:
@@ -200,8 +200,9 @@ def _refused(bt, monkeypatch, tmp_path, argv: list[str], match: str) -> str:
     ([*R20, "--released-bet", "share_trend", "--bet-strength", "0.5"], "with --released-bet and --bet-strength"),
     ([*R20, "--seed", "1000002"], "recomputed last file only"),
     ([*R20, "--board", "T1:val"], "recomputed last file only"),
-    (["--feng-fraction-mult", "2.5", "--captain-ruling", "R20"], "--feng-fraction-mult takes 1"),
-    (["--feng-fraction-mult", "3", "--captain-ruling", "R20"], "--feng-fraction-mult takes 1"),
+    # 2.5 and 3.0 are row R22's line (tests/test_t1_fraction_line_build.py): refused with R20 all the same
+    (["--feng-fraction-mult", "2.5", "--captain-ruling", "R20"], "refused with --captain-ruling R20: only row R22"),
+    (["--feng-fraction-mult", "3", "--captain-ruling", "R20"], "refused with --captain-ruling R20: only row R22"),
     (["--feng-fraction-mult", "0.8"], "--feng-fraction-mult takes 1"),
 ])
 def test_every_other_use_of_the_value_or_the_row_is_refused(bt, monkeypatch, tmp_path, extra, match):
