@@ -42,7 +42,7 @@ case "$STEP" in
       tests/test_feng_relabel.py tests/test_t1_feng_groups_none.py tests/test_hidden_counts.py \
       tests/test_g_mom_verify.py tests/test_core.py tests/test_s2_rules.py tests/test_t1_late_proxy.py \
       tests/test_b0_trend.py tests/test_build_heart_floor_iso.py tests/test_build_heart_iso_trim.py \
-      tests/test_build_heart_core_trim.py tests/test_e47_floor_exact.py \
+      tests/test_build_heart_core_trim.py tests/test_build_heart_organ_scope.py tests/test_e47_floor_exact.py \
       tests/test_h25_heart_forms.py tests/test_h6_cfm.py tests/test_heart_trend_build.py \
       tests/test_n12_hygiene_size.py tests/test_n2_momentum_size.py tests/test_n48_m1_direction_shrink.py \
       tests/test_t1_cal_read.py tests/test_t1_ctl_range_read.py tests/test_t1_eb_read.py tests/test_t1_eps_read.py \
@@ -52,7 +52,7 @@ case "$STEP" in
       tests/test_t1_zone_read.py tests/test_t2_latent.py tests/test_h26_heart_scope_forms.py tests/test_t1_bets.py \
       tests/test_t62_recomputed_read.py tests/test_h27_heart_forecast_size.py \
       tests/test_t63_double_step_read.py tests/test_h28_heart_trend_strength.py tests/test_h29a_heart_trend_forms.py \
-      tests/test_heart_candidates.py \
+      tests/test_heart_candidates.py tests/test_h29b_heart_organ.py tests/test_heart_organ_launchers.py \
       tests/test_t1_candidates_build.py tests/test_occupancy_frame.py tests/test_shape_interp_build.py \
       tests/test_t64_heldmom_read.py tests/test_t65_ms_read.py tests/test_copy_rows_build.py tests/test_copy_rows.py \
       tests/test_e50_copy_rows_read.py tests/test_embryo_overlay.py tests/test_embryo_copy_rows_launcher.py \

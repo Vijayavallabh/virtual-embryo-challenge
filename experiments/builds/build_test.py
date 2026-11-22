@@ -86,7 +86,14 @@ machine, and an official upload needs the captain's go-ahead.
           core_trim --expression copy --z-mode raw, the same draw from E10.5 under radial_trim_mask at fraction 0,
           sized to the size JSON's raw-mode core forecast (z_modes.raw.pred_rms_core, the cloud at the core's own
           scope); its record and the half trim's carry scope_option (scope rule, kept-share field, size field,
-          halving)
+          halving). The organ cut, file D (row R21 of experiments/harness/TRIES.md, the captain's order of
+          2026-11-22 to code and read it; off unless all three flags are given; refused with --trend, --depth, --herd
+          and --cfm): heart --entry organ_scope --expression copy --z-mode raw, the same draw from E10.5 under
+          vec.t2_build.organ_scope_mask (the chamber categories of configs/t2_chamber_classes.yaml joined to the core
+          at L, the 99th percentile of the core's nearest-core distances; an unmapped label refuses), sized by
+          vec.t2_build.size_organ_scope to z_modes.raw.pred_rms_core times rms(organ pool) / rms(core) on E10.5; then
+          halve.py at seed 1000001 as for the trims. Its record names the scope, the label config's sha256, L, the
+          pool's E10.5 rows and the size field
   embryo  --method pseudobulk_shift | fgw | fgw_shape0 | fgw_shape1: E7.5 cells moved by the E7.25 -> E7.5 change, or
           the FGW interpolation between E7.5 and E8.0 at t = 1/2 (fgw_shape0, the s2 of docs/S2_RULES.md, keeps the
           mixture in E7.5's geometry); sized by the pre-registered embryo procedure (size_embryo_E7.75.json).
@@ -237,6 +244,15 @@ HEART_SCOPE_OPTIONS = {
                   "rule": "surrounding cells removed farthest in plane from the core first, to an in-plane scope of "
                           "at most zero (the core's own)"},
 }
+# The organ cut, file D of the heart's order rule (row R21 of experiments/harness/TRIES.md, the captain's order of
+# 2026-11-22 to code and read it; docs/S2_RULES.md, amendment of 2026-11-22; off unless all three flags are given, and
+# only the captain's yes by name, after its gate and its read, puts it in an upload): the copy draw from E10.5 under
+# vec.t2_build.organ_scope_mask (the chamber categories of configs/t2_chamber_classes.yaml joined to the core), sized
+# to the raw-mode core forecast times rms(organ pool) / rms(core) on E10.5 (vec.t2_build.size_organ_scope); the count
+# rule, the seed and the halving are the full trim's.
+HEART_ORGAN_SCOPE = "heart --entry organ_scope --expression copy --z-mode raw"
+HEART_ORGAN_RULING = ("row R21 of experiments/harness/TRIES.md: the captain's order to code and read file D; an "
+                      "upload needs its gate, its read, two identical DGX builds and his yes by name")
 # --shape-interp (row E49 as drafted; no ruling): off by default; the fixed order of the steps when it is given
 SHAPE_INTERP_OFF = "none"
 SHAPE_INTERP_ORDER = ("floor_exact positions, the shape form, the size rule's RMS rescale, the duplicate jitter, the "
@@ -1070,10 +1086,17 @@ def build_heart(a) -> dict:
     if a.trend and (a.entry == "s2" or a.depth or a.herd or a.cfm):
         sys.exit("--trend is refused with --entry s2, --depth, --herd and --cfm (no try read those combinations)")
     copy = a.expression == "copy"
+    # The organ cut (HEART_ORGAN_SCOPE; off unless asked for): --entry organ_scope builds that one combination only
+    organ = a.entry == "organ_scope"
+    if organ and (not (copy and a.z_mode == "raw") or a.trend or a.depth or a.herd or a.cfm):
+        sys.exit(f"--entry organ_scope is refused except as {HEART_ORGAN_SCOPE} (the copy draw from the organ cut, "
+                 "sized in the raw mode to the core forecast times rms(organ pool) / rms(core) on E10.5), and with "
+                 "--trend, --depth, --herd and --cfm")
     # The scope bet (HEART_ISO_TRIM; off unless asked for): --entry s2_trim with --expression copy --z-mode raw, the one
     # trimmed copy file. Every other use of --expression copy outside s1 is refused, as before.
     iso_trim = copy and a.entry == "s2_trim" and a.z_mode == "raw"
-    if copy and ((a.entry not in ("s1", "core_trim") and not iso_trim) or a.trend or a.depth or a.herd or a.cfm):
+    if copy and ((a.entry not in ("s1", "core_trim", "organ_scope") and not iso_trim) or a.trend or a.depth or a.herd
+                 or a.cfm):
         sys.exit("--expression copy is refused with --entry s2, --trend, --depth, --herd and --cfm, and with --entry "
                  "s2_trim unless --z-mode raw is given (it is the copy baseline's draw from --entry s1's pool, the "
                  f"full E10.5, with no step; or {HEART_ISO_TRIM}: the same draw from the half trim, sized in the raw "
@@ -1103,7 +1126,21 @@ def build_heart(a) -> dict:
         trim = {"rule": HEART_SCOPE_OPTIONS["core_trim"]["rule"], "frac": HEART_SCOPE_OPTIONS["core_trim"]["frac"],
                 "kept_share": float(keep.mean()), "xy_scope_before": t2_build.xy_scope(C, core),
                 "xy_scope_after": t2_build.xy_scope(C[keep], core[keep])}
-    roles = {"ref": ("T2/E10.5.h5ad", 10.5), "start": ("T2/E9.5.h5ad", 9.5)}
+    elif organ:  # file D: the organ cut of E10.5 (row R21)
+        core = np.asarray(ref.obs["core"], dtype=bool)
+        C = np.asarray(ref.obsm[COORD_KEY], dtype=float)[:, :3]
+        if t2_build.T2_LABEL_KEY not in ref.obs:
+            sys.exit(f"E10.5 has no obs[{t2_build.T2_LABEL_KEY!r}] column: the organ cut needs the released labels")
+        try:
+            keep, trim = t2_build.organ_scope(C, ref.obs[t2_build.T2_LABEL_KEY].to_numpy(), core)
+        except t2_build.UnmappedT2LabelError as e:
+            sys.exit(str(e))
+        organ_ratio = t2_build.organ_core_rms_ratio(C, keep, core)
+        pool = ref[keep].copy()
+        # the pool's rows are E10.5's (released data), never a test board's count
+        trim.update(pool_rows=int(keep.sum()), pool_rows_of="the released E10.5 after duplicate records are dropped",
+                    organ_core_rms_ratio=organ_ratio)
+    roles ={"ref": ("T2/E10.5.h5ad", 10.5), "start": ("T2/E9.5.h5ad", 9.5)}
     inputs = {"ref": pool, "start": start}
     if a.trend:  # b0_trend (row H11): the earlier stages on the board's panel, loaded as the two above, never trimmed
         for role, (f, day) in HEART_TREND_STAGES.items():
@@ -1119,10 +1156,14 @@ def build_heart(a) -> dict:
         stage = harness._b0_t2(ctx, trend=True, trend_record=trend_rec)  # b0_trend, the harness's B0 otherwise
     else:
         stage = harness._b0_t2(ctx, depth=a.depth, herd=a.herd, cfm=a.cfm)  # the harness's B0 with its guard and checks
-    hyp = {"s1": "H1", "s2": "H2", "s2_trim": "H2", "core_trim": t2_build.SIZE_CORE_SCOPE}[a.entry]
+    hyp = {"s1": "H1", "s2": "H2", "s2_trim": "H2", "core_trim": t2_build.SIZE_CORE_SCOPE,
+           "organ_scope": t2_build.SIZE_ORGAN_SCOPE}[a.entry]
     z_mode = None if a.z_mode == "recorded" else a.z_mode  # None: the mode the size JSON recorded
     # the size step checks its reference against the full E10.5 cloud it measured; it rescales the (trimmed) cells
-    if z_mode is None:
+    if organ:
+        coords, size = t2_build.size_organ_scope(stage.coords, SIZES["heart"], organ_ratio, source_stage="E10.5",
+                                                 reference_cloud=ref, expect_board="heart")
+    elif z_mode is None:
         coords, size = t2_build.size_or_hold(stage.coords, SIZES["heart"], hyp, source_stage="E10.5",
                                              reference_cloud=ref, expect_board="heart")
     else:
@@ -1139,7 +1180,20 @@ def build_heart(a) -> dict:
             **({"expression": "copy"} if copy else {}),
             **({"z_mode": z_mode} if z_mode is not None else {}),
             **({"scope_option": _scope_option_record(a.entry, scope_option)} if scope_option is not None else {}),
+            **({"scope_option": _organ_option_record(trim)} if organ else {}),
             "size": {k: size[k] for k in size if not isinstance(size[k], (dict, list))}}
+
+
+def _organ_option_record(trim: dict) -> dict:
+    """What the organ cut's build record names: the command, the order it was built under, the scope rule, the label
+    config and its sha256, L and its percentile, the record fields of the kept share and of the pool's rows (E10.5's,
+    released data; no test board's count), the size field and its source, and the halving that follows."""
+    return {"command": HEART_ORGAN_SCOPE, "ruling": HEART_ORGAN_RULING, "scope": "organ_scope",
+            "scope_rule": trim["rule"], "label_config": trim["label_config"],
+            "label_config_sha256": trim["label_config_sha256"], "link_percentile": trim["link_percentile"],
+            "link_length": trim["link_length"], "kept_share_field": "trim.kept_share",
+            "pool_rows_field": "trim.pool_rows", "size_hypothesis": t2_build.SIZE_ORGAN_SCOPE,
+            "size_source_field": t2_build.SIZE_ORGAN_SOURCE, "halving": HEART_HALVING}
 
 
 def _scope_option_record(entry: str, opt: dict) -> dict:
@@ -1531,10 +1585,12 @@ def build_parser() -> argparse.ArgumentParser:
                                 f"{FENG_FRACTION_MULTS_R22[0]:g} or {FENG_FRACTION_MULTS_R22[1]:g}: {T1_R22_ROW}, the "
                                 "captain's order for the first search line")
         if name == "heart":
-            p.add_argument("--entry", choices=("s1", "s2", "s2_trim", "core_trim"), required=True,
+            p.add_argument("--entry", choices=("s1", "s2", "s2_trim", "core_trim", "organ_scope"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "
                                 "scope, the s2 of docs/S2_RULES.md; core_trim = the full trim (no ruling; only as "
-                                f"{HEART_CORE_TRIM}, sized to the raw mode's own core forecast)")
+                                f"{HEART_CORE_TRIM}, sized to the raw mode's own core forecast); organ_scope = the "
+                                f"organ cut, file D (row R21; only as {HEART_ORGAN_SCOPE}, sized to the raw-mode core "
+                                "forecast times rms(organ pool) / rms(core) on E10.5)")
             p.add_argument("--herd", action="store_true",
                            help="herd B0's draw towards the pool's mean expression (try H4; off: the entry so far)")
             p.add_argument("--depth", action="store_true",
