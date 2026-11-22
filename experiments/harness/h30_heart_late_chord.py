@@ -344,7 +344,8 @@ GENE_SYMBOL_COLUMNS = ("gene_short_name", "gene_name", "symbol")
 
 
 def jax_gene_symbols(df_gene: Path) -> dict[str, str]:
-    """Gene ID -> symbol from JAX's gene table (no cells)."""
+    """Gene ID -> symbol from JAX's gene table (its ID and symbol columns only; no cells). Fails closed when a gene ID
+    is listed more than once."""
     with open(df_gene, newline="") as f:
         header = next(csv.reader(f))
     idc = next((c for c in GENE_ID_COLUMNS if c in header), header[0])
@@ -352,24 +353,45 @@ def jax_gene_symbols(df_gene: Path) -> dict[str, str]:
     if sym is None:
         raise ValueError(f"{Path(df_gene).name}: no symbol column among {GENE_SYMBOL_COLUMNS}")
     cols = _csv_columns(df_gene, (idc, sym))
-    return dict(zip(cols[idc], cols[sym], strict=True))
+    out = dict(zip(cols[idc], cols[sym], strict=True))
+    if len(out) != len(cols[idc]):
+        raise ValueError(f"{Path(df_gene).name}: a gene ID is listed more than once")
+    return out
 
 
-def symbols_of_rows(rows, id_to_symbol: dict[str, str], panel) -> list[str]:
-    """The count matrix's row names as symbols: through the gene table when every row name is a gene ID in it, as
-    given when the row names already hold the panel's symbols; anything else fails closed."""
+def symbols_of_rows(rows, id_to_symbol: dict[str, str]) -> tuple[list[str | None], dict]:
+    """The count matrix's row names as symbols through the gene table. A row name takes a symbol only when it equals
+    a table gene ID exactly, as written (no version stripping, no case folding); a row name the table does not list
+    gets None and is never matched in its own right (not as a symbol, not by any other route). Also the row record,
+    from the row names only: the numbers of rows, listed rows and unlisted rows. Fails closed on non-unique row names,
+    or when no row name is a table gene ID."""
     rows = [str(r) for r in rows]
-    if rows and all(r in id_to_symbol for r in rows):
-        return [id_to_symbol[r] for r in rows]
-    if set(panel) & set(rows):
-        return rows
-    raise ValueError("the count matrix's row names are neither the gene table's IDs nor gene symbols")
+    if len(set(rows)) != len(rows):
+        raise ValueError("the count matrix's row names are not unique")
+    symbols = [id_to_symbol.get(r) for r in rows]
+    listed = sum(s is not None for s in symbols)
+    if listed == 0:
+        raise ValueError("none of the count matrix's row names is a gene ID of the gene table")
+    return symbols, {"rows": len(rows), "listed": listed, "unlisted": len(rows) - listed}
 
 
-def panel_columns(symbols, panel) -> dict[str, int]:
-    """Panel gene -> column of a source, for symbols the source holds once (feng_relabel.unique_index)."""
+def table_held_twice(id_to_symbol: dict[str, str]) -> frozenset[str]:
+    """The symbols a gene table gives to two or more gene IDs."""
+    seen: set[str] = set()
+    dup: set[str] = set()
+    for s in id_to_symbol.values():
+        (dup if s in seen else seen).add(s)
+    return frozenset(dup)
+
+
+def panel_columns(symbols, panel, table_symbols: dict[str, str] | None = None) -> dict[str, int]:
+    """Panel gene -> column of a source, for symbols the source holds once (feng_relabel.unique_index). A None symbol
+    (a matrix row the gene table does not list) is never mapped. With `table_symbols` (JAX's gene table, ID ->
+    symbol), a symbol the table gives to two or more IDs is dropped as well, even when the matrix holds only one of
+    those IDs."""
     idx = feng_relabel.unique_index(list(symbols))
-    return {g: idx[g] for g in panel if g in idx}
+    drop = table_held_twice(table_symbols) if table_symbols is not None else frozenset()
+    return {g: idx[g] for g in panel if g is not None and g in idx and g not in drop}
 
 
 def to_panel(C: sparse.spmatrix, cols: dict[str, int], panel) -> tuple[sparse.csr_matrix, np.ndarray]:
@@ -393,8 +415,9 @@ def _parse_rds(path: Path):
     return feng2022_geo.deref(parse_file(path).object)
 
 
-def read_jax_embryo(path: Path, id_to_symbol: dict[str, str], panel) -> tuple[sparse.csr_matrix, np.ndarray]:
-    """One JAX embryo's raw counts (a dgCMatrix, genes x cells, in the per-embryo rds) on the panel genes it carries."""
+def read_jax_embryo(path: Path, id_to_symbol: dict[str, str], panel) -> tuple[sparse.csr_matrix, np.ndarray, dict]:
+    """One JAX embryo's raw counts (a dgCMatrix, genes x cells, in the per-embryo rds) on the panel genes it carries,
+    and its row record. Rows the gene table does not list are dropped by name before anything is summed."""
     fio.verify_manifest_output(path)
     obj = _parse_rds(path)
     if feng2022_geo.r_class(obj) != "dgCMatrix":
@@ -402,8 +425,10 @@ def read_jax_embryo(path: Path, id_to_symbol: dict[str, str], panel) -> tuple[sp
     X, rows, _ = feng2022_geo.dgc_matrix(obj)
     if rows is None:
         raise ValueError(f"{path.name}: the count matrix has no row names")
-    cols = panel_columns(symbols_of_rows(rows, id_to_symbol, panel), panel)
-    return to_panel(X.T, cols, panel)
+    symbols, rec = symbols_of_rows(rows, id_to_symbol)
+    cols = panel_columns(symbols, panel, id_to_symbol)
+    C, carried = to_panel(X.T, cols, panel)
+    return C, carried, rec
 
 
 def read_jax(root: Path, embryos, panel, refused=frozenset()) -> tuple[dict[int, sparse.csr_matrix], np.ndarray,
@@ -419,13 +444,14 @@ def read_jax(root: Path, embryos, panel, refused=frozenset()) -> tuple[dict[int,
         fio.verify_manifest_output(p)
     days = check_jax_days(jax_days(df_cell, embryos))
     id_to_symbol = jax_gene_symbols(df_gene)
-    out, carried = {}, None
+    out, carried, matrix_rows = {}, None, {}
     for n in sorted(embryos):
-        C, car = read_jax_embryo(root / "embryo" / f"embryo_{n}_gene_count.rds", id_to_symbol, panel)
+        C, car, rows = read_jax_embryo(root / "embryo" / f"embryo_{n}_gene_count.rds", id_to_symbol, panel)
         if carried is not None and not np.array_equal(car, carried):
             raise ValueError("JAX embryos carry different panel genes")
-        out[n], carried = C, car
-    return out, carried, {"embryos": sorted(int(n) for n in embryos), "days": {str(k): v for k, v in days.items()}}
+        out[n], carried, matrix_rows[str(n)] = C, car, rows
+    return out, carried, {"embryos": sorted(int(n) for n in embryos), "days": {str(k): v for k, v in days.items()},
+                          "matrix_rows": matrix_rows}
 
 
 FENG_OBS_COLUMNS = ("stage",)  # the only metadata column of Feng's this script reads
@@ -729,8 +755,10 @@ def build_table(key: str, data_dir: Path, external: Path, panel, jax_cache: dict
             raise ValueError("JAX embryos carry different panel genes")
         jcache.setdefault("counts", {}).update(got)
         jcache.setdefault("days", {}).update({int(k): v for k, v in jrec["days"].items()})
+        jcache.setdefault("matrix_rows", {}).update({int(k): v for k, v in jrec["matrix_rows"].items()})
         jcache["carried"] = car
     days = {n: jcache["days"][n] for n in jax_emb}
+    matrix_rows = {n: jcache["matrix_rows"][n] for n in jax_emb}
     feng_stages = tuple(s for s in (tr["feng_early"], FENG_LATE) if s)
     fc, fcar, _ = read_feng(Path(external) / FENG_DIR, feng_stages, panel, REFUSED_FENG[key])
     carried = {"jax": jcache["carried"], "feng": fcar}
@@ -753,6 +781,7 @@ def build_table(key: str, data_dir: Path, external: Path, panel, jax_cache: dict
             "anchors": {"jax": {a: [int(n) for n in v] for a, v in anchors["jax"].items()},
                         "feng": anchors["feng"]},
             "jax_days": {str(k): v for k, v in days.items()},
+            "jax_matrix_rows": {str(k): v for k, v in matrix_rows.items()},
             "carried": {s: int(np.sum(v)) for s, v in carried.items()},
             "stages_read": {"merfish": [tr["merfish"]], "jax": sorted(int(n) for n in jax_emb),
                             "feng": list(feng_stages)},

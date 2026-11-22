@@ -1,0 +1,238 @@
+# T2 chamber categories for every T2 heart label (MERFISH), for the heart's organ-cut file D (row R21 of
+# experiments/harness/TRIES.md, the captain's order of 2026-11-22; docs/S2_RULES.md, amendment of 2026-11-22).
+#
+# This file ports the committed rule of configs/t1_chamber_classes.yaml, fixed 2026-10-19 before the 2026-10-20 release,
+# to the T2 labels. It holds no composition, count or score of any stage: it says only which category each label belongs
+# to. vec.t2_build.t2_chamber_categories reads it and refuses any label not listed here (`UnmappedT2LabelError`), so a
+# new label is mapped and committed before the organ cut touches its file. vec.t2_build.organ_scope_mask keeps the
+# categories whose scope is `chamber`.
+#
+# The rule, as configs/t1_chamber_classes.yaml states it (its rules 1 to 3; rule 4, stand-ins, has no use here):
+#   1. The label is mapped in configs/lineage_map.yaml first, by that file's rule.
+#   2. Its category is group_base[its group], except where the label names one of these, which win over the group:
+#      septum transversum -> surrounding; cushion or valve endocardium, cushion EndoMT cells or cushion mesenchyme ->
+#      endocardium; epicardium, proepicardium or epicardium-derived cells -> epicardium; erythroid, haematopoietic or
+#      immune cells of any kind -> blood; lymphatic endothelium -> vascular_endothelium.
+#   3. A label whose group has a null base (LPM, Unknown) or whose name does not say what it is: placed by its evidence
+#      when that evidence places it inside the heart, else surrounding. No new evidence is run for this port (it reads
+#      no data file), so every such label takes the default, surrounding, except Early VIC, which T1's committed file
+#      already places in endocardium by rule 2 (cushion mesenchyme).
+#
+# Which labels: every label of configs/lineage_map.yaml (one map serves every released file). That is a superset of
+# the T2 heart labels of E8.25_late, E8.5, E8.75, E9.5 and E10.5: the release harmonisation of 2026-10-28
+# (experiments/harmonise/results/release/manifest_release.json, allow_unmapped false) found no label of those five files
+# outside the lineage map. The committed per-label lists name the labels of four of the five files (the comments
+# below: E10.5 from experiments/labels/results/E10.5__vs__E9.5.csv, E9.5 and E8.75 from
+# experiments/harmonise/results/ref_perclass_*.csv, E8.5 from tests/test_prep.py); no committed file lists E8.25_late's
+# labels one by one, so E8.25_late is covered through the lineage map and the loader's refusal. Labels of T1 and T3
+# files are placed by the same rule; they are listed only so that the file covers the whole map.
+#
+# tests/test_t2_chamber_classes.py checks: every lineage-map label is listed; categories and group_base equal T1's;
+# each label's category is its group's base unless it is listed under `exceptions`, and every null-base label is.
+
+version: 1
+
+# The categories and their scopes, copied from configs/t1_chamber_classes.yaml (the test checks they are equal). The
+# organ cut keeps the `chamber` scope: cm, endocardium, epicardium, vascular_endothelium, blood.
+categories:
+  cm:
+    scope: chamber
+    description: cardiomyocytes of every segment (atrial, ventricular, AVC, OFT, IFT, SV)
+  endocardium:
+    scope: chamber
+    description: endocardium, cushion and valve endocardium, cushion EndoMT cells and cushion mesenchyme
+  epicardium:
+    scope: chamber
+    description: epicardium, proepicardium and epicardium-derived cells
+  vascular_endothelium:
+    scope: chamber
+    description: vascular (non-endocardial) and lymphatic endothelium
+  blood:
+    scope: chamber
+    description: erythroid, haematopoietic and immune cells
+  progenitor:
+    scope: adjacent
+    description: cardiac progenitors (first and second heart field, JCF, DMP)
+  pericardium:
+    scope: adjacent
+    description: pericardial mesoderm
+  pharyngeal:
+    scope: adjacent
+    description: pharyngeal mesoderm
+  surrounding:
+    scope: surrounding
+    description: >-
+      foregut, ectoderm, neural tube, neural crest, hepatocyte, septum transversum, paraxial and extra-embryonic
+      mesoderm
+
+# Lineage-map group -> category, copied from configs/t1_chamber_classes.yaml. null = no default (rule 3).
+group_base:
+  CM: cm
+  Endocardium: endocardium
+  Endothelium: vascular_endothelium
+  EpicardiumST: epicardium          # ST itself is an exception (surrounding)
+  CardiacProgenitor: progenitor
+  Pericardium: pericardium
+  PharyngealMesoderm: pharyngeal
+  ParaxialMesoderm: surrounding
+  LPM: null
+  ExtraEmbryonicMeso: surrounding
+  NCC: surrounding
+  Endoderm: surrounding
+  Hepatocyte: surrounding
+  Ectoderm: surrounding
+  Neural: surrounding
+  Blood: blood
+  EpiblastStreak: surrounding
+  Unknown: null
+
+# Every label of configs/lineage_map.yaml. Stage tags: the T2 files whose committed per-label list names the label.
+labels:
+  # cardiomyocytes (CM)
+  OFT/RV-CM: cm
+  IFT-CM: cm                    # T2 E8.5, E8.75
+  AVC-CM: cm
+  RV-CM: cm
+  LV-CM: cm
+  SV-CM: cm                     # T2 E9.5, E10.5
+  V-CM: cm                      # T2 E8.5, E8.75, E9.5, E10.5
+  A-CM: cm                      # T2 E9.5, E10.5
+  OFT-CM: cm                    # T2 E9.5, E10.5
+  vCM: cm
+  FHF: cm
+  CM: cm
+  # cardiac progenitors (CardiacProgenitor)
+  pSHF: progenitor
+  aSHF: progenitor
+  SHF: progenitor
+  JCF: progenitor               # T2 E8.5, E8.75
+  CP: progenitor
+  DMP: progenitor               # T2 E9.5, E10.5
+  DPM: progenitor
+  # endocardium (Endocardium)
+  Endocardium: endocardium
+  Endo: endocardium             # T2 E8.5, E8.75
+  Chamber-Endo: endocardium     # T2 E9.5, E10.5
+  Cush-EndoMT-Endo: endocardium     # T2 E9.5, E10.5; cushion EndoMT cells (rule 2 agrees with the group)
+  Valve-EndoMT-Endo: endocardium    # T2 E10.5; valve EndoMT endocardium (rule 2 agrees with the group)
+  Endocardium-1: endocardium
+  Endocardium-2: endocardium
+  EndoMT Endocardium: endocardium
+  Early VIC: endocardium        # T1 only; group Unknown (null base): T1's committed exception, cushion mesenchyme
+  # vascular endothelium (Endothelium)
+  Endothelium: vascular_endothelium
+  BEC: vascular_endothelium     # T2 E9.5, E10.5
+  early-VEC: vascular_endothelium   # T2 E9.5, E10.5
+  Great Artery Endoth: vascular_endothelium   # T2 E9.5, E10.5
+  Intra-Endoth: vascular_endothelium
+  Intra-Endoth-1: vascular_endothelium        # T2 E8.5, E8.75
+  Intra-Endoth-2: vascular_endothelium        # T2 E8.5, E8.75
+  HEM-Endoth: vascular_endothelium            # T2 E8.5, E8.75, E10.5; haemato-endothelial: named endothelium, kept
+                                              # at its group's base (blood would be kept the same way)
+  EXE-Endothlium: vascular_endothelium
+  Allantois Endothelium: vascular_endothelium
+  Endocardium/Intra-Embryonic Endothelium: vascular_endothelium
+  Haematopoetic Endothelium: vascular_endothelium   # as HEM-Endoth
+  # epicardium lineage and septum transversum (EpicardiumST)
+  Proepicardium: epicardium
+  Proepi: epicardium            # T2 E9.5
+  Epicardium: epicardium
+  Epi: epicardium               # T2 E10.5
+  ST: surrounding               # T2 E9.5; septum transversum (rule 2; see exceptions)
+  # pericardium (Pericardium)
+  Pericardium: pericardium
+  Peri: pericardium             # T2 E8.5, E8.75, E9.5, E10.5
+  Pericardium/Body Wall: pericardium
+  # pharyngeal mesoderm (PharyngealMesoderm)
+  aPHM: pharyngeal              # T2 E8.5, E8.75, E9.5
+  pPHM: pharyngeal              # T2 E8.5, E8.75, E9.5
+  Lateral-PAM: pharyngeal       # T2 E9.5
+  Late-a-PHM: pharyngeal        # T2 E10.5
+  BW: pharyngeal                # T2 E10.5; body wall, grouped with pharyngeal mesoderm by the lineage map
+  Anterior Pharyngeal Mesoderm: pharyngeal
+  Posterior Pharyngeal Mesoderm: pharyngeal
+  # paraxial mesoderm (ParaxialMesoderm)
+  PHM/PAM: surrounding
+  PAM-1: surrounding            # T2 E8.5, E8.75
+  PAM-2: surrounding            # T2 E8.5, E8.75
+  PAM-3: surrounding            # T2 E8.5, E8.75
+  PAM-4: surrounding            # T2 E8.5, E8.75
+  Dorsal-PAM: surrounding       # T2 E9.5, E10.5
+  Paraxial Mesoderm: surrounding
+  SOM: surrounding              # T2 E8.5, E8.75
+  Paraxial Mesoderm-1: surrounding
+  Paraxial Mesoderm-2: surrounding
+  # lateral plate mesoderm (LPM, null base)
+  LPM: surrounding              # T2 E8.5, E8.75; rule 3 default (see exceptions)
+  # extra-embryonic mesoderm (ExtraEmbryonicMeso)
+  EXEM: surrounding
+  ExEM-1: surrounding           # T2 E8.5, E8.75
+  ExEM-2: surrounding           # T2 E8.5, E8.75
+  p-EXEM: surrounding
+  Allantois: surrounding        # T2 E8.5, E8.75
+  Extra-Embryonic Mesenchyme-1: surrounding
+  Extra-Embryonic Mesenchyme-2: surrounding
+  # neural crest (NCC)
+  NCC: surrounding              # T2 E8.5, E8.75, E9.5, E10.5
+  NCC-derived: surrounding
+  Branchial Arch: surrounding
+  Branch Arch: surrounding      # T2 E9.5, E10.5
+  NCC-1: surrounding
+  NCC-2: surrounding
+  NCC-3: surrounding
+  # endoderm (Endoderm) and hepatocytes (Hepatocyte)
+  Foregut: surrounding          # T2 E9.5
+  D-FG: surrounding             # T2 E8.5, E8.75
+  V-FG: surrounding
+  a-FG: surrounding             # T2 E8.5, E8.75
+  Lateral FG: surrounding       # T2 E8.5, E8.75
+  Gut Endoderm: surrounding     # T2 E8.5, E8.75
+  Hindgut: surrounding          # T2 E8.5, E8.75
+  Epithelium: surrounding
+  EXE-Endoderm: surrounding     # T2 E8.5, E8.75
+  Bronchus: surrounding         # T2 E10.5
+  Ventral Foregut: surrounding
+  Dorsal Foregut: surrounding
+  Extra Endoderm: surrounding
+  Hepatocyte: surrounding
+  Hepatocytes: surrounding      # T2 E9.5, E10.5
+  # ectoderm (Ectoderm) and neural tissue (Neural)
+  Surface Ectoderm: surrounding
+  SE: surrounding               # T2 E9.5, E10.5
+  aSE: surrounding
+  pSE: surrounding              # T2 E8.5, E8.75
+  V-SE: surrounding
+  d-CSE: surrounding            # T2 E8.5, E8.75
+  V-CSE: surrounding            # T2 E8.5, E8.75
+  EXE-Ectoderm: surrounding
+  Ventral Surface Ectoderm: surrounding
+  Dorsal Surface Ectoderm: surrounding
+  Neural Tube: surrounding      # T2 E8.5, E8.75
+  Forebrain: surrounding        # T2 E8.5, E8.75
+  Hindbrain: surrounding
+  # blood (Blood)
+  Blood: blood
+  Blood Progenitor: blood
+  Macrophage: blood
+  # epiblast and streak (EpiblastStreak)
+  Anterior Epiblast: surrounding
+  Caudal Epiblast: surrounding  # T2 E8.5, E8.75
+  Primitive Streak: surrounding
+  # unknown (Unknown, null base)
+  Unknown: surrounding          # T2 E8.5, E10.5; rule 3 default (see exceptions)
+  Artificial: surrounding       # rule 3 default (see exceptions)
+
+# Labels whose category differs from group_base[their lineage-map group], or whose group has a null base.
+exceptions:
+  ST: >-
+    Septum transversum: rule 2 places it in surrounding, as configs/t1_chamber_classes.yaml does.
+  Early VIC: >-
+    Early valve interstitial cells (cushion mesenchyme): rule 2 places them in endocardium, as
+    configs/t1_chamber_classes.yaml does (its exception gives the evidence). Not a T2 label.
+  LPM: >-
+    Lateral plate mesoderm, a null-base group: rule 3's default, surrounding. No evidence places it inside the heart in
+    this port, which runs none.
+  Unknown: >-
+    Unknown, a null-base group: rule 3's default, surrounding.
+  Artificial: >-
+    An artefact cluster of a T3 file, group Unknown (null base): rule 3's default, surrounding.

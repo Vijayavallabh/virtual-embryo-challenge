@@ -1,0 +1,8 @@
+Try H30, STEP G (commit f8c46dd06e20a65397190eb8a4c2f41b7d9a0e73): target-free, counts no try. OUTCOME: VOID.
+gate VOID: the classifier's balanced accuracy on held-out MERFISH is below 0.8; H30 ends, no counted read runs, nothing is asked.
+Classifier balanced accuracy on held-out MERFISH: 0.746 (void below 0.8).
+Panel genes JAX carries: 475 (the specification: 475).
+CM: rho +0.261 (line 0.35, null 95th percentile +0.212) does not pass; genes 211; cells {'merfish_E8.75': 3076, 'merfish_E9.5': 16291, 'jax_E8.75': 5946, 'jax_E9.5': 13106}; split-half ceiling MERFISH +0.959, JAX +0.926; embryos 15-21 as the late point (reported only) +0.221
+Endo: rho +0.070 (line 0.25, null 95th percentile +0.143) does not pass; genes 204; cells {'merfish_E8.75': 2307, 'merfish_E9.5': 8284, 'jax_E8.75': 1918, 'jax_E9.5': 3097}; split-half ceiling MERFISH +0.956, JAX +0.755; embryos 15-21 as the late point (reported only) +0.009
+Epi: not evaluable (cells {'merfish_E8.75': 0, 'merfish_E9.5': 2986, 'jax_E8.75': 288, 'jax_E9.5': 495}; at least 200 each); does not pass
+Hep: not evaluable (cells {'merfish_E8.75': 0, 'merfish_E9.5': 458, 'jax_E8.75': 118, 'jax_E9.5': 520}; at least 200 each); does not pass

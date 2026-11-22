@@ -61,7 +61,11 @@ machine, and an official upload needs the captain's go-ahead.
           order of 2026-11-21, docs/PLAN.md decision log 2026-11-21 (x)): the same file with the direction step at 2.0
           times the calendar fraction, nothing else changed; refused without that flag, with any other row, unless
           row R20 is the captain's order naming the option, with --g-mom-damping other than 0.5, with --released-bet,
-          on any other command or seed and on a dry run. Its record's t1_candidate field names row R20
+          on any other command or seed and on a dry run. Its record's t1_candidate field names row R20.
+          --feng-fraction-mult 2.5 or 3.0 --captain-ruling R22 (row R22 of experiments/harness/TRIES.md, the captain's
+          order of 2026-11-22, docs/PLAN.md decision log 2026-11-22 (j): the first search line): the same file with the
+          direction step at 2.5 or 3.0 times the calendar fraction, nothing else changed; refused as the 2.0 value is,
+          with R22 in place of R20 (and 2.0 refused with R22). Its record's t1_candidate field names row R22
   heart   B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
           procedure: --entry s1 = scope hypothesis H1; s2_trim = the s2 of docs/S2_RULES.md (H2 as a trim to half
           E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`). --trend
@@ -82,7 +86,14 @@ machine, and an official upload needs the captain's go-ahead.
           core_trim --expression copy --z-mode raw, the same draw from E10.5 under radial_trim_mask at fraction 0,
           sized to the size JSON's raw-mode core forecast (z_modes.raw.pred_rms_core, the cloud at the core's own
           scope); its record and the half trim's carry scope_option (scope rule, kept-share field, size field,
-          halving)
+          halving). The organ cut, file D (row R21 of experiments/harness/TRIES.md, the captain's order of
+          2026-11-22 to code and read it; off unless all three flags are given; refused with --trend, --depth, --herd
+          and --cfm): heart --entry organ_scope --expression copy --z-mode raw, the same draw from E10.5 under
+          vec.t2_build.organ_scope_mask (the chamber categories of configs/t2_chamber_classes.yaml joined to the core
+          at L, the 99th percentile of the core's nearest-core distances; an unmapped label refuses), sized by
+          vec.t2_build.size_organ_scope to z_modes.raw.pred_rms_core times rms(organ pool) / rms(core) on E10.5; then
+          halve.py at seed 1000001 as for the trims. Its record names the scope, the label config's sha256, L, the
+          pool's E10.5 rows and the size field
   embryo  --method pseudobulk_shift | fgw | fgw_shape0 | fgw_shape1: E7.5 cells moved by the E7.25 -> E7.5 change, or
           the FGW interpolation between E7.5 and E8.0 at t = 1/2 (fgw_shape0, the s2 of docs/S2_RULES.md, keeps the
           mixture in E7.5's geometry); sized by the pre-registered embryo procedure (size_embryo_E7.75.json).
@@ -233,6 +244,15 @@ HEART_SCOPE_OPTIONS = {
                   "rule": "surrounding cells removed farthest in plane from the core first, to an in-plane scope of "
                           "at most zero (the core's own)"},
 }
+# The organ cut, file D of the heart's order rule (row R21 of experiments/harness/TRIES.md, the captain's order of
+# 2026-11-22 to code and read it; docs/S2_RULES.md, amendment of 2026-11-22; off unless all three flags are given, and
+# only the captain's yes by name, after its gate and its read, puts it in an upload): the copy draw from E10.5 under
+# vec.t2_build.organ_scope_mask (the chamber categories of configs/t2_chamber_classes.yaml joined to the core), sized
+# to the raw-mode core forecast times rms(organ pool) / rms(core) on E10.5 (vec.t2_build.size_organ_scope); the count
+# rule, the seed and the halving are the full trim's.
+HEART_ORGAN_SCOPE = "heart --entry organ_scope --expression copy --z-mode raw"
+HEART_ORGAN_RULING = ("row R21 of experiments/harness/TRIES.md: the captain's order to code and read file D; an "
+                      "upload needs its gate, its read, two identical DGX builds and his yes by name")
 # --shape-interp (row E49 as drafted; no ruling): off by default; the fixed order of the steps when it is given
 SHAPE_INTERP_OFF = "none"
 SHAPE_INTERP_ORDER = ("floor_exact positions, the shape form, the size rule's RMS rescale, the duplicate jitter, the "
@@ -544,7 +564,7 @@ def _bet_refusals(a) -> None:
     bet = getattr(a, "released_bet", None)
     if bet is None:
         ruling = getattr(a, "captain_ruling", None)
-        if ruling is not None and _r20_ordered(a):  # row R20's file: _t1_candidate has refused every other use
+        if ruling is not None and _ruled_fraction_ordered(a):  # rows R20, R22: _t1_candidate refused every other use
             return
         if ruling is not None or getattr(a, "bet_strength", None) is not None:
             sys.exit("--captain-ruling and --bet-strength go with --released-bet only")
@@ -576,6 +596,25 @@ T1_CANDIDATE_COMMAND = f"{FENG_NONE_COMMAND} --feng-groups recomputed"
 FENG_FRACTION_MULT_R20 = 2.0
 T1_R20_ROW = "R20"
 T1_R20_OPTION = "`--feng-fraction-mult 2.0`"
+# Row R22 of experiments/harness/TRIES.md (the captain's order of 2026-11-22, docs/PLAN.md decision log 2026-11-22 (j),
+# the amendment of docs/S2_RULES.md "a score-guided search of round steps may run"): the first search line, the next
+# half steps of the same scale, 2.5 and 3.0 x the calendar fraction on T1_CANDIDATE_COMMAND with nothing else changed.
+# Each is taken only with --captain-ruling R22, and only while that row is the captain's order naming the option.
+FENG_FRACTION_MULTS_R22 = (2.5, 3.0)
+T1_R22_ROW = "R22"
+T1_R22_OPTIONS = {2.5: "`--feng-fraction-mult 2.5`", 3.0: "`--feng-fraction-mult 3.0`"}
+# Every value taken only under a ruling row: value -> (the row, the option as the row's first cell names it, the
+# record's order text). R20's entry is the 2.0 file exactly as before.
+FENG_FRACTION_MULTS_RULED = {
+    FENG_FRACTION_MULT_R20: (T1_R20_ROW, T1_R20_OPTION,
+                             f"experiments/harness/TRIES.md row {T1_R20_ROW}, the captain's order of 2026-11-21 "
+                             "(docs/PLAN.md decision log 2026-11-21 (x)): the direction at 2.0 x the calendar "
+                             "fraction, nothing else changed"),
+    **{v: (T1_R22_ROW, T1_R22_OPTIONS[v],
+           f"experiments/harness/TRIES.md row {T1_R22_ROW}, the captain's order of 2026-11-22 (docs/PLAN.md decision "
+           f"log 2026-11-22 (j)), the first search line: the direction at {v:.1f} x the calendar fraction, nothing "
+           "else changed") for v in FENG_FRACTION_MULTS_R22},
+}
 
 
 def _captain_order_names(row: str, option: str, path: Path | None = None) -> bool:
@@ -590,63 +629,66 @@ def _captain_order_names(row: str, option: str, path: Path | None = None) -> boo
             and f"`--captain-ruling {row}`" in first)
 
 
-def _r20_ordered(a) -> bool:
-    """The one command row R20 orders, as _t1_candidate holds it: --feng-fraction-mult 2.0 with --captain-ruling R20,
-    no --released-bet or --bet-strength, and row R20 the captain's order naming the option."""
-    return (getattr(a, "feng_fraction_mult", None) == FENG_FRACTION_MULT_R20
-            and getattr(a, "captain_ruling", None) == T1_R20_ROW and getattr(a, "released_bet", None) is None
-            and getattr(a, "bet_strength", None) is None and _captain_order_names(T1_R20_ROW, T1_R20_OPTION))
+def _ruled_fraction_ordered(a) -> bool:
+    """The commands the ruling rows order, as _t1_candidate holds them: --feng-fraction-mult 2.0 with --captain-ruling
+    R20, or 2.5 or 3.0 with --captain-ruling R22, no --released-bet or --bet-strength, and the value's row the
+    captain's order naming its option."""
+    ruled = FENG_FRACTION_MULTS_RULED.get(getattr(a, "feng_fraction_mult", None))
+    return (ruled is not None and getattr(a, "captain_ruling", None) == ruled[0]
+            and getattr(a, "released_bet", None) is None and getattr(a, "bet_strength", None) is None
+            and _captain_order_names(ruled[0], ruled[1]))
 
 
-def _t1_r20(a) -> dict:
-    """--feng-fraction-mult 2.0, row R20's file: refused before anything is read without --captain-ruling R20, with
-    any other row, unless that row is the captain's order naming the option, with --released-bet or --bet-strength,
-    with --g-mom-damping other than the default, and on any command but T1_CANDIDATE_COMMAND at the default seed on
-    the test board. Returns the record's candidate values, naming the row."""
+def _t1_ruled(a, mult: float) -> dict:
+    """--feng-fraction-mult 2.0 (row R20's file) or 2.5 or 3.0 (row R22's first search line): refused before anything
+    is read without --captain-ruling naming the value's row, with any other row, unless that row is the captain's order
+    naming the option, with --released-bet or --bet-strength, with --g-mom-damping other than the default, and on any
+    command but T1_CANDIDATE_COMMAND at the default seed on the test board. Returns the record's candidate values,
+    naming the row. At 2.0 the messages and the record are row R20's as before."""
+    row, option, order = FENG_FRACTION_MULTS_RULED[mult]
     damping, ruling = getattr(a, "g_mom_damping", None), getattr(a, "captain_ruling", None)
     if ruling is None:
         sys.exit(f"--feng-fraction-mult takes {FENG_FRACTION_MULTS[0]:g} (the default) or {FENG_FRACTION_MULTS[1]:g} "
-                 f"only; {FENG_FRACTION_MULT_R20:g} is the captain's order of row {T1_R20_ROW} alone and needs "
-                 f"--captain-ruling {T1_R20_ROW}")
-    if ruling != T1_R20_ROW:
-        sys.exit(f"--feng-fraction-mult {FENG_FRACTION_MULT_R20:g} is refused with --captain-ruling {ruling}: only "
-                 f"row {T1_R20_ROW} orders it")
-    if not _captain_order_names(T1_R20_ROW, T1_R20_OPTION):
-        sys.exit(f"--feng-fraction-mult {FENG_FRACTION_MULT_R20:g} is refused: experiments/harness/TRIES.md has no "
-                 f"single row {T1_R20_ROW} whose first cell is the captain's order (\"ruling, no run\") naming "
-                 f"{T1_R20_OPTION} and `--captain-ruling {T1_R20_ROW}`")
+                 f"only; {mult:g} is the captain's order of row {row} alone and needs --captain-ruling {row}")
+    if ruling != row:
+        sys.exit(f"--feng-fraction-mult {mult:g} is refused with --captain-ruling {ruling}: only row {row} orders it")
+    if not _captain_order_names(row, option):
+        sys.exit(f"--feng-fraction-mult {mult:g} is refused: experiments/harness/TRIES.md has no single row {row} "
+                 f"whose first cell is the captain's order (\"ruling, no run\") naming {option} and "
+                 f"`--captain-ruling {row}`")
     if getattr(a, "released_bet", None) is not None or getattr(a, "bet_strength", None) is not None:
-        sys.exit(f"--feng-fraction-mult {FENG_FRACTION_MULT_R20:g} is refused with --released-bet and --bet-strength: "
-                 f"row {T1_R20_ROW} is one file with one change")
+        sys.exit(f"--feng-fraction-mult {mult:g} is refused with --released-bet and --bet-strength: row {row} is one "
+                 "file with one change")
     if damping is not None and damping != G_MOM_DAMPINGS[0]:
-        sys.exit(f"--feng-fraction-mult {FENG_FRACTION_MULT_R20:g} is refused with --g-mom-damping other than "
-                 f"{G_MOM_DAMPINGS[0]:g}: row {T1_R20_ROW} is one file with one change")
+        sys.exit(f"--feng-fraction-mult {mult:g} is refused with --g-mom-damping other than {G_MOM_DAMPINGS[0]:g}: "
+                 f"row {row} is one file with one change")
     if (getattr(a, "feng_groups", FENG_GROUPS_DEFAULT) != "recomputed" or a.seed != harness.BUILD_SEED_OFFSET + 1
             or a.board is not None):
-        sys.exit(f"--feng-fraction-mult {FENG_FRACTION_MULT_R20:g} changes T1's recomputed last file only: it needs "
-                 f"the command {T1_CANDIDATE_COMMAND} at the default seed on the test board (row {T1_R20_ROW})")
-    return {"g_mom_damping": G_MOM_DAMPINGS[0], "feng_fraction_mult": FENG_FRACTION_MULT_R20,
-            "captain_ruling": T1_R20_ROW,
-            "order": f"experiments/harness/TRIES.md row {T1_R20_ROW}, the captain's order of 2026-11-21 (docs/PLAN.md "
-                     "decision log 2026-11-21 (x)): the direction at 2.0 x the calendar fraction, nothing else changed"}
+        sys.exit(f"--feng-fraction-mult {mult:g} changes T1's recomputed last file only: it needs the command "
+                 f"{T1_CANDIDATE_COMMAND} at the default seed on the test board (row {row})")
+    return {"g_mom_damping": G_MOM_DAMPINGS[0], "feng_fraction_mult": float(mult), "captain_ruling": row,
+            "order": order}
 
 
 def _t1_candidate(a) -> dict | None:
     """--g-mom-damping and --feng-fraction-mult: refused before anything is read with a value outside their two, on any
     command but T1_CANDIDATE_COMMAND (--feng-groups recomputed, whose own refusals then hold every other option to the
     first upload's), with a seed other than the default and on a dry run. Returns None when neither is given (today's
-    file and record), else the two values as the record names them. --feng-fraction-mult 2.0 is row R20's file alone
-    (_t1_r20); with the flag --captain-ruling, any other value is refused here or by _bet_refusals."""
+    file and record), else the two values as the record names them. --feng-fraction-mult 2.0 is row R20's file alone,
+    2.5 and 3.0 row R22's line alone (_t1_ruled); with the flag --captain-ruling, any other value is refused here or by
+    _bet_refusals."""
     damping, mult = getattr(a, "g_mom_damping", None), getattr(a, "feng_fraction_mult", None)
     if damping is None and mult is None:
         return None
-    if mult == FENG_FRACTION_MULT_R20:
-        return _t1_r20(a)
+    if mult in FENG_FRACTION_MULTS_RULED:
+        return _t1_ruled(a, mult)
     if damping is not None and damping not in G_MOM_DAMPINGS:
         sys.exit(f"--g-mom-damping takes {G_MOM_DAMPINGS[0]:g} (the default) or {G_MOM_DAMPINGS[1]:g} only")
     if mult is not None and mult not in FENG_FRACTION_MULTS:
         sys.exit(f"--feng-fraction-mult takes {FENG_FRACTION_MULTS[0]:g} (the default) or {FENG_FRACTION_MULTS[1]:g} "
-                 f"only ({FENG_FRACTION_MULT_R20:g} only with --captain-ruling {T1_R20_ROW})")
+                 f"only ({FENG_FRACTION_MULT_R20:g} only with --captain-ruling {T1_R20_ROW}; "
+                 f"{FENG_FRACTION_MULTS_R22[0]:g} and {FENG_FRACTION_MULTS_R22[1]:g} only with --captain-ruling "
+                 f"{T1_R22_ROW})")
     if (getattr(a, "feng_groups", FENG_GROUPS_DEFAULT) != "recomputed" or a.seed != harness.BUILD_SEED_OFFSET + 1
             or a.board is not None):
         sys.exit("--g-mom-damping and --feng-fraction-mult change T1's recomputed last file only: they need the "
@@ -1044,10 +1086,17 @@ def build_heart(a) -> dict:
     if a.trend and (a.entry == "s2" or a.depth or a.herd or a.cfm):
         sys.exit("--trend is refused with --entry s2, --depth, --herd and --cfm (no try read those combinations)")
     copy = a.expression == "copy"
+    # The organ cut (HEART_ORGAN_SCOPE; off unless asked for): --entry organ_scope builds that one combination only
+    organ = a.entry == "organ_scope"
+    if organ and (not (copy and a.z_mode == "raw") or a.trend or a.depth or a.herd or a.cfm):
+        sys.exit(f"--entry organ_scope is refused except as {HEART_ORGAN_SCOPE} (the copy draw from the organ cut, "
+                 "sized in the raw mode to the core forecast times rms(organ pool) / rms(core) on E10.5), and with "
+                 "--trend, --depth, --herd and --cfm")
     # The scope bet (HEART_ISO_TRIM; off unless asked for): --entry s2_trim with --expression copy --z-mode raw, the one
     # trimmed copy file. Every other use of --expression copy outside s1 is refused, as before.
     iso_trim = copy and a.entry == "s2_trim" and a.z_mode == "raw"
-    if copy and ((a.entry not in ("s1", "core_trim") and not iso_trim) or a.trend or a.depth or a.herd or a.cfm):
+    if copy and ((a.entry not in ("s1", "core_trim", "organ_scope") and not iso_trim) or a.trend or a.depth or a.herd
+                 or a.cfm):
         sys.exit("--expression copy is refused with --entry s2, --trend, --depth, --herd and --cfm, and with --entry "
                  "s2_trim unless --z-mode raw is given (it is the copy baseline's draw from --entry s1's pool, the "
                  f"full E10.5, with no step; or {HEART_ISO_TRIM}: the same draw from the half trim, sized in the raw "
@@ -1077,7 +1126,21 @@ def build_heart(a) -> dict:
         trim = {"rule": HEART_SCOPE_OPTIONS["core_trim"]["rule"], "frac": HEART_SCOPE_OPTIONS["core_trim"]["frac"],
                 "kept_share": float(keep.mean()), "xy_scope_before": t2_build.xy_scope(C, core),
                 "xy_scope_after": t2_build.xy_scope(C[keep], core[keep])}
-    roles = {"ref": ("T2/E10.5.h5ad", 10.5), "start": ("T2/E9.5.h5ad", 9.5)}
+    elif organ:  # file D: the organ cut of E10.5 (row R21)
+        core = np.asarray(ref.obs["core"], dtype=bool)
+        C = np.asarray(ref.obsm[COORD_KEY], dtype=float)[:, :3]
+        if t2_build.T2_LABEL_KEY not in ref.obs:
+            sys.exit(f"E10.5 has no obs[{t2_build.T2_LABEL_KEY!r}] column: the organ cut needs the released labels")
+        try:
+            keep, trim = t2_build.organ_scope(C, ref.obs[t2_build.T2_LABEL_KEY].to_numpy(), core)
+        except t2_build.UnmappedT2LabelError as e:
+            sys.exit(str(e))
+        organ_ratio = t2_build.organ_core_rms_ratio(C, keep, core)
+        pool = ref[keep].copy()
+        # the pool's rows are E10.5's (released data), never a test board's count
+        trim.update(pool_rows=int(keep.sum()), pool_rows_of="the released E10.5 after duplicate records are dropped",
+                    organ_core_rms_ratio=organ_ratio)
+    roles ={"ref": ("T2/E10.5.h5ad", 10.5), "start": ("T2/E9.5.h5ad", 9.5)}
     inputs = {"ref": pool, "start": start}
     if a.trend:  # b0_trend (row H11): the earlier stages on the board's panel, loaded as the two above, never trimmed
         for role, (f, day) in HEART_TREND_STAGES.items():
@@ -1093,10 +1156,14 @@ def build_heart(a) -> dict:
         stage = harness._b0_t2(ctx, trend=True, trend_record=trend_rec)  # b0_trend, the harness's B0 otherwise
     else:
         stage = harness._b0_t2(ctx, depth=a.depth, herd=a.herd, cfm=a.cfm)  # the harness's B0 with its guard and checks
-    hyp = {"s1": "H1", "s2": "H2", "s2_trim": "H2", "core_trim": t2_build.SIZE_CORE_SCOPE}[a.entry]
+    hyp = {"s1": "H1", "s2": "H2", "s2_trim": "H2", "core_trim": t2_build.SIZE_CORE_SCOPE,
+           "organ_scope": t2_build.SIZE_ORGAN_SCOPE}[a.entry]
     z_mode = None if a.z_mode == "recorded" else a.z_mode  # None: the mode the size JSON recorded
     # the size step checks its reference against the full E10.5 cloud it measured; it rescales the (trimmed) cells
-    if z_mode is None:
+    if organ:
+        coords, size = t2_build.size_organ_scope(stage.coords, SIZES["heart"], organ_ratio, source_stage="E10.5",
+                                                 reference_cloud=ref, expect_board="heart")
+    elif z_mode is None:
         coords, size = t2_build.size_or_hold(stage.coords, SIZES["heart"], hyp, source_stage="E10.5",
                                              reference_cloud=ref, expect_board="heart")
     else:
@@ -1113,7 +1180,20 @@ def build_heart(a) -> dict:
             **({"expression": "copy"} if copy else {}),
             **({"z_mode": z_mode} if z_mode is not None else {}),
             **({"scope_option": _scope_option_record(a.entry, scope_option)} if scope_option is not None else {}),
+            **({"scope_option": _organ_option_record(trim)} if organ else {}),
             "size": {k: size[k] for k in size if not isinstance(size[k], (dict, list))}}
+
+
+def _organ_option_record(trim: dict) -> dict:
+    """What the organ cut's build record names: the command, the order it was built under, the scope rule, the label
+    config and its sha256, L and its percentile, the record fields of the kept share and of the pool's rows (E10.5's,
+    released data; no test board's count), the size field and its source, and the halving that follows."""
+    return {"command": HEART_ORGAN_SCOPE, "ruling": HEART_ORGAN_RULING, "scope": "organ_scope",
+            "scope_rule": trim["rule"], "label_config": trim["label_config"],
+            "label_config_sha256": trim["label_config_sha256"], "link_percentile": trim["link_percentile"],
+            "link_length": trim["link_length"], "kept_share_field": "trim.kept_share",
+            "pool_rows_field": "trim.pool_rows", "size_hypothesis": t2_build.SIZE_ORGAN_SCOPE,
+            "size_source_field": t2_build.SIZE_ORGAN_SOURCE, "halving": HEART_HALVING}
 
 
 def _scope_option_record(entry: str, opt: dict) -> dict:
@@ -1485,7 +1565,10 @@ def build_parser() -> argparse.ArgumentParser:
                                 "1.0 (the default, today's file) or 1.5; only with the command "
                                 f"{T1_CANDIDATE_COMMAND} at the default seed on the test board. "
                                 f"{FENG_FRACTION_MULT_R20:g} is row {T1_R20_ROW}'s file (the captain's order of "
-                                f"2026-11-21) and needs --captain-ruling {T1_R20_ROW}, with no other change")
+                                f"2026-11-21) and needs --captain-ruling {T1_R20_ROW}, with no other change; "
+                                f"{FENG_FRACTION_MULTS_R22[0]:g} and {FENG_FRACTION_MULTS_R22[1]:g} are row "
+                                f"{T1_R22_ROW}'s first search line (the captain's order of 2026-11-22) and need "
+                                f"--captain-ruling {T1_R22_ROW}, with no other change")
             p.add_argument("--released-bet", choices=tuple(RELEASED_BETS), default=None,
                            help="try T61 of experiments/harness/TRIES.md (off by default): a variant of T1's last file "
                                 "(--feng-groups none only) that changes which cells are drawn: share_trend (the "
@@ -1498,12 +1581,16 @@ def build_parser() -> argparse.ArgumentParser:
             p.add_argument("--captain-ruling", default=None,
                            help="with --released-bet: the ID of the row of experiments/harness/TRIES.md that is the "
                                 "captain's ruling for the arm; with --feng-fraction-mult "
-                                f"{FENG_FRACTION_MULT_R20:g}: {T1_R20_ROW}, the captain's order for that file")
+                                f"{FENG_FRACTION_MULT_R20:g}: {T1_R20_ROW}, the captain's order for that file; with "
+                                f"{FENG_FRACTION_MULTS_R22[0]:g} or {FENG_FRACTION_MULTS_R22[1]:g}: {T1_R22_ROW}, the "
+                                "captain's order for the first search line")
         if name == "heart":
-            p.add_argument("--entry", choices=("s1", "s2", "s2_trim", "core_trim"), required=True,
+            p.add_argument("--entry", choices=("s1", "s2", "s2_trim", "core_trim", "organ_scope"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "
                                 "scope, the s2 of docs/S2_RULES.md; core_trim = the full trim (no ruling; only as "
-                                f"{HEART_CORE_TRIM}, sized to the raw mode's own core forecast)")
+                                f"{HEART_CORE_TRIM}, sized to the raw mode's own core forecast); organ_scope = the "
+                                f"organ cut, file D (row R21; only as {HEART_ORGAN_SCOPE}, sized to the raw-mode core "
+                                "forecast times rms(organ pool) / rms(core) on E10.5)")
             p.add_argument("--herd", action="store_true",
                            help="herd B0's draw towards the pool's mean expression (try H4; off: the entry so far)")
             p.add_argument("--depth", action="store_true",

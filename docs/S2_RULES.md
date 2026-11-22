@@ -1871,3 +1871,72 @@ after its score. Only the headline is recorded, for the board's best-headline ma
 recorded, and no difference between headlines enters any number, file, rule or statement about the E12.5 stack. D
 drops if it is not built, read and reviewed by 2026-11-25 12:00 UTC. The heart's list ends after D: no further heart
 file is designed from any of these scores. Each upload is the captain's own act.
+
+## Amendment of 2026-11-22: a score-guided search of round steps may run (the captain's word; row R22)
+
+The captain, asked in decision log 2026-11-21 (aa) whether to lift the team's own bars so that a score-guided search
+(round steps on a few settings per board, each fixed in the log before its own score) may run, and reminded of it on
+2026-11-22 among three open items, answered, verbatim: "yes to all three, go ahead" (`docs/PLAN.md` decision log
+2026-11-22 (j); ruling row R22). The team's own bar that no number is set from a score (decision log 2026-11-18 (k),
+2026-11-20 (n) and (q), 2026-11-21 (l)) is lifted for such searches and for nothing else. The organisers' rule is
+untouched: scores choose among predictions and never compute them.
+
+**The framework.** (1) A search line is one open setting of one existing file's command, moved in round steps on the
+scale its candidates already use, with nothing else in the command changed. (2) Every file of a line is named, command
+and value, in the decision log before its own score; a line's files may be built in advance; no file is rebuilt,
+re-seeded, resized or changed after a score. (3) The rule that names the next upload reads only the headlines of the
+team's own uploads on that board, as the captain reports them: it compares them, keeps the best, steps on in the
+direction that improved and ends the line at the first file that does not strictly beat the line's best. No value is
+fitted from the sizes of scores; no per-metric value is read, recorded, compared or quoted; no property of a hidden
+sample is inferred or bounded from a score, in code, in text or in reasoning. (4) The levers closed after the exposure
+of 2026-11-04 are outside every line: sizes, scope and cell numbers on every board, and T1's composition, depth and
+advance draw; a file on one of them needs the captain's own named exception, file by file. (5) At most two official
+uploads a board a day until 2026-11-26 11:59 UTC; files already queued keep their places unless the captain says
+otherwise. (6) The method report says plainly which values were tried and that the best headline was kept.
+
+**The first line, T1's atlas step:** the outside heart atlas's direction step as a multiple of the calendar fraction
+2/5, on R13's command with nothing else changed. On record: 1.0 (R13's file), 1.5 (candidate B), 2.0 (row R20's file,
+not uploaded and not scored when this is written). Fixed now, before the 2.0 file's score: if the 2.0 file's headline
+is strictly above the line's best headline so far, the next file of the line is `--feng-fraction-mult 2.5
+--captain-ruling R22`; if the 2.5 file's headline is strictly above the line's best, the next is `--feng-fraction-mult
+3.0 --captain-ruling R22`; the line ends at the first file that does not strictly beat the line's best headline, and
+in any case at 3.0. No value between the half steps is tried, and none is computed from the sizes of headlines. At 2.5
+the step is the atlas's whole E9.5-to-E14.5 change and at 3.0 it goes past it. The files `T1_s2rcB25.h5ad` and
+`T1_s2rcB30.h5ad` count only after the builder takes the two values under `--captain-ruling R22`, reviewed, and each
+is built twice with one sha256 at a clean commit after the default command has reproduced R13's bytes. Data used: as
+R13's file (released challenge data and the outside heart atlas on recomputed groups).
+
+**Other lines.** Which other settings get a line, on which board, with which steps, is proposed by fresh analysts
+blind to test scores and checked cold against the recorded rule text; each line is written into the decision log, and
+added below, before any of its files is scored. The AI assistant designs none of them and stays recused on the heart's
+scope and size and on the embryo's occupancy term and shape forms.
+
+## Amendment of 2026-11-22: T3's refused s1 with the wild-type-only factor is re-admitted after the queued files (the captain's word)
+
+The amendments of 2026-11-18 and 2026-11-19 above say that this file "stays built and is not uploaded". The
+score-blind round's T3 order rule (decision log 2026-11-21 (y)) proposed it as T3's last file, on the captain's word;
+asked among three open items on 2026-11-22, the captain answered, verbatim: "yes to all three, go ahead" (decision log
+2026-11-22 (j)). So the file is uploaded, on that rule's terms and no others: it takes the first T3 slot free after
+the last of the queued files that is uploadable (C1, C2, row K23's file, and CK on its condition); it waits on no
+file's score; if fewer slots remain before 2026-11-26 11:59 UTC than files, the queued files keep precedence unless
+the captain says otherwise; only its headline is recorded, for the board's best-headline mark; T3's list ends with it.
+
+**The file.** `runs/manual_upload/T3_refused_s1.h5ad`, the reference-listed bytes of `t3_build/refused_s1.h5ad`,
+sha256 0394575a11fcd4f915e0daf4972e5a783b6b89efa065ed4f85fe2445cbbb1545, built on 2026-11-13 before any score. Data
+used: released challenge data only (released wild-type stage files; its composition at the released Mab21l2 knockout's
+magnitude; no Gata4 validation file and no Gata4-derived number); no outside data. Every upload is the captain's own
+act.
+
+## Amendment of 2026-11-22: T1's no-outside-data file F may be uploaded (the captain's answer to QF)
+
+The section "T1's last upload" of 2026-11-19 above (R13's file) says of the file it replaced: "That file stays built
+and is not uploaded." Decision log 2026-11-20 (r) listed it as candidate F, to go only on the captain's answer 'Upload
+it' to question QF; asked among three open items on 2026-11-22, the captain answered, verbatim: "yes to all three, go
+ahead" (decision log 2026-11-22 (j)). That is read as 'Upload it'. By (r)'s rule F takes the first free T1 slot; its
+score is read as a headline only and decides nothing beyond the board's standing file.
+
+**The file.** `runs/manual_upload/T1_s2none.h5ad`, sha256
+55eaee547ff18d7477da5b730c34e7de9ab74f85cc12fd01a9eff6450367611c, the bytes on record (row R8;
+`experiments/builds/results/t1none_385ff58.txt`), built on 2026-11-19: the first upload's design with the outside
+atlas's step taken out. Data used: released challenge data only; no outside data. Every upload is the captain's own
+act.

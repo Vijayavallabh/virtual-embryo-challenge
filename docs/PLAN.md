@@ -10001,3 +10001,159 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     library runs follow one after another. E51: at its reproduction gate (six of nine tasks done). E54: its tests exit
     0 on the DGX with the torch tests; the fits are running on GPUs 2 and 7. The organ-cut file's code and the rerun
     of T66 as row T68 are with their engineers.
+- 2026-11-22 (i), what was started on the captain's order of entry (g), and one stray edit put right (state at 01:18
+  UTC, 2026-11-22). Written by the AI assistant, which gives no design lean.
+  - **Started, each with score-blind agents and a blocker standard fixed up front.** (1) The organ-cut file D: two
+    engineers in turn (the builder side; then the practice read with its target-free gate, the launchers and row
+    H29b), two reviewers, one fix round if needed. (2) The corrected rerun of T66 as row T68: an analyst fixes the
+    rule for the atlas's matrix genes outside its gene table, an engineer writes the row's code, a reviewer checks it.
+    (3) The reader of rows N56 and H30: the same three roles for the heart chord's gate. (4) The two parked
+    outside-data candidates: K26's fix round (T3, a query-gene response map) and the first build of rc18 (T1, the
+    atlas direction over E9.5 to E18; rows N58 and T69). (5) One more design round on outside data, per board a fresh
+    designer and a cold challenger, at most two candidates each, no web access, every new source marked unverified
+    until a screening agent has checked it; "no further candidate" is a valid answer. H31 (the heart bridge) waits for
+    the gene rule of (3) and then gets its own fix round.
+  - **A stray edit in the main checkout, put right.** The analyst of (3), an agent without a worktree of its own,
+    drafted its code change in the main checkout's two heart chord files before handing back (the files changed at
+    01:14 UTC; the engineer's worktree was made at 01:15). Nothing was committed. The draft is kept as a patch in the
+    session's scratch folder and the two files are restored to the committed state; the engineer works to the
+    analyst's written decision in its own worktree. From now on an agent that only decides is told that it changes no
+    file anywhere, and the main checkout's state is looked at after each such stage.
+  - **Second start of E52** (01:12 UTC) at 2c3d568 in the DGX worktree `~/v/scratch/e52b-wt`, with the per-machine
+    pins of entry (h).
+- 2026-11-22 (j), the captain answers the three open questions with yes: a score-guided search of round steps, T3's
+  refused s1 file, T1's no-outside-data file (state at 01:24 UTC, 2026-11-22). Written by the AI assistant, which
+  designs no search line beyond writing down the next half steps of one existing scale.
+  - **The captain's words**, in reply to the AI assistant's report that listed three items open with a default of no
+    ("a score-guided search of round steps, Task 3's refused first file, and Task 1's no-outside-data file"),
+    verbatim: "yes to all three, go ahead". Each item was a question already on record: the search in entry 2026-11-21
+    (aa); the refused s1 in the T3 order rule of entry 2026-11-21 (y); file F as question QF of entry 2026-11-20 (r).
+    So this is read as three specific answers, not as a general go-ahead, and it lifts nothing that those three
+    questions did not ask.
+  - **The score-guided search (ruling row R22; rules amended).** The team's own bar that no number is set from a score
+    is lifted for searches in round steps and for nothing else. The framework, fixed now: (1) A search line is one
+    open setting of one existing file's command, moved in round steps on the scale its candidates already use, with
+    nothing else in the command changed. (2) Every file of a line is named, command and value, in the decision log
+    before its own score; a line's files may be built in advance; no file is rebuilt, re-seeded, resized or changed
+    after a score. (3) The rule that names the next upload reads only the headlines of the team's own uploads on that
+    board, as the captain reports them: it compares them, keeps the best, steps on in the direction that improved and
+    ends the line at the first file that does not strictly beat the line's best. No value is fitted from the sizes of
+    scores; no per-metric value is read, recorded, compared or quoted; no property of a hidden sample is inferred or
+    bounded from a score, in code, in text or in reasoning. (4) The levers closed after the exposure of 2026-11-04 are
+    outside every line: sizes, scope and cell numbers on every board, and T1's composition, depth and advance draw; a
+    file on one of them needs the captain's own named exception, file by file. (5) At most two official uploads a
+    board a day until 2026-11-26 11:59 UTC; files already queued keep their places unless the captain says otherwise.
+    (6) The method report says plainly which values were tried and that the best headline was kept.
+  - **The first line, fixed before the 2.0 file's score:** T1's atlas step, the outside heart atlas's direction step
+    as a multiple of the calendar fraction 2/5, on R13's command with nothing else changed. On record: 1.0 (R13's
+    file), 1.5 (candidate B), 2.0 (row R20's file, not uploaded and not scored when this is written). Fixed now,
+    before the 2.0 file's score: if the 2.0 file's headline is strictly above the line's best headline so far, the
+    next file of the line is `--feng-fraction-mult 2.5 --captain-ruling R22`; if the 2.5 file's headline is strictly
+    above the line's best, the next is `--feng-fraction-mult 3.0 --captain-ruling R22`; the line ends at the first
+    file that does not strictly beat the line's best headline, and in any case at 3.0. No value between the half steps
+    is tried, and none is computed from the sizes of headlines. At 2.5 the step is the atlas's whole E9.5-to-E14.5
+    change and at 3.0 it goes past it. Writing these two values down is not a design choice of the AI assistant's:
+    they are the next half steps of the scale the candidates already used, and the cold check of entry 2026-11-21 (aa)
+    asked that any further strength be named before the 2.0 file's score. An engineer adds the two values to the
+    builder under `--captain-ruling R22`, a reviewer checks it, and each file is built twice before its turn.
+  - **Other lines.** A round of fresh analysts blind to scores proposes, per board, which other open settings get a
+    line and with which round steps; a cold challenger checks each line against the recorded text of the Rules page
+    (the team's screened record only; the page itself is not opened) and against the closed levers. Each line is
+    written here before any of its files is scored. The heart's scope and size and every other closed lever are
+    outside the search: a further heart trim would need the captain's own named exception, file by file, on a question
+    the AI assistant does not write.
+  - **T3's refused s1 (rules amended).** `runs/manual_upload/T3_refused_s1.h5ad`, sha256
+    0394575a11fcd4f915e0daf4972e5a783b6b89efa065ed4f85fe2445cbbb1545, the reference-listed bytes. It takes the first
+    T3 slot free after the last uploadable queued file (C1, C2, row K23's file, CK on its condition), waits on no
+    score, and ends T3's list. Data used: released challenge data only; no Gata4 validation file; no outside data.
+  - **T1's file F (rules amended).** `runs/manual_upload/T1_s2none.h5ad`, sha256
+    55eaee547ff18d7477da5b730c34e7de9ab74f85cc12fd01a9eff6450367611c, the bytes on record. The answer is read as
+    'Upload it' to QF. By entry 2026-11-20 (r) it takes the first free T1 slot, its score is a headline only and it
+    decides nothing beyond the standing file. Data used: released challenge data only; no outside data. The T1 order
+    from here, by the rules on record: F in the first free slot; C; then row R20's 2.0 file after C; then the line's
+    2.5 and 3.0 on their conditions; MS, T68 and rc18 only on their own paths. Which slot the captain gives to which
+    file is the captain's own act.
+  - **What stays, whatever is lifted.** The organisers' rules (scores choose, never compute; the held-out windows;
+    nothing from or like the held-out knockout); headlines only, no per-metric value read or recorded; the levers
+    closed after 2026-11-04; the AI assistant's recusals and its giving no design lean; two uploads a board a day on
+    the captain's word; every upload the captain's own act.
+- 2026-11-22 (k), the heart chord's reader is corrected and reviewed; rows N56 and H30 name the corrected code before
+  the gate's second start (state at 01:27 UTC, 2026-11-22). Written by the AI assistant, which decided nothing in it.
+  - **The rule, a fresh score-blind analyst's as judge of record.** A row of the outside nuclei atlas's count matrices
+    whose gene id the atlas's gene table does not list gets no symbol and enters nothing: not the panel, not the panel
+    library that keeps a cell (at least 30 counts), not the CP10k of the classifier or the means, not a chord. A row
+    takes a symbol only when its name equals a table gene id exactly; a symbol the table gives to two ids is dropped;
+    the reader fails closed on duplicate ids, on row names that are not unique and when no row is a table id; the
+    fallback that took row names as symbols is gone. The analyst's finding on the rows' wording: no change, because
+    rows N56 and H30 already say "matched by symbol through JAX's gene table" and confine the library and the
+    normalisation to "the genes JAX carries"; an unlisted row has no symbol through that table. The table's
+    `gene_type` and `chr` columns are not read. No bar, constant, seed, embryo list, stage list or statement changed.
+  - **The code.** An engineer implemented it with tests on a synthetic mixed matrix (`campaign/moon-heart-chord-4`,
+    e5ba8d9: the reader; and the launcher now marks a starting step as running before it records its commit, so the
+    exit file left by the first start cannot be read as the second start's). Each embryo's counts of rows, listed rows
+    and unlisted rows are recorded in the gate's record and the tables. A reviewer says ready, no blocker. Merged to
+    main; the three H30 files on main are byte for byte e5ba8d9's.
+  - **The rows.** Rows N56 and H30 are changed in this commit in two things only, checked by a string comparison
+    against the rows as placed: the code commit they name (e5ba8d9 for 88bb2cf, in two places each) and its branch.
+    Their rules, bars and words are as placed in entry (e). No gate reading existed when they were changed: the first
+    start crashed in the reader before anything was read (entry (h)). This commit is the second start's ROW; the gate,
+    the tables and, if the gate says PASS, the counted read run from a new worktree with its own environment.
+  - **Same fact, other reads.** H31 (the heart bridge) reads the same files and takes this rule in its own fix round.
+    Row T68 (T1) takes its own analyst's rule for its reducer.
+- 2026-11-22 (l), the heart chord's gate N56 is VOID: row H30 ends without a counted read, and the heart bridge H31
+  behind the same gate ends with it; what the outside-data design round returned (state at 01:34 UTC, 2026-11-22).
+  Written by the AI assistant; the gate's outcome is its own words.
+  - **N56** (target-free, not a try; ROW f8c46dd in `~/v/scratch/h30b-wt`; tests exit 0; the gate exit 3). In its own
+    words: "OUTCOME: VOID"; "gate VOID: the classifier's balanced accuracy on held-out MERFISH is below 0.8; H30 ends,
+    no counted read runs, nothing is asked." The balanced accuracy is 0.746. Its other lines, which would not have
+    passed either: CM rho +0.261 against a line of 0.35; Endo +0.070 against 0.25; Epi and Hep not evaluable. By the
+    rows, H30 ends: no table, no counted read, no try, no question. The gate's two files are committed with this
+    entry.
+  - **H31** (the heart bridge) stands behind the same gate by its specification, so it cannot run; its fix round,
+    started under entry (i), was stopped (two agents, a few minutes in). Nothing of it is merged. No other gate is
+    written for either row by the AI assistant: a new gate would be a new design.
+  - **The outside-data design round (workflow outside-data-round-2, eight agents; hand-back in the scratch folder
+    `lift8/outside_round2.json`).** The challengers' final lists, in their words to the captain. T1, two long shots on
+    data already on the team's machines: C1A, the cardiomyocyte direction blended with a second, single-nucleus atlas
+    direction at unchanged size, with a guard against skeletal-muscle nuclei (their odds of a pass about 1 in 10);
+    C2A, atrial cells moved by the heart atlas's atrial direction and ventricular cells by its ventricular one, after
+    a screen of how the atlas's zone column was made (about 1 in 14). T3: nothing (the one proposal, an outside
+    developmental-clock table, was struck: about 2 in 100, and its practice test rewards the opposite direction).
+    Heart: one, H32, the trend step kept only for genes whose outside late change points the same way, on the file in
+    force, with its own target-free gate (about 1 in 25, worth under half a heart point; it does not depend on N56's
+    outcome by its specification, which was fixed before that outcome existed). Embryo: nothing (the one proposal, an
+    outside gastrulation atlas to clean the series factor, was struck: its practice test cannot tell the atlas's
+    information from simply weakening the factor, and its legality is open).
+  - **What is done with them.** C2A and H32 go to engineers now; C1A follows when the rerun of T66 (row T68) is
+    reviewed, because it builds on that reducer and its gene rule. Screens asked by the challengers go to screening
+    agents: each atlas embryo's day label and somite count; one published adult statement naming fast skeletal-muscle
+    marker genes, by symbol only; how the heart atlas's zone column was made; and, from the outside nuclei atlas's
+    methods on quality filtering only, whether its nucleus filter was fitted on nuclei pooled with in-window embryos.
+    That last answer bears on every use of that atlas (T66, T68, C1A, H32) and is recorded in the register whichever
+    way it falls.
+- 2026-11-22 (m), row T68, the rerun of T66, is placed before its run (state at 01:37 UTC, 2026-11-22). Written by the
+  AI assistant, which decided nothing in it.
+  - **The rule, a fresh score-blind analyst's as judge of record.** The reducer's gene universe is the atlas's gene
+    table: a count-matrix gene whose id the table does not list (25,033 beside the table's 24,552) is removed at load,
+    by exact id, and enters nothing afterwards: no marker score, no control bin, no gene mean, no 400-UMI floor or
+    downsampling, no CP10k denominator. The mapping to T1's genes stays through the table's unique symbols. The
+    analyst's reasons are of validity only: the specification asks for a common depth before the means, which needs
+    one universe for the downsampling and the means; a gene outside the table can never be mapped to T1; and its share
+    of counts differs between the atlas's runs, which would add nearly the same offset to every gene's direction, an
+    artefact the permuted control could not tell from signal. The record keeps the universe's name, the gene counts, a
+    hash of the left-out ids and each embryo's share of counts on them (reported only). No pre-gate clause, void
+    condition or statement changes; the table's `gene_type` and `chr` columns are not read.
+  - **The code** (`campaign/moon-t1-blood-3`, bf9668d, three commits; the settings file's new sha256 d46bd682...,
+    status frozen, pinned in the code and in the row). The row id the code requires is T68 everywhere; the reducer's
+    output folder, the results folder and the launcher's scratch folder have new names, so nothing left by row T66 is
+    reused or can block it. A reviewer says ready, no blocker, and showed by a mutation that the tests catch a
+    universe that leaks. Merged to main; the six files on main are byte for byte bf9668d's.
+  - **Placed in this commit, before its run:** row T68, the engineer's text as the reviewer compared it word by word
+    with row T66's (every change one the decision named). Ten tries, T1 439 to 448, only if its target-free pre-gate
+    passes. Its statement is row T66's: AHEAD only if all four clauses hold, which leads to one priced question (amend
+    R1 for Blood by this direction, default keep R1); NOT AHEAD closes the line. The register's X003 line names the
+    row and the gene rule. It runs in a detached worktree of `~/v/vec-campaign-d`'s repository with its own
+    environment and the checkout's data linked.
+  - **Next on the same reducer.** Candidate C1A of the outside-data round (the cardiomyocyte direction blended with
+    this atlas's nuclei direction) builds on this reducer and rule; its engineer starts now, and its row is placed
+    only after its review and after the screens the challenger asked for are in.

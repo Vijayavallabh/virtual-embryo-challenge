@@ -1,8 +1,13 @@
-# Row T66 (experiments/harness/TRIES.md): the recomputed erythroid group of JAX/Qiu 2024 (register row X003), read by
-# experiments/external/jax_blood.py, which writes data/derived/jax_blood/ and its MANIFEST.json. Fixed and hashed
+# Row T68 (experiments/harness/TRIES.md): the recomputed erythroid group of JAX/Qiu 2024 (register row X003), read by
+# experiments/external/jax_blood.py, which writes data/derived/jax_blood_t68/ and its MANIFEST.json. Fixed and hashed
 # before the run: the row carries this file's sha256 (jax_blood.YAML_SHA256 holds the same value; the reducer and the
 # read refuse any other file). Nothing here was set from any JAX value: no JAX cell, count, label or figure was opened
 # to write it. A change after the run is a new ledger row.
+#
+# Row T68 is the rerun of row T66, whose reducer refused before any group was computed: its count matrices carry gene ids
+# that meta/df_gene.csv does not list, a case T66's specification did not cover. A score-blind judge fixed the rule
+# (gene_universe below); everything else here is T66's yaml unchanged in value. Row T66's folder data/derived/jax_blood/
+# is left as it is and is never read or removed.
 #
 # What the reducer reads, and nothing else (X003 as amended for this row, before any run):
 #   - data/external/jax_qiu2024/embryo/embryo_<n>_gene_count.rds for the embryos listed under `embryos` alone (raw
@@ -11,12 +16,21 @@
 #     by a reader that refuses any other column and refuses a whitelist naming an annotation, cluster or embedding
 #     column (celltype_update and major_trajectory are named in the code's refusal list). Rows of other embryos are
 #     dropped as they are parsed;
-#   - meta/df_gene.csv: gene_id and gene_short_name (a gene table, no cells).
+#   - meta/df_gene.csv: gene_id and gene_short_name (a gene table, no cells; gene_type and chr are not read).
 # The stats/*.npz files of that folder (per-label sufficient statistics keyed by the authors' labels) are never read.
 
 version: 1
-row: T66
+row: T68
 status: frozen
+
+# The reducer's gene universe is the gene table's genes: a count-matrix row id that meta/df_gene.csv does not list
+# (exact gene_id match: no version stripping, no change of case, no lookup by symbol) is removed when the matrix is
+# loaded, before any arithmetic: the log1p CP10k, the controls' pool, bins and draws, the per-end gene means, the UMI
+# floor, the downsampling and every CP10k denominator use table genes only, and a nucleus with no table-gene UMI is
+# dropped as empty. A duplicated matrix row id, a duplicated table gene_id or a table gene_id missing from a matrix
+# refuses. The manifest records the counts, the sha256 of the sorted left-out ids and, per embryo, the share of the
+# listed nuclei's UMIs on left-out genes (reported only). jax_blood.check_config refuses any other value.
+gene_universe: gene_table
 
 inputs:
   dir: data/external/jax_qiu2024        # experiments/external/jax_qiu2024.py's output, checked against its manifest
@@ -33,7 +47,7 @@ embryos:
   late: [59, 60, 61, 62, 63]
 
 output:
-  dir: data/derived/jax_blood         # inside the checkout's own data/ (feng_relabel.output_dir_ok)
+  dir: data/derived/jax_blood_t68     # inside the checkout's own data/ (feng_relabel.output_dir_ok)
   direction: jax_blood_direction.npz  # per JAX gene: gene_id, symbol, m_early, m_late, direction; per embryo: means
   embryos: jax_blood_embryos.csv      # per embryo: end, day labels, batches, nuclei read, assigned erythroid, entering
 
@@ -111,10 +125,11 @@ dropped: [Plp1, Hba-a1, Hbb-bs, Alas2, Col1a2, Col3a1, Dcn, Myh11, Pdgfrb, Rgs5,
           Prox1, Flt4, Phox2b, Fcer1g, Pdpn]
 
 # ------------------------------------------------------------------ the direction
-# Each assigned erythroid nucleus with at least umi_target UMIs is downsampled to exactly umi_target UMIs (without
-# replacement, numpy default_rng([downsample_seed, embryo]) over the embryo's nuclei sorted by name); a nucleus with
-# fewer is left out. Per embryo with at least min_embryo_nuclei such nuclei: the mean CP10k over them. Per end: the
-# mean over its embryos, equal weight per embryo. The direction per gene: log((m_late + eps) / (m_early + eps)).
+# Each assigned erythroid nucleus with at least umi_target UMIs on table genes is downsampled to exactly umi_target
+# table-gene UMIs (without replacement, numpy default_rng([downsample_seed, embryo]) over the embryo's nuclei sorted by
+# name); a nucleus with fewer is left out. Per embryo with at least min_embryo_nuclei such nuclei: the mean CP10k over
+# them (each totals umi_target, so 1e4 / umi_target x counts). Per end: the mean over its embryos, equal weight per
+# embryo. The direction per gene: log((m_late + eps) / (m_early + eps)).
 umi_target: 400
 downsample_seed: 20261122
 min_embryo_nuclei: 30

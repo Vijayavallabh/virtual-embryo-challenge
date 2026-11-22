@@ -20,7 +20,9 @@
 #   read ROW RUN     the one read into experiments/harness/results/h30_heart_late_chord (reading.json, reading.txt; the
 #                    script refuses to overwrite either); its two printed lines in read.out
 # ROW is the commit of rows N56 and H30, RUN the run commit (full hashes). A step that runs writes its exit to
-# ~/v/scratch/h30/<STEP>.exit. A call refused before its step runs (usage 2, unknown step 97, earlier step not done 96,
+# ~/v/scratch/h30/<STEP>.exit; as it starts it first sets that file to "running" and only then records ROW in
+# <STEP>.head, so an exit left by a start at another commit is never read as this start's (by the next step's check or
+# by a poller) while the step runs. A call refused before its step runs (usage 2, unknown step 97, earlier step not done 96,
 # the step already exited 0 at this ROW 94, RUN not as above 95, unclean tree 98, another HEAD 99) writes
 # <STEP>.refused.exit only (usage.refused.exit without a step), so a refusal never overwrites a finished step's exit.
 # Each step runs with 8 BLAS threads a process and NUMPY_MADVISE_HUGEPAGE=0. The launcher deletes nothing itself;
@@ -98,6 +100,7 @@ fi
 export OMP_NUM_THREADS=8 OPENBLAS_NUM_THREADS=8 MKL_NUM_THREADS=8 NUMPY_MADVISE_HUGEPAGE=0 TMPDIR="$S/tmp"
 export UV_PROJECT_ENVIRONMENT="$PWD/.venv"
 PY="uv run --frozen --no-sync python -I -B"
+echo running > "$S/$STEP.exit"
 echo "$ROW" > "$S/$STEP.head"
 if [ -n "$RUN" ]; then echo "$RUN" > "$S/$STEP.run"; fi
 SCRIPT=experiments/harness/h30_heart_late_chord.py

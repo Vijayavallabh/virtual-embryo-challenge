@@ -61,11 +61,13 @@ from pathlib import Path
 
 import anndata as ad
 import numpy as np
+import yaml
 from scipy import sparse
+from scipy.sparse.csgraph import connected_components
 from scipy.spatial import cKDTree
 from scipy.stats import rankdata
 
-from vec.boards import Board
+from vec.boards import REPO_ROOT, Board
 from vec.core import (
     aligned_coupling,
     barycentric,
@@ -112,6 +114,12 @@ SIZE_HYPOTHESES = ("H1", "H0", "H2")
 # valid JSON, never the fallback, and only the captain's ruling puts a file sized this way in an upload.
 SIZE_CORE_SCOPE = "core"
 SIZE_CORE_SCOPE_MODES = ("raw",)
+# The organ cut's size (file D of the heart's order rule; row R21 of experiments/harness/TRIES.md, the captain's order
+# of 2026-11-22): its own named size field beside H1, H0, H2 and the core's, none of which it changes. The raw mode's
+# core forecast (the full trim's field) times rms(organ pool) / rms(core), both measured on E10.5, the size procedure's
+# reference input (`size_organ_scope`). Raw mode only, a valid JSON only, never the fallback.
+SIZE_ORGAN_SCOPE = "organ"
+SIZE_ORGAN_SOURCE = "z_modes.raw.pred_rms_core x rms(organ pool) / rms(core), both on E10.5"
 APPLICABLE_Z_MODES = ("raw", "common_step", "xy_grow_z_hold")  # "split" is logged by the procedure for diagnosis only
 SIZE_MATCH = ("full", "xy")
 REDACTED_PREFIX = "[redacted"
@@ -691,6 +699,204 @@ def radial_trim_mask(coords, core, frac: float) -> np.ndarray:
         else:
             lo = mid + 1
     return keep_after(lo)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# The organ cut (file D of the heart's order rule, docs/PLAN.md decision log 2026-11-21 (y); row R21 of
+# experiments/harness/TRIES.md, the captain's order of 2026-11-22; docs/S2_RULES.md, amendment of 2026-11-22). A scope
+# operator that cuts by what a cell is, not by how far it sits from the core: the chamber categories of
+# configs/t1_chamber_classes.yaml (its rule of 2026-10-19), ported to the T2 labels in configs/t2_chamber_classes.yaml,
+# kept where they form one tissue with the core. Its one constant is ORGAN_LINK_PERCENTILE, fixed in the score-blind
+# specification before any code; no number here comes from a count or a score.
+T2_CHAMBER_CLASSES = REPO_ROOT / "configs" / "t2_chamber_classes.yaml"
+T2_LABEL_KEY = "celltype"
+ORGAN_KEPT_SCOPE = "chamber"  # the categories kept: T1's chamber scope (cm, endocardium, epicardium, vessels, blood)
+ORGAN_LINK_PERCENTILE = 99.0  # L: this percentile of each core cell's distance to its nearest other core cell
+ORGAN_SCOPE_RULE = ("organ cut: chamber-category cells (configs/t2_chamber_classes.yaml, T1's chamber scope) in a "
+                    "connected component that holds core cells, two chamber-category cells linked when closer than L "
+                    "(3D, stored units); L = the 99th percentile of each core cell's distance to its nearest other "
+                    "core cell on the same stage; core cells (CM plus endocardium) always kept")
+
+
+@dataclass(frozen=True)
+class T2ChamberSpec:
+    """configs/t2_chamber_classes.yaml after validation (see that file for the rule and the meaning of each field)."""
+
+    categories: dict[str, dict]
+    group_base: dict[str, str | None]
+    labels: dict[str, str]
+    exceptions: dict[str, str]
+    path: str
+    sha256: str
+
+    def in_scope(self, scope: str) -> tuple[str, ...]:
+        """Categories with this `scope` ("chamber", "adjacent" or "surrounding"), in config order."""
+        return tuple(c for c, v in self.categories.items() if v.get("scope") == scope)
+
+    @property
+    def kept(self) -> tuple[str, ...]:
+        """The categories the organ cut keeps: the chamber scope."""
+        return self.in_scope(ORGAN_KEPT_SCOPE)
+
+
+class UnmappedT2LabelError(ValueError):
+    """Labels without a category in configs/t2_chamber_classes.yaml. Map them there by the rule in its header first."""
+
+    def __init__(self, labels: Mapping[str, int], path: str = ""):
+        self.labels = dict(labels)
+        shown = ", ".join(f"{lab!r} ({n} cells)" for lab, n in sorted(self.labels.items()))
+        super().__init__(f"{len(self.labels)} label(s) without a T2 chamber category: {shown}. Map them in "
+                         f"{path or 'configs/t2_chamber_classes.yaml'} by the rule in its header before the organ cut "
+                         "uses this file (refused, nothing built).")
+
+
+def load_t2_chamber_spec(path: str | Path = T2_CHAMBER_CLASSES) -> T2ChamberSpec:
+    """Read and validate the T2 chamber-category config: every category a label or group names must be defined, and
+    the chamber scope must be non-empty. The record keeps the file's sha256."""
+    raw_bytes = Path(path).read_bytes()
+    raw = yaml.safe_load(raw_bytes)
+    cats = {str(c): dict(v or {}) for c, v in raw["categories"].items()}
+    labels = {str(k): str(v) for k, v in raw["labels"].items()}
+    for lab, cat in labels.items():
+        if cat not in cats:
+            raise ValueError(f"{path}: label {lab!r} names an undefined category {cat!r}")
+    base = {str(g): (None if c is None else str(c)) for g, c in (raw.get("group_base") or {}).items()}
+    for g, cat in base.items():
+        if cat is not None and cat not in cats:
+            raise ValueError(f"{path}: group_base[{g}] names an undefined category {cat!r}")
+    spec = T2ChamberSpec(categories=cats, group_base=base, labels=labels,
+                         exceptions={str(k): str(v) for k, v in (raw.get("exceptions") or {}).items()},
+                         path=str(path), sha256=hashlib.sha256(raw_bytes).hexdigest())
+    if not spec.kept:
+        raise ValueError(f"{path}: no category has scope {ORGAN_KEPT_SCOPE!r}")
+    return spec
+
+
+def t2_chamber_categories(labels, spec: T2ChamberSpec | None = None) -> np.ndarray:
+    """Each cell's T2 chamber category from its label. Any label the config does not list refuses
+    (`UnmappedT2LabelError`, naming every such label): nothing defaults silently."""
+    spec = spec or load_t2_chamber_spec()
+    labs = np.asarray(labels).astype(str)
+    if labs.ndim != 1:
+        raise ValueError(f"labels must be one-dimensional, got shape {labs.shape}")
+    uniq, inverse, counts = np.unique(labs, return_inverse=True, return_counts=True)
+    missing = {str(u): int(n) for u, n in zip(uniq, counts, strict=True) if u not in spec.labels}
+    if missing:
+        raise UnmappedT2LabelError(missing, spec.path)
+    return np.array([spec.labels[u] for u in uniq], dtype=object)[inverse].astype(str)
+
+
+def organ_link_length(coords, core) -> float:
+    """L: the ORGAN_LINK_PERCENTILE-th percentile of each core cell's 3D distance (stored units) to its nearest other
+    core cell. Needs at least two core cells."""
+    C = _as_coords(coords)
+    core = np.asarray(core, dtype=bool)
+    if core.shape != (len(C),) or core.sum() < 2:
+        raise ValueError("core must be a boolean mask over the cells with at least two core cells")
+    P = C[core]
+    d, _ = cKDTree(P).query(P, k=2)
+    return float(np.percentile(d[:, 1], ORGAN_LINK_PERCENTILE))
+
+
+def organ_scope(coords, labels, core, spec: T2ChamberSpec | None = None) -> tuple[np.ndarray, dict]:
+    """The organ cut's mask and its record (see `organ_scope_mask`). The record names the rule, the label config and
+    its sha256, the percentile and L, and shares of the input stage (kept, chamber-category, core within the kept);
+    the kept row count of the input stage is the caller's to record or not."""
+    spec = spec or load_t2_chamber_spec()
+    C = _as_coords(coords)
+    core = np.asarray(core, dtype=bool)
+    if core.shape != (len(C),):
+        raise ValueError(f"core must be a boolean mask over the {len(C)} cells, got shape {core.shape}")
+    cats = t2_chamber_categories(labels, spec)
+    if cats.shape != (len(C),):
+        raise ValueError(f"labels must name the {len(C)} cells, got {cats.shape[0]}")
+    chamber = np.isin(cats, spec.kept)
+    if (core & ~chamber).any():
+        bad = sorted(set(np.asarray(labels).astype(str)[core & ~chamber]))
+        raise ValueError(f"core cells with a label outside the chamber categories ({bad}): the core (CM plus "
+                         "endocardium) must lie inside the kept categories; the label config and the lineage map "
+                         "disagree")
+    L = organ_link_length(C, core)
+    nodes = np.flatnonzero(chamber)
+    m = len(nodes)
+    r = float(np.nextafter(L, 0.0))  # "closer than L": query_pairs keeps pairs at distance <= r, i.e. < L
+    pairs = (cKDTree(C[nodes]).query_pairs(r, output_type="ndarray") if r > 0
+             else np.empty((0, 2), dtype=np.intp))
+    graph = sparse.coo_matrix((np.ones(len(pairs), dtype=np.int8), (pairs[:, 0], pairs[:, 1])), shape=(m, m))
+    n_comp, comp = connected_components(graph, directed=False)
+    held = np.unique(comp[core[nodes]])
+    keep = np.zeros(len(C), dtype=bool)
+    keep[nodes[np.isin(comp, held)]] = True
+    keep |= core
+    rec = {"rule": ORGAN_SCOPE_RULE, "label_config": _repo_relative(spec.path), "label_config_sha256": spec.sha256,
+           "kept_categories": list(spec.kept), "link_percentile": ORGAN_LINK_PERCENTILE, "link_length": L,
+           "kept_share": float(keep.mean()), "chamber_share": float(chamber.mean()),
+           "core_share_of_kept": float(core.sum() / keep.sum()),
+           "components_kept": int(len(held)), "components_total": int(n_comp)}
+    return keep, rec
+
+
+def organ_scope_mask(coords, labels, core, spec: T2ChamberSpec | None = None) -> np.ndarray:
+    """The organ cut (file D): kept = chamber-category cells (configs/t2_chamber_classes.yaml, the scope `chamber`)
+    in the connected component(s) that contain core cells, in a graph that links two chamber-category cells closer
+    than L (3D, stored units), L = `organ_link_length` on the same input. Core cells (CM plus endocardium, the size
+    procedure's core) are always kept, and must carry chamber-category labels. A label the config does not list
+    refuses. Deterministic and invariant to row order (a set operation on positions and labels); a k-d tree's pair
+    list, never a dense distance matrix."""
+    return organ_scope(coords, labels, core, spec)[0]
+
+
+def organ_core_rms_ratio(coords, keep, core) -> float:
+    """rms(organ pool) / rms(core) on one stage: the RMS radius of the kept cells over that of the core cells (the
+    core lies inside the pool). The organ cut's size multiplies the raw-mode core forecast by this ratio measured on
+    E10.5 (`size_organ_scope`)."""
+    C = _as_coords(coords)
+    keep, core = np.asarray(keep, dtype=bool), np.asarray(core, dtype=bool)
+    if keep.shape != (len(C),) or core.shape != (len(C),) or not core.any():
+        raise ValueError("keep and core must be boolean masks over the cells, with at least one core cell")
+    if (core & ~keep).any():
+        raise ValueError("every core cell must lie in the organ pool")
+    rc = rms_radius(C[core])
+    if rc < DEGENERATE_RMS:
+        raise ValueError("the core has no spread: the ratio is undefined")
+    return rms_radius(C[keep]) / rc
+
+
+def _repo_relative(path: str) -> str:
+    p = Path(path).resolve()
+    try:
+        return str(p.relative_to(REPO_ROOT))
+    except ValueError:
+        return str(path)
+
+
+def size_organ_scope(coords, size_json, ratio: float, *, source_stage: str | None = None, reference_cloud=None,
+                     expect_board: str | None = "heart") -> tuple[np.ndarray, dict]:
+    """The organ cut's size (SIZE_ORGAN_SCOPE): rescale the cloud isotropically about its centroid to the size JSON's
+    raw-mode core forecast (z_modes.raw.pred_rms_core, the full trim's field) times `ratio`, rms(organ pool) / rms(core)
+    measured on E10.5 (`organ_core_rms_ratio`). Every check of the core's own scope applies first, through
+    `size_or_hold` (cells from E10.5 only, the reference cloud the JSON measured as E10.5, a valid JSON, the raw mode,
+    no fallback); the core forecast is read from its record and nothing else of it is used. The record is that record
+    with the organ size's fields: the hypothesis "organ", the core target and its source, the ratio, the target and its
+    source (SIZE_ORGAN_SOURCE), and the sizes after."""
+    if isinstance(ratio, bool) or not isinstance(ratio, int | float | np.floating) or not np.isfinite(ratio) \
+            or ratio <= 0:
+        raise ValueError(f"the organ-over-core RMS ratio must be a positive finite number, got {ratio!r}")
+    C = _as_coords(coords)
+    _, core_rec = size_or_hold(C, size_json, SIZE_CORE_SCOPE, source_stage=source_stage,
+                               reference_cloud=reference_cloud, z_mode="raw", expect_board=expect_board)
+    core_target = _forecast(core_rec.get("target_rms_full"), "the core forecast (target_rms_full)")
+    target = core_target * float(ratio)
+    out = rescale_to_rms(C, target)
+    before = rms_radius(C)
+    rec = dict(core_rec)
+    rec.update(hypothesis=SIZE_ORGAN_SCOPE, core_target_rms=core_target,
+               core_target_source=core_rec.get("target_source"), organ_core_rms_ratio=float(ratio),
+               ratio_stage=SIZE_FALLBACK_STAGE, target_rms_full=target, target_source=SIZE_ORGAN_SOURCE,
+               rms_before=before, scale=target / before, z_held=False, z_mode_used="raw")
+    rec["rms_after"] = rms_radius(out)
+    rec["log_rms_after_vs_target"] = float(np.log(rec["rms_after"] / target))
+    return out, rec
 
 
 def _scale_xy_hold_z(C: np.ndarray, target_full: float | None, target_xy: float | None) -> tuple[np.ndarray, dict]:

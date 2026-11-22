@@ -2,6 +2,13 @@
 
 ## Current State
 
+- **2026-11-22, 01:32 UTC.** No new score. The captain answered the three open questions with yes (decision log
+  2026-11-22 (j), ruling row R22): a score-guided search of round steps may run inside a fixed framework, with T1's
+  atlas line fixed at 2.5 and 3.0 before the 2.0 file's score; T3's refused s1 is re-admitted after the queued files;
+  T1's no-outside-data file F may be uploaded. The heart chord's reader is corrected and its gate restarted (entry
+  (k)). Teams at work: the search lines and the T1 line's builder, T68, the organ cut, K26, rc18, H31, the
+  outside-data design round.
+
 - **2026-11-22, 01:20 UTC.** No new score. The captain ordered the heart's organ-cut file D coded and read and outside
   datasets used as widely as possible (decision log 2026-11-22 (g), ruling row R21). Five practice lines closed
   without a file: T67 (T1 timing, NOT AHEAD), H29a (both heart trend candidates NOT QUALIFIED), K25 (T3 dispersion,
