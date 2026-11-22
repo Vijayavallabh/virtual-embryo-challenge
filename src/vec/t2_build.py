@@ -714,8 +714,8 @@ ORGAN_KEPT_SCOPE = "chamber"  # the categories kept: T1's chamber scope (cm, end
 ORGAN_LINK_PERCENTILE = 99.0  # L: this percentile of each core cell's distance to its nearest other core cell
 ORGAN_SCOPE_RULE = ("organ cut: chamber-category cells (configs/t2_chamber_classes.yaml, T1's chamber scope) in a "
                     "connected component that holds core cells, two chamber-category cells linked when closer than L "
-                    "(3D, stored units); L = the 99th percentile of each core cell's distance to its nearest other core "
-                    "cell on the same stage; core cells (CM plus endocardium) always kept")
+                    "(3D, stored units); L = the 99th percentile of each core cell's distance to its nearest other "
+                    "core cell on the same stage; core cells (CM plus endocardium) always kept")
 
 
 @dataclass(frozen=True)
