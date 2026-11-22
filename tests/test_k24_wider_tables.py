@@ -72,8 +72,8 @@ BYTE_IDENTICAL = {
     "outside_forms.py": "4837687d47f134ff690177ecaaec7c712952c238d0e7c806c5c8ef2cecb3ceb5",
     "k22_outside_forms.py": "6482585242ad6213eb550ceac54f3b9f911da6f8b0c2901216ea74ff24c7dc19",
     "k23_outside_exponents.py": "98bdac5b9f2413bc6d11e470fdbd2202df5ab3dc22548c8940812ac1f455eb98",
-    "build_outside_form.py": "6eb64142ab58e743746b22371a3329347a68d159c37ffb0fdf4607d5fd91516f",
-    "build_outside_form.sh": "d54429326d2e5cb1c7675840d4b2793859060dcffe5f8c528f864d7bda057a77",
+    # build_outside_form.py and .sh: no longer pinned here (row R22's T3 line, off by default; see
+    # tests/test_t3_exponent_line_build.py)
     "build_two_knockout.py": "e6bff930c32d3377bd1b5dc8174c2d60814fa0867d160ab64f1d577f94a50c9b",
     "build_two_knockout.sh": "dc1f8cff8fc2eb9cfa8c6bf9b85f3414e5639f8dbf1ca4984fd56ed6ffd69add",
     "build_combination.py": "ef94fb068845ea3b23db69dc1d6b1d936fa8219f51b7cec07916b5f891ada915",

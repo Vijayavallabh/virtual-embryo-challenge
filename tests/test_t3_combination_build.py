@@ -682,8 +682,9 @@ PINNED = {
     "experiments/t3_decomp/outside_forms.py": "4837687d47f134ff690177ecaaec7c712952c238d0e7c806c5c8ef2cecb3ceb5",
     "experiments/t3_decomp/build_two_knockout.py": "e6bff930c32d3377bd1b5dc8174c2d60814fa0867d160ab64f1d577f94a50c9b",
     "experiments/t3_decomp/build_two_knockout.sh": "dc1f8cff8fc2eb9cfa8c6bf9b85f3414e5639f8dbf1ca4984fd56ed6ffd69add",
-    "experiments/t3_decomp/build_outside_form.py": "6eb64142ab58e743746b22371a3329347a68d159c37ffb0fdf4607d5fd91516f",
-    "experiments/t3_decomp/build_outside_form.sh": "d54429326d2e5cb1c7675840d4b2793859060dcffe5f8c528f864d7bda057a77",
+    # build_outside_form.py and .sh: no longer pinned here; they gained row R22's T3 line (--captain-ruling R22, off by
+    # default), and their unchanged paths are held by tests/test_t3_outside_forms.py and
+    # tests/test_t3_exponent_line_build.py on the synthetic fixture
     "experiments/t3_decomp/k23_outside_exponents.py":
         "98bdac5b9f2413bc6d11e470fdbd2202df5ab3dc22548c8940812ac1f455eb98",
     "experiments/builds/results/t3two_fb01487.SHA256SUMS":
