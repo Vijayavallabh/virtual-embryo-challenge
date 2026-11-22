@@ -2,7 +2,53 @@
 
 ## Current Objective
 
-- **State at 2026-11-22, 02:01 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-22, 02:34 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-22 (t); the next label is 2026-11-22 (u). Local main = origin/main at b193249. Tries: T1 448, embryo 87,
+  heart 97, T3 74. No new score yet today.
+  - **THREE QUESTIONS ARE WITH THE CAPTAIN (plain text; act only on the captain's own words).** (1) T1's first search
+    line, a step back (1.75, and 1.25) if the 2.0 file does not beat 1.5; it must be fixed before the 2.0 file's
+    score; default: the rule stays. (2) The heart search line (trend 0.5, then 1.0, on the full trim C): needs the
+    captain's own named exception; recused. (3) **File D, the organ cut:** built,
+    `runs/manual_upload/T2heart_organ_half.h5ad`, sha256
+    1b4342c151c19dfc827d4b7a310c6a0fa8908f1e369836ebffb22c27c93b4f00; the analysts' question is
+    `experiments/harness/results/h29b_heart_organ/question_for_the_captain.md` (passed on unchanged; recused); it is
+    uploaded only on the captain's yes to it by name; default no. On a yes: amend `docs/S2_RULES.md` (file D enters
+    the heart's order), re-pin, hand over path, sha256, board and the Data-used text (released Task 2 heart stages and
+    the unlocked E10.5 validation file only; no outside data).
+  - **CLOSED SINCE 02:00.** Row K26 stopped at its stage 0 (a diagnostic on outside tables; no try, no file).
+    Candidate C2A stopped on its own rule: the heart atlas's zones were assigned by a fitted demultiplexer on a pooled
+    library that held in-window cells. **Said to the captain once (entry (q)):** the same step assigned that atlas's
+    stage column, which every atlas-based T1 file reads; register row X002 now says so; my reading is that it is the
+    residual on record since 19 Nov with its mechanism named; file F (no outside data) does not depend on it. The
+    nuclei atlas's filter question is answered (entry (r)): per-experiment doublet models, no experiment mixes a
+    permitted embryo with an embryo labelled inside the window; run_15 also held the boundary embryos 23 and 24.
+  - **RUNNING ON THE DGX (a waiter on each).** T65 (libraries one after another; then commit the five task files
+    UNOPENED, push, and in `~/v/scratch/t65-wt` move the untracked task files aside before `git checkout --detach`,
+    then `t65_ms.sh read`). T68 (five runs since 02:15; ten arms counted). E51 (run since 01:28). E54 (fit since
+    01:01; its gate counts when it runs). E52 second start (run since 01:54). T1 line builds
+    (`~/v/scratch/t1line/r1/`). **rc18** (rows N58 and T69; worktree `~/v/scratch/t69-wt` at 3844836, own environment;
+    chain `~/v/scratch/t69chain1/chain.exit`: label-tests, label; label exit 3 = stopped after preflight, not rerun).
+    On 0: copy `experiments/external/results/feng_relabel_e18/MANIFEST.json` back, place row T69 (`lift8/row_t69.txt`)
+    with the E18 statistics' sha256 in its marked blank and the count T1 449 to 463, commit (ROWC), push to
+    `v/vec-campaign-d`, move the untracked record aside in the worktree, check out ROWC, then `rc18.sh tests ROWC`,
+    the five runs (`cut chamber`, `cut whole`, `lib 1`, `lib 2`, `lib 3`; they may run in parallel), `read ROWC`; the
+    launcher names its exit files with underscores (`label_tests.exit`). **H32** (worktree `~/v/scratch/h32-wt` at
+    3844836, own environment with the outside-data group; chain `~/v/scratch/h32chain/chain.exit`: tests, tables,
+    gate; 3 = gate FAIL, nothing runs or counts). On 0: commit `runs/h32/gate/gate.json`, `gate.txt` and
+    `runs/h32/tables/tables_sha256.json` as `experiments/harness/results/h32_heart_gated_trend/gate/` and
+    `.../tables_sha256.json` ON A SIDE BRANCH cut from 3844836 (the launcher wants RUN to differ from ROW in those
+    files only), deliver, then `run_h32.sh run ROW RUN` and `read ROW RUN`; sixteen tries, heart 98 to 113, from the
+    run step; merge the side branch afterwards.
+  - **WORKFLOW RUNNING.** wn2g89uiu: T1 line 2's builder (`campaign/t1-damping-line`), the T3 line (re-based; write
+    its text into the log and the rules BEFORE the K23 file's headline, add `--table-exponent 4.0` to row R22's first
+    cell then), C1A (row T71, `campaign/t1-cm-nuclei`; its screens are clear; register the adult muscle statement,
+    PMID 33459151, as an X010 amendment at placement; any file that reads embryos 13 to 22 carries the run_15 note
+    into the captain's question). Do not merge a builder change before a build that must match an earlier reading's
+    code.
+  - **A slip to avoid (entry (r)).** Where a row sends a read's figures to fresh analysts, read the outcome line only
+    (`grep '^OUTCOME'`), never the head of the reading: on H29b the first fourteen lines held a headline figure. I am
+    recused on the heart's scope and size; I restated nothing and gave no lean.
+- **State at 2026-11-22, 02:01 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-22 (o); the next label is 2026-11-22 (p). Local main = origin/main at 95dd312. Tries: T1 438, embryo 87,
   heart 88, T3 74. No new score yet today.
   - **TWO QUESTIONS ARE WITH THE CAPTAIN (plain text; act only on the captain's own words).** (1) T1's first search

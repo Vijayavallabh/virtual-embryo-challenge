@@ -2,6 +2,14 @@
 
 ## Current State
 
+- **2026-11-22, 02:34 UTC.** No new score. Row K26 (the T3 gene-context map) stopped at its first diagnostic with no
+  try. The organ cut's practice read (row H29b) came back valid; file D was built twice with one sha256 and its
+  question, written by fresh analysts, is with the captain. Four screening answers were recorded: the T1 zone
+  candidate stopped on its own rule, and the register now says how the heart atlas assigned stage and zone; the nuclei
+  atlas's filter question is answered with no stop. Rows N58 (the E18 labelling for T1 candidate rc18) and H32 (the
+  heart's sign-gated trend) were placed and started. Tries: T1 448, embryo 87, heart 97, T3 74. Decision log
+  2026-11-22 (p) to (t).
+
 - **2026-11-22, 02:01 UTC.** No new score. The heart chord's gate N56 came back VOID, so rows H30 and H31 ended
   without a counted read. Started on the DGX: T68 (T66's rerun on the gene table's genes), the organ cut's read (row
   H29b, with its target-free gate), and the builds of the first search line's 2.5 and 3.0 files. The outside-data
