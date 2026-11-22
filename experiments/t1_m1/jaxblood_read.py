@@ -1,9 +1,13 @@
 #!/usr/bin/env python
-"""Try T66 (experiments/harness/TRIES.md): the kill test of the moonshot "held blood moved along a same-modality nuclei
+"""Try T68 (experiments/harness/TRIES.md): the kill test of the moonshot "held blood moved along a same-modality nuclei
 atlas", read on row T62's five practice tasks. Ruling R1 keeps the drawn Blood cells at their counts as drawn; this
 moves them by the per-gene change of the erythroid group of JAX/Qiu 2024 (register row X003) recomputed from raw counts
 by experiments/external/jax_blood.py (row N54's marker-score machinery, UMI-downsampled nuclei, equal weight per embryo;
-early end embryos 1-12, late end embryos 59-63).
+early end embryos 1-12, late end embryos 59-63; the gene table's genes alone).
+
+Row T68 is the rerun of row T66, whose reducer refused before any direction, pre-gate, T1 read or score; the only
+change is the reducer's gene universe (the gene table's genes, fixed by a score-blind judge) with the names that follow
+from a new row. Row T66's folders are never read.
 
 The practice analogue of R13's file is row T62's `m1rc_gmom`, taken unchanged from `recomputed_read.cut_pair` and
 `recomputed_read.library_pair` (their CANDIDATE): the gate and the base, not counted. The two counted arms are that
@@ -31,11 +35,11 @@ It imports recomputed_read.py (T62) and heldmom_read.py (T64) and copies none of
            nuclei entering the direction (at least the UMI target), the per-gene log f summary and each end's
            experimental_batch and day labels. Writes tasks/pregate.json and pregate.txt; prints the outcome words only;
            exits 0 when it passes and PREGATE_FAIL when it fails (then nothing is scored and no try is counted).
-  run-cut  One E10.5 cut. Refused before anything loads unless row T66 is in TRIES.md, HEAD is --commit, the tree is
+  run-cut  One E10.5 cut. Refused before anything loads unless row T68 is in TRIES.md, HEAD is --commit, the tree is
            clean by vec.provenance's rule, the task file does not exist, the source guards pass, the relabelling's
            committed checks pass, and the pre-gate passed at this commit on the same reducer manifest. Prints no score.
   run-lib  One library task; the same refusals. Prints no score.
-  read     Row T66's statement, applied before anything is printed; writes t66.json and t66.txt; prints the outcome
+  read     Row T68's statement, applied before anything is printed; writes t68.json and t68.txt; prints the outcome
            words and what follows only. The same refusals on the row, the commit and the tree.
 
 Usage: through experiments/t1_m1/jaxblood.sh on the DGX campaign checkout ~/v/vec-campaign-d (it alone holds
@@ -77,13 +81,13 @@ bt, gv, pt, rr = rc.bt, rc.gv, rc.pt, rc.rr
 feng_dirs = rc.feng_dirs
 fr, fio = jb.fr, jb.fio
 
-ROW = "T66"
-OUT = "t66_jaxblood"
+ROW = "T68"
+OUT = "t68_jaxblood"
 CUTS, CUT_FILES, LIBRARIES = rc.CUTS, rc.CUT_FILES, rc.LIBRARIES
 T62_TASKS = RESULTS / "t62_recomputed" / "tasks"
 T64_TASKS = RESULTS / "t64_heldmom" / "tasks"
 T64_ARM = hmr.ARM  # m1rc_gmom_heldmom, the comparator
-OUT_FILES = ("t66.json", "t66.txt")
+OUT_FILES = ("t68.json", "t68.txt")
 PREGATE_FILES = ("pregate.json", "pregate.txt")
 
 BASE = rc.CANDIDATE  # m1rc_gmom: the gate and the base, not counted
@@ -126,15 +130,15 @@ FOLLOWS_AHEAD = ("What follows: one priced question to the captain: amend R1 for
                  "this read.")
 FOLLOWS_END = ("What follows: NOT AHEAD closes 'JAX erythroid direction on the held Blood cells' on T1. No question "
                "goes to the captain, nothing is built, and nothing is rerun under another row.")
-FOLLOWS_VOID = ("What follows: the tries still count; nothing is rerun under row T66, no question goes to the captain "
+FOLLOWS_VOID = ("What follows: the tries still count; nothing is rerun under row T68, no question goes to the captain "
                 "and nothing is built.")
-FOLLOWS_PRUNED = ("What follows: nothing is scored and no try is counted under row T66; the arm is pruned at the "
+FOLLOWS_PRUNED = ("What follows: nothing is scored and no try is counted under row T68; the arm is pruned at the "
                   "pre-gate.")
 BESIDE = ("J2: the October readout already compared JAX's blood direction with the E10.5 truth, so this read carries "
           "no forecast weight.",
           "The arm moves the expression of the drawn Blood cells only; R1 is the captain's ruling, and only his ruling "
           "naming R1 puts the arm in a file. Macrophage and Early VIC, held at the test, are unpriced here.")
-LABEL = ("try T66, a labelled in-sample diagnostic, never an adoption result: the drawn Blood cells moved along the "
+LABEL = ("try T68, a labelled in-sample diagnostic, never an adoption result: the drawn Blood cells moved along the "
          "recomputed erythroid direction of JAX/Qiu 2024 nuclei (m1rc_gmom_jaxblood) and its permuted control "
          "(m1rc_gmom_jaxperm) against m1rc_gmom (row T62's) on T62's five tasks; every task scores one truth (E10.5) "
          "over one day")
@@ -170,14 +174,17 @@ def reducer_paths() -> tuple[Path, Path]:
 
 
 def manifest_problems(man: Mapping) -> list[str]:
-    """Every way the reducer's manifest is not the row's: the yaml's sha256, the gate, the columns read (the whitelist
+    """Every way the reducer's manifest is not the row's: the yaml's sha256, the gate, the gene universe (the gene
+    table's genes, which the yaml's sha256 already binds), the columns read (the whitelist
     check), an embryo outside the row's lists, a direction missing."""
     bad = []
     if (man.get("config") or {}).get("sha256") != jb.YAML_SHA256:
         bad.append("the reducer ran under another yaml than the row's")
     gate = man.get("gate") or {}
     if gate.get("row") != ROW or gate.get("clean") is not True:
-        bad.append("the reducer's gate is not row T66's on a clean tree")
+        bad.append(f"the reducer's gate is not row {ROW}'s on a clean tree")
+    if man.get("gene_universe") != jb.GENE_UNIVERSE:  # bound by the yaml's sha256, checked here too
+        bad.append("the reducer's gene universe is not the gene table's genes")
     cols = list(man.get("columns_read") or [])
     if not cols or any(c not in jb.CELL_WHITELIST or c in jb.REFUSED_COLUMNS or fr.ANNOTATION_PATTERN.search(c)
                        for c in cols):
@@ -639,7 +646,7 @@ def library_valid(r: Mapping) -> bool:
 def guards(loaded: Mapping[str, Mapping | None], t62: Mapping[str, Mapping[int, float]],
            t64: Mapping[str, Mapping[int, float]], checks: Mapping, pregate: Mapping | None, manifest_sha: str | None,
            source_bad: Sequence[str], seeds: Sequence[int] = SEEDS, read_commit: str | None = None) -> list[str]:
-    """Every void condition of row T66; an empty list means none fired. `read_commit`, when given (the read passes its
+    """Every void condition of row T68; an empty list means none fired. `read_commit`, when given (the read passes its
     own HEAD), must be the task files' commit."""
     reasons = []
     if pregate is None or (pregate.get("reading") or {}).get("passes") is not True:
@@ -730,7 +737,7 @@ def paired(rows: Sequence[Mapping], change: str, base: str) -> dict:
 
 def statement(arm: Mapping[str, Mapping], ap: Mapping[str, Mapping], arm_means: Mapping[str, float],
               t64_means: Mapping[str, float]) -> tuple[bool, list[str], dict]:
-    """Row T66's statement: (i) to (iv), with d = arm - m1rc_gmom (`arm`) and arm - jaxperm (`ap`) paired per seed.
+    """Row T68's statement: (i) to (iv), with d = arm - m1rc_gmom (`arm`) and arm - jaxperm (`ap`) paired per seed.
     Returns AHEAD, the clauses that failed (words only) and the values the clauses read."""
     lib_d = float(np.mean([arm[lib]["mean"] for lib in LIBRARIES]))
     lib_ap = float(np.mean([ap[lib]["mean"] for lib in LIBRARIES]))
@@ -755,10 +762,10 @@ def statement(arm: Mapping[str, Mapping], ap: Mapping[str, Mapping], arm_means: 
                                 "libraries_at_or_above_t64": at_t64}
 
 
-def t66_reading(loaded: Mapping[str, Mapping | None], t62: Mapping[str, Mapping[int, float]],
+def t68_reading(loaded: Mapping[str, Mapping | None], t62: Mapping[str, Mapping[int, float]],
                 t64: Mapping[str, Mapping[int, float]], checks: Mapping, pregate: Mapping | None,
                 manifest_sha: str | None, source_bad: Sequence[str] = (), read_commit: str | None = None) -> dict:
-    """Row T66's reading: the void conditions (the gate among them) first, then the statement."""
+    """Row T68's reading: the void conditions (the gate among them) first, then the statement."""
     reasons = guards(loaded, t62, t64, checks, pregate, manifest_sha, source_bad, read_commit=read_commit)
     if reasons:
         return {"outcome": "VOID", "reasons": reasons, "follows": FOLLOWS_VOID}
@@ -795,7 +802,7 @@ def _line(name: str, p: Mapping) -> str:
             f"{p['of']}, per seed {p['range'][0]:+.2f} to {p['range'][1]:+.2f}; by group: {g}")
 
 
-def t66_text(res: Mapping) -> str:
+def t68_text(res: Mapping) -> str:
     r = res["reading"]
     lines = [res["label"], *outcome_lines(r)]
     if r["outcome"] != "VOID":
@@ -835,12 +842,12 @@ def read(out: Path, commit: str) -> dict:
     manifest_sha = fio.sha256_file(mpath) if mpath.exists() else None
     checks = rc.relabel_checks(need_stats=False)  # the stats file's hash is in each task file, checked by `guards`
     bad = source_guard() + [f"recomputed_read.py: {x}" for x in rc.source_guard()]
-    reading = t66_reading(loaded, t62, t64, checks, pregate, manifest_sha, bad, read_commit=started["commit"])
+    reading = t68_reading(loaded, t62, t64, checks, pregate, manifest_sha, bad, read_commit=started["commit"])
     res = {"label": LABEL, "row": ROW, "reading": reading, "tries": TRIES_COUNT}
     res["stamp"] = gv.stamp(started, [p for p in [*paths.values(), pg_path] if p.exists()])
     out.mkdir(parents=True, exist_ok=True)
     write_new(out / OUT_FILES[0], json.dumps(res, indent=1, default=float) + "\n")
-    write_new(out / OUT_FILES[1], t66_text(res))
+    write_new(out / OUT_FILES[1], t68_text(res))
     print("\n".join(outcome_lines(reading)) + f"\n(numbers in {out / OUT_FILES[1]})")
     return res
 
@@ -848,22 +855,22 @@ def read(out: Path, commit: str) -> dict:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
-    p = sub.add_parser("pregate", help="try T66's target-free pre-gate")
+    p = sub.add_parser("pregate", help="try T68's target-free pre-gate")
     p.add_argument("--out", required=True)
     p.add_argument("--commit", required=True)
-    p = sub.add_parser("run-cut", help="one E10.5 cut of try T66")
+    p = sub.add_parser("run-cut", help="one E10.5 cut of try T68")
     p.add_argument("--cut", required=True, choices=list(CUTS))
     p.add_argument("--out", required=True)
     p.add_argument("--commit", required=True)
     p.add_argument("--seeds", default=",".join(map(str, SEEDS)))
     p.add_argument("--data", default=str(harness.DATA_DIR))
-    p = sub.add_parser("run-lib", help="one library task of try T66")
+    p = sub.add_parser("run-lib", help="one library task of try T68")
     p.add_argument("--library", required=True, choices=list(LIBRARIES))
     p.add_argument("--out", required=True)
     p.add_argument("--commit", required=True)
     p.add_argument("--seeds", default=",".join(map(str, SEEDS)))
     p.add_argument("--data", default=str(harness.DATA_DIR))
-    p = sub.add_parser("read", help="try T66's reading")
+    p = sub.add_parser("read", help="try T68's reading")
     p.add_argument("--out", required=True)
     p.add_argument("--commit", required=True)
     a = ap.parse_args(argv)

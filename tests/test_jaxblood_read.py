@@ -1,4 +1,4 @@
-"""Try T66 (experiments/harness/TRIES.md): experiments/t1_m1/jaxblood_read.py and its launcher on synthetic stages,
+"""Try T68 (experiments/harness/TRIES.md): experiments/t1_m1/jaxblood_read.py and its launcher on synthetic stages,
 hand-made task files and temporary git repositories only. No released file, reducer output, statistics file, board file
 or score is read; the committed T62 and T64 task folders are checked for their file names only. It reuses row T64's
 fixtures."""
@@ -235,7 +235,8 @@ def _manifest(jr, assigned=None, entering=None, **change):
     entering = entering if entering is not None else {n: max(k - 25, 0) for n, k in assigned.items()}
     per = {str(n): {"erythroid_assigned": k, "erythroid_entering": entering[n], "experimental_batch": ["run_4"],
                     "days": ["E8.5"]} for n, k in assigned.items()}
-    man = {"config": {"sha256": jr.jb.YAML_SHA256}, "gate": {"row": "T66", "clean": True},
+    man = {"config": {"sha256": jr.jb.YAML_SHA256}, "gate": {"row": "T68", "clean": True},
+           "gene_universe": "gene_table",
            "columns_read": list(jr.jb.CELL_WHITELIST), "authors_labels_read": False, "stats_npz_read": False,
            "embryos_read": sorted(assigned), "embryo_lists": {e: list(jr.jb.ROW_EMBRYOS[e]) for e in jr.jb.ENDS},
            "embryos_used": {e: list(jr.jb.ROW_EMBRYOS[e]) for e in jr.jb.ENDS}, "has_direction": True,
@@ -282,6 +283,7 @@ def test_the_pregate_counts_assigned_nuclei_not_the_ones_at_the_umi_target(jr):
     ("column", "outside the whitelist"),
     ("yaml", "another yaml"),
     ("no_direction", "wrote no direction"),
+    ("universe", "gene universe"),
 ])
 def test_the_pregate_fails(jr, case, part):
     assigned = _counts(jr)
@@ -303,6 +305,8 @@ def test_the_pregate_fails(jr, case, part):
         man["columns_read"] = [*man["columns_read"], "celltype_update"]
     elif case == "yaml":
         man["config"]["sha256"] = "0" * 64
+    elif case == "universe":
+        man["gene_universe"] = "all_matrix_genes"
     r = jr.pregate_reading(man, d, _held(), [f"g{i}" for i in range(50)])
     assert not r["passes"] and any(part in f for f in r["failed"]), r["failed"]
     assert len(r["failed"]) == 1, r["failed"]  # the fixture fails on the case's own reason only
@@ -393,7 +397,7 @@ OK = {"reasons": []}
 
 
 def _read(jr, loaded, t64=None, pregate=None, sha=MSHA, checks=OK, source=()):
-    return jr.t66_reading(loaded, _t62(), _t64() if t64 is None else t64, checks,
+    return jr.t68_reading(loaded, _t62(), _t64() if t64 is None else t64, checks,
                           _pregate() if pregate is None else pregate, sha, source)
 
 
@@ -471,7 +475,7 @@ def test_the_idle_case_is_named(jr):
 def test_every_void_reason_fires(jr, case):
     loaded, t64, pregate, sha, checks, source = _loaded(jr), _t64(), _pregate(), MSHA, OK, []
     read_commit = "c" * 40
-    assert jr.t66_reading(loaded, _t62(), t64, checks, pregate, sha, source, read_commit)["outcome"] != "VOID"
+    assert jr.t68_reading(loaded, _t62(), t64, checks, pregate, sha, source, read_commit)["outcome"] != "VOID"
     if case == "held_not_blood":  # another R1-held label drawn: the arm would move Blood alone
         for name in jr.COUNTED:
             loaded["2"]["rows"][3]["records"][name].update(held_set=["Blood", "Macrophage"],
@@ -540,7 +544,7 @@ def test_every_void_reason_fires(jr, case):
         del t64["2"][7]
     elif case == "perm_values":
         loaded["2"]["jax"]["perm_same_values"] = False
-    r = jr.t66_reading(loaded, _t62(), t64, checks, pregate, sha, source, read_commit)
+    r = jr.t68_reading(loaded, _t62(), t64, checks, pregate, sha, source, read_commit)
     assert r["outcome"] == "VOID" and r["reasons"] and r["follows"] == jr.FOLLOWS_VOID, case
     lines = jr.outcome_lines(r)
     assert lines[0].startswith("Outcome: VOID") and not any(b in lines for b in jr.BESIDE)
@@ -556,7 +560,7 @@ def test_the_gate_passes_at_a_difference_of_0_02(jr):
 def test_the_counts_and_constants(jr):
     assert jr.TRIES_COUNT == 10 and jr.COUNTED == ("m1rc_gmom_jaxblood", "m1rc_gmom_jaxperm")
     assert jr.ARMS == ("m1rc_gmom", "m1rc_gmom_jaxblood", "m1rc_gmom_jaxperm") and jr.LIB_ARMS[0] == "copy_last"
-    assert jr.BASE == jr.rc.CANDIDATE and jr.T64_ARM == "m1rc_gmom_heldmom" and jr.ROW == "T66"
+    assert jr.BASE == jr.rc.CANDIDATE and jr.T64_ARM == "m1rc_gmom_heldmom" and jr.ROW == "T68"
     assert (jr.MIN_END_NUCLEI, jr.MIN_EMBRYO_NUCLEI, jr.MIN_EMBRYOS, jr.MAX_HELD_SHARE) == (300, 30, 3, 0.5)
     assert (jr.LIB_BAR, jr.MIN_AHEAD, jr.MIN_T64_LIBS, jr.CUT_FLOOR) == (0.3, 8, 2, -0.05)
     assert jr.AHEAD_LIBS_ARM == ("1", "3") and jr.AHEAD_LIBS_PERM == ("3",)
@@ -589,7 +593,7 @@ def test_the_source_guard(jr, tmp_path):
 # Refusals and the printed lines
 
 
-def _tries(tmp_path, row="T66"):
+def _tries(tmp_path, row="T68"):
     t = tmp_path / "TRIES.md"
     t.write_text(f"| {row} (one row) | T1 | x |\n")
     return t
@@ -649,7 +653,7 @@ def test_a_run_is_refused_on_another_head_an_unclean_tree_or_without_a_passed_pr
 
 def test_the_read_prints_no_score_and_never_overwrites(jr, tmp_path, monkeypatch):
     sha = _ready(jr, tmp_path, monkeypatch)
-    out = tmp_path / "results" / "t66"
+    out = tmp_path / "results" / "t68"
     (out / "tasks").mkdir(parents=True)
     loaded = _loaded(jr, libs=(1.234567, 1.0, 1.0))
     for k, f in jr.task_files().items():
@@ -662,7 +666,7 @@ def test_the_read_prints_no_score_and_never_overwrites(jr, tmp_path, monkeypatch
     monkeypatch.setattr(jr.gv, "stamp", lambda started, fs: {"commit": "c" * 40, "tree_clean": True, "utc": "x"})
     res = jr.read(out, "c" * 40)
     assert res["reading"]["outcome"] == "AHEAD" and res["tries"] == 10
-    text = (out / "t66.txt").read_text()
+    text = (out / "t68.txt").read_text()
     assert "+1.23" in text and "Clause values" in text and "row T64's m1rc_gmom_heldmom" in text
     with pytest.raises(SystemExit):
         jr.read(out, "c" * 40)  # no second read into the same folder
@@ -670,7 +674,7 @@ def test_the_read_prints_no_score_and_never_overwrites(jr, tmp_path, monkeypatch
 
 def test_the_read_prints_only_words(jr, tmp_path, monkeypatch, capsys):
     sha = _ready(jr, tmp_path, monkeypatch)
-    out = tmp_path / "results" / "t66w"
+    out = tmp_path / "results" / "t68w"
     (out / "tasks").mkdir(parents=True)
     loaded = _loaded(jr, libs=(1.234567, 1.0, 1.0))
     for k, f in jr.task_files().items():
@@ -699,7 +703,7 @@ def test_the_pregate_prints_only_words_and_exits_3_on_a_failure(jr, tmp_path, mo
     assert jr.cmd_pregate(A) == jr.PREGATE_FAIL == 3
     printed = capsys.readouterr().out
     assert printed.startswith("Pre-gate: FAILS") and "no try is counted" in printed
-    assert not any(ch.isdigit() for ch in printed.replace("T66", ""))
+    assert not any(ch.isdigit() for ch in printed.replace("T68", ""))
     rec = json.loads((jr.RESULTS / "pg" / "tasks" / "pregate.json").read_text())
     assert rec["reading"]["passes"] is False and rec["manifest_sha256"] == "s" * 64
     with pytest.raises(SystemExit, match="already holds"):
@@ -717,7 +721,7 @@ def _git_env(home):
     return env
 
 
-def _repo(tmp_path, row="T66"):
+def _repo(tmp_path, row="T68"):
     repo, home = tmp_path / "repo", tmp_path / "home"
     (repo / "experiments" / "t1_m1").mkdir(parents=True)
     (repo / "experiments" / "harness").mkdir(parents=True)
@@ -740,20 +744,20 @@ def _run(repo, env, *args):
 
 
 def _exit(home, name):
-    return (home / "v" / "scratch" / "t66" / f"{name}.exit").read_text().strip()
+    return (home / "v" / "scratch" / "t68" / f"{name}.exit").read_text().strip()
 
 
 def _refused(home, name):
-    return (home / "v" / "scratch" / "t66" / f"{name}.refused").read_text().strip()
+    return (home / "v" / "scratch" / "t68" / f"{name}.refused").read_text().strip()
 
 
 def _no_record(home, name):
-    s = home / "v" / "scratch" / "t66"
+    s = home / "v" / "scratch" / "t68"
     return not (s / f"{name}.exit").exists() and not (s / f"{name}.head").exists()
 
 
 def _passed(home, head, *names):
-    s = home / "v" / "scratch" / "t66"
+    s = home / "v" / "scratch" / "t68"
     for n in names:
         (s / f"{n}.exit").write_text("0\n")
         (s / f"{n}.head").write_text(head + "\n")
@@ -775,19 +779,19 @@ def test_the_launcher_refusals(tmp_path):
     assert _run(repo, env, "reduce", head) == 93  # the JAX folder is not in place
     (repo / "data" / "external" / "jax_qiu2024").mkdir(parents=True)
     (repo / "data" / "external" / "jax_qiu2024" / "MANIFEST.json").write_text("{}")
-    (repo / "data" / "derived" / "jax_blood").mkdir()
+    (repo / "data" / "derived" / "jax_blood_t68").mkdir()
     assert _run(repo, env, "reduce", head) == 91 and _refused(home, "reduce") == "91"  # never over a folder
     assert _run(repo, env, "pregate", head) == 94
     _passed(home, head, "reduce")
     assert _run(repo, env, "pregate", head) == 93  # no reducer manifest
-    (repo / "data" / "derived" / "jax_blood" / "MANIFEST.json").write_text("{}")
-    tasks = repo / "experiments" / "t1_m1" / "results" / "t66_jaxblood" / "tasks"
+    (repo / "data" / "derived" / "jax_blood_t68" / "MANIFEST.json").write_text("{}")
+    tasks = repo / "experiments" / "t1_m1" / "results" / "t68_jaxblood" / "tasks"
     tasks.mkdir(parents=True)
     (tasks / "pregate.json").write_text("{}")  # untracked inside the row's folder: the tree stays clean
     assert _run(repo, env, "pregate", head) == 91
     assert _run(repo, env, "cut", "chamber", head) == 94  # the pre-gate has not exited 0
-    (home / "v" / "scratch" / "t66" / "pregate.exit").write_text("3\n")
-    (home / "v" / "scratch" / "t66" / "pregate.head").write_text(head + "\n")
+    (home / "v" / "scratch" / "t68" / "pregate.exit").write_text("3\n")
+    (home / "v" / "scratch" / "t68" / "pregate.head").write_text(head + "\n")
     assert _run(repo, env, "lib", "2", head) == 94 and _refused(home, "lib_2") == "94"  # a failed pre-gate stops all
     _passed(home, head, "pregate")
     (tasks / "T1_E9.5_E10.5_chamber.json").write_text("{}")
@@ -796,8 +800,8 @@ def test_the_launcher_refusals(tmp_path):
     _passed(home, head, "cut_chamber", "cut_whole", "lib_1", "lib_2", "lib_3")
     # a second call of a step that succeeded is refused and leaves its record as it was (the review's lesser point)
     assert _run(repo, env, "cut", "chamber", head) == 91 and _exit(home, "cut_chamber") == "0"
-    assert (home / "v" / "scratch" / "t66" / "cut_chamber.head").read_text().strip() == head
-    (tasks.parent / "t66.json").write_text("{}")
+    assert (home / "v" / "scratch" / "t68" / "cut_chamber.head").read_text().strip() == head
+    (tasks.parent / "t68.json").write_text("{}")
     assert _run(repo, env, "read", head) == 91 and _refused(home, "read") == "91"  # past the 94 check: records hold
     (repo / "stray.txt").write_text("x")
     assert _run(repo, env, "read", head) == 98 and _refused(home, "read") == "98"
@@ -811,11 +815,11 @@ def test_a_step_that_runs_marks_itself_running_then_writes_its_exit(tmp_path):
     fake = tmp_path / "bin"
     fake.mkdir()
     seen = tmp_path / "seen.txt"
-    (fake / "uv").write_text(f'#!/usr/bin/env bash\ncat "$HOME/v/scratch/t66/tests.exit" "$HOME/v/scratch/t66/'
+    (fake / "uv").write_text(f'#!/usr/bin/env bash\ncat "$HOME/v/scratch/t68/tests.exit" "$HOME/v/scratch/t68/'
                              f'tests.head" > "{seen}"\nexit 0\n')
     (fake / "uv").chmod(0o755)
     env = {**env, "PATH": f"{fake}:{env['PATH']}"}
-    s = home / "v" / "scratch" / "t66"
+    s = home / "v" / "scratch" / "t68"
     s.mkdir(parents=True)
     (repo / "data" / "derived" / "feng_relabel_c").mkdir(parents=True)
     (repo / "data" / "derived" / "feng_relabel_c" / "cd1_stats_relabel.npz").write_text("x")
@@ -830,7 +834,7 @@ def test_the_launcher_refuses_without_the_row_and_on_another_heads_exit_file(tmp
     repo, home, env, head = _repo(tmp_path, row="T64")
     assert _run(repo, env, "tests", head) == 96 and _refused(home, "tests") == "96"
     repo2, home2, env2, head2 = _repo(tmp_path / "b")
-    s = home2 / "v" / "scratch" / "t66"
+    s = home2 / "v" / "scratch" / "t68"
     s.mkdir(parents=True)
     (s / "tests.exit").write_text("0\n")
     (s / "tests.head").write_text("f" * 40 + "\n")  # exit 0, but at another commit

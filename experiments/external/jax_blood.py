@@ -1,19 +1,30 @@
-"""Row T66 (experiments/harness/TRIES.md): the erythroid direction of JAX/Qiu 2024 (register row X003), recomputed from
+"""Row T68 (experiments/harness/TRIES.md): the erythroid direction of JAX/Qiu 2024 (register row X003), recomputed from
 raw counts.
 
-The kill test of row T66 (experiments/t1_m1/jaxblood_read.py) moves the drawn Blood cells by the per-gene change of an
+The kill test of row T68 (experiments/t1_m1/jaxblood_read.py) moves the drawn Blood cells by the per-gene change of an
 erythroid group of JAX nuclei between an early end (embryos 1-12, E8.5) and a late end (embryos 59-63, E15.5-E16.5).
-This script makes that change and nothing else, with the fixed settings of experiments/external/jax_blood.yaml:
+This script makes that change and nothing else, with the fixed settings of experiments/external/jax_blood.yaml.
+Row T68 is the rerun of row T66, whose reducer refused before any group was computed because its count matrices carry
+gene ids the gene table does not list; a score-blind judge fixed the rule below (the yaml's gene_universe), and nothing
+else changed. Row T66's folder data/derived/jax_blood/ is never read or removed.
 
+  0. The gene universe is the gene table's genes (`gene_universe`): a count-matrix row id that meta/df_gene.csv does not
+     list (exact gene_id match) is removed when each matrix is loaded, before any arithmetic, and every step below runs
+     on the nuclei x table-genes matrix (each nucleus's library is its UMIs on table genes; a nucleus with none is
+     dropped as empty). A duplicated matrix row id, a duplicated table gene_id or a table gene_id missing from a matrix
+     refuses. The manifest records the universe, the counts of matrix, kept and left-out genes, the sha256 of the
+     sorted left-out ids, the first three of them and, per embryo, the share of the listed nuclei's UMIs on left-out
+     genes (reported only: it decides nothing). No left-out gene is in the direction file.
   1. The group is recomputed from the nuclei's raw counts by row N54's marker-score machinery, imported from
      experiments/external/feng_relabel.py (log1p_cp10k, unique_index, control_sets, set_score, assign; none of it is
      copied), with N54's released-data gene sets. The controls' gene means are taken per end over the end's nuclei and
      averaged over the two ends with equal weight (feng_relabel.gene_means's rule, with the ends as its stages), summed
      embryo by embryo so that no end is held in memory as log values at once (`end_means`, tested equal to gene_means).
-  2. Each assigned erythroid nucleus with at least umi_target UMIs is downsampled to exactly umi_target UMIs (without
-     replacement); a nucleus with fewer is left out. Per embryo with at least min_embryo_nuclei such nuclei, the mean
-     CP10k (vec.core.mean_cp10k); per end, the mean over its embryos with equal weight.
-  3. direction[g] = log((m_late[g] + eps) / (m_early[g] + eps)) per JAX gene (dirlib.lfc_ratio's form).
+  2. Each assigned erythroid nucleus with at least umi_target UMIs on table genes is downsampled to exactly umi_target
+     table-gene UMIs (without replacement); a nucleus with fewer is left out. Per embryo with at least
+     min_embryo_nuclei such nuclei, the mean CP10k (vec.core.mean_cp10k); per end, the mean over its embryos with equal
+     weight.
+  3. direction[g] = log((m_late[g] + eps) / (m_early[g] + eps)) per table gene (dirlib.lfc_ratio's form).
 
 What it reads, and nothing else: the per-embryo count matrices of the row's embryos (each checked against the JAX
 folder's MANIFEST.json), from meta/df_cell.csv the columns of CELL_WHITELIST alone (a reader that refuses any other
@@ -21,18 +32,18 @@ column, and refuses a whitelist naming an annotation, cluster or embedding colum
 major_trajectory are refused by name), and from meta/df_gene.csv gene_id and gene_short_name. JAX's own labels and the
 stats/*.npz files keyed by them are never read. An embryo outside ROW_EMBRYOS refuses before any file is opened.
 
-It runs once (`preflight`, all checked before the output folder is made and before any count is read): ledger row T66
+It runs once (`preflight`, all checked before the output folder is made and before any count is read): ledger row T68
 in TRIES.md; X003's row in EXTERNAL_DATA.md amended to name this use (AMENDMENT_PHRASE) and every column read
 (AMENDMENT_COLUMNS, each in backticks); the committed yaml with sha256 YAML_SHA256 and status frozen, equal to its
 version at HEAD; a clean tree at the commit given by --commit; the output folder absent and inside the checkout's own
 data/ directory; and the inputs' format as far as it can be checked without reading a count (`check_inputs`): the rds
 reader imports, every input file of the row's embryos is in place and matches the JAX folder's MANIFEST.json, and the
 header lines of df_cell.csv and df_gene.csv hold every column read. What only the counts show (an rds that is not a
-dgCMatrix with row and column names, a count matrix gene missing from the gene table) is still checked after the folder
-is made. It writes STARTED.json before the first count matrix is opened, then the direction file,
-the per-embryo table and MANIFEST.json (inputs' and outputs' sha256, the yaml's sha256, the columns read, the embryos
-read, the gate, per-embryo counts, the sets' genes found and controls). It never removes anything; a folder left by a
-stopped run blocks a second run (a rerun is a new row).
+dgCMatrix with row and column names, a duplicated matrix row id, a table gene missing from a matrix) is still checked
+after the folder is made. It writes STARTED.json before the first count matrix is opened, then the direction file, the
+per-embryo table and MANIFEST.json (inputs' and outputs' sha256, the yaml's sha256, the columns read, the embryos read,
+the gate, the gene universe's record, per-embryo counts, the sets' genes found and controls). It never removes
+anything; a folder left by a stopped run blocks a second run (a rerun is a new row).
 
 Run (DGX campaign checkout, repo root, through experiments/t1_m1/jaxblood.sh's `reduce` step; rdata from the external
 dependency group):
@@ -43,6 +54,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import importlib
 import json
 import re
@@ -63,9 +75,9 @@ from vec import provenance  # noqa: E402
 from vec.core import mean_cp10k  # noqa: E402
 
 SOURCE = "jax_blood"
-ROW = "T66"
+ROW = "T68"
 CONFIG = fio.HERE / "jax_blood.yaml"
-YAML_SHA256 = "750cd3c3c15e0d6cf20e02b219a99652bfa5e36dada9376078db1878be7f6064"
+YAML_SHA256 = "d46bd682712b2a6db4581c50f2236099fd8bd35c993346e48c2d4fd1dedb75ab"
 TRIES = fio.REPO / "experiments" / "harness" / "TRIES.md"
 REGISTER = fio.REPO / "EXTERNAL_DATA.md"
 REGISTER_ROW = "X003"
@@ -74,6 +86,8 @@ CODE = [Path(__file__), Path(fr.__file__), Path(feng2022_geo.__file__), Path(fio
 STARTED = "STARTED.json"
 ROW_EMBRYOS = {"early": tuple(range(1, 13)), "late": (59, 60, 61, 62, 63)}
 ENDS = ("early", "late")
+# The judge's rule for row T68: the reducer's gene universe is the gene table's genes (the yaml's gene_universe)
+GENE_UNIVERSE = "gene_table"
 # The only df_cell columns this module may read, fixed in code; the cell id is read by name, not by position.
 CELL_WHITELIST = ("cell_id", "embryo_id", "day", "experimental_batch")
 GENE_COLUMNS = ("gene_id", "gene_short_name")
@@ -103,6 +117,8 @@ def check_config(cfg: Mapping) -> None:
     """Structural checks that need no data: the row, the embryo lists, the sets' sources and the settings."""
     if cfg.get("row") != ROW:
         raise Refused(f"the yaml is not row {ROW}'s")
+    if cfg.get("gene_universe") != GENE_UNIVERSE:
+        raise Refused(f"the yaml's gene_universe is {cfg.get('gene_universe')!r}, not row {ROW}'s {GENE_UNIVERSE!r}")
     check_embryos(cfg["embryos"])
     for name, s in cfg["sets"].items():
         if s.get("role") not in fr.ROLES:
@@ -303,6 +319,49 @@ def load_rds(path: Path) -> tuple[sparse.csr_matrix, list[str], list[str]]:
     return C, list(genes), list(cells)
 
 
+# ------------------------------------------------------------------------------------------------ the gene universe
+
+
+def unique_table(gene_ids: Sequence[str]) -> dict[str, int]:
+    """gene_id -> row of the gene table; a gene_id the table lists twice refuses."""
+    pos: dict[str, int] = {}
+    for i, g in enumerate(gene_ids):
+        if g in pos:
+            raise Refused(f"the gene table lists gene_id {g!r} twice")
+        pos[g] = i
+    return pos
+
+
+def gene_universe(matrix_genes: Sequence[str], table: Mapping[str, int]) -> dict:
+    """Row T68's rule: the kept columns are the matrix row ids that equal a table gene_id character for character (no
+    version stripping, no change of case, no lookup by symbol), in the matrix's order; the rest are left out. A matrix
+    row id that appears twice refuses, and so does a table gene_id the matrix lacks. Returns the kept and the left-out
+    column positions and the rule's record: gene_universe, matrix_genes, genes_kept, genes_left_out,
+    genes_left_out_sha256 (the sorted left-out ids joined by newlines, with a trailing newline) and the first three
+    sorted left-out ids."""
+    genes = [str(g) for g in matrix_genes]
+    seen: set[str] = set()
+    dup: set[str] = set()
+    for g in genes:
+        if g in seen:
+            dup.add(g)
+        seen.add(g)
+    if dup:
+        raise Refused(f"{len(dup)} row ids of the count matrix appear twice, e.g. {sorted(dup)[:3]}")
+    absent = [g for g in table if g not in seen]
+    if absent:
+        raise Refused(f"{len(absent)} gene_ids of the gene table are not in the count matrix, e.g. {absent[:3]}")
+    kept = np.array([j for j, g in enumerate(genes) if g in table], dtype=np.int64)
+    left = np.array([j for j, g in enumerate(genes) if g not in table], dtype=np.int64)
+    if kept.size != len(table):
+        raise Refused("the kept genes are not the gene table's genes")
+    left_ids = sorted(genes[j] for j in left)
+    sha = hashlib.sha256("".join(f"{g}\n" for g in left_ids).encode()).hexdigest()
+    record = {"gene_universe": GENE_UNIVERSE, "matrix_genes": len(genes), "genes_kept": int(kept.size),
+              "genes_left_out": int(left.size), "genes_left_out_sha256": sha, "genes_left_out_first": left_ids[:3]}
+    return {"kept": kept, "left_out": left, "record": record}
+
+
 # ------------------------------------------------------------------------------------------------ the arithmetic
 
 
@@ -420,22 +479,27 @@ def reduce(cfg: Mapping, src: Path, gate: Mapping, loader=load_rds, verify=fio.v
     cells = read_cells(paths["cells"], wanted)
     col = cells["columns"]
     gene_ids, symbols = read_genes(paths["genes"])
-    sym_of = dict(zip(gene_ids, symbols, strict=True))
+    table = unique_table(gene_ids)
     cfg_s = scoring_config(cfg)
-    # pass 1: counts in memory, per-end sums of log1p CP10k
+    # pass 1: counts in memory on the gene table's genes alone (row T68's rule), per-end sums of log1p CP10k
     store, info = {}, {}
     sums, counts = {}, {e: 0 for e in ENDS}
-    genes_first = None
+    genes_first, universe = None, None
     for n in wanted:
         C, genes, names = loader(paths[f"embryo_{n}"])
         if genes_first is None:
             genes_first = list(genes)
+            universe = gene_universe(genes_first, table)
         elif list(genes) != genes_first:
             raise Refused(f"embryo {n}: its genes differ from the first embryo's")
         mine = np.flatnonzero(np.char.equal(col["embryo_id"], f"embryo_{n}"))
         listed = {str(c): i for c, i in zip(col["cell_id"][mine], mine, strict=True)}
         pos = [j for j, c in enumerate(names) if c in listed]
         C = sparse.csr_matrix(C)[pos]
+        # the record's one number per embryo, reported only: the share of the listed nuclei's UMIs on left-out genes
+        total_all = float(C.sum())
+        C = sparse.csr_matrix(C[:, universe["kept"]])  # the left-out genes are removed here, before any arithmetic
+        left_share = (total_all - float(C.sum())) / total_all if total_all > 0 else None
         nm = [names[j] for j in pos]
         order = np.argsort(np.asarray(nm, dtype=str), kind="stable")
         C, nm = C[order], [nm[j] for j in order]
@@ -450,12 +514,11 @@ def reduce(cfg: Mapping, src: Path, gate: Mapping, loader=load_rds, verify=fio.v
         store[n] = C
         info[n] = {"end": e, "nuclei_in_matrix": len(names), "nuclei_listed": int(mine.size),
                    "nuclei_read": int(C.shape[0]), "empty_dropped": int(empty.sum()),
+                   "left_out_umi_share": left_share,
                    "days": sorted(set(col["day"][rows].tolist())),
                    "experimental_batch": sorted(set(col["experimental_batch"][rows].tolist()))}
-    missing = [g for g in genes_first if g not in sym_of]
-    if missing:
-        raise Refused(f"{len(missing)} genes of the count matrices are not in the gene table, e.g. {missing[:3]}")
-    jsym = [sym_of[g] for g in genes_first]
+    kept_ids = [genes_first[j] for j in universe["kept"]]
+    jsym = [symbols[table[g]] for g in kept_ids]
     found, set_idx, uidx = set_indices(cfg, jsym)
     means = end_means(sums, counts)
     ctrl = controls(cfg, jsym, means, set_idx, uidx)
@@ -471,14 +534,14 @@ def reduce(cfg: Mapping, src: Path, gate: Mapping, loader=load_rds, verify=fio.v
         info[n].update(erythroid_assigned=int(ery.sum()), erythroid_entering=k)
     res = end_direction(per_embryo, int(cfg["min_embryo_nuclei"]), float(cfg["eps"]))
     gnames = np.asarray(jsym, dtype=str)
-    record = {"embryos_read": wanted, "embryo_lists": {e: list(embryos[e]) for e in ENDS},
+    record = {**universe["record"], "embryos_read": wanted, "embryo_lists": {e: list(embryos[e]) for e in ENDS},
               "columns_read": list(CELL_WHITELIST), "gene_columns_read": list(GENE_COLUMNS),
               "authors_labels_read": False, "stats_npz_read": False, "inputs": inputs,
               "rows_other_embryos_dropped": cells["rows_other_embryos"], "per_embryo": info,
               "labels_per_embryo": labels_count, "embryos_used": res["embryos_used"],
               "sets": {k: {"found": found[k], "controls": [str(gnames[i]) for i in ctrl[k]]} for k in cfg["sets"]},
               "has_direction": res["direction"] is not None}
-    arrays = {"gene_id": np.asarray(genes_first, dtype=str), "symbol": gnames,
+    arrays = {"gene_id": np.asarray(kept_ids, dtype=str), "symbol": gnames,
               "m_early": res["m_early"] if res["m_early"] is not None else np.full(len(gnames), np.nan),
               "m_late": res["m_late"] if res["m_late"] is not None else np.full(len(gnames), np.nan),
               "direction": res["direction"] if res["direction"] is not None else np.full(len(gnames), np.nan),
