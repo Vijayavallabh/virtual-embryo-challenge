@@ -2027,6 +2027,24 @@ def copy_rows_cloud(released_coords, dropped_rows, Eb, Ea, released_X_panel, t: 
                          pool_weights=np.full(len(C), 1.0 / len(C)), record=record)
 
 
+# The copy-rows file at the team's pre-registered size (row E52 as specified; the captain's order of 2026-11-21,
+# docs/PLAN.md decision log 2026-11-21 (v); off by default): the copy-rows file's rows, order, count and expression,
+# its coordinates scaled about the copy's own centroid to the embryo size rule, the last step before writing.
+COPY_ROWS_SIZE_RULE = ("copy rows sized: the copy-rows file's coordinates as float64, scaled isotropically about the "
+                       "copy's own centroid (rescale_to_rms, the raw-mode routine of apply_size_procedure) to the "
+                       "embryo size rule's full-cloud RMS (the builder: preregistered.pred_rms_full of the size JSON; "
+                       "the harness: target_rms on the task's own role stages), then stored as float32; no jitter, "
+                       "centring, cloud guard or row-order step")
+
+
+def copy_rows_sized(coords, target: float) -> np.ndarray:
+    """Row E52's size step, shared by the builder (`--copy-rows --copy-rows-size`) and the harness arm
+    fgw_copyrows_sized: float64(coords) scaled about its own centroid so that its RMS radius is `target`
+    (`rescale_to_rms`: mu + (C - mu) * (target / rms_radius(C)), in float64). Refuses a cloud with no spread and a
+    target that is not finite and positive."""
+    return rescale_to_rms(np.asarray(coords, dtype=np.float64), target)
+
+
 def _sample_from_rows(P: np.ndarray, which: np.ndarray, rng: np.random.Generator,
                       chunk: int = PARTNER_CHUNK) -> np.ndarray:
     """For each entry r of `which`, a column of P drawn with probability P[r, j] / P[r].sum()."""

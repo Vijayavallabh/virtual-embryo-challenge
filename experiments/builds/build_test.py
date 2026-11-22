@@ -116,6 +116,17 @@ machine, and an official upload needs the captain's go-ahead.
           limits are checked here, and every refusal on this path shows no value; the coordinates are checked bit for
           bit before writing and on the file read back. On a test board it is refused unless --copy-rows-test-ok (the
           captain's yes) is also given, before anything loads
+          --copy-rows-size (off by default; the copy-rows file at the team's pre-registered size, the captain's order
+          of 2026-11-21, docs/PLAN.md decision log 2026-11-21 (v); row E52 as specified): with --copy-rows and
+          --expression mixture only. After the floor copy's bit check, the coordinates are scaled in float64 about the
+          copy's own centroid to the embryo size JSON's preregistered.pred_rms_full (raw mode only, read as for the
+          exact-position file; vec.t2_build.copy_rows_sized) and stored as float32; rows, order, count and expression
+          stay the copy-rows file's, and nothing follows but writing (no jitter, centring, cloud guard or row-order
+          step). Self-checks, each refusing with no value: the RMS within 1e-6 relative of the target, the prefix
+          parity of the matched rows at metric seed 0 equal to the floor copy's for every count from 4 to the copy's,
+          and the file read back equal to the float32 coordinates bit for bit (else the file and its stamp are
+          removed). On a test board it needs --copy-rows-size-test-ok as well as --copy-rows-test-ok, before anything
+          loads
 
 The board is the test board from boards/ (after the intake, `vec boards update --from-file`); before that, --board
 may name a validation board of the same task for a dry run, and the script refuses a dry run whose output file name
@@ -142,6 +153,7 @@ kept for reproducing the earlier reference set (builds_38616fe).
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -231,6 +243,13 @@ SHAPE_INTERP_ORDER = ("floor_exact positions, the shape form, the size rule's RM
 COPY_ROWS_EXPRESSIONS = ("mixture", "series")
 COPY_ROWS_N = "_copy_rows_n"  # the floor copy's count, handed to _hide_counts and never written
 COPY_ROWS_COUNT_RULE = "departed: the floor copy's count (the captain's order of 2026-11-21)"
+# --copy-rows-size (off by default; row E52 as specified, the captain's order of 2026-11-21, docs/PLAN.md decision log
+# 2026-11-21 (v)): the copy-rows file (mixture only) rescaled about the copy's centroid to the pre-registered size
+COPY_ROWS_SIZE_EXPRESSION = "mixture"
+COPY_ROWS_SIZE_RULE = "applied: rescale_to_rms about the copy centroid to preregistered pred_rms_full (raw mode)"
+COPY_ROWS_SIZE_RMS_TOL = 1e-6  # the RMS self-check, relative
+COPY_ROWS_PARITY_FROM = 4  # the prefix parity self-check's smallest count (three rows have rank two: arbitrary)
+COPY_ROWS_PARITY_SEED = 0  # its metric seed
 HEART_HALVING = ("experiments/builds/halve.py <file> <half>: a uniform random half of the rows (halve.DEFAULT_SEED, "
                  "order kept), as for the ruled heart2 file; the halving is a separate step, not this build")
 
@@ -1136,6 +1155,13 @@ def floor_copy_coords(stage_file: str) -> np.ndarray:
 def _copy_rows_refusals(a) -> None:
     """--copy-rows' refusals, before any board or stage is read (off by default: nothing here acts without it)."""
     copy_rows, ok = getattr(a, "copy_rows", False), getattr(a, "copy_rows_test_ok", False)
+    sized, sized_ok = getattr(a, "copy_rows_size", False), getattr(a, "copy_rows_size_test_ok", False)
+    if sized_ok and not sized:  # row E52's option (off by default)
+        raise SystemExit("--copy-rows-size-test-ok is for --copy-rows-size only")
+    if sized and not copy_rows:
+        raise SystemExit("--copy-rows-size is for --copy-rows only")
+    if sized and a.expression != COPY_ROWS_SIZE_EXPRESSION:
+        raise SystemExit("--copy-rows-size is for --expression mixture only")
     if ok and not copy_rows:
         raise SystemExit("--copy-rows-test-ok is for --copy-rows only")
     if not copy_rows:
@@ -1154,6 +1180,46 @@ def _same_bits(C, ref32: np.ndarray) -> bool:
     C32 = np.ascontiguousarray(np.asarray(C)[:, :3], dtype=np.float32)
     R = np.ascontiguousarray(ref32, dtype=np.float32)
     return C32.shape == R.shape and np.array_equal(C32.view(np.uint32), R.view(np.uint32))
+
+
+def _copy_rows_size_target() -> tuple[float, str, str]:
+    """--copy-rows-size: the embryo size JSON's pre-registered full-cloud RMS, read by code with build_embryo's checks
+    and message (valid, raw mode), and the file's path and sha256. Refusals show no value."""
+    path = SIZES["embryo"]
+    raw = Path(path).read_bytes()
+    size = json.loads(raw)
+    if not size.get("valid") or size["preregistered"]["z_mode"] != "raw":
+        raise SystemExit("the embryo size JSON is not a valid raw-mode result")
+    target = float(size["preregistered"]["pred_rms_full"])  # exactly as build_embryo reads it for the positions file
+    if not np.isfinite(target) or target <= 0:
+        raise SystemExit("the embryo size JSON's target is not finite and positive (values not shown)")
+    try:
+        shown = str(Path(path).resolve().relative_to(REPO_ROOT.resolve()))
+    except ValueError:
+        shown = str(path)
+    return target, shown, hashlib.sha256(raw).hexdigest()
+
+
+def _copy_rows_rms_ok(S32: np.ndarray, target: float) -> bool:
+    """The RMS self-check: the stored float32 coordinates' RMS radius within COPY_ROWS_SIZE_RMS_TOL of the target."""
+    return bool(abs(t2_build.rms_radius(np.asarray(S32, dtype=np.float64)) / target - 1.0) <= COPY_ROWS_SIZE_RMS_TOL)
+
+
+def _copy_rows_parity_ok(S32: np.ndarray, floor32: np.ndarray) -> bool:
+    """The prefix parity self-check, count-free: for every count n from COPY_ROWS_PARITY_FROM to the copy's own, the
+    SVD parity of the rows the scorer's _match_n takes at metric seed COPY_ROWS_PARITY_SEED from the stored
+    coordinates equals the floor copy's (the rows depend on the counts only)."""
+    from vec.evaluate import match_rows, svd_parity
+
+    S, F = np.asarray(S32, dtype=np.float32), np.asarray(floor32, dtype=np.float32)
+    if S.shape != F.shape:
+        return False
+    for n in range(COPY_ROWS_PARITY_FROM, len(S) + 1):
+        zeros = np.zeros((n, 3))
+        if (svd_parity(match_rows(S, zeros, COPY_ROWS_PARITY_SEED)[0])
+                != svd_parity(match_rows(F, zeros, COPY_ROWS_PARITY_SEED)[0])):
+            return False
+    return True
 
 
 def _build_copy_rows(a, board, dry: bool, genes, files: dict, inputs: dict, count: dict) -> dict:
@@ -1178,6 +1244,19 @@ def _build_copy_rows(a, board, dry: bool, genes, files: dict, inputs: dict, coun
         raise SystemExit(f"--copy-rows refused: {e}") from None
     if not _same_bits(res.coords, floor):
         raise SystemExit("--copy-rows: the coordinates are not the floor copy's, bit for bit (values not shown)")
+    sized = getattr(a, "copy_rows_size", False)  # row E52 (off by default): the rescale, then only writing
+    coords, written = res.coords, floor
+    if sized:
+        target, size_file, size_sha = _copy_rows_size_target()
+        try:
+            coords = t2_build.copy_rows_sized(res.coords, target)
+        except ValueError:
+            raise SystemExit("--copy-rows-size refused: the copy cannot be rescaled (values not shown)") from None
+        written = coords.astype(np.float32)  # what the file stores: round to nearest
+        if not _copy_rows_rms_ok(written, target):
+            raise SystemExit("--copy-rows-size: the stored coordinates' RMS is not the target's (values not shown)")
+        if not _copy_rows_parity_ok(written, floor):
+            raise SystemExit("--copy-rows-size: a prefix parity differs from the floor copy's (values not shown)")
     expr_rec = None
     if a.expression == "mixture":
         X = np.empty((len(res.rows), len(genes)), dtype=np.float32)
@@ -1187,30 +1266,37 @@ def _build_copy_rows(a, board, dry: bool, genes, files: dict, inputs: dict, coun
     if len(X) < board.min_cells or (board.max_cells is not None and len(X) > board.max_cells):
         raise SystemExit("the copy-rows count is outside the board's limits (values not shown)")
     try:
-        _, report = t2_build.build_submission(board, X, res.coords, genes=list(genes), out=a.out,
+        _, report = t2_build.build_submission(board, X, coords, genes=list(genes), out=a.out,
                                               allow_duplicate_coords=True, allow_below_truth=True)
     except ValueError:
         raise SystemExit("build_submission refused the copy-rows file (values not shown)") from None
     if not report.ok:
         raise SystemExit("the built copy-rows file fails its check (values not shown)")
     back = ad.read_h5ad(a.out)
-    if not _same_bits(back.obsm[COORD_KEY], floor):
+    if not _same_bits(back.obsm[COORD_KEY], written):
         Path(a.out).unlink(missing_ok=True)
         provenance.stamp_path(Path(a.out)).unlink(missing_ok=True)
+        if sized:
+            raise SystemExit("--copy-rows-size: the written file's coordinates are not the rescaled copy's, bit for "
+                             "bit; the file was removed (values not shown)")
         raise SystemExit("--copy-rows: the written file's coordinates are not the floor copy's, bit for bit; the file "
                          "was removed (values not shown)")
     rec = dict(res.record)
     if expr_rec is not None:
         rec.update({f"series_{k}": v for k, v in expr_rec.items() if not isinstance(v, (dict, list))})
     rec["expression"] = a.expression
-    return {"entry": a.method, "board": board.key, "dry_run": dry, "n_cells": int(len(X)), "seed": a.seed,
-            "count_decision": count, "target_rms": None,
-            "record": {k: v for k, v in rec.items() if not isinstance(v, (dict, list))},
-            "copy_rows": True,
-            "copy_rows_copy": f"vec.evaluate.subsample({stage_file} as released, {SUBSAMPLE_FRAC}, "
-                              f"{t2_build.COPY_PARITY_COPY_SEED})",
-            "count_rule": COPY_ROWS_COUNT_RULE, "size_rule": "not applied", "allow_below_truth": True,
-            COPY_ROWS_N: int(len(floor))}
+    out = {"entry": a.method, "board": board.key, "dry_run": dry, "n_cells": int(len(X)), "seed": a.seed,
+           "count_decision": count, "target_rms": None,
+           "record": {k: v for k, v in rec.items() if not isinstance(v, (dict, list))},
+           "copy_rows": True,
+           "copy_rows_copy": f"vec.evaluate.subsample({stage_file} as released, {SUBSAMPLE_FRAC}, "
+                             f"{t2_build.COPY_PARITY_COPY_SEED})",
+           "count_rule": COPY_ROWS_COUNT_RULE, "size_rule": "not applied", "allow_below_truth": True,
+           COPY_ROWS_N: int(len(floor))}
+    if sized:  # row E52 only: the record says the size step and where its target came from
+        out.update({"copy_rows_size": True, "size_rule": COPY_ROWS_SIZE_RULE, "target_rms": target,
+                    "size_file": size_file, "size_sha256": size_sha})
+    return out
 
 
 def build_embryo(a) -> dict:
@@ -1237,6 +1323,9 @@ def build_embryo(a) -> dict:
             and not a.copy_rows_test_ok):  # before anything loads: a refusal or a pass there shows one bit
         raise SystemExit("--copy-rows on a test board needs the captain's yes (--copy-rows-test-ok); a refusal or a "
                          "pass there shows one bit about the board's limits")
+    if (getattr(a, "copy_rows_size", False) and (not dry or str(board.split).startswith("test"))
+            and not a.copy_rows_size_test_ok):  # row E52's option: before anything loads
+        raise SystemExit("--copy-rows-size on a test board needs the captain's yes (--copy-rows-size-test-ok)")
     genes = board.genes
     files = {"before": ("T2/E7.5.h5ad", 7.5), "after": ("T2/E8.0.h5ad", 8.0)}
     if a.method == "pseudobulk_shift":  # only it uses the stage before the bracket (E7.25 lacks two panel genes)
@@ -1497,6 +1586,15 @@ def build_parser() -> argparse.ArgumentParser:
                            help="--copy-rows on the test board: the captain's yes (off by default; without it the "
                                 "option refuses on a test board before anything loads, because a refusal or a pass "
                                 "there shows one bit about the board's limits)")
+            p.add_argument("--copy-rows-size", action="store_true",
+                           help="with --copy-rows and --expression mixture only (off by default; the captain's order "
+                                "of 2026-11-21, docs/PLAN.md decision log 2026-11-21 (v); row E52 as specified): the "
+                                "copy-rows file with its coordinates scaled about the copy's own centroid to the "
+                                "embryo size JSON's pre-registered full-cloud RMS (raw mode), the last step before "
+                                "writing (vec.t2_build.copy_rows_sized)")
+            p.add_argument("--copy-rows-size-test-ok", action="store_true",
+                           help="--copy-rows-size on the test board: the captain's yes (off by default; a test build "
+                                "needs it and --copy-rows-test-ok, before anything loads)")
             p.add_argument("--row-order-test-ok", action="store_true",
                            help="--row-order copy_parity on the test board: the captain's yes (off by default; "
                                 "without it the option refuses on a test board before anything loads, because a "
