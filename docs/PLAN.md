@@ -10255,3 +10255,29 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     as written."
   - **Counts.** Row E52's gate passed and its run step started at 01:54 UTC: one try, embryo 87. Totals: T1 438,
     embryo 87, heart 88, T3 74.
+- 2026-11-22 (p), row K26 (T3, a query-gene response map) is placed before its run, after two fix rounds (state at
+  02:09 UTC, 2026-11-22). Written by the AI assistant, which made one call of the ledger's own rule in it and no
+  design choice.
+  - **What it is** (a score-blind judge's moonshot of 2026-11-21). Each knocked-out gene with a measured response gets
+    a context vector from the released whole-transcriptome wild-type files (its within-cell-type correlation with each
+    panel gene); a ridge-regularised low-rank map from context to response table is fitted over the perturbations that
+    have tables and evaluated at a query gene's own context. The test gene enters only as a name that indexes its
+    released wild-type expression. The decisive control is the same map evaluated at a random other gene's context.
+  - **The two fix rounds.** The first review named a pre-gate that read a table built from a fold's own target; the
+    first fix removed that table from that fold's pre-gate. The second review showed that the other fold's pre-gate
+    still compares a predicted table with a table built from the first fold's target file, and that a drop there stops
+    both folds. The AI assistant then took the reviewer's strict option as a matter of the ledger's rule 3 (a reading
+    that compares a predictor with a fold target is a try), not as a design choice: the pre-gate is a counted step,
+    and the three tries count from the start of that step whatever follows. The second review also closed a launcher
+    fault (a stop could have taken another commit's reading as its own). `campaign/moon-t3-map-3`, 2e51729; the third
+    reviewer says ready, no blocker. Merged; the six K26 files on main are byte for byte 2e51729's.
+  - **Register, before any run.** Rows X013, X014, X015 and X017 each name the row and its use: the per-gene unit
+    tables behind row K24's pinned tables as training labels of the map, never as a factor. Row K24 had closed those
+    tables on that fold; that was the ledger's own closure after its own try, and this different use is opened as a
+    practice read under the campaign's rule for such closures and the captain's orders on outside data. That is the AI
+    assistant's reading, said to the captain in the next report; a file would need the captain's ruling under A15 in
+    any case, because T1 data would enter a T3 file.
+  - **Placed in this commit:** row K26, the engineers' text as the third reviewer checked it, with the reviewer's one
+    suggested sentence on the count. Counts: stage 0 is one diagnostic on outside tables only; then three tries (T3 75
+    to 77) from the start of the pre-gate step; a stop at stage 0 counts no try. It runs in a detached worktree of
+    `~/v/vec-campaign-c`'s repository with its own environment.
