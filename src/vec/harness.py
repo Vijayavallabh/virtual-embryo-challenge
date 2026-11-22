@@ -1177,6 +1177,11 @@ SHAPE_CANDIDATES = {"fgw_shape0x_sr": "stretch_ratio", "fgw_shape0x_sg": "stretc
                     "fgw_shape0x_ov_rot": "overlay_rot"}
 
 
+# Row E53 (as specified; branch campaign/moon-embryo-geodesic): fgw_shape0x with the geodesic overlay (E53a) and its
+# rotated-start placebo (E53b), vec.shape_interp.GEODESIC_FORMS. Harness only; the builder offers neither.
+GEODESIC_CANDIDATES = {"fgw_shape0x_geo": "geodesic_overlay", "fgw_shape0x_geo_rot": "geodesic_overlay_rot"}
+
+
 def _fgw_shape0x_form(form: str) -> Callable[[BuildContext], Stage]:
     return lambda ctx: _fgw(ctx, t_pos=0.0, positions=t2_build.POSITIONS[1], shape_form=form)
 
@@ -1188,18 +1193,23 @@ def _fgw_shape0x_series(ctx: BuildContext) -> Stage:
 
 # Row E50 (as specified; the captain's order of 2026-11-21, docs/PLAN.md decision log 2026-11-21 (h)): the copy-rows
 # file, the floor copy's own rows, order, count and coordinates with the mixture's expression
-# (vec.t2_build.copy_rows_cloud). Off by default: only these two candidates set needs_reference_cells.
+# (vec.t2_build.copy_rows_cloud). Off by default: only these two candidates set needs_reference_cells, and row E52's
+# fgw_copyrows_sized (the same file at the embryo size rule).
 REFERENCE_RELEASED = "reference_released"
 REFERENCE_RELEASED_ROWS = "reference_released_rows"
 
 
-def _copy_rows(ctx: BuildContext, expression: str = "mixture") -> Stage:
+def _copy_rows(ctx: BuildContext, expression: str = "mixture", sized: bool = False) -> Stage:
     """The copy-rows arms: the floor copy of this scoring seed (copy seed = build seed - BUILD_SEED_OFFSET) drawn from
     the very reference cells run_task drew the floor from, the earlier bracket's own expression in round((1 - t) n)
     slots and the later bracket's rows in the others, then the expression step of the arm (mixture, or the series
     rendering of fgw_shape0x_series). Finish: build_submission with duplicate positions and a count below the
     truth's allowed (this path only); no cloud guard, because the coordinates are the floor copy's by construction
-    and reading (i) of row E50 checks them bit for bit."""
+    and reading (i) of row E50 checks them bit for bit.
+
+    sized (row E52, off by default): the coordinates are then scaled about the copy's own centroid to the embryo size
+    rule read on the task's own role stages only (target_rms of a context holding ctx.task.roles alone, fgw_shape0x's
+    target; never the reference cells run_task adds), vec.t2_build.copy_rows_sized, before build_submission."""
     t = ctx.task
     if REFERENCE_RELEASED not in ctx.inputs:
         raise ValueError(f"{t.key}: the copy-rows arm needs the reference cells run_task hands over")
@@ -1221,7 +1231,11 @@ def _copy_rows(ctx: BuildContext, expression: str = "mixture") -> Stage:
     else:
         raise ValueError(f"unknown expression step {expression!r}")
     X = np.clip(np.asarray(X, dtype=np.float32), 0.0, None)
-    sub, rep = t2_build.build_submission(ctx.board, X, res.coords, genes=g, allow_duplicate_coords=True,
+    coords = res.coords
+    if sized:  # row E52 only: the task's own role stages, never the reference-augmented inputs
+        own = replace(ctx, inputs={r: ctx.inputs[r] for r in t.roles})
+        coords = t2_build.copy_rows_sized(res.coords, target_rms(own))
+    sub, rep = t2_build.build_submission(ctx.board, X, coords, genes=g, allow_duplicate_coords=True,
                                          allow_below_truth=True)
     if not rep.ok:
         raise ValueError(f"{t.key}: the built file fails its check: {rep.errors}")
@@ -1234,6 +1248,109 @@ def _fgw_copyrows(ctx: BuildContext) -> Stage:
 
 def _fgw_copyrows_series(ctx: BuildContext) -> Stage:
     return _copy_rows(ctx, expression="series")
+
+
+def _fgw_copyrows_sized(ctx: BuildContext) -> Stage:
+    """Row E52: fgw_copyrows rescaled about the copy's centroid to the embryo size rule (COPY_ROWS_SIZE_RULE)."""
+    return _copy_rows(ctx, sized=True)
+
+
+# Row E54 (the moonshot "multi-stage flow, then retrieval", as specified; off by default): fgw_shape0x's positions,
+# count, bracket quotas and position assignment, each bracket's rows replaced by the real cells of that bracket
+# retrieved one to one (vec.t2_mmflow.retrieve) for the states its drawn cells reach under a multi-marginal flow. The
+# flow is fitted outside the build (experiments/coords/e54_mmflow_read.py fit), so these arms are not in CANDIDATES:
+# mmflow_candidate makes one around the fitted states of one task.
+MMFLOW_ARMS = {"fgw_mmflow_snap": "snap", "fgw_mmflow_anti": "anti"}
+MMFLOW_STATE_KEYS = ("before_obs", "after_obs", "before_latent", "after_latent", "before_snap", "after_snap",
+                     "before_anti", "after_anti", "days")
+
+
+def _shares(labels: np.ndarray) -> dict[str, float]:
+    names, counts = np.unique(np.asarray(labels).astype(str), return_counts=True)
+    return {str(k): float(v) / float(counts.sum()) for k, v in zip(names, counts, strict=True)}
+
+
+def _median_library(a: ad.AnnData, genes, rows: np.ndarray) -> float | None:
+    """The median library size (vec.t2_build.library_sizes) of the given rows, over those with an expressed panel gene
+    (the formula reads the library from them; a row without one has none to read)."""
+    from scipy import sparse
+
+    if "counts" not in a.layers or len(rows) == 0:
+        return None
+    sub = a[:, list(genes)]
+    C = sparse.csr_matrix(sub.layers["counts"][rows])
+    C.eliminate_zeros()
+    keep = np.flatnonzero(np.diff(C.indptr) > 0)
+    if len(keep) == 0:
+        return None
+    return float(np.median(t2_build.library_sizes(sub.X[rows][keep], C[keep])))
+
+
+def _fgw_mmflow(ctx: BuildContext, states: Mapping[str, np.ndarray], direction: str,
+                facts: dict | None = None) -> Stage:
+    """The E54 arm (direction "snap") or its placebo ("anti"). fgw_shape0x's interpolation is made with fgw_shape0x's
+    own arguments; every slot keeps its coordinates (the jittered ones included), its bracket and its place in the
+    file. The before bracket's slots take the before pool's rows retrieved for the flow states of the rows fgw_shape0x
+    drew there (states[before_<direction>] at those rows), the after bracket's alike; the expression is the mixture's
+    (each cell as released). `states` come from the task's fit (keys MMFLOW_STATE_KEYS: each pool's obs names and
+    latent, the states carried to the target day ("snap") or away from it by the same span ("anti"), and the days
+    (before, after, target) the fit used). `facts`, if given, receives this build's record under the build seed: the
+    C0 and arm rows' median library per bracket, Kish pool use, type shares and the jitter flag (no count)."""
+    from vec import t2_mmflow
+
+    t = ctx.task
+    if direction not in t2_mmflow.DIRECTIONS:
+        raise ValueError(f"unknown direction {direction!r}")
+    before, after = ctx.inputs["before"], ctx.inputs["after"]
+    lo, hi = t.role_days["before"], t.role_days["after"]
+    if [float(x) for x in np.asarray(states["days"]).ravel()] != [lo, hi, t.target_day]:
+        raise ValueError(f"{t.key}: the fitted states are for days {list(np.asarray(states['days']))}")
+    for role, a in (("before", before), ("after", after)):
+        if list(np.asarray(states[f"{role}_obs"]).astype(str)) != list(a.obs_names):
+            raise ValueError(f"{t.key}: the fitted states' {role} cells are not the input's")
+    g = ctx.board.genes
+    frac = (t.target_day - lo) / (hi - lo)
+    Eb, Ea = dense(before[:, g].X).astype(np.float32), dense(after[:, g].X).astype(np.float32)
+    res = t2_build.interpolate_clouds(np.asarray(before.obsm[COORD_KEY], dtype=float)[:, :3],
+                                      np.asarray(after.obsm[COORD_KEY], dtype=float)[:, :3], Eb, Ea,
+                                      frac, count_for(ctx.board, before.n_obs), ctx.seed,
+                                      target_rms=target_rms(ctx), t_pos=0.0, positions=t2_build.POSITIONS[1])
+    rows = res.rows.copy()
+    rec: dict = {"n_jittered_any": bool(res.record.get("n_jittered", 0) > 0)}
+    for s, role, a in ((0, "before", before), (1, "after", after)):
+        slots = res.stage == s
+        old = res.rows[slots]
+        new = t2_mmflow.retrieve(np.asarray(states[f"{role}_{direction}"])[old], states[f"{role}_latent"])
+        rows[slots] = new
+        lib_old, lib_new = _median_library(a, g, old), _median_library(a, g, new)
+        labels = a.obs["celltype"].to_numpy() if "celltype" in a.obs else None
+        rec[role] = {"median_library_c0": lib_old, "median_library_arm": lib_new,
+                     "library_ratio": None if not lib_old or lib_new is None else lib_new / lib_old,
+                     "kish_frac_c0": t2_mmflow.kish_ess_frac(old, a.n_obs),
+                     "kish_frac_arm": t2_mmflow.kish_ess_frac(new, a.n_obs),
+                     "shares_c0": _shares(labels[old]) if labels is not None and len(old) else {},
+                     "shares_arm": _shares(labels[new]) if labels is not None and len(new) else {}}
+    X = np.empty((len(rows), len(g)), dtype=np.float32)
+    X[res.stage == 0], X[res.stage == 1] = Eb[rows[res.stage == 0]], Ea[rows[res.stage == 1]]
+    if facts is not None:
+        facts[ctx.seed] = rec
+    return finish(ctx, before, X, res.coords, guard_source=res.pool_coords, guard_weights=res.pool_weights)
+
+
+def mmflow_candidate(name: str, states: Mapping[str, np.ndarray], facts: dict | None = None) -> Candidate:
+    """A harness candidate for the E54 arm `name` (MMFLOW_ARMS) around one task's fitted states."""
+    direction = MMFLOW_ARMS[name]
+    missing = [k for k in MMFLOW_STATE_KEYS if k not in states]
+    if missing:
+        raise ValueError(f"{name}: the fitted states lack {missing}")
+    what = ("towards the target day" if direction == "snap"
+            else "away from the target day by the same span (the placebo)")
+    return Candidate(name, frozenset({"T2"}), (), lambda ctx: _fgw_mmflow(ctx, states, direction, facts),
+                     {"what": "fgw_shape0x's positions, count, bracket quotas and position assignment, each bracket's "
+                              "rows the real cells retrieved one to one for the states its drawn cells reach under a "
+                              f"multi-marginal flow {what}",
+                      "direction": direction, "positions": t2_build.POSITIONS[1],
+                      "stream": t2_build.FLOOR_EXACT_STREAM, "scope": "whole"}, requires=_interp)
 
 
 def _fgw_late(ctx: BuildContext) -> Stage:
@@ -1784,6 +1901,13 @@ CANDIDATES = {
                                       "rule": t2_build.COPY_ROWS_RULE, "series_rule": t2_build.SERIES_RULE,
                                       "stream": t2_build.COPY_ROWS_STREAM, "scope": "whole"},
                                      requires=_series_applies, needs_reference_cells=True),
+    # row E52 (as specified): fgw_copyrows at the team's pre-registered size rule
+    "fgw_copyrows_sized": Candidate("fgw_copyrows_sized", frozenset({"T2"}), (), _fgw_copyrows_sized,
+                                    {"what": "fgw_copyrows rescaled about the copy centroid to the embryo size rule "
+                                             "(row E52)",
+                                     "rule": t2_build.COPY_ROWS_RULE, "size_rule": t2_build.COPY_ROWS_SIZE_RULE,
+                                     "stream": t2_build.COPY_ROWS_STREAM, "scope": "whole"},
+                                    requires=_interp, needs_reference_cells=True),
     # row E49 (as drafted): fgw_shape0x with a shape form between the brackets, three arms and four controls
     **{name: Candidate(name, frozenset({"T2"}), (), _fgw_shape0x_form(form),
                        {"what": "fgw_shape0x (the earlier bracket's own positions) with the shape form "
@@ -1791,6 +1915,13 @@ CANDIDATES = {
                         "positions": t2_build.POSITIONS[1], "stream": t2_build.FLOOR_EXACT_STREAM, "shape_form": form,
                         "scope": "whole"}, requires=_interp)
        for name, form in SHAPE_CANDIDATES.items()},
+    # row E53 (as specified): fgw_shape0x with the LDDMM geodesic overlay, and its rotated-start placebo
+    **{name: Candidate(name, frozenset({"T2"}), (), _fgw_shape0x_form(form),
+                       {"what": "fgw_shape0x_ov's rows with positions on one LDDMM geodesic between the brackets "
+                                f"(vec.shape_interp {form}, vec.lddmm) applied before the size rule",
+                        "positions": t2_build.POSITIONS[1], "stream": t2_build.FLOOR_EXACT_STREAM, "shape_form": form,
+                        "scope": "whole"}, requires=_interp)
+       for name, form in GEODESIC_CANDIDATES.items()},
     # embryo tries E25a-E25c (experiments/harness/TRIES.md, registered before their run): the geometry that goes with
     # the series rendering, and the later bracket alone
     "fgw_aligned_series": Candidate("fgw_aligned_series", frozenset({"T2"}), (), _fgw_aligned_series,
@@ -1986,6 +2117,39 @@ CANDIDATES = {
     "lp_eb": _lp("lp_eb", "try T18: lp_proxy with empirical-Bayes reliability shrinkage per expression decile (from "
                  "Feng's two per-cell halves)", shrink=True),
 }
+
+
+# Row E51 (the score-blind challenger's specification, job_embryo_so_ohi): the overlay file's positions (fgw_shape0x_ov,
+# E49c) with another expression step. Two new names only; no existing candidate, option or default changes.
+SO_OHI_CANDIDATES = {"fgw_shape0x_series_ov": "series", "fgw_shape0x_ov_hi": "render_hi"}
+
+
+def _fgw_shape0x_series_ov(ctx: BuildContext) -> Stage:
+    """Embryo candidate SO (row E51): fgw_shape0x_ov's positions with fgw_shape0x_series' expression (the series
+    rendering, stream [seed, 7])."""
+    return _fgw(ctx, t_pos=0.0, expression="series", positions="floor_exact", shape_form="overlay")
+
+
+def _fgw_shape0x_ov_hi(ctx: BuildContext) -> Stage:
+    """Embryo candidate O_hi (row E51): fgw_shape0x_ov's positions with the depth top-up render_hi (tries E19c, E24b)
+    in place of the mixture."""
+    return _fgw(ctx, t_pos=0.0, expression="render_hi", positions="floor_exact", shape_form="overlay")
+
+
+CANDIDATES.update({
+    "fgw_shape0x_series_ov": Candidate("fgw_shape0x_series_ov", frozenset({"T2"}), (), _fgw_shape0x_series_ov,
+                                       {"what": "fgw_shape0x_ov (the overlay form on the earlier bracket's own "
+                                                "positions) with the series rendering of fgw_shape0x_series",
+                                        "rule": t2_build.SERIES_RULE, "positions": "floor_exact",
+                                        "stream": t2_build.FLOOR_EXACT_STREAM, "shape_form": "overlay",
+                                        "expression": "series", "scope": "whole"}, requires=_series_applies),
+    "fgw_shape0x_ov_hi": Candidate("fgw_shape0x_ov_hi", frozenset({"T2"}), (), _fgw_shape0x_ov_hi,
+                                   {"what": "fgw_shape0x_ov (the overlay form on the earlier bracket's own positions) "
+                                            "with every cell topped up to the deeper bracket's depth (render_hi)",
+                                    "rule": t2_build.RENDER_RULE, "positions": "floor_exact",
+                                    "stream": t2_build.FLOOR_EXACT_STREAM, "shape_form": "overlay",
+                                    "expression": "render_hi", "scope": "whole"}, requires=_interp),
+})
 
 
 # ------------------------------------------------------------------------------------------------ read guard

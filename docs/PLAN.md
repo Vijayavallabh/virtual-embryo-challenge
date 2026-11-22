@@ -9575,3 +9575,429 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     not closed. So it exists under the challenger's rule and is handed over as the embryo's file after C. A copy-rows
     file at the team's own size, which the round did not propose and the captain's yes of entry (v) covers, is being
     specified by a fresh analyst.
+- 2026-11-21 (z), the moonshot round's outcome: eight kill tests go to engineers (state at 23:08 UTC, 2026-11-21). Written by the
+  AI assistant, which gives no design lean on any board (entry 2026-11-21 (t)); the judgements below are the
+  score-blind judges'.
+  - **The round** (workflow `moonshots-round-1`, the captain's order of entry 2026-11-21 (v); twelve agents: per board
+    two designers and a cold judge, all told to use no test score; hand-back in the session scratchpad
+    `lift8/moonshots_round1.json`). Twenty-three proposals; the judges kept two per board and struck the rest (closed
+    levers such as size, scope and composition; duplicates; ideas already read; kill tests that were not fair). Their
+    plain summaries, verbatim, follow.
+  - **T1, the judge's summary, verbatim:** "Of six proposals, two can run tonight on the existing harness without a
+    GPU. Both are for T1 and both can be built by 25 November if they pass. First: move the blood cells, which nothing
+    moves today, along the change of red-blood-cell nuclei in the JAX atlas between E8.5 and E15.5-E16.5. Chance it
+    passes its practice test: about 1 in 5; chance of 3 or more points at the test if it passes: about 7 in 100.
+    Second: let each gene move at its own pace, using how fast it is still changing in Feng's hearts after E14.5.
+    About 1 in 8 to pass; about 4 in 100 for 3 or more points if it passes. Both most likely fail against their
+    shuffled-gene controls; either file needs your ruling (the blood one amends your ruling R1), and I struck the
+    neural-network and learned-transfer ideas as too weakly identified to finish in time."
+  - **T3, the judge's summary, verbatim:** "Of the six moonshots, two survive and four are struck. The transport map
+    would bring back T3's closed composition and confuse genotype with slide. The scorer-optimised posterior repeats
+    exponent and shrinkage reads, and rests on outside tables that row K24 closed on this fold. The spatial field
+    revives pruned lines and cannot move a fitted field from E9.5 into the E8.75 frame. The duplicate gene-map design
+    is merged into survivor 2. First to run: a mean-preserving within-label spread transfer, released data only. It
+    must gain on the Mab21l2-truth fold and in the depth-matched world, because added noise has scored by depth
+    before. Pass about 0.08; given a pass, about 0.12 for a gain of 3 points or more. Second: a map from the
+    knocked-out gene's own wild-type co-expression in the released T1 files to its response, gated first on outside
+    tables alone and needing your A15 ruling for any file. Pass about 0.05; given a pass, about 0.15 for 3 points or
+    more. Honestly, the most likely outcome of both is no file, and the realistic size of a success is 0.5 to 2
+    points."
+  - **Heart, the judge's summary, verbatim:** "I struck the size idea because size is a closed lever. I also struck
+    the T1-trained translator: it needs T1 data on the heart, and its own designer expects it to fail. Two ideas
+    survive, and both pull the heart's expression toward legal E14.5 data (JAX embryos 54-56 and Feng's E14.5 hearts)
+    without changing cells, positions, size or depth. First comes a cheap check that reads no target: does the JAX
+    atlas's E8.75-to-E9.5 change agree with the MERFISH change on the panel genes? About 0.35 that it passes. If it
+    fails, the heart line ends at no cost. If it passes, the chord idea (H29, CPU, 30 tries) and the latent bridge
+    (H30, two GPU fits, 18 tries) each face a placebo bar in both practice worlds. Honest odds of a gain of three
+    board points or more at the test are about 1% for each idea, and about 2-4% of any real gain; most likely nothing
+    changes, and a pass would still need your yes on the outside-data question."
+  - **Embryo, the judge's summary, verbatim:** "Two of five moonshots survive. Both designer two's ideas are struck:
+    they crop the embryo's scope and size, which the post-exposure block closes, and one of their checks compared a
+    candidate with a practice truth before any row was written. Designer one's simulator idea is struck because its
+    fake truths are made from bracket cells, so it favours the current mixture by design. First to run is a smooth
+    deformation that carries both halves of the overlay file to one midpoint shape: about 12% to pass its test, and
+    about 2% overall to add 3 or more board points over the overlay already built. Second is a flow through all seven
+    released stages that picks which real cells go in: about 7% to pass, and under 1% overall for a 3-point gain. Each
+    costs about 3 hours on the DGX and could be built by 24 November; most likely neither passes."
+  - **Row labels.** The judges drafted rows under labels that collide with the candidate round's (E51, E52, H29a,
+    T65). The labels in force: T1 blood along the outside nuclei atlas T66; T1 per-gene timing T67; T3 within-label
+    dispersion K25; T3 gene-conditioned response map K26; heart late-anchor chord H30 (its target-free gate first);
+    heart latent bridge H31; embryo geodesic overlay E53; embryo multi-stage flow E54.
+  - **What is done.** Workflow `moonshots-engineering-1` (sixteen agents): per moonshot an engineer writes the kill
+    test exactly as its judge specified, on its own branch, and a reviewer checks it. Each kill test is a counted try:
+    the AI assistant places its row and a log entry in one commit before the read, amends the register row of any
+    outside source first (the outside nuclei atlas and the heart atlas's later stages are new uses of rows X003 and
+    X002), runs it on the DGX and reads it in its fixed words. Only a pass leads to a build path, and several passes
+    would still need the captain's word before any file: the blood line amends ruling R1; the heart lines and T3's map
+    use data across tasks or from outside on a board that has had none (question A15). The judges' own odds: each kill
+    test passes with a chance between about one in twenty and one in five, and a gain of three board points or more at
+    the test is about one or two in a hundred per moonshot. Most likely no file comes of them.
+- 2026-11-21 (aa), the T1 file at twice the calendar fraction: the code is reviewed and merged; a cold challenger's check of the
+  rule reading; what the Rules page says about trying settings (state at 23:25 UTC, 2026-11-21). Written by the AI
+  assistant.
+  - **The code** (workflow `t1-fraction-2x`; branch `campaign/t1-fraction-2x`, 6165ed8, merged to main at 0619ad2).
+    The builder takes `--feng-fraction-mult 2.0` only with `--captain-ruling R20`, only on R13's exact command, and
+    refuses every other value and combination before anything is read; the commands that exist (the default, A, B, C)
+    build the same bytes and records as before, pinned by tests on a synthetic fixture. The launcher
+    `experiments/builds/t1_fraction2.sh` first rebuilds R13's bytes and B's bytes and stops if either differs, then
+    builds the 2.0 file twice. The reviewer: READY, no blocker; lesser points noted (two refusals leave no exit file,
+    so the waiter also watches the process; the launcher runs Python isolated where the reference sets did not, which
+    fails closed at the identity steps if it mattered). On merged main: 152 passed on the related test files, the step
+    script's guard passes, the linter is clean.
+  - **The rule check** (a cold challenger, told only the sign of B's headline against R13's file). Verdict: the
+    reading of entry 2026-11-21 (x) stands. It puts the chance that the organisers would treat the 2.0 file as
+    improper at about one in twenty, on the score-use question alone, and the loss at that one file. Its strongest
+    argument against: the direction of the move follows a comparison of two submissions, a one-bit estimate of a
+    hidden-target property, and the team's own paraphrase lists 'differencing submissions' among prohibited acts. Its
+    conditions for staying on the allowed side: a round step on the existing scale, fixed before its own score; only
+    the team's own headlines, used only to choose which file stands; nothing else in R13's command changes; any
+    further strengths named before the 2.0 score; the method report says plainly that the strength was tried at 1.0,
+    1.5 and 2.0 and the best headline kept; the normal build checks. What it says would cross the line: a value fitted
+    from the sizes of returned scores; setting the strength from per-metric returns; inverting the skill map.
+  - **Two corrections to entry (x), from the challenger.** (1) Entry (x) understated the record. The Rules page's
+    Section 10, as the screened check of 2026-11-18 quotes it in `docs/ORGANIZER_QUESTIONS.md`, says: "Trying a
+    parameter value, seeing how it scores, and trying another is ordinary leaderboard work and remains permitted
+    however many rounds it takes; ... what is prohibited is solving for a property of the target and building a
+    submission out of the solution." (2) Entry (x) said the 'Scores' section of `docs/DATA_POLICY.md` records the
+    Rules page's test ("whether the truth enters your prediction's content or only its selection"); that sentence is
+    in a later change note of that file and in `docs/ORGANIZER_QUESTIONS.md`, not in the 'Scores' section.
+  - **What this means beyond the one file (the AI assistant's reading, put to the captain).** Entry 2026-11-21 (t)
+    refused to tune any file from the returned scores and named the organisers' rule as the reason. On the record just
+    quoted that was stricter than the organisers' rule: trying a setting, seeing its score and trying another is
+    permitted by them for as many rounds as it takes. What their rule prohibits is solving for a property of the
+    hidden target (by inverting the skill map) and building a submission out of the solution. The bars on setting a
+    number from a score and on reading per-metric lines are the team's own (entries 2026-11-18 (k), 2026-11-20 (n) and
+    (q), 2026-11-21 (l)), written after the AI assistant's lapses, which were of the prohibited kind (bounding a
+    hidden quantity from scores). The team's own rules are the captain's to lift; the levers closed after the exposure
+    of 2026-11-04 (sizes, scope, cell numbers, T1's composition, depth and draw) and the AI assistant's recusals stay
+    whatever is lifted, because those concern leaked or solved hidden properties. The captain is asked one question:
+    whether to lift the team's own bars so that a score-guided search (round steps on a few settings per board, each
+    fixed in the log before its own score) may run.
+- 2026-11-21 (bb), the T1 file at twice the calendar fraction is built and handed over; the moonshot kill tests' reviews (state at
+  23:45 UTC, 2026-11-21). Written by the AI assistant.
+  - **The 2.0 file** (row R20; record `experiments/builds/results/t1x2_3d18841.txt`). On the DGX at 3d18841, clean,
+    `experiments/builds/t1_fraction2.sh` (run r1) passed its gate and tests (172 passed), rebuilt R13's bytes
+    (ad8f24c71c90...) and B's bytes (c7240cb6a7f7...), and built the 2.0 file twice with the same bytes: sha256
+    52897fe375b8a81afffa788592047c30361824148b00a8176514385060518837. Stamps: this commit, clean.
+    `runs/manual_upload/T1_s2rcB2.h5ad`, format check passes. It is handed over as T1's file after C. Unpriced on
+    practice; the cost of a miss is one slot.
+  - **The moonshot kill tests** (workflow `moonshots-engineering-1`, sixteen agents; hand-back in the scratchpad
+    `lift8/moonshots_eng1.json`). One of the eight is reviewed ready: T67, T1's per-gene timing
+    (`campaign/moon-t1-timing`, 485e3d3). Seven are not ready, each with stated fixes: T66 T1 blood (four blockers;
+    its work was left uncommitted in the engineer's worktree; it also needs the `rdata` package, which the DGX
+    environments lack); K25 T3 dispersion (the row text leaves out constants the code fixes); K26 T3 map (its pre-gate
+    on one fold reads a table derived from that fold's target; the try count on a void); H30 heart chord (row
+    placeholders; its gate needs its own row); H31 heart bridge (four); E53 embryo geodesic (row wording twice; a
+    stale exit file can let a step run; the register lacks torch); E54 embryo flow (the launcher's clean-tree check
+    refuses after its own gate). The outside nuclei atlas and the heart atlas's later stages are on the DGX. A fix
+    round follows for T66, K25, H30, E53 and E54; K26 and H31 wait (the lowest odds; H31 depends on H30's gate).
+- 2026-11-21 (cc), the first moonshot kill test starts: T1's per-gene timing, its late labelling first (state at 23:49 UTC,
+  2026-11-21). Written by the AI assistant, which gives no design lean; the kill test is its score-blind judge's.
+  - **Merged.** `campaign/moon-t1-timing` (485e3d3; review ready, no blocker) is merged to main at c64b2bb, with both
+    sides of the step script's test list kept; on merged main the timing tests and the related guards pass (124
+    passed; the step script's guard 1 passed; the linter clean).
+  - **Two steps, two rows.** (1) Row N57, placed with this entry: the frozen relabeller of row N54 rerun unchanged on
+    the outside heart atlas's permitted cells at E15.5, E16.5 and E17.5. It is target-free and counts no try. Register
+    row X002 is amended in the same commit, before any read: the later stages are a new use of the same source, after
+    the protected window, with no authors' label read; the captain's approval of new outside uses in bulk (2026-11-20)
+    covers it, and no upload uses it without a pass and the captain's word. (2) Row T67, placed in a second commit
+    once the late statistics exist (the row must carry their sha256): two counted arms on row T62's five tasks, ten
+    tries, with an idle pre-gate that prunes the row before any score if the timing changes the direction by less than
+    five per cent in every group.
+  - **The reviewer's lesser points, recorded.** The control permutes each gene's deviation within bins of the
+    direction's absolute size, which mixes genes whose direction is positive and negative; the limiter then zeroes
+    more of the control's slopes than the arm's, so the comparison of arm and control partly measures more timing
+    against less. That is the specification's literal design; it is kept, and the pre-gate reports both ratios. The
+    row text handed back leaves out rules the code fixes; they are written into row T67 when it is placed.
+  - **The judge's odds:** the kill test passes with about 0.12; given a pass, three board points or more at the test
+    about 0.04; the most likely outcome is that the permuted control ties the arm.
+- 2026-11-21 (dd), row N57 is run (the late labelling is usable) and row T67 is placed before its run (state at 23:56 UTC,
+  2026-11-21). Written by the AI assistant, which gives no design lean; the kill test is its score-blind judge's.
+  - **N57.** A first launch at ea206dc ran nothing: the launcher's tests step stopped on one test that fails only on
+    the DGX checkout holding a real N55 marker. The launcher now deselects that test by name (119e4cd), and at that
+    commit the labelling ran: exit 0, usable; unassigned shares 0.050, 0.041 and 0.046 against a cap of 0.40; the
+    cardiomyocyte, endocardium and endothelium groups have 88 to 1201 cells per late stage, the epicardium 26 to 29,
+    under T67's minimum of 50, so the epicardium keeps the steady rate. The record is committed with this entry; the
+    statistics' sha256 is 6e15bbf97b973eddc057d6ef2dcaa4981d6317ef7e2e5d8a839bbc6cbbeb9043.
+  - **T67.** Placed in this commit, before its run, with the rules the reviewer found missing from the row text
+    written in as the code has them (the control's bins and seed, the void list, the late cell minimum, the unassigned
+    cap, the norm over held genes, the summed-means form of the third clause). Two counted arms on row T62's five
+    tasks; ten tries, T1 419 to 428, once the runs start; an idle pre-gate first, which prunes the row with no try.
+    Fixed statement: AHEAD only if the arm beats the practice analogue of R13's file on the chamber cut, the whole cut
+    and the libraries, beats its permuted control, and has at least six tenths of its gain in the two terms its reason
+    names; otherwise NOT AHEAD, which closes the line. AHEAD leads to one priced question to the captain, not to a
+    file.
+- 2026-11-22 (a), row T67's runs have started (ten tries counted); row T65 is placed before its run (state at 00:06 UTC,
+  2026-11-22). Written by the AI assistant, which gives no design lean; both reads are their score-blind analysts'.
+  - **T67** (T1's per-gene timing; run commit 6c01146 on `~/v/vec-campaign-d`): the launcher's tests passed, the idle
+    pre-gate passed (the timing changes the direction by five per cent or more in at least one group, so the row is
+    not pruned), and the five runs started at 00:02 UTC. The ten tries are counted from that moment: T1 419 to 428.
+    The read follows when the runs end.
+  - **T65** (candidate MS of the score-blind round, decision log 2026-11-21 (y): R13's file with the released
+    per-category momentum added on the direction-group cells; `campaign/t1-ms-read`, b012eff, review ready, merged to
+    main; on merged main its tests and the related read tests pass, 270 passed, the step script's guard passes, the
+    linter is clean). Its row is placed in this commit, before its run: two counted arms, the momentum and its
+    permuted placebo, on row T62's five tasks; ten tries, T1 429 to 438, once its first run starts. Fixed statement,
+    from the round's challenger: AHEAD only if the chamber mean is above +0.3 with at least 8 of 10 seeds above 0, the
+    whole-cut mean is above 0, at least two libraries are valid with none below -0.3, and the momentum beats its
+    placebo on the chamber cut in at least 8 of 10 seeds with a positive mean; otherwise MS ends with no question, no
+    build and no rerun. It runs in a detached worktree of the DGX checkout's repository, because row T67's chain holds
+    the checkout itself; the commit reaches that repository by a push to a new branch ref, which leaves the checkout's
+    working tree and HEAD untouched.
+- 2026-11-22 (b), both fix rounds are back: seven reads are review-ready and merged; four rows are placed before their
+  runs (T66, E51, E53, H29a); row T65's first launch refused and is relaunched (state at 00:31 UTC, 2026-11-22).
+  Written by the AI assistant, which gives no design lean; each read is its score-blind judge's or challenger's.
+  - **Hand-backs.** Moonshot fix round (ten agents): T66 (T1, the held Blood cells moved along the outside nuclei
+    atlas), K25 (T3, within-label dispersion), H30 with its gate row N56 (heart, a late-anchor chord), E53 (embryo,
+    geodesic overlay) and E54 (embryo, multi-stage flow): each re-review says ready, no blocker. Candidate fix round
+    (seven agents): E51 (embryo, the overlay with the series expression and the overlay at the deeper depth) and H29a
+    (heart, the trend step on forms A and B) are ready; E52 (embryo, copy-positions at the team's own size) is not
+    ready on one launcher point (a step killed part way could leave an earlier exit 0 standing beside the new commit)
+    and went back with the reviewer's fix.
+  - **Merged to main**, both sides of the step script's test list kept: the five moonshot branches and the two ready
+    candidate branches. On merged main 752 tests pass and 5 are skipped (the torch tests, which run on the DGX), the
+    step script's guard passes and the linter is clean. One pin tripped on the merge and was corrected: E51's test
+    pins the 63 harness candidates older than its row, and with row E53's geodesic pair merged beside it the count was
+    65. Recomputed with that pair left out, the digest is the pinned one, so no older candidate changed; the test now
+    leaves out, by name, the registries of rows merged beside it (commit 1d4b854).
+  - **T65: the first launch refused and is relaunched; the fault was the AI assistant's.** It ran from a detached
+    worktree with the checkout's environment. That environment's package path names the checkout's own source (commit
+    6c01146), so the run step's commit check saw the checkout's commit, not the row's, and refused before anything
+    loaded ("HEAD is not the run commit given by --commit"; the chamber step exited 1 after two seconds; no task file,
+    no score, no try). The package source is byte for byte the same at the two commits, so nothing wrong could have
+    been computed. The worktree now has its own environment from the locked versions (68 packages, each at the
+    checkout's version); it imports its own source and sees its own commit, clean. The second chain started at 00:20
+    UTC. From now on a read whose script does not put its own checkout's source first runs in a real checkout or in a
+    worktree with its own environment.
+  - **Register, before any run.** X003 is amended for T66: model input for the held Blood direction, practice only,
+    embryos 1-12 and 59-63, raw counts, the stage label, two identifiers, the gene table's two name columns, and
+    `experimental_batch` for reporting only. That column is one beyond the words of the captain's approval of
+    2026-11-19 ("raw counts and stage labels"); naming it is the AI assistant's reading (a run identifier, no
+    annotation of what a cell is) and is said to the captain in the next report. X005 is amended: torch (E53's
+    registration, E54's flow), torchdiffeq (E54), torchcfm installed and not imported; licences as the installed
+    packages declare them. The R-data reader was added to the environment of the DGX checkout `~/v/vec-campaign` from
+    the lock (`uv sync --frozen --inexact --group external --group gpu`: one package added, none removed, nothing
+    running there).
+  - **Rows placed in this commit, each before its run.** Their texts are the engineers', checked by the reviewers
+    against the code, with the blanks filled, T66's run place corrected and pronouns for the captain removed. **T66**:
+    ten tries (T1 439 to 448 after T65's ten; none if its target-free pre-gate fails); AHEAD only if all four clauses
+    of its statement hold, which leads to one priced question (amend R1 for Blood, default keep R1); NOT AHEAD closes
+    the line. **E51**: two tries (embryo 85 and 86); SO and O_hi each pass only on their three clauses; a pass only
+    puts the question to the captain. **E53**: two tries (embryo 87 and 88; none if its target-free gate fails on the
+    test pair); it passes only if (a) to (f) hold, and then the candidate is fixed in this log before any score and
+    goes to the captain as a priced question. Its J7 dry run reports and decides nothing: the engineer asked whether
+    it should stop the run, and the specification's own words (dry-run and quote) are kept, which is no lean of the AI
+    assistant's. **H29a**: eight tries (heart 81 to 88); H-T1 qualifies only on S1 to S3 on form A, H-T1B only on S1
+    to S3 on form B with H-T1's S2; a qualified file is built twice and goes to the captain by name.
+  - **Open points sent to fresh score-blind analysts** (workflow open-points-round, up to twelve agents), because the
+    engineers left them to the main session and the main session makes no design call: K25 (which total the estimator
+    divides by; the wording of the pooled build path), E54 (how a slot is filled), H30 (a per-source minimum, and a
+    second reading of its data windows); with them E52's launcher fix and its re-review, and a screen of the licence
+    of the outside nuclei atlas's portal copy, which row H30's code requires the register to call confirmed. Those
+    rows are placed when the answers are back. K26 and H31 stay deferred.
+- 2026-11-22 (c), row T67 is read (NOT AHEAD: the line is closed); the first four reads of entry (b) are running
+  (state at 00:36 UTC, 2026-11-22). Written by the AI assistant; the outcome is quoted from the read's own text and
+  nothing is added to it.
+  - **T67** (T1's per-gene timing; run commit 6c01146 on `~/v/vec-campaign-d`; the five runs 00:02 to 00:32 UTC; the
+    read exit 0). In the read's fixed words: "NOT AHEAD: this closes 'per-gene Hermite timing from Feng's post-window
+    slope' on T1"; "(i) against m1rc_gmom: fails; (ii) against the permuted control: fails; (iii) the gain's share in
+    de_recovery plus direction: fails"; "What follows: nothing is built; the line is closed on T1". The arm minus the
+    practice analogue of R13's file is -0.05 points on the chamber cut (1 of 10 seeds ahead) and -0.01 on the whole
+    cut. Ten tries, T1 419 to 428, counted since 00:02 UTC. No question goes to the captain and no file changes. The
+    result files are committed with this entry, copied from the DGX and checked against its sha256.
+  - **Running, each at the row commit d0f0d6e (entry (b)), each started after a traced refusal of its launcher under a
+    throwaway home folder (a wrong commit: exit 95 or 99, an exit record written, nothing real made).** T66 in the
+    detached worktree `~/v/scratch/t66-wt` of `~/v/vec-campaign-d`'s repository, with its own environment (`uv sync
+    --frozen --group external`) and the checkout's data linked; chain `~/v/scratch/t66_chain.sh`, exit file
+    `~/v/scratch/t66/chain.exit` (3 means its target-free pre-gate pruned it, no try). E51 and E53 in the detached
+    worktrees `~/v/scratch/e51-wt` and `~/v/scratch/e53-wt` of `~/v/vec-campaign`'s repository (their scripts put
+    their own source first and use that checkout's environment and data); E53 on GPUs 2 and 7 only, because GPUs 3 to
+    6 hold another job's memory. H29a in `~/v/vec-campaign` itself, moved to the row commit while nothing ran there.
+    The last three run through `~/v/scratch/steps_chain.sh`, which only calls a launcher's steps in order; exit files
+    `~/v/scratch/e51/chain.exit`, `~/v/scratch/e53/chain.exit`, `~/v/scratch/h29a/chain.exit`. All four started at
+    00:35 UTC.
+  - **Counts.** T65's chamber run started at 00:30 UTC (its second launch), so T1 429 to 438 are counted; H29a's run
+    step started at 00:35 UTC, so heart 81 to 88 are counted. Totals: T1 438, embryo 84, heart 88, T3 72. T66, E51 and
+    E53 count from their run steps, and not at all if their gates stop them first.
+- 2026-11-22 (d), row H29a is read: neither heart trend candidate qualifies (state at 00:48 UTC, 2026-11-22). Written
+  by the AI assistant, which is recused on the heart's scope and size and adds nothing to the read's own words.
+  - **H29a** (the heart's trend step on row H27's forms A and B, the practice reads the heart's order rule fixed for
+    candidates H-T1 and H-T1B before any of their scores; run commit d0f0d6e on `~/v/vec-campaign`; the run 00:35 to
+    00:45 UTC; tests, run and read each exit 0). In the read's fixed words: "OUTCOME H-T1: NOT QUALIFIED", "H-T1 NOT
+    QUALIFIED under row H29a (fails S1, S2): the file is skipped and the next file moves up. No priced question; no
+    rerun under this row."; "OUTCOME H-T1B: NOT QUALIFIED", "H-T1B NOT QUALIFIED under row H29a (fails S1, S3, H-T1's
+    S2 on the whole pool): the file is skipped and the next file moves up. No priced question; no rerun under this
+    row."
+  - **The reading's own lines beside the outcome** (practice, one truth, both gates at distance 0.000; no
+    interpretation is added). Form A, the whole pool: S1 FALSE (trend minus the copy: +1.14 in the truth as released,
+    10 of 10 seeds; +0.29 in the thinned truths, 10 of 10; the bar is a mean above +0.3 in both worlds); S2 FALSE
+    (trend minus its placebo: +0.69 as released; -0.19 in the thinned truths, 0 of 10); S3 TRUE. Form B, the half
+    trim: S1 FALSE (+0.84 and +0.25); S2 TRUE (+0.88 and +0.40, 10 of 10 in both); S3 FALSE (de_direction below 0 in
+    the thinned truths). Eight tries, heart 81 to 88, counted since 00:35 UTC. No file is built, no question goes to
+    the captain, and nothing is rerun under this row. The heart's file in force is unchanged.
+- 2026-11-22 (e), the open points are decided by fresh score-blind analysts; rows K25, N56 with H30, E54 and E52 are
+  placed before their runs (state at 00:48 UTC, 2026-11-22). Written by the AI assistant, which made none of the
+  design decisions below and applied two text fixes the reviewers prescribed.
+  - **K25 (T3, within-label dispersion).** The analyst kept the estimator's depth total as built (each cell's total
+    over every gene of the file: the specification names no panel, the ratio serves several panels, and a small
+    panel's total moves with the knockout's own effect). Three wording points, no value or rule changed: "a gene with
+    no label left" replaces "no qualifying label" (the row now matches the code; one required phrase changed with it);
+    the pooled build path is fixed further (each source's label is its own term; a gene with no label left in either
+    source has ln r = 0); the row no longer suggests that the rounding noise is paired between the arm and its
+    control. An engineer applied them (`campaign/moon-t3-dispersion-3`, 2eafb3c) and a reviewer says ready. The row's
+    count, T3 72 to 74, matches the ledger's total of 72.
+  - **E54 (embryo, multi-stage flow).** The analyst confirmed the slot reading as built (each slot keeps the control's
+    coordinates, bracket and file position; only the real cell in it changes): it is the one reading under which the
+    shape check at 1e-9 is a real check. One row sentence was corrected to what the code does (the fit, the gates and
+    the run refuse and the read voids while the register does not name the two libraries; the tests step does not read
+    the register). No code changed; a reviewer says ready. The script's own docstring still carries the old sentence;
+    it is a comment, the decision said no code change, and it is left. If the first fit fails in the solver, any
+    change of tolerance or precision goes into the row before the gate runs, decided on the failure alone (the
+    analyst's instruction).
+  - **H30 with its gate N56 (heart, late-anchor chord).** The analyst changed one rule on validity grounds: an outside
+    source enters a lineage's chord only with at least 200 kept cells of that lineage at each of its anchors (as
+    built, one cell was enough, so a near-single-cell mean could have been half of an average). 200 is the gate's own
+    per-platform count, so no new constant enters. Two row sentences that claimed more refusals than the code makes
+    were corrected. An engineer applied it (`campaign/moon-heart-chord-3`, 88bb2cf: one condition, its docstrings, the
+    rewritten tests, both rows). The reviewer's one blocker was text: both rows still named the branch
+    `campaign/moon-heart-chord-2`, which does not hold that commit. The reviewer's fix (the branch name in four
+    places, hash kept) is applied here by the AI assistant, and the rows are rechecked by the script's own parsers.
+    The analyst's own reading of the data windows: every outside sample the gate and the tables read lies outside the
+    heart board's window (JAX embryos 13 to 22 at E8.75 to E9.5 and 54 to 56 at E14.25 to E14.75; Feng at E9.5 and
+    E14.5; each checked in code), and no author type, label, cluster or embedding is read. One doubt is stated in the
+    register and not resolved: both atlases' cells are the authors' quality-passed sets, and whether that filtering
+    was learned together with in-window cells is not known. The file in force that the row names, C, is checked
+    against row R16's rule (6): the highest headline of C, B and A is C's.
+  - **E52 (embryo, copy-positions at the team's own size).** The launcher's blocker is closed: a step now marks its
+    exit file as running before it writes its head, so a step killed part way cannot leave an earlier 0 standing
+    (`campaign/embryo-copy-rows-size-3`, 42db549, main merged in; its harness lines and row E54's were added at the
+    same place and both are kept). The reviewer's one remaining blocker was text: the row named the older code commit.
+    The reviewer's fix is applied here by the AI assistant: the row names main's merge f95f3fc4618b and both older
+    hashes. By its row, if reading (i) holds the test file is built under the captain's order of 2026-11-21.
+  - **Licence (register row X003).** A screening agent read the portal only (no paper, no scientific content): the
+    CELLxGENE Discover copy of the outside nuclei atlas is under CC BY 4.0 by the portal's contributor agreement, a
+    portal-wide statement; the collection's own metadata names no licence; the lab's download server, where the team's
+    files came from, states none. The register says exactly that. Whether the portal's licence covers the lab server's
+    files is a question for any file that would use them, and none is built.
+  - **Register, before any run.** X002 and X003 each carry a T2-heart amendment for row H30: practice read only, on
+    the captain's approval of new outside uses in bulk (2026-11-20), which goes beyond the Task 1 approval of
+    2026-11-19; the stages and columns read; the open question on the authors' cell filtering; and that a T2 file with
+    an outside atlas needs the captain's ruling under A15 first.
+  - **Merged and tested.** `campaign/moon-t3-dispersion-3`, `campaign/moon-heart-chord-3` and
+    `campaign/embryo-copy-rows-size-3` are merged to main without conflict; the tests of the four reads and of the
+    modules they share pass on merged main at f95f3fc (822 passed, 4 skipped: the torch tests, which run on the DGX),
+    with the step script's guard and the linter.
+  - **Rows placed in this commit, each before its run.** K25: two tries (T3 73 and 74), none if its source-only
+    pre-gate fails or refuses; PASS only on (a) to (e); a file only by the captain's ruling. N56: a target-free gate,
+    not a try; FAIL or VOID ends H30. H30: thirty tries (heart 89 to 118, after H29a's eight) only if the gate says
+    PASS; only PASS leads to one priced question. E54: the gate E54a counts once it runs (embryo, after E51's and
+    E53's), then two more tries if it passes; a pass fixes the candidate here before any score. E52: one try, counted
+    when its run step starts; if (i) holds the file is built twice and handed over at its place after C. Places: K25
+    in the DGX checkout `~/v/vec-campaign-c` itself; H30 in a detached worktree with its own environment (its script
+    does not put its own source first, and its second half runs at a later commit); E54 and E52 in detached worktrees
+    of `~/v/vec-campaign`.
+- 2026-11-22 (f), rows E53 and T66 stopped before any score; a slip in placing the second batch is corrected (state at
+  00:58 UTC, 2026-11-22). Written by the AI assistant; the outcomes are the rows' own rules and nothing is added to
+  them.
+  - **E53** (embryo, geodesic overlay; run commit d0f0d6e in `~/v/scratch/e53-wt`): its target-free gate fails on the
+    test pair. Clause g1: the data term at t = 1 is 0.59 to 0.65 of its value at the rigid start in all ten draws; the
+    row asks for at most 0.5 in at least 8 of 10. Clauses g2 and g3 hold. The row's rule: "If any test-pair clause
+    fails, nothing runs and nothing counts." No try, no score, no file; the gate's record is committed with this
+    entry. No other row is opened for it by the AI assistant.
+  - **T66** (T1, the held Blood cells along the outside nuclei atlas; run commit d0f0d6e in `~/v/scratch/t66-wt`): the
+    reducer refused after its preflight: "25033 genes of the count matrices are not in the gene table". Nothing was
+    computed after that: no direction, no pre-gate, no T1 cell read, no score, no try. The gene table lists 24,552
+    genes; the count matrices carry those and 25,033 more. To describe the stop the AI assistant read that table's
+    header and the category counts of its `gene_type` and `chr` columns (no count, no cell, no model input); the
+    register lists only `gene_id` and `gene_short_name` as read by the reducer, so this is said here. By row T66 a
+    rerun is a new row. A fresh score-blind analyst fixes the rule for matrix genes outside the table, an engineer
+    writes the corrected read as row T68 and a reviewer checks it (workflow t1-blood-rerun-row, three agents); the row
+    is placed only when the review says ready.
+  - **The AI assistant's slip in entry (e), corrected.** The second batch's commit (a99f203) was made although one
+    test failed: the commit command was not tied to the test run's result. The test
+    (`test_the_register_must_carry_the_required_wording_in_both_outside_sources`) ended with an assertion that the
+    repository's own register did not yet carry row H30's wording, true when it was written and false, as intended,
+    once the amendment was committed. That last line now asserts the amended state. Nothing had run. The test file
+    therefore differs from 88bb2cf by that one assertion; the script and the launcher are byte for byte 88bb2cf's. Row
+    H30 runs with this commit as its ROW (rows N56 and H30 are unchanged since a99f203). Every test file that the four
+    launchers run was then run here with the rows and the register as committed: 822 passed and 4 skipped (the torch
+    tests, which run on the DGX), the linter clean. Rule from now on, also written into the engineers' brief: no test
+    asserts today's state of the repository's own ledger or register.
+  - **Places on the DGX.** K25 runs in its own detached worktree `~/v/scratch/k25-wt` (of `~/v/vec-campaign-c`'s
+    repository) with its own environment and the checkout's data linked, not in the checkout itself: the checkout
+    holds row K24's two reading files untracked, a checkout of the new commit would have had to overwrite them, and
+    they are left as they are. E54 and E52 run in detached worktrees of `~/v/vec-campaign`'s repository at a99f203;
+    H30 in its own worktree with its own environment at this commit.
+  - **Counts.** Rows E53 and T66 counted nothing. Totals stay T1 438, embryo 84, heart 88, T3 72. E51 is at its
+    reproduction gate and T65 at its first run.
+- 2026-11-22 (g), the captain orders the heart's organ-cut file started and outside datasets used as widely as
+  possible (state at 01:02 UTC, 2026-11-22). Written by the AI assistant, which is recused on the heart's scope and
+  size and states no preference.
+  - **The captain's words**, added to a forwarded side-agent note, verbatim: "yes and go ahead with all the external
+    datasets as much as possible". The note is a side agent's, not the main session's. It said that three heart
+    uploads differing mainly in trim had headlines 49.5 with no trim, 54.1 with the half trim and 56.4 with the full
+    trim; that the two heart files then being coded add an expression step to the no-trim and half-trim forms and are
+    unlikely to pass 56.4; that the organ cut "may push further in the direction that paid off"; and it ended "If you
+    want it, say yes soon. It needs about a day of code, done by 25 Nov."
+  - **What the yes covers, as the AI assistant reads it.** The question open with the captain since 2026-11-21 with a
+    default of no, in the blind round's words (entry 2026-11-21 (y)): "Heart: may the organ-cut file (a new scope and
+    size: E10.5's heart tissue by label, joined to the core) be coded, read and, if you approve the read's figures,
+    uploaded?" So file D of the heart's order rule is coded and read. This is the captain's own named exception on the
+    heart's scope and size for this one file. The upload still takes the order rule's three conditions: the gate
+    passes and the read is not void; two builds from one clean commit give one sha256 and pass the format check; and
+    the captain says yes to the file by name, on a question with the read's figures written by analysts other than the
+    main session.
+  - **"go ahead with all the external datasets as much as possible"** renews the approval of outside sources in bulk
+    (decision log 2026-11-20 (g) and (y)). Each source still gets its register row or amendment before it enters a
+    model, and no organiser rule is lifted: the held-out windows stand, and nothing from or like the held-out knockout
+    is used. The AI assistant reads it as covering the practice reads already placed on outside data (H30 on the
+    heart, the rerun of T66 on T1), the two deferred moonshots that use outside data (K26 on T3, H31 on the heart),
+    T1's atlas-to-E18 candidate, and one more score-blind round on what other outside data could carry. It does not
+    read it as the say-so to upload row H30's file or any T2 file built with an outside atlas: that stays one priced
+    question per file under A15.
+  - **What the AI assistant does not do.** It gives no lean on the organ cut. The note's argument from the three
+    headlines is the side agent's. The blind round's own words on D stand beside it unchanged: a long shot; practice
+    cannot test its premise; its nearest released analogue, E10.5, collected under the same wording, is about half
+    non-heart by label. No number, threshold or label choice of D comes from any score: its specification is the
+    score-blind designer's and challenger's of 2026-11-21, handed to the engineers verbatim.
+  - **What is executed.** Score-blind engineers write D to that specification (the label config ported from T1's
+    committed chamber rule; the tissue mask; the size field; the builder entry, off by default, with byte-for-byte
+    regression tests for every existing heart file; the practice script extending row H27's; the launchers), and a
+    reviewer holds it to a blocker standard fixed up front. Then the target-free gate on E10.5 (its stops are fixed in
+    the specification), row H29b committed before the read, the read, and only then the two builds. The order rule's
+    hard stop stands: D drops if it is not built, read and reviewed by 2026-11-25 12:00 UTC. H-T1 and H-T1B, the two
+    files before D in that order, did not qualify (entry (d)); D is the list's last file.
+  - **Recorded in** ruling row R21 of the ledger and in an amendment of `docs/S2_RULES.md` (its hash re-pinned).
+- 2026-11-22 (h), row K25 is read (FAIL: nothing follows); rows E52 and H30 stopped at their first steps before any
+  reading and are being corrected (state at 01:10 UTC, 2026-11-22). Written by the AI assistant; the outcome is the
+  read's own words.
+  - **K25** (T3, within-label dispersion; run commit a99f203 in `~/v/scratch/k25-wt`; tests, pre-gate, run and read
+    each exit 0; the five reproduction guards at distance 0.0000). In the read's fixed words: "Try K25: FAIL: the
+    dispersion arm does not pass K25's kill test; nothing follows." Clauses (a) False, (b) False, (c) True, (d) False,
+    (e) False: the arm is ahead in dm g1 and x2 but behind in plain g1 (-0.34, 0 of 10 seeds), and where it is ahead
+    it does not beat its permuted control by the row's margin (dm g1 -2.38; x2 +0.29 against a bar above 0.3). Two
+    tries, T3 73 and 74, counted. No file, no question, no build path. T3's queued files are unchanged.
+  - **E52** (embryo, copy-positions at the team's own size; first start at a99f203): the launcher's tests step failed
+    on the DGX, exit 1, so no gate and no run happened and nothing counted. Cause: three tests of
+    `tests/test_copy_rows_build.py` pinned the sha256 of two files built on synthetic stages, and the pins were made
+    on the local machine; such builds differ in bytes between the two machines (`docs/COMPUTE.md`, "What reproduces
+    where"), so the same code gives other bytes on the DGX. Checked on both machines with the builder as it stood
+    before the size option existed (main at cf0e0cf, in a scratch worktree, this test file copied in): locally the two
+    pinned files come out at the pinned hashes (2 passed); on the DGX the old builder gives fc9fa84c... and
+    38f9dc26..., exactly the bytes the new builder gave in the failed tests step. So the new code keeps both existing
+    files' bytes on each machine. The test now pins both machines' hashes for each file (a per-machine pair). Only
+    that test file changes: the launcher, the read script and the package source are byte for byte those the row
+    names. E52 is started again at this commit in a new worktree; its row is unchanged.
+  - **H30 with its gate N56** (heart, late-anchor chord; first start at 784e427 in `~/v/scratch/h30-wt`): tests exit
+    0; the gate step crashed in its reader, exit 1, before any reading: "the count matrix's row names are neither the
+    gene table's IDs nor gene symbols". It is the fact that stopped row T66 (entry (f)): the outside nuclei atlas's
+    count matrices carry 25,033 gene ids beside the 24,552 its gene table lists, and the reader required one or the
+    other for every row. No gate.json, no table, no try; by the launcher's own codes this is an error, not the gate's
+    FAIL or VOID, and the rows' rules are untouched. A fresh score-blind analyst says how matrix rows outside the gene
+    table are treated under the rows' words (the gate reads "the heart panel genes JAX carries, matched by symbol
+    through JAX's gene table"), an engineer corrects the reader and a reviewer checks it; rows N56 and H30 then name
+    the corrected code before the gate runs. H31 (deferred) reads the same files and takes the same correction.
+  - **Running at this time.** T65: the chamber run took 38 minutes and exited 0; the whole cut is running and three
+    library runs follow one after another. E51: at its reproduction gate (six of nine tasks done). E54: its tests exit
+    0 on the DGX with the torch tests; the fits are running on GPUs 2 and 7. The organ-cut file's code and the rerun
+    of T66 as row T68 are with their engineers.

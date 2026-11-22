@@ -1847,3 +1847,27 @@ reopening it is uploaded after C: `runs/manual_upload/T2embryo_s2.h5ad`, sha256
 before any score. The record check the challenger asked for: those amendments set the file aside as the last upload of
 a two-upload board and close no lever on its geometry. Data used: released challenge data only; no outside data. Every
 upload is the captain's own act.
+
+## Amendment of 2026-11-22: the heart's organ-cut file D is coded and read (the captain's named exception on scope and size; row R21)
+
+The captain, on a forwarded side-agent note that asked for a yes to the organ cut, verbatim: "yes and go ahead with
+all the external datasets as much as possible" (`docs/PLAN.md` decision log 2026-11-22 (g); ruling row R21). This is
+the captain's own named exception on the heart's scope and size, closed levers of the post-exposure block, for one
+file: D of the heart's order rule, fixed before any of its scores by a round blind to test scores (decision log
+2026-11-21 (y)). The main session is recused on the heart's scope and size and states no preference.
+
+**The file.** `build_test.py heart --entry organ_scope --expression copy --z-mode raw --out <O>/T2heart_organ.h5ad`,
+then `experiments/builds/halve.py` at seed 1000001; the half, `T2heart_organ_half.h5ad`, is the upload file. From
+E10.5's own cells it keeps the chamber categories of `configs/t1_chamber_classes.yaml`, ported to the MERFISH labels,
+that form one tissue with the core, and sizes them by the raw-mode core forecast times a ratio measured on E10.5. No
+number, label choice or threshold in it comes from a test score. Data used: released Task 2 heart stages and the
+unlocked E10.5 validation file only; no outside data.
+
+**Conditions, from the heart's order rule, unchanged.** The file enters only if (a) its target-free gate passes and
+its practice read, row H29b committed before it runs, is not void; (b) two DGX builds from one clean commit give
+identical sha256 and pass the format check; and (c) the captain says yes to it by name, on a question with the read's
+figures written by analysts other than the main session. It is never rebuilt, re-seeded, changed or uploaded again
+after its score. Only the headline is recorded, for the board's best-headline mark; no per-metric value is read or
+recorded, and no difference between headlines enters any number, file, rule or statement about the E12.5 stack. D
+drops if it is not built, read and reviewed by 2026-11-25 12:00 UTC. The heart's list ends after D: no further heart
+file is designed from any of these scores. Each upload is the captain's own act.

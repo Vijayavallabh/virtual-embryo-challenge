@@ -1,0 +1,65 @@
+Try K25: FAIL: the dispersion arm does not pass K25's kill test; nothing follows.
+tries counted: 2
+pre-gate mab21l2: passes True; genes with |ln r| > ln 1.2: 192 of 500; share clipped 0.0880; sd ln r 0.2975; labels used 22; genes without a label 0; n_g quantiles {'0': 0.0, '0.1': 0.0, '0.25': 0.0, '0.5': 3492.5, '0.75': 20912.0, '0.9': 37214.40000000001, '1': 47483.0}; n_g histogram {'[0, 1)': 201, '[1, 50)': 0, '[50, 100)': 1, '[100, 200)': 0, '[200, 500)': 1, '[500, 1000)': 16, '[1000, 2000)': 16, '[2000, 5000)': 37, '[5000, 10000)': 55, '[10000, inf)': 173}
+pre-gate gata4: passes True; genes with |ln r| > ln 1.2: 164 of 500; share clipped 0.0400; sd ln r 0.2252; labels used 35; genes without a label 0; n_g quantiles {'0': 0.0, '0.1': 0.0, '0.25': 0.0, '0.5': 3967.5, '0.75': 23663.25, '0.9': 61575.90000000001, '1': 88369.0}; n_g histogram {'[0, 1)': 200, '[1, 50)': 0, '[50, 100)': 0, '[100, 200)': 2, '[200, 500)': 0, '[500, 1000)': 1, '[1000, 2000)': 22, '[2000, 5000)': 39, '[5000, 10000)': 47, '[10000, inf)': 189}
+guard plain g1 (barred_form): passes True; mean +0.0000, largest seed 0.0000, seeds differing none
+guard plain g2 (barred_form): passes True; mean +0.0000, largest seed 0.0000, seeds differing none
+guard dm g1 (barred_form): passes True; mean +0.0000, largest seed 0.0000, seeds differing none
+guard dm g2 (barred_form): passes True; mean +0.0000, largest seed 0.0000, seeds differing none
+guard x2 (raw): passes True; mean +0.0000, largest seed 0.0000, seeds differing none
+commit a99f203fff3b1cc47f168948d6c5d89fcdb8709d, machine p01r10srv05. (a) False, (b) False, (c) True, (d) False, (e) False; ahead in ['dm g1', 'x2']; behind in ['plain g1']; gated (arm, base) {'plain g1': [0, 0], 'plain g2': [0, 0], 'dm g1': [2, 4], 'dm g2': [0, 0], 'x2': [7, 10]}
+U3d's check arm in the dm world, reported only: g1 mean -0.0000, largest seed 0.0000, seeds differing none; g2 mean +0.0000, largest seed 0.0000, seeds differing none
+Reported tables, deciding nothing (g1 and g2 are two replicates of one knockout run):
+plain g1 (base barred_form):
+    floor        50.00 (sd 0.00); gated 10 {'no_response': 10}; mutant-state group skill 0.5000; skills de_score 0.500, de_direction 0.500, severity_slope 0.500, mmd_u 0.500, variogram 0.500
+    barred_form  59.43 (sd 0.46); gated 0 {'scored': 10}; mutant-state group skill 0.4628; skills de_score 0.486, de_direction 0.527, severity_slope 0.897, mmd_u 0.493, variogram 0.418
+    disp         59.09 (sd 0.42); gated 0 {'scored': 10}; mutant-state group skill 0.4515; skills de_score 0.487, de_direction 0.530, severity_slope 0.888, mmd_u 0.480, variogram 0.409
+    disp_perm    59.27 (sd 0.53); gated 0 {'scored': 10}; mutant-state group skill 0.4394; skills de_score 0.496, de_direction 0.527, severity_slope 0.897, mmd_u 0.463, variogram 0.405
+    disp - barred_form: -0.34 (sd 0.29, ahead 0 of 10)
+    disp_perm - barred_form: -0.16 (sd 0.39, ahead 4 of 10)
+    disp - disp_perm: -0.19 (sd 0.31, ahead 3 of 10)
+    barred_form - floor: +9.43 (sd 0.46, ahead 10 of 10)
+    per-term skill, disp - base: de_score +0.0006, de_direction +0.0038, severity_slope -0.0093, mmd_u -0.0129, variogram -0.0089; mutant-state group -0.0113 (up in 0 seeds)
+    per-term skill, disp_perm - base: de_score +0.0097, de_direction +0.0007, severity_slope +0.0001, mmd_u -0.0302, variogram -0.0131; mutant-state group -0.0234 (up in 0 seeds)
+plain g2 (base barred_form):
+    floor        50.00 (sd 0.00); gated 10 {'no_response': 10}; mutant-state group skill 0.5000; skills de_score 0.500, de_direction 0.500, severity_slope 0.500, mmd_u 0.500, variogram 0.500
+    barred_form  62.04 (sd 0.50); gated 0 {'scored': 10}; mutant-state group skill 0.5384; skills de_score 0.499, de_direction 0.559, severity_slope 0.893, mmd_u 0.564, variogram 0.500
+    disp         62.09 (sd 0.66); gated 0 {'scored': 10}; mutant-state group skill 0.5291; skills de_score 0.508, de_direction 0.563, severity_slope 0.888, mmd_u 0.554, variogram 0.492
+    disp_perm    61.97 (sd 0.46); gated 0 {'scored': 10}; mutant-state group skill 0.5233; skills de_score 0.503, de_direction 0.563, severity_slope 0.894, mmd_u 0.548, variogram 0.487
+    disp - barred_form: +0.05 (sd 0.34, ahead 6 of 10)
+    disp_perm - barred_form: -0.07 (sd 0.26, ahead 3 of 10)
+    disp - disp_perm: +0.12 (sd 0.39, ahead 6 of 10)
+    barred_form - floor: +12.04 (sd 0.50, ahead 10 of 10)
+    per-term skill, disp - base: de_score +0.0086, de_direction +0.0037, severity_slope -0.0046, mmd_u -0.0102, variogram -0.0079; mutant-state group -0.0093 (up in 0 seeds)
+    per-term skill, disp_perm - base: de_score +0.0037, de_direction +0.0037, severity_slope +0.0012, mmd_u -0.0164, variogram -0.0132; mutant-state group -0.0151 (up in 0 seeds)
+dm g1 (base barred_form):
+    barred_form  55.64 (sd 5.17); gated 4 {'r2_gate': 4, 'scored': 6}; mutant-state group skill 0.3391; skills de_score 0.550, de_direction 0.560, severity_slope 0.735, mmd_u 0.356, variogram 0.314
+    disp         57.62 (sd 4.59); gated 2 {'r2_gate': 2, 'scored': 8}; mutant-state group skill 0.3359; skills de_score 0.553, de_direction 0.562, severity_slope 0.810, mmd_u 0.352, variogram 0.312
+    disp_perm    60.00 (sd 0.83); gated 0 {'scored': 10}; mutant-state group skill 0.3309; skills de_score 0.562, de_direction 0.559, severity_slope 0.901, mmd_u 0.344, variogram 0.312
+    disp - barred_form: +1.98 (sd 4.02, ahead 8 of 10)
+    disp_perm - barred_form: +4.36 (sd 4.70, ahead 10 of 10)
+    disp - disp_perm: -2.38 (sd 3.91, ahead 0 of 10)
+    per-term skill, disp - base: de_score +0.0037, de_direction +0.0024, severity_slope +0.0749, mmd_u -0.0039, variogram -0.0022; mutant-state group -0.0032 (up in 0 seeds)
+    per-term skill, disp_perm - base: de_score +0.0127, de_direction -0.0002, severity_slope +0.1659, mmd_u -0.0118, variogram -0.0028; mutant-state group -0.0082 (up in 0 seeds)
+dm g2 (base barred_form):
+    barred_form  63.84 (sd 0.60); gated 0 {'scored': 10}; mutant-state group skill 0.4412; skills de_score 0.580, de_direction 0.591, severity_slope 0.914, mmd_u 0.455, variogram 0.420
+    disp         63.80 (sd 0.56); gated 0 {'scored': 10}; mutant-state group skill 0.4415; skills de_score 0.576, de_direction 0.595, severity_slope 0.913, mmd_u 0.456, variogram 0.421
+    disp_perm    64.55 (sd 0.68); gated 0 {'scored': 10}; mutant-state group skill 0.4455; skills de_score 0.589, de_direction 0.593, severity_slope 0.926, mmd_u 0.460, variogram 0.423
+    disp - barred_form: -0.03 (sd 0.19, ahead 5 of 10)
+    disp_perm - barred_form: +0.71 (sd 0.33, ahead 10 of 10)
+    disp - disp_perm: -0.75 (sd 0.28, ahead 0 of 10)
+    per-term skill, disp - base: de_score -0.0041, de_direction +0.0041, severity_slope -0.0008, mmd_u +0.0005, variogram +0.0001; mutant-state group +0.0004 (up in 5 seeds)
+    per-term skill, disp_perm - base: de_score +0.0090, de_direction +0.0017, severity_slope +0.0125, mmd_u +0.0053, variogram +0.0030; mutant-state group +0.0044 (up in 10 seeds)
+x2 (base raw):
+    floor        50.00 (sd 0.00); gated 10 {'no_response': 10}; mutant-state group skill 0.5000; skills de_score 0.500, de_direction 0.500, severity_slope 0.500, mmd_u 0.500, variogram 0.500
+    raw          50.08 (sd 0.47); gated 10 {'r2_gate': 10}; mutant-state group skill 0.4751; skills de_score 0.518, de_direction 0.502, severity_slope 0.500, mmd_u 0.491, variogram 0.451
+    disp         51.96 (sd 2.63); gated 7 {'r2_gate': 7, 'scored': 3}; mutant-state group skill 0.4903; skills de_score 0.515, de_direction 0.505, severity_slope 0.563, mmd_u 0.506, variogram 0.466
+    disp_perm    51.67 (sd 2.70); gated 7 {'r2_gate': 7, 'scored': 3}; mutant-state group skill 0.4712; skills de_score 0.521, de_direction 0.501, severity_slope 0.564, mmd_u 0.490, variogram 0.443
+    disp - raw: +1.88 (sd 2.53, ahead 10 of 10)
+    disp_perm - raw: +1.59 (sd 2.62, ahead 6 of 10)
+    disp - disp_perm: +0.29 (sd 0.25, ahead 8 of 10)
+    raw - floor: +0.08 (sd 0.47, ahead 5 of 10)
+    per-term skill, disp - base: de_score -0.0029, de_direction +0.0037, severity_slope +0.0627, mmd_u +0.0152, variogram +0.0151; mutant-state group +0.0152 (up in 10 seeds)
+    per-term skill, disp_perm - base: de_score +0.0030, de_direction -0.0006, severity_slope +0.0636, mmd_u -0.0011, variogram -0.0082; mutant-state group -0.0039 (up in 1 seeds)
+task files: plain_g1/seed_0.json 6230e1be5aa3, plain_g1/seed_1.json ffc67c80d500, plain_g1/seed_2.json 036464754be3, plain_g1/seed_3.json d814b39ea63f, plain_g1/seed_4.json 598aab896afc, plain_g1/seed_5.json c7033be999b4, plain_g1/seed_6.json 82257f3028e9, plain_g1/seed_7.json 093abbc9def7, plain_g1/seed_8.json da2c97e94331, plain_g1/seed_9.json e79a0a257719, plain_g2/seed_0.json 022af04fb084, plain_g2/seed_1.json 3bc0f1c908f4, plain_g2/seed_2.json 7d7ddcf71142, plain_g2/seed_3.json 66ada1d3993e, plain_g2/seed_4.json 5f25501f4269, plain_g2/seed_5.json 3dfd6a513199, plain_g2/seed_6.json eb3843ee5600, plain_g2/seed_7.json f9dbda3ee87b, plain_g2/seed_8.json 6a257f0c3ff9, plain_g2/seed_9.json 670cc10cc3e3, dm/g1_seed_0.json 1ef82d02cf04, dm/g1_seed_1.json 930b4a91922c, dm/g1_seed_2.json f21973d9406f, dm/g1_seed_3.json c6d211b8bf66, dm/g1_seed_4.json 518d2d700759, dm/g1_seed_5.json 3e8be2f179bf, dm/g1_seed_6.json 2c80a928e61b, dm/g1_seed_7.json 9b47fad29611, dm/g1_seed_8.json 2183992b368c, dm/g1_seed_9.json 253d7fbd8732, dm/g2_seed_0.json cb2680204c22, dm/g2_seed_1.json cb3bd6aaae82, dm/g2_seed_2.json 0783965d1fe4, dm/g2_seed_3.json 5393e9bbf366, dm/g2_seed_4.json f85726db7a44, dm/g2_seed_5.json 8407aaef68e1, dm/g2_seed_6.json b18f134eef14, dm/g2_seed_7.json f1924588b43d, dm/g2_seed_8.json 92973c371efd, dm/g2_seed_9.json bf8d8b7ef887, x2/seed_0.json 52b37641aad2, x2/seed_1.json 8248af081bed, x2/seed_2.json f7caa84ff39f, x2/seed_3.json d43ac7fcb846, x2/seed_4.json bd004fe519af, x2/seed_5.json 74846792686f, x2/seed_6.json 1c48763536ac, x2/seed_7.json 037489a08678, x2/seed_8.json 28e9dd557726, x2/seed_9.json ea14e3f0483f
+read by experiments/t3_decomp/k25_dispersion.py cab53bf3b5a3 at commit a99f203fff3b1cc47f168948d6c5d89fcdb8709d, clean True, machine p01r10srv05

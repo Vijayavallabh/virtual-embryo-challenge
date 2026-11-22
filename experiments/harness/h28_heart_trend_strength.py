@@ -4,8 +4,8 @@ the full trim the captain named for the heart's last file, against that file's o
 the same factor sizes per strength. A labelled diagnostic on one truth (E10.5); it changes no file, rule or default.
 
 The control is row H27's arm C at its forecast size f (`core_iso_half:f`): `vec.harness._copy` on a context whose
-reference input is E10.5's pool under `radial_trim_mask(C, core, 0.0)` (earlier stages whole, as the heart builder loads
-them), then `t2_build.apply_size_procedure` in raw mode with the core hypothesis on the in-memory size result row H27
+reference input is the backtest's reference stage (E9.5 or E8.75; the analogue of E10.5 at the test) under
+`radial_trim_mask(C, core, 0.0)` (earlier stages whole, as the heart builder loads them), then `t2_build.apply_size_procedure` in raw mode with the core hypothesis on the in-memory size result row H27
 forms from the input stages only, then row H25's half, then the checked builder (`h27.size_arm`, imported). Every arm
 here is the control with ONE change, the expression step, made before the size step:
   trend_s{s}    b0_trend's expression (`vec.harness._b0_t2(ctx, trend=True)`, rebuilt step by step below) with every
@@ -218,13 +218,20 @@ def whole_pool_comparison(ctx: harness.BuildContext, whole_ref, genes, types) ->
     return out
 
 
-def build_arms(ctx: harness.BuildContext, size: dict, whole_ref=None) -> tuple[dict, dict]:
+def build_arms(ctx: harness.BuildContext, size: dict, whole_ref=None, form: str = FORM, strengths=STRENGTHS,
+               zero: bool = True) -> tuple[dict, dict]:
     """Every arm of one seed on the full trim's context: the control (`_copy`), trend_s0, the trend and placebo arms,
-    each then sized by row H27's f step, halved and checked; and the identity checks of guard V5."""
+    each then sized by row H27's f step, halved and checked; and the identity checks of guard V5.
+
+    The keywords are row H29a's (h29a_heart_trend_forms.py): `form` names row H27's form whose f step sizes every arm
+    (the context's reference input must be that form's pool), `strengths` the counted strengths (1 must be among them)
+    and `zero` whether trend_s0 and its two checks are built. Their defaults are row H28's, whose path they leave as it
+    was: the same arms, calls and records in the same order."""
     seed = ctx.seed - harness.BUILD_SEED_OFFSET
     pre = {CONTROL: (harness._copy(ctx), None, None, {"strength": None})}
-    pre[ZERO] = trend_expression(ctx, ZERO_STRENGTH)
-    for s in STRENGTHS:
+    if zero:
+        pre[ZERO] = trend_expression(ctx, ZERO_STRENGTH)
+    for s in strengths:
         pre[arm(s)] = trend_expression(ctx, s)
         pre[placebo(s)] = trend_expression(ctx, s, placebo_arm=True)
     ref_b0 = harness._b0_t2(ctx, trend=True)  # the harness's own b0_trend on the same context (guard V5, not scored)
@@ -232,15 +239,16 @@ def build_arms(ctx: harness.BuildContext, size: dict, whole_ref=None) -> tuple[d
     drawn = counts_of(pool[rows], list(ctx.board.genes))
     ctrl = pre[CONTROL][0]
     checks = {"s1_equals_harness_b0_trend": bool(np.array_equal(pre[arm(1.0)][0].X, ref_b0.X)
-                                                 and np.array_equal(pre[arm(1.0)][0].coords, ref_b0.coords)),
-              "s0_counts_equal_drawn": bool((pre[ZERO][1] != drawn).nnz == 0),
-              "s0_x_max_abs_diff_control": float(np.abs(np.asarray(pre[ZERO][0].X, np.float64)
-                                                        - np.asarray(ctrl.X, np.float64)).max()),
-              "same_draw": bool(all(np.array_equal(v[2], rows) for k, v in pre.items() if k != CONTROL)),
-              "pre_size_coords_equal": bool(all(np.array_equal(v[0].coords, ctrl.coords) for v in pre.values()))}
+                                                 and np.array_equal(pre[arm(1.0)][0].coords, ref_b0.coords))}
+    if zero:
+        checks["s0_counts_equal_drawn"] = bool((pre[ZERO][1] != drawn).nnz == 0)
+        checks["s0_x_max_abs_diff_control"] = float(np.abs(np.asarray(pre[ZERO][0].X, np.float64)
+                                                           - np.asarray(ctrl.X, np.float64)).max())
+    checks["same_draw"] = bool(all(np.array_equal(v[2], rows) for k, v in pre.items() if k != CONTROL))
+    checks["pre_size_coords_equal"] = bool(all(np.array_equal(v[0].coords, ctrl.coords) for v in pre.values()))
     out, recs = {}, {}
     for name, (st, _, _, rec) in pre.items():
-        X, C, srec = h27.size_arm(st.X, st.coords, FORM, SIZING, {}, size, {}, seed)
+        X, C, srec = h27.size_arm(st.X, st.coords, form, SIZING, {}, size, {}, seed)
         sub, rep = t2_build.build_submission(ctx.board, X, C, genes=list(ctx.board.genes))
         if not rep.ok:
             raise ValueError(f"{ctx.task.key} {name}: the built file fails its check: {rep.errors}")

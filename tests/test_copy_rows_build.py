@@ -3,10 +3,12 @@ and synthetic stages only. No board file, released stage or test count is read."
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import anndata
 import numpy as np
@@ -244,3 +246,228 @@ def test_the_bit_self_checks_fire_on_one_ulp(bt, monkeypatch, world, own_repo, t
 def test_the_launcher_list_names_this_file():
     sh = (REPO / "experiments" / "external" / "n54_step.sh").read_text()
     assert "tests/test_copy_rows_build.py" in sh
+
+
+# ------------------------------------------------------------------------------------------------ row E52
+# --copy-rows-size (off by default; the copy-rows file at the team's pre-registered size, the captain's order of
+# 2026-11-21, decision log 2026-11-21 (v)). Synthetic stages and a synthetic size JSON only; the size file is not read.
+SIZE_ARGS = ["--copy-rows", "--copy-rows-test-ok", "--copy-rows-size", "--copy-rows-size-test-ok"]
+# The flag-off copy-rows file of the fixture world (mixture, the default seed), pinned on the builder before
+# --copy-rows-size existed and unchanged after it: the flag-off path keeps its bytes and its record.
+# The flag-off copy-rows file on the synthetic stages, per machine, each measured with the builder as it stood before
+# the size option existed (main at cf0e0cf; the two byte-pin tests run there with this file): the local workstation
+# first, the DGX second. The synthetic FGW builds differ in bytes between the two machines (docs/COMPUTE.md, "What
+# reproduces where"), so a single pin fails the launcher's tests step on the other machine.
+GOLDEN_CR_SHA256 = ("3e126d6352eaaaf606fa6e75e66ada46e612381bcbdfcdaa9090fec18e6e048b",
+                    "fc9fa84cca158c775c20cbf12b73bbc3d1f37f80667807525f95d27885618130")
+GOLDEN_CR_KEYS = ["allow_below_truth", "board", "copy_rows", "copy_rows_copy", "count_decision", "count_rule",
+                  "dry_run", "entry", "n_cells", "record", "seed", "size_rule", "target_rms"]
+
+
+def test_the_flag_off_copy_rows_file_keeps_its_bytes_and_record(bt, monkeypatch, world, own_repo, tmp_path):
+    _fake(bt, monkeypatch, world, _board(world[3]))
+    out = tmp_path / OUT
+    bt.main([*BASE, "--copy-rows", "--copy-rows-test-ok", "--out", str(out)])
+    assert hashlib.sha256(out.read_bytes()).hexdigest() in GOLDEN_CR_SHA256
+    rec = json.loads(out.with_suffix(".build.json").read_text())
+    assert sorted(rec) == GOLDEN_CR_KEYS
+    assert rec["size_rule"] == "not applied" and rec["target_rms"] is None and "copy_rows_size" not in rec
+    assert rec["n_cells"] == "floor_copy" and rec["record"]["expression"] == "mixture"
+
+
+# The exact-position file P's command (--method fgw_shape0 --positions floor_exact --expression mixture) on the fixture
+# world with a synthetic size JSON (the bracket's own RMS) and a dry board, pinned with the builder of main before
+# --copy-rows-size existed (b1430aa, run from a copy of that file) and unchanged after it. The cloud guard, a check that
+# changes nothing it passes, is stubbed: this small synthetic world trips it.
+# the exact-position file, per machine, measured the same way: the local workstation, then the DGX
+GOLDEN_P_SHA256 = ("ca775cc85b5f3b3efd9d5fe7376369b889d1819ea948b1f38ddf6783f36f98ff",
+                   "38f9dc26fdba6db020af18f3ce01e91e689b5780d04ae6efb236f8e86a2bfdad")
+
+
+def test_the_exact_position_file_keeps_its_bytes(bt, monkeypatch, world, own_repo, tmp_path):
+    board = _board(world[3], key="T2:embryo:val_interp", split="val")
+    _fake(bt, monkeypatch, world, board, dry=True)
+    monkeypatch.setattr(bt.t2_build, "cloud_guard", lambda *a, **kw: SimpleNamespace(ok=True, flags=[]))
+    own = tb.rms_radius(np.asarray(world[1].obsm[COORD_KEY], dtype=np.float64)[:, :3])
+    p = tmp_path / "size_embryo.json"
+    p.write_text(json.dumps({"board": "embryo", "valid": True,
+                             "preregistered": {"z_mode": "raw", "valid": True, "pred_rms_full": own}}))
+    monkeypatch.setitem(bt.SIZES, "embryo", p)
+    out = tmp_path / "T2embryo_s2x.h5ad"
+    bt.main([*BASE, "--expression", "mixture", "--out", str(out)])
+    assert hashlib.sha256(out.read_bytes()).hexdigest() in GOLDEN_P_SHA256
+
+
+def test_the_size_flags_are_off_by_default(bt):
+    a = bt.build_parser().parse_args([*BASE, "--out", f"runs/x/{OUT}"])
+    assert a.copy_rows_size is False and a.copy_rows_size_test_ok is False
+    a = bt.build_parser().parse_args([*BASE, "--copy-rows", "--out", f"runs/x/{OUT}"])
+    assert a.copy_rows_size is False and a.copy_rows_size_test_ok is False
+    assert bt._copy_rows_refusals(a) is None
+
+
+def _no_loader(bt, monkeypatch):
+    for name in ("_board", "load_stage", "read_stage", "load_boards", "_t2_count", "_copy_rows_size_target"):
+        monkeypatch.setattr(bt, name, _raise)
+
+
+@pytest.mark.parametrize("argv, match", [
+    (["--copy-rows-size"], "--copy-rows-size is for --copy-rows only"),
+    (["--copy-rows-size", "--copy-rows-size-test-ok"], "--copy-rows-size is for --copy-rows only"),
+    (["--copy-rows", "--copy-rows-size-test-ok"], "--copy-rows-size-test-ok is for --copy-rows-size only"),
+    (["--copy-rows-size-test-ok"], "--copy-rows-size-test-ok is for --copy-rows-size only"),
+    (["--copy-rows", "--copy-rows-test-ok", "--copy-rows-size", "--copy-rows-size-test-ok", "--expression", "series"],
+     "--copy-rows-size is for --expression mixture only"),
+    (["--copy-rows", "--copy-rows-test-ok", "--copy-rows-size", "--copy-rows-size-test-ok", "--expression", "blend"],
+     "--copy-rows-size is for --expression mixture only"),
+])
+def test_the_size_refusals_come_before_anything_loads_and_show_no_digit(bt, monkeypatch, argv, match):
+    _no_loader(bt, monkeypatch)
+    a = bt.build_parser().parse_args([*BASE, *argv, "--out", f"x/{OUT}"])
+    with pytest.raises(SystemExit, match=re.escape(match)) as e:
+        bt.build_embryo(a)
+    assert not re.search(r"\d", str(e.value))
+
+
+@pytest.mark.parametrize("drop, match", [("--copy-rows-size-test-ok", "--copy-rows-size-test-ok"),
+                                         ("--copy-rows-test-ok", "--copy-rows-test-ok")])
+@pytest.mark.parametrize("dry", [False, True])
+def test_a_test_board_needs_both_yes_flags_before_anything_loads(bt, monkeypatch, world, drop, match, dry):
+    board = _board(world[3]) if not dry else _board(world[3], key="T2:embryo:val_interp")  # split test either way
+    _no_loader(bt, monkeypatch)
+    monkeypatch.setattr(bt, "_board", lambda which, override: (board, dry))
+    a = bt.build_parser().parse_args([*BASE, *[x for x in SIZE_ARGS if x != drop], "--out", f"x/{OUT}"])
+    with pytest.raises(SystemExit) as e:
+        bt.build_embryo(a)
+    assert "needs the captain's yes" in str(e.value) and match in str(e.value)
+    assert not re.search(r"\d", str(e.value))
+
+
+def _size_json(tmp_path, target=3.25, valid=True, z_mode="raw"):
+    p = tmp_path / "size_embryo_E7.75.json"
+    p.write_text(json.dumps({"board": "embryo", "valid": valid,
+                             "preregistered": {"z_mode": z_mode, "valid": valid, "pred_rms_full": target}}))
+    return p
+
+
+@pytest.mark.parametrize("kw", [{"valid": False}, {"z_mode": "xy_grow_z_hold"}, {"z_mode": "common_step"}])
+def test_an_invalid_or_not_raw_size_json_is_refused_with_build_embryos_message(bt, monkeypatch, world, own_repo,
+                                                                               tmp_path, kw):
+    _fake(bt, monkeypatch, world, _board(world[3]))
+    monkeypatch.setitem(bt.SIZES, "embryo", _size_json(tmp_path, **kw))
+    out = tmp_path / OUT
+    with pytest.raises(SystemExit, match="the embryo size JSON is not a valid raw-mode result"):
+        bt.main([*BASE, *SIZE_ARGS, "--out", str(out)])
+    assert not out.exists()
+
+
+@pytest.mark.parametrize("target", [0.0, -1.0, float("inf"), float("nan")])
+def test_a_target_that_is_not_finite_and_positive_is_refused_with_no_value(bt, monkeypatch, world, own_repo, tmp_path,
+                                                                           target):
+    _fake(bt, monkeypatch, world, _board(world[3]))
+    monkeypatch.setitem(bt.SIZES, "embryo", _size_json(tmp_path, target=target))
+    with pytest.raises(SystemExit) as e:
+        bt.main([*BASE, *SIZE_ARGS, "--out", str(tmp_path / OUT)])
+    assert "finite and positive" in str(e.value) and not re.search(r"\d", str(e.value))
+
+
+@pytest.fixture
+def sized_build(bt, monkeypatch, world, own_repo, tmp_path):
+    """The flag-off copy-rows file and the sized one of the fixture world, at a synthetic pre-registered size."""
+    _fake(bt, monkeypatch, world, _board(world[3]))
+    size = _size_json(tmp_path, target=3.25)
+    monkeypatch.setitem(bt.SIZES, "embryo", size)
+    cr, cs = tmp_path / "cr" / OUT, tmp_path / "cs" / "T2embryo_crs.h5ad"
+    bt.main([*BASE, "--copy-rows", "--copy-rows-test-ok", "--out", str(cr)])
+    bt.main([*BASE, *SIZE_ARGS, "--out", str(cs)])
+    return cr, cs, size
+
+
+def test_the_sized_file_is_the_copy_rows_file_rescaled_and_its_record(bt, sized_build):
+    cr, cs, size = sized_build
+    assert hashlib.sha256(cr.read_bytes()).hexdigest() in GOLDEN_CR_SHA256  # the flag-off file, unchanged
+    A, B = anndata.read_h5ad(cr), anndata.read_h5ad(cs)
+    XA = A.X.toarray() if hasattr(A.X, "toarray") else np.asarray(A.X)
+    XB = B.X.toarray() if hasattr(B.X, "toarray") else np.asarray(B.X)
+    assert XA.dtype == XB.dtype and XA.tobytes() == XB.tobytes()  # C's expression, byte for byte
+    assert list(A.obs_names) == list(B.obs_names) and list(A.var_names) == list(B.var_names)
+    floor = _floor(bt)
+    C64 = floor.astype(np.float64)
+    mu = C64.mean(0)
+    want = (mu + (C64 - mu) * (3.25 / tb.rms_radius(C64))).astype(np.float32)
+    np.testing.assert_array_equal(_bits(B.obsm[COORD_KEY]), _bits(want))
+    np.testing.assert_array_equal(_bits(B.obsm[COORD_KEY]), _bits(tb.copy_rows_sized(floor, 3.25)))
+    assert abs(tb.rms_radius(np.asarray(B.obsm[COORD_KEY], np.float64)) / 3.25 - 1) <= 1e-6
+    rec = json.loads(cs.with_suffix(".build.json").read_text())
+    assert rec["copy_rows_size"] is True and rec["target_rms"] == 3.25
+    assert rec["size_rule"] == ("applied: rescale_to_rms about the copy centroid to preregistered pred_rms_full "
+                                "(raw mode)") == bt.COPY_ROWS_SIZE_RULE
+    assert rec["size_sha256"] == hashlib.sha256(size.read_bytes()).hexdigest() and rec["size_file"].endswith(size.name)
+    assert rec["n_cells"] == "floor_copy" and bt.COPY_ROWS_N not in rec and len(floor) not in _ints(rec)
+    c_rec = json.loads(cr.with_suffix(".build.json").read_text())
+    assert sorted(rec) == sorted([*c_rec, "copy_rows_size", "size_file", "size_sha256"])
+    assert {k: v for k, v in rec.items() if k not in ("copy_rows_size", "size_rule", "target_rms", "size_file",
+                                                     "size_sha256")} == {k: v for k, v in c_rec.items()
+                                                                         if k not in ("size_rule", "target_rms")}
+
+
+def test_the_parity_self_check_is_count_free_and_catches_a_mirror(bt, monkeypatch, world):
+    _fake(bt, monkeypatch, world, _board(world[3]))
+    floor = _floor(bt)
+    S32 = tb.copy_rows_sized(floor, 7.5).astype(np.float32)
+    assert bt._copy_rows_parity_ok(S32, floor)
+    assert not bt._copy_rows_parity_ok(ev_mirror(S32), floor)
+    assert not bt._copy_rows_parity_ok(S32[:-1], floor)
+    assert bt._copy_rows_rms_ok(S32, 7.5) and not bt._copy_rows_rms_ok(S32, 7.5 * (1 + 3e-6))
+
+
+def ev_mirror(C):
+    M = np.array(C, copy=True)
+    M[:, 2] = -M[:, 2]
+    return M
+
+
+@pytest.mark.parametrize("check", ["_copy_rows_rms_ok", "_copy_rows_parity_ok"])
+def test_a_failing_self_check_refuses_before_writing_with_no_number(bt, monkeypatch, world, own_repo, tmp_path,
+                                                                    check):
+    _fake(bt, monkeypatch, world, _board(world[3]))
+    monkeypatch.setitem(bt.SIZES, "embryo", _size_json(tmp_path))
+    monkeypatch.setattr(bt, check, lambda *a, **kw: False)
+    out = tmp_path / OUT
+    with pytest.raises(SystemExit) as e:
+        bt.main([*BASE, *SIZE_ARGS, "--out", str(out)])
+    assert "--copy-rows-size" in str(e.value) and not re.search(r"\d", str(e.value))
+    assert not out.exists()
+
+
+def test_a_failing_read_back_removes_the_file_and_its_stamp(bt, monkeypatch, world, own_repo, tmp_path):
+    from vec import provenance
+
+    _fake(bt, monkeypatch, world, _board(world[3]))
+    monkeypatch.setitem(bt.SIZES, "embryo", _size_json(tmp_path))
+    real = anndata.read_h5ad
+
+    def read_back(path, *a, **kw):
+        x = real(path, *a, **kw)
+        c = np.asarray(x.obsm[COORD_KEY], np.float32).copy()
+        c[1, 2] = np.nextafter(c[1, 2], np.float32(np.inf))
+        x.obsm[COORD_KEY] = c
+        return x
+
+    monkeypatch.setattr(anndata, "read_h5ad", read_back)
+    out = tmp_path / OUT
+    with pytest.raises(SystemExit) as e:
+        bt.main([*BASE, *SIZE_ARGS, "--out", str(out)])
+    assert "rescaled copy's" in str(e.value) and not re.search(r"\d", str(e.value))
+    assert not out.exists() and not provenance.stamp_path(out).exists()
+
+
+def test_the_sized_record_hides_counts_like_the_copy_rows_record(bt):
+    board = _board(["g0"], max_cells=777)
+    rec = {"n_cells": 69, bt.COPY_ROWS_N: 69, "copy_rows_size": True, "target_rms": 3.25,
+           "record": {"n": 69, "n_before": 35, "n_after": 34, "n_jittered": 0, "t": 0.5}}
+    out = bt._hide_counts(rec, board)
+    assert out["n_cells"] == "floor_copy" and bt.COPY_ROWS_N not in out
+    assert out["record"] == {"t": 0.5} and not set(bt.COUNT_FIELDS) & set(out["record"])
+    with pytest.raises(SystemExit):
+        bt._hide_counts({**rec, "n_cells": 70}, board)

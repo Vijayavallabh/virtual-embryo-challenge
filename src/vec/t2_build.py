@@ -1746,7 +1746,9 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     `vec.shape_interp.ALL_FORMS`, applied to the exact-position cloud in the before stage's normalised frame before the
     size rule, so the size rule's RMS is set after it (`vec.shape_interp.apply_form`; the guard's source cloud is mapped
     alike). Rows, order, count and every random stream of the default are unchanged; stream 47's candidate draw still
-    runs. Left at None, the result is bit-identical to a call without it.
+    runs. Left at None, the result is bit-identical to a call without it. Row E53 (as specified) adds the harness-only
+    forms `vec.shape_interp.GEODESIC_FORMS`, which also take every cell's joint PCs (`_joint_pc_loadings` of the
+    coupling's anchors).
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -1776,7 +1778,7 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     if shape_form is not None:
         from vec import shape_interp
 
-        if shape_form not in shape_interp.ALL_FORMS:
+        if shape_form not in shape_interp.ALL_FORMS and shape_form not in shape_interp.GEODESIC_FORMS:
             raise ValueError(f"shape_form must be one of {shape_interp.ALL_FORMS}, got {shape_form!r}")
         if positions != POSITIONS[1]:
             raise ValueError("shape_form acts on the exact-position cloud: pass positions='floor_exact'")
@@ -1839,8 +1841,12 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         Z = np.vstack([Zb[rows_b], at_a])[perm]
     shaped = None
     if shape_form is not None:  # E49: the form on the exact-position cloud, before the size rule
+        extra = {}
+        if shape_form in shape_interp.GEODESIC_FORMS:  # row E53: every cell's joint PCs, for the fit's data term
+            centre, loadings = _joint_pc_loadings(Eb[ib], Ea[ia], n_pc)
+            extra = {"features": ((Eb - centre) @ loadings, (Ea - centre) @ loadings)}
         shaped = shape_interp.apply_form(shape_form, Z=Z, Zb=Zb, Za=Za, t=float(t), R=R, seed=seed, rows_b=rows_b,
-                                         rows_a=rows_a, perm=perm, t_mix=tm)
+                                         rows_a=rows_a, perm=perm, t_mix=tm, **extra)
         Z = shaped.Z
     zc = Z.mean(0)
     scale = target_rms / rms_radius(Z)
@@ -2019,6 +2025,24 @@ def copy_rows_cloud(released_coords, dropped_rows, Eb, Ea, released_X_panel, t: 
               "anchor_stream": [seed, 4], "n_pc": int(n_pc), "mean_cost": mean_cost}
     return Interpolation(stage=stage, rows=rows, coords=coords, pool_coords=C.astype(np.float64),
                          pool_weights=np.full(len(C), 1.0 / len(C)), record=record)
+
+
+# The copy-rows file at the team's pre-registered size (row E52 as specified; the captain's order of 2026-11-21,
+# docs/PLAN.md decision log 2026-11-21 (v); off by default): the copy-rows file's rows, order, count and expression,
+# its coordinates scaled about the copy's own centroid to the embryo size rule, the last step before writing.
+COPY_ROWS_SIZE_RULE = ("copy rows sized: the copy-rows file's coordinates as float64, scaled isotropically about the "
+                       "copy's own centroid (rescale_to_rms, the raw-mode routine of apply_size_procedure) to the "
+                       "embryo size rule's full-cloud RMS (the builder: preregistered.pred_rms_full of the size JSON; "
+                       "the harness: target_rms on the task's own role stages), then stored as float32; no jitter, "
+                       "centring, cloud guard or row-order step")
+
+
+def copy_rows_sized(coords, target: float) -> np.ndarray:
+    """Row E52's size step, shared by the builder (`--copy-rows --copy-rows-size`) and the harness arm
+    fgw_copyrows_sized: float64(coords) scaled about its own centroid so that its RMS radius is `target`
+    (`rescale_to_rms`: mu + (C - mu) * (target / rms_radius(C)), in float64). Refuses a cloud with no spread and a
+    target that is not finite and positive."""
+    return rescale_to_rms(np.asarray(coords, dtype=np.float64), target)
 
 
 def _sample_from_rows(P: np.ndarray, which: np.ndarray, rng: np.random.Generator,

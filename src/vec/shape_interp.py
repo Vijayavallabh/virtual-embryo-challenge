@@ -25,6 +25,10 @@ Controls (harness candidates only; the builder never builds one; no bracket-rang
   stretch_registered_rot   F2's interpolated covariance turned by Q (Q S* Q^T): the same spectrum, a random
                            orientation; Q is a uniform proper rotation from default_rng([seed, ROT_STREAM]).
   overlay_rot              F3 with Q in place of R.
+Row E53 (as specified; branch campaign/moon-embryo-geodesic) adds two harness-only forms, GEODESIC_FORMS, outside
+ALL_FORMS (the builder does not offer them): geodesic_overlay (F3's rows on one LDDMM geodesic between the brackets,
+vec.lddmm) and its placebo geodesic_overlay_rot (the fit started from Q in place of R). They need every cell's joint PCs
+(apply_form's `features`).
 
 Fixed constants (protocol, not tuned): IDENT_DRAWS draws of IDENT_FRAC of a bracket's cells (the emulator's 10 percent
 subsample halved, the truth half's share), from the seed-free streams default_rng([IDENT_STREAM, h]), so a pair of
@@ -309,9 +313,67 @@ def overlay(Zb, Za, rows_b, rows_a, perm, R, t_mix: float) -> ShapeResult:
                        record={"thin_sd": float(normalised_sds(Zn)[-1])})
 
 
-def apply_form(form: str, *, Z, Zb, Za, t: float, R, seed: int, rows_b, rows_a, perm, t_mix: float) -> ShapeResult:
+def geodesic_overlay(Zb, Za, rows_b, rows_a, perm, R, t_mix: float, *, t: float, seed: int, Fb, Fa) -> ShapeResult:
+    """Row E53 (as specified; branch campaign/moon-embryo-geodesic): overlay()'s rows, order and pool weights, with
+    positions on one LDDMM geodesic (vec.lddmm) from the earlier cloud Zb to the later cloud in the earlier frame,
+    Za @ R, fitted at the build seed on the brackets' positions and expression features (Fb, Fa: every cell's joint
+    PCs). Each earlier row moves forward from 0 to t, each later row back from 1 to t. With Q for R (the placebo) the
+    fit starts from Q's turn of the later cloud. The pool for the cloud guard is every cell of both brackets carried
+    the same way. Record (flat): the fit's momentum and data facts (lddmm_*), the smallest Jacobian determinant over
+    the drawn rows (jac_min), and the thinnest normalised SD of the moved union and of the two brackets."""
+    from vec import lddmm
+
+    Zb, Za = _check_cloud(Zb, "Zb"), _check_cloud(Za, "Za")
+    R = check_rotation(R)
+    if not 0.0 <= float(t) <= 1.0:
+        raise ValueError(f"t must lie in [0, 1], got {t}")
+    Fb, Fa = np.asarray(Fb, np.float64), np.asarray(Fa, np.float64)
+    if Fb.ndim != 2 or Fa.ndim != 2 or len(Fb) != len(Zb) or len(Fa) != len(Za) or Fb.shape[1] != Fa.shape[1]:
+        raise ValueError("features: one row per cell of each bracket, the same columns")
+    Zr = Za @ R
+    try:
+        fit = lddmm.fit_cached(Zb, Zr, Fb, Fa, seed)
+    except ValueError as e:
+        raise ShapeRefused(f"geodesic_overlay: {e}") from e
+    t = float(t)
+    mb, ma = fit.carry(Zb, 0.0, t), fit.carry(Zr, 1.0, t)
+    if not (np.isfinite(mb).all() and np.isfinite(ma).all()):
+        raise ShapeRefused("geodesic_overlay: a carried position is not finite")
+    rows_b, rows_a = np.asarray(rows_b, np.int64), np.asarray(rows_a, np.int64)
+    Zn = np.vstack([mb[rows_b], ma[rows_a]])[np.asarray(perm, np.int64)]
+    jac = []
+    if len(rows_b):
+        jac.append(fit.jacobian_det(Zb[np.unique(rows_b)], 0.0, t).min())
+    if len(rows_a):
+        jac.append(fit.jacobian_det(Zr[np.unique(rows_a)], 1.0, t).min())
+    w = np.r_[np.full(len(Zb), (1.0 - t_mix) / len(Zb)), np.full(len(Za), t_mix / len(Za))]
+    thin, thin_b, thin_a = (float(normalised_sds(c)[-1]) for c in (Zn, Zb, Za))
+    rec = {**{f"lddmm_{k}": v for k, v in fit.record.items()}, "t": t, "jac_min": float(min(jac)),
+           "thin_sd": thin, "thin_sd_before": thin_b, "thin_sd_after": thin_a,
+           "thin_between": bool(min(thin_b, thin_a) <= thin <= max(thin_b, thin_a))}
+    return ShapeResult(Z=Zn, pool=np.vstack([mb, ma]), pool_weights=w, record=rec)
+
+
+GEODESIC_FORMS = ("geodesic_overlay", "geodesic_overlay_rot")  # row E53: harness candidates only, not in ALL_FORMS
+
+
+def apply_form(form: str, *, Z, Zb, Za, t: float, R, seed: int, rows_b, rows_a, perm, t_mix: float,
+               features=None) -> ShapeResult:
     """One named form or control on the exact-position cloud Z (Zb, Za: the brackets in the earlier frame before R;
-    R: the build's coupling rotation; seed: the build seed, used by the controls' Q only)."""
+    R: the build's coupling rotation; seed: the build seed, used by the controls' Q only). features (row E53's
+    geodesic forms only): (Fb, Fa), every cell's joint PCs of each bracket."""
+    if form in GEODESIC_FORMS:
+        if features is None:
+            raise ValueError(f"{form} needs features=(Fb, Fa)")
+        Q = R if form == "geodesic_overlay" else random_rotation(seed)
+        out = geodesic_overlay(Zb, Za, rows_b, rows_a, perm, Q, t_mix, t=t, seed=seed, Fb=features[0],
+                               Fa=features[1])
+        out.record = {"form": form, **out.record}
+        if form.endswith("_rot"):
+            out.record["rot_stream"] = ROT_STREAM
+        return out
+    if features is not None:
+        raise ValueError(f"{form} takes no features")
     if form == "stretch_ratio":
         out = stretch_ratio(Z, Zb, Za, t)
     elif form == "stretch_ratio_anti":

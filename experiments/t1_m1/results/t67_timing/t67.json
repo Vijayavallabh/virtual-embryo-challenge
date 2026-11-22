@@ -1,0 +1,386 @@
+{
+ "label": "try T67, a labelled in-sample diagnostic, never an adoption result: the per-gene Hermite timing of the recomputed Feng direction from Feng's post-window slope (m1rc_timing_gmom) against m1rc_gmom (T62's candidate) and against its timing-permuted control, on row T62's five tasks; every task scores one truth (E10.5) over one day; the practice arm carries the test's gene profile at the practice size",
+ "row": "T67",
+ "reading": {
+  "outcome": "NOT AHEAD: this closes 'per-gene Hermite timing from Feng's post-window slope' on T1",
+  "ahead": false,
+  "i": {
+   "holds": false,
+   "parts": {
+    "chamber": false,
+    "whole": false,
+    "library_mean": false,
+    "library_3_seeds": false,
+    "no_library_below_floor": true
+   },
+   "library_mean": -0.02599573181709805
+  },
+  "ii": {
+   "holds": false,
+   "parts": {
+    "chamber": false,
+    "library_mean": false
+   },
+   "library_mean": -0.0020320012709608656
+  },
+  "iii": {
+   "holds": false,
+   "share": NaN,
+   "gain": -0.13946739699427085,
+   "de_points": -0.12947741016573588
+  },
+  "vs_m1rc": {
+   "chamber": {
+    "change": "m1rc_timing_gmom",
+    "base": "m1rc_gmom",
+    "mean": -0.05115917152929868,
+    "sd": 0.05281804552687993,
+    "ahead": 1,
+    "of": 10,
+    "range": [
+     -0.1395705943967087,
+     0.0041590062483507495
+    ],
+    "groups": {
+     "de_recovery": -0.06680685651725929,
+     "direction": -0.0004987578182147345,
+     "distribution": 0.0004199345393247067,
+     "covariance": 0.01572650826684885
+    }
+   },
+   "whole": {
+    "change": "m1rc_timing_gmom",
+    "base": "m1rc_gmom",
+    "mean": -0.010321030013678012,
+    "sd": 0.05795617202698213,
+    "ahead": 5,
+    "of": 10,
+    "range": [
+     -0.08887250155115112,
+     0.06845974914846664
+    ],
+    "groups": {
+     "de_recovery": -0.03457015773417768,
+     "direction": -0.0009648098325373834,
+     "distribution": 0.009047849596229784,
+     "covariance": 0.01616608795680874
+    }
+   },
+   "1": {
+    "change": "m1rc_timing_gmom",
+    "base": "m1rc_gmom",
+    "mean": -0.05341058920135282,
+    "sd": 0.0731835214098919,
+    "ahead": 3,
+    "of": 10,
+    "range": [
+     -0.15500519412644564,
+     0.06442545675928102
+    ],
+    "groups": {
+     "de_recovery": -0.028985931320736347,
+     "direction": -0.010665214902711162,
+     "distribution": -0.017898392278301922,
+     "covariance": 0.00413894930039449
+    }
+   },
+   "2": {
+    "change": "m1rc_timing_gmom",
+    "base": "m1rc_gmom",
+    "mean": 0.018982910554501586,
+    "sd": 0.13851183911385626,
+    "ahead": 5,
+    "of": 10,
+    "range": [
+     -0.2326654533017063,
+     0.32342263398881244
+    ],
+    "groups": {
+     "de_recovery": 0.02161418128009268,
+     "direction": 0.007423959023792892,
+     "distribution": -0.016425560152573015,
+     "covariance": 0.00637033040319257
+    }
+   },
+   "3": {
+    "change": "m1rc_timing_gmom",
+    "base": "m1rc_gmom",
+    "mean": -0.04355951680444292,
+    "sd": 0.056729327752157645,
+    "ahead": 4,
+    "of": 10,
+    "range": [
+     -0.14424009399441218,
+     0.020132811646575988
+    ],
+    "groups": {
+     "de_recovery": -0.01140217749771577,
+     "direction": -0.004621644846269091,
+     "distribution": -0.028077629129285353,
+     "covariance": 0.000541934668829791
+    }
+   }
+  },
+  "vs_perm": {
+   "chamber": {
+    "change": "m1rc_timing_gmom",
+    "base": "m1rc_timing_perm_gmom",
+    "mean": -0.022541962610979027,
+    "sd": 0.03795571199461175,
+    "ahead": 4,
+    "of": 10,
+    "range": [
+     -0.07381660848612626,
+     0.029342603069075324
+    ],
+    "groups": {
+     "de_recovery": -0.05474912800539453,
+     "direction": 0.009927247481392731,
+     "distribution": 0.0026201627814141926,
+     "covariance": 0.01965975513160434
+    }
+   },
+   "whole": {
+    "change": "m1rc_timing_gmom",
+    "base": "m1rc_timing_perm_gmom",
+    "mean": -0.023288354028351676,
+    "sd": 0.035968081918912514,
+    "ahead": 2,
+    "of": 10,
+    "range": [
+     -0.07883743029406531,
+     0.03959550248459465
+    ],
+    "groups": {
+     "de_recovery": -0.06329263554815362,
+     "direction": 0.008717952859390588,
+     "distribution": 0.011823259313321732,
+     "covariance": 0.019463069347090856
+    }
+   },
+   "1": {
+    "change": "m1rc_timing_gmom",
+    "base": "m1rc_timing_perm_gmom",
+    "mean": -0.02180616446607786,
+    "sd": 0.07290068994220229,
+    "ahead": 5,
+    "of": 10,
+    "range": [
+     -0.11256392194107434,
+     0.09138466104656118
+    ],
+    "groups": {
+     "de_recovery": -0.011167418931413986,
+     "direction": 0.002269679891888643,
+     "distribution": -0.01903301346431785,
+     "covariance": 0.0061245880377616135
+    }
+   },
+   "2": {
+    "change": "m1rc_timing_gmom",
+    "base": "m1rc_timing_perm_gmom",
+    "mean": 0.038036400421086115,
+    "sd": 0.12586870406352196,
+    "ahead": 7,
+    "of": 10,
+    "range": [
+     -0.19159778393365912,
+     0.28883055568492466
+    ],
+    "groups": {
+     "de_recovery": 0.027129088217237307,
+     "direction": 0.012370783669280181,
+     "distribution": -0.013051397104573925,
+     "covariance": 0.01158792563914357
+    }
+   },
+   "3": {
+    "change": "m1rc_timing_gmom",
+    "base": "m1rc_timing_perm_gmom",
+    "mean": -0.022326239767890853,
+    "sd": 0.070108511388613,
+    "ahead": 3,
+    "of": 10,
+    "range": [
+     -0.10962110326225627,
+     0.09872016304319686
+    ],
+    "groups": {
+     "de_recovery": -0.015364585623622029,
+     "direction": 0.009564009206677604,
+     "distribution": -0.024168318330446192,
+     "covariance": 0.007642654979497454
+    }
+   }
+  },
+  "reported": {
+   "perm_minus_m1rc": {
+    "chamber": {
+     "change": "m1rc_timing_perm_gmom",
+     "base": "m1rc_gmom",
+     "mean": -0.028617208918319648,
+     "sd": 0.04551996175631076,
+     "ahead": 3,
+     "of": 10,
+     "range": [
+      -0.10515812394950075,
+      0.03970094208666097
+     ],
+     "groups": {
+      "de_recovery": -0.012057728511864763,
+      "direction": -0.010426005299607466,
+      "distribution": -0.002200228242089486,
+      "covariance": -0.003933246864755491
+     }
+    },
+    "whole": {
+     "change": "m1rc_timing_perm_gmom",
+     "base": "m1rc_gmom",
+     "mean": 0.012967324014673664,
+     "sd": 0.042922882673081045,
+     "ahead": 7,
+     "of": 10,
+     "range": [
+      -0.05847369132673208,
+      0.0665422596911398
+     ],
+     "groups": {
+      "de_recovery": 0.02872247781397594,
+      "direction": -0.00968276269192797,
+      "distribution": -0.002775409717091948,
+      "covariance": -0.0032969813902821166
+     }
+    },
+    "1": {
+     "change": "m1rc_timing_perm_gmom",
+     "base": "m1rc_gmom",
+     "mean": -0.03160442473527496,
+     "sd": 0.07302336674211529,
+     "ahead": 3,
+     "of": 10,
+     "range": [
+      -0.15795770932267317,
+      0.09954028232473888
+     ],
+     "groups": {
+      "de_recovery": -0.01781851238932236,
+      "direction": -0.012934894794599807,
+      "distribution": 0.0011346211860159272,
+      "covariance": -0.0019856387373671236
+     }
+    },
+    "2": {
+     "change": "m1rc_timing_perm_gmom",
+     "base": "m1rc_gmom",
+     "mean": -0.019053489866584526,
+     "sd": 0.11643567404697959,
+     "ahead": 3,
+     "of": 10,
+     "range": [
+      -0.2248418897297455,
+      0.21777361458350697
+     ],
+     "groups": {
+      "de_recovery": -0.005514906937144626,
+      "direction": -0.004946824645487291,
+      "distribution": -0.0033741630479990903,
+      "covariance": -0.005217595235951
+     }
+    },
+    "3": {
+     "change": "m1rc_timing_perm_gmom",
+     "base": "m1rc_gmom",
+     "mean": -0.02123327703655207,
+     "sd": 0.08592942456469077,
+     "ahead": 5,
+     "of": 10,
+     "range": [
+      -0.16274167196974076,
+      0.10137610638932415
+     ],
+     "groups": {
+      "de_recovery": 0.003962408125906258,
+      "direction": -0.014185654052946693,
+      "distribution": -0.003909310798839161,
+      "covariance": -0.007100720310667663
+     }
+    }
+   },
+   "mean_scores": {
+    "chamber": {
+     "m1rc_gmom": 52.00367447661053,
+     "m1rc_timing_gmom": 51.95251530508123,
+     "m1rc_timing_perm_gmom": 51.975057267692215
+    },
+    "whole": {
+     "m1rc_gmom": 46.160269003437136,
+     "m1rc_timing_gmom": 46.14994797342346,
+     "m1rc_timing_perm_gmom": 46.17323632745181
+    },
+    "1": {
+     "copy_last": 44.66302690837692,
+     "m1rc_gmom": 74.8118600238186,
+     "m1rc_timing_gmom": 74.75844943461723,
+     "m1rc_timing_perm_gmom": 74.78025559908335
+    },
+    "2": {
+     "copy_last": 46.71533990176692,
+     "m1rc_gmom": 89.36654892652898,
+     "m1rc_timing_gmom": 89.38553183708349,
+     "m1rc_timing_perm_gmom": 89.34749543666241
+    },
+    "3": {
+     "copy_last": 49.55845356988028,
+     "m1rc_gmom": 73.94635890676676,
+     "m1rc_timing_gmom": 73.90279938996233,
+     "m1rc_timing_perm_gmom": 73.92512562973022
+    }
+   },
+   "inverted_anchor_libraries": [],
+   "pregate": {
+    "CM": {
+     "idle_ratio": 0.14140645483512576,
+     "perm_idle_ratio": 0.1516249024882667,
+     "fallback_share": 0.29308430085815246,
+     "group_ok": true
+    },
+    "Endocardium": {
+     "idle_ratio": 0.12981626302162885,
+     "perm_idle_ratio": 0.13601177934254136,
+     "fallback_share": 0.32855460205283527,
+     "group_ok": true
+    },
+    "Endothelium": {
+     "idle_ratio": 0.12608254026371452,
+     "perm_idle_ratio": 0.12901283079309592,
+     "fallback_share": 0.34228504122497055,
+     "group_ok": true
+    },
+    "Epicardium": {
+     "idle_ratio": 0.0,
+     "perm_idle_ratio": 0.0,
+     "fallback_share": 1.0,
+     "group_ok": false
+    }
+   }
+  },
+  "j6_range": [
+   -0.05115917152929868,
+   0.0
+  ]
+ },
+ "tries": 10,
+ "stamp": {
+  "commit": "6c011467fba75ef842705ff6f518fee5cf6ba578",
+  "tree_clean": true,
+  "utc": "2026-11-22T00:32:39Z",
+  "inputs": {
+   "experiments/t1_m1/results/t67_timing/tasks/T1_E9.5_E10.5_chamber.json": "8f8969a45454a42882a3e09030dab3e7559d07c8c1a4d0fccc6a612ae3202422",
+   "experiments/t1_m1/results/t67_timing/tasks/T1_E9.5_E10.5.json": "166d31272bd341a473fccec2c248980fe2943c7c52d72d49dab93962dcbd8a24",
+   "experiments/t1_m1/results/t67_timing/tasks/lib1.json": "9fdcfa1c4650e82184ce0f07545e4e14959412956c52a413d03b806a13b8f6c9",
+   "experiments/t1_m1/results/t67_timing/tasks/lib2.json": "b43f76f478e0d1955f63e39f8fffc3148ce0657043c47616d88a0e6515581ecf",
+   "experiments/t1_m1/results/t67_timing/tasks/lib3.json": "fa3af00ccc327bc95afc49503334b4780fd3d30e609f548a4a87e1f3461c15aa",
+   "experiments/t1_m1/results/t67_timing/tasks/pregate.json": "c1fa5b8ced76153087526d85695f052d6bbb707d219f0fa681bea3b5d93df752"
+  }
+ }
+}
