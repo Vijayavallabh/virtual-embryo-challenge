@@ -512,3 +512,17 @@ def test_the_launcher_order_and_usage(tmp_path):
     (s / "tests.head").write_text(head + "\n")
     assert call("tests", head).returncode == 94  # already exited 0 at this ROW
     assert (s / "tests.exit").read_text().strip() == "0"
+
+
+def test_g0s_pair_values_on_synthetic_stages(h32, synth):
+    """G0's statistic on a pair built from the pool's own lineages (no draw): one record per chord lineage, the
+    fallback case named, and a lineage with no chord reported as such."""
+    mod, inputs = synth
+    for ins, case in ((inputs, "mapping"), (_fallback_inputs(inputs), "fallback")):
+        trimmed = _trimmed(h32, ins)
+        ctx = mod._ctx(trimmed)
+        res = h32.pair_values(ctx, trimmed["ref"], ins["ref"], _table(mod.GENES, lineages=("CM",)))
+        assert set(res) == {"CM", "Endo"}
+        assert res["CM"]["case"] == "mapping" and res["CM"]["chord"] is True and res["CM"]["n"] > 0
+        assert 0.0 <= res["CM"]["a"] <= 1.0 and np.isfinite(res["CM"]["null_p95"])
+        assert res["Endo"]["case"] == case and res["Endo"]["chord"] is False and res["Endo"]["n"] == 0
