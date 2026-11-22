@@ -10408,3 +10408,18 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Order.** By the heart's order rule file D enters only on the captain's yes to it by name. Nothing is uploaded by
     the main session. Data used: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside
     data.
+- 2026-11-22 (u), the two files of T1's first search line are built (state at 02:36 UTC, 2026-11-22). Written by the
+  AI assistant; the line and its rule are entry (j)'s, unchanged.
+  - **The builds** (`experiments/builds/t1_fraction_line.sh` at commit e3cc0e4, the DGX worktree
+    `~/v/scratch/t1line-wt`, run r1). Every step exit 0. The three identity steps reproduce R13's file, candidate B
+    and the 2.0 file byte for byte. The 2.5 file, `T1_s2rcB25.h5ad`, sha256
+    ccb7c457c0e8ac8ac668bcea17bc61ed22f414f58ab5a63e946cb2f08c4f4e77, and the 3.0 file, `T1_s2rcB30.h5ad`, sha256
+    b639de29bd13d7005450ca53e7cd3dacb2e362a55beca8545937858e6582a024, were each built twice and each pair agrees byte
+    for byte. Both are copied to `runs/manual_upload/` and checked. Record:
+    `experiments/builds/results/t1line_e3cc0e4_r1.txt` and `.SHA256SUMS`. Read by exit codes, sha256 and the stamps'
+    commit and clean fields only.
+  - **When they are uploaded.** Only by the line's rule, fixed before any of their scores: the 2.5 file if the 2.0
+    file's headline is strictly above the line's best so far, the 3.0 file if the 2.5 file's is; the line ends at the
+    first file that does not beat its best. The captain's question on a step back (quarter steps below 2.0) is still
+    open; if the captain adds such files they are named in this log before the 2.0 file's score. Data used: as R13's
+    file (released challenge data and the outside heart atlas on recomputed groups).

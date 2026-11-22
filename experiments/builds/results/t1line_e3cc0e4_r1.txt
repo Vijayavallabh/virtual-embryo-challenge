@@ -1,0 +1,26 @@
+T1's first search line (ruling row R22; docs/S2_RULES.md, "a score-guided search of round steps may run"; decision log
+2026-11-22 (j)): the set t1line, run r1. BUILT; each file is uploaded only on the line's own condition
+=================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-22 in the detached worktree ~/v/scratch/t1line-wt (its own environment,
+row N54's relabelling output linked) at commit e3cc0e4e14450786b5c0e23e0cb3199adc7e5566 (clean tree):
+`bash experiments/builds/t1_fraction_line.sh e3cc0e4e14450786b5c0e23e0cb3199adc7e5566 r1`
+Step exit codes: gate 0, tests 0, D 0, B 0, X2 0, X25a 0, X25b 0, X30a 0, X30b 0, done 0.
+  D     the default command reproduces R13's file            ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f
+  B     the 1.5 command reproduces candidate B               c7240cb6a7f7ee93d037f437832efbaad004f1fbe608d80072f8efd5d20a0062
+  X2    the 2.0 command (row R20) reproduces the 2.0 file    52897fe375b8a81afffa788592047c30361824148b00a8176514385060518837
+  X25a  T1_s2rcB25.h5ad (atlas step 2.5, --captain-ruling R22)  ccb7c457c0e8ac8ac668bcea17bc61ed22f414f58ab5a63e946cb2f08c4f4e77
+  X25b  the same sha256: the two builds agree byte for byte
+  X30a  T1_s2rcB30.h5ad (atlas step 3.0, --captain-ruling R22)  b639de29bd13d7005450ca53e7cd3dacb2e362a55beca8545937858e6582a024
+  X30b  the same sha256: the two builds agree byte for byte
+Stamps (the commit and clean fields only): all seven say e3cc0e4e1445 and clean True.
+
+Copied to runs/manual_upload/T1_s2rcB25.h5ad and runs/manual_upload/T1_s2rcB30.h5ad and checked against these sha256.
+
+The line's rule, fixed before any of these files' scores: the 2.5 file is uploaded only if the 2.0 file's headline is
+strictly above the line's best so far; the 3.0 file only if the 2.5 file's is; the line ends at the first file that
+does not beat its best. Nothing is rebuilt, re-seeded or changed after a score.
+
+Read by exit codes, sha256 and the stamps' commit and clean fields only (AGENTS.md): no build log, file size, cell
+count or sidecar record was read. Nothing was uploaded: an upload is the captain's own act.
+Data used: as R13's file (released challenge data and the outside heart atlas on recomputed groups).
