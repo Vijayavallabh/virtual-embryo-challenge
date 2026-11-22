@@ -10560,3 +10560,23 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     only).
   - **Counts.** Row T69's five runs started at 02:44 UTC, so its fifteen arms count: T1 449 to 463. Totals: T1 463,
     embryo 87, heart 97, T3 74.
+- 2026-11-22 (aa), row E54's counted gate fails; the T3 line's build stopped a second time, on a real fault (state at
+  03:06 UTC, 2026-11-22). Written by the AI assistant; the outcomes are the rows' own rules and nothing is added to
+  them.
+  - **E54** (embryo, a multi-stage flow; run commit a99f203 in `~/v/scratch/e54-wt`; tests, fits and the reproduction
+    gate exit 0; the gate E54a exit 3). In the gate's fixed words: "The flow beats the mixture on 1 of 5 stages
+    (needed: 4 and T2/E7.5.h5ad). Outcome: the gate fails: E54b and E54c do not run and are not counted; E54a stays
+    counted. Counted: E54a (J5 diagnostics)." One try, E54a, embryo 88. No candidate is fixed and no file follows. The
+    gate's two record files are committed with this entry. The AI assistant opens no other row for it.
+  - **The T3 line's build, second launch** (commit de7050b in `~/v/scratch/k26-wt`, the tool path set). The tests exit
+    0; the two identity steps reproduce the barred s1 and the barred s2 byte for byte; the step that rebuilds row
+    K23's file at exponent 2.0 ended with the builder's exit 4, the form's own refusal, so the launcher finished 50
+    and nothing else was built. The cause, read from folder names and sha256 pins only (no build log): since row K24
+    (2026-11-21) the folder `~/v/vec-ext/t3/tables` holds K24's wider tables, and the two-study tables that rows K22
+    and K23 read, whose bytes the builder pins, sit in `~/v/vec-ext/t3/tables_two_study`; this older launcher still
+    names the first folder. The builder refused a table whose bytes do not match its pin, as it should. An engineer
+    points the launcher at the two-study folder, as `run_k24.sh` and `run_k26.sh` already do, and sets the tool path
+    inside it; a reviewer checks (workflow t3-line-tables-folder-fix). The line's rule text names the old folder in
+    its parenthesis; the table is fixed there by its sha256, and the folder name is corrected in the log and the rules
+    when the fix is merged. The K23 file has not been uploaded.
+  - **Counts.** T1 463, embryo 88, heart 97, T3 74.

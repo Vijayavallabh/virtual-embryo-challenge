@@ -1,0 +1,7 @@
+Row E54, E54a (run commit a99f203fff3b1cc47f168948d6c5d89fcdb8709d): leave-one-stage-out, energy distance in each fit's own thinned latent, mean of 5 draws of 5,000 held cells (flow-predicted against the calendar-fraction mixture):
+  T2/E7.25.h5ad: flow 0.70203, mixture 0.35051; the flow does not beat the mixture
+  T2/E7.5.h5ad: flow 0.68493, mixture 0.65731; the flow does not beat the mixture
+  T2/E8.0.h5ad: flow 0.20841, mixture 0.15959; the flow does not beat the mixture
+  T2/E8.25_late.h5ad: flow 0.05441, mixture 0.03045; the flow does not beat the mixture
+  T2/E8.5.h5ad: flow 0.08423, mixture 0.08445; the flow beats the mixture
+The flow beats the mixture on 1 of 5 stages (needed: 4 and T2/E7.5.h5ad). Outcome: the gate fails: E54b and E54c do not run and are not counted; E54a stays counted. Counted: E54a (J5 diagnostics).
