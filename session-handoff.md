@@ -2,7 +2,26 @@
 
 ## Current Objective
 
-- **State at 2026-11-22, 03:22 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-22, 03:42 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-22 (hh); the next label is 2026-11-22 (ii). Local main = origin/main at 05e395c or one notes commit after
+  it. Tries: T1 463, embryo 88, heart 97, T3 74. No new score yet today. The four questions of the bullet below are
+  still with the captain, and the two files handed over today still wait for their uploads.
+  - **CLOSED SINCE 03:25.** Row T69: STOP, rc18 ends on T1 (entry (gg)). Row T71 (C1A): its target-free pre-gate
+    failed on the skeletal-muscle guard, no try (entry (hh)). With these every candidate of the outside-data round is
+    closed.
+  - **BUILT SINCE 03:25.** The T3 line's E = 4.0 file: `runs/manual_upload/T3_k23_s2_e4.h5ad`, sha256
+    9934f1b104fafed0514cff7bb1dec3f5e362e6a5068ae32711cbfc67f62b90f1 (entry (ff)); uploaded only if the K23 file's
+    headline is strictly above B's, after C1, C2, the K23 file, CK on its condition and the refused s1.
+  - **STILL RUNNING ON THE DGX.** Only E51 (the embryo overlay reads; worktree `~/v/scratch/e51-wt` at d0f0d6e;
+    `~/v/scratch/e51/chain.exit`; at 03:41 UTC its last task was on seed 7 of 10). On its read: copy
+    `experiments/coords/results/e51_so_ohi/` back and check sha256; record the read's fixed words only; by the
+    embryo's order rule (entry 2026-11-21 (y)) SO (`T2embryo_s2xs_ov`) and O_hi (`T2embryo_s2x_ovhi`) exist only if
+    their row's practice read is not void and its pre-set pass rule holds, then each is built twice with one sha256; I
+    am recused on their terms, so any figures for the captain are written by fresh analysts.
+  - **NOTHING ELSE IS QUEUED WITH AN ENGINEER.** New work starts only from the captain's answers (MS on a yes: builder
+    option, review, build; the heart line on a named exception; the step back if named before the 2.0 file's score) or
+    from scores the captain pastes (headline only; apply each board's pre-set rule).
+- **State at 2026-11-22, 03:22 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-22 (ee); the next label is 2026-11-22 (ff). Local main = origin/main at 11b0e26 or one notes commit after
   it. Tries: T1 463 (483 if row T71's pre-gate passes), embryo 88, heart 97, T3 74. No new score yet today.
   - **FOUR QUESTIONS ARE WITH THE CAPTAIN (act only on the captain's own words; no lean from me on any).** (1) T1 line

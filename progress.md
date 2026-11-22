@@ -2,6 +2,12 @@
 
 ## Current State
 
+- **2026-11-22, 03:42 UTC.** No new score. The T3 search line's file was built with the fixed launcher (its three
+  identity steps reproduce, its guard passed). The atlas-to-E18 T1 candidate (row T69) stopped on its pre-set rule and
+  the nuclei-blend T1 candidate (row T71) stopped at its target-free pre-gate, so every candidate of the outside-data
+  round is closed. Only the embryo overlay read still runs. Tries: T1 463, embryo 88, heart 97, T3 74. Decision log
+  2026-11-22 (ff) to (hh).
+
 - **2026-11-22, 03:22 UTC.** No new score. The multi-seed T1 read (row T65) came back AHEAD on practice, so one priced
   question went to the captain; nothing is built before the answer. The blood rerun (T68) was not ahead and that line
   closed; the embryo flow read (E54) failed its counted gate. T1's damping files were built and the damping 1.5 file
