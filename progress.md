@@ -2,6 +2,13 @@
 
 ## Current State
 
+- **2026-11-22, 02:58 UTC.** No new score. The heart's sign-gated trend (row H32) stopped at its target-free gate, so
+  no outside-data heart candidate reached a counted read. The embryo's copy-rows file at the team's size passed its
+  condition (row E52) and was built twice with one sha256; fresh analysts are writing its price note. The T3 search
+  line (outside-table exponent 4.0 on the K23 file) was written into the log and rules before that file's score and
+  its file is building; T1's damping files are building; the atlas-to-E18 read (row T69) has its five runs under way.
+  The 2.5 and 3.0 files of T1's first line are built. Decision log 2026-11-22 (u) to (y).
+
 - **2026-11-22, 02:34 UTC.** No new score. Row K26 (the T3 gene-context map) stopped at its first diagnostic with no
   try. The organ cut's practice read (row H29b) came back valid; file D was built twice with one sha256 and its
   question, written by fresh analysts, is with the captain. Four screening answers were recorded: the T1 zone

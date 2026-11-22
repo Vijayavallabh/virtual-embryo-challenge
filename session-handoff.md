@@ -2,7 +2,48 @@
 
 ## Current Objective
 
-- **State at 2026-11-22, 02:34 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-22, 02:58 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-22 (y); the next label is 2026-11-22 (z), then (aa). Local main = origin/main at de7050b or one notes commit
+  after it. Tries: T1 448 (463 once row T69's runs have started: check `~/v/scratch/t69chain2/chain.log` and update
+  the totals line), embryo 87, heart 97, T3 74. No new score yet today.
+  - **THE THREE QUESTIONS OF THE BULLET BELOW ARE STILL WITH THE CAPTAIN** (T1 step back; the heart search line's
+    exception; file D yes or no). Nothing new was asked since.
+  - **CLOSED SINCE 02:35.** Row H32's target-free gate said FAIL (entry (w)): no arm, no try. All three outside-data
+    heart candidates of this round are closed without a counted read.
+  - **BUILT AND WAITING.** T1 line 1: `runs/manual_upload/T1_s2rcB25.h5ad` (sha256
+    ccb7c457c0e8ac8ac668bcea17bc61ed22f414f58ab5a63e946cb2f08c4f4e77) and `T1_s2rcB30.h5ad`
+    (b639de29bd13d7005450ca53e7cd3dacb2e362a55beca8545937858e6582a024); uploaded only by the line's rule. Embryo:
+    `runs/manual_upload/T2embryo_s2x_crs.h5ad` (the copy-rows file at the team's size, sha256
+    323f2acc32f731819b1a3cc0da32478a51d9e9a10f13dbd940773b113b5644fa; the captain's order of 21 Nov; its place is
+    after C); its price note is being written by fresh analysts (workflow w057t50fr; hand-back to `lift8/`), because I
+    am recused: pass the checker's final text on unchanged with path, sha256, board and Data used (released challenge
+    data only; no outside data).
+  - **RUNNING ON THE DGX (a waiter on each).** T65, T68, E51, E54 as before. rc18's read chain
+    (`~/v/scratch/t69chain2/chain.exit`; worktree `~/v/scratch/t69-wt` at 54e5a7f; 30 = a run failed): on 0 copy the
+    five task files and the reading from `experiments/t1_m1/results/` there, check sha256, fill row T69's last cell in
+    the read's fixed words, totals T1 463. T1 line 2's builds (`~/v/scratch/t1damp/r1/`; worktree
+    `~/v/scratch/t1line-wt` at 9a10157): on done 0 copy `X15a/T1_s2rcA15.h5ad` and `X20a/T1_s2rcA20.h5ad` from
+    `runs/t1damp_9a10157_r1/` to `runs/manual_upload/`, record as `experiments/builds/results/t1damp_9a10157_r1.*`;
+    A15 is the line's next file (after line 1's next file). The T3 line's E = 4.0 builds, second launch
+    (`~/v/scratch/t3outside_de7050b_s2_e4.0/all.exit`; worktree `~/v/scratch/k26-wt` at de7050b; 47 = the guard failed
+    and the line ends at 2.0): on 0 read `SHA256SUMS` and `stamps` there, copy
+    `runs/t3_outside_form_de7050b_s2_e4.0/a/xall-s2.h5ad` to `runs/manual_upload/T3_k23_s2_e4.h5ad`, record; never
+    open the build's sidecar. It is uploaded only if the K23 file's headline is strictly above B's, after the queued
+    T3 files.
+  - **SEARCH LINES IN FORCE.** T1 line 1 (2.5 then 3.0), T1 line 2 (damping 1.5 then 2.0), the T3 line (exponent 4.0;
+    entry (x); rules amended and pinned). Heart: only on the captain's named exception. Embryo: none.
+  - **C1A (row T71; `campaign/t1-cm-nuclei`, 6e79b6c; reviewed ready).** Its screens are clear (entries (q), (r)).
+    Before placement: a second literature screen (a background agent) looks for a published adult statement naming
+    Mylpf and Myl1 as fast skeletal-muscle genes; with it all five guard genes have a quoted source and the row is
+    placed with X010 amendments naming both statements (the first is Oe, Ojima and Muroya 2021, PMID 33459151);
+    without it a fresh analyst decides between the specification's five genes and the labeller's source rule. Row text
+    and needs: `lift8/search_lines_build.json`, key c1a. A file from it that reads embryos 13 to 22 carries the run_15
+    note into the captain's question.
+  - **LAUNCH RULES LEARNED TODAY.** Put `export PATH=$HOME/.local/bin:$PATH UV_FROZEN=1 UV_NO_SYNC=1` in every DGX
+    launch command (an older launcher stopped at its tests step with exit 127 without it). A build whose gate wants
+    the reading's code byte for byte is launched from a side branch cut at the reading's commit (done for the sized
+    embryo file, `campaign/e52-build`). Record script, tests and commit go in one `&&` chain.
+- **State at 2026-11-22, 02:34 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-22 (t); the next label is 2026-11-22 (u). Local main = origin/main at b193249. Tries: T1 448, embryo 87,
   heart 97, T3 74. No new score yet today.
   - **THREE QUESTIONS ARE WITH THE CAPTAIN (plain text; act only on the captain's own words).** (1) T1's first search
