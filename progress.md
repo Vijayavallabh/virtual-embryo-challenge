@@ -2,6 +2,14 @@
 
 ## Current State
 
+- **2026-11-22, 01:20 UTC.** No new score. The captain ordered the heart's organ-cut file D coded and read and outside
+  datasets used as widely as possible (decision log 2026-11-22 (g), ruling row R21). Five practice lines closed
+  without a file: T67 (T1 timing, NOT AHEAD), H29a (both heart trend candidates NOT QUALIFIED), K25 (T3 dispersion,
+  FAIL), E53 (embryo geodesic, stopped by its target-free gate, no try) and T66 (T1 blood, stopped by its reducer
+  before any score, no try). Running: T65, E51, E54, E52 (second start). With engineers: the blood read's rerun as row
+  T68, the organ cut, the heart chord's reader, K26 and rc18. Tries: T1 438, embryo 84, heart 88, T3 74. Decision log
+  2026-11-22 (d) to (h).
+
 - **2026-11-22, 00:40 UTC.** No new score. Both fix rounds came back: seven of eight practice reads are review-ready
   and merged (752 tests pass on merged main). T67 (T1 per-gene timing, the first moonshot to run) is read: NOT AHEAD,
   line closed, no file. Five reads are running on the DGX: T65 (T1 momentum; its first launch refused before anything

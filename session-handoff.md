@@ -2,7 +2,55 @@
 
 ## Current Objective
 
-- **State at 2026-11-22, 00:40 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-22, 01:20 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-22 (h); the next label is 2026-11-22 (i). Local main = origin/main at 2c3d568. Tries: T1 438, embryo 84,
+  heart 88, T3 74. No new score. Upload queue unchanged (T1: C, then the 2x file; embryo: the copy-positions file,
+  then `T2embryo_s2`; T3: C1, C2, K23, CK on barred s2; heart: nothing queued).
+  - **THE CAPTAIN'S ORDER OF 22 NOV (entry (g), ruling row R21, rules amended and re-pinned), verbatim, on a forwarded
+    side note about the heart: "yes and go ahead with all the external datasets as much as possible".** (1) The
+    heart's organ-cut file D is coded and read: the captain's named exception on scope and size for that one file. The
+    main session stays recused and gives no lean; D's specification is the score-blind round's
+    (`lift8/job_heart_organ.txt`). The upload still needs: gate passes and read not void, two identical builds, and
+    the captain's yes by name on a question with the read's figures WRITTEN BY ANALYSTS OTHER THAN THE MAIN SESSION. D
+    drops if not built, read and reviewed by 2026-11-25 12:00 UTC. (2) Outside datasets as widely as possible: a
+    renewal of the bulk approval; each source still gets its register row or amendment first; no organiser rule
+    lifted; a T2 file with an outside atlas still needs its own priced question under A15.
+  - **READ SINCE 00:40 (all closed, no file): T67 NOT AHEAD (T1 timing); H29a both heart trend candidates NOT
+    QUALIFIED; K25 FAIL (T3 dispersion; T3 73 and 74 counted); E53 stopped by its target-free gate (clause g1; no
+    try); T66 stopped by its reducer before any score (no try).**
+  - **RUNNING ON THE DGX (a local waiter on each exit file).** T65 (T1 momentum; worktree `~/v/scratch/t65-wt`, own
+    env; the chamber run took 38 min; whole cut and three libraries follow one after another, to about 03:50 UTC; exit
+    `~/v/scratch/t65/chain2.exit`; then commit the five task files UNOPENED, push, checkout in the worktree,
+    `t65_ms.sh read`). E51 (embryo overlay reads; `~/v/scratch/e51-wt` at d0f0d6e; at its reproduction gate; exit
+    `~/v/scratch/e51/chain.exit`). E54 (embryo flow; `~/v/scratch/e54-wt` at a99f203; fits on GPUs 2 and 7; exit
+    `~/v/scratch/e54/chain.exit`; its gate E54a counts once it runs). E52 second start (embryo copy-positions at own
+    size; `~/v/scratch/e52b-wt` at 2c3d568; exit `~/v/scratch/e52b/chain.exit`, the launcher's own exits stay under
+    `~/v/scratch/e52/`; if its reading (i) holds, build with `experiments/builds/embryo_copy_rows_sized.sh` twice and
+    hand over at its place after C).
+  - **WORKFLOWS RUNNING (hand-backs go to `lift8/`; merge only on a ready review; row and register first, then run).**
+    (a) t1-blood-rerun-row (wcust43nx): row T68 = T66's rerun with the gene rule fixed by a fresh analyst (the atlas's
+    count matrices carry 25,033 gene ids its gene table of 24,552 does not list); branch `campaign/moon-t1-blood-3`;
+    run it in a worktree of `~/v/vec-campaign-d` with its own env (`uv sync --frozen --group external`), data linked
+    as for T66; X003 needs a sentence naming T68. (b) heart-organ-cut (wseung8we): branches `campaign/heart-organ`,
+    `-2`, maybe `-3`; then gate on E10.5, row H29b, read, builds. (c) heart-chord-reader-fix (wzsj9va23): H30's gate
+    crashed in its reader on the same gene-table fact; branch `campaign/moon-heart-chord-4`; then rows N56 and H30 are
+    updated to name the corrected code in a new commit, which becomes ROW, and the chain (tests, gate, tables; then
+    commit gate.json, gate.txt and tables_sha256.json as RUN; then run, read) starts again in a NEW worktree with its
+    own env (`uv sync --frozen --group external`), data linked from `~/v/vec-campaign/data`. (d) outside-data-resume
+    (w7y2lvts0): K26 fix round (`campaign/moon-t3-map-2`) and rc18's first build (`campaign/t1-rc18`; rows N58 and
+    T69). H31 (heart bridge) waits for (c)'s gene rule, then gets its own fix round. A further score-blind round on
+    other outside data is still to launch.
+  - **LESSONS OF THIS NIGHT, now in every brief:** (1) no test asserts today's state of the repository's own ledger or
+    register (H30's test did; the tests step would have failed after placement); (2) no test pins the bytes of a file
+    built on one machine (E52's did; DGX bytes differ); when a pin is needed, measure it on both machines with the old
+    code and pin the pair; (3) tie every commit to its test run's result with `&&` (the second batch's commit went in
+    beside a failing test); (4) a T1, T3 or heart read from a worktree needs the worktree's own environment (T65); (5)
+    a DGX checkout with untracked result files cannot be moved to a commit that tracks them (`~/v/vec-campaign-c`
+    holds K24's two reading files untracked): use a worktree.
+  - **Open with the captain (plain text, default no each):** a score-guided search of round steps; T3's refused s1
+    file; T1's no-outside-data file F. (The organ cut is answered: yes.) Told in the 00:40 report: X003's
+    `experimental_batch` column, reported only.
+- **State at 2026-11-22, 00:40 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-22 (c); the next label is 2026-11-22 (d). Local main = origin/main at 9ff856b. Tries: T1 438, embryo 84,
   heart 88, T3 72. No new score; the upload queue is unchanged (T1: C, then the 2x file; embryo: the copy-positions
   file, then `T2embryo_s2`; T3: C1, C2, K23, CK on barred s2; heart: nothing queued).
