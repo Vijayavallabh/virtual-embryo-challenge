@@ -235,7 +235,7 @@ def _manifest(jr, assigned=None, entering=None, **change):
     entering = entering if entering is not None else {n: max(k - 25, 0) for n, k in assigned.items()}
     per = {str(n): {"erythroid_assigned": k, "erythroid_entering": entering[n], "experimental_batch": ["run_4"],
                     "days": ["E8.5"]} for n, k in assigned.items()}
-    man = {"config": {"sha256": jr.jb.YAML_SHA256}, "gate": {"row": "T68", "clean": True},
+    man = {"config": {"sha256": jr.jb.YAML_SHA256}, "gate": {"row": "T68", "clean": True}, "gene_universe": "gene_table",
            "columns_read": list(jr.jb.CELL_WHITELIST), "authors_labels_read": False, "stats_npz_read": False,
            "embryos_read": sorted(assigned), "embryo_lists": {e: list(jr.jb.ROW_EMBRYOS[e]) for e in jr.jb.ENDS},
            "embryos_used": {e: list(jr.jb.ROW_EMBRYOS[e]) for e in jr.jb.ENDS}, "has_direction": True,
@@ -282,6 +282,7 @@ def test_the_pregate_counts_assigned_nuclei_not_the_ones_at_the_umi_target(jr):
     ("column", "outside the whitelist"),
     ("yaml", "another yaml"),
     ("no_direction", "wrote no direction"),
+    ("universe", "gene universe"),
 ])
 def test_the_pregate_fails(jr, case, part):
     assigned = _counts(jr)
@@ -303,6 +304,8 @@ def test_the_pregate_fails(jr, case, part):
         man["columns_read"] = [*man["columns_read"], "celltype_update"]
     elif case == "yaml":
         man["config"]["sha256"] = "0" * 64
+    elif case == "universe":
+        man["gene_universe"] = "all_matrix_genes"
     r = jr.pregate_reading(man, d, _held(), [f"g{i}" for i in range(50)])
     assert not r["passes"] and any(part in f for f in r["failed"]), r["failed"]
     assert len(r["failed"]) == 1, r["failed"]  # the fixture fails on the case's own reason only
