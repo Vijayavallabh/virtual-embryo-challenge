@@ -1177,3 +1177,36 @@ def test_the_launcher_refusal_paths_under_a_temporary_home(tmp_path):
         "build.refused.exit", "gate.exit", "gate.head", "gate.refused.exit", "read.refused.exit", "run.exit",
         "run.head", "run.refused.exit", "run.run", "tables.exit", "tables.head", "tests.exit", "tests.head",
         "tests.refused.exit", "tmp", "usage.refused.exit"]
+
+
+def test_a_start_at_a_new_commit_never_reads_an_earlier_starts_exit(tmp_path):
+    """A scratch folder left by a start at another commit (tests exit 0, gate exit 1): while the new start's step runs,
+    its exit file says "running", never the earlier start's code. Traced in a throwaway repository with a stand-in
+    `uv` that only records what the scratch folder holds; nothing of this checkout runs."""
+    repo = tmp_path / "repo"
+    (repo / "experiments" / "harness").mkdir(parents=True)
+    (repo / "experiments" / "harness" / "run_h30.sh").write_bytes(LAUNCHER.read_bytes())
+    env = {k: v for k, v in os.environ.items() if k not in ("GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE")}
+    env.update(HOME=str(tmp_path), GIT_CEILING_DIRECTORIES=str(tmp_path))
+    git = ["git", "-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false"]
+    for argv in (["init", "-q"], ["add", "-A"], ["commit", "-q", "-m", "x"]):
+        subprocess.run([*git, *argv], cwd=repo, env=env, check=True, capture_output=True)
+    head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, env=env, capture_output=True, text=True,
+                          check=True).stdout.strip()
+    s = tmp_path / "v" / "scratch" / "h30"
+    s.mkdir(parents=True)
+    old = "1" * 40
+    for step, code in (("tests", "0"), ("gate", "1")):
+        (s / f"{step}.exit").write_text(code + "\n")
+        (s / f"{step}.head").write_text(old + "\n")
+    bin_ = tmp_path / "bin"
+    bin_.mkdir()
+    (bin_ / "uv").write_text(f'#!/usr/bin/env bash\ncat "{s}/tests.exit" "{s}/tests.head" > "{tmp_path}/seen"\n')
+    (bin_ / "uv").chmod(0o755)
+    env["PATH"] = f"{bin_}{os.pathsep}{env['PATH']}"
+    run = subprocess.run(["bash", "experiments/harness/run_h30.sh", "tests", head], cwd=repo, env=env,
+                         capture_output=True, text=True)
+    assert run.returncode == 0, run.stderr
+    assert (tmp_path / "seen").read_text().split() == ["running", head]  # during the step: not the old 0
+    assert (s / "tests.exit").read_text().strip() == "0" and (s / "tests.head").read_text().strip() == head
+    assert (s / "gate.exit").read_text().strip() == "1"  # untouched until the gate itself starts
