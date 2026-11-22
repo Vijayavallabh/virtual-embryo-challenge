@@ -254,7 +254,12 @@ def test_the_launcher_list_names_this_file():
 SIZE_ARGS = ["--copy-rows", "--copy-rows-test-ok", "--copy-rows-size", "--copy-rows-size-test-ok"]
 # The flag-off copy-rows file of the fixture world (mixture, the default seed), pinned on the builder before
 # --copy-rows-size existed and unchanged after it: the flag-off path keeps its bytes and its record.
-GOLDEN_CR_SHA256 = "3e126d6352eaaaf606fa6e75e66ada46e612381bcbdfcdaa9090fec18e6e048b"
+# The flag-off copy-rows file on the synthetic stages, per machine, each measured with the builder as it stood before
+# the size option existed (main at cf0e0cf; the two byte-pin tests run there with this file): the local workstation
+# first, the DGX second. The synthetic FGW builds differ in bytes between the two machines (docs/COMPUTE.md, "What
+# reproduces where"), so a single pin fails the launcher's tests step on the other machine.
+GOLDEN_CR_SHA256 = ("3e126d6352eaaaf606fa6e75e66ada46e612381bcbdfcdaa9090fec18e6e048b",
+                    "fc9fa84cca158c775c20cbf12b73bbc3d1f37f80667807525f95d27885618130")
 GOLDEN_CR_KEYS = ["allow_below_truth", "board", "copy_rows", "copy_rows_copy", "count_decision", "count_rule",
                   "dry_run", "entry", "n_cells", "record", "seed", "size_rule", "target_rms"]
 
@@ -263,7 +268,7 @@ def test_the_flag_off_copy_rows_file_keeps_its_bytes_and_record(bt, monkeypatch,
     _fake(bt, monkeypatch, world, _board(world[3]))
     out = tmp_path / OUT
     bt.main([*BASE, "--copy-rows", "--copy-rows-test-ok", "--out", str(out)])
-    assert hashlib.sha256(out.read_bytes()).hexdigest() == GOLDEN_CR_SHA256
+    assert hashlib.sha256(out.read_bytes()).hexdigest() in GOLDEN_CR_SHA256
     rec = json.loads(out.with_suffix(".build.json").read_text())
     assert sorted(rec) == GOLDEN_CR_KEYS
     assert rec["size_rule"] == "not applied" and rec["target_rms"] is None and "copy_rows_size" not in rec
@@ -274,7 +279,9 @@ def test_the_flag_off_copy_rows_file_keeps_its_bytes_and_record(bt, monkeypatch,
 # world with a synthetic size JSON (the bracket's own RMS) and a dry board, pinned with the builder of main before
 # --copy-rows-size existed (b1430aa, run from a copy of that file) and unchanged after it. The cloud guard, a check that
 # changes nothing it passes, is stubbed: this small synthetic world trips it.
-GOLDEN_P_SHA256 = "ca775cc85b5f3b3efd9d5fe7376369b889d1819ea948b1f38ddf6783f36f98ff"
+# the exact-position file, per machine, measured the same way: the local workstation, then the DGX
+GOLDEN_P_SHA256 = ("ca775cc85b5f3b3efd9d5fe7376369b889d1819ea948b1f38ddf6783f36f98ff",
+                   "38f9dc26fdba6db020af18f3ce01e91e689b5780d04ae6efb236f8e86a2bfdad")
 
 
 def test_the_exact_position_file_keeps_its_bytes(bt, monkeypatch, world, own_repo, tmp_path):
@@ -288,7 +295,7 @@ def test_the_exact_position_file_keeps_its_bytes(bt, monkeypatch, world, own_rep
     monkeypatch.setitem(bt.SIZES, "embryo", p)
     out = tmp_path / "T2embryo_s2x.h5ad"
     bt.main([*BASE, "--expression", "mixture", "--out", str(out)])
-    assert hashlib.sha256(out.read_bytes()).hexdigest() == GOLDEN_P_SHA256
+    assert hashlib.sha256(out.read_bytes()).hexdigest() in GOLDEN_P_SHA256
 
 
 def test_the_size_flags_are_off_by_default(bt):
@@ -378,7 +385,7 @@ def sized_build(bt, monkeypatch, world, own_repo, tmp_path):
 
 def test_the_sized_file_is_the_copy_rows_file_rescaled_and_its_record(bt, sized_build):
     cr, cs, size = sized_build
-    assert hashlib.sha256(cr.read_bytes()).hexdigest() == GOLDEN_CR_SHA256  # the flag-off file, unchanged
+    assert hashlib.sha256(cr.read_bytes()).hexdigest() in GOLDEN_CR_SHA256  # the flag-off file, unchanged
     A, B = anndata.read_h5ad(cr), anndata.read_h5ad(cs)
     XA = A.X.toarray() if hasattr(A.X, "toarray") else np.asarray(A.X)
     XB = B.X.toarray() if hasattr(B.X, "toarray") else np.asarray(B.X)

@@ -9968,3 +9968,36 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     hard stop stands: D drops if it is not built, read and reviewed by 2026-11-25 12:00 UTC. H-T1 and H-T1B, the two
     files before D in that order, did not qualify (entry (d)); D is the list's last file.
   - **Recorded in** ruling row R21 of the ledger and in an amendment of `docs/S2_RULES.md` (its hash re-pinned).
+- 2026-11-22 (h), row K25 is read (FAIL: nothing follows); rows E52 and H30 stopped at their first steps before any
+  reading and are being corrected (state at 01:10 UTC, 2026-11-22). Written by the AI assistant; the outcome is the
+  read's own words.
+  - **K25** (T3, within-label dispersion; run commit a99f203 in `~/v/scratch/k25-wt`; tests, pre-gate, run and read
+    each exit 0; the five reproduction guards at distance 0.0000). In the read's fixed words: "Try K25: FAIL: the
+    dispersion arm does not pass K25's kill test; nothing follows." Clauses (a) False, (b) False, (c) True, (d) False,
+    (e) False: the arm is ahead in dm g1 and x2 but behind in plain g1 (-0.34, 0 of 10 seeds), and where it is ahead
+    it does not beat its permuted control by the row's margin (dm g1 -2.38; x2 +0.29 against a bar above 0.3). Two
+    tries, T3 73 and 74, counted. No file, no question, no build path. T3's queued files are unchanged.
+  - **E52** (embryo, copy-positions at the team's own size; first start at a99f203): the launcher's tests step failed
+    on the DGX, exit 1, so no gate and no run happened and nothing counted. Cause: three tests of
+    `tests/test_copy_rows_build.py` pinned the sha256 of two files built on synthetic stages, and the pins were made
+    on the local machine; such builds differ in bytes between the two machines (`docs/COMPUTE.md`, "What reproduces
+    where"), so the same code gives other bytes on the DGX. Checked on both machines with the builder as it stood
+    before the size option existed (main at cf0e0cf, in a scratch worktree, this test file copied in): locally the two
+    pinned files come out at the pinned hashes (2 passed); on the DGX the old builder gives fc9fa84c... and
+    38f9dc26..., exactly the bytes the new builder gave in the failed tests step. So the new code keeps both existing
+    files' bytes on each machine. The test now pins both machines' hashes for each file (a per-machine pair). Only
+    that test file changes: the launcher, the read script and the package source are byte for byte those the row
+    names. E52 is started again at this commit in a new worktree; its row is unchanged.
+  - **H30 with its gate N56** (heart, late-anchor chord; first start at 784e427 in `~/v/scratch/h30-wt`): tests exit
+    0; the gate step crashed in its reader, exit 1, before any reading: "the count matrix's row names are neither the
+    gene table's IDs nor gene symbols". It is the fact that stopped row T66 (entry (f)): the outside nuclei atlas's
+    count matrices carry 25,033 gene ids beside the 24,552 its gene table lists, and the reader required one or the
+    other for every row. No gate.json, no table, no try; by the launcher's own codes this is an error, not the gate's
+    FAIL or VOID, and the rows' rules are untouched. A fresh score-blind analyst says how matrix rows outside the gene
+    table are treated under the rows' words (the gate reads "the heart panel genes JAX carries, matched by symbol
+    through JAX's gene table"), an engineer corrects the reader and a reviewer checks it; rows N56 and H30 then name
+    the corrected code before the gate runs. H31 (deferred) reads the same files and takes the same correction.
+  - **Running at this time.** T65: the chamber run took 38 minutes and exited 0; the whole cut is running and three
+    library runs follow one after another. E51: at its reproduction gate (six of nine tasks done). E54: its tests exit
+    0 on the DGX with the torch tests; the fits are running on GPUs 2 and 7. The organ-cut file's code and the rerun
+    of T66 as row T68 are with their engineers.
