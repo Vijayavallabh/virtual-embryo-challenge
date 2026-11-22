@@ -10456,3 +10456,65 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     under a message that names this entry and the row's cell. Nothing wrong was written anywhere; the cell, the totals
     note and this entry follow in the next commit, and pushed history is not rewritten. From now on the record script,
     the tests and the commit are one chain, each step run only if the one before it succeeded.
+- 2026-11-22 (x), the T3 search line is in force before the K23 file's headline; T1's second line has its builder; row
+  E52's reading says the sized copy-rows file is built (state at 02:50 UTC, 2026-11-22). Written by the AI assistant,
+  which designed none of the lines and is recused on the embryo's lever.
+  - **The T3 search line, its rule text** (a fresh designer blind to test scores, a cold challenger, then a fresh
+    analyst who re-based the text onto the base in force; verbatim, except that the launcher form in the parenthesis
+    names `--captain-ruling R22` as the reviewed launcher takes it, which changes no built byte): T3 search line
+    (R22): the outside-table exponent on row K23's file. Setting: `--table-exponent` of
+    experiments/t3_decomp/build_outside_form.py on the K23 file's command for base B, the barred s2 (`--form xall-s2`,
+    table `all` sha256 9490f524e40e..., seed 1000001, board T3:bcatenin). Only E changes, on K23's geometric scale.
+    Members: B (E = 0; the barred s2, sha256 1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f), the
+    K23 file on B (E = 2.0; runs/manual_upload/T3_k23_s2.h5ad, sha256
+    77ff0b947f7f409c9ce171bdc59a44de3d3c2ef2f3e5a7332011a459ce9ee9c3), and the file T3_k23_s2_e4.h5ad built by the
+    same command with `--table-exponent 4.0 --captain-ruling R22` and nothing else changed: `python -I -B
+    experiments/t3_decomp/build_outside_form.py build experiments/t3_decomp/results/gata4/gata4_decisions.json --form
+    xall-s2 --table-exponent 4.0 --captain-ruling R22 --wt data/raw/T2/E8.75.h5ad --run-dir
+    ~/v/virtual-embryo-challenge/runs/t3_decomp/gata4_20261028T122425Z --board T3:bcatenin --seed 1000001` (launcher
+    form: `experiments/t3_decomp/build_outside_form.sh --table-exponent 4.0 --captain-ruling R22 <clean commit> s2
+    xall`, 16 BLAS threads, tables folder ~/v/vec-ext/t3/tables through VEC_T3_EXT_TABLES). Identity gates:
+    identity-s1 reproduces the barred s1 (3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2) and
+    identity-s2 reproduces B (1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f), and the E = 2.0 file
+    on s2 reproduces 77ff0b947f7f.... This line is void unless this entry is committed before the K23 file's headline
+    is returned. Before it is built, the E = 4 file must pass a guard computed from released wild-type E8.75 data and
+    the pinned table only: the den-weighted total of phi_M * T**4 lies within 5% of that of phi_M (base s2's own
+    factor is phi_M ** 1, the pinned `transfer_mab21l2_all`, sha256 64b1e0b8572c...). Otherwise it is not built and
+    the line ends at 2.0. Rule: if the K23 file's headline is strictly above B's headline, the next T3 file of this
+    line is the E = 4.0 file. Otherwise (tie included) the line ends with no new file. If the K23 file is never
+    uploaded, the line never starts. The line ends at the E = 4.0 file whatever its headline, and 8.0 and 1.0 are
+    never tried. The E = 4.0 file takes the first T3 slot free after C1, C2, the K23 file, CK on its condition and the
+    refused s1. With no slot left it is not uploaded. It is built twice with one sha256 at a clean commit after the
+    identity gates and the E = 2.0 file reproduce, and it is never rebuilt, re-seeded or changed after a score. Only
+    headlines of the team's own T3 uploads are compared. Nothing is computed from their sizes, no per-metric value is
+    read, and no difference is read as evidence of anything. The best headline is kept. Under an organiser restriction
+    on X013/X014 neither outside-table file is marked. Method report: table exponents 0, 2 and 4 were tried on B and
+    the best headline was kept. Data used: released challenge data (wild-type E8.75 cells, the released Mab21l2
+    knockout) and GEO GSE204906 and GSE277839 as knockout-over-control changes on the panel genes. No beta-catenin or
+    Gata4 perturbation data from outside the release. Every upload is the captain's own act.
+  - **Its state.** The K23 file has not been uploaded, so no headline of it exists; this entry and the rules amendment
+    are committed first. The builder change the text asks for is reviewed (`campaign/t3-exponent-line`, ee5a6d2:
+    ready, no blocker) and merged; row R22's first cell names `--table-exponent 4.0`. The E = 4.0 file is built on the
+    DGX from this commit: identity steps first (the barred s1, the barred s2 and the K23 file must reproduce), then
+    the guard from released wild-type data and the pinned table, then the file twice. It is read by exit codes, sha256
+    and the stamps' commit and clean fields only; a guard miss shows as exit 47 and ends the line at 2.0. It is
+    uploaded only on the line's rule, after the queued T3 files.
+  - **T1's second search line (g_mom's damping, entry (o)).** Its builder change is reviewed
+    (`campaign/t1-damping-line`, 1ef29af: ready, no blocker) and merged; the added and removed lines in
+    `experiments/builds/build_test.py` are the reviewed ones exactly (the file also holds the organ-cut hunk merged
+    before it). The files `T1_s2rcA15.h5ad` and `T1_s2rcA20.h5ad` are built on the DGX from this commit, each twice,
+    after the default command and the damping 1.0 command have reproduced R13's and A's bytes.
+  - **E52** (embryo, the copy-rows file at the team's pre-registered size; the captain's order of 2026-11-21, entry
+    (v); run commit 2c3d568). In the read's fixed words: "(i) on every built task-seed, both builds: HOLDS" "Outcome:
+    build: (i) holds; the test file is built under the captain's order ((iii) and (iv) decide nothing)." Its one try
+    was counted at 01:54 UTC (embryo 87). The main session is recused on this lever and restates no figure of the
+    reading. By the row the test file is built: twice, on the DGX, from commit 9b04926 (branch `campaign/e52-build`,
+    the read's commit plus the two reading files), because the build's gate wants the code byte for byte as the
+    reading ran it and main's builder has changed since (the fraction line and the organ cut). When the two builds
+    agree the file is handed over at its place after C, with a note of its price written by fresh analysts, not by the
+    main session.
+  - **C1A** (T1, the cardiomyocyte direction blended with a nuclei-atlas direction; `campaign/t1-cm-nuclei`, 6e79b6c):
+    reviewed ready, no blocker. One point is open before its row is placed: the published statement found names three
+    of its five muscle guard genes, and the labeller's rule wants a quoted source for each. A second literature screen
+    is looking for the other two; if none is found a fresh analyst decides between the specification's list and that
+    rule. The AI assistant decides neither.
