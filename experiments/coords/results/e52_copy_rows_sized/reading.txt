@@ -1,0 +1,70 @@
+Row E52 (run commit 2c3d568e7633ed5d6b4bcf3181d5f7a6d07c8f89), arm fgw_copyrows_sized; the pre-run gate passed on all nine tasks.
+(i) on every built task-seed, both builds: HOLDS
+    reported: task-seeds with a prefix parity flip at some count: 0; sliced_wasserstein unequal to the floor's: 0
+(ii) refusals per task-seed: none; refused at every seed: none
+(iii) arm minus fgw_shape0x (mean, SE, seeds ahead), five truths / test-like four:
+    main board: -1.4211 (SE 0.1737, 0 ahead; gain 0 n/a, loss 9 -1.1988; worst e725, best x3) / -1.4347 (SE 0.1184, 0 ahead)
+    main group:expression_change: -0.0065 (SE 0.0015, 0 ahead; gain 3 +0.0008, loss 6 -0.0084; worst e725, best x2) / -0.0068 (SE 0.0021, 0 ahead)
+    main group:cell_state: +0.0018 (SE 0.0010, 8 ahead; gain 5 +0.0034, loss 4 -0.0014; worst new2, best x1) / -0.0011 (SE 0.0008, 5 ahead)
+    main group:shape_growth: -0.0143 (SE 0.0047, 2 ahead; gain 1 +0.0117, loss 8 -0.0125; worst e725, best x3) / -0.0084 (SE 0.0023, 1 ahead)
+    main group:local_organisation: -0.0378 (SE 0.0012, 0 ahead; gain 0 n/a, loss 9 -0.0340; worst e725, best x3) / -0.0410 (SE 0.0017, 0 ahead)
+    main skill:de_score: -0.0066 (SE 0.0019, 0 ahead; gain 4 +0.0017, loss 5 -0.0099; worst e725, best x2) / -0.0062 (SE 0.0027, 2 ahead)
+    main skill:de_direction: -0.0065 (SE 0.0015, 0 ahead; gain 2 +0.0005, loss 7 -0.0077; worst e725, best x3) / -0.0075 (SE 0.0020, 1 ahead)
+    main skill:mmd_u: +0.0025 (SE 0.0014, 7 ahead; gain 7 +0.0031, loss 2 -0.0019; worst new2, best x1) / -0.0008 (SE 0.0009, 4 ahead)
+    main skill:variogram: +0.0007 (SE 0.0015, 7 ahead; gain 3 +0.0044, loss 6 -0.0020; worst late, best x1) / -0.0016 (SE 0.0013, 4 ahead)
+    main skill:d2_shape: +0.0002 (SE 0.0030, 3 ahead; gain 3 +0.0191, loss 6 -0.0042; worst e75, best x3) / -0.0023 (SE 0.0026, 3 ahead)
+    main skill:occupancy_dice: -0.0156 (SE 0.0092, 3 ahead; gain 2 +0.0114, loss 7 -0.0209; worst new1, best x1) / -0.0230 (SE 0.0050, 1 ahead)
+    main skill:scale_log_ratio: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+    main skill:neighborhood_mmd: -0.0378 (SE 0.0012, 0 ahead; gain 0 n/a, loss 9 -0.0340; worst e725, best x3) / -0.0410 (SE 0.0017, 0 ahead)
+    prefix board: -1.4608 (SE 0.1725, 0 ahead; gain 0 n/a, loss 9 -1.2486; worst e725, best x3) / -1.5300 (SE 0.1252, 0 ahead)
+    prefix group:expression_change: -0.0065 (SE 0.0015, 0 ahead; gain 3 +0.0008, loss 6 -0.0084; worst e725, best x2) / -0.0068 (SE 0.0021, 0 ahead)
+    prefix group:cell_state: +0.0018 (SE 0.0010, 8 ahead; gain 5 +0.0034, loss 4 -0.0014; worst new2, best x1) / -0.0011 (SE 0.0008, 5 ahead)
+    prefix group:shape_growth: -0.0159 (SE 0.0044, 2 ahead; gain 2 +0.0050, loss 7 -0.0166; worst e725, best x3) / -0.0122 (SE 0.0034, 1 ahead)
+    prefix group:local_organisation: -0.0378 (SE 0.0012, 0 ahead; gain 0 n/a, loss 9 -0.0340; worst e725, best x3) / -0.0410 (SE 0.0017, 0 ahead)
+    prefix skill:de_score: -0.0066 (SE 0.0019, 0 ahead; gain 4 +0.0017, loss 5 -0.0099; worst e725, best x2) / -0.0062 (SE 0.0027, 2 ahead)
+    prefix skill:de_direction: -0.0065 (SE 0.0015, 0 ahead; gain 2 +0.0005, loss 7 -0.0077; worst e725, best x3) / -0.0075 (SE 0.0020, 1 ahead)
+    prefix skill:mmd_u: +0.0025 (SE 0.0014, 7 ahead; gain 7 +0.0031, loss 2 -0.0019; worst new2, best x1) / -0.0008 (SE 0.0009, 4 ahead)
+    prefix skill:variogram: +0.0007 (SE 0.0015, 7 ahead; gain 3 +0.0044, loss 6 -0.0020; worst late, best x1) / -0.0016 (SE 0.0013, 4 ahead)
+    prefix skill:d2_shape: +0.0002 (SE 0.0030, 3 ahead; gain 3 +0.0191, loss 6 -0.0042; worst e75, best x3) / -0.0023 (SE 0.0026, 3 ahead)
+    prefix skill:occupancy_dice: -0.0204 (SE 0.0083, 2 ahead; gain 2 +0.0111, loss 7 -0.0286; worst new1, best x1) / -0.0344 (SE 0.0084, 1 ahead)
+    prefix skill:scale_log_ratio: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+    prefix skill:neighborhood_mmd: -0.0378 (SE 0.0012, 0 ahead; gain 0 n/a, loss 9 -0.0340; worst e725, best x3) / -0.0410 (SE 0.0017, 0 ahead)
+(iii) arm minus fgw_copyrows (mean, SE, seeds ahead), five truths / test-like four:
+    main board: +1.2784 (SE 0.0136, 10 ahead; gain 8 +1.6768, loss 1 -1.2769; worst x1, best x2) / +1.0364 (SE 0.0077, 10 ahead)
+    main group:expression_change: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+    main group:cell_state: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+    main group:shape_growth: +0.0511 (SE 0.0005, 10 ahead; gain 8 +0.0671, loss 1 -0.0511; worst x1, best x2) / +0.0415 (SE 0.0003, 10 ahead)
+    main group:local_organisation: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+    main skill:de_score: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+    main skill:de_direction: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+    main skill:mmd_u: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+    main skill:variogram: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+    main skill:d2_shape: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+    main skill:occupancy_dice: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+    main skill:scale_log_ratio: +0.1439 (SE 0.0018, 10 ahead; gain 8 +0.2023, loss 1 -0.2665; worst x1, best x2) / +0.1244 (SE 0.0009, 10 ahead)
+    main skill:neighborhood_mmd: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+    prefix board: +1.2784 (SE 0.0136, 10 ahead; gain 8 +1.6768, loss 1 -1.2769; worst x1, best x2) / +1.0364 (SE 0.0077, 10 ahead)
+    prefix group:expression_change: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+    prefix group:cell_state: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+    prefix group:shape_growth: +0.0511 (SE 0.0005, 10 ahead; gain 8 +0.0671, loss 1 -0.0511; worst x1, best x2) / +0.0415 (SE 0.0003, 10 ahead)
+    prefix group:local_organisation: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+    prefix skill:de_score: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+    prefix skill:de_direction: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+    prefix skill:mmd_u: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+    prefix skill:variogram: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+    prefix skill:d2_shape: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+    prefix skill:occupancy_dice: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+    prefix skill:scale_log_ratio: +0.1439 (SE 0.0018, 10 ahead; gain 8 +0.2023, loss 1 -0.2665; worst x1, best x2) / +0.1244 (SE 0.0009, 10 ahead)
+    prefix skill:neighborhood_mmd: +0.0000 (SE 0.0000, 0 ahead; gain 0 n/a, loss 0 n/a; worst half, best half) / +0.0000 (SE 0.0000, 0 ahead)
+(iv) per task (main): neighborhood_mmd skill, seeds where the assumed gate bites, shape gated / ungated:
+    half: 0.614, 0, 0.5245 / 0.5245
+    late: 0.758, 0, 0.5977 / 0.5977
+    new1: 0.694, 0, 0.5354 / 0.5354
+    new2: 0.631, 0, 0.5278 / 0.5278
+    e75: 0.584, 0, 0.5757 / 0.5757
+    e725: 0.473, 7, 0.5063 / 0.5414
+    x1: 0.287, 10, 0.2356 / 0.4112
+    x2: 0.522, 0, 0.6459 / 0.6459
+    x3: 0.575, 0, 0.5910 / 0.5910
+Outcome: build: (i) holds; the test file is built under the captain's order ((iii) and (iv) decide nothing).
+Nothing here shows that the live floor is subsample(E7.5 as released, 0.1, 0), that rows are scored as held, or that anchors and uploads share a scorer build and numeric library; nothing about E7.75; the practice size is the rule read on each task's own stages, not the test's size file.
