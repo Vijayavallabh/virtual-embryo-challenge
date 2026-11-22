@@ -2,7 +2,42 @@
 
 ## Current Objective
 
-- **State at 2026-11-22, 04:09 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-22, 04:29 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-22 (kk); the next label is 2026-11-22 (ll). Local main = origin/main at a233119 or one notes commit after
+  it. Tries: T1 463, embryo 88, heart 97, T3 74. No new score yet today. NOTHING RUNS on the DGX and no agent is out.
+  Every read started in this session is recorded.
+  - **SIX QUESTIONS ARE WITH THE CAPTAIN (plain text in my messages; act only on the captain's own words; I gave no
+    lean on any; a blanket reply does not answer the recused or closed-lever ones: ask one short question per item).**
+    (1) Embryo: name SO? (2) Embryo: name O_hi, which also lifts the embryo's depth line for that one file? [the
+    analysts' text: `experiments/coords/results/e51_so_ohi/question_for_the_captain.md`; recused]. (3) T1: name MS, so
+    that it is built (entry (bb))? (4) Heart: upload the organ-cut file D
+    (`.../h29b_heart_organ/question_for_the_captain.md`; recused)? (5) T1 line 1: a step back (1.75, 1.25), to be
+    fixed before the 2.0 file's score? (6) The heart search line's named exception (recused)? Defaults: no upload,
+    nothing built, the rule stays.
+  - **FILES BUILT TODAY AND WHERE THEY STAND (all in `runs/manual_upload/`; sha256 in
+    `experiments/builds/results/`).** Handed over, the captain may upload: `T2embryo_s2x_crs.h5ad` (embryo, after C;
+    323f2acc...) and `T1_s2rcA15.h5ad` (T1 line 2's next file; e2334137...). On the captain's naming only:
+    `T2embryo_s2xs_ov.h5ad` (SO; 77062082d97555961901c811d8a1aaf9b5b2403417c19a6988c816ff553f1165),
+    `T2embryo_s2x_ovhi.h5ad` (O_hi; 7e4d1eaafc40080d9d9c461d4b9396f0cee6353686538e79fb92ca31d1d2deeb),
+    `T2heart_organ_half.h5ad` (D; 1b4342c1...). On their lines' rules only: `T1_s2rcB25.h5ad`, `T1_s2rcB30.h5ad`
+    (after the 2.0 file's headline), `T1_s2rcA20.h5ad` (after A15's), `T3_k23_s2_e4.h5ad` (after the K23 file's;
+    9934f1b1...). Queued from before, unchanged: T1 F, C, the 2.0 file; T3 C1, C2, K23, CK on its condition, the
+    refused s1; embryo C, `T2embryo_s2`.
+  - **ON A YES TO SO OR O_hi:** amend `docs/S2_RULES.md` (the file enters the embryo's order by the captain's naming;
+    for O_hi the depth line is lifted for that one file), re-pin, log it, and hand over path, sha256, board and Data
+    used (released challenge data only). **ON A YES TO MS:** engineer + reviewer for the builder option, traced dry
+    run, two builds where the default command first rebuilds ad8f24c7; place after entry 2026-11-20 (r)'s list. **ON A
+    YES TO D:** amend the rules (file D enters the heart's order), re-pin, hand over. **ON THE STEP BACK:** name 1.75
+    and 1.25 files in the log before the 2.0 file's score; a builder change and review are needed. **ON THE HEART
+    LINE'S EXCEPTION:** engineer + reviewer for the two trend files on C.
+  - **WHEN THE CAPTAIN PASTES SCORES:** take the headline per board and stop reading; `results/manual_uploads.csv`,
+    one log entry, then each board's pre-set rule mechanically (T1 line 1: 2.5 only if the 2.0 file strictly beats the
+    line's best 71.59, then 3.0; T1 line 2: A20 only if A15 strictly beats A's; T3: CK only if C2 and K23 each
+    strictly beat 62.30, the E = 4.0 file only if K23 strictly beats B's; embryo and heart: best-headline mark only).
+  - **CLOSED TONIGHT, NO FILE:** K26, K25 (earlier), C2A, C1A (T71), T68, rc18 (T69), H30, H31, H32, E53, E54, T66,
+    T67. **AHEAD OR PASSED, WITH THE CAPTAIN:** MS (T65), SO and O_hi (E51), and the built files D and the sized
+    copy-rows file.
+- **State at 2026-11-22, 04:09 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-22 (ii); the next label is 2026-11-22 (jj). Local main = origin/main at c4465e9 or one notes commit after
   it. Tries: T1 463, embryo 88, heart 97, T3 74. No new score yet today. Nothing runs on the DGX. The four questions
   with the captain and the two handed-over files are as in the bullets below.

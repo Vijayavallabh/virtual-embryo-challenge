@@ -2,6 +2,12 @@
 
 ## Current State
 
+- **2026-11-22, 04:29 UTC.** No new score. The embryo overlay read (row E51) passed both candidates, SO and O_hi;
+  fresh analysts wrote the captain's question and both files were built twice with one sha256 each. Every read started
+  in this session is now recorded and nothing runs. Six questions are with the captain (SO, O_hi, MS, file D, T1's
+  step back, the heart line's exception); two built files are handed over for upload (the sized embryo file and T1's
+  damping 1.5 file). Tries: T1 463, embryo 88, heart 97, T3 74. Decision log 2026-11-22 (ii) to (kk).
+
 - **2026-11-22, 03:42 UTC.** No new score. The T3 search line's file was built with the fixed launcher (its three
   identity steps reproduce, its guard passed). The atlas-to-E18 T1 candidate (row T69) stopped on its pre-set rule and
   the nuclei-blend T1 candidate (row T71) stopped at its target-free pre-gate, so every candidate of the outside-data
