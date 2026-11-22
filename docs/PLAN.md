@@ -10361,3 +10361,31 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     (run_4, run_20, run_21 and run_26), so nothing of this touches it.
   - **Counts.** Row T68's pre-gate passed at 02:15 UTC and its ten arms count from the start of its runs: T1 439 to
     448. Totals: T1 448, embryo 87, heart 97, T3 74.
+- 2026-11-22 (s), rows N58 (T1 candidate rc18's E18 labelling) and H32 (the heart's sign-gated trend) are placed
+  before their runs (state at 02:28 UTC, 2026-11-22). Written by the AI assistant, which designed neither and gives no
+  lean on either.
+  - **rc18** (T1: the outside heart atlas's direction over E9.5 to E18, the chord; the T1 order rule of decision log
+    2026-11-21 (y); a score-blind challenger's final text). The first branch changed the builder and no longer merged;
+    its reviewer's second option was taken: the builder option and its build launcher are written only after an AHEAD
+    reading and the captain's yes. `campaign/t1-rc18-2` (49bfb3d) holds the E18-only labelling, the direction code,
+    the practice read and its launcher; `experiments/builds/build_test.py` is main's byte for byte. Second review:
+    ready, no blocker. Two readings of the specification that the engineer took in their stricter form and the rows
+    state are accepted as written: the stop fires on any library-3 loss below -0.3, and "beats both on at least 8 of
+    10" means the same seed beats both controls.
+  - **Placed now: row N58** (a diagnostic, not a try: it reads no fold target, no released T1 file and no score), with
+    register row X002's amendment naming `feng_relabel_e18`. **Row T69** (fifteen tries, counted from the run steps)
+    is placed after the label step, in the commit that holds the labelling's record, with the E18 statistics' sha256
+    written into it; every T69 guard refuses until then.
+  - **H32** (heart: the ladder trend gated gene by gene by the sign of the outside late change, on form C; a
+    score-blind round's specification, the cold challenger's final entry governing; `campaign/heart-trend-sign-gate`,
+    8f00c38). Its review named one blocker, a placement matter: the two register amendments must be committed at or
+    before the row's commit, on main's present text. They are written here with the engineer's wording, in the same
+    commit as the row, and the script's own `check` and the launcher's test list pass on that state before the commit.
+    Sixteen tries, heart 98 to 113, counted from the run step; its target-free gate G0 comes first and a FAIL there
+    runs and counts nothing. The screens it asked for are in entries (q) and (r): no embryo inside a heart window; the
+    atlases' filter facts are recorded and go into the captain's question if a file is ever proposed. Its run commit
+    holds the gate reading and the table checksums only, so it is made on a side branch from this commit and merged
+    afterwards.
+  - **Where they run.** rc18 in a detached worktree of `~/v/vec-campaign-d`'s repository (`~/v/scratch/t69-wt`, its
+    own environment, row N54's output linked); H32 in one of `~/v/vec-campaign`'s (`~/v/scratch/h32-wt`, its own
+    environment with the outside-data group).
