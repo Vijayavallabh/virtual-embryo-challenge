@@ -1099,7 +1099,8 @@ def reading_code() -> dict:
 
 def reading(runs: Path, refs: dict | None = None) -> dict:
     """Apply the reading of row K26 to a run folder: a STOP at stage 0 or at the pre-gate is a reading of its own (no
-    fold read, no try beyond stage 0); otherwise the guard part is read again, then the scoring part."""
+    fold read, no try beyond stage 0); otherwise the guard part is read again, then the scoring part. Every VOID
+    reading counts the three tries (VOID_TRIES; row K26, "a void counts"), a failed reproduction gate included."""
     runs = Path(runs)
     why: list[str] = []
     sha, prov, body = {}, {}, {}
