@@ -10884,3 +10884,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     Next: an engineer and a reviewer make the builder take the two combined options under the ruling, with a launcher
     whose identity steps reproduce R13's, A's, B's, C's and the 2.0 file's bytes; each new file is built twice and its
     sha256 is added here before its score.
+- 2026-11-22 (oo), T1 line 3's builder change is reviewed and merged (state at 11:25 UTC, 2026-11-22). Written by the
+  AI assistant, which designed none of it.
+  - **The change** (`campaign/t1-line-3`, aeac4a1: an engineer, then an independent reviewer; ready, no blocker;
+    merged). `experiments/builds/build_test.py` takes `--g-mom-damping 1.0 --feng-fraction-mult 2.0` and
+    `--g-mom-damping 1.0 --feng-fraction-mult 2.5` only with `--captain-ruling R22` and only while row R22's first
+    cell names the exact combined option; the bare line 1 option cannot satisfy that check; every other pair of the
+    two settings takes the path it took before, and `src/` is untouched. On the synthetic fixture every existing
+    command (the default, A, B, C, row R20's file, line 1's and line 2's files) gives the same bytes and records as
+    before, and each new file differs from C only through the atlas step. Two existing refusal tests were adjusted for
+    exactly the pair that is now this line's, as the reviewer confirmed.
+  - **The launcher** (`experiments/builds/t1_c_line.sh`): its gate, its tests, five identity steps that must reproduce
+    R13's, A's, B's, C's and the 2.0 file's committed bytes, then each new file twice. The line's first three
+    conditions (entry (nn)) are met by this entry except the identity steps, which the launch shows; the fourth and
+    fifth follow from the builds, and each new file's sha256 is added to this log before its score.
