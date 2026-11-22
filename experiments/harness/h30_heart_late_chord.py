@@ -9,7 +9,8 @@ D = log(mean CP10k at the late anchor + 0.5) - log(mean CP10k at the early ancho
 (Qiu 2024, X003) embryos 54-56 and Feng 2022 (X002) E14.5; the early anchor JAX embryo 22 and Feng E9.5 on the one-day
 backtest, JAX embryos 13 and 14 alone on the 1.75-day backtest. Genes below 0.5 CP10k at both anchors of a source get
 D = 0 in it; the sources' chords are averaged gene by gene where both hold both anchors; |D| is clipped at log 3. A
-lineage is moved only with at least 200 kept outside cells at each anchor. Outside cells take their lineage from a
+source enters the average only with at least 200 kept cells of the lineage at each of its anchors, and a lineage is
+moved only where at least one source enters. Outside cells take their lineage from a
 multinomial logistic regression trained on released MERFISH labels (configs/lineage_map.yaml groups) on log1p CP10k
 of the panel genes the source carries, with a reject option (top probability below 0.7 or panel library below 30
 counts). No author label, cluster or embedding of either source is read: JAX's cell table is read for its embryo_id
@@ -692,14 +693,14 @@ def combine(chords: list[np.ndarray], n_genes: int) -> np.ndarray:
 def chord_table(anchor_cells: dict[str, dict[str, dict[str, sparse.csr_matrix]]],
                 carried: dict[str, np.ndarray], n_genes: int) -> tuple[dict[str, np.ndarray], dict]:
     """anchor_cells[source][anchor]['CM'...]: kept outside cells of each lineage at 'early' and 'late'. A source
-    contributes to a lineage where it holds both anchors with at least one kept cell at each; the lineage is moved
-    only with at least 200 kept cells at each anchor over the sources."""
+    contributes to a lineage where it holds both anchors with at least 200 kept cells at each; the lineage is moved
+    only where at least one source contributes."""
     D, rec = {}, {}
     for lin in LINEAGES:
         n = {s: {a: int(anchor_cells[s][a][lin].shape[0]) for a in anchor_cells[s]} for s in anchor_cells}
         total = {a: sum(n[s].get(a, 0) for s in n) for a in ("early", "late")}
         contrib = sorted(s for s in anchor_cells if set(anchor_cells[s]) == {"early", "late"}
-                         and n[s]["early"] > 0 and n[s]["late"] > 0)
+                         and n[s]["early"] >= MIN_CELLS and n[s]["late"] >= MIN_CELLS)
         moved = bool(contrib) and all(v >= MIN_CELLS for v in total.values())
         rec[lin] = {"cells": n, "total": total, "sources": contrib, "moved": moved}
         if moved:

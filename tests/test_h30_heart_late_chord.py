@@ -165,23 +165,34 @@ def _cells(n, genes=5):
     return sparse.csr_matrix(np.ones((n, genes), dtype=np.int64) * 10)
 
 
-def test_a_lineage_moves_only_with_200_kept_cells_at_each_anchor(h30):
+def test_a_source_contributes_only_with_200_kept_cells_at_each_of_its_anchors(h30):
     def lins(**n):
         return {k: _cells(n.get(k, 0)) for k in h30.LINEAGES}
     carried = {"jax": np.ones(5, bool), "feng": np.ones(5, bool)}
-    cells = {"jax": {"early": lins(CM=150, Endo=300, Hep=0), "late": lins(CM=100, Endo=300, Hep=500)},
-             "feng": {"early": lins(CM=50, Endo=0), "late": lins(CM=100, Endo=10)}}
+    # (i) Feng under 200 is not averaged; (v) Endo on JAX alone; Hep and Epi with no source at 200
+    cells = {"jax": {"early": lins(CM=250, Endo=300, Hep=150, Epi=10), "late": lins(CM=300, Endo=300, Hep=500)},
+             "feng": {"early": lins(CM=50, Hep=100, Epi=199), "late": lins(CM=100, Hep=100, Epi=300)}}
     D, rec = h30.chord_table(cells, carried, 5)
-    assert rec["CM"]["moved"] and rec["CM"]["sources"] == ["feng", "jax"] and rec["CM"]["total"] == {
-        "early": 200, "late": 200}
-    assert rec["Endo"]["moved"] and rec["Endo"]["sources"] == ["jax"]  # Feng holds no kept early cell: not averaged
+    assert rec["CM"]["moved"] and rec["CM"]["sources"] == ["jax"]
+    assert rec["Endo"]["moved"] and rec["Endo"]["sources"] == ["jax"]
     assert not rec["Hep"]["moved"] and not rec["Epi"]["moved"] and set(D) == {"CM", "Endo"}
-    cells["feng"]["early"] = lins(CM=49)
-    assert not h30.chord_table(cells, carried, 5)[1]["CM"]["moved"]  # 199 early cells
-    # the 1.75-day backtest: Feng has no early anchor and never contributes
-    one = {"jax": cells["jax"], "feng": {"late": lins(CM=900)}}
-    r = h30.chord_table(one, carried, 5)[1]["CM"]
-    assert r["sources"] == ["jax"] and r["total"]["early"] == 150 and not r["moved"]
+    assert rec["Hep"]["total"] == {"early": 250, "late": 600}  # summed over 200, yet no source holds 200 at each
+    # (ii) JAX one cell short at its early anchor: Feng alone
+    cells2 = {"jax": {"early": lins(CM=199), "late": lins(CM=300)},
+              "feng": {"early": lins(CM=300), "late": lins(CM=300)}}
+    r = h30.chord_table(cells2, carried, 5)[1]["CM"]
+    assert r["moved"] and r["sources"] == ["feng"]
+    # (iii) 150 and 150 in each source: the summed totals are 300, but no source contributes
+    cells3 = {"jax": {"early": lins(CM=150), "late": lins(CM=150)},
+              "feng": {"early": lins(CM=150), "late": lins(CM=150)}}
+    D3, rec3 = h30.chord_table(cells3, carried, 5)
+    assert rec3["CM"]["total"] == {"early": 300, "late": 300} and not rec3["CM"]["moved"] and "CM" not in D3
+    assert rec3["CM"]["sources"] == []
+    # (iv) the 1.75-day backtest: Feng has no early anchor and never contributes; its 900 late cells move nothing
+    one = {"jax": {"early": lins(CM=250), "late": lins(CM=150)}, "feng": {"late": lins(CM=900)}}
+    D4, rec4 = h30.chord_table(one, carried, 5)
+    r = rec4["CM"]
+    assert r["total"] == {"early": 250, "late": 1050} and r["sources"] == [] and not r["moved"] and "CM" not in D4
 
 
 def test_the_code_guards_refuse_before_any_file_is_opened(h30, tmp_path):
@@ -285,7 +296,7 @@ class _World:
         assert not set(stages) & set(refused)
         self.calls.append(("feng", tuple(stages)))
         t = {"E9.5": (1, 0), "E14.5": (1, 1)}
-        return ({s: self.stage(t[s], n=120, groups=("CM", "Endocardium"))[0] for s in stages},
+        return ({s: self.stage(t[s], n=300, groups=("CM", "Endocardium"))[0] for s in stages},
                 np.ones(160, bool), {"stages": list(stages)})
 
 
