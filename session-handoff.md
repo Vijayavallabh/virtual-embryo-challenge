@@ -2,7 +2,60 @@
 
 ## Current Objective
 
-- **State at 2026-11-21, 23:47 UTC (newest; it supersedes the bullets below where they differ).** Decision log
+- **State at 2026-11-22, 00:40 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-22 (c); the next label is 2026-11-22 (d). Local main = origin/main at 9ff856b. Tries: T1 438, embryo 84,
+  heart 88, T3 72. No new score; the upload queue is unchanged (T1: C, then the 2x file; embryo: the copy-positions
+  file, then `T2embryo_s2`; T3: C1, C2, K23, CK on barred s2; heart: nothing queued).
+  - **READ: T67 (T1 per-gene timing) is NOT AHEAD: the line is closed, nothing is built, no question.** Files in
+    `experiments/t1_m1/results/t67_timing/`. `~/v/vec-campaign-d` is idle again at 6c01146 (its worktrees t65-wt and
+    t66-wt are in use: do not remove them).
+  - **RUNNING ON THE DGX (five chains; a local waiter polls each exit file; never wait in the foreground).** (1)
+    **T65** (T1 momentum), second launch: worktree `~/v/scratch/t65-wt` at 34567906…, own `.venv`; chain
+    `~/v/scratch/t65_chain2.sh`; exit `~/v/scratch/t65/chain2.exit`. On 0: copy the five task files from the
+    worktree's `experiments/t1_m1/results/t65_ms/tasks/` back UNOPENED, commit, push that commit to the DGX repository
+    (`git push PrakashDGX_H2:v/vec-campaign-d <commit>:refs/heads/<name>`), `git checkout --detach` it in the
+    worktree, run `bash experiments/t1_m1/t65_ms.sh read 34567906a651f08316f5689003bcfa1c4e57e430` there (no
+    UV_PROJECT_ENVIRONMENT: the worktree's own environment), read only `read.exit` and `read.out`, copy `t65.json` and
+    `t65.txt` back, commit with the outcome in its fixed words. AHEAD = question Q-MS to the captain; else MS ends.
+    (2) **T66** (T1 held blood along the outside nuclei atlas): worktree `~/v/scratch/t66-wt` at the row commit R1 =
+    d0f0d6e54c5af45b3cd4038fc41354a73358e46c, own `.venv` (with the R-data reader), data linked; exit
+    `~/v/scratch/t66/chain.exit` (0 read done: copy `experiments/t1_m1/results/t66_jaxblood/` back and commit; 3 its
+    pre-gate pruned it, no try). (3) **E51** (embryo: overlay with the series expression; overlay at the deeper
+    depth): worktree `~/v/scratch/e51-wt` at R1; exit `~/v/scratch/e51/chain.exit` (3 = its reproduction gate failed,
+    nothing counted); reading in the worktree's `experiments/coords/results/e51_so_ohi/`. (4) **E53** (embryo geodesic
+    overlay, GPUs 2 and 7): worktree `~/v/scratch/e53-wt` at R1; exit `~/v/scratch/e53/chain.exit` (4 = its
+    target-free gate failed, nothing counted; 3 = a reproduction miss, void); reading in
+    `experiments/coords/results/e53_geodesic/`. (5) **H29a** (heart trend step on forms A and B; eight tries counted,
+    heart 81 to 88): in `~/v/vec-campaign` itself at R1 (do not move that checkout while it runs); exit
+    `~/v/scratch/h29a/chain.exit`; reading in `experiments/harness/results/h29a_heart_trend_forms/`, outcome words in
+    `~/v/scratch/h29a/read.out`. For each: copy the result files back, check them against the DGX sha256, fill the
+    row's last cell with the read's fixed words, one log entry, update the totals line (E51 85 to 86, E53 87 to 88,
+    T66 439 to 448, each only once its run step started). A pass leads to one priced question to the captain (and, for
+    the embryo and heart candidates, two identical builds first as their rows say); anything else ends the line.
+  - **WORKFLOW RUNNING: open-points-round (task wnrpzb0uz).** Fresh score-blind analysts decide the open design points
+    of K25 (T3 dispersion), E54 (embryo flow) and H30 with its gate N56 (heart chord); an engineer and a reviewer
+    close E52's one launcher blocker (branch `campaign/embryo-copy-rows-size-3`); a screen confirms the licence of the
+    outside nuclei atlas's portal copy (H30's code needs the register sentence 'Licence confirmed for row H30' in
+    X003, written only if confirmed). On hand-back: save to the scratch folder `lift8/`; merge any new branch (`-3`),
+    rerun the touched tests on main; then ONE commit with rows K25 (text `experiments/t3_decomp/k25_row.txt`, its
+    ROW_MUST_STATE phrases word for word; T3 72 to 74), N56 and H30 together (H30's code needs X002 and X003 each to
+    hold a sentence starting 'T2-heart amendment for row H30'; the heart use of both atlases rests on the captain's
+    bulk approval of outside data and a file would still need the A15 ruling), E54 (its tries after E53's: 89, then 90
+    and 91 if its gate passes) and E52 if ready. Places: K25 in `~/v/vec-campaign-c` itself (sync by a git push to a
+    branch ref and a checkout; nothing runs there); H30 in its own worktree with its own environment (`uv sync
+    --frozen --group external`), because its script does not put its own source first and it moves HEAD from ROW to
+    RUN; E54 and E52 in worktrees of `~/v/vec-campaign` (their scripts put their own source first).
+  - **RULE LEARNT TODAY (T65's refused first launch).** An environment's package path names the source of the checkout
+    it was made in. A script that does not insert its own `src` first (the T1 reads, K25, H29a, H30) therefore runs
+    only in a real checkout at the run commit, or in a worktree with its OWN environment (`uv sync --frozen` there;
+    0.8 GB; about a minute). The embryo read scripts insert their own source and may share `~/v/vec-campaign`'s
+    environment. On the DGX never print `git worktree list` unfiltered (the repositories carry this machine's worktree
+    records: thousands of lines).
+  - **Open with the captain (plain text, default no each), unchanged:** a score-guided search of round steps; T3's
+    refused s1 file; the heart's organ-cut file D; T1's no-outside-data file F. To tell the captain in the next
+    report: X003's amendment for T66 names one column beyond the words of the approval of 19 Nov
+    (`experimental_batch`, reported only).
+- **State at 2026-11-21, 23:47 UTC (superseded by the bullet above where they differ).** Decision log
   2026-11-21 (c) to (bb); the next label is 2026-11-22 (a). Local main = origin/main. Standing by best headline per
   board: T1 71.59, T3 62.30, heart 56.4, embryo 69.9 = 197.04. Only headlines are recorded; the main session gives no
   design lean on any board (entry (t)).

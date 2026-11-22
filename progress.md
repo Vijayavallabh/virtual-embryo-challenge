@@ -2,6 +2,15 @@
 
 ## Current State
 
+- **2026-11-22, 00:40 UTC.** No new score. Both fix rounds came back: seven of eight practice reads are review-ready
+  and merged (752 tests pass on merged main). T67 (T1 per-gene timing, the first moonshot to run) is read: NOT AHEAD,
+  line closed, no file. Five reads are running on the DGX: T65 (T1 momentum; its first launch refused before anything
+  loaded because it ran from a side folder with another checkout's environment, the AI assistant's fault; relaunched
+  with its own environment), T66 (T1 blood along the outside nuclei atlas), E51 and E53 (embryo), H29a (heart trend).
+  Rows for all were placed before their runs; the register was amended first (X003 for T66, X005 for the torch
+  libraries). Fresh analysts are deciding the open design points of K25, E54 and H30, and E52's launcher fix is with
+  an engineer. Tries: T1 438, embryo 84, heart 88, T3 72. Decision log 2026-11-22 (b) and (c).
+
 - **2026-11-21, 22:57 UTC.** Second scores of the day (headlines only): T1 B 71.59, the board's best; heart K2 49.51;
   embryo positions 67.11; T3 barred s2 62.30, the board's best and now the base for T3's later files. By the record's
   best headline per board the total is 197.04 (193.2 this morning). Next by the pre-set rules: T1 C; embryo
