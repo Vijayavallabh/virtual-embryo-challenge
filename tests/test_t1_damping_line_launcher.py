@@ -73,7 +73,9 @@ def test_the_launcher_reproduces_two_files_then_builds_each_line_file_twice():
 def test_every_step_writes_running_first_then_its_code():
     sh = _sh()
     assert 'begin() { echo running > "$S/$STEP.exit"; }' in sh
-    for step in ("gate", "tests", "D", "A", "done"):
+    # the gate's running mark comes right after the helpers it uses, before its first check
+    assert 'step_ok() { echo 0 > "$S/$STEP.exit"; }\nbegin\n\nhead=$(git rev-parse HEAD)\n' in sh
+    for step in ("tests", "D", "A", "done"):
         at = sh.index(f"STEP={step}\n")
         assert sh[at:].split("\n", 2)[1] == "begin", step  # the line after STEP=<step>
     assert 'for STEP in X15a X15b; do begin; build' in sh and 'for STEP in X20a X20b; do begin; build' in sh
