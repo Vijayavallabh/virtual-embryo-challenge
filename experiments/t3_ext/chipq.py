@@ -30,9 +30,13 @@ symbol, a score or the column of a dropped experiment.
 Steps (python -I -B experiments/t3_ext/chipq.py <step>):
   p1      prints exactly two integers for Ctnnb1: the number of kept experiments and |B|. Exit 0 when both bars hold
           (P1_MIN_EXPERIMENTS, P1_MIN_BOUND), 3 when not, 2 refused. It writes nothing.
-  tables  Gata4's raw table and the per-seed placebo tables (seeds vec.adoption.SEEDS) into --out (outside every
-          checkout), each with its manifest (t3x_tables.write_table, the outside tables' writer); prints file names and
-          sha256 only. Never Ctnnb1's table: that belongs to the build path after the captain's ruling.
+  tables  Gata4's raw table and the per-seed placebo tables (seeds vec.adoption.SEEDS), named chipq_Gata4 and
+          chipq_rand_seed0 to chipq_rand_seed9, into the folder the environment variable VEC_T3_EXT_TABLES_K27 names
+          (outside every checkout; no path is taken from the command line), each with its manifest
+          (t3x_tables.write_table, the outside tables' writer; a placebo's manifest records its target file's sha256
+          and pool index, never its name); prints file names and sha256 only. Never Ctnnb1's table: that belongs to
+          the build path after the captain's ruling. The committed listing experiments/t3_ext/TABLES_K27.sha256 is
+          written by the read's engineer, not here.
 """
 
 from __future__ import annotations
@@ -82,8 +86,10 @@ PLACEBO_DRAW = ("without replacement over the pool sorted by name: for s in vec.
                 "pool minus the antigens drawn for earlier seeds")   # settled A1 (reading B2 changed)
 P1_MIN_EXPERIMENTS = 3         # P1: at least 3 tier-U Ctnnb1 experiments
 P1_MIN_BOUND = 15              # P1: |B| at least 15
-TABLE_QUERY = "chipq_{q}"      # the tables step's file names (no rule-writer name was handed over); open point
+TABLE_QUERY = "chipq_{q}"      # the tables step's file names, kept (settled A5)
 TABLE_PLACEBO = "chipq_rand_seed{s}"
+ENV_TABLES = "VEC_T3_EXT_TABLES_K27"   # the tables step's folder, ~/v/vec-ext/t3/tables_k27 on the DGX (settled A5,
+#                                        reading B6 changed): named only by this variable, outside every checkout
 
 _SHA_LINE = re.compile(r"([0-9a-f]{64})  chipq_kept\.yaml\n?")
 
@@ -380,15 +386,36 @@ def p1(genes: list[str], root=None, kept: Kept | None = None) -> tuple[int, int,
     return r["n_kept"], r["n_bound"], r["n_kept"] >= P1_MIN_EXPERIMENTS and r["n_bound"] >= P1_MIN_BOUND
 
 
-def tables(genes: list[str], out, seeds=None, root=None, kept: Kept | None = None) -> list[tuple[str, str]]:
-    """Gata4's raw table and the per-seed placebo tables, written with their manifests; [(file name, sha256)]."""
+def tables_folder(env: dict | None = None) -> Path:
+    """The tables step's folder: the environment variable ENV_TABLES, set, absolute, no symlink, an existing directory,
+    outside every checkout (t3x_common.outside_repo). Returns its realpath. No other path is taken."""
+    env = os.environ if env is None else env
+    v = env.get(ENV_TABLES)
+    if not v:
+        raise Refused(f"the environment variable {ENV_TABLES} is not set: refused (no table path is taken otherwise)")
+    p = Path(v)
+    if not p.is_absolute():
+        raise Refused(f"{ENV_TABLES} is not an absolute path: refused")
+    if p.is_symlink():
+        raise Refused(f"{ENV_TABLES} names a symlink: refused")
+    if not p.is_dir():
+        raise Refused(f"{ENV_TABLES} does not name a directory: refused")
+    try:
+        return tb.cm.outside_repo(Path(os.path.realpath(p)))
+    except tb.cm.Refused as e:
+        raise Refused(f"{ENV_TABLES}: {e}") from None
+
+
+def tables(genes: list[str], out=None, seeds=None, root=None, kept: Kept | None = None) -> list[tuple[str, str]]:
+    """Gata4's raw table and the per-seed placebo tables, written with their manifests; [(file name, sha256)]. `out`
+    None (the step's only form) is tables_folder(); a folder given here (tests) must lie outside every checkout."""
     from vec.adoption import SEEDS
 
     seeds = SEEDS if seeds is None else seeds
     root = cf.root_of(root)
     man = cf.load_manifest(root)
     kept = load_kept() if kept is None else kept
-    out = cf.outside_repo(out)
+    out = tables_folder() if out is None else tb.cm.outside_repo(out)
     q = PRACTICE_QUERY
     rq = build(q, genes, root, kept, man)
     pool = placebo_pool(q, rq["K"], genes, root, man)
@@ -404,7 +431,7 @@ def tables(genes: list[str], out, seeds=None, root=None, kept: Kept | None = Non
                       "target_sha256": man["files"][cf.target_rel(a)]["sha256"]}))
     for name, _, _ in jobs:
         if (out / "factors" / f"{name}.csv").exists() or (out / f"{name}_manifest.json").exists():
-            raise Refused(f"{name}: already written in --out: nothing is overwritten")
+            raise Refused(f"{name}: already written in the tables folder: nothing is overwritten")
     written = []
     for name, r, extra in jobs:
         manifest = {"candidate": "CHIPQ-S", "register_row": "X018", "query": q, **extra,
@@ -432,8 +459,6 @@ def main(argv: list[str] | None = None) -> int:
         q.add_argument("--data", default=None)
         q.add_argument("--run-dir", default=None)
         q.add_argument("--decision", default=None)
-        if name == "tables":
-            q.add_argument("--out", required=True)
     a = ap.parse_args(argv)
     import contextlib
 
@@ -453,7 +478,7 @@ def main(argv: list[str] | None = None) -> int:
             if a.step == "p1":
                 n, b, ok = p1(genes, None, kept)
             else:
-                written = tables(genes, a.out, None, None, kept)
+                written = tables(genes, tables_folder(), None, None, kept)
     except (Refused, tb.Refused) as e:
         print(f"REFUSED: {e}", file=sys.stderr)
         return 2

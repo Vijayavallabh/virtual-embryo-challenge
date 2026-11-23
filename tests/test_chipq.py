@@ -715,7 +715,40 @@ def _main_tables(db, kept, monkeypatch, out):
     monkeypatch.setattr(cq, "load_kept", lambda *a, **k: kept)
     monkeypatch.setattr(cq, "barred_genes", lambda *a, **k: list(GENES))
     monkeypatch.setattr(cf, "DATA_ROOT", db)
-    return cq.main(["tables", "--out", str(out)])
+    out.mkdir(parents=True, exist_ok=True)
+    monkeypatch.setenv(cq.ENV_TABLES, str(out))
+    return cq.main(["tables"])
+
+
+def test_the_tables_step_writes_into_the_folder_its_variable_names(db, kept, tmp_path, monkeypatch, capsys):
+    out = tmp_path / "tables_k27"
+    assert _main_tables(db, kept, monkeypatch, out) == 0
+    lines = capsys.readouterr().out.splitlines()
+    names = ["chipq_Gata4.csv", *(f"chipq_rand_seed{s}.csv" for s in range(10))]
+    assert [x.split("  ")[1] for x in lines] == names
+    for x in lines:
+        sha, name = x.split("  ")
+        assert cf.sha256_file(out / "factors" / name) == sha
+    with pytest.raises(SystemExit):   # no path from the command line
+        cq.main(["tables", "--out", str(tmp_path / "elsewhere")])
+
+
+def test_the_tables_folder_is_checked(tmp_path, monkeypatch):
+    d = tmp_path / "k27"
+    d.mkdir()
+    assert cq.tables_folder({cq.ENV_TABLES: str(d)}) == d.resolve()
+    (tmp_path / "link").symlink_to(d)
+    (tmp_path / "file").write_text("x")
+    for v, msg in ((None, "not set"), ("", "not set"), ("relative/k27", "absolute"),
+                   (str(tmp_path / "link"), "symlink"), (str(tmp_path / "file"), "directory"),
+                   (str(tmp_path / "missing"), "directory"),
+                   (str(ROOT / "experiments"), "checkout|repository")):
+        with pytest.raises(cq.Refused, match=msg):
+            cq.tables_folder({} if v is None else {cq.ENV_TABLES: v})
+    monkeypatch.delenv(cq.ENV_TABLES, raising=False)
+    with pytest.raises(cq.Refused, match="not set"):
+        cq.tables_folder()
+    assert cq.ENV_TABLES == "VEC_T3_EXT_TABLES_K27"
 
 
 @pytest.mark.parametrize("case", ["corrupted", "leftover_part"])
