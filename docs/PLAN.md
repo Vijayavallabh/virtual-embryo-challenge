@@ -11142,3 +11142,20 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     twice, the list) runs in the detached worktree `~/v/scratch/t1line-wt` at 6bc36d9 since 15:22 UTC (the gate's exit
     record; this entry first said "about 15:40", an error of the AI assistant's); its
     sha256 is recorded in this log before any score.
+- 2026-11-23 (g), T3 pathway tier: the screened search found no further organiser statement; the weighing stands
+  (state at 15:26 UTC, 2026-11-23). Written by the AI assistant.
+  - **The check** (the cold challenger's cheapest check of entry (f); workflow screened-read-phenocopy-statements). A
+    screening agent read the team's committed digests (the Slack digest in full, the other files by search) and
+    searched the organisers' posts and threads of every date in the public channel for one question: has an organiser
+    said whether outside perturbation data may be used for Task 3 when it comes from a gene other than the two
+    held-out ones, from a perturbation that phenocopies a held-out knockout, or from a held-out gene at another stage
+    or tissue. A second agent audited its block and released it with four removals (a team reading, a description of
+    an item already on record, a participant's question, a process note). The main session opened neither source and
+    no transcript.
+  - **What came through.** "No further organiser statement found" in either source: every organiser item on the
+    question is one of the three already on record (the genotype clause, the ruling of 2026-10-15, the approval of
+    2026-08-18). The screening agent reported its withheld passages by class and count only; none reached the main
+    session.
+  - **What it changes.** Nothing: the odds of entry (f) stand (they were given without such a statement), the verdict
+    stands, and the question to the captain keeps its default, the tier stays out. The captain is told.
+    `docs/DATA_POLICY.md` change note 2026-11-23 (b).

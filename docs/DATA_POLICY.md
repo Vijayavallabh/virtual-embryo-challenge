@@ -1501,3 +1501,17 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     email"). No procedural fact about the hidden E7.75 sections or the hidden E12.5 libraries is known to the team
     beyond the collection text released through the screen on 2026-11-10. No figure about a held-out sample was
     released or used.
+- 2026-11-23 (b), the genotype clause and outside perturbations of other genes: a screened search (`docs/PLAN.md`
+  decision log 2026-11-23 (e) to (g)). Written by the AI assistant.
+  - **Why.** The captain asked for the Task 3 tier of outside knockouts of genes in the held-out gene's own pathway to
+    be weighed. The clause above ("or from a perturbation that phenocopies them") is not limited to the held-out gene;
+    the ruling of 2026-10-15 governs literature and priors and does not narrow it for measured perturbation data; the
+    ruling of 2026-08-18 shows the organisers weigh distance in time. The question put to the captain on 2026-11-20
+    quoted neither the clause nor the plan's line that excludes GSE165300.
+  - **The search.** A screening agent and an auditor, the committed digests and the public channel, every date: no
+    organiser statement on phenocopies, on other genes' perturbations or on a held-out gene at another stage beyond
+    the three items on record.
+  - **Where it stands.** The tier's datasets stay held (`experiments/t3_ext/datasets.yaml`, `t3x_common.HELD_EXTRA`);
+    the plan's line on GSE165300 stands; one priced question is with the captain, default: the tier stays out. A cold
+    rules reader's odds that an organiser counts a dataset as held out are in the decision log entry (f); they are
+    odds, not a ruling.
