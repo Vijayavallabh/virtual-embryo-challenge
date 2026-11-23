@@ -2,7 +2,32 @@
 
 ## Current Objective
 
-- **State at 2026-11-23, 16:53 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-23, 17:08 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-23 (p); next label (q). Local main = origin/main at e69d0e1 or one notes commit after it.
+  - **T1: THE COMBINED FILE IS BUILT AND HANDED OVER (entry (p)).** `runs/manual_upload/T1_s2rcMSB.h5ad`, sha256
+    78bb17eea5721e590cfd2c9f707e9cd6f2f496e081acede4f697dc4035871da2 (set t1msc, run m1, a3e879a; record
+    `experiments/builds/results/t1msc_a3e879a_m1.txt`). Place by the captain's "try it": the plain momentum file's
+    place unless the captain names another; MS (`T1_s2rc_MS.h5ad`, 6103d105...) follows it. Neither has a score. When
+    T1 scores are pasted: headline only; MSB and MS serve the best-headline mark only and enter no line.
+  - **T3: ROW K27 IS PLACED, REGISTRATION COMMIT REG = 4b11323e8da674804e944d4d16e770a095284cd1 (entry (o)).**
+    `~/v/vec-campaign-c` on the DGX is checked out at REG (clean; two untracked copies of K24's reading moved aside to
+    `~/v/scratch/k24_results_dgx_copy`, identical to the committed ones); `~/v/vec-ext/t3/tables_k27` exists (empty);
+    both launcher invocations traced under a throwaway HOME (exit 97, all.exit written). **WAITING ON** the
+    target-file download (second run, in `~/v/scratch/k27-wt` at 66d2e21; waiter bbxct9705; exit record
+    `~/v/scratch/k27_targets2.exit`; its two count lines name no antigen). ON exit 0: run `chipq_fetch.py verify`
+    there (exit code only), then in `~/v/vec-campaign-c`: `export PATH=$HOME/.local/bin:$PATH UV_FROZEN=1
+    UV_NO_SYNC=1; setsid nohup bash experiments/t3_decomp/run_k27.sh db 4b11323e8da674804e944d4d16e770a095284cd1`
+    detached; waiter on `~/v/scratch/k27_4b11323/db/all.exit` (0 P2 passed; 28 P1 stop; 29 P2 stop; 22 refused). P1's
+    two counts are in `runs/k27_4b11323/p1.out`. On 0: read `~/v/scratch/k27_4b11323/db/second_commit.txt` (sha256 and
+    table names only), make the SECOND commit on a side branch cut at REG (`campaign/k27-run`): only
+    `experiments/t3_ext/TABLES_K27.sha256` and the pin lines of `experiments/t3_decomp/k27_chip_query.py`; deliver;
+    check out SECOND in `~/v/vec-campaign-c`; `run_k27.sh run <SECOND> 4b11323e8da674804e944d4d16e770a095284cd1`;
+    waiter on `.../run/all.exit`; read only `grep '^OUTCOME'` of
+    `experiments/t3_decomp/results/k27_chip_query/reading.txt`. If P1 passes, launch the build-path engineer and
+    reviewer at once. Add the download's counts and the manifest's state to register row X018. Count the tries in the
+    ledger's totals when P3 starts.
+  - **OPEN WITH THE CAPTAIN (each default no change):** the T3 pathway tier (stays out); MX2s (stays parked).
+- **State at 2026-11-23, 16:53 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-23 (n); next label (o). Local main = origin/main at f2a0bdf or one notes commit after it. The combined MS
   build (run m1, waiter bcqv7ks8j) is still running; see the bullet below for what to do on done=0.
   - **CHIPQ-S, WHERE IT STANDS.** Database code merged (f3cc4d7); lists and rows fetched on the DGX; the screen done

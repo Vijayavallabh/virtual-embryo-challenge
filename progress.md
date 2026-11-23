@@ -2,6 +2,13 @@
 
 ## Current State
 
+- **2026-11-23, 17:08 UTC.** The combined momentum file for T1 (the best file's command plus the momentum step, ruling
+  row R26) is built twice with one sha256 after six identity rebuilds and handed over; by the captain's word it takes
+  the plain momentum file's place in the queue. The new T3 candidate's ledger row K27 is placed after a cold attack
+  and thirteen corrections; its database code is merged after four review rounds; two readers screened the experiments
+  (5 of 20 and 7 of 32 kept); the binding files are downloading, then the two free gates run. Decision log 2026-11-23
+  (l) to (p).
+
 - **2026-11-23, 16:11 UTC.** The captain ordered a combined momentum file ("combine MS"). Its list, written by
   score-blind analysts, is in force (ruling row R26): one file, the best T1 file's command with the momentum step
   added, queued last; its builder is being coded. The new T3 candidate's ledger row was attacked cold (13 corrections,
