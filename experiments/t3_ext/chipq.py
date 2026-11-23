@@ -71,14 +71,14 @@ PHI_M_SHA256 = "64b1e0b8572c7193ed1e1f0b7339a26081e601f1e706e6b08193e1718dc5c7e8
 K_MAX = 40                     # step 4: K = min(40, |B_q|)
 BOUND_SHARE = 0.5              # step 4: score > 0 in at least half of E_q (2 * count >= n), and in at least one
 W_TOP, W_BOTTOM = 1.0, 0.5     # step 5: linear from 1 (rank 1) to 0.5 (rank K); K = 1 gives w = 1
-RANK_TIES = "file order"       # step 4: equal s_g keep the barred factor's gene order (a stable sort); open point
+RANK_TIES = "file order"       # step 4: equal s_g keep the barred factor's gene order (a stable sort); stands (A3)
 FINISH_DEN = None              # step 6: t3x_tables.finish's den. None = a zero profile, so finish does exp, clip and
-#                                absent = 1 and no rescale (the specification lists only those two); open point
+#                                absent = 1 and no rescale (the specification lists only those two); stands (A4)
 S_STAR = 0.04949423311987974   # step 7: K23's committed size (k24_wider_tables.S_STAR; a test pins the equality)
 SIZES = {"S*": S_STAR, "4S*": 4 * S_STAR}
 POOL_MIN_KEPT = cf.PLACEBO_MIN_KEPT   # "at least 2 screened-clean experiments"
 POOL_EXCLUDE = ("Ctnnb1", "Gata4", "Gata6")   # and q itself
-POOL_BAND = (0.75, 1.25)       # |B_p| in [0.75 K_q, 1.25 K_q], both ends included, K_q = the query's K; open point
+POOL_BAND = (0.75, 1.25)       # |B_p| in [0.75 K_q, 1.25 K_q], both ends included, K_q = the query's K; stands (A2)
 PLACEBO_SEED_BASE = 20261124   # seed 20261124 + s
 POOL_MIN_SIZE = 10             # the pool holds at least 10 antigens, or the step refuses (settled A1, D's P2 bar)
 PLACEBO_DRAW = ("without replacement over the pool sorted by name: for s in vec.adoption.SEEDS in order, "
