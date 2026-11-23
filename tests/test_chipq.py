@@ -35,8 +35,8 @@ def _load(name):
     return m
 
 
-cf = _load("chipq_fetch")
 cq = _load("chipq")
+cf = cq.cf   # the very module chipq uses, so a patched DATA_ROOT reaches it
 
 GENES = [f"g{i:03d}" for i in range(80)][::-1]   # the panel, in a file order that is not sorted
 CLASS = "Unclassified"
@@ -115,7 +115,7 @@ def make_db():
     placebo_ids = {}
     for a, (k, d, _) in PLACEBO.items():
         placebo_ids[a] = []
-        for j in range(k):
+        for _ in range(k):
             row(f"SRX{n}", a, CLEAN)
             placebo_ids[a].append(f"SRX{n}")
             n += 1
@@ -531,7 +531,8 @@ def _barred_run(tmp_path, genes):
     (run / "factors").mkdir(parents=True)
     p = run / "factors" / f"{cq.BARRED_NAME}.csv"
     p.write_text("gene,factor\n" + "".join(f"{g},1.0\n" for g in genes))
-    (run / "factors" / "factors.json").write_text(json.dumps({"files": {cq.BARRED_NAME: {"sha256": cf.sha256_file(p)}}}))
+    rec = {"files": {cq.BARRED_NAME: {"sha256": cf.sha256_file(p)}}}
+    (run / "factors" / "factors.json").write_text(json.dumps(rec))
     return bs, run
 
 
