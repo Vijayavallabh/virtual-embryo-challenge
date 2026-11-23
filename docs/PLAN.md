@@ -11858,3 +11858,54 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     and occupancy term.
   - **What follows.** Uploads are the captain's own acts, on the captain's own condition. Nothing changes in any file,
     rule or queue.
+- 2026-11-23 (aa), which waiting files the record itself expects below their board's best: a checked reading, and
+  three corrections to entry (z) (state at 22:23 UTC, 2026-11-23). Written by the AI assistant.
+  - **What the captain sent.** A side agent's note with no words of the captain's added: the records never forecast a
+    gain at the test, so the condition of entry (z) as stated blocks every waiting file; the board's best T1 and
+    embryo files were rated the same way before their uploads; "Consider asking which files the record expects to
+    score below today's best, and skipping only those." The AI assistant changed no rule and no queue on it (a
+    forwarded note is not an order) and answered the question it suggests, as information. The captain's condition of
+    entry (z) stands until the captain changes it.
+  - **How it was answered.** One reader per board judged each of the 18 waiting files that need no earlier score, from
+    the committed record alone, under definitions fixed in the brief (below: the record's own range or words put the
+    file under the board's best; not below: its range reaches above it or its practice read puts it ahead of the very
+    form that holds the best; otherwise no expectation; a doubt goes to no expectation); a cold verifier per board
+    then tried to refute each verdict against its sources (quotations word for word, both headlines, the arithmetic).
+    One verdict was overturned. The readers and verifiers read headlines only; several report passing text with
+    per-metric wording about test uploads without using it.
+  - **Below their board's best, by the record (3).** `T1_s2rc_MS.h5ad`: on the 70.60 file, the record's range for its
+    gain at the test is 0 to +0.73, so it tops out at 71.33 under 71.59. `T1_s2none.h5ad` (file F): practice never
+    puts it above the 70.60 atlas file it was cut from (row T62, J6 range 0 to +1.97 for the atlas file over it), and
+    entry (b) of this day says it "cannot raise T1's mark"; it was built as the no-outside-data file, not for a gain.
+    `T3_refused_s1.h5ad`: the plan table of 2026-11-18 (k) gives it an expected board score of about 54 (49 to 60),
+    and entry 2026-11-19 (s) a tail of 57 to 59, both under 62.30; it is the frozen rule's own file, which uses no
+    Gata4 validation file.
+  - **Not below, by the record (2), both on the embryo board; the AI assistant, recused on the embryo's shape forms
+    and occupancy term, passes the verified statements on and gives no preference.** `T2embryo_s2x_ovhi.h5ad` (O_hi):
+    row E51's fixed reading puts it ahead of the very form that holds the board's best on practice (+1.059 merged, 10
+    of 10 seeds), with the record's own caution that it could lose about a point if the hidden stage was measured
+    shallowly and that none of the gains forecasts a test score. `T2embryo_s2.h5ad`: the only range on record is the
+    plan table of 2026-11-18 (k), about 67 (60 to 74), written before the overlay file existed and never withdrawn;
+    its top is above 69.9 and its centre below.
+  - **No expectation either way (13).** T1: `T1_s2rcC.h5ad`, `T1_s2rcB2.h5ad`, `T1_s2rcMSB.h5ad`, `T1_s2rcA15.h5ad`
+    (unpriced combinations or settings no practice run read; "a returned headline chooses"). T3: `T3_c1_s2.h5ad`,
+    `T3_c2_s2.h5ad` (no gain estimated, no fair practice test), `T3_k23_s2.h5ad` (its practice lead of +0.19 to +0.93
+    is over the barred factor at another composition than the file that holds the best). Embryo:
+    `T2embryo_s2x_cr.h5ad`, `T2embryo_s2x_crs.h5ad` (they trail the exact-position form on practice by 2.70 and 1.42
+    board points, and the record says of those tables that they decide nothing and predicts no sign at the test),
+    `T2embryo_s2xs_ov.h5ad`. Heart: `T2heart_organ_half.h5ad` (practice cannot test its bet),
+    `T2heart_core_ts05_half.h5ad` (the reader's not below was overturned: row H28's outcome line puts the practice
+    edge down to count noise or depth, and row R28 estimates no gain), `T2heart_organ_ts05_half.h5ad` (never read on
+    practice). The nine files that wait on an earlier score are decided by their lines' rules and were not judged.
+  - **Three statements of entry (z) and of the AI assistant's reply to the captain are corrected by this reading.**
+    (1) "The record holds no forecast of a test score for any waiting file" was wrong for two older files: the plan
+    table of 2026-11-18 (k) gives expected board scores for the refused s1 and for `T2embryo_s2.h5ad`. (2) The two
+    copy-rows embryo files were listed as files whose record points below the board's best: the checked verdict is no
+    expectation. (3) File F and the refused s1 were listed under not enough information: the checked verdict for both
+    is below. The AI assistant's first pass was its own quick reading of the ruling rows; it had not searched the plan
+    tables.
+  - **One disclosure from a verifier:** to read ten long ledger rows it wrote them to temporary files in the session's
+    scratch folder and deleted them by literal path, against its brief's 'write no file'; no repository file was
+    touched.
+  - **What follows.** Nothing changes in any file, rule or queue. If the captain adopts the note's rule, the three
+    files of the first list are the ones it would skip; uploads are the captain's own acts.

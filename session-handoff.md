@@ -6,6 +6,14 @@
   2026-11-23 (y); next label (z), then (aa). Ruling rows through R29; next R30. Register through X020; next X021. T1's
   next row is T73. Tries unchanged: T1 463, embryo 88, heart 97, T3 74. NOTHING RUNS, here or on the DGX; no workflow
   is open. Main at the commit of this note.
+  - **ADDED 22:23 UTC: A CHECKED LIST OF WHAT THE RECORD EXPECTS BELOW EACH BOARD'S BEST** (log (aa); next label (bb);
+    scratch `lift8/record_expects_below.json`). A forwarded side note (no words of the captain's) suggested skipping
+    only files the record expects below today's best; no rule or queue was changed. Four readers and four cold
+    verifiers: BELOW: `T1_s2rc_MS.h5ad`, `T1_s2none.h5ad`, `T3_refused_s1.h5ad`. NOT BELOW: `T2embryo_s2x_ovhi.h5ad`,
+    `T2embryo_s2.h5ad` (an old range, 60 to 74). NO EXPECTATION: the other 13 that need no earlier score. My reply of
+    entry (z) was wrong on three points (the 2026-11-18 (k) plan table does hold expected board scores for two older
+    files; the copy-rows embryo files are 'no expectation', not 'below'; F and the refused s1 are 'below'): corrected
+    to the captain. LESSON: before saying 'the record holds none', search PLAN.md's plan tables as well as the ledger.
   - **ADDED 22:02 UTC: THE CAPTAIN'S UPLOAD CONDITION** (log (z); next label is now (aa)). The captain uploads alone
     and "only if the expected leaderboard scores are closer to these targets than our current scores", with four
     per-board target figures that are NOT in the repository (possible per-board leaderboard figures: never record
