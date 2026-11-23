@@ -30,14 +30,21 @@ Two lines of defence keep window samples out (README, "Pinned samples"):
                         writes the processing text they give to meta/<ACC>/processing_text_pinned.txt). No hash is
                         typed by hand. read_by and date are placeholders the atlas check refuses until the readers
                         replace them. It never writes atlases.yaml.
-  fetch ACC --dest D --plan-sha256 S
+  heads ACC --dest D --plan-sha256 S
                         S must be the sha256 of the stored plan.json (a plan nobody read cannot be fetched). The plan
                         must have passed under the current atlas entry (pins included) and clearance; the series'
                         metadata is then downloaded and planned AGAIN, and the live plan must pass with the same
-                        processing text, USED samples, records (each hashing to its pin) and files. Only then are the
-                        USED samples' listed files downloaded (never a series RAW.tar, a bigwig or any file outside the
-                        sample's own folder) to D/raw/<ACC>/<GSM>/, with D/raw/<ACC>/MANIFEST.json (url, bytes,
-                        sha256 per file; each sample's full record, its record_sha256 and pin; the series records).
+                        processing text, USED samples, records (each hashing to its pin), files and series-wide
+                        fields. Only then are the USED samples' barcode and feature files downloaded, never a matrix,
+                        to D/raw/<ACC>/<GSM>/, with D/raw/<ACC>/HEADS.json; screens.py runs on them.
+  fetch ACC --dest D --plan-sha256 S
+                        The same checks; for an atlas with screens, only while experiments/t1_ext/screens.yaml records
+                        the member kept with the sha256 of a screen file that says every check passed on the heads on
+                        disk: the heads are re-hashed and only the matrices are fetched. Every data file comes from
+                        the sample's own GEO folder only (never a series RAW.tar, a bigwig, a never-fetch sample's or
+                        file's name); D/raw/<ACC>/MANIFEST.json holds url, bytes and sha256 per file, each sample's
+                        full record, its record_sha256 and pin, the series records, the series-wide fields and the
+                        screen.
 
 Requests go only to ftp.ncbi.nlm.nih.gov over https with a generic user agent (geo.get). Exit status 2 on a
 refusal.
