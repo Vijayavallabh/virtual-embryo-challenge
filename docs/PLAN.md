@@ -10943,3 +10943,41 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     stays unknown, as the analysts' question of 2026-11-22 says. Recorded in `docs/ORGANIZER_QUESTIONS.md` and
     `docs/DATA_POLICY.md` (entry 2026-11-23 (a)). This was the last read that could still change a build; none further
     is scheduled by this entry.
+- 2026-11-23 (b), the captain's bar of 200 for today's uploads and the order for a drastic outside-data round (state
+  at 14:40 UTC, 2026-11-23). Written by the AI assistant.
+  - **The captain's words, verbatim:** "ultrathink Now for the 2 submissions of today, I will only submit it if it
+    reaches the score more than 200. If you really believe that it doesn't, then improve it drastically and utilize
+    external datasets extensively [Even if it takes 1TB of space in the dgx]".
+  - **The AI assistant's reading (its own).** (1) The captain asks for its honest belief on whether today's uploads
+    take the total above 200. (2) If it does not believe so, it is to improve the files drastically and use outside
+    datasets extensively; disk on the DGX up to 1 TB is allowed. This renews the bulk approval of outside sources and
+    lifts cost only: no rule of the organisers, no closed lever, not the register row before a source enters a model,
+    not the recusals. (3) It answers none of the six questions still open (SO, O_hi, MS, the heart's file D, T1 line
+    1's step back, the heart line's exception).
+  - **Its answer, given to the captain plainly.** It does not believe it. The standing by best headline per board is
+    197.04, so 200 needs 2.96 more. Nothing new can be designed, reviewed, read on practice and built in the hours
+    left today, so today's uploads can only be files already built. Its rough odds, with the heart left out because it
+    is recused on the heart's scope and size (each heart point is worth half a point): about one in 25 today if the
+    best ready files go up and the captain names SO and O_hi, close to nil otherwise; about one in 13 by the deadline
+    if every ready file gets its upload. These are its own forecasts from the team's own headlines and the practice
+    reads; nothing in any file is computed from them, and its earlier forecasts have run low.
+  - **Two process facts it told the captain.** A file that scores lower does not replace a board's best, so an upload
+    cannot lower the standing, while an unused daily slot is gone; and the three T1 search lines and the T3 line step
+    only on returned headlines, so they stand still without uploads. For the 200 goal the no-outside-data file F
+    cannot raise T1's mark; if today's two T1 slots are the scarce thing, C and the 2.0 file are the ones that can.
+    The order of uploads stays the captain's.
+  - **What it found while checking the record.** The organisers' ruling of 2026-10-15 allows generic pathway and
+    gene-set databases for Task 3 (except sets built from a knockout or perturbation of the held-out gene); the
+    October plan listed such a component (item B), it was pruned on its odds and never built, and no Task 3 try has
+    used a generic database. The team's bar of entry 2026-11-21 (i) is on a language model's or the literature's
+    knowledge of the held-out gene; a pinned database queried by code with the gene's name is the route the ruling
+    allows. This is put to the designers as an allowed class, not as a design.
+  - **Started.** Workflow drastic-outside-data-round (nine agents, all blind to test scores): three designers on T3
+    (generic databases keyed by the gene's name; many more outside perturbations; a free lens), two on T1 (more
+    atlases; a free lens), one on the two T2 boards, and one cold challenger per track who strikes what is not legal
+    by the rules' own words, already closed in the ledger or too late, and returns final specifications for at most
+    two candidates on T3, two on T1 and one on T2. Limits given to them: a built file by 2026-11-25 12:00 UTC; about
+    600 GB of new outside data in all (the DGX's shared disk has 1.2 TB free; its root disk is full); closed levers
+    need the captain's named exception; the held-out gene's own pathway tier of outside knockouts is treated as held
+    out unless the rule's words show otherwise. The main session designs none of it; kept candidates go to engineers
+    and reviewers, then to practice reads under ledger rows.

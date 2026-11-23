@@ -2,6 +2,11 @@
 
 ## Current State
 
+- **2026-11-23, 14:40 UTC.** The captain set a bar of 200 for today's uploads and ordered a drastic improvement using
+  outside datasets extensively (up to 1 TB on the DGX). The AI assistant answered that it does not believe today's
+  ready files reach 200 (standing 197.04) and started a nine-agent, score-blind design round on all boards with cold
+  challengers. Decision log 2026-11-23 (b).
+
 - **2026-11-23, 04:41 UTC.** The second screened read for an organiser answer to the seventh email (approved on 13
   Nov) ran: no answer in the mail thread, the Slack channel or the Data Protocol page, so by the reading fixed
   beforehand nothing changes. The two files of T1's third search line (ordered by the captain on 22 Nov) are built.

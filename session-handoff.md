@@ -2,7 +2,27 @@
 
 ## Current Objective
 
-- **State at 2026-11-23, 04:41 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-23, 14:40 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-23 (b); the next label is 2026-11-23 (c). **THE CAPTAIN'S INSTRUCTION OF 23 NOV (entry (b)):** "for the 2
+  submissions of today, I will only submit it if it reaches the score more than 200. If you really believe that it
+  doesn't, then improve it drastically and utilize external datasets extensively [Even if it takes 1TB of space in the
+  dgx]". My answer, given plainly: I do not believe today's ready files reach 200 (standing 197.04; rough odds one in
+  25 today, one in 13 by the deadline, heart left out); an upload cannot lower the standing and the search lines need
+  uploads. It answers none of the six open questions.
+  - **RUNNING: workflow wprn6jz7a (drastic-outside-data-round; hand-back to `lift8/`).** Six score-blind designers and
+    three cold challengers; it returns final specifications for at most two T3, two T1 and one T2 candidate. For each
+    kept candidate: engineer + reviewer workflow (blocker standard up front; worktree isolation; test rules), register
+    rows first, ledger row before any read, DGX worktree with its own environment and PATH exported, practice read,
+    then the test-board build twice; a file from it goes to the captain as one priced question (T2 files with an
+    outside atlas need A15's question; closed levers need the captain's named exception). Disk cap for the round:
+    about 600 GB under `/home/prachh/v` (check `df` before each download; the root disk is full). A built file must
+    exist by 2026-11-25 12:00 UTC.
+  - **An allowed class found unused (entry (b)):** generic pathway and gene-set databases for T3 (the organisers'
+    ruling of 2026-10-15; `docs/DATA_POLICY.md`, 'Organiser rulings on record'), queried by code with the gene's name;
+    never from a language model's memory or the literature; I name no pathway gene.
+  - **Everything else as below:** the screened read of 23 Nov found no organiser answer; T1's third line and its two
+    files are in force; six questions and the turn order are with the captain; nothing else runs.
+- **State at 2026-11-23, 04:41 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-23 (a); the next label is 2026-11-23 (b). The second screened read for the seventh email ran (the captain's
   approval of 13 Nov; reminder): NO ANSWER in the mail thread, the Slack channel or the Data Protocol page; by the
   reading fixed beforehand nothing changes; recorded in `docs/ORGANIZER_QUESTIONS.md` and `docs/DATA_POLICY.md`.
