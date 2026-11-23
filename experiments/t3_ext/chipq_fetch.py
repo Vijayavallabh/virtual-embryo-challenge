@@ -10,8 +10,9 @@ Genome mm10 only; of the per-antigen files only the target-gene files within 5 k
 only through the URL the analysis list gives for that antigen. A signal, bigWig, bigBed or BED file is never fetched.
 
 Steps (python -I -B experiments/t3_ext/chipq_fetch.py <step>):
-  lists    the analysis list, the experiment list and the archive's README (it carries the licence; saved and hashed,
-           nothing of it printed), into <root>/lists/.
+  lists    the analysis list and the experiment list, into <root>/lists/. With the target-gene files these are the
+           specification's three kinds of file and the only ones fetched (the licence words are in the specification
+           and go into register row X018 as the archive states them).
   rows     for each query antigen held for mm10 (Ctnnb1, Gata4; Mab21l2 only if held) its experiment-list rows go to
            <root>/screen/<antigen>.rows.tsv for the two screening readers, and only the number of rows is printed.
            For every other mm10 antigen with a target-gene file the committed keyword filter (DROP_PATTERNS) runs on
@@ -59,7 +60,6 @@ ARCHIVE = "https://dbarchive.biosciencedbc.jp/data/chip-atlas/LATEST/"
 LISTS = {  # name in <root>/lists/ -> URL (the DBCLS archive's download page)
     "chip_atlas_analysis_list.zip": ARCHIVE + "chip_atlas_analysis_list.zip",
     "chip_atlas_experiment_list.zip": ARCHIVE + "chip_atlas_experiment_list.zip",
-    "README_e.html": ARCHIVE + "README_e.html",   # the archive's README: it states the licence (CC BY-SA 4.0)
 }
 ANALYSIS = "chip_atlas_analysis_list.zip"
 EXPERIMENTS = "chip_atlas_experiment_list.zip"
@@ -386,10 +386,10 @@ def analysis_rows(raw_zip: bytes) -> dict[str, str]:
     return out
 
 
-# The experiment list's layout (README_e.html, "Experiment list", and the file itself: one CSV member with this header
-# and 17 fields per row). The keyword filter reads the metadata fields SCREENED_COLS (antigen class, antigen, cell-type
-# class, cell type, cell-type description, title, the authors' metadata): not the id, the genome, the processing logs
-# (read counts) or the seven file links.
+# The experiment list's layout (the archive's documentation, "Experiment list", and the file itself: one CSV member
+# with this header and 17 fields per row). The keyword filter reads the metadata fields SCREENED_COLS (antigen class,
+# antigen, cell-type class, cell type, cell-type description, title, the authors' metadata): not the id, the genome,
+# the processing logs (read counts) or the seven file links.
 EXPERIMENT_COLUMNS = ("Experimental ID", "Genome assembly", "Antigen class", "Antigen", "Cell type class", "Cell type",
                       "Cell type description", "Processing logs", "Title", "Meta data", "BigWig",
                       "Peak-call (BED) (q < 1E-05)", "Peak-call (BED) (q < 1E-10)", "Peak-call (BED) (q < 1E-20)",

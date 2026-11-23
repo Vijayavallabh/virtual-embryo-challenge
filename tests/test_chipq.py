@@ -129,8 +129,7 @@ def make_db():
     experiments = _zip("chip_atlas_experiment_list.csv", exp.getvalue())
 
     files = {cf.LISTS["chip_atlas_analysis_list.zip"]: analysis,
-             cf.LISTS["chip_atlas_experiment_list.zip"]: experiments,
-             cf.LISTS["README_e.html"]: b"<html>licence text</html>"}
+             cf.LISTS["chip_atlas_experiment_list.zip"]: experiments}
     https = base.replace("http://", "https://")
     files[f"{https}Ctnnb1.5.tsv"] = target_file("Ctnnb1", QUERY_IDS["Ctnnb1"], bound_rows(16, 4, 3, seed=1))
     files[f"{https}Gata4.5.tsv"] = target_file("Gata4", QUERY_IDS["Gata4"], bound_rows(20, 4, 5, seed=2, offset=7))
@@ -209,7 +208,9 @@ def kept(tmp_path):
 
 def test_fetch_steps_hosts_agent_counts_and_manifest(tmp_path, net):
     root = tmp_path / "chipatlas"
-    assert cf.step_lists(root) == {"files": 3}
+    assert cf.step_lists(root) == {"files": 2}
+    # the specification's three kinds of file only: the two lists and the target-gene files (no README page)
+    assert set(cf.LISTS) == {"chip_atlas_analysis_list.zip", "chip_atlas_experiment_list.zip"}
     r = cf.step_rows(root)
     assert r["rows"] == {"Ctnnb1": 4, "Gata4": 4, "Mab21l2": 0}
     # P01 (2 kept), P02, P03 (3), P04, P05, P07, Gata6 keep at least two; P06 keeps one
@@ -226,6 +227,8 @@ def test_fetch_steps_hosts_agent_counts_and_manifest(tmp_path, net):
         assert agent == cf.USER_AGENT
         assert not re.search(r"bigwig|\.bw$|\.bed|bigbed|\.bb$|\.1\.tsv|\.10\.tsv", url, re.IGNORECASE)
     assert not re.search(r"embryo|vec|mithril|team|challenge|claude", cf.USER_AGENT, re.IGNORECASE)
+    kinds = re.compile(r"/chip_atlas_(analysis|experiment)_list\.zip$|/target/[^/]+\.5\.tsv$")
+    assert all(kinds.search(u) for u, _ in net.calls)
     man = json.loads((root / "MANIFEST.json").read_text())
     for rel, rec in man["files"].items():
         assert {"url", "size", "sha256", "fetched"} <= set(rec)
