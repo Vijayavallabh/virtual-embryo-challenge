@@ -11230,3 +11230,92 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     build and so before any score of the list's files; then the merge, the dry-run trace, the builds (each file
     twice), the sha256 into this log, and the hand-over. Uploads stay the captain's own acts; the captain may use any
     order.
+- 2026-11-23 (k), T1's combined MS list is in force before MS's headline and before any build of its file (state at
+  16:09 UTC, 2026-11-23). Written by the AI assistant, which designed none of it and gives no lean on it.
+  - **The list** (a score-blind designer, then a score-blind cold challenger whose amended text this is, verbatim): T1
+    combined MS list (under the captain's order of 2026-11-23, "combine MS", and rule (5) of the T1 order rule of
+    2026-11-21, "Any combination needs its own list, fixed before its score"; written by a score-blind designer and
+    amended by a score-blind cold challenger, whose text this is; fixed before any score of its file and before MS's
+    headline is returned). One file, named here with its command and values before its own score: T1_s2rcMSB,
+    `build_test.py t1 --g-mom --base lib3 --feng-groups recomputed --feng-fraction-mult 1.5 --direction-momentum all
+    --captain-ruling R26 --out <O>/T1_s2rcMSB.h5ad`. R26 is the ruling row that records the captain's order; its first
+    cell starts "R26 (the captain's order", says "ruling, no run", and names `--feng-fraction-mult 1.5
+    --direction-momentum all` and `--captain-ruling R26` in backticks. If the main session gives that row another
+    number, that number replaces R26 everywhere here, and nothing else changes. The file is candidate MS's step
+    exactly as row R23 fixes it, put on candidate B's command exactly as B has it, with nothing else changed. MS's
+    step is the released per-category damped mean momentum: harness.B0_DAMPING 0.5, pseudocount 0.5, min_cells 20,
+    keep_depth, held genes R2's union with the pre-registered list, fitted from E9.5 to E10.5's portion libraries 1
+    and 2 (library 3 never enters the fit), stream [seed, 1], on the cells whose label's recomputed group has a
+    direction. B's command has default seed 1000001, board T1:test, g_mom's within-type damping 0.5 passed as B's
+    build passes it, and the atlas step at 1.5 times the calendar fraction 2/5, on stream [seed, 2] after the
+    momentum. g_mom follows on stream [seed, 5]. The only difference from MS's file is the atlas step's multiplier
+    (1.5 for 1.0), and the only difference from B's file is the momentum on the covered cells. Composition, depth, the
+    advance draw, sizes, scope and cell numbers are untouched. The rule: T1_s2rcMSB reads no score to go. It is queued
+    last among the team's T1 files. It takes a T1 slot only when, at that slot, no file queued by an earlier
+    decision-log entry and no next file of line 1, line 2 or line 3 is ready for it, unless the captain says
+    otherwise. It may therefore get no upload at all. Its building does not wait on any headline. The standing file is
+    the highest headline among all the team's T1 uploads. T1_s2rcMSB raises the board's mark only if its headline is
+    strictly above that, and a tie keeps the earlier file. Its headline enters no line, and no line's headline, nor
+    MS's or B's, decides anything in this list. No size of a difference, no per-metric value and no interpolated value
+    is read, and no value is fitted from the sizes of scores. No damping, fraction, multiplier, momentum constant or
+    other number is set from a score: every value above is MS's or B's as fixed before this list. No property of the
+    hidden E12.5 sample is inferred or bounded from a score, in code, text or reasoning. Under this list no second
+    combined file is built or uploaded, whatever any headline says. MS is not stacked on A, C, the 2.0, 2.5 or 3.0
+    files, A15, A20, Cm20, Cm25 or rc18. Order: every T1 file queued by an earlier decision-log entry keeps its place
+    and its own conditions, MS's place included. Lines 1, 2 and 3 keep theirs, line 1's next file first, then line
+    2's, then line 3's. The file counts only after five conditions are met. First, the builder takes
+    `--feng-fraction-mult 1.5 --direction-momentum all` only with `--captain-ruling R26`, and only while TRIES.md
+    holds exactly one row R26 whose first cell is the captain's order naming that option string and `--captain-ruling
+    R26`. The pair is refused without the ruling, with R23 or any other row, and with `--g-mom-damping` (any value).
+    It is also refused with `--released-bet`, `--bet-strength`, `--no-hold-unbracketed`, a seed other than 1000001, a
+    board other than the test board, a dry run, or any command but R13's options plus the pair. `--direction-momentum
+    all` with any other `--feng-fraction-mult` stays refused, R26 with any other option set is refused, and bare
+    `--direction-momentum all --captain-ruling R23` keeps R23's path, refusals and bytes. Second, an independent
+    reviewer has passed the change. The reviewer confirms that it touches only option routing, refusals, the record,
+    tests and the launcher, and no constant or step of MS or B. Third, on ~/v/vec-campaign-d, at one clean commit
+    holding the reviewed change, these commands rebuild these bytes: the default command R13's
+    (ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f), A's command A's
+    (76865826f5a3741c7585f81c4241048ca1a95b5791ebb3c8feb1f2b536678ce4), B's command B's
+    (c7240cb6a7f7ee93d037f437832efbaad004f1fbe608d80072f8efd5d20a0062), C's command C's
+    (31477ef7df5d5374a74a8249c570217020c593916ab4d3780049b7b3f87b0620), row R20's command the 2.0 file's
+    (52897fe375b8a81afffa788592047c30361824148b00a8176514385060518837) and MS's command MS's
+    (6103d10535665634ee0cad3390590a5df132d1805682fb1d309bb19581fdaa5e). Fourth, after the launcher has been traced
+    with bash -x on a harmless path, the file has been built twice there from that commit with one sha256 and has
+    passed the format check. Fifth, its sha256 has been added to this entry before its score. A file not ready by
+    2026-11-25 12:00 UTC drops and the list ends. No free T1 slot before 2026-11-26 11:59 UTC also ends the list.
+    Void: the whole list is void unless this entry is committed to the decision log before MS's headline is returned.
+    It is also void if any constant of MS or B in the built file's record differs from the values above, or if the
+    file is rebuilt, re-seeded, resized or changed after any score. No file is rebuilt, re-seeded or changed after a
+    score. Practice evidence, stated plainly: row T65 read MS (the momentum on R13's base, at the practice fraction's
+    1.0 multiple) AHEAD on five practice tasks, a labelled in-sample diagnostic on one truth whose test gain counts
+    zero at the centre (J6). No row measures the momentum together with the 1.5x atlas step. Row T26's carry-over
+    (0.96 to 0.99) is g_mom's, a different edit, on the 1.0x step. The pre-registered readout found momentum plus
+    atlas worse than the atlas alone on cardiomyocyte ranking. So the combination's sign is unmeasured, and it is a
+    correlated bet on B's axis that may overshoot instead of adding (row R23's risk cell). The method report says that
+    MS's released momentum was combined with B's atlas step in one file, whether that file was uploaded, and that the
+    best headline was kept. Data used: as R13's file (released challenge data and the outside heart atlas on
+    recomputed groups, register row X002); the momentum uses released challenge data only. Each upload is the
+    captain's own act.
+  - **What the challenger changed.** The designer's gate (the combined file only after MS was uploaded and stood above
+    R13) is removed: the file is queued last, so the only slot it can take is one nothing else is ready for, a lower
+    headline never replaces the best, and the gate measured the momentum at the 1.0 step and not with B's 1.5 step;
+    without it the list reads no score at all. The practice evidence is restated plainly: no row measures the momentum
+    together with the 1.5 step, so the combination's sign is unmeasured. The construction is pinned against the
+    builder's code (B's own fraction expression and damping as B's build passes it; MS's step function unchanged). The
+    building waits on no headline.
+  - **What the challenger says the captain should be told:** T1_s2rcMSB is one new file: B's command, the board's best
+    so far, with MS's released momentum added on the same cells, nothing else changed. It is ready by 25 Nov 12:00 UTC
+    only if coded, reviewed and built twice. It raises the mark only if its own headline is strictly above the board's
+    best. No practice read covers the momentum together with B's larger atlas step, so it is an unmeasured, correlated
+    bet that may overshoot. It is queued last and reads no other score, so it only takes a T1 slot nothing else is
+    ready for. A miss costs no mark, only that otherwise-lost slot and the build work, and it may get no upload at
+    all. Moving it ahead of other queued files, for example into MS's own slot, stays the captain's choice alone.
+  - **Disclosed.** The challenger reports that the task text it was started with carried the side agent's note, which
+    quotes two T1 headlines and MS's practice range; it says that nothing in the list or its reasoning rests on them,
+    only on the ordinal facts of the brief (B holds the best headline, then the first upload, then A, then R13). The
+    list reads no score.
+  - **In force with this commit (16:09 UTC).** Ruling row R26 names the option string and the ruling; the rules note
+    is amended and re-pinned. No score of MS has been reported to the main session; MS was handed over at entry (h).
+    Next: the engineer's builder change and launcher (running in the same workflow), the reviewer, the merge, the
+    dry-run trace, the identity rebuilds and the two builds on `~/v/vec-campaign-d`'s worktree, and the file's sha256
+    into this log before its score.
