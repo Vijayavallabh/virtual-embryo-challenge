@@ -19,6 +19,7 @@ import copy
 import gzip
 import importlib.util
 import json
+import re
 import sys
 import textwrap
 from pathlib import Path
@@ -605,9 +606,16 @@ def test_tables_reads_each_reduction_with_the_atlas_config(monkeypatch, tmp_path
 # ------------------------------------------------------------------------------------------------ Task 1 only
 
 
+NAMES_T1_EXT = re.compile(r"experiments[/.]t1_ext\b|(?<![\w])t1_ext[/.]|[\"']t1_ext[\"']|t1x_common")
+
+
 def test_no_code_outside_t1_ext_names_it():
     """E8.5 lies inside the T2 heart window: no T2 path, the shared core, the builders (build_test.py among them) or
     T3 code may import the outside-atlas tables."""
+    for ref in ('EXT = ROOT / "experiments" / "t1_ext"', "experiments/t1_ext/tables.py", "import t1x_common",
+                "from experiments.t1_ext import tables", "sys.path.insert(0, str(HERE / 't1_ext'))"):
+        assert NAMES_T1_EXT.search(ref), ref
+    assert not NAMES_T1_EXT.search("tests/test_t1_ext_mx2s.py tests/test_t1_ext_load.py")
     roots = [ROOT / "src", ROOT / "experiments"]
     hits = []
     for r in roots:
@@ -615,7 +623,7 @@ def test_no_code_outside_t1_ext_names_it():
             if EXT in p.parents or "results" in p.relative_to(ROOT).parts:
                 continue  # results folders hold outputs, some never opened (the brief's never-open list)
             t = p.read_text(errors="replace")
-            if "t1_ext" in t or "t1x_common" in t:
+            if NAMES_T1_EXT.search(t):  # a path into the folder or its module; a test file's name is not a use
                 hits.append(str(p.relative_to(ROOT)))
     assert hits == []
     assert "t1_ext" not in (ROOT / "experiments" / "builds" / "build_test.py").read_text()
