@@ -1,13 +1,16 @@
 """GEO access for the Task 1 outside atlases: the family SOFT parser, the sample-folder file check and the one
 download function. Written for this folder (the T1 code never imports the T3 outside-knockout code; a test of that
 code checks it), in the same form as that fetcher. Requests go only to ftp.ncbi.nlm.nih.gov over https with a generic
-user agent and nothing that names a team, a person or a challenge.
+user agent and nothing that names a team, a person or a challenge; no redirect is followed (one refuses), and a 403,
+429, 5xx or timeout is retried a bounded number of times with a pause (TRIES, PAUSE_S).
 """
 
 from __future__ import annotations
 
 import hashlib
 import re
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
@@ -23,7 +26,17 @@ DENY = re.compile(r"fastq|\.bam$|\.bai$|fragments|atac|peaks?[._]|\.bw$|bigwig|\
 OTHER = "_other_lines"
 LINE_SEPARATORS = "\r\x0b\x0c\x1c\x1d\x1e\x85  "
 _KEY = re.compile(r"[A-Za-z0-9_]+")
+# The repository's standard field names that hold a slash, accepted after the block's prefix (Series_ or Sample_):
+# a literal list, so every other odd key still refuses the series. The first real plan run (290da3f) met
+# "Sample_contact_zip/postal_code" and refused the whole series on it.
+SLASH_KEYS = frozenset({"contact_zip/postal_code"})
 _FILE_NAME = re.compile(r"[A-Za-z0-9._+-]+")
+# The fetch's bounded retry (the first real plan run met one HTTP 403 that was a 200 a moment later): at most TRIES
+# requests per file, PAUSE_S seconds apart, retried only on HTTP 403, 429 and 5xx and on a timeout; any other error,
+# and every redirect, refuses at once.
+TRIES = 4
+PAUSE_S = 20.0
+RETRY_CODES = frozenset({403, 429})
 
 
 def soft_url(series: str) -> str:
@@ -77,7 +90,7 @@ def parse_soft(text: str) -> dict:
         key, eq, val = line[1:].partition("=")
         key, val = key.strip(), val.strip()
         if line.startswith("!") and eq and key.startswith(prefix):
-            if not _KEY.fullmatch(key[len(prefix):]) and key != "Series_contact_zip/postal_code":
+            if not _KEY.fullmatch(key[len(prefix):]) and key[len(prefix):] not in SLASH_KEYS:
                 raise Refused(f"{cur}: a field name that is not a plain key (line {i}): refused")
             rec.setdefault(key[len(prefix):], []).append(val)
         else:
@@ -105,22 +118,65 @@ def own_file(gsm: str, url: str) -> tuple[str | None, str]:
     return u, ""
 
 
-def get(url: str, dst: Path, max_bytes: int) -> tuple[int, str]:
-    """The one network call: stream an allowed URL to dst (outside the repository), refusing past max_bytes."""
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    """Every redirect refuses: the fetch stays on the one host over https and follows no redirect at all (the
+    reading that refuses more of 'follows no redirect off it'; a same-host redirect refuses too)."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise Refused(f"{req.full_url}: the repository answered with a redirect ({code} to {newurl!r}): not followed")
+
+
+def opener() -> urllib.request.OpenerDirector:
+    return urllib.request.build_opener(_NoRedirect())
+
+
+def _retryable(e: BaseException) -> bool:
+    if isinstance(e, urllib.error.HTTPError):
+        return e.code in RETRY_CODES or 500 <= e.code <= 599
+    if isinstance(e, TimeoutError):
+        return True
+    return isinstance(e, urllib.error.URLError) and isinstance(e.reason, TimeoutError)
+
+
+def get(url: str, dst: Path, max_bytes: int, open_url=None, sleep=time.sleep, tries: int = TRIES,
+        pause_s: float = PAUSE_S) -> tuple[int, str]:
+    """The one network call: stream an allowed URL to dst (outside the repository), refusing past max_bytes. Up to
+    `tries` requests, `pause_s` seconds apart, on HTTP 403, 429 and 5xx and on a timeout (each try starts the file
+    again); any other error, a redirect (refused, never followed) and the byte limit end it at once. `open_url(request,
+    timeout)` is the opener's open (a fake in the tests)."""
     url = https_url(url)
     dst = cm.outside_repo(dst)
     dst.parent.mkdir(parents=True, exist_ok=True)
     part = dst.with_name(dst.name + ".part")
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    n, h = 0, hashlib.sha256()
-    with urllib.request.urlopen(req, timeout=120) as r, open(part, "wb") as f:
-        while block := r.read(1 << 20):
-            n += len(block)
-            if n > max_bytes:
-                f.close()
-                part.unlink(missing_ok=True)
-                raise Refused(f"{url}: over the byte limit ({max_bytes}); nothing kept")
-            h.update(block)
-            f.write(block)
-    part.replace(dst)
-    return n, h.hexdigest()
+    open_url = open_url or opener().open
+    errors = []
+    for attempt in range(1, tries + 1):
+        req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+        n, h = 0, hashlib.sha256()
+        try:
+            with open_url(req, timeout=120) as r, open(part, "wb") as f:
+                final = getattr(r, "geturl", lambda: url)()
+                if https_url(final) != url:
+                    raise Refused(f"{url}: the response came from {final!r}, not the requested address")
+                while block := r.read(1 << 20):
+                    n += len(block)
+                    if n > max_bytes:
+                        f.close()
+                        part.unlink(missing_ok=True)
+                        raise Refused(f"{url}: over the byte limit ({max_bytes}); nothing kept")
+                    h.update(block)
+                    f.write(block)
+        except Refused:
+            part.unlink(missing_ok=True)
+            raise
+        except (urllib.error.URLError, TimeoutError) as e:
+            part.unlink(missing_ok=True)
+            if not _retryable(e):
+                raise Refused(f"{url}: {e!r}: not retried") from None
+            errors.append(f"try {attempt}: {e!r}")
+            if attempt < tries:
+                sleep(pause_s)
+            continue
+        part.replace(dst)
+        return n, h.hexdigest()
+    raise Refused(f"{url}: no answer after {tries} tries ({'; '.join(errors)})")
