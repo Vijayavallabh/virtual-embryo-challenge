@@ -2,6 +2,12 @@
 
 ## Current State
 
+- **2026-11-23, 15:16 UTC.** The outside-data design round handed back: no drastic gain exists inside the rules, in
+  its challengers' words. One T3 candidate (the knocked-out gene's binding set from a generic ChIP database; register
+  row X018) is being coded for its practice read; one T1 candidate (a three-atlas sign consensus) waits on the
+  captain's word; nothing for the heart or the embryo. The captain asked for the held T3 pathway tier of outside
+  knockouts to be weighed; three cold analysts are weighing it. Decision log 2026-11-23 (d) and (e).
+
 - **2026-11-23, 14:48 UTC.** The captain approved the four items put by name: the momentum file MS (T1), the embryo's
   SO and O_hi, and the upload of the heart's organ-cut file D (ruling rows R23 to R25; rules amended). SO, O_hi and D
   are handed over; MS's builder option is with an engineer and a reviewer. The drastic outside-data design round is

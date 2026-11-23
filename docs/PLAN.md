@@ -11050,3 +11050,30 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     captain's bar, which is the captain's target and not a returned score.
   - **The AI assistant's own estimate for the captain's bar is unchanged by this round** (its reading): the files
     ready today do not reach 200, and no outside-data candidate found changes that by itself.
+- 2026-11-23 (e), T3: the captain asks for the held pathway tier of outside knockout data to be weighed; the record's
+  facts; a cold weighing is running (state at 15:16 UTC, 2026-11-23). Written by the AI assistant, which gives no lean
+  before the weighing returns.
+  - **What the captain sent.** A note from a side agent (the tier the captain approved on 2026-11-20 was never used;
+    the team's searchers set it aside as too close to the hidden knockout; today's design round leaves it out by
+    default; "If you still want it weighed, say so in the main session now"), and under it the captain's own words,
+    verbatim: "[weigh it]". The AI assistant reads them as an order to weigh the tier, not as an order to use it.
+  - **The facts of record, checked today.** (1) The organisers' genotype clause: "data from the held-out KOs, from
+    another allele of the same gene at a comparable stage, or from a perturbation that phenocopies them, counts as
+    held out". (2) The team's own plan has said since October: "no phenocopies (GSE165300, Mesp1-Cre; Wls, is
+    excluded)". (3) The question of entry 2026-11-20 (j), which the AI assistant wrote and to which the captain
+    answered "All three tiers (Recommended)", quoted neither; it called the risk "an organiser reading the Wnt tier as
+    a proxy and discounting the file". That was the AI assistant's omission, and its recommended option rested on it.
+    (4) The planner then held the tier's datasets under the clause (entry 2026-11-20, the stage-1 report), two readers
+    declined to clear the T study, and the dataset settings say the held datasets "wait for one priced question" to
+    the captain. No such question was ever put: the side agent's note is right on that. (5) The organisers' ruling of
+    2026-08-18 approved an outside perturbation of a held-out gene itself at a stage "substantially far away"; it is
+    the one recorded sign of how they weigh distance.
+  - **Started: a cold weighing** (workflow t3-pathway-tier-weighing; three agents blind to test scores; nothing
+    fetched, no dataset or paper opened). A rules reader weighs each dataset of the tier under the organisers' words,
+    with odds that an organiser counts it as held out and the loss either way; a value analyst weighs what a file on
+    the tier could gain, whether any practice read can test it without opening data the same clause may hold out for
+    the validation genotype, and the hours; a cold challenger attacks both the case for using it and the case for
+    leaving it out and writes the one priced question the record says the captain is owed. The briefs give the facts
+    above and no view of the AI assistant's.
+  - **What stays as it is until the captain answers that question:** the held list, the dataset statuses and the
+    plan's line. Nothing of the tier is fetched or opened by the weighing.

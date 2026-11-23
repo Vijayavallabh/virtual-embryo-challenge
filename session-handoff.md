@@ -2,7 +2,28 @@
 
 ## Current Objective
 
-- **State at 2026-11-23, 14:48 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-23, 15:16 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-23 (e); next label (f). Next ruling row R26; next register row X019; T3's next row K27. The outside-data
+  round handed back (entry (d)): T3 candidate CHIPQ-S kept (register row X018 placed), T1 candidate MX2s kept but
+  waiting on the captain's word, nothing for the T2 boards. The captain asked for the held T3 pathway tier to be
+  weighed (entry (e)).
+  - **RUNNING (four workflows).** wdfh9z62z: MS's builder (see the bullet below). wh5dbcldb: CHIPQ-S rule writer, then
+    the data-path engineer (branch `campaign/t3-chipq`). On its hand-back: save to lift8/, launch (a) a reviewer of
+    the data path and of the rule's design (blocker standard up front) and (b) the read's engineer and reviewer
+    (`k27_chip_query.py`, `run_k27.sh`, builder path; branch cut from `campaign/t3-chipq`); merge the data path when
+    ready; deliver to `v/vec-campaign-c`, check out in `~/v/scratch/k26-wt`; fetch lists on the DGX (both hosts answer
+    200 from there); copy the two query antigens' row files to local scratch WITHOUT reading them; two independent
+    screening agents read them and hand back ids and counts only; commit `experiments/t3_ext/chipq_kept.yaml` and
+    `CHIPQ_KEPT.sha256`; fetch targets; place row K27 (from the rule writer's cells) before P1; P1 (uncounted, two
+    counts); tables; pins; the counted read. A pass goes to the captain as one question with the file (provenance rule
+    of section 4.4, A15, share-alike). wdz9jjg9o: the cold weighing of the T3 pathway tier; on its hand-back put the
+    challenger's ONE priced question to the captain with the weighing and the AI assistant's own compliance view;
+    nothing of the tier is fetched before the captain's answer.
+  - **OPEN WITH THE CAPTAIN.** (1) MX2s: reopen the parked T1 multi-atlas branch in its strict form, including a
+    stage-parser exception that loosens a team guard (default no; about 20 to 24 h; odds about 0.12; a few tenths to a
+    point on practice). (2) The T3 pathway tier, after the weighing. (3) Unless named: T1 line 1's step back, the
+    heart search line's exception, line 3's turn order.
+- **State at 2026-11-23, 14:48 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-23 (c); the next label is 2026-11-23 (d). Local main = origin/main at ba05554 or one notes commit after it.
   **THE CAPTAIN: "You have my approval for all" (entry (c)).** Read as the yes to the four items the message before it
   put by name: MS (row R23), SO and O_hi (row R24; O_hi's naming lifts the embryo's depth line for that one file), the
