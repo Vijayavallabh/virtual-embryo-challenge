@@ -2,7 +2,33 @@
 
 ## Current Objective
 
-- **State at 2026-11-23, 15:45 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-23, 16:11 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-23 (k); next label (l). Next ruling row R27; next register row X019; T3's next row K27 (not placed). Local
+  main = origin/main at 2646249 or one notes commit after it.
+  - **THE CAPTAIN: "combine MS" (entries (j), (k)).** The combined MS list is in force since 16:10 UTC (row R26, rules
+    note re-pinned), before any score of MS was reported: ONE file, `T1_s2rcMSB` = `build_test.py t1 --g-mom --base
+    lib3 --feng-groups recomputed --feng-fraction-mult 1.5 --direction-momentum all --captain-ruling R26`, queued
+    LAST, reading no score; the captain may move it (for example into MS's slot). Workflow wt7lfrgsp (journal folder
+    wf_770e75f9-ca7) is at its engineer (branch `campaign/t1-ms-combined`, launcher
+    `experiments/builds/t1_ms_combined.sh <COMMIT> <RUN>`, scratch `~/v/scratch/t1msc/<RUN>`) and reviewer. On a ready
+    review: merge, tests, deliver to `v/vec-campaign-d`, check out in `~/v/scratch/t1line-wt`, dry-run trace under a
+    throwaway HOME, launch with PATH exported, waiter; on done 0: copy the file to
+    `runs/manual_upload/T1_s2rcMSB.h5ad`, record `experiments/builds/results/t1msc_<c7>_<RUN>.*`, add the sha256 to
+    the log BEFORE its score, hand over. It drops if not built by 25 Nov 12:00 UTC.
+  - **CHIPQ-S (T3).** Row K27 as written: scratch `lift8/k27_row_cells.json`; the cold attack
+    (`lift8/k27_rule_attack.json`): place after 13 corrections, two-step placement (registration commit before P1;
+    second commit after P2 fills the listing and pins; counted steps at the second). Workflow wj1jeljlg (reviser)
+    writes the corrected row to `lift8/k27_rule_v2/`. Workflow wtz3mwdnj (journal wf_98fdb744-4cd): the fix engineer
+    for the five database blockers (branch `campaign/t3-chipq-2`) then a reviewer; waiter b3f2wjjui saves the fix
+    engineer's hand-back to `lift8/chipq_data_fix.json`. NEXT: when the reviser and the fix engineer are both in,
+    launch the read engineer (branch cut from `campaign/t3-chipq-2`; files `experiments/t3_decomp/k27_chip_query.py`,
+    `run_k27.sh` with TWO invocations, tests; chipq files untouched) and a reviewer; when the fix review is ready:
+    merge, DGX fetch (lists, rows), two screening agents, kept list, targets. The registration commit needs the read
+    script merged; then P1, P2, pins commit, P3 to the read. The build path is coded only if P1 passes.
+  - **OPEN WITH THE CAPTAIN (each default no change):** the T3 pathway tier (stays out); MX2s (stays parked; had to
+    start on the evening of 23 Nov); unless named: T1 line 1's step back, the heart search line's exception, line 3's
+    turn order.
+- **State at 2026-11-23, 15:45 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-23 (i); next label (j). CHIPQ-S step 2 is running: workflow w18fza0f9 (journal folder wf_916677f6-312): rule
   writer 2 (files under scratch `lift8/k27_rule/`: points_settled.md, cell_01..11.txt, engineer_notes.md), data-path
   reviewer, then read engineer (branch `campaign/t3-chipq-read` cut from `campaign/t3-chipq` 4498ece) and read

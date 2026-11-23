@@ -2,6 +2,11 @@
 
 ## Current State
 
+- **2026-11-23, 16:11 UTC.** The captain ordered a combined momentum file ("combine MS"). Its list, written by
+  score-blind analysts, is in force (ruling row R26): one file, the best T1 file's command with the momentum step
+  added, queued last; its builder is being coded. The new T3 candidate's ledger row was attacked cold (13 corrections,
+  being applied) and five blockers in its database code are being fixed. Decision log 2026-11-23 (i) to (k).
+
 - **2026-11-23, 15:40 UTC.** The momentum file MS (T1) is built twice with one sha256 and handed over. The captain's
   request to weigh the held T3 pathway tier is answered: three cold analysts say leave it out, a screened search found
   no organiser statement that changes that, and one question is with the captain (default: it stays out). Decision log
