@@ -114,6 +114,23 @@ def outside_repo(path, repo: Path | None = None) -> Path:
     return p
 
 
+ROW_DATA_RELS = ("data/external/t1_ext_t72", "data/derived/t1_ext_t72")
+
+
+def writable(path, repo: Path | None = None) -> Path:
+    """The resolved path where a step of this folder may write: outside every checkout (outside_repo), or inside row
+    T72's two output folders under the checkout's own data/ (a real directory; row_t72.guards checks the rest)."""
+    p = Path(path).expanduser().resolve()
+    r = Path(repo or REPO)
+    data = r / "data"
+    if data.is_dir() and not data.is_symlink():
+        for rel in ROW_DATA_RELS:
+            root = data.resolve() / rel.split("/", 1)[1]
+            if p == root or root in p.parents:
+                return p
+    return outside_repo(path, repo)
+
+
 def _json_default(o):
     import numpy as np
 
@@ -131,7 +148,7 @@ def _json_default(o):
 
 
 def dump_json(obj, path) -> Path:
-    path = outside_repo(path)
+    path = writable(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_name(path.name + ".part")
     tmp.write_text(json.dumps(obj, indent=1, sort_keys=True, default=_json_default) + "\n")
@@ -361,14 +378,14 @@ def entry_sha256(acc: str, cfg: Mapping | None = None) -> str:
                         "pooling_stage_words": POOLING_STAGE_WORDS.pattern})
 
 
-def require_frozen(cfg: Mapping) -> None:
+def require_frozen(cfg: Mapping, repo: Path | None = None) -> None:
     """Load and tables run only on a frozen atlases.yaml whose derived extra classes are pinned and committed."""
     if cfg.get("status") != "frozen":
         raise Refused("atlases.yaml is not frozen: the main session freezes it after reading every plan table")
     ex = cfg["extra_competing"]
     if ex.get("derived_sha256") in (None, PENDING):
         raise Refused("extra_competing.derived_sha256 is PENDING: run `groups.py derive` and pin its output first")
-    f = REPO / ex["derived_file"]
+    f = Path(repo or REPO) / ex["derived_file"]
     if not f.exists() or sha256_file(f) != ex["derived_sha256"]:
         raise Refused(f"{ex['derived_file']} is missing or does not match extra_competing.derived_sha256")
 

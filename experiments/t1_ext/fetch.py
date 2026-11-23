@@ -410,10 +410,10 @@ def write_table(pl: Mapping, mdir: Path) -> Path:
     lines.append(recs.rstrip("\n"))
     lines.append(f"# PROCESSING TEXT, canonical form {cm.PROCESSING_FORMAT}, sha256 {pl['processing_sha256']} "
                  f"(the same bytes are processing_text.txt; clearance: {pl['processing_clearance']})")
-    path = cm.outside_repo(Path(mdir) / "plan_table.tsv")
+    path = cm.writable(Path(mdir) / "plan_table.tsv")
     path.write_text("\n".join(lines) + "\n" + pl["processing_text"], encoding="utf-8")
-    cm.outside_repo(Path(mdir) / "records.txt").write_text(recs, encoding="utf-8")
-    rdir = cm.outside_repo(Path(mdir) / "records")
+    cm.writable(Path(mdir) / "records.txt").write_text(recs, encoding="utf-8")
+    rdir = cm.writable(Path(mdir) / "records")
     rdir.mkdir(parents=True, exist_ok=True)
     for old in rdir.glob("*.txt"):
         old.unlink()
@@ -422,11 +422,11 @@ def write_table(pl: Mapping, mdir: Path) -> Path:
     for r in pl["samples"]:
         if "record" in r:
             (rdir / f"{r['gsm']}.txt").write_bytes(cm.record_text("SAMPLE", r["gsm"], r["record"]).encode("utf-8"))
-    tp = cm.outside_repo(Path(mdir) / "processing_text.txt")
+    tp = cm.writable(Path(mdir) / "processing_text.txt")
     tp.write_bytes(pl["processing_text"].encode("utf-8"))
     if cm.sha256_file(tp) != pl["processing_sha256"]:
         raise Refused("processing_text.txt does not hash to the plan's processing_sha256")
-    cm.outside_repo(Path(mdir) / "protocol_field_sha256.tsv").write_text(
+    cm.writable(Path(mdir) / "protocol_field_sha256.tsv").write_text(
         "".join(ln + "\n" for ln in field_sha_lines(pl)), encoding="utf-8")
     return path
 
@@ -446,7 +446,7 @@ def default_getter(url: str, dst: Path) -> None:
 
 
 def read_series(series: str, mdir: Path, getter: Callable[[str, Path], None] | None = None) -> tuple[dict, str]:
-    dst = cm.outside_repo(mdir / f"{series}_family.soft.gz")
+    dst = cm.writable(mdir / f"{series}_family.soft.gz")
     (getter or default_getter)(geo.soft_url(series), dst)
     raw = gzip.decompress(dst.read_bytes())
     return geo.parse_soft(geo.decode(raw, series)), cm.sha256_file(dst)
@@ -457,7 +457,7 @@ def plan(acc: str, dest: Path, getter=None, cfg: Mapping | None = None) -> dict:
     a = cm.atlas(acc, cfg)
     if a["status"] == "in_use":
         raise Refused(f"{acc} is the atlas in use: nothing is planned or fetched for it")
-    mdir = cm.outside_repo(Path(dest) / "meta" / acc)
+    mdir = cm.writable(Path(dest) / "meta" / acc)
     mdir.mkdir(parents=True, exist_ok=True)
     cm.dump_json({"accession": acc, "status": "in_progress"}, mdir / "plan.json")
     metas, shas = {}, {}
@@ -491,7 +491,7 @@ def pin_template(acc: str, dest: Path, gsms: list[str], cfg: Mapping | None = No
         raise Refused("name every sample to pin with --gsm GSMnnn (one per sample; there is no bulk selector)")
     if len(set(gsms)) != len(gsms):
         raise Refused("a sample is named twice")
-    mdir = cm.outside_repo(Path(dest) / "meta" / acc)
+    mdir = cm.writable(Path(dest) / "meta" / acc)
     pp = mdir / "plan.json"
     if not pp.is_file():
         raise Refused(f"{pp}: no plan; run plan first")
@@ -532,7 +532,7 @@ def pin_template(acc: str, dest: Path, gsms: list[str], cfg: Mapping | None = No
             raise Refused(f"the named samples of the {e} end are at two stages {sorted(st)}: name one stage")
     text = processing_for(acc, a, series_records, {g: (r["series"], r["record"]) for g, r in picked.items()},
                           series_text)
-    tp = cm.outside_repo(mdir / "processing_text_pinned.txt")
+    tp = cm.writable(mdir / "processing_text_pinned.txt")
     tp.write_bytes(text.encode("utf-8"))
     out = [f"# pin-template {acc}: {len(gsms)} sample(s) named; from {pp} (sha256 {cm.sha256_file(pp)})",
            "# READ each named sample's full record (records/<GSM>.txt) and every series record (records/<GSE>.txt)",
@@ -570,7 +570,7 @@ def pin_template(acc: str, dest: Path, gsms: list[str], cfg: Mapping | None = No
 
 
 def stored_plan(acc: str, dest: Path) -> tuple[Path, dict]:
-    p = cm.outside_repo(Path(dest) / "meta" / acc / "plan.json")
+    p = cm.writable(Path(dest) / "meta" / acc / "plan.json")
     if not p.exists():
         raise Refused(f"{acc}: no plan at {p}")
     return p, json.loads(p.read_text())
@@ -646,7 +646,7 @@ def _live_checked(acc: str, dest: Path, plan_sha256: str, getter, cfg: Mapping) 
     pl = check_plan(acc, dest, plan_sha256, cfg)
     a = cm.atlas(acc, cfg)
     check_used_against_pins(acc, a, pl)
-    live_dir = cm.outside_repo(Path(dest) / "meta" / acc / "live")
+    live_dir = cm.writable(Path(dest) / "meta" / acc / "live")
     live_dir.mkdir(parents=True, exist_ok=True)
     live = plan_from_meta(acc, {s: read_series(s, live_dir, getter)[0] for s in a["series"]}, cfg)
     if live["status"] != "passed":
@@ -669,7 +669,7 @@ def _get_data(a: Mapping, gsm: str, f: Mapping, dst_dir: Path, getter) -> dict:
     nf = cm.never_fetch_refusal(a, gsm=gsm, url=u)
     if nf:
         raise Refused(f"{gsm}: {nf}")
-    dst = cm.outside_repo(dst_dir / gsm / f["name"])
+    dst = cm.writable(dst_dir / gsm / f["name"])
     (getter or default_getter)(u, dst)
     return {"name": f["name"], "url": u, "bytes": dst.stat().st_size, "sha256": cm.sha256_file(dst)}
 
@@ -746,7 +746,7 @@ def fetch_meta(acc: str, dest: Path, plan_sha256: str, getter=None, cfg: Mapping
         for role in SCREEN_ROLES:
             f = rows[g]["role_files"][role]
             todo.append((g, end, role, f, _requested(a, g, role, f, matrix_rx)))  # every refusal before any request
-    live_dir = cm.outside_repo(root / "meta" / acc / "live")
+    live_dir = cm.writable(root / "meta" / acc / "live")
     live_dir.mkdir(parents=True, exist_ok=True)
     live = plan_from_meta(acc, {s: read_series(s, live_dir, getter)[0] for s in a["series"]}, cfg)
     lrows = {r["gsm"]: r for r in live["samples"]}
@@ -755,11 +755,11 @@ def fetch_meta(acc: str, dest: Path, plan_sha256: str, getter=None, cfg: Mapping
         if lr.get("record_sha256") != rows[g]["record_sha256"] or lr.get("role_files") != rows[g].get("role_files") \
                 or lr.get("candidate") != rows[g]["candidate"]:
             raise Refused(f"{g}: the live record or its files differ from the plan that was read: plan again")
-    out_dir = cm.outside_repo(root / "screen" / acc)
+    out_dir = cm.writable(root / "screen" / acc)
     out = {"accession": acc, "plan_sha256": plan_sha256, "atlas_entry_sha256": pl["atlas_entry_sha256"],
            "tasks": list(cm.TASKS), "roles": list(SCREEN_ROLES), "samples": {}}
     for g, end, role, f, u in todo:
-        dst = cm.outside_repo(out_dir / g / f["name"])
+        dst = cm.writable(out_dir / g / f["name"])
         (getter or default_getter)(u, dst)
         out["samples"].setdefault(g, {"end": end, "files": {}})["files"][role] = {
             "name": f["name"], "url": u, "bytes": dst.stat().st_size, "sha256": cm.sha256_file(dst)}
@@ -775,7 +775,7 @@ def fetch(acc: str, dest: Path, plan_sha256: str, getter=None, cfg: Mapping | No
     cfg = cfg or cm.load_atlases()
     pl, a, pins = _live_checked(acc, dest, plan_sha256, getter, cfg)
     screen = cm.screen_kept(acc, a)
-    rdir = cm.outside_repo(Path(dest) / "raw" / acc)
+    rdir = cm.writable(Path(dest) / "raw" / acc)
     rdir.mkdir(parents=True, exist_ok=True)
     man = {"accession": acc, "plan_sha256": plan_sha256, "atlas_entry_sha256": pl["atlas_entry_sha256"],
            "chosen": pl["chosen"], "form": a["form"], "tasks": list(cm.TASKS),
@@ -790,11 +790,10 @@ def fetch(acc: str, dest: Path, plan_sha256: str, getter=None, cfg: Mapping | No
         files = {}
         for role, f in r["role_files"].items():
             files[role] = _get_data(a, r["gsm"], f, rdir, getter)
-            if screen is not None and role in SCREEN_ROLES:
+            if screen is not None and role in SCREEN_ROLES:  # recorded here; load refuses it (a failed (p1))
                 want = screen[r["gsm"]][role]
-                if files[role]["name"] != want["name"] or files[role]["sha256"] != want["sha256"]:
-                    raise Refused(f"{r['gsm']}: {f['name']} is not the file the readers screened (sha256 "
-                                  f"{files[role]['sha256']}, the yaml records {want['sha256']})")
+                files[role]["screened_copy"] = bool(files[role]["name"] == want["name"]
+                                                    and files[role]["sha256"] == want["sha256"])
         man["samples"][r["gsm"]] = {"series": r["series"], "end": r["end"], "label": r["label"],
                                     "record": r["record"], "record_sha256": r["record_sha256"],
                                     "series_protocol": pl["series_protocol"][r["series"]],
@@ -804,17 +803,55 @@ def fetch(acc: str, dest: Path, plan_sha256: str, getter=None, cfg: Mapping | No
     return man
 
 
+MEMBERS = ("GSE244783", "GSE230531")  # row T72's two new members, in the members' order (X019, X020)
+
+
+def row_fetch(commit: str, getter=None, repo: Path | None = None, guard=None, cfg: Mapping | None = None,
+              members: tuple[str, ...] = MEMBERS) -> dict:
+    """ROW T72'S FETCH STEP, at the row's commit: every guard of cell 8 (row_t72.guards), then
+    data/external/t1_ext_t72/ is created exclusively and, for each member the frozen yaml keeps (status use), the plan
+    is made again from the live metadata into it and must pass under the frozen yaml (pins, clearance, screen kept),
+    and the pinned samples' files (barcodes, features, matrix) are fetched from each sample's own folder (fetch()).
+    A member dropped by the screens is recorded and never requested. Writes data/external/t1_ext_t72/FETCH.json."""
+    rt = cm.sibling("row_t72")
+    repo = Path(repo or cm.REPO)
+    g = (guard or rt.guards)("fetch", commit, repo)
+    cfg = cfg or cm.load_atlases(repo / rt.ATLASES_REL)
+    ext = rt.make_exclusive(rt.row_external(repo))
+    cm.dump_json({**g, "started": True}, ext / "STARTED.json")
+    out = {**g, "atlases": {}, "dropped": {}}
+    for acc in members:
+        a = cm.atlas(acc, cfg)
+        if a["status"] == "dropped":
+            out["dropped"][acc] = list(a["screen"]["failed"])
+            continue
+        if a["status"] != "use":
+            raise Refused(f"{acc}: status {a['status']!r} in the frozen yaml")
+        pl = plan(acc, ext, getter, cfg)
+        if pl["status"] != "passed":
+            raise Refused(f"{acc}: the live plan does not pass under the frozen yaml ({pl['refusals']})")
+        man = fetch(acc, ext, cm.sha256_file(ext / "meta" / acc / "plan.json"), getter, cfg)
+        out["atlases"][acc] = {"manifest_sha256": cm.sha256_file(ext / "raw" / acc / "MANIFEST.json"),
+                               "files": {s: {r: {k: f[k] for k in ("name", "bytes", "sha256") if k in f}
+                                             for r, f in x["files"].items()} for s, x in man["samples"].items()}}
+    if not out["atlases"]:
+        raise Refused("no member is kept: nothing is fetched")
+    cm.dump_json(out, ext / "FETCH.json")
+    return out
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     p1 = sub.add_parser("plan")
     p1.add_argument("accession")
     p1.add_argument("--dest", required=True, type=Path)
-    for name in ("fetch-meta", "fetch"):
-        p2 = sub.add_parser(name)
-        p2.add_argument("accession")
-        p2.add_argument("--dest", required=True, type=Path)
-        p2.add_argument("--plan-sha256", required=True)
+    p2 = sub.add_parser("fetch-meta")
+    p2.add_argument("accession")
+    p2.add_argument("--dest", required=True, type=Path)
+    p2.add_argument("--plan-sha256", required=True)
+    p4 = sub.add_parser("fetch")
+    p4.add_argument("--commit", required=True, help="the row's commit, full sha (HEAD must be it)")
     p3 = sub.add_parser("pin-template")
     p3.add_argument("accession")
     p3.add_argument("--dest", required=True, type=Path)
@@ -835,8 +872,13 @@ def main(argv=None) -> int:
                 for role, f in sorted(s["files"].items()):
                     print(f"fetched\t{a.accession}\t{g}\t{role}\t{f['name']}\tbytes {f['bytes']}\tsha256 {f['sha256']}")
             return cm.sibling("screens").main([a.accession, "--dest", str(a.dest)])
-        man = fetch(a.accession, a.dest, a.plan_sha256)
-        print(json.dumps({"accession": a.accession, "samples": sorted(man["samples"])}, indent=1))
+        out = row_fetch(a.commit)
+        for acc, x in out["atlases"].items():
+            for g, files in sorted(x["files"].items()):
+                for role, f in sorted(files.items()):
+                    print(f"fetched	{acc}	{g}	{role}	{f['name']}	bytes {f['bytes']}	sha256 {f['sha256']}")
+        for acc, failed in out["dropped"].items():
+            print(f"dropped by the screens	{acc}	failed {failed}: nothing requested")
         return 0
     except Refused as e:
         print(f"refused: {e}", file=sys.stderr)

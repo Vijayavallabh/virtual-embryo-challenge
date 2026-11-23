@@ -10,7 +10,7 @@ only (no network, no released or outside data):
 - the SCREENS (a) to (d) on barcode and feature files before any matrix is fetched, the screens record, and the fetch
   of matrices refusing a member that is not recorded kept;
 - the parked branch's known blocker, closed: a reduction is read only under the pins, clearance and screen in force;
-- no code outside experiments/t1_ext (the shared core, the T2 heads, the builders such as build_test.py, T3) names it.
+- (no shared-core, T2, T3 or builder path names it: tests/test_t1_ext_imports.py).
 """
 
 from __future__ import annotations
@@ -19,7 +19,6 @@ import copy
 import gzip
 import importlib.util
 import json
-import re
 import sys
 import textwrap
 from pathlib import Path
@@ -656,12 +655,16 @@ def test_fetch_ties_the_fetched_files_to_the_screened_copies(tmp_path):
             continue
         man = fetch.fetch(ACC, tmp_path / "row", sha, getter_for(soft(SAMPLES), log, FILES), cfg2)
         assert man["screen"] == files
+        assert all(f["screened_copy"] for s in man["samples"].values() for r, f in s["files"].items()
+                   if r != "matrix")
         assert man["samples"][LATE]["files"]["features"]["sha256"] == files[LATE]["features"]["sha256"]
         assert man["series_text"][ACC] and man["samples"][LATE]["series_text"] == man["series_text"][ACC]
-    # a features file that is not the screened copy refuses the fetch
+    # a features file that is not the screened copy is recorded by the fetch, and the load refuses it (a failed (p1))
     bad = {**FILES, f"{LATE}_features.tsv.gz": features(range(300, 6000, 700)) + "\n"}
+    man = fetch.fetch(ACC, tmp_path / "row", sha, getter_for(soft(SAMPLES), [], bad), cfg2)
+    assert man["samples"][LATE]["files"]["features"]["screened_copy"] is False
     with pytest.raises(cm.Refused, match="not the file the readers screened"):
-        fetch.fetch(ACC, tmp_path / "row", sha, getter_for(soft(SAMPLES), [], bad), cfg2)
+        ld.check_screen(ACC, cm.atlas(ACC, cfg2), man)
     # the yaml's screen block form
     a = cm.atlas(ACC, cfg2)
     for blk in ({**kept, "files": {LATE: files[LATE]}}, {**kept, "read_by": ["Reader A"]},
@@ -783,48 +786,3 @@ def test_a_screened_member_dropped_after_its_load_is_not_read(tmp_path, monkeypa
     scfg["atlases"][LACC]["screen"] = {"verdict": "dropped", "failed": ["a"]}
     with pytest.raises(cm.Refused, match="dropped"):
         ld.check_screen(LACC, cm.atlas(LACC, scfg), man)
-
-
-def test_tables_reads_each_reduction_with_the_atlas_config(monkeypatch, tmp_path):
-    tb = _load("tables")
-    seen = []
-
-    def stop(acc, dest, cfg=None):
-        seen.append(cfg)
-        raise cm.Refused("stop")
-
-    monkeypatch.setattr(ld, "read_reduced", stop)
-    monkeypatch.setattr(cm, "require_frozen", lambda c: None)
-    gr = _load("groups")
-    monkeypatch.setattr(gr, "load_extra", lambda c: {})
-    monkeypatch.setattr(tb, "t1_genes_from", lambda p: ["G0"])
-    cfg = cm.load_atlases()
-    with pytest.raises(cm.Refused, match="stop"):
-        tb.run(cfg, tmp_path, ["GSE244783"], tmp_path, "x")
-    assert seen == [cfg]
-
-
-# ------------------------------------------------------------------------------------------------ Task 1 only
-
-
-NAMES_T1_EXT = re.compile(r"experiments[/.]t1_ext\b|(?<![\w])t1_ext[/.]|[\"']t1_ext[\"']|t1x_common")
-
-
-def test_no_code_outside_t1_ext_names_it():
-    """E8.5 lies inside the T2 heart window: no T2 path, the shared core, the builders (build_test.py among them) or
-    T3 code may import the outside-atlas tables."""
-    for ref in ('EXT = ROOT / "experiments" / "t1_ext"', "experiments/t1_ext/tables.py", "import t1x_common",
-                "from experiments.t1_ext import tables", "sys.path.insert(0, str(HERE / 't1_ext'))"):
-        assert NAMES_T1_EXT.search(ref), ref
-    assert not NAMES_T1_EXT.search("tests/test_t1_ext_mx2s.py tests/test_t1_ext_load.py")
-    roots = [ROOT / "src", ROOT / "experiments"]
-    hits = []
-    for r in roots:
-        for p in [*r.rglob("*.py"), *r.rglob("*.sh")]:
-            if EXT in p.parents or "results" in p.relative_to(ROOT).parts:
-                continue  # results folders hold outputs, some never opened (the brief's never-open list)
-            t = p.read_text(errors="replace")
-            if NAMES_T1_EXT.search(t):  # a path into the folder or its module; a test file's name is not a use
-                hits.append(str(p.relative_to(ROOT)))
-    assert hits == []
-    assert "t1_ext" not in (ROOT / "experiments" / "builds" / "build_test.py").read_text()

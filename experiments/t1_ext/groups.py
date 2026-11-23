@@ -1,30 +1,27 @@
 #!/usr/bin/env python
-"""Recomputed cell groups of the outside atlases, by the team's fixed marker scores, and the cross-atlas checks.
+"""Recomputed cell groups of the outside atlases of row T72 (candidate MX2s; Task 1 only), by the team's fixed
+marker scores.
 
 The labeller is experiments/external/feng_relabel.relabel, IMPORTED, never copied or edited, on the frozen base yaml
-of row N54 (atlases.yaml relabel.base, its sha256 pinned there). Each atlas's config is derived in code
-(derived_config): the base unchanged except its `stages` (the atlas's two bracket stages; relabel() refuses any other
-stage) and, for an atlas whose early end is a whole embryo, the extra competing classes of atlases.yaml
-extra_competing, whose genes the released E8.5 data decide (derive_extra, run once by `groups.py derive` before any
-atlas file is opened; its output is committed and pinned). Adding a class adds its genes to every set's control
-exclusions, so the controls are not those of the base: each derived config's sha256 goes to every manifest. A
-competing class only removes cells from the target groups. The derived config keeps the base's terminal section, so
-relabel() runs on it unchanged (its route output is ignored here: no builder route follows from an outside atlas).
+of row N54 (atlases.yaml relabel.base, its sha256 pinned there): its sets and thresholds unchanged (log1p CP10k;
+control sets of 25 bins and 10 genes per set gene, seed 20261119; min_genes_found 2; min_score 0.3, min_margin 0.25,
+split_margin 0.1) and its label-to-group map. Each atlas's configs are derived in code (label_configs), the base
+unchanged except:
+  - `stages`: the stages of the cells the config labels;
+  - the competing class skm (Tnnt3, Tnni2, Mylpf, Myl1, Tnnc2; label r_skm; source X010_T71, the skeletal-muscle
+    competing class of row T71), on both new atlases. Its genes are set genes, so relabel() never draws one as a
+    control gene (feng_relabel.relabel excludes every set gene);
+  - on X020's E8.5 samples ONLY (an atlas whose early end is a whole embryo; atlases.yaml extra_competing.stage), the
+    derived neural, paraxial and EXEM classes of `groups.py derive` (computed on the released T1 E8.5 file, a training
+    stage, before any atlas file is opened; committed at experiments/t1_ext/results/extra_competing.json and pinned by
+    its sha256 in atlases.yaml).
+So X019 (heart at both ends) is labelled in one run over both stages (as row N54 labelled its two stages), and X020
+in two runs: its E8.5 cells with skm and the derived classes, its E16.5 cells with skm only (the derived classes are
+the E8.5 samples' only). Each config's sha256 goes to the tables' manifest. A competing class only removes cells from
+the target groups. No author label, cluster or embedding is read; nothing here prints a gene-level value.
 
-The checks (atlases.yaml checks; all fixed before any atlas file is opened; each drops an atlas-group pair, never
-relaxes a threshold):
-  (a) profile_check: a group's mean log1p CP10k profile at the atlas's early end correlates (Spearman, genes with mean
-      CP10k >= 1 in either profile) best with a released same-stage label of its own category;
-  (b) the same at the late end against the atlas in use's recomputed E14.5 group profiles;
-  (c) the share check is deleted with the composition block (the strict form, ruling row R27): no share is computed;
-  purity_gate: for every competing class with released labels at the early stage, the group's mean class score lies
-      below the midpoint between the released CM labels' and the class's own released labels' mean scores;
-  embryo_gene_gate: in a whole-embryo early end, a gene enters the atlas's CM direction only if its mean CP10k in the
-      CM group is above its mean in the same atlas's early non-heart cells (ratio > 1);
-  min_cells: a group with fewer than min_cells_ext cells at either end has no direction.
-Nothing here prints a gene-level value.
-
-  uv run --frozen --no-sync python -I -B experiments/t1_ext/groups.py derive --released-e85 <E8.5_RNA.h5ad> --out F
+  uv run --frozen --no-sync python -I -B experiments/t1_ext/groups.py derive --released-e85 data/raw/T1/E8.5_RNA.h5ad \\
+      --out experiments/t1_ext/results/extra_competing.json
 """
 
 from __future__ import annotations
@@ -37,9 +34,7 @@ from collections.abc import Mapping, Sequence
 from pathlib import Path
 
 import numpy as np
-import yaml
 from scipy import sparse
-from scipy.stats import spearmanr
 
 HERE = Path(__file__).resolve().parent
 for _p in (HERE, HERE.parents[1] / "experiments" / "external"):
@@ -49,9 +44,12 @@ import feng_relabel as fr  # noqa: E402
 import t1x_common as cm  # noqa: E402
 
 Refused = cm.Refused
-CHAMBER = cm.REPO / "configs" / "t1_chamber_classes.yaml"
 EXTRA_SOURCE = "released_e85_extra"
-TARGET_LABELS = ("r_cm", "r_endocardial_ec", "r_vascular_ec", "r_ec_ambiguous", "r_epicardial")
+SKM_SET = "skm"
+SKM_LABEL = "r_skm"
+SKM_GENES = ("Tnnt3", "Tnni2", "Mylpf", "Myl1", "Tnnc2")
+SKM_SOURCE = "X010_T71"
+SKM_PURITY_SCORE = 0.3  # (m2): a late-end r_cm cell whose skm score is at least this counts against purity
 CP10K = 1e4
 
 
@@ -74,15 +72,17 @@ def load_extra(cfg: Mapping) -> dict:
     return json.loads(f.read_text())
 
 
-def derived_config(a: Mapping, cfg: Mapping, extra: Mapping | None, early: str, late: str) -> tuple[dict, str]:
-    """The labeller's config for one atlas: the base with stages [early, late] and, for a whole-embryo early end, the
-    extra classes. Checked by feng_relabel.check_config. Returns it and its sha256."""
-    base = base_config(cfg)
-    out = copy.deepcopy(base)
-    out["stages"] = [early, late]
-    if a.get("early_tissue") == "whole_embryo":
-        if extra is None:
-            raise Refused(f"{a.get('accession')}: a whole-embryo early end needs the derived extra classes")
+def derived_config(base: Mapping, stages: Sequence[str], extra: Mapping | None) -> tuple[dict, str]:
+    """The base with `stages`, the skm class and, when `extra` is given, the derived classes. Checked by
+    feng_relabel.check_config. Returns it and its sha256."""
+    out = copy.deepcopy(dict(base))
+    out["stages"] = list(stages)
+    if SKM_SET in out["sets"]:
+        raise Refused("the base already holds an skm set")
+    out["sources"][SKM_SOURCE] = ("The skeletal-muscle competing class of row T71 (register row X010's amendment): "
+                                  "gene symbols only.")
+    out["sets"][SKM_SET] = {"role": "competing", "label": SKM_LABEL, "genes": {g: SKM_SOURCE for g in SKM_GENES}}
+    if extra is not None:
         out["sources"][EXTRA_SOURCE] = (
             "Extra competing classes for whole-embryo early ends (experiments/t1_ext/atlases.yaml extra_competing): "
             "candidates proposed by the AI assistant from general knowledge, members decided by the released T1 E8.5 "
@@ -99,6 +99,22 @@ def derived_config(a: Mapping, cfg: Mapping, extra: Mapping | None, early: str, 
     return out, cm.sha256_json(out)
 
 
+def label_configs(a: Mapping, cfg: Mapping, extra: Mapping | None, early: str, late: str) -> list[dict]:
+    """[{stages, config, sha256}]: one run over both ends, or, for an atlas whose early end is a whole embryo, the early
+    end (with the derived classes, which must be of that stage) and the late end (without them)."""
+    base = base_config(cfg)
+    if a.get("early_tissue") != "whole_embryo":
+        c, h = derived_config(base, [early, late], None)
+        return [{"stages": [early, late], "config": c, "sha256": h}]
+    if extra is None:
+        raise Refused(f"{a.get('accession')}: a whole-embryo early end needs the derived extra classes")
+    if early != cfg["extra_competing"]["stage"] or extra.get("stage") != early:
+        raise Refused(f"{a.get('accession')}: the derived classes are of {extra.get('stage')}, not {early}")
+    ce, he = derived_config(base, [early], extra)
+    cl, hl = derived_config(base, [late], None)
+    return [{"stages": [early], "config": ce, "sha256": he}, {"stages": [late], "config": cl, "sha256": hl}]
+
+
 def derive_extra(label_means: Mapping[str, Mapping[str, float]], cfg: Mapping) -> dict:
     """atlases.yaml's extra-class rule on released per-label means (label -> gene -> mean log1p CP10k, one stage):
     a candidate joins its class if its highest mean over the class's released labels is >= min_mean and >= min_ratio
@@ -106,7 +122,7 @@ def derive_extra(label_means: Mapping[str, Mapping[str, float]], cfg: Mapping) -
     min_genes_found members is dropped."""
     ex = cfg["extra_competing"]
     base = base_config(cfg)
-    named = fr.named_genes(base)
+    named = fr.named_genes(base) | set(SKM_GENES)
     need = int(base["score"]["min_genes_found"])
     out, record = {}, {}
     for name, spec in ex["classes"].items():
@@ -118,7 +134,7 @@ def derive_extra(label_means: Mapping[str, Mapping[str, float]], cfg: Mapping) -
         genes, why = [], {}
         for g in spec["candidates"]:
             if g in named:
-                why[g] = "named by the base yaml"
+                why[g] = "named by the base yaml or the skm class"
                 continue
             hi = max(label_means[lab].get(g, 0.0) for lab in own)
             oth = max((label_means[lab].get(g, 0.0) for lab in others), default=0.0)
@@ -136,10 +152,6 @@ def derive_extra(label_means: Mapping[str, Mapping[str, float]], cfg: Mapping) -
 
 
 # ------------------------------------------------------------------------------------------------ released profiles
-
-
-def chamber_categories() -> dict[str, str]:
-    return dict(yaml.safe_load(CHAMBER.read_text())["labels"])
 
 
 def label_profiles(C: sparse.spmatrix, genes: Sequence[str], labels: np.ndarray) -> dict:
@@ -172,78 +184,36 @@ def released_stage(path: Path) -> tuple[sparse.csr_matrix, list[str], np.ndarray
     return counts_of(ref), [str(g) for g in ref.var_names], ref.obs["celltype"].astype(str).to_numpy()
 
 
-# ------------------------------------------------------------------------------------------------ checks
-
-
-def _on(genes_from: Sequence[str], values: np.ndarray, genes_to: Sequence[str]) -> np.ndarray:
-    pos = {g: i for i, g in enumerate(genes_from)}
-    return np.array([values[pos[g]] if g in pos else np.nan for g in genes_to])
-
-
-def profile_check(group: Mapping, refs: Mapping[str, Mapping], own: Sequence[str], min_cp: float) -> dict:
-    """Spearman of the group's mean log1p CP10k with each reference profile, over shared genes with mean CP10k >= min_cp
-    in either profile; passes when the best reference is one of `own`."""
-    rho = {}
-    for lab, r in refs.items():
-        g_cp = _on(group["genes"], group["cp"], r["genes"])
-        g_lg = _on(group["genes"], group["log"], r["genes"])
-        ok = np.isfinite(g_cp) & ((g_cp >= min_cp) | (np.asarray(r["cp"]) >= min_cp))
-        rho[lab] = float(spearmanr(g_lg[ok], np.asarray(r["log"])[ok])[0]) if ok.sum() >= 10 else float("nan")
-    finite = {k: v for k, v in rho.items() if np.isfinite(v)}
-    best = max(finite, key=finite.get) if finite else None
-    return {"rho": rho, "best": best, "own": list(own), "passed": best is not None and best in own}
-
-
-def purity_gate(group_mean: Mapping[str, float], released_cm: Mapping[str, float],
-                released_own: Mapping[str, float | None]) -> dict:
-    """Per competing class with a released mean of its own: passed when the group's mean class score is below the
-    midpoint of the released CM labels' and the class's own labels' mean scores."""
-    per, ok = {}, True
-    for c, own in released_own.items():
-        if own is None or c not in released_cm or c not in group_mean:
-            per[c] = {"checked": False}
-            continue
-        mid = (released_cm[c] + own) / 2.0
-        p = bool(group_mean[c] < mid)
-        per[c] = {"checked": True, "passed": p}
-        ok &= p
-    return {"passed": ok, "classes": per}
-
-
-def embryo_gene_gate(cm_cp: np.ndarray, nonheart_cp: np.ndarray) -> np.ndarray:
-    """True where a gene may enter a whole-embryo atlas's CM direction: CM mean CP10k above the non-heart mean."""
-    cm_cp, nh = np.asarray(cm_cp, dtype=np.float64), np.asarray(nonheart_cp, dtype=np.float64)
-    return np.isfinite(cm_cp) & np.isfinite(nh) & (cm_cp > nh)
-
-
 # ------------------------------------------------------------------------------------------------ the labelling
 
 
-def label_atlas(red: Mapping, cfg_a: Mapping) -> dict:
-    """relabel() on one reduced atlas, and the per-sample diagnostics of row 0 (label counts, the unassigned split into
-    'no class reached min_score' and 'margin failed', the target classes' score quantiles). Deciding nothing."""
-    out = fr.relabel(red["C"], red["genes"], red["stage"], cfg_a)
-    labels, scores = out["labels"], out["scores"]
-    classes = fr.classes(cfg_a)
-    low = np.vstack([scores[n] for n in classes]).max(0) < float(cfg_a["assign"]["min_score"])
-    un = cfg_a["assign"]["unassigned"]
-    per = {}
-    for g in sorted(set(red["gsm"])):
-        m = red["gsm"] == g
-        per[g] = {"stage": str(red["stage"][m][0]), "cells": int(m.sum()),
-                  "labels": {lab: int(np.sum(m & (labels == lab))) for lab in fr.all_labels(cfg_a)},
-                  "unassigned_no_class": int(np.sum(m & low)),
-                  "unassigned_margin": int(np.sum(m & (labels == un) & ~low)),
-                  "score_quantiles": {n: [float(q) for q in np.quantile(scores[n][m], [0.1, 0.5, 0.9])]
-                                      for n, s in cfg_a["sets"].items() if s["role"] == "target"}}
-    return {"labels": labels, "scores": scores, "per_sample": per, "group_cells": out["group_cells"],
-            "label_counts": out["label_counts"], "unassigned_share": out["unassigned_share"],
-            "sets": out["sets"]}
-
-
-def class_means(scores: Mapping[str, np.ndarray], mask: np.ndarray, cfg_a: Mapping) -> dict[str, float]:
-    return {n: float(np.mean(scores[n][mask])) for n, s in cfg_a["sets"].items()
-            if s["role"] == "competing" and mask.any()}
+def label_atlas(red: Mapping, runs: Sequence[Mapping]) -> dict:
+    """relabel() on one reduced atlas, one run per config (each on the cells of its stages). Returns per cell the
+    label and the skm score, and per run its config's sha256, the sets found and the control genes' count."""
+    stage = np.asarray(red["stage"], dtype=str)
+    n = stage.size
+    labels = np.full(n, "", dtype=object)
+    skm = np.full(n, np.nan)
+    rec = []
+    done = np.zeros(n, dtype=bool)
+    for r in runs:
+        m = np.isin(stage, r["stages"])
+        if not m.any():
+            raise Refused(f"no cell at {r['stages']}")
+        rows = np.flatnonzero(m)
+        out = fr.relabel(sparse.csr_matrix(red["C"])[rows], red["genes"], stage[rows], r["config"])
+        if set(out["sets"][SKM_SET]["controls"]) & set(SKM_GENES) or any(
+                set(s["controls"]) & set(SKM_GENES) for s in out["sets"].values()):
+            raise Refused("an skm gene was drawn as a control gene")
+        labels[rows] = out["labels"]
+        skm[rows] = out["scores"][SKM_SET]
+        done[rows] = True
+        rec.append({"stages": list(r["stages"]), "config_sha256": r["sha256"], "cells": int(rows.size),
+                    "sets_found": {k: len(v["found"]) for k, v in out["sets"].items()},
+                    "unassigned_share": out["unassigned_share"]})
+    if not done.all():
+        raise Refused("a cell was not labelled")
+    return {"labels": labels.astype(str), "skm": skm, "runs": rec}
 
 
 def main(argv=None) -> int:
@@ -254,14 +224,21 @@ def main(argv=None) -> int:
     d.add_argument("--out", required=True, type=Path)
     a = ap.parse_args(argv)
     cfg = cm.load_atlases()
+    want = (cm.REPO / cfg["extra_competing"]["derived_file"]).resolve()
+    if a.out.resolve() != want:
+        raise SystemExit(f"--out must be {cfg['extra_competing']['derived_file']} (the file atlases.yaml pins)")
+    if Path(a.released_e85).name != f"{cfg['extra_competing']['stage']}_RNA.h5ad":
+        raise SystemExit("--released-e85 must be the released E8.5 file (a training stage)")
     C, genes, labels = released_stage(a.released_e85)
     prof = label_profiles(C, genes, labels)
     means = {lab: dict(zip(p["genes"], p["log"].tolist(), strict=True)) for lab, p in prof.items()}
     res = derive_extra(means, cfg)
     res["released_sha256"] = cm.sha256_file(a.released_e85)
-    cm.dump_json(res, a.out)
+    want.parent.mkdir(parents=True, exist_ok=True)
+    want.write_text(json.dumps(res, indent=1, sort_keys=True) + "\n")
     print(json.dumps({k: {"members": len(v.get("members", [])), "dropped": v.get("dropped")}
                       for k, v in res["record"].items()}, indent=1))
+    print(f"wrote {cfg['extra_competing']['derived_file']} sha256 {cm.sha256_file(want)}")
     return 0
 
 

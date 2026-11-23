@@ -145,7 +145,7 @@ def get(url: str, dst: Path, max_bytes: int, open_url=None, sleep=time.sleep, tr
     again); any other error, a redirect (refused, never followed) and the byte limit end it at once. `open_url(request,
     timeout)` is the opener's open (a fake in the tests)."""
     url = https_url(url)
-    dst = cm.outside_repo(dst)
+    dst = cm.writable(dst)
     dst.parent.mkdir(parents=True, exist_ok=True)
     part = dst.with_name(dst.name + ".part")
     open_url = open_url or opener().open

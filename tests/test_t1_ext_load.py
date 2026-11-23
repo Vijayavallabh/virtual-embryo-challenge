@@ -322,12 +322,18 @@ def test_read_reduced_rechecks_every_row(tmp_path):
     good = (out / "cells.csv").read_text()
     lines = good.splitlines()
     # a row whose day is in the window, with the manifest's hashes made to match: the re-check refuses
-    bad = "\n".join([lines[0], lines[1].rsplit(",", 1)[0] + ",12.5", *lines[2:]]) + "\n"
+    assert lines[0] == "cell,gsm,stage,day,total_ge"
+
+    def with_day(line, day):
+        f = line.split(",")
+        return ",".join([*f[:3], day, *f[4:]])
+
+    bad = "\n".join([lines[0], with_day(lines[1], "12.5"), *lines[2:]]) + "\n"
     tamper(bad)
     with pytest.raises(cm.Refused):
         ld.read_reduced(ACC, tmp_path, cfg)
     # a row whose day is outside the window but is not its sample's stage
-    bad = "\n".join([lines[0], lines[1].rsplit(",", 1)[0] + ",16.5", *lines[2:]]) + "\n"
+    bad = "\n".join([lines[0], with_day(lines[1], "16.5"), *lines[2:]]) + "\n"
     tamper(bad)
     with pytest.raises(cm.Refused):
         ld.read_reduced(ACC, tmp_path, cfg)

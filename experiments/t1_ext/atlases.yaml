@@ -129,23 +129,12 @@ extra_competing:
       released_labels: [EXEM]
       candidates: [Tbx4, Hoxa10, Hoxa11, Hoxa13, Cdx2, Pitx1, Ahnak]
 
-# Checks, fixed now (groups.py). A failing atlas-group pair is dropped from that group's consensus.
-checks:
-  profile_min_cp10k: 1.0       # genes with mean CP10k >= 1 in either profile enter a profile comparison
-  min_cells_ext: 10            # equal to the readout's (experiments/t1_direction/config.yaml)
-  unassigned_cap_heart: 0.40   # heart-dissected samples only (the base yaml's cap)
-  # released labels that count as a group's own, by category of configs/t1_chamber_classes.yaml
-  own_categories:
-    CM: [cm]
-    Endocardium: [endocardium, vascular_endothelium]
-    Endothelium: [endocardium, vascular_endothelium]
-    Epicardium: [epicardium]
-
-# The consensus rules, fixed now (tables.py). No composition rule: the block is deleted (strict form).
-consensus:
-  feng_bracket_days: 5.0       # every member is rescaled to an E9.5 -> E14.5 equivalent: d * 5 / (late - early)
-  eb_bins: 10
-  held_modules: ['^Hb[ab]-', '^mt-']   # R2's A1 and N1, held (NaN) in every member of a consensus group
+# The tables (row T72's TABLES; tables.py constants, fixed in code): per atlas and group with at least 10 cells at each
+# end, m_end = the equal-weight mean over the end's samples of each sample's mean CP10k over the group's cells (no
+# downsampling), D = log((m_late + 0.5) / (m_early + 0.5)) x 5 / (late - early), on T1's genes by unique symbol,
+# ^Hb[ab]- and ^mt- genes NaN. The labeller: row N54's frozen yaml plus the skm class on both new atlases and the
+# derived classes on X020's E8.5 samples only (groups.py). No check, consensus, rescale or control is formed here: the
+# consensus, the rescale and the controls are the practice-read script's (experiments/t1_m1/mx2s_read.py).
 
 # What screens.py computes for the readers' checks (a) to (d) of row T72's cell 3, on the barcodes and features files
 # fetch-meta fetched, before any matrix; each atlas lists the ones that apply to it; the same functions run again on the

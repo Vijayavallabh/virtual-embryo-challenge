@@ -40,7 +40,6 @@ import gzip
 import io
 import json
 import re
-import shutil
 import sys
 from collections.abc import Mapping, Sequence
 from pathlib import Path
@@ -454,7 +453,7 @@ def load_atlas(acc: str, dest: Path, cfg: Mapping | None = None, check_frozen: b
     a = cm.atlas(acc, cfg)
     if a["status"] not in cm.FETCHABLE:
         raise Refused(f"{acc} has status {a['status']!r}: it is never loaded")
-    rdir = cm.outside_repo(Path(dest) / "raw" / acc)
+    rdir = cm.writable(Path(dest) / "raw" / acc)
     man_path = rdir / "MANIFEST.json"
     man = json.loads(man_path.read_text())
     if man.get("atlas_entry_sha256") != cm.entry_sha256(acc, cfg):
@@ -469,9 +468,12 @@ def load_atlas(acc: str, dest: Path, cfg: Mapping | None = None, check_frozen: b
     parts, qc = [], {"per_sample": {}}
     for gsm, s in sorted(kept.items()):
         x = (reader or read_sample)(acc, form, a, s, rdir / gsm, rd)
-        C, genes = x["C"], np.asarray(x["genes"], dtype=str)
-        C, genes, ndup = unique_symbols(sparse.csr_matrix(C), genes)
+        C, genes = sparse.csr_matrix(x["C"]), np.asarray(x["genes"], dtype=str)
+        # the cell call and each cell's total on ALL its Gene Expression rows, before duplicated symbols are dropped
+        # (row T72: CP10k is counts x 10^4 over the cell's total on Gene Expression rows)
         called = cell_call(C, genes, a["qc"])
+        total = np.asarray(C.sum(1)).ravel().astype(np.int64)
+        C, genes, ndup = unique_symbols(C, genes)
         day = np.full(int(called.sum()), s["day"])
         ok = drop_window_cells(day)
         qc["per_sample"][gsm] = {"stage": s["label"], "day": s["day"], "barcodes": int(C.shape[0]),
@@ -479,15 +481,16 @@ def load_atlas(acc: str, dest: Path, cfg: Mapping | None = None, check_frozen: b
                                  "duplicated_symbols_dropped": ndup, "gates": x["gates"]}
         Ck = C[np.flatnonzero(called)][np.flatnonzero(ok)]
         bc = np.asarray(x["barcodes"], dtype=str)[np.flatnonzero(called)][np.flatnonzero(ok)]
-        parts.append((gsm, s["label"], s["day"], Ck, genes, bc))
+        tot = total[np.flatnonzero(called)][np.flatnonzero(ok)]
+        parts.append((gsm, s["label"], s["day"], Ck, genes, bc, tot))
     if not parts:
         raise Refused(f"{acc}: no sample left after the window filter")
     common = sorted(set.intersection(*[set(p[4]) for p in parts]))
     mats, cells = [], []
-    for gsm, lab, day, Ck, genes, bc in parts:
+    for gsm, lab, day, Ck, genes, bc, tot in parts:
         idx = {g: i for i, g in enumerate(genes)}
         mats.append(Ck[:, [idx[g] for g in common]])
-        cells += [(f"{gsm}:{b}", gsm, lab, day) for b in bc]
+        cells += [(f"{gsm}:{b}", gsm, lab, day, int(t)) for b, t in zip(bc, tot, strict=True)]
     C = sparse.vstack(mats).tocsr().astype(np.int32)
     days = np.array([c[3] for c in cells], dtype=np.float64)
     before = {lab: int(sum(1 for c in cells if c[2] == lab)) for lab in sorted({c[2] for c in cells})}
@@ -514,7 +517,7 @@ def load_atlas(acc: str, dest: Path, cfg: Mapping | None = None, check_frozen: b
 def write_reduced(acc: str, dest: Path, red: Mapping, cfg: Mapping | None = None) -> Path:
     import filterio as fio
 
-    out = cm.outside_repo(Path(dest) / "reduced" / acc)
+    out = cm.writable(Path(dest) / "reduced" / acc)
     out.mkdir(parents=True, exist_ok=True)
     C = red["C"]
     np.savez_compressed(out / "counts.npz", data=C.data, indices=C.indices, indptr=C.indptr,
@@ -522,7 +525,7 @@ def write_reduced(acc: str, dest: Path, red: Mapping, cfg: Mapping | None = None
     (out / "genes.txt").write_text("\n".join(red["genes"]) + "\n")
     buf = io.StringIO()
     w = csv.writer(buf, lineterminator="\n")
-    w.writerow(["cell", "gsm", "stage", "day"])
+    w.writerow(["cell", "gsm", "stage", "day", "total_ge"])
     w.writerows(red["cells"])
     (out / "cells.csv").write_text(buf.getvalue())
     cm.dump_json(red["qc"], out / "qc.json")
@@ -564,7 +567,8 @@ def check_reduction_pins(acc: str, a: Mapping, man: Mapping, cfg: Mapping) -> No
     ok, why = cm.clearance(a, man.get("processing_sha256") or "")
     if not ok:
         raise Refused(f"{acc}: {why}")
-    check_screen(acc, a, man)
+    if cm.screen_kept(acc, a) != man.get("screen"):  # a screened member is still recorded kept, with the same files
+        raise Refused(f"{acc}: the reduction was made under another screen record")
 
 
 def read_reduced(acc: str, dest: Path, cfg: Mapping | None = None) -> dict:
@@ -573,7 +577,7 @@ def read_reduced(acc: str, dest: Path, cfg: Mapping | None = None) -> dict:
     sample's stored record (cells_in_window) and by drop_window_cells, is outside the window."""
     cfg = cfg or cm.load_atlases()
     a = cm.atlas(acc, cfg)
-    out = cm.outside_repo(Path(dest) / "reduced" / acc)
+    out = cm.writable(Path(dest) / "reduced" / acc)
     man = json.loads((out / "MANIFEST.json").read_text())
     for n, e in man["outputs"].items():
         if cm.sha256_file(out / n) != e["sha256"]:
@@ -596,25 +600,99 @@ def read_reduced(acc: str, dest: Path, cfg: Mapping | None = None) -> dict:
         raise Refused(f"{acc}: a row of cells.csv names a sample the reduction holds no pinned record for")
     return {"C": C, "genes": genes, "cell": np.array([r["cell"] for r in rows]),
             "gsm": gsm, "stage": np.array([r["stage"] for r in rows]), "day": day, "manifest": man,
+            "total_ge": np.array([float(r.get("total_ge") or "nan") for r in rows], dtype=np.float64),
             "manifest_sha256": cm.sha256_file(out / "MANIFEST.json")}
+
+
+RECHECK = ("suffix", "own_peaks", "whitelist_sized")  # (a), (b) and (d) again on the fetched files (row T72, LOAD)
+
+
+def recheck_screens(acc: str, a: Mapping, cfg: Mapping, man: Mapping, rdir: Path) -> dict:
+    """Checks (a), (b) and (d) of cell 3, as the atlas lists them, on the FETCHED barcodes and features files (each
+    re-hashed against the manifest first); refused when one says no (a failed (p1) at the row's load)."""
+    names = [n for n in a.get("screens") or [] if n in RECHECK]
+    if not names:
+        return {}
+    files, sha = {}, {}
+    for g, s in man["samples"].items():
+        files[g], sha[g] = {}, {}
+        for role in cm.SCREEN_ROLES:
+            f = s["files"][role]
+            p = rdir / g / f["name"]
+            if not p.is_file() or cm.sha256_file(p) != f["sha256"]:
+                raise Refused(f"{acc} {g}: {f['name']} is missing or not the file the fetch manifest records")
+            files[g][role], sha[g][role] = p, f["sha256"]
+    res = cm.sibling("screens").run_checks({**a, "screens": names}, cfg["screen_rules"], files, sha)
+    failed = [n for n in names if not res[n]["passed"]]
+    if failed:
+        raise Refused(f"{acc}: checks {failed} of the screens fail on the fetched files")
+    return {n: True for n in names}
+
+
+def row_load(commit: str, repo: Path | None = None, guard=None, cfg: Mapping | None = None, reader=None) -> dict:
+    """ROW T72'S LOAD STEP, at the row's commit: every guard of cell 8, data/external/t1_ext_t72/FETCH.json present,
+    then data/external/t1_ext_t72/reduced/ created exclusively; per fetched member, the load of load_atlas (window
+    removal first, the pins, the clearance, the screened copies' sha256, Gene Expression rows only, the cell call)
+    with checks (a), (b) and (d) again on the fetched files, and every pinned sample loaded. A failure of any of these
+    is a failed (p1) for that member: recorded in reduced/LOAD.json (the pre-gate reads it), its reduction not
+    written, and the step goes on (exit 0). Returns LOAD.json's content."""
+    rt = cm.sibling("row_t72")
+    repo = Path(repo or cm.REPO)
+    g = (guard or rt.guards)("load", commit, repo)
+    cfg = cfg or cm.load_atlases(repo / rt.ATLASES_REL)
+    ext = rt.row_external(repo)
+    fp = ext / "FETCH.json"
+    if not fp.is_file():
+        raise Refused(f"{fp} is missing: the fetch step did not finish")
+    fx = json.loads(fp.read_text())
+    if fx.get("commit") != commit:
+        raise Refused(f"{fp} was written at another commit")
+    rt.make_exclusive(ext / "reduced")
+    out = {**g, "fetch_sha256": cm.sha256_file(fp), "p1": {}, "dropped_by_screens": fx.get("dropped") or {},
+           "load": {}}
+    for acc in sorted(fx["atlases"]):
+        try:
+            a = cm.atlas(acc, cfg)
+            rdir = cm.writable(ext / "raw" / acc)
+            man = json.loads((rdir / "MANIFEST.json").read_text())
+            if cm.sha256_file(rdir / "MANIFEST.json") != fx["atlases"][acc]["manifest_sha256"]:
+                raise Refused(f"{acc}: the fetch manifest is not the one FETCH.json records")
+            pins = cm.check_pins(acc, a)
+            if set(man["samples"]) != set(pins["samples"]):
+                raise Refused(f"{acc}: the fetched samples are not exactly the pinned ones")
+            checks = recheck_screens(acc, a, cfg, man, rdir)
+            red = load_atlas(acc, ext, cfg, check_frozen=False, reader=reader)  # the guards checked the freeze
+            if red["qc"]["window"]["samples_removed_window"] or \
+                    set(red["qc"]["window"]["samples_kept"]) != set(pins["samples"]):
+                raise Refused(f"{acc}: not every pinned sample loaded")
+            p = write_reduced(acc, ext, red, cfg)
+            out["p1"][acc] = {"passed": True, "rechecked": checks}
+            out["load"][acc] = {"manifest_sha256": cm.sha256_file(p), "qc": red["qc"]}
+        except Refused as e:
+            out["p1"][acc] = {"passed": False, "reason": str(e)}
+    cm.dump_json(out, ext / "reduced" / "LOAD.json")
+    return out
 
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("accession")
-    ap.add_argument("--dest", required=True, type=Path)
-    ap.add_argument("--delete-raw", action="store_true", help="delete D/raw/<ACC> after the reduction is written")
+    ap.add_argument("--commit", required=True, help="the row's commit, full sha (HEAD must be it)")
     a = ap.parse_args(argv)
     try:
-        red = load_atlas(a.accession, a.dest)
-        p = write_reduced(a.accession, a.dest, red)
+        out = row_load(a.commit)
     except Refused as e:
         print(f"refused: {e}", file=sys.stderr)
         return 2
-    print(json.dumps({"accession": a.accession, "manifest": str(p), "window": red["qc"]["window"],
-                      "cells": len(red["cells"]), "genes": len(red["genes"])}, indent=1, default=str))
-    if a.delete_raw:
-        shutil.rmtree(cm.outside_repo(Path(a.dest) / "raw" / a.accession))
+    for acc, p1 in sorted(out["p1"].items()):
+        if p1["passed"]:
+            q = out["load"][acc]["qc"]
+            per = {g: {k: x[k] for k in ("stage", "barcodes", "cells_called", "cells_kept")}
+                   for g, x in q["per_sample"].items()}
+            print(f"loaded\t{acc}\t(p1) passed\t{json.dumps(per)}\tgenes {q['genes_common']}")
+        else:
+            print(f"loaded\t{acc}\t(p1) FAILED\t{p1['reason']}")
+    for acc, failed in out["dropped_by_screens"].items():
+        print(f"loaded\t{acc}\tdropped by the screens ({failed}): not loaded")
     return 0
 
 

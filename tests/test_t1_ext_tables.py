@@ -1,14 +1,15 @@
-"""experiments/t1_ext groups.py and tables.py on synthetic data: the group score against a hand case, relabel()
-running on every derived config, the extra-class rule, the checks, the consensus sign rule and weights (zeros count as
-no value; k = 1 groups keep the ruled vector byte for byte) and the norm match. The strict form (ruling row R27)
-deleted the composition block: its tests went with it, and no output of the member or the run holds a composition or
-share key (test_no_composition_key_in_any_output)."""
+"""experiments/t1_ext groups.py and tables.py (row T72, candidate MX2s) on synthetic data only: the group score against
+a hand case; the labeller's configs (row N54's frozen yaml unchanged, plus the skm class on both new atlases, plus the
+derived classes on X020's E8.5 samples only), relabel() running on them, no skm gene ever a control; the extra-class
+rule; the member tables against hand computations (per-sample CP10k on the cell's Gene Expression total, equal-weight
+samples, pseudocount 0.5, the factor 5/8, unique-symbol mapping, ^Hb[ab]- and ^mt- NaN, at least 10 cells at each
+end); the skm purity figure; and that tables.py forms no consensus, variant, rescale, control, composition or share.
+"""
 
 from __future__ import annotations
 
 import copy
 import importlib.util
-import json
 import math
 import re
 import sys
@@ -39,13 +40,13 @@ def _load(name):
 gr = _load("groups")
 tb = _load("tables")
 fr = gr.fr  # the labeller of row N54, as groups.py imports it
-NAN = np.nan
-EXTRA = {"classes": {"neural": {"label": "r_neural", "released_labels": ["Neural Tube"], "genes": ["Sox1", "Pax6"]},
+EXTRA = {"stage": "E8.5",
+         "classes": {"neural": {"label": "r_neural", "released_labels": ["Neural Tube"], "genes": ["Sox1", "Pax6"]},
                      "paraxial": {"label": "r_paraxial", "released_labels": ["Paraxial Mesoderm"],
                                   "genes": ["Meox1"]}}}
 
 
-# ------------------------------------------------------------------------------------------------ groups
+# ------------------------------------------------------------------------------------------------ the labeller
 
 
 def test_set_score_hand_case():
@@ -56,43 +57,63 @@ def test_set_score_hand_case():
     assert np.allclose(s, want)
 
 
-def derived(early_tissue):
+def test_label_configs_keep_n54_and_add_skm_and_the_derived_classes_at_e85_only():
     cfg = cm.load_atlases()
-    a = {"accession": "GSE999003", "early_tissue": early_tissue}
-    return gr.derived_config(a, cfg, EXTRA, "E8.5", "E14.5")
-
-
-def test_derived_configs_keep_the_base_and_add_extra_classes_only_for_embryos():
-    heart, h_sha = derived("heart")
-    emb, e_sha = derived("whole_embryo")
-    base = gr.base_config(cm.load_atlases())
-    assert heart["stages"] == ["E8.5", "E14.5"] and heart["sets"] == base["sets"]
-    assert heart["terminal"] == base["terminal"] and heart["assign"] == base["assign"]
-    assert "neural" in emb["sets"] and "paraxial" not in emb["sets"]  # one gene: under min_genes_found
-    assert h_sha != e_sha
+    base = gr.base_config(cfg)
+    heart = gr.label_configs({"accession": "X019", "early_tissue": "heart"}, cfg, EXTRA, "E8.5", "E16.5")
+    emb = gr.label_configs({"accession": "X020", "early_tissue": "whole_embryo"}, cfg, EXTRA, "E8.5", "E16.5")
+    assert [r["stages"] for r in heart] == [["E8.5", "E16.5"]]  # one run over both ends, as row N54's
+    assert [r["stages"] for r in emb] == [["E8.5"], ["E16.5"]]
+    for r in (*heart, *emb):
+        c = r["config"]
+        assert c["sets"]["skm"] == {"role": "competing", "label": "r_skm",
+                                    "genes": {g: "X010_T71" for g in ("Tnnt3", "Tnni2", "Mylpf", "Myl1", "Tnnc2")}}
+        for k in ("score", "assign", "groups", "terminal", "unassigned_cap", "min_cells_ext", "fallback"):
+            assert c[k] == base[k], k  # N54's thresholds, map and rules unchanged
+        assert {n: s for n, s in c["sets"].items() if n in base["sets"]} == base["sets"]
+    assert "neural" in emb[0]["config"]["sets"] and "paraxial" not in emb[0]["config"]["sets"]  # under min_genes_found
+    assert not {"neural", "paraxial"} & set(emb[1]["config"]["sets"])  # the late end: skm only
+    assert not {"neural", "paraxial"} & set(heart[0]["config"]["sets"])
+    assert len({r["sha256"] for r in (*heart, *emb)}) == 3
     with pytest.raises(cm.Refused):
-        gr.derived_config({"accession": "x", "early_tissue": "whole_embryo"}, cm.load_atlases(), None, "E8.5",
-                          "E14.5")
+        gr.label_configs({"accession": "x", "early_tissue": "whole_embryo"}, cfg, None, "E8.5", "E16.5")
+    with pytest.raises(cm.Refused):  # derived classes of another stage
+        gr.label_configs({"accession": "x", "early_tissue": "whole_embryo"}, cfg, {**EXTRA, "stage": "E9.5"},
+                         "E8.5", "E16.5")
+    assert gr.SKM_PURITY_SCORE == 0.3
 
 
-@pytest.mark.parametrize("tissue", ["heart", "whole_embryo"])
-def test_relabel_runs_on_each_derived_config(tissue):
-    cfg_a, _ = derived(tissue)
-    named = sorted({g for s in cfg_a["sets"].values() for g in s["genes"]})
-    fillers = [f"Fill{i}" for i in range(400)]
-    genes = named + fillers
-    rng = np.random.default_rng(3)
-    n = 120
+def synthetic_reduction(seed=3, n_per=60, genes_extra=()):
+    cfg = cm.load_atlases()
+    runs = gr.label_configs({"accession": "X020", "early_tissue": "whole_embryo"}, cfg, EXTRA, "E8.5", "E16.5")
+    named = sorted({g for r in runs for s in r["config"]["sets"].values() for g in s["genes"]})
+    genes = named + [f"Fill{i}" for i in range(400)] + list(genes_extra)
+    rng = np.random.default_rng(seed)
+    n = 4 * n_per
     X = rng.poisson(0.3, size=(n, len(genes))).astype(np.float64)
-    cm_idx = [genes.index(g) for g in cfg_a["sets"]["cm"]["genes"]]
-    X[:40][:, cm_idx] += 40  # forty cardiomyocytes
-    stage = np.array(["E8.5"] * 60 + ["E14.5"] * 60)
-    red = {"C": sparse.csr_matrix(X), "genes": genes, "stage": stage, "gsm": np.where(stage == "E8.5", "G1", "G2")}
-    lab = gr.label_atlas(red, cfg_a)
-    assert np.mean(lab["labels"][:40] == "r_cm") > 0.9
-    assert set(lab["per_sample"]) == {"G1", "G2"}
-    ps = lab["per_sample"]["G1"]
-    assert ps["unassigned_no_class"] + ps["unassigned_margin"] == ps["labels"]["r_unassigned"]
+    cmi = [genes.index(g) for g in runs[0]["config"]["sets"]["cm"]["genes"]]
+    skm = [genes.index(g) for g in gr.SKM_GENES]
+    for k in range(4):
+        X[k * n_per:k * n_per + 25][:, cmi] += 40  # 25 cardiomyocytes per sample
+    X[3 * n_per + 25:3 * n_per + 35][:, skm] += 60  # ten skeletal-muscle-like cells in a late sample
+    stage = np.array(["E8.5"] * (2 * n_per) + ["E16.5"] * (2 * n_per))
+    gsm = np.repeat(["GSM1", "GSM2", "GSM3", "GSM4"], n_per)
+    red = {"C": sparse.csr_matrix(X), "genes": genes, "stage": stage, "gsm": gsm,
+           "total_ge": X.sum(1) + 5.0}  # the cell's total on all its Gene Expression rows (more than these genes)
+    return red, runs
+
+
+def test_relabel_runs_on_each_config_and_no_skm_gene_is_a_control():
+    red, runs = synthetic_reduction()
+    lab = gr.label_atlas(red, runs)
+    for k in range(4):
+        assert np.mean(lab["labels"][k * 60:k * 60 + 25] == "r_cm") > 0.9
+    assert np.all(np.isfinite(lab["skm"]))
+    assert np.mean(lab["labels"][3 * 60 + 25:3 * 60 + 35] == "r_skm") > 0.9
+    assert [r["stages"] for r in lab["runs"]] == [["E8.5"], ["E16.5"]]
+    out = fr.relabel(red["C"], red["genes"], red["stage"], gr.label_configs(
+        {"accession": "X019", "early_tissue": "heart"}, cm.load_atlases(), None, "E8.5", "E16.5")[0]["config"])
+    assert not any(set(s["controls"]) & set(gr.SKM_GENES) for s in out["sets"].values())
 
 
 def test_extra_class_rule():
@@ -105,220 +126,104 @@ def test_extra_class_rule():
     assert "neural" not in r["classes"]  # one member: under min_genes_found
     rec = r["record"]["neural"]
     assert rec["members"] == ["Sox1"]  # Pax6 fails the ratio, Hes5 the mean, Myl7 is named by the base
-    assert rec["left_out"]["Myl7"] == "named by the base yaml" and "dropped" in rec
+    assert rec["left_out"]["Myl7"].startswith("named by the base yaml") and "dropped" in rec
 
 
-def test_checks_hand_cases():
-    genes = [f"G{i}" for i in range(30)]
-    base = np.linspace(0.5, 30, 30)
-    grp = {"genes": genes, "cp": base, "log": np.log1p(base)}
-    refs = {"V-CM": {"genes": genes, "cp": base * 1.1, "log": np.log1p(base * 1.1)},
-            "Neural Tube": {"genes": genes, "cp": base[::-1], "log": np.log1p(base[::-1])}}
-    r = gr.profile_check(grp, refs, ["V-CM"], 1.0)
-    assert r["passed"] and r["best"] == "V-CM"
-    assert not gr.profile_check(grp, refs, ["Neural Tube"], 1.0)["passed"]
-    p = gr.purity_gate({"hepatic": 0.1, "neural": 0.6}, {"hepatic": 0.0, "neural": 0.0},
-                       {"hepatic": 1.0, "neural": 1.0, "mural": None})
-    assert not p["passed"] and p["classes"]["hepatic"]["passed"] and not p["classes"]["neural"]["passed"]
-    assert not p["classes"]["mural"]["checked"]
-    assert not hasattr(gr, "share_check")  # deleted with the composition block
-    assert gr.embryo_gene_gate(np.array([2.0, 1.0, NAN]), np.array([1.0, 1.0, 0.0])).tolist() == [True, False, False]
+# ------------------------------------------------------------------------------------------------ the tables
 
 
-# ------------------------------------------------------------------------------------------------ consensus
+def test_tables_hand_case():
+    # two early samples, one late sample; genes A, B, mt-X, Hbb-y; T1 genes in another order with a duplicate and one
+    # gene the atlas lacks
+    genes = ["A", "B", "mt-X", "Hbb-y", "Dup"]
+    rows = {"GSM1": [[10, 0, 0, 0, 1], [0, 10, 0, 0, 1]],
+            "GSM2": [[5, 5, 0, 0, 1]] * 10,
+            "GSM3": [[0, 20, 2, 2, 1]] * 12}
+    X, gsm, stage, tot = [], [], [], []
+    for g, rr in rows.items():
+        for r in rr:
+            X.append(r)
+            gsm.append(g)
+            stage.append("E16.5" if g == "GSM3" else "E8.5")
+            tot.append(100.0)  # every cell's Gene Expression total
+    X = np.array(X, dtype=np.float64)
+    red = {"C": sparse.csr_matrix(X), "genes": genes, "stage": np.array(stage), "gsm": np.array(gsm),
+           "total_ge": np.array(tot)}
+    lab = {"labels": np.array(["r_cm"] * len(gsm)), "skm": np.zeros(len(gsm))}
+    t1 = ["B", "Zz", "A", "Dup", "Dup", "mt-X", "Hbb-y"]
+    out = tb.member_tables(red, lab, {"CM": ["r_cm"]}, ["CM"], "E8.5", "E16.5", t1)
+    t = out["CM"]["table"]
+    assert t is not None and list(t) == list(tb.TABLE_KEYS)
+    # GSM1: 2 cells, CP10k A = (1000 + 0) / 2 = 500, B = 500; GSM2: A = B = 500; equal weight: m_early A = B = 500
+    # GSM3: A = 0, B = 2000
+    k = 5.0 / 8.0
+    want_A = math.log((0 + 0.5) / (500 + 0.5)) * k
+    want_B = math.log((2000 + 0.5) / (500 + 0.5)) * k
+    assert t["D"][2] == pytest.approx(want_A) and t["D"][0] == pytest.approx(want_B)
+    assert np.isnan(t["D"][1]) and np.isnan(t["D"][3]) and np.isnan(t["D"][4])  # lacked, T1 duplicate
+    assert np.isnan(t["D"][5]) and np.isnan(t["D"][6])  # ^mt- and ^Hb[ab]- held
+    assert t["m_late"][5] == pytest.approx(200.0)  # the level itself is kept
+    assert (int(t["n_cells_early"]), int(t["n_cells_late"])) == (12, 12)
+    assert t["per_sample_early"].shape == (2, len(t1)) and list(t["samples_early"]) == ["GSM1", "GSM2"]
+    assert t["per_sample_early"][0][2] == pytest.approx(500.0) and t["per_sample_early"][1][2] == pytest.approx(500.0)
+    # equal weight per sample, not per cell: GSM1's two cells weigh as much as GSM2's ten
+    lab2 = {"labels": np.array(["r_cm"] * len(gsm)), "skm": np.zeros(len(gsm))}
+    X2 = X.copy()
+    X2[0] = [30, 0, 0, 0, 1]  # GSM1's first cell: A 3000 -> GSM1 A = 1500; m_early A = (1500 + 500) / 2 = 1000
+    red2 = {**red, "C": sparse.csr_matrix(X2)}
+    t2 = tb.member_tables(red2, lab2, {"CM": ["r_cm"]}, ["CM"], "E8.5", "E16.5", t1)["CM"]["table"]
+    assert t2["m_early"][2] == pytest.approx(1000.0)
 
 
-def test_sign_rule_and_equal_weights():
-    m = {"A": np.array([1.0, 1.0, 1.0, 0.0, NAN, 1.0, -1.0]),
-         "B": np.array([2.0, -1.0, 1.0, 0.0, NAN, NAN, -3.0]),
-         "C": np.array([3.0, -1.0, NAN, 0.0, NAN, NAN, 2.0]),
-         "D": np.array([NAN, -1.0, NAN, 2.0, NAN, NAN, NAN])}
-    r = tb.consensus(m)
-    # gene 0: k 3, all agree: mean of 1, 2, 3 over k = 2.0
-    # gene 1: k 4, three negative agree (> k/2): (-3) / 4; the dissent counts as zero
-    # gene 2: k 2, both agree: 1.0
-    # gene 3: zeros are no value: k 1, one cannot agree alone: 0.0
-    # gene 4: no finite value: NaN; gene 5: one member: 0.0
-    # gene 6: k 3, two negative agree (> 1.5): (-1 - 3) / 3
-    want = [2.0, -0.75, 1.0, 0.0, NAN, 0.0, -4.0 / 3.0]
-    assert np.allclose(r["c"], want, equal_nan=True)
-    assert r["k"].tolist() == [3, 4, 2, 1, 0, 1, 3]
-    two = tb.consensus({"A": np.array([1.0, 1.0]), "B": np.array([1.0, -1.0])})
-    assert two["c"].tolist() == [1.0, 0.0]  # k = 2: both must agree
+def test_a_group_needs_ten_cells_at_each_end_and_a_cell_in_every_sample():
+    genes = ["A", "B"]
+    X = np.ones((30, 2))
+    stage = np.array(["E8.5"] * 20 + ["E16.5"] * 10)
+    gsm = np.array(["GSM1"] * 10 + ["GSM2"] * 10 + ["GSM3"] * 10)
+    red = {"C": sparse.csr_matrix(X), "genes": genes, "stage": stage, "gsm": gsm, "total_ge": np.full(30, 2.0)}
+    labs = np.array(["r_cm"] * 30, dtype=object)
+    labs[20:21] = "r_epicardial"  # the late end keeps 9 CM cells
+    out = tb.member_tables(red, {"labels": labs.astype(str), "skm": np.zeros(30)}, {"CM": ["r_cm"]}, ["CM"],
+                           "E8.5", "E16.5", genes)
+    assert out["CM"]["table"] is None and "fewer than 10" in out["CM"]["record"]["no_table"][0]
+    labs = np.array(["r_cm"] * 30, dtype=object)
+    labs[10:20] = "r_epicardial"  # GSM2 has no CM cell
+    out = tb.member_tables(red, {"labels": labs.astype(str), "skm": np.zeros(30)}, {"CM": ["r_cm"]}, ["CM"],
+                           "E8.5", "E16.5", genes)
+    assert out["CM"]["table"] is None and any("a sample without" in w for w in out["CM"]["record"]["no_table"])
+    labs = np.array(["r_cm"] * 30, dtype=object)
+    out = tb.member_tables(red, {"labels": labs.astype(str), "skm": np.zeros(30)}, {"CM": ["r_cm"]}, ["CM"],
+                           "E8.5", "E16.5", genes)
+    assert out["CM"]["table"] is not None and np.allclose(out["CM"]["table"]["D"], 0.0)
+    with pytest.raises(cm.Refused):  # a cell without a Gene Expression total
+        tb.cp10k_mean(sparse.csr_matrix(np.ones((1, 2))), np.array([0.0]))
 
 
-def test_norm_match_and_passthrough_byte_for_byte():
-    ref = np.array([3.0, 4.0, NAN])
-    # the second review's rule: the ruled norm over genes where c is finite and non-zero (and the ruled finite)
-    c, rec = tb.norm_match(np.array([1.0, 0.0, 5.0]), ref)
-    assert np.allclose(c, [3.0, 0.0, 15.0]) and rec["factor"] == 3.0 and rec["genes_in_norm"] == 1
-    assert math.isclose(rec["zero_share"], 1 / 3)
-    # the reviewer's hand case: one surviving gene (0.5 and 0.4 in two members) no longer takes the whole norm
-    ruled0 = np.array([3.0, 2.0, 0.45])
-    c2, rec2 = tb.norm_match(np.array([0.0, 0.0, 0.45]), ruled0, {"A": np.array([0.1, -0.2, 0.5]),
-                                                                    "B": np.array([NAN, 0.1, 0.4])})
-    assert np.allclose(c2, [0.0, 0.0, 0.45]) and rec2["factor"] == 1.0
-    assert math.isclose(rec2["max_ratio_to_largest_member"], 0.9)
-    ruled = {"CM": np.array([0.1, -0.2, NAN]), "Epicardium": np.array([0.3, 0.0, 0.7])}
-    members = {"GSE193346": {"CM": np.array([0.1, -0.1, NAN]), "Epicardium": np.array([0.2, 0.0, 0.5])},
-               "X1": {"CM": np.array([0.2, -0.1, 0.4])}, "X2": {"CM": np.array([0.3, 0.1, 0.4])}}
-    early = {"GSE193346": 9.5, "X1": 8.5, "X2": 9.5}
-    out = tb.group_tables(members, ruled, early)
-    for v in tb.VARIANTS:
-        assert out["tables"][v]["Epicardium"].tobytes() == ruled["Epicardium"].tobytes()
-        assert out["record"][v]["Epicardium"]["passthrough"]
-    raw = out["tables"]["raw"]["CM"]
-    assert np.allclose(raw, [0.2, -0.1 * 2 / 3, 0.4], equal_nan=True)
-    dec = out["tables"]["deciding"]["CM"]
-    m = np.isfinite(dec) & (dec != 0) & np.isfinite(ruled["CM"])
-    assert math.isclose(np.linalg.norm(dec[m]), np.linalg.norm(ruled["CM"][m]))
-    r = out["record"]["deciding"]["CM"]
-    assert r["norm_match"]["max_ratio_to_largest_member"] is not None and "genes_zero_one_member" in r
-    # without the E8.5-start member, two members remain; without the atlas in use, two remain
-    assert out["record"]["noE85start"]["CM"]["members"] == ["GSE193346", "X2"]
-    assert out["record"]["noX002"]["CM"]["members"] == ["X1", "X2"]
+def test_the_skm_purity_figure():
+    lab = {"labels": np.array(["r_cm", "r_cm", "r_cm", "r_skm", "r_cm"]), "skm": np.array([0.31, 0.3, 0.29, 2.0, 5.0])}
+    stage = np.array(["E16.5", "E16.5", "E16.5", "E16.5", "E8.5"])
+    p = tb.skm_purity(lab, stage, "E16.5", 0.3)
+    assert p == {"late_r_cm_cells": 3, "late_r_cm_skm_at_least": 2, "threshold": 0.3, "share": pytest.approx(2 / 3)}
+    assert tb.skm_purity(lab, stage, "E17.5", 0.3)["share"] is None
 
 
-def test_held_mask():
-    m = tb.held_mask(["Hba-a1", "Hbb-bs", "mt-Co1", "Myl7", "Afp"], ["^Hb[ab]-", "^mt-"], {"Afp"})
-    assert m.tolist() == [True, True, True, False, True]
+def test_the_constants_are_the_rows():
+    assert (tb.PSEUDOCOUNT, tb.FENG_BRACKET_DAYS, tb.MIN_CELLS, tb.CP10K) == (0.5, 5.0, 10, 1e4)
+    assert tb.HELD == (r"^Hb[ab]-", r"^mt-")
+    assert tb.direction(np.array([0.0]), np.array([0.0]), 8.5, 16.5)[0] == 0.0
+    with pytest.raises(cm.Refused):  # an end inside the T1 window
+        tb.direction(np.array([0.0]), np.array([0.0]), 8.5, 12.5)
 
 
-# keys that would carry a composition (a share of cells, a level or change form, label counts): none may be written
-COMPOSITION_KEY = re.compile(r"composition|(?<!zero_)share|level|change_eligible|label_counts|forecast|logit")
+FORBIDDEN = re.compile(r"\bdef (?:consensus|norm_match|group_tables|rescale|mask|perm)\b|VARIANTS|noX002|noE85start|"
+                       r"composition|eb_shrink|deciding")
 
 
-def keys_of(obj, out=None):
-    out = set() if out is None else out
-    if isinstance(obj, dict):
-        for k, v in obj.items():
-            out.add(str(k))
-            keys_of(v, out)
-    elif isinstance(obj, list | tuple):
-        for v in obj:
-            keys_of(v, out)
-    return out
-
-
-def composition_keys(obj):
-    return sorted(k for k in keys_of(obj) if COMPOSITION_KEY.search(k))
-
-
-def synthetic_member():
-    cfg = copy.deepcopy(cm.load_atlases())
-    acc = "GSE999004"
-    cfg["atlases"][acc] = {"status": "use", "series": [acc], "form": "tenx_mtx", "early_tissue": "whole_embryo",
-                           "early": {"labels": ["E8.5"], "tissue": "embryo"},
-                           "late": {"labels": ["E14.5"], "tissue": "heart"}, "groups_formed": ["CM"],
-                           "qc": {"min_umi": 1, "min_genes": 1, "max_mito": 1.0}}
-    cfg_a, _ = gr.derived_config({**cfg["atlases"][acc], "accession": acc}, cfg, EXTRA, "E8.5", "E14.5")
-    named = sorted({g for s in cfg_a["sets"].values() for g in s["genes"]})
-    genes = named + [f"Fill{i}" for i in range(400)]
-    rng = np.random.default_rng(5)
-    stage = np.array(["E8.5"] * 80 + ["E14.5"] * 80)
-    X = rng.poisson(0.5, size=(160, len(genes))).astype(np.float64)
-    cmi = [genes.index(g) for g in cfg_a["sets"]["cm"]["genes"]]
-    is_cm = np.zeros(160, dtype=bool)
-    is_cm[:40] = True
-    is_cm[80:120] = True
-    X[np.ix_(np.flatnonzero(is_cm), cmi)] += 30
-    X[80:120, genes.index("Fill7")] += 20  # a gene that rises in CM between the ends
-    red = {"C": sparse.csr_matrix(X), "genes": genes, "stage": stage,
-           "gsm": np.array(["G1", "G2"] * 40 + ["G3", "G4"] * 40), "cell": np.array([f"c{i}" for i in range(160)])}
-    lab = gr.label_atlas(red, cfg_a)
-    rel = np.where(is_cm, "V-CM", "Neural Tube")
-    early_p = gr.label_profiles(red["C"][:80], genes, rel[:80])
-    late_p = gr.label_profiles(red["C"][80:], genes, np.where(is_cm[80:], "CM", "Endothelium"))
-    comp = [n for n, s in cfg_a["sets"].items() if s["role"] == "competing"]
-    checks_in = {"categories": {"V-CM": "cm", "Neural Tube": "surrounding"}, "released_profiles": {"E8.5": early_p},
-                 "feng_late_profiles": late_p,
-                 "purity": {"E8.5": {"cm": {c: 0.0 for c in comp}, "own": {c: 100.0 for c in comp}}}}
-    t1_genes = ["Fill7", "Myl7", "Afp", "Hbb-y", "Sox1", "Fill1", "NotInAtlas"]
-    return tb.atlas_member(acc, cfg, red, lab, cfg_a, t1_genes, checks_in)
-
-
-def test_atlas_member_on_a_synthetic_whole_embryo_atlas():
-    m = synthetic_member()
-    assert m["record"]["groups_kept"] == ["CM"], m["record"]["checks"]
-    d = m["directions"]["CM"]
-    assert np.isnan(d[[2, 3, 4, 6]]).all()  # competing-class genes held in a whole-embryo atlas; unmapped NaN
-    assert m["record"]["fractions"]["rescale_to_5_days"] == 5.0 / 6.0
-    assert math.isclose(m["record"]["fractions"]["test"], 2.0 / 6.0)
-    assert set(m["record"]["purity_unchecked_classes"]) == {"CM"}
-
-
-def rec_zero(out):
-    return json.loads((out / "directions.json").read_text())["consensus"]["raw"]["CM"]["genes_zero_one_member"]
-
-
-def test_run_wiring_on_stubs(tmp_path, monkeypatch):
-    """run() with stub inputs (no N54 file, no released data): a group only the atlas in use forms passes through
-    byte for byte in every variant, the consensus group is written, the fallback and norm records are present, and
-    the manifest says tasks ['T1']. Every output goes outside the repository."""
-
-    ld = _load("load")
-    acc = "GSE999005"
-    cfg = copy.deepcopy(cm.load_atlases())
-    cfg["atlases"][acc] = {"status": "use", "series": [acc], "form": "tenx_mtx", "early_tissue": "whole_embryo",
-                           "early": {"labels": ["E8.5"], "tissue": "embryo"},
-                           "late": {"labels": ["E14.5"], "tissue": "heart"}, "groups_formed": ["CM"],
-                           "qc": {"min_umi": 1, "min_genes": 1, "max_mito": 1.0}}
-    genes = ["G0", "G1", "G2", "G3"]
-    ruled = {"CM": np.array([0.1, -0.2, 0.3, NAN]), "Epicardium": np.array([0.3, 0.0, 0.7, -0.1])}
-    feng = {"atlas": tb.IN_USE, "early": "E9.5", "late": "E14.5", "early_day": 9.5, "late_day": 14.5,
-            "ruled": ruled, "late_profiles": {},
-            "directions": {"CM": np.array([0.1, -0.1, 0.2, NAN]), "Epicardium": np.array([0.2, 0.0, 0.5, -0.1])},
-            "record": {"ruled_record": {"fallbacks": {"Epicardium": {"takes": "Endothelium"}}}}}
-    member = {"atlas": acc, "early": "E8.5", "late": "E14.5", "early_day": 8.5, "late_day": 14.5,
-              "directions": {"CM": np.array([0.2, -0.1, 0.4, 0.1])}, "record": {"groups_kept": ["CM"]}}
-    monkeypatch.setattr(cm, "require_frozen", lambda c: None)
-    monkeypatch.setattr(gr, "load_extra", lambda c: {})
-    monkeypatch.setattr(gr, "derived_config", lambda a, c, extra, e, late: ({"stages": [e, late]}, "b" * 64))
-    monkeypatch.setattr(gr, "label_atlas", lambda red, c: {})
-    monkeypatch.setattr(ld, "read_reduced", lambda a, d, c=None: {
-        "manifest": {"chosen": {"early": "E8.5", "late": "E14.5"}, "inputs": {"fetch_manifest_sha256": "f" * 64}},
-        "manifest_sha256": "a" * 64, "gsm": np.array(["GSM1", "GSM2"])})
-    monkeypatch.setattr(tb, "t1_genes_from", lambda p: genes)
-    monkeypatch.setattr(tb, "released_inputs", lambda c, d, cfgs: {"purity": {}, "categories": {},
-                                                                    "released_profiles": {}})
-    monkeypatch.setattr(tb, "feng_member", lambda c, g: feng)
-    monkeypatch.setattr(tb, "atlas_member", lambda *a, **k: member)
-    res = tb.run(cfg, tmp_path, [acc], tmp_path / "released", "stub")
-    out = tmp_path / "tables" / "stub"
-    z = np.load(out / "directions.npz")
-    for v in tb.VARIANTS:
-        assert z[f"{v}|Epicardium"].tobytes() == ruled["Epicardium"].tobytes()
-    assert np.allclose(z["raw|CM"], [0.15, -0.1, 0.3, 0.0])  # G3: one member has a value, so 0
-    assert rec_zero(out) == 1
-    rec = json.loads((out / "directions.json").read_text())
-    assert rec["consensus"]["deciding"]["CM"]["in_use_member_fallback"] is None
-    assert rec["consensus"]["deciding"]["Epicardium"]["in_use_member_fallback"] == {"takes": "Endothelium"}
-    assert rec["consensus"]["deciding"]["CM"]["norm_match"]["factor"] is not None
-    man = json.loads((out / "MANIFEST.json").read_text())
-    assert man["tasks"] == ["T1"] and man["atlases"] == [tb.IN_USE, acc]
-    assert res["kept"][acc] == ["CM"]
-    # no composition: no composition file, and no composition or share key in any output or in the return value
-    assert sorted(p.name for p in out.iterdir()) == ["MANIFEST.json", "directions.json", "directions.npz"]
-    for f in ("MANIFEST.json", "directions.json"):
-        assert composition_keys(json.loads((out / f).read_text())) == [], f
-    assert composition_keys(res) == [] and not any(COMPOSITION_KEY.search(k) for k in z.files)
-    with pytest.raises(cm.Refused):
-        tb.run(cfg, ROOT / "data" / "derived" / "t1_ext_test", [acc], tmp_path / "released", "stub")
-
-
-def test_no_composition_key_in_any_output():
-    """The strict form deleted the composition block (ruling row R27): the member record of an outside atlas and of the
-    atlas in use carry no share, level, change form or label counts, the tables module has no composition function,
-    and atlases.yaml has no composition block (the run's outputs are checked in test_run_wiring_on_stubs)."""
-    m = synthetic_member()
-    assert "composition" not in m and composition_keys(m) == []
-    for name in ("cm_share", "composition_table", "forecast", "logit", "MODES"):
-        assert not hasattr(tb, name), name
-    cfg = cm.load_atlases()
-    assert "composition" not in cfg and "share_logit_max" not in cfg["checks"]
-    assert composition_keys(cfg["atlases"]) == []
-    import inspect
-
-    assert list(inspect.signature(tb.feng_member).parameters) == ["cfg", "t1_genes"]
+def test_tables_forms_no_consensus_variant_control_or_share():
     src = (EXT / "tables.py").read_text()
-    assert "composition.json" not in src and "released_share" not in src
+    code = "\n".join(ln for ln in src.splitlines() if not ln.lstrip().startswith("#"))
+    body = code[code.index('"""', code.index('"""') + 3) + 3:]  # after the module docstring
+    assert not FORBIDDEN.search(body)
+    assert not hasattr(tb, "consensus") and not hasattr(tb, "VARIANTS")
+    gsrc = (EXT / "groups.py").read_text()
+    assert "share_check" not in gsrc and "profile_check" not in gsrc
