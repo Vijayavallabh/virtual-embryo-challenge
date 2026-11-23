@@ -2,6 +2,15 @@
 
 ## Current State
 
+- **2026-11-23, 23:30 UTC.** The checked reading was redone against the new bests: the record now puts one more
+  waiting file below its board's best (the heart's first trend file on the full trim), and an independent reader
+  confirmed the rule application in the upload sheet. A design round for T1 and T3 was started, found not blind (the
+  workflow harness had shown its analysts the captain's pasted results) and voided; an audit found the same relay in
+  twelve earlier rounds, and the record's words 'blind to test scores' were corrected. The round was restarted through
+  a route that relays nothing: it wrote one T1 line (g_mom's damping on file C's command, two files) and one T3 line
+  (the Gata4 table squared in C1, one file); both texts are in the log and neither is in force without the captain's
+  word. Nothing runs. Decision log 2026-11-23 (dd), (ee), (ff).
+
 - **2026-11-23, 23:10 UTC.** The captain reported four headlines, one per board. T1's file C (71.8), the heart's
   organ-cut file D (60.4) and T3's C1 (63.8) each took their board's best; the embryo's copy-rows file returned 63.99
   under the board's 69.9. Standing by best headline per board: 200.75 (197.04 before). Each board's pre-set rule was

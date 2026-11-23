@@ -2,7 +2,43 @@
 
 ## Current Objective
 
-- **State at 2026-11-23, 23:10 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-23, 23:30 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-23 (ff); next label (gg). Ruling rows through R29; next R30. Register through X020; next X021. T1's next row
+  is T73. Tries unchanged: T1 463, embryo 88, heart 97, T3 74. NOTHING RUNS, here or on the DGX; no workflow and no
+  agent is open. Main at the commit of this note.
+  - **HEADLINES AND ORDERS:** as the bullet of 23:10 UTC below, unchanged (standing 200.75; `docs/UPLOAD_SHEET.md`
+    holds 20 files in the orders and 3 skipped; an independent reader confirmed the rule application and every
+    sha256).
+  - **RE-READING AGAINST THE NEW BESTS** (log (dd); scratch `lift8/record_expects_below_new_bests.json`): one file is
+    now below its board's best by the record, the heart's `T2heart_core_ts05_half.h5ad` (its base returned 56.4 and
+    the widest practice figure on record for the step is +1.38, under D's 60.4); not below: `T2embryo_s2x_ovhi.h5ad`,
+    `T2embryo_s2.h5ad`; nine files without an expectation; the eight conditional files were not judged.
+  - **FOUR ITEMS WAIT ON THE CAPTAIN'S OWN WORDS** (each was put in the reply; a side note forwarded without words of
+    the captain's changed nothing). (1) 'Cm20 next': T1's third search first (`T1_s2rcCm20.h5ad`, then
+    `T1_s2rcCm25.h5ad` if due); the main session recommended it, from ordinal facts only. (2) Heart: 'OTS05 next' or
+    'skip TS05'; no recommendation (recused). (3) T1 line 4 (text in log (ff); scratch
+    `lift8/round_1123b/T1_line_4_final.txt`): files `T1_s2rcCd15.h5ad` and `T1_s2rcCd20.h5ad`, g_mom's damping 1.5
+    then 2.0 on C's command; it needs the captain's add-only amendment of row R22's first cell (`--g-mom-damping 1.5
+    --feng-fraction-mult 1.5`, `--g-mom-damping 2.0 --feng-fraction-mult 1.5`) and, to get a slot, the captain's words
+    naming the file Cd15 goes ahead of. On a yes: amend R22's first cell by record script, add the text to
+    `docs/S2_RULES.md` and re-pin, then a blind engineer and reviewer, the nine identity rebuilds on
+    `~/v/vec-campaign-d` (worktree `~/v/scratch/t1line-wt`), two builds with one sha256, and the sha256 into the log
+    before any score; all by 2026-11-25 12:00 UTC. (4) T3 line 2 (text in log (ff); scratch
+    `lift8/round_1123b/T3_line_1_final.txt`): one file `T3_c1_s2_g2.h5ad`, C1's command with a new `--gata4-exponent
+    2.0 --captain-ruling R22`; VOID without the captain's yes, default no, and nothing of it is coded before the yes.
+    On a yes: R22's first cell (add-only), the rules amendment, a blind engineer and reviewer, the 5% guard before any
+    build, the identity gates (identity-s1, identity-s2, c1-s2, c2-s2), two builds with one sha256.
+  - **PROCESS FAULT FOUND AND CORRECTED** (log (ee); `docs/DATA_POLICY.md` 2026-11-23 (e); rules note re-pinned).
+    Every agent of a workflow receives the captain's triggering message verbatim ahead of its brief; an agent started
+    with the plain agent tool does not. Twelve earlier workflows of analysts told they were blind had figures in that
+    message, and today's first design round was voided. RULE FROM NOW: score-blind analysts are started ONLY with the
+    agent tool, never as a workflow; their brief carries the EXPOSED tripwire; they read the ledger only through
+    `lift8/ledger_blind.py` and run no git log, show or diff. The captain's latest message (a forwarded side note)
+    holds headline values, so any workflow launched now relays them.
+  - **WHEN THE CAPTAIN PASTES SCORES:** the headline per board only into `results/manual_uploads.csv`; a log entry
+    (next label (gg)); each rule by its letter (T3's two conditions against the barred s2's headline, not the board's
+    best); the sheet; the reply with the next file per board.
+- **State at 2026-11-23, 23:10 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-23 (cc); next label (dd). Ruling rows through R29; next R30. Register through X020; next X021. T1's next row
   is T73. Tries unchanged: T1 463, embryo 88, heart 97, T3 74. TWO WORKFLOWS ARE OPEN (below); nothing runs on the
   DGX. Main at the commit of this note.
