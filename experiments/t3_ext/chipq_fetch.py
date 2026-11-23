@@ -19,7 +19,19 @@ Steps (python -I -B experiments/t3_ext/chipq_fetch.py <step>):
            its experiment rows, and <root>/screen/placebo_kept.json maps each such antigen to its kept experiment ids,
            sorted. Only the number of antigens that keep at least two experiments is printed.
   targets  the target-gene file of each query antigen and of each placebo antigen with at least two kept experiments,
-           into <root>/targets/. Prints counts and total bytes only.
+           into <root>/targets/. The archive does not serve every placebo antigen's file: a placebo antigen whose URL
+           answers with a redirect (never followed: its Location is never requested) or with HTTP 404 or 410 has no
+           file, and the pass goes on. When the pass over all antigens is complete, <root>/screen/placebo_unfetched.json
+           (antigen -> "redirect" or "not found", sorted; written through a .part file and a rename) enters the
+           manifest; its presence there marks the pass complete. A query antigen that cannot be fetched, and every
+           other failure (a network error after the retries, a server error, bytes that differ from the manifest, a
+           leftover or unknown file), still refuses the step. Prints counts, total bytes and how many placebo
+           antigens were unfetched by kind; never which.
+           A rerun requests no file the manifest holds. Before the record exists, it requests every other antigen
+           (an earlier stopped run's unfetched antigens again) and writes the record at the end. Once the record is in
+           the manifest, a rerun checks it against its entry, requests each recorded antigen once more without
+           reading a byte of the answer or writing anything, and refuses unless the antigens unfetched now, with their
+           kinds, are exactly the record's; it rewrites nothing, so a complete pass run twice leaves the same bytes.
   verify   every file of the manifest re-hashed against it; exit code only (0 all match, 2 not).
 
 The manifest (<root>/MANIFEST.json) records for every file its URL (None for a file the rows step derives), size,
@@ -40,6 +52,7 @@ chipq.open_target. Exit codes: 0 done, 2 refused.
 
 from __future__ import annotations
 
+import contextlib
 import csv
 import hashlib
 import http.client
@@ -74,6 +87,9 @@ MAX_BYTES = {"list": 512 * 1024 ** 2, "target": 256 * 1024 ** 2}   # a download 
 RETRIES = 3            # a failed download (a network or OS error, not a refusal) is tried again up to three times
 RETRY_PAUSE = 10.0     # seconds before each retry
 REQUEST_PAUSE = 1.0    # seconds before every request, so hundreds of target files are fetched at a gentle pace
+UNFETCHED = "screen/placebo_unfetched.json"   # the targets pass's record of placebo antigens the archive does not serve
+UNFETCHED_KINDS = ("redirect", "not found")
+NOT_FOUND_CODES = (404, 410)
 _sleep = time.sleep    # (the tests replace it)
 
 # the analysis list's +/-5 kb column: its header cell and the one URL form taken from it (the archive serves the
@@ -252,17 +268,46 @@ def https_url(url: str) -> str:
     return urllib.parse.urlunparse(("https", p.netloc, p.path, "", "", ""))
 
 
+class Unserved(Refused):
+    """The server does not serve the URL: it answered with a redirect (never followed) or with HTTP 404 or 410. A
+    refusal like any other, except that the targets step records it for a placebo antigen and goes on. `kind` is one
+    of UNFETCHED_KINDS. The message names no file."""
+
+    MESSAGES = {"redirect": "the server answered with a redirect: refused (no redirect is followed)",
+                "not found": "the server answered HTTP 404 or 410 (not found): refused"}
+
+    def __init__(self, kind: str):
+        super().__init__(self.MESSAGES[kind])
+        self.kind = kind
+
+
 class _NoRedirect(urllib.request.HTTPRedirectHandler):
     """Every redirect is refused: no request leaves the URL it was given, so none can leave the two hosts."""
 
     def redirect_request(self, req, fp, code, msg, headers, newurl):
-        raise Refused("the server answered with a redirect: refused (no redirect is followed)")
+        raise Unserved("redirect")
 
 
 def _opener(*extra):
     """The one opener every request goes through: urllib's default handlers with the redirect handler replaced (the
     tests add a fake https handler through `extra`)."""
     return urllib.request.build_opener(_NoRedirect, *extra)
+
+
+def _open(req):
+    """The opener's answer to req. A redirect (also one urllib turns into an HTTP error: no Location, or one of a
+    scheme it does not follow) and HTTP 404 or 410 raise Unserved; any other HTTP error is raised as it is."""
+    try:
+        return _opener().open(req, timeout=300)
+    except urllib.error.HTTPError as e:
+        code = e.code
+        with contextlib.suppress(Exception):
+            e.close()
+        if 300 <= code < 400:
+            raise Unserved("redirect") from None
+        if code in NOT_FOUND_CODES:
+            raise Unserved("not found") from None
+        raise
 
 
 def file_label(rel: str, rec: dict | None = None, path: Path | None = None) -> str:
@@ -294,7 +339,7 @@ def _download(url: str, dst: Path, max_bytes: int, label: str | None = None) -> 
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     h = hashlib.sha256()
     n = 0
-    with _opener().open(req, timeout=300) as r:
+    with _open(req) as r:
         if r.geturl() != url:
             raise Refused("the answer came from another URL than the one asked for: refused")
         with open(part, "xb") as f:
@@ -327,24 +372,53 @@ def set_aside(part: Path) -> Path | None:
 _TRANSIENT = (OSError, urllib.error.URLError, http.client.HTTPException)
 
 
-def _download_retried(url: str, dst: Path, max_bytes: int, label: str) -> tuple[int, str]:
-    """_download after a short pause, tried again up to RETRIES times on a network or OS error (never on a refusal).
-    A leftover .part from an earlier run, and the .part of every failed or refused attempt, is set aside first."""
-    part = dst.with_name(dst.name + ".part")
-    set_aside(part)
+def _retried(call, part: Path | None, label: str, what: str = "download"):
+    """call() after a short pause, tried again up to RETRIES times on a network or OS error (never on a refusal, so
+    never on a redirect or a 404 or 410). A leftover .part from an earlier run, and the .part of every failed or
+    refused attempt, is set aside."""
+    if part is not None:
+        set_aside(part)
     last = ""
     for attempt in range(1 + RETRIES):
         _sleep(REQUEST_PAUSE if attempt == 0 else RETRY_PAUSE)
         try:
-            return _download(url, dst, max_bytes, label)
+            return call()
         except Refused:
-            set_aside(part)
+            if part is not None:
+                set_aside(part)
             raise
         except _TRANSIENT as e:
-            set_aside(part)
+            if part is not None:
+                set_aside(part)
             last = type(e).__name__
-    raise Refused(f"{label}: the download failed {1 + RETRIES} times (last: {last}): refused; partial files were "
+    raise Refused(f"{label}: the {what} failed {1 + RETRIES} times (last: {last}): refused; partial files were "
                   "set aside as .failed.<n>")
+
+
+def _download_retried(url: str, dst: Path, max_bytes: int, label: str) -> tuple[int, str]:
+    """_download through _retried."""
+    return _retried(lambda: _download(url, dst, max_bytes, label), dst.with_name(dst.name + ".part"), label)
+
+
+def _probe(url: str, label: str) -> str | None:
+    """One request for the URL whose answer is never read and nothing written: the Unserved kind, or None when the
+    server serves the URL itself."""
+    try:
+        url = https_url(url)
+    except Refused:
+        raise Refused(f"{label}: its URL is not an allowed URL: refused") from None
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    try:
+        with _open(req) as r:
+            if r.geturl() != url:
+                raise Refused("the answer came from another URL than the one asked for: refused")
+            return None
+    except Unserved as e:
+        return e.kind
+
+
+def _probe_retried(url: str, label: str) -> str | None:
+    return _retried(lambda: _probe(url, label), None, label, "request")
 
 
 def _rel(root: Path, p: Path) -> str:
@@ -572,6 +646,61 @@ def target_rel(antigen: str) -> str:
     return f"targets/{antigen}.5.tsv"
 
 
+def unfetched_bytes(record: dict[str, str]) -> bytes:
+    """The record's one byte form: antigen -> kind, sorted by antigen."""
+    return (json.dumps(dict(sorted(record.items())), indent=1, sort_keys=True) + "\n").encode("utf-8")
+
+
+def placebo_unfetched(root: Path, man: dict | None = None) -> dict[str, str]:
+    """The targets pass's record (antigen -> "redirect" or "not found"), read from its manifest-checked file. Refused
+    while the record is not in the manifest (the targets pass is incomplete), and when it is not of its fixed form or
+    disagrees with the manifest: every antigen it names is a placebo antigen with at least PLACEBO_MIN_KEPT kept
+    experiments whose target file the manifest does not hold. No message names an antigen."""
+    man = load_manifest(root) if man is None else man
+    if UNFETCHED not in man["files"]:
+        raise Refused("the targets pass is incomplete (its record of unfetched placebo antigens is not in the "
+                      "manifest): run the targets step to its end: refused")
+    raw = checked_bytes(root, UNFETCHED, man)
+    try:
+        d = json.loads(raw)
+    except ValueError:
+        d = None
+    if (not isinstance(d, dict) or not all(isinstance(a, str) and NAME.fullmatch(a) for a in d)
+            or not all(v in UNFETCHED_KINDS for v in d.values()) or unfetched_bytes(d) != raw):
+        raise Refused(f"{UNFETCHED} is not of its fixed form: refused")
+    kept = placebo_kept(root, man)
+    for a in d:
+        if a in QUERY_ANTIGENS or len(kept.get(a, ())) < PLACEBO_MIN_KEPT or target_rel(a) in man["files"]:
+            raise Refused(f"{UNFETCHED} names an antigen that is not an unfetched placebo antigen of the targets "
+                          "pass: refused")
+    return d
+
+
+def _write_unfetched(root: Path, man: dict, record: dict[str, str]) -> None:
+    """The record, written once through a .part file and a rename, then entered in the manifest."""
+    p = root / UNFETCHED
+    part = p.with_name(p.name + ".part")
+    if p.exists() or p.is_symlink() or part.exists() or part.is_symlink():
+        raise Refused(f"{UNFETCHED}: already on disk but not in the manifest (or a .part beside it): nothing is "
+                      "overwritten: refused")
+    raw = unfetched_bytes(record)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    with open(part, "xb") as f:
+        f.write(raw)
+    if p.exists() or p.is_symlink():
+        raise Refused(f"{UNFETCHED}: appeared while writing: refused")
+    part.rename(p)
+    man["files"][UNFETCHED] = {"url": None, "derived_from": [f"lists/{ANALYSIS}", "screen/placebo_kept.json"],
+                               "size": len(raw), "sha256": sha256_bytes(raw),
+                               "fetched": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime())}
+    save_manifest(root, man)
+
+
+def unfetched_counts(record: dict[str, str]) -> dict[str, int]:
+    """How many antigens of each kind; never which."""
+    return {k: sum(1 for v in record.values() if v == k) for k in UNFETCHED_KINDS}
+
+
 def step_targets(root=None) -> dict:
     root = root_of(root)
     man = load_manifest(root)
@@ -579,13 +708,48 @@ def step_targets(root=None) -> dict:
     want = [q for q in QUERY_ANTIGENS if q in targets]
     kept = placebo_kept(root, man)
     want += sorted(a for a, v in kept.items() if len(v) >= PLACEBO_MIN_KEPT)
-    total = 0
     for a in want:
         if a not in targets:
             raise Refused("a placebo antigen has no target-gene file in the analysis list: refused")
-        total += _fetch_one(root, man, target_rel(a), targets[a], "target")
+    rp = root / UNFETCHED
+    rpart = rp.with_name(rp.name + ".part")
+    if rpart.exists() or rpart.is_symlink():
+        raise Refused(f"{UNFETCHED}.part is on disk: nothing is overwritten or deleted: refused")
+    recorded = None
+    if UNFETCHED in man["files"]:
+        recorded = placebo_unfetched(root, man)   # checked against its manifest entry, its form and the manifest
+        if any(target_rel(a) not in man["files"] and a not in recorded for a in want):
+            raise Refused("an antigen of the targets pass has neither a file in the manifest nor an entry in the "
+                          "record of unfetched placebo antigens: refused")
+    elif rp.exists() or rp.is_symlink():
+        raise Refused(f"{UNFETCHED}: on disk but not in the manifest: refused")
+    total = 0
+    unfetched: dict[str, str] = {}
+    for a in want:
+        rel = target_rel(a)
+        if rel in man["files"]:
+            total += _fetch_one(root, man, rel, targets[a], "target")   # checked against the manifest, no request
+        elif recorded is not None:
+            # a recorded antigen, asked once more: no byte of the answer is read and nothing is written
+            kind = _probe_retried(targets[a], file_label(rel))
+            unfetched[a] = "served" if kind is None else kind
+        else:
+            try:
+                total += _fetch_one(root, man, rel, targets[a], "target")
+            except Unserved as e:
+                if a in QUERY_ANTIGENS:
+                    raise
+                unfetched[a] = e.kind
+    if recorded is None:
+        _write_unfetched(root, man, unfetched)
+    elif unfetched != recorded:
+        now = sum(1 for v in unfetched.values() if v != "served")
+        differ = sum(1 for a, v in unfetched.items() if v != recorded[a])
+        raise Refused(f"the placebo antigens unfetched on this pass differ from the record in the manifest ({now} "
+                      f"now, {len(recorded)} recorded, {differ} differing): nothing is rewritten: refused")
     return {"query_files": sum(1 for a in want if a in QUERY_ANTIGENS),
-            "placebo_files": sum(1 for a in want if a not in QUERY_ANTIGENS), "total_bytes": total}
+            "placebo_files": sum(1 for a in want if a not in QUERY_ANTIGENS and target_rel(a) in man["files"]),
+            "total_bytes": total, "unfetched": unfetched_counts(unfetched)}
 
 
 def step_verify(root=None) -> bool:
@@ -617,6 +781,8 @@ def main(argv: list[str] | None = None) -> int:
         elif a.step == "targets":
             r = step_targets()
             print(f"query files {r['query_files']}, placebo files {r['placebo_files']}, total bytes {r['total_bytes']}")
+            u = r["unfetched"]
+            print(f"placebo antigens unfetched: {u['redirect']} redirect, {u['not found']} not found")
         else:
             return 0 if step_verify() else 2
     except Refused as e:
