@@ -37,6 +37,8 @@ Steps (python -I -B experiments/t3_ext/chipq.py <step>):
           and pool index, never its name); prints file names and sha256 only. Never Ctnnb1's table: that belongs to
           the build path after the captain's ruling. The committed listing experiments/t3_ext/TABLES_K27.sha256 is
           written by the read's engineer, not here.
+Both steps refuse (exit 2) while the fetch's targets pass is incomplete: its record of unfetched placebo antigens
+(screen/placebo_unfetched.json) is not in the manifest. The placebo pool leaves out every antigen that record names.
 """
 
 from __future__ import annotations
@@ -307,14 +309,23 @@ def build(antigen: str, genes: list[str], root=None, kept: Kept | None = None, m
 def placebo_pool(q: str, K_q: int, genes: list[str], root=None, man: dict | None = None) -> list[str]:
     """Antigens of placebo_kept.json with at least POOL_MIN_KEPT kept experiments that have a column in their target
     file (the experiments open_target uses for a placebo) and |B| in POOL_BAND * K_q, excluding q and POOL_EXCLUDE;
-    sorted by name."""
+    sorted by name. An antigen the targets pass recorded as unfetched (the archive serves no file for it) has no
+    file, so no experiment of it has a column and its bound set is empty: it is left out without a refusal. Refused
+    while the targets pass is incomplete (no record in the manifest), and for an antigen that is neither a target
+    file in the manifest nor in the record."""
     root = cf.root_of(root)
     man = cf.load_manifest(root) if man is None else man
+    unfetched = cf.placebo_unfetched(root, man)
     lo, hi = POOL_BAND[0] * K_q, POOL_BAND[1] * K_q
     pool = []
     for a, ids in sorted(cf.placebo_kept(root, man).items()):
         if a == q or a in POOL_EXCLUDE or a in QUERY_ANTIGENS or len(ids) < POOL_MIN_KEPT:
             continue   # fewer than two kept ids: its target file was never fetched
+        if a in unfetched:
+            continue   # no file: no column, an empty bound set (settled A2 leaves it out)
+        if cf.target_rel(a) not in man["files"]:
+            raise Refused("a placebo antigen has neither a target file in the manifest nor an entry in the record of "
+                          "unfetched antigens: the fetch is incomplete: refused")
         E, used = open_target(a, genes, root, None, None, man)
         if len(used) < POOL_MIN_KEPT:
             continue
@@ -376,7 +387,10 @@ def barred_genes(data: Path, run_dir: Path, decision: Path) -> list[str]:
 
 
 def p1(genes: list[str], root=None, kept: Kept | None = None) -> tuple[int, int, bool]:
-    """(kept experiments, |B|, both bars hold) for the test query. With no kept experiment the file is not opened."""
+    """(kept experiments, |B|, both bars hold) for the test query. With no kept experiment the file is not opened.
+    Refused while the targets pass is incomplete."""
+    root = cf.root_of(root)
+    cf.placebo_unfetched(root)
     kept = load_kept() if kept is None else kept
     if TEST_QUERY not in kept:
         raise Refused("the pinned kept list has no entry for the test query: refused")
@@ -414,6 +428,7 @@ def tables(genes: list[str], out=None, seeds=None, root=None, kept: Kept | None 
     seeds = SEEDS if seeds is None else seeds
     root = cf.root_of(root)
     man = cf.load_manifest(root)
+    cf.placebo_unfetched(root, man)   # refused while the targets pass is incomplete
     kept = load_kept() if kept is None else kept
     out = tables_folder() if out is None else tb.cm.outside_repo(out)
     q = PRACTICE_QUERY

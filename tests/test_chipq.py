@@ -143,12 +143,14 @@ def make_db():
 
 class FakeNet(urllib.request.HTTPSHandler):
     """A fake https handler inside the fetch's own opener (chipq_fetch._opener), so urllib's redirect and error
-    processing run as they would on the network. `redirects` maps a URL to the Location of a 302 answer."""
+    processing run as they would on the network. `redirects` maps a URL to the Location of a 302 answer, `status` a
+    URL to another HTTP status (404, 410, 500) answered with an error page."""
 
-    def __init__(self, files, redirects=None):
+    def __init__(self, files, redirects=None, status=None):
         super().__init__()
         self.files = files
         self.redirects = dict(redirects or {})
+        self.status = dict(status or {})
         self.calls = []
 
     def https_open(self, req):
@@ -159,6 +161,10 @@ class FakeNet(urllib.request.HTTPSHandler):
             hdrs["Location"] = self.redirects[url]
             r = urllib.response.addinfourl(io.BytesIO(b"moved"), hdrs, url, 302)
             r.msg = "Found"
+            return r
+        if url in self.status:
+            r = urllib.response.addinfourl(io.BytesIO(b"error page"), hdrs, url, self.status[url])
+            r.msg = "Error"
             return r
         if url not in self.files:
             raise AssertionError(f"unexpected request {url}")
@@ -998,16 +1004,220 @@ def test_no_message_names_a_placebo_antigen(db, kept, tmp_path, monkeypatch, cap
 
 
 def test_a_placebo_download_refused_mid_way_names_no_antigen(tmp_path, monkeypatch, capsys):
-    files = make_db()
-    use_net(monkeypatch, FakeNet(files, redirects={
-        "https://dbarchive.biosciencedbc.jp/kyushu-u/mm10/target/P03.5.tsv": "https://example.org/P03.5.tsv"}))
-    root = tmp_path / "chipatlas"
+    """A server error for a placebo antigen (not a redirect, 404 or 410) still stops the step, naming no antigen."""
+    root = _lists_and_rows(tmp_path, monkeypatch, capsys, status={turl("P03"): 503})
+    assert cf.main(["targets"]) == 2
+    err = capsys.readouterr()
+    assert "REFUSED" in err.err and not PLACEBO_NAME.search(err.err + err.out), err
+    assert cf.UNFETCHED not in cf.load_manifest(root)["files"]
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Placebo antigens the archive does not serve: a redirect (never followed) or HTTP 404 or 410
+
+
+def turl(a: str) -> str:
+    return f"https://dbarchive.biosciencedbc.jp/kyushu-u/mm10/target/{a}.5.tsv"
+
+
+def _lists_and_rows(tmp_path, monkeypatch, capsys, name="chipatlas", **net):
+    """A data root after the lists and rows steps, the fetch's DATA_ROOT pointed at it, the net answering as `net`."""
+    use_net(monkeypatch, FakeNet(make_db(), **net))
+    root = tmp_path / name
     monkeypatch.setattr(cf, "DATA_ROOT", root)
     assert cf.main(["lists"]) == 0 and cf.main(["rows"]) == 0
     capsys.readouterr()
+    return root
+
+
+def _snapshot(root: Path) -> dict[str, bytes]:
+    return {p.relative_to(root).as_posix(): p.read_bytes() for p in sorted(root.rglob("*")) if p.is_file()}
+
+
+def _record(root: Path) -> dict:
+    return json.loads((root / cf.UNFETCHED).read_bytes())
+
+
+@pytest.mark.parametrize("location", ["https://www.example.org/", "https://dbarchive.biosciencedbc.jp/other/P03.5.tsv",
+                                      "/elsewhere/P03.5.tsv"])
+def test_a_placebo_redirect_is_recorded_never_followed_and_the_step_goes_on(tmp_path, monkeypatch, capsys,
+                                                                            location):
+    """Another host, the same host, a relative Location: recorded as "redirect", the Location never requested, every
+    other antigen fetched, the record in the manifest and verify passing; the output names no antigen."""
+    root = _lists_and_rows(tmp_path, monkeypatch, capsys)
+    net = FakeNet(make_db(), redirects={turl("P03"): location})
+    use_net(monkeypatch, net)
+    assert cf.main(["targets"]) == 0
+    out = capsys.readouterr()
+    assert out.out.splitlines()[-1] == "placebo antigens unfetched: 1 redirect, 0 not found"
+    assert not PLACEBO_NAME.search(out.out + out.err), out
+    urls = [u for u, _ in net.calls]
+    assert urls.count(turl("P03")) == 1
+    assert not any(x in u for u in urls for x in ("example", "/other/", "elsewhere"))
+    assert _record(root) == {"P03": "redirect"}
+    assert not (root / "targets" / "P03.5.tsv").exists() and not list(root.rglob("*.part"))
+    assert not list((root / "targets").glob("P03.5.tsv*"))
+    man = cf.load_manifest(root)
+    rec = man["files"][cf.UNFETCHED]
+    assert rec["url"] is None and rec["sha256"] == cf.sha256_file(root / cf.UNFETCHED)
+    fetched = [a for a in ["Ctnnb1", "Gata4", *PLACEBO] if a not in ("P06", "P03")]
+    assert sorted(r for r in man["files"] if r.startswith("targets/")) == sorted(f"targets/{a}.5.tsv" for a in fetched)
+    assert cf.main(["verify"]) == 0
+    # the record is a manifest file like any other: changed, verify fails and every reader refuses
+    (root / cf.UNFETCHED).write_bytes(b"{}\n")
+    assert cf.main(["verify"]) == 2
+    with pytest.raises(cf.Refused, match="differ from the manifest"):
+        cf.placebo_unfetched(root)
+
+
+@pytest.mark.parametrize("code", [404, 410])
+def test_a_placebo_404_or_410_is_recorded_as_not_found(tmp_path, monkeypatch, capsys, code):
+    root = _lists_and_rows(tmp_path, monkeypatch, capsys, status={turl("P04"): code, turl("P05"): code},
+                           redirects={turl("P07"): "https://www.example.org/"})
+    assert cf.main(["targets"]) == 0
+    out = capsys.readouterr()
+    assert re.fullmatch(r"query files 2, placebo files 10, total bytes \d+\n"
+                        r"placebo antigens unfetched: 1 redirect, 2 not found\n", out.out), out
+    assert not PLACEBO_NAME.search(out.out + out.err), out
+    assert _record(root) == {"P04": "not found", "P05": "not found", "P07": "redirect"}
+    assert (root / cf.UNFETCHED).read_bytes() == cf.unfetched_bytes(_record(root))   # sorted, one form
+    assert cf.main(["verify"]) == 0
+
+
+@pytest.mark.parametrize("query", ["Ctnnb1", "Gata4"])
+@pytest.mark.parametrize("answer", ["redirect", 404, 410, 500])
+def test_a_query_antigen_that_cannot_be_fetched_refuses(tmp_path, monkeypatch, capsys, query, answer):
+    net = ({"redirects": {turl(query): "https://www.example.org/"}} if answer == "redirect"
+           else {"status": {turl(query): answer}})
+    root = _lists_and_rows(tmp_path, monkeypatch, capsys, **net)
     assert cf.main(["targets"]) == 2
-    err = capsys.readouterr()
-    assert "redirect" in err.err and not PLACEBO_NAME.search(err.err + err.out), err
+    out = capsys.readouterr()
+    assert "REFUSED" in out.err and not PLACEBO_NAME.search(out.out + out.err), out
+    assert not (root / cf.UNFETCHED).exists() and cf.UNFETCHED not in cf.load_manifest(root)["files"]
+
+
+def test_a_placebo_server_error_still_refuses_after_the_retries(tmp_path, monkeypatch, capsys):
+    root = _lists_and_rows(tmp_path, monkeypatch, capsys)
+    net = use_net(monkeypatch, FakeNet(make_db(), status={turl("P03"): 500}))
+    assert cf.main(["targets"]) == 2
+    out = capsys.readouterr()
+    assert "failed 4 times" in out.err and "HTTPError" in out.err and not PLACEBO_NAME.search(out.out + out.err)
+    assert [u for u, _ in net.calls].count(turl("P03")) == 4
+    assert not (root / cf.UNFETCHED).exists()
+
+
+def test_a_rerun_takes_up_a_stopped_pass_and_a_second_pass_leaves_the_same_bytes(tmp_path, monkeypatch, capsys):
+    """As on the DGX: a pass stopped part-way (here by a server error at the sixth antigen) leaves the lists, the three
+    screen files and five target files in the manifest. The rerun requests none of those, records the placebo antigens
+    not served and writes the record; a further pass requests only the recorded antigens (no byte of the answer read),
+    writes nothing and leaves every byte as it was."""
+    root = _lists_and_rows(tmp_path, monkeypatch, capsys, status={turl("P03"): 500})
+    assert cf.main(["targets"]) == 2
+    before = cf.load_manifest(root)["files"]
+    done = sorted(r for r in before if r.startswith("targets/"))
+    assert done == sorted(f"targets/{a}.5.tsv" for a in ("Ctnnb1", "Gata4", "Gata6", "P01", "P02"))
+    capsys.readouterr()
+    answers = {"redirects": {turl("P03"): "https://www.example.org/"}, "status": {turl("P04"): 404}}
+    net = use_net(monkeypatch, FakeNet(make_db(), **answers))
+    assert cf.main(["targets"]) == 0
+    first = capsys.readouterr()
+    urls = [u for u, _ in net.calls]
+    assert not any(turl(r[len("targets/"):-len(".5.tsv")]) in urls for r in done)   # fetched files: no request
+    assert urls.count(turl("P03")) == 1 and urls.count(turl("P04")) == 1
+    assert _record(root) == {"P03": "redirect", "P04": "not found"}
+    assert all(cf.load_manifest(root)["files"][r] == before[r] for r in before)   # no entry changed
+    snap = _snapshot(root)
+    net = use_net(monkeypatch, FakeNet(make_db(), **answers))
+    assert cf.main(["targets"]) == 0
+    second = capsys.readouterr()
+    assert _snapshot(root) == snap
+    assert sorted(u for u, _ in net.calls) == sorted([turl("P03"), turl("P04")])
+    assert second.out == first.out and not PLACEBO_NAME.search(second.out + second.err)
+    assert cf.main(["verify"]) == 0
+
+
+@pytest.mark.parametrize("later", [{}, {"status": {turl("P03"): 404}},
+                                   {"redirects": {turl("P03"): "https://chip-atlas.dbcls.jp/elsewhere"}}])
+def test_a_later_pass_with_another_unfetched_set_refuses_and_rewrites_nothing(tmp_path, monkeypatch, capsys, later):
+    """P03 recorded as a redirect; on a later pass it is served, or answers 404 (another kind), or is still a
+    redirect. The first two refuse, the last passes; in every case nothing is written and P03's file is not fetched."""
+    root = _lists_and_rows(tmp_path, monkeypatch, capsys, redirects={turl("P03"): "https://www.example.org/"})
+    assert cf.main(["targets"]) == 0
+    snap = _snapshot(root)
+    capsys.readouterr()
+    use_net(monkeypatch, FakeNet(make_db(), **later))
+    code = cf.main(["targets"])
+    out = capsys.readouterr()
+    if later.get("redirects"):
+        assert code == 0   # the same set, the same kind
+    else:
+        assert code == 2 and "differ from the record" in out.err
+    assert not PLACEBO_NAME.search(out.out + out.err), out
+    assert _snapshot(root) == snap and not (root / "targets" / "P03.5.tsv").exists()
+
+
+def test_a_record_or_part_not_in_the_manifest_refuses(tmp_path, monkeypatch, capsys):
+    root = _lists_and_rows(tmp_path, monkeypatch, capsys)
+    (root / "screen" / "placebo_unfetched.json").write_bytes(b"{}\n")
+    assert cf.main(["targets"]) == 2 and "not in the manifest" in capsys.readouterr().err
+    (root / "screen" / "placebo_unfetched.json").rename(root / "screen" / "placebo_unfetched.json.part")
+    assert cf.main(["targets"]) == 2 and ".part" in capsys.readouterr().err
+    assert (root / "screen" / "placebo_unfetched.json.part").read_bytes() == b"{}\n"   # nothing deleted
+
+
+def _root_with(tmp_path, monkeypatch, capsys, name, **net):
+    root = _lists_and_rows(tmp_path, monkeypatch, capsys, name=name, **net)
+    assert cf.main(["targets"]) == 0
+    capsys.readouterr()
+    return root
+
+
+def test_the_pool_leaves_recorded_antigens_out_and_the_draw_is_unchanged(tmp_path, monkeypatch, capsys, kept):
+    plain = _root_with(tmp_path, monkeypatch, capsys, "plain")
+    # P04 and P05 (outside the band) and Gata6 (excluded) not served: the pool, the draw and the tables are the same
+    out_of_pool = _root_with(tmp_path, monkeypatch, capsys, "outside",
+                             status={turl("P04"): 404, turl("P05"): 410},
+                             redirects={turl("Gata6"): "https://www.example.org/"})
+    K = cq.build("Gata4", GENES, plain, kept)["K"]
+    assert cq.placebo_pool("Gata4", K, GENES, plain) == POOL
+    assert cq.placebo_pool("Gata4", K, GENES, out_of_pool) == POOL
+    t_plain = cq.tables(GENES, tmp_path / "t_plain", seeds=range(10), root=plain, kept=kept)
+    t_out = cq.tables(GENES, tmp_path / "t_out", seeds=range(10), root=out_of_pool, kept=kept)
+    assert t_plain == t_out
+    # a pool antigen not served is left out without a refusal (here the pool falls to 9: the draw then refuses)
+    in_pool = _root_with(tmp_path, monkeypatch, capsys, "inside", redirects={turl("P07"): "https://www.example.org/"})
+    assert cq.placebo_pool("Gata4", K, GENES, in_pool) == [a for a in POOL if a != "P07"]
+    with pytest.raises(cq.Refused, match="fewer than 10"):
+        cq.tables(GENES, tmp_path / "t_in", seeds=(0,), root=in_pool, kept=kept)
+    # an antigen neither in the manifest as a target file nor in the record: an incomplete fetch, refused
+    mf = plain / "MANIFEST.json"
+    m = json.loads(mf.read_bytes())
+    del m["files"]["targets/P07.5.tsv"]
+    mf.write_text(json.dumps(m))
+    with pytest.raises(cq.Refused, match="incomplete") as e:
+        cq.placebo_pool("Gata4", K, GENES, plain)
+    assert not PLACEBO_NAME.search(str(e.value))
+
+
+def test_p1_and_tables_refuse_before_a_complete_targets_pass(tmp_path, monkeypatch, capsys, kept):
+    root = _lists_and_rows(tmp_path, monkeypatch, capsys, status={turl("P03"): 500})
+    assert cf.main(["targets"]) == 2   # stopped part-way: both query files fetched, no record
+    assert {"targets/Ctnnb1.5.tsv", "targets/Gata4.5.tsv"} <= set(cf.load_manifest(root)["files"])
+    capsys.readouterr()
+    monkeypatch.setattr(cq, "load_kept", lambda *a, **k: kept)
+    monkeypatch.setattr(cq, "barred_genes", lambda *a, **k: list(GENES))
+    out = tmp_path / "tables_k27"
+    out.mkdir()
+    monkeypatch.setenv(cq.ENV_TABLES, str(out))
+    for step in ("p1", "tables"):
+        assert cq.main([step]) == 2
+        o = capsys.readouterr()
+        assert o.out == "" and "incomplete" in o.err and not PLACEBO_NAME.search(o.err), o
+    assert not any(out.iterdir())
+    with pytest.raises(cq.Refused, match="incomplete"):
+        cq.p1(GENES, root, kept)
+    with pytest.raises(cq.Refused, match="incomplete"):
+        cq.placebo_pool("Gata4", 20, GENES, root)
 
 
 def test_file_labels():
