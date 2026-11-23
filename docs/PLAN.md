@@ -11413,3 +11413,37 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Where the first gate stands.** P1 needs at least three kept experiments of the test's gene and a bound set of at
     least fifteen panel genes. The first bar is met by the count above; the second is read by code at P1, which by the
     corrected row runs at the row's registration commit, after the read script is merged. Row K27 is not placed yet.
+- 2026-11-23 (o), T3: row K27 (candidate CHIPQ-S) is placed, its registration commit, before P1 (state at 17:04 UTC,
+  2026-11-23). Written by the AI assistant, which designed none of it and gives no lean on it.
+  - **Placed in this commit:** row K27 in `experiments/harness/TRIES.md`, its eleven cells as the score-blind rule
+    writer wrote them and the reviser corrected them after the cold attack (entry (l)); the settled points and the
+    notes for the engineers beside the script (`experiments/t3_decomp/k27_points_settled.md`,
+    `k27_engineer_notes.md`). The read script and its launcher were merged at a8444b7 (reviewed; its one blocker,
+    tests that assumed empty pins, fixed and re-reviewed ready; the launcher's own test list passes on the merged
+    tree). The listing `experiments/t3_ext/TABLES_K27.sha256` is tracked and empty and the script's pins are None: the
+    row's second commit fills them after P2.
+  - **Three facts brought up to date in the row's candidate cell at placement, by the AI assistant, none of them a
+    rule change:** the database code is merged (it named a branch); the launcher has two invocations, `run_k27.sh db
+    <registration commit>` and `run_k27.sh run <second commit> <registration commit>` (the row's own two-commit
+    placement needs them); and the placebo pool's "at least 2 kept experiments" is counted as the reviewed code counts
+    it, on the experiments that have a column in the antigen's target file, with an antigen the archive serves no file
+    for left out. The last is the first reviewer's fix and the specification's own definition of the experiments used;
+    a rule agent's confirmation of it was stopped by a safety classifier (entry (n)) and is not pressed for, so it
+    stands as a declared reading.
+  - **The read engineer's departures, accepted as they refuse more or change no reading:** the listing is an empty
+    tracked file at this commit; its lines take the form `<sha256> <name>` without a file ending, as point A5 has
+    them; the second commit may change the listing and the script's pin lines and nothing else, so it is made on a
+    side branch cut at this commit; P2 loads the barred factor only to take the panel's gene order and compares
+    nothing with it; a stop at P1 or P2 writes its fixed sentence once.
+  - **K24's closure, read as the specification reads it (its legality point 13) and as K26's placement did:** "no
+    further size, weight or combination of these tables is read on this fold" names K24's tables; this row reads a new
+    table from another kind of source, leaves `two` at its named exponent and uses the named form only as K24 itself
+    used it, as guard and comparator. Opened as a practice read under the campaign's rule for lines the ledger closed
+    and the captain's orders on outside data; no file without the captain's ruling.
+  - **Counting, as the row has it:** nothing if P1 or P2 stops it; eight tries from the start of P3 whatever follows,
+    plus one for each failed guard arm; the outcome cell records their numbers from the running count.
+  - **Next.** The target-gene files are still downloading on the DGX (the fixed fetch records placebo antigens the
+    archive serves no file for and goes on). When the pass is complete: the launcher's database part at this commit in
+    `~/v/vec-campaign-c` (its tests, the manifest's check, P1, P2), after a traced refusal path. P1 prints two counts.
+    If P1 holds, the test-board build path is given to an engineer and a reviewer at once, so that a pass can be built
+    in time; nothing of it runs without the captain's ruling.
