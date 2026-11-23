@@ -11909,3 +11909,25 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     touched.
   - **What follows.** Nothing changes in any file, rule or queue. If the captain adopts the note's rule, the three
     files of the first list are the ones it would skip; uploads are the captain's own acts.
+- 2026-11-23 (bb), the captain skips three waiting files; the upload sheet is updated (state at 22:32 UTC,
+  2026-11-23). Written by the AI assistant.
+  - **The captain's words, verbatim:** "skip those three and update the upload sheet". They answer the AI assistant's
+    message that listed, from the checked reading of entry (aa), the three waiting files the committed record itself
+    expects to score below their board's best headline: `T1_s2rc_MS.h5ad` (the plain momentum file), `T1_s2none.h5ad`
+    (file F, T1's file with no outside data) and `T3_refused_s1.h5ad` (T3's refused s1, which uses no Gata4 validation
+    file).
+  - **What changes.** The three are not uploaded unless the captain says otherwise and hold no place in any order.
+    T1's order: C, the 2.0 file, the combined momentum file, the A15 file, then the lines' conditional files. T3's
+    order: C1, C2, the K23 file, then CK and the e4 file on their conditions. `docs/UPLOAD_SHEET.md` lists the three
+    in a section of their own with the reason in words; `docs/S2_RULES.md` carries a note (re-pinned); the last cells
+    of ledger rows R23 and R8 say so.
+  - **What does not change.** The embryo's and the heart's orders; every other file's place and condition; every
+    search line's rule (no line's comparison uses a headline of any of the three). The files stay in
+    `runs/manual_upload/` as built: nothing is moved, deleted or rebuilt, and a later word of the captain's can put
+    any of them back.
+  - **One fact for the record.** With file F skipped, no T1 file without the outside atlas waits for an upload; with
+    the refused s1 skipped, no T3 file without the Gata4 validation files or the outside knockout table does. The AI
+    assistant had told the captain what each of the two files is before the order.
+  - **The captain's condition of entry (z)** (upload only where the expected score is closer to the targets) is not
+    restated or withdrawn by these words; the AI assistant reads them as the skip and nothing more. Uploads remain the
+    captain's own acts.

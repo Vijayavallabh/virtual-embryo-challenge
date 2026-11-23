@@ -2331,3 +2331,18 @@ ee9e0e68d62e8d1448f1dbbbce1146dc5fb4877e94d77fc289fa82744acb06a9 (OTS10); build 
 and reported headline; OTS05 is then its next file; OTS10 only if OTS05's headline is strictly above D's; at each
 heart slot the first line's due file goes first; nothing is rebuilt, re-seeded, resized or changed after a score. Data
 used: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data.
+
+## Note of 2026-11-23: three files are skipped by the captain's word (decision log 2026-11-23 (bb))
+
+The captain's words, verbatim: "skip those three and update the upload sheet", in answer to the AI assistant's list of
+the three waiting files that the committed record itself expects to score below their board's best headline (decision
+log 2026-11-23 (aa); four readers and four cold verifiers): `T1_s2rc_MS.h5ad` (the plain momentum file; row R23),
+`T1_s2none.h5ad` (file F; the amendment of 2026-11-22 above) and `T3_refused_s1.h5ad` (the amendment of 2026-11-22
+above). **What changes:** the three are not uploaded unless the captain says otherwise, and they hold no place in any
+board's order. T1's order is C, the 2.0 file, the combined momentum file and the A15 file, then the lines' files on
+their conditions. T3's order is C1, C2 and the K23 file, then CK and the e4 file on their conditions. **What does not
+change:** every other file keeps its place and its condition; no search line's comparison uses a headline of any of
+the three, so no line's rule changes; the three files stay on disk as built, nothing is rebuilt or deleted, and their
+own amendments above stand as written, set aside as to the order by this note. A later word of the captain's can put
+any of them back. With file F skipped, no T1 file without the outside atlas waits for an upload, and with the refused
+s1 skipped, no T3 file without the Gata4 validation files or the outside knockout table does.
