@@ -5,8 +5,10 @@
 # GSE230531 (E8.5 embryo and E16.5 heart, CM only); GSE176063 with GSE153562, and GSE216970, are held. Each used
 # atlas names its samples per end (`gsms`): a pin may name only those, and the pins must cover all of them. Its
 # never_fetch list names samples and files no step fetches; no sample that is not named is ever fetched either (only
-# pinned samples are). Screens (screens.py) run on the fetched barcode and feature files before any matrix is fetched;
-# their verdict is committed in screens.yaml by the main session. The composition block (level and change forms) is
+# pinned samples are). Before any matrix, `fetch.py fetch-meta` fetches the named samples' barcodes and features files
+# only into ~/v/scratch/t72_screen and `screens.py` prints what checks (a) to (d) need; two readers decide, and the main
+# session records each atlas's verdict here (`screen`: kept with the sha256 of every screened barcodes and features
+# file, or status dropped with the failed points; row T72, cell 3). The composition block (level and change forms) is
 # deleted: no share is computed or written. The pins stay empty until the main session commits the readers' pins.
 #
 # Read by experiments/t1_ext/t1x_common.py, which refuses any accession that is not under `atlases` here. Every atlas
@@ -19,6 +21,8 @@
 #   use     - planned, fetched, loaded and tabled by run_dgx.sh's default accession list.
 #   second  - planned, fetched, loaded and tabled only when named explicitly (none in the strict form).
 #   held    - planned only (its plan table checks its gate); fetch refuses it whatever the command line says.
+#   dropped - dropped by the readers' screens (screen: {verdict: dropped, failed: [points]}): never planned, fetched,
+#             loaded or tabled again; no exception is granted on the spot.
 #
 # PINNED SAMPLES, THE FIRST LINE (third version, 2026-11-21; README, "Pinned samples"). A sample is USED only when the
 # atlas's `pinned` block names it AND the stage rule below does not refuse it. Per atlas:
@@ -143,20 +147,18 @@ consensus:
   eb_bins: 10
   held_modules: ['^Hb[ab]-', '^mt-']   # R2's A1 and N1, held (NaN) in every member of a consensus group
 
-# The screens run by screens.py on the fetched barcode and feature files, before any matrix is fetched (the
-# specification's SCREENS (a) to (d)); each atlas lists the ones that apply to it. Each returns yes or no with a count,
-# never a cell or a gene.
+# What screens.py computes for the readers' checks (a) to (d) of row T72's cell 3, on the barcodes and features files
+# fetch-meta fetched, before any matrix; each atlas lists the ones that apply to it; the same functions run again on the
+# fetched files at the row's load (a failure there is a failed (p1)). Counts and yes/no only, never a cell or a gene.
 #   suffix          (a) every barcode of every sample ends in -1 (no aggr)
-#   own_peaks       (b) Multiome: the samples' features files have different sha256 and different Peaks rows (each
-#                   library its own peak set: cellranger-arc count per library); their Gene Expression rows are counted
-#   no_hashing      (c) no hashing or pooling field: one column per barcode line, no feature type outside the atlas's
+#   own_peaks       (b) Multiome: the two features files have different sha256; at least one Peaks interval of each
+#                   partly overlaps an interval of the other without being identical; their Gene Expression rows are
+#                   the same features in the same order
+#   no_hashing      (c) no hashing or multiplexing: one column per barcode line, no feature type outside the atlas's
 #                   assay, no hashtag-like feature name, a features file of 2, 3 or (Multiome) 6 columns
-#   whitelist_sized (d) every barcode file has a 10x whitelist's number of lines (unfiltered matrices; the team's own
-#                   cell call then applies)
+#   whitelist_sized (d) every barcodes file has the line count of the 10x 3' v2 whitelist, 737,280 (screens.WHITELIST_V2;
+#                   the matrices are unfiltered and the team's own cell call applies)
 screen_rules:
-  # 10x barcode whitelists: 737,280 (737K-august-2016 and 737K-april-2014, 3' v2 and v1) and 6,794,880
-  # (3M-february-2018, 3' v3); general knowledge of the 10x whitelists, not checked against a source
-  whitelist_sizes: [737280, 6794880]
   feature_types: {tenx: ['Gene Expression'], multiome: ['Gene Expression', 'Peaks']}
   hashing_names: '^(?:hto|cmo\d|hashtag|totalseq|adt[_-]|cellplex|multiplex)'
 
@@ -187,6 +189,7 @@ atlases:
       samples: [GSM7829701, GSM7829700, GSM7829702, GSM7829704]   # E10.5 (in the window); the three ATAC samples
       files: [GSE244783_RAW.tar]                                  # the series archive (it holds E10.5)
     screens: [suffix, own_peaks, no_hashing]
+    screen: {verdict: PENDING}   # written by the main session from both readers' hand-backs (screens.py paste block)
     assay_rule: {library_strategy: 'RNA-Seq'}
     early_tissue: heart
     groups_formed: [CM, Endocardium, Endothelium]
@@ -213,6 +216,7 @@ atlases:
       samples: [GSM7226279, GSM7226280, GSM7226270, GSM7226271, GSM7226272, GSM7226273]
       files: [GSE230531_RAW.tar]                                  # the series archive
     screens: [suffix, no_hashing, whitelist_sized]
+    screen: {verdict: PENDING}   # written by the main session from both readers' hand-backs (screens.py paste block)
     assay_rule: {library_strategy: 'RNA-Seq'}
     early_tissue: whole_embryo
     groups_formed: [CM]

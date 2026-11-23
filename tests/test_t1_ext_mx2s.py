@@ -317,11 +317,11 @@ def getter_for(text, log, files=None):
         log.append(u)
         dst.parent.mkdir(parents=True, exist_ok=True)
         if u.endswith("_family.soft.gz"):
-            dst.write_bytes(gzip.compress(text.encode()))
+            dst.write_bytes(gzip.compress(text.encode(), mtime=0))
             return
         name = u.rsplit("/", 1)[-1]
         body = next((v for k, v in files.items() if name.endswith(k)), "x\n")
-        dst.write_bytes(gzip.compress(body.encode()))
+        dst.write_bytes(gzip.compress(body.encode(), mtime=0))  # fixed bytes: a refetch is the same file
     return get
 
 
@@ -364,6 +364,37 @@ def test_plan_reads_the_series_wide_sentence_as_series_text_and_still_needs_pins
     assert pl3["status"] == "refused" and any("not usable" in r for r in pl3["refusals"])
 
 
+def test_the_plan_prints_the_sha256_of_every_protocol_field_of_every_sample_and_nothing_else_of_a_window_sample(
+        tmp_path):
+    own = copy.deepcopy(SAMPLES)
+    own[2] = sample(WIN, "E10.5-scRNA-Library", "E10.5", "heart", processing="E10.5 library processed alone")
+    pl = fetch.plan(ACC, tmp_path, getter_for(soft(own), []), config())
+    fs = pl["protocol_field_sha256"][ACC]
+    assert set(fs) == {EARLY, LATE, WIN, ATAC}  # every sample record of the series, the window sample included
+    assert all(set(v) == {"extract_protocol_ch1", "data_processing"} for v in fs.values())
+    assert fs[EARLY]["extract_protocol_ch1"] == fs[WIN]["extract_protocol_ch1"] == \
+        cm.field_sha256("extract_protocol_ch1", [SHARED])
+    assert fs[WIN]["data_processing"] != fs[EARLY]["data_processing"]  # the readers see the difference
+    lines = (tmp_path / "meta" / ACC / "protocol_field_sha256.tsv").read_text().splitlines()
+    assert lines == fetch.field_sha_lines(pl) and len(lines) == 8
+    assert all(ln.split("\t")[0] == "field_sha256" and len(ln.split("\t")) == 5 for ln in lines)
+    win_lines = [ln for ln in lines if f"\t{WIN}\t" in ln]
+    assert all("E10.5" not in ln and "alone" not in ln for ln in win_lines)  # nothing else of a window sample
+    # the field hash is the hash of the field's lines in the canonical record text
+    rec = [["data_processing", ["a", "bé"]]]
+    body = cm.record_text("SAMPLE", "GSM1", rec).split("\n", 1)[1]
+    assert cm.field_sha256("data_processing", ["a", "bé"]) == cm.text_sha256(body)
+
+
+def test_a_stage_only_in_the_shared_sentence_refuses():
+    rs = recs(own={"GSM8801": {"title": ["heart sample 2"], "characteristics_ch1": ["tissue: heart"]}},
+              shared="Hearts were collected at E16.5.")
+    st = cm.series_wide_fields(rs)
+    assert st == {"extract_protocol_ch1": ["Hearts were collected at E16.5."]}
+    r = cm.record_stage(rs["GSM8801"], E05, st)
+    assert r["mark"] == "UNKNOWN"  # no stage of its own: refused (the shared sentence gives none)
+
+
 def test_named_samples_and_never_fetch_lists(tmp_path):
     cfg = config()
     a = cm.atlas(ACC, cfg)
@@ -377,7 +408,7 @@ def test_named_samples_and_never_fetch_lists(tmp_path):
     fetch.plan(ACC, tmp_path, getter_for(soft(SAMPLES), []), cfg)
     with pytest.raises(cm.Refused, match="exactly the samples"):
         fetch.pin_template(ACC, tmp_path, [LATE, EARLY, WIN], cfg)
-    for u, why in ((f"https://ftp.ncbi.nlm.nih.gov/geo/series/GSE999nnn/{ACC}/suppl/{ACC}_RAW.tar", "never-fetch"),
+    for u, why in ((f"https://ftp.ncbi.nlm.nih.gov/geo/series/GSE999nnn/{ACC}/suppl/{ACC}_RAW.tar", "never"),
                    (url(WIN, "matrix.mtx.gz"), WIN), (url(ATAC, "atac_fragments.tsv.gz"), ATAC)):
         assert why in (cm.never_fetch_refusal(a, url=u) or "")
     assert cm.never_fetch_refusal(a, url=url(LATE, "matrix.mtx.gz")) is None
@@ -404,9 +435,11 @@ def test_committed_atlases_yaml_is_the_strict_form(tmp_path):
     cfg = cm.load_atlases()
     at = cfg["atlases"]
     assert cfg["tasks"] == ["T1"] and "composition" not in cfg
-    assert {k: a["status"] for k, a in at.items()} == {"GSE193346": "in_use", "GSE244783": "use",
-                                                         "GSE230531": "use", "GSE176063": "held",
-                                                         "GSE216970": "held"}
+    # holds before and after the placement commit (pins, screens and the freeze change no assertion here)
+    st = {k: a["status"] for k, a in at.items()}
+    assert st["GSE193346"] == "in_use" and st["GSE176063"] == st["GSE216970"] == "held"
+    assert st["GSE244783"] in ("use", "dropped") and st["GSE230531"] in ("use", "dropped") and len(st) == 5
+    assert {k: at[k].get("register") for k in ("GSE193346", "GSE244783", "GSE230531")} == cm.REGISTER_ROWS
     g4, g3 = at["GSE244783"], at["GSE230531"]
     assert (g4["early"]["labels"], g4["early"]["gsms"]) == (["E8.5"], ["GSM7829699"])
     assert (g4["late"]["labels"], g4["late"]["gsms"]) == (["E16.5"], ["GSM7829703"])
@@ -433,139 +466,215 @@ def test_committed_atlases_yaml_is_the_strict_form(tmp_path):
              "read_by": ["READER_1", "READER_2"], "date": "YYYY-MM-DD"}], "series": []}})
     # a fetchable 10x atlas without screens, named samples or a never-fetch list is refused by the loader of the yaml
     raw = yaml.safe_load((EXT / "atlases.yaml").read_text())
-    for key in ("screens", "never_fetch"):
+    pending = {"verdict": "PENDING"}
+
+    def without(key):
+        def f(a):
+            a.pop(key)
+        return f
+
+    for i, change in enumerate((without("screens"), without("never_fetch"), without("screen"),
+                                lambda a: a.update(register="X018"),
+                                lambda a: a["never_fetch"]["samples"].remove("GSM7829700"),
+                                lambda a: a["late"].update(gsms=["GSM7829703", "GSM7829705"]),
+                                lambda a: a.update(screen={"verdict": "READERS_VERDICT"}))):
         bad = copy.deepcopy(raw)
-        bad["atlases"]["GSE244783"].pop(key)
-        p = tmp_path / f"atlases_without_{key}.yaml"
+        a4 = bad["atlases"]["GSE244783"]
+        a4.update(status="use", screen=pending, pinned={"samples": [], "series": []})  # the draft form, then one change
+        change(a4)
+        p = tmp_path / f"atlases_{i}.yaml"
         p.write_text(yaml.safe_dump(bad))
         with pytest.raises(cm.Refused):
             cm.load_atlases(p)
+    ok = copy.deepcopy(raw)
+    ok["atlases"]["GSE244783"].update(status="use", screen=pending, pinned={"samples": [], "series": []})
+    (tmp_path / "ok.yaml").write_text(yaml.safe_dump(ok))
+    cm.load_atlases(tmp_path / "ok.yaml")
 
 
 # ------------------------------------------------------------------------------------------------ the screens
 
 
-def heads_ready(tmp_path, files=None, cfg=None):
-    files = files or {f"{EARLY}_barcodes.tsv.gz": BARCODES, f"{LATE}_barcodes.tsv.gz": BARCODES,
-                      f"{EARLY}_features.tsv.gz": features(range(0, 5000, 1000)),
-                      f"{LATE}_features.tsv.gz": features(range(300, 6000, 700))}
-    pl, cfg2 = pinned(tmp_path, cfg)
+FILES = {f"{EARLY}_barcodes.tsv.gz": BARCODES, f"{LATE}_barcodes.tsv.gz": BARCODES,
+         f"{EARLY}_features.tsv.gz": features(range(0, 5000, 1000)),
+         f"{LATE}_features.tsv.gz": features(range(300, 6000, 700))}
+WANT = {ACC: {EARLY: "early", LATE: "late"}}
+
+
+def meta_ready(tmp_path, files=None, cfg=None):
+    """The plan (no pins yet), then the screens' fetch of the named samples' barcodes and features into tmp_path (the
+    screens' folder of the test)."""
+    cfg = cfg or config()
+    fetch.plan(ACC, tmp_path, getter_for(soft(SAMPLES), []), cfg)
     log = []
-    hd = fetch.heads(ACC, tmp_path, cm.sha256_file(tmp_path / "meta" / ACC / "plan.json"),
-                     getter_for(soft(SAMPLES), log, files), cfg2)
-    return hd, cfg2, log
+    fm = fetch.fetch_meta(ACC, tmp_path, cm.sha256_file(tmp_path / "meta" / ACC / "plan.json"),
+                          getter_for(soft(SAMPLES), log, files or FILES), cfg, screen_root=tmp_path, samples=WANT)
+    return fm, cfg, log
 
 
-def test_heads_fetch_barcodes_and_features_only_and_the_screens_pass(tmp_path):
-    hd, cfg, log = heads_ready(tmp_path)
+def test_fetch_meta_takes_barcodes_and_features_only_and_the_screens_pass(tmp_path):
+    fm, cfg, log = meta_ready(tmp_path)
     data = [u for u in log if not u.endswith("_family.soft.gz")]
     assert len(data) == 4 and not any("matrix" in u for u in data) and all(EARLY in u or LATE in u for u in data)
-    res = scr.screen(ACC, tmp_path, cfg)
-    assert res["passed"] and {k: c["passed"] for k, c in res["checks"].items()} == {
+    assert all("/geo/samples/" in u and "/suppl/" in u for u in data)  # each from the sample's own folder
+    assert set(fm["samples"]) == {EARLY, LATE} and fm["tasks"] == ["T1"]
+    assert all(set(s["files"]) == {"barcodes", "features"} for s in fm["samples"].values())
+    assert sorted(p.name for p in (tmp_path / "screen" / ACC).rglob("*.gz")) == sorted(FILES)
+    res = scr.screen(ACC, tmp_path, cfg, screen_root=tmp_path)
+    ch = res["checks"]
+    assert ch["passed"] and {k: ch[k]["passed"] for k in ("suffix", "own_peaks", "no_hashing")} == {
         "suffix": True, "own_peaks": True, "no_hashing": True}
-    assert res["checks"]["suffix"]["barcodes"] == 24
-    assert res["checks"]["own_peaks"]["gene_expression_rows"] == {EARLY: 20, LATE: 20}
-    written = (tmp_path / "screens" / ACC / "screen.json").read_text()
-    assert "AAACGT" not in written and "Gene1" not in written and "chr1:" not in written  # counts only
-    assert json.loads(written)["tasks"] == ["T1"]
-    assert scr.paste_line(res).startswith(f'  {ACC}: {{verdict: kept, screen_sha256: "{res["screen_sha256"]}"')
-    with pytest.raises(cm.Refused):  # an atlas without screens has no heads step
-        fetch.heads(ACC, tmp_path, "0" * 64, None, config(screens=[]))
+    assert ch["per_file"][LATE]["barcodes"] == {"wc_l": 12, "not_suffix": 0}
+    assert ch["per_file"][LATE]["features"]["types"] == {"Gene Expression": 20, "Peaks": 9}
+    pair = ch["own_peaks"]["pairs"][f"{EARLY}|{LATE}"]
+    assert pair["different_sha256"] and pair["peaks_partly_overlap"] and pair["gene_expression_rows_same_in_order"]
+    block = scr.paste_block(res)
+    assert "verdict: READERS_VERDICT" in block and fm["samples"][LATE]["files"]["features"]["sha256"] in block
+    filled = yaml.safe_load(textwrap.dedent(block.replace("READERS_VERDICT", "kept").replace(
+        "READER_1", "Reader A").replace("READER_2", "Reader B").replace("YYYY-MM-DD", "2026-11-24")))
+    cm.check_screen_block(ACC, {**cm.atlas(ACC, cfg), **filled})  # the block fills the yaml's form
+    with pytest.raises(cm.Refused):  # the placeholder verdict is refused
+        cm.check_screen_block(ACC, {**cm.atlas(ACC, cfg), **yaml.safe_load(textwrap.dedent(block))})
+
+
+def test_fetch_meta_refuses_before_any_request(tmp_path):
+    cfg = config()
+    fetch.plan(ACC, tmp_path, getter_for(soft(SAMPLES), []), cfg)
+    sha = cm.sha256_file(tmp_path / "meta" / ACC / "plan.json")
+    log = []
+
+    def run(**kw):
+        args = {"dest": tmp_path, "plan_sha256": sha, "getter": getter_for(soft(SAMPLES), log, FILES), "cfg": cfg,
+                "screen_root": tmp_path, "samples": WANT, **kw}
+        return fetch.fetch_meta(ACC, **args)
+
+    for kw, why in (({"plan_sha256": "0" * 64}, "plan sha256"),
+                    ({"dest": tmp_path / "elsewhere"}, "write only under"),
+                    ({"samples": {ACC: {EARLY: "early"}}}, "names"),
+                    ({"cfg": config(qc={"min_umi": 2, "min_genes": 1, "max_mito": 1.0})}, "another atlas entry"),
+                    ({"cfg": config(screens=[])}, "two 10x members")):
+        with pytest.raises(cm.Refused, match=why):
+            run(**kw)
+    assert log == []  # nothing was requested, not even the SOFT
+    # a named sample the plan reads in the window is not a candidate
+    wcfg = config(late={"labels": ["E16.5"], "tissue": "heart", "gsms": [WIN]},
+                  never_fetch={"samples": [ATAC], "files": []})
+    fetch.plan(ACC, tmp_path / "w", getter_for(soft(SAMPLES), []), wcfg)
+    with pytest.raises(cm.Refused, match="not a candidate"):
+        fetch.fetch_meta(ACC, tmp_path / "w", cm.sha256_file(tmp_path / "w" / "meta" / ACC / "plan.json"),
+                         getter_for(soft(SAMPLES), log, FILES), wcfg, screen_root=tmp_path / "w",
+                         samples={ACC: {EARLY: "early", WIN: "late"}})
+    assert log == []
+    a = cm.atlas(ACC, cfg)
+    for role, f, why in (("matrix", {"name": f"{LATE}_matrix.mtx.gz", "url": url(LATE, "matrix.mtx.gz")}, "role"),
+                         ("features", {"name": f"{LATE}_matrix.mtx.gz", "url": url(LATE, "matrix.mtx.gz")}, "matrix"),
+                         ("features", {"name": f"{ACC}_RAW.tar", "url": f"ftp://ftp.ncbi.nlm.nih.gov/geo/series/"
+                                                                      f"GSE999nnn/{ACC}/suppl/{ACC}_RAW.tar"}, None),
+                         ("barcodes", {"name": f"{WIN}_barcodes.tsv.gz", "url": url(WIN, "barcodes.tsv.gz")}, None),
+                         ("barcodes", {"name": "GSM7829701_barcodes.tsv.gz",
+                                       "url": url("GSM7829701", "barcodes.tsv.gz")}, "never-fetched")):
+        with pytest.raises(cm.Refused, match=why):
+            fetch._requested(a, f["name"].split("_")[0], role, f, r"matrix\.mtx(\.gz)?$")
+    # a changed live record refuses after the SOFT and before any data file
+    changed = copy.deepcopy(SAMPLES)
+    changed[1] = sample(LATE, "E16.5-scRNA-Library", "E16.5", "heart", processing="Cell Ranger count, library 2")
+    log.clear()
+    with pytest.raises(cm.Refused, match="live record"):
+        run(getter=getter_for(soft(changed), log, FILES))
+    assert all(u.endswith("_family.soft.gz") for u in log)
+
+
+def test_the_screens_folder_and_the_literal_lists():
+    assert cm.SCREEN_ROOT == Path.home() / "v" / "scratch" / "t72_screen"
+    assert cm.SCREEN_SAMPLES == {"GSE244783": {"GSM7829699": "early", "GSM7829703": "late"},
+                                 "GSE230531": {"GSM7226268": "early", "GSM7226269": "early", "GSM7226274": "late",
+                                               "GSM7226276": "late"}}
+    assert cm.NEVER_FETCHED_ALL == {"GSM7829701", "GSM7829700", "GSM7829702", "GSM7829704", "GSE244783_RAW.tar",
+                                    "GSM7226279", "GSM7226280", "GSM7226270", "GSM7226271", "GSM7226272",
+                                    "GSM7226273", "GSE230531_RAW.tar"}
+    for n in cm.NEVER_FETCHED_ALL:
+        assert cm.never_fetched_refusal(n) and cm.never_fetched_refusal(f"https://x/{n}_matrix.mtx.gz")
+    assert cm.never_fetched_refusal("https://x/GSE1_raw.TAR")
+    assert cm.never_fetched_refusal("GSM78297010") is None and cm.never_fetched_refusal("GSM7829699") is None
 
 
 @pytest.mark.parametrize("change,check", [
     ({f"{LATE}_barcodes.tsv.gz": BARCODES.replace("0003-1", "0003-2")}, "suffix"),
-    ({f"{LATE}_features.tsv.gz": features(range(0, 5000, 1000))}, "own_peaks"),          # one shared peak set
+    ({f"{LATE}_features.tsv.gz": features(range(0, 5000, 1000))}, "own_peaks"),          # one file: same sha256
+    ({f"{LATE}_features.tsv.gz": features(range(0, 3000, 1000))}, "own_peaks"),          # a subset: no partial overlap
+    ({f"{LATE}_features.tsv.gz": features(range(20000, 26000, 1000))}, "own_peaks"),     # disjoint peak sets
     ({f"{LATE}_features.tsv.gz": features([])}, "own_peaks"),                             # no Peaks rows
+    ({f"{LATE}_features.tsv.gz": features(range(300, 6000, 700)).replace("Gene3\t", "GeneX\t")}, "own_peaks"),
     ({f"{LATE}_barcodes.tsv.gz": BARCODES.replace("-1\n", "-1\tE16.5\n")}, "no_hashing"),  # a per-cell column
     ({f"{LATE}_features.tsv.gz": features(range(300, 6000, 700)) +
       "HTO_A\tHTO_A\tAntibody Capture\tNA\t0\t0\n"}, "no_hashing"),
 ])
-def test_a_failing_screen_says_no_with_a_count(tmp_path, change, check):
-    base = {f"{EARLY}_barcodes.tsv.gz": BARCODES, f"{LATE}_barcodes.tsv.gz": BARCODES,
-            f"{EARLY}_features.tsv.gz": features(range(0, 5000, 1000)),
-            f"{LATE}_features.tsv.gz": features(range(300, 6000, 700))}
-    _, cfg, _ = heads_ready(tmp_path, {**base, **change})
-    res = scr.screen(ACC, tmp_path, cfg)
-    assert not res["passed"] and not res["checks"][check]["passed"]
-    assert all(c["passed"] for k, c in res["checks"].items() if k != check), res["checks"]
-    assert "verdict: dropped" in scr.paste_line(res) and check in scr.paste_line(res)
+def test_a_failing_screen_says_no(tmp_path, change, check):
+    _, cfg, _ = meta_ready(tmp_path, {**FILES, **change})
+    ch = scr.screen(ACC, tmp_path, cfg, screen_root=tmp_path)["checks"]
+    assert not ch["passed"] and not ch[check]["passed"]
+    assert all(ch[k]["passed"] for k in ("suffix", "own_peaks", "no_hashing") if k != check), ch
     if check == "suffix":
-        assert res["checks"]["suffix"]["not_ending_in_-1"] == 1
+        assert ch["suffix"]["barcodes_not_ending_in_-1"] == 1
 
 
-def test_whitelist_sized(tmp_path):
-    cfg = config(multiome=False, screens=["suffix", "no_hashing", "whitelist_sized"])
-    cfg["screen_rules"] = {**cfg["screen_rules"], "whitelist_sizes": [12]}
-    tenx = "\n".join(f"ENSMUSG{i:05d}\tGene{i}\tGene Expression" for i in range(20)) + "\n"
-    files = {f"{EARLY}_barcodes.tsv.gz": BARCODES, f"{LATE}_barcodes.tsv.gz": BARCODES,
-             f"{EARLY}_features.tsv.gz": tenx, f"{LATE}_features.tsv.gz": tenx}
-    _, cfg2, _ = heads_ready(tmp_path, files, cfg)
-    res = scr.screen(ACC, tmp_path, cfg2)
-    assert res["passed"] and res["checks"]["whitelist_sized"]["barcodes_per_sample"] == {EARLY: 12, LATE: 12}
-    heads_ready(tmp_path / "b", {**files, f"{LATE}_barcodes.tsv.gz": BARCODES + "TTTT-1\n"}, cfg)
-    res = scr.screen(ACC, tmp_path / "b", cfg2)
-    assert not res["checks"]["whitelist_sized"]["passed"] and res["checks"]["suffix"]["passed"]
-    # the committed rules name the 10x whitelist sizes
-    assert cm.load_atlases()["screen_rules"]["whitelist_sizes"] == [737280, 6794880]
+def test_whitelist_sized_is_the_v2_whitelist(tmp_path):
+    assert scr.WHITELIST_V2 == 737280
+    p = tmp_path / "b.tsv.gz"
+    p.write_bytes(gzip.compress("".join(f"AAAC{i:07d}-1\n" for i in range(737280)).encode()))
+    assert scr.check_d({"g": scr.barcode_facts(p)})["passed"]
+    p.write_bytes(gzip.compress("".join(f"AAAC{i:07d}-1\n" for i in range(737281)).encode()))
+    assert not scr.check_d({"g": scr.barcode_facts(p)})["passed"]
+    q = tmp_path / "c.tsv"
+    q.write_text("A-1\nB-1")  # no newline at the end: wc -l says 1
+    assert scr.newline_count(q) == 1 and scr.barcode_facts(q)["barcodes"] == 2
 
 
-def test_matrices_are_fetched_only_for_a_member_recorded_kept(tmp_path, monkeypatch):
-    hd, cfg, _ = heads_ready(tmp_path)
-    res = scr.screen(ACC, tmp_path, cfg)
-    plan_sha = cm.sha256_file(tmp_path / "meta" / ACC / "plan.json")
-    record = {}
-    monkeypatch.setattr(cm, "load_screens", lambda path=None: record)
+def test_partial_overlap_hand_cases():
+    a = [("chr1", 100, 200)]
+    assert not scr.partial_overlap(a, [("chr1", 100, 200)])     # identical
+    assert scr.partial_overlap(a, [("chr1", 150, 250)])          # partial
+    assert scr.partial_overlap(a, [("chr1", 120, 180)])          # contained, not identical
+    assert not scr.partial_overlap(a, [("chr1", 200, 300)])      # touching, half-open
+    assert not scr.partial_overlap(a, [("chr2", 150, 250)])      # another chromosome
+    assert scr.partial_overlap(a + [("chr1", 5000, 5100)], [("chr1", 0, 99), ("chr1", 4000, 5050)])
 
-    def try_fetch(log):
-        return fetch.fetch(ACC, tmp_path, plan_sha, getter_for(soft(SAMPLES), log), cfg)
 
-    for entry in ({}, {ACC: {"verdict": "PENDING"}},
-                  {ACC: {"verdict": "dropped", "screen_sha256": res["screen_sha256"], "date": "2026-11-24",
-                         "failed": ["own_peaks"]}},
-                  {ACC: {"verdict": "kept", "screen_sha256": "0" * 64, "date": "2026-11-24"}}):
-        record.clear()
-        record.update(entry)
+def test_fetch_ties_the_fetched_files_to_the_screened_copies(tmp_path):
+    fm, cfg, _ = meta_ready(tmp_path / "screen")
+    files = {g: {r: {"name": f["name"], "sha256": f["sha256"]} for r, f in s["files"].items()}
+             for g, s in fm["samples"].items()}
+    kept = {"verdict": "kept", "files": files, "read_by": ["Reader A", "Reader B"], "date": "2026-11-24"}
+    for scr_block, ok in (({"verdict": "PENDING"}, False), (kept, True)):
+        pl, cfg2 = pinned(tmp_path / ("row" if ok else "pending"), config(screen=scr_block))
+        sha = cm.sha256_file(tmp_path / ("row" if ok else "pending") / "meta" / ACC / "plan.json")
         log = []
+        if not ok:
+            with pytest.raises(cm.Refused, match="PENDING"):
+                fetch.fetch(ACC, tmp_path / "pending", sha, getter_for(soft(SAMPLES), log, FILES), cfg2)
+            assert not any("matrix" in u for u in log)
+            continue
+        man = fetch.fetch(ACC, tmp_path / "row", sha, getter_for(soft(SAMPLES), log, FILES), cfg2)
+        assert man["screen"] == files
+        assert man["samples"][LATE]["files"]["features"]["sha256"] == files[LATE]["features"]["sha256"]
+        assert man["series_text"][ACC] and man["samples"][LATE]["series_text"] == man["series_text"][ACC]
+    # a features file that is not the screened copy refuses the fetch
+    bad = {**FILES, f"{LATE}_features.tsv.gz": features(range(300, 6000, 700)) + "\n"}
+    with pytest.raises(cm.Refused, match="not the file the readers screened"):
+        fetch.fetch(ACC, tmp_path / "row", sha, getter_for(soft(SAMPLES), [], bad), cfg2)
+    # the yaml's screen block form
+    a = cm.atlas(ACC, cfg2)
+    for blk in ({**kept, "files": {LATE: files[LATE]}}, {**kept, "read_by": ["Reader A"]},
+                {**kept, "files": {**files, LATE: {"barcodes": files[LATE]["barcodes"]}}},
+                {"verdict": "dropped", "failed": ["b"]}, {"verdict": "maybe"},
+                {"verdict": "PENDING", "files": files}):
         with pytest.raises(cm.Refused):
-            try_fetch(log)
-        assert not any("matrix" in u for u in log)
-    record.clear()
-    record[ACC] = {"verdict": "kept", "screen_sha256": res["screen_sha256"], "date": "2026-11-24"}
-    log = []
-    man = try_fetch(log)
-    data = [u for u in log if not u.endswith("_family.soft.gz")]
-    assert len(data) == 2 and all(u.endswith("matrix.mtx.gz") for u in data)  # the heads are not fetched again
-    assert man["screen"] == {"verdict": "kept", "screen_sha256": res["screen_sha256"]}
-    assert man["samples"][LATE]["files"]["features"]["sha256"] == hd["samples"][LATE]["files"]["features"]["sha256"]
-    assert man["series_text"][ACC] and man["samples"][LATE]["series_text"] == man["series_text"][ACC]
-    # a kept verdict over a screen file that failed is refused: the fetch reads the screen file itself
-    sp = tmp_path / "screens" / ACC / "screen.json"
-    bad = json.loads(sp.read_text())
-    bad["checks"]["own_peaks"]["passed"] = False
-    sp.write_text(json.dumps(bad))
-    record[ACC] = {"verdict": "kept", "screen_sha256": cm.sha256_file(sp), "date": "2026-11-24"}
-    with pytest.raises(cm.Refused, match="every screen"):
-        try_fetch([])
-    # a changed heads file after the screens is refused
-    sp.write_text(json.dumps({**bad, "checks": res["checks"]}))
-    record[ACC]["screen_sha256"] = cm.sha256_file(sp)
-    (tmp_path / "raw" / ACC / LATE / f"{LATE}_features.tsv.gz").write_bytes(gzip.compress(b"x\n"))
-    with pytest.raises(cm.Refused, match="not the file the screens ran on"):
-        try_fetch([])
-
-
-def test_the_screens_record_form(tmp_path):
-    assert set(cm.load_screens()) == {"GSE244783", "GSE230531"}
+            cm.check_screen_block(ACC, {**a, "screen": blk})
+    cm.check_screen_block(ACC, {**a, "status": "dropped", "screen": {"verdict": "dropped", "failed": ["b", "4"]}})
     with pytest.raises(cm.Refused):
-        cm.screened_kept("GSE244783", {"screens": ["suffix"]}, {"GSE244783": {"verdict": "PENDING"}})
-    assert cm.screened_kept("X", {"screens": []}, {}) is None
-    for bad in ({"verdict": "kept"}, {"verdict": "kept", "screen_sha256": "a" * 64},
-                {"verdict": "dropped", "screen_sha256": "a" * 64, "date": "2026-11-24"}, {"verdict": "maybe"}):
-        p = tmp_path / "screens.yaml"
-        p.write_text(yaml.safe_dump({"tasks": ["T1"], "members": {"GSE1": bad}}))
-        with pytest.raises(cm.Refused):
-            cm.load_screens(p)
+        cm.check_screen_block(ACC, {**a, "status": "dropped", "screen": {"verdict": "dropped", "failed": ["e"]}})
+    assert cm.screen_kept(ACC, {**a, "screen": kept}) == files
+    assert cm.screen_kept("X", {"screens": []}) is None
 
 
 # ------------------------------------------------------------------------------------------------ the known blocker
@@ -660,16 +769,20 @@ def test_a_screened_member_dropped_after_its_load_is_not_read(tmp_path, monkeypa
     cfg = reduction(tmp_path)
     scfg = copy.deepcopy(cfg)
     scfg["atlases"][LACC]["screens"] = ["suffix"]
-    with pytest.raises(cm.Refused, match="no entry"):  # no screens record for it
-        ld.check_screen(LACC, cm.atlas(LACC, scfg), {"screen": {"screen_sha256": "a" * 64}}, {})
-    rec = {LACC: {"verdict": "kept", "screen_sha256": "a" * 64, "date": "2026-11-24"}}
-    assert ld.check_screen(LACC, cm.atlas(LACC, scfg), {"screen": {"screen_sha256": "a" * 64}}, rec)["verdict"] == \
-        "kept"
-    with pytest.raises(cm.Refused):
-        ld.check_screen(LACC, cm.atlas(LACC, scfg), {"screen": {"screen_sha256": "b" * 64}}, rec)
-    rec[LACC] = {"verdict": "dropped", "screen_sha256": "a" * 64, "date": "2026-11-24", "failed": ["suffix"]}
+    files = {g: {r: {"name": f"{g}_{r}.tsv.gz", "sha256": "a" * 64} for r in cm.SCREEN_ROLES}
+             for g in ("GSM31", "GSM32")}
+    man = {"screen": copy.deepcopy(files), "samples": {g: {"files": copy.deepcopy(f)} for g, f in files.items()}}
+    with pytest.raises(cm.Refused, match="None"):  # no screen record for it
+        ld.check_screen(LACC, cm.atlas(LACC, scfg), man)
+    scfg["atlases"][LACC]["screen"] = {"verdict": "kept", "files": files}
+    assert ld.check_screen(LACC, cm.atlas(LACC, scfg), man) == files
+    other = copy.deepcopy(man)
+    other["samples"]["GSM32"]["files"]["features"]["sha256"] = "b" * 64  # fetched, but not the screened copy
+    with pytest.raises(cm.Refused, match="not the file the readers screened"):
+        ld.check_screen(LACC, cm.atlas(LACC, scfg), other)
+    scfg["atlases"][LACC]["screen"] = {"verdict": "dropped", "failed": ["a"]}
     with pytest.raises(cm.Refused, match="dropped"):
-        ld.check_screen(LACC, cm.atlas(LACC, scfg), {"screen": {"screen_sha256": "a" * 64}}, rec)
+        ld.check_screen(LACC, cm.atlas(LACC, scfg), man)
 
 
 def test_tables_reads_each_reduction_with_the_atlas_config(monkeypatch, tmp_path):

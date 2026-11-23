@@ -363,15 +363,21 @@ def check_processing(acc: str, a: Mapping, man: Mapping) -> str:
     return sha
 
 
-def check_screen(acc: str, a: Mapping, man: Mapping, screens: Mapping | None = None) -> dict | None:
-    """For a screened atlas: screens.yaml records it kept, and the manifest was fetched under that screen."""
-    e = cm.screened_kept(acc, a, screens)
+def check_screen(acc: str, a: Mapping, man: Mapping) -> dict | None:
+    """For a screened atlas: atlases.yaml records its screen kept, the manifest was fetched under that screen, and
+    every fetched barcodes and features file the manifest records has the sha256 of the screened file (row T72, cell 3;
+    read_sample re-hashes each file against the manifest before it is opened)."""
+    e = cm.screen_kept(acc, a)
     if e is None:
         return None
-    got = man.get("screen") or {}
-    if got.get("screen_sha256") != e["screen_sha256"]:
-        raise Refused(f"{acc}: the files were not fetched under the screen screens.yaml records")
-    return {"verdict": e["verdict"], "screen_sha256": e["screen_sha256"]}
+    if man.get("screen") != e:
+        raise Refused(f"{acc}: the files were not fetched under the screen atlases.yaml records")
+    for g, s in man["samples"].items():
+        for role in cm.SCREEN_ROLES:
+            f = s["files"].get(role) or {}
+            if g not in e or f.get("name") != e[g][role]["name"] or f.get("sha256") != e[g][role]["sha256"]:
+                raise Refused(f"{acc}: {g} {role}: not the file the readers screened")
+    return e
 
 
 def cells_in_window(gsm: np.ndarray, day: np.ndarray, records: Mapping[str, Mapping]) -> int:
@@ -456,7 +462,7 @@ def load_atlas(acc: str, dest: Path, cfg: Mapping | None = None, check_frozen: b
     kept, wrec = window_filter(man["samples"])  # FIRST: before any file is opened
     check_pinned(acc, a, man)  # the first line: every sample pinned, its record its pin's, both ends
     processing_sha = check_processing(acc, a, man)  # the cleared text, rebuilt from the manifest, before any file
-    screen = check_screen(acc, a, man)  # a screened member is loaded only while screens.yaml records it kept
+    screen = check_screen(acc, a, man)  # a screened member is loaded only while atlases.yaml records it kept
     records = {g: stage_record(s) for g, s in kept.items()}
     form = cfg["forms"][a["form"]]
     rd = Reader()

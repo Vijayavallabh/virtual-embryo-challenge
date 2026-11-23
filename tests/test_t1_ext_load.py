@@ -410,8 +410,10 @@ def test_tsv_table_reads_only_its_column(tmp_path):
 
 
 def test_draft_atlases_yaml_refuses_load():
+    cfg = copy.deepcopy(cm.load_atlases())
+    cfg["status"] = "draft"  # whatever the committed file says (the placement commit freezes it)
     with pytest.raises(cm.Refused):
-        cm.require_frozen(cm.load_atlases())
+        cm.require_frozen(cfg)
 
 
 def test_cell_call_rule():

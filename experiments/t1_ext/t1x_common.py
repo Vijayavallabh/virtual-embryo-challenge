@@ -39,8 +39,27 @@ WINDOW = (9.5, 13.5)  # T1: low exclusive, high inclusive (windows.WINDOWS["T1"]
 BIRTH = windows.BIRTH_EDAY
 PENDING = "PENDING"
 MARKS = ("USED", "WINDOW", "NOT_USED", "UNKNOWN")
-STATUSES = ("in_use", "use", "second", "held")
+STATUSES = ("in_use", "use", "second", "held", "dropped")  # dropped: by the readers' screens (row T72, cell 3)
 FETCHABLE = ("use", "second")
+# Row T72 (candidate MX2s), cells 3 and 8, as literal lists: no step requests any of these by any route, whatever
+# atlases.yaml says (the yaml's never_fetch lists must name exactly these too; load_atlases checks it).
+NEVER_FETCHED = {
+    "GSE244783": ("GSM7829701", "GSM7829700", "GSM7829702", "GSM7829704", "GSE244783_RAW.tar"),
+    "GSE230531": ("GSM7226279", "GSM7226280", "GSM7226270", "GSM7226271", "GSM7226272", "GSM7226273",
+                  "GSE230531_RAW.tar"),
+}
+NEVER_FETCHED_ALL = frozenset(x for v in NEVER_FETCHED.values() for x in v)
+# The six samples whose barcodes and features files alone `fetch.py fetch-meta` requests, before any matrix (cell 3).
+SCREEN_SAMPLES = {"GSE244783": {"GSM7829699": "early", "GSM7829703": "late"},
+                  "GSE230531": {"GSM7226268": "early", "GSM7226269": "early", "GSM7226274": "late",
+                                "GSM7226276": "late"}}
+# The register rows of the three members (cell 3: X002, X019 GSE244783, X020 GSE230531).
+REGISTER_ROWS = {"GSE193346": "X002", "GSE244783": "X019", "GSE230531": "X020"}
+# The screens' folder (cell 3: fetch-meta "writes only under ~/v/scratch/t72_screen, never into the row's data
+# folders"). The plan, pin-template, fetch-meta and screens.py all use it.
+SCREEN_ROOT = Path.home() / "v" / "scratch" / "t72_screen"
+SCREEN_POINTS = ("1", "2", "3", "4", "5", "6", "7", "a", "b", "c", "d")
+SCREEN_ROLES = ("barcodes", "features")
 # The DGX's reference checkout stays exactly as rehearsed: nothing here writes into it.
 REFERENCE_CHECKOUT = Path.home() / "v" / "virtual-embryo-challenge"
 
@@ -149,7 +168,16 @@ def load_atlases(path: Path | None = None) -> dict:
                 raise Refused(f"{acc}: never_fetch missing")
             if a["form"] == "tenx_mtx" and not a.get("screens"):
                 raise Refused(f"{acc}: a 10x atlas without screens is refused")
+        if acc in REGISTER_ROWS and a.get("register") != REGISTER_ROWS[acc]:
+            raise Refused(f"{acc}: register must be {REGISTER_ROWS[acc]} (row T72's members)")
+        if acc in NEVER_FETCHED and a.get("status") != "in_use":
+            nf = a.get("never_fetch") or {}
+            if set(nf.get("samples") or []) | set(nf.get("files") or []) != set(NEVER_FETCHED[acc]):
+                raise Refused(f"{acc}: never_fetch must name exactly row T72's list {list(NEVER_FETCHED[acc])}")
+            if a.get("status") in FETCHABLE and dict(named_gsms({**a, "accession": acc})) != SCREEN_SAMPLES[acc]:
+                raise Refused(f"{acc}: the named samples must be exactly row T72's {SCREEN_SAMPLES[acc]}")
         check_never_fetch(acc, a)
+        check_screen_block(acc, a)
         if a.get("screens"):
             unknown = set(a["screens"]) - set(SCREENS)
             if unknown:
@@ -177,6 +205,82 @@ def named_gsms(a: Mapping) -> dict[str, str]:
     return out
 
 
+def check_screen_block(acc: str, a: Mapping) -> None:
+    """The readers' screens as the frozen yaml records them (row T72, cell 3: "the frozen yaml records each atlas's
+    status and its pins and the sha256 of each screened barcodes and features file"). Per atlas with screens:
+      screen: {verdict: PENDING}                                    before the screens
+      screen: {verdict: kept, files: {GSM: {barcodes: {name, sha256}, features: {name, sha256}}, ...},
+               read_by: [two readers], date: "YYYY-MM-DD"}           status use: both readers said yes to every point
+      screen: {verdict: dropped, failed: [points], files: {...}, read_by: [...], date: ...}   status dropped
+    A kept atlas's files name exactly its named samples and the two roles, each with a plain file name and a sha256
+    (as `screens.py` printed them); a dropped atlas names the points that failed (1 to 7, a to d) and is never
+    fetched, loaded or tabled. No exception is granted on the spot."""
+    sc = a.get("screen")
+    if a.get("status") == "dropped":
+        if not isinstance(sc, Mapping) or sc.get("verdict") != "dropped" or not sc.get("failed") or \
+                not set(sc["failed"]) <= set(SCREEN_POINTS):
+            raise Refused(f"{acc}: a dropped atlas records screen.verdict dropped and the failed points "
+                          f"(of {SCREEN_POINTS})")
+        return
+    if not a.get("screens"):
+        if sc is not None:
+            raise Refused(f"{acc}: a screen record on an atlas without screens")
+        return
+    if a.get("status") not in FETCHABLE:
+        return
+    if not isinstance(sc, Mapping) or sc.get("verdict") not in ("PENDING", "kept"):
+        raise Refused(f"{acc}: screen.verdict must be PENDING or kept (a failed screen sets status: dropped)")
+    if sc["verdict"] == "PENDING":
+        if set(sc) - {"verdict", "files"} or sc.get("files"):
+            raise Refused(f"{acc}: a PENDING screen holds no files, readers or date")
+        return
+    if set(sc) != {"verdict", "files", "read_by", "date"}:
+        raise Refused(f"{acc}: a kept screen holds exactly verdict, files, read_by and date")
+    _check_readers(f"{acc}: screen", {**sc, "record_sha256": "0" * 64})
+    files = sc["files"]
+    named = named_gsms({**a, "accession": acc})
+    if not isinstance(files, Mapping) or set(files) != set(named):
+        raise Refused(f"{acc}: the screen's files must name exactly the atlas's samples {sorted(named)}")
+    for g, f in files.items():
+        if not isinstance(f, Mapping) or set(f) != set(SCREEN_ROLES):
+            raise Refused(f"{acc}: {g}: the screen records exactly the roles {SCREEN_ROLES}")
+        for role, x in f.items():
+            if not isinstance(x, Mapping) or set(x) != {"name", "sha256"} or not isinstance(x["sha256"], str) or \
+                    not _SHA.fullmatch(x["sha256"]) or not isinstance(x["name"], str) or \
+                    not re.fullmatch(rf"{g}_[A-Za-z0-9._+-]+", x["name"]):
+                raise Refused(f"{acc}: {g} {role}: the screen records a plain file name named after the sample and "
+                              f"its sha256 (64 lower-case hex digits)")
+
+
+def screen_kept(acc: str, a: Mapping) -> dict | None:
+    """For an atlas with screens: its screen block, which must say kept (else refused): {GSM: {role: {name,
+    sha256}}}. None for an atlas without screens (a synthetic test entry; load_atlases refuses a fetchable 10x atlas
+    without them)."""
+    if not a.get("screens"):
+        return None
+    sc = a.get("screen") or {}
+    if sc.get("verdict") != "kept":
+        raise Refused(f"{acc}: atlases.yaml records the screen as {sc.get('verdict')!r}: its matrices are not "
+                      f"fetched, loaded or tabled")
+    return {g: {r: dict(x) for r, x in f.items()} for g, f in sc["files"].items()}
+
+
+def never_fetched_refusal(*names: str | None) -> str | None:
+    """Why a request naming any of `names` (accessions, file names, URLs) is refused under row T72's literal list."""
+    for n in names:
+        if not n:
+            continue
+        for x in sorted(NEVER_FETCHED_ALL):
+            if x.endswith(".tar"):
+                if x.lower() in str(n).lower():
+                    return f"{x} is on row T72's never-fetched list"
+            elif re.search(rf"(?<!\d){x}(?!\d)", str(n)):
+                return f"{x} is on row T72's never-fetched list"
+        if re.search(r"_raw\.tar", str(n), re.IGNORECASE):
+            return f"{n}: a series archive (RAW.tar) is never fetched"
+    return None
+
+
 def check_never_fetch(acc: str, a: Mapping) -> None:
     nf = a.get("never_fetch")
     if nf is None:
@@ -195,6 +299,9 @@ def never_fetch_refusal(a: Mapping, gsm: str | None = None, url: str | None = No
     """Why a sample or a file may not be fetched under the atlas's never-fetch list (None when it may): a listed sample
     by accession, a listed file by name, any file whose name or path names a listed sample, and every series archive
     (<GSE>_RAW.tar) of the atlas's series by name."""
+    lit = never_fetched_refusal(gsm, url)
+    if lit:
+        return lit
     nf = a.get("never_fetch") or {}
     samples = set(nf.get("samples") or [])
     files = set(nf.get("files") or []) | {f"{s}_RAW.tar" for s in a.get("series", [])}
@@ -1074,44 +1181,24 @@ def bracket_ok(early: float, late: float) -> None:
         raise Refused("the early end must come before the late end")
 
 
-# ------------------------------------------------------------------------------------------------ the screens record
+# ------------------------------------------------------------------------------------------------ per-field sha256
 #
-# screens.yaml (committed by the main session only): per screened atlas, the verdict on the screens that screens.py ran
-# on the fetched barcode and feature files BEFORE any matrix was fetched (the specification's SCREENS (a) to (d)):
-#   <ACC>: {verdict: PENDING}                                          before the screens ran
-#   <ACC>: {verdict: kept, screen_sha256: <hex>, date: YYYY-MM-DD}     every check said yes
-#   <ACC>: {verdict: dropped, screen_sha256: <hex>, date: YYYY-MM-DD, failed: [<check>, ...]}
-# A dropped member's matrices are never fetched; it enters no load and no table. A failing screen cannot be recorded as
-# kept (the fetch reads the screen file itself), and no exception is granted on the spot.
-SCREENS_RECORD = HERE / "screens.yaml"
-VERDICTS = ("PENDING", "kept", "dropped")
+# Row T72, cell 3: "The plan prints, for every sample record of the series (window samples included), the sha256 of
+# each protocol and processing field and nothing else of a window sample. The readers compare those hashes and open no
+# record of a never-fetched sample." A field is one key with all its values; its sha256 is that of its canonical
+# lines (_text_lines: '<key>[<i>]: <value>' per value, plus the escaped line under a value holding a character outside
+# printable ASCII), joined by newlines with one at the end, UTF-8: the same lines the field has in record_text.
 
 
-def load_screens(path: Path | None = None) -> dict:
-    d = yaml.safe_load(Path(path or SCREENS_RECORD).read_text()) or {}
-    if tuple(d.get("tasks") or ()) != TASKS:
-        raise Refused("screens.yaml must serve T1 only (tasks: [T1])")
-    members = d.get("members") or {}
-    for acc, e in members.items():
-        if not isinstance(e, Mapping) or e.get("verdict") not in VERDICTS:
-            raise Refused(f"screens.yaml {acc}: verdict must be one of {VERDICTS}")
-        if e["verdict"] != "PENDING":
-            if not isinstance(e.get("screen_sha256"), str) or not _SHA.fullmatch(e["screen_sha256"]):
-                raise Refused(f"screens.yaml {acc}: screen_sha256 must be 64 lower-case hex digits")
-            if not isinstance(e.get("date"), str) or not re.fullmatch(r"20\d\d-\d\d-\d\d", e["date"]):
-                raise Refused(f"screens.yaml {acc}: date must be YYYY-MM-DD (quoted as text)")
-        if e["verdict"] == "dropped" and not e.get("failed"):
-            raise Refused(f"screens.yaml {acc}: a dropped member names the checks that failed")
-    return members
+def field_sha256(key: str, values: Iterable[str]) -> str:
+    return text_sha256("\n".join(_text_lines(key, values)) + "\n")
 
 
-def screened_kept(acc: str, a: Mapping, screens: Mapping | None = None) -> dict | None:
-    """For an atlas with screens: its screens.yaml entry, which must say kept (else refused). None for an atlas without
-    screens (a synthetic test entry; load_atlases refuses a fetchable 10x atlas without them)."""
-    if not a.get("screens"):
-        return None
-    e = (load_screens() if screens is None else screens).get(acc)
-    if e is None or e.get("verdict") != "kept":
-        raise Refused(f"{acc}: screens.yaml records {e.get('verdict') if e else 'no entry'} for this member: its "
-                      f"matrices are not fetched, loaded or tabled")
-    return dict(e)
+def protocol_field_sha256(sample_records: Mapping[str, object]) -> dict[str, dict[str, str]]:
+    """GSM -> {field: sha256} for every protocol and processing field (PROTOCOL_FIELD, not NOT_STAGE) of every sample
+    record of one series, window samples included; a key no sample holds is absent, a key one sample lacks is
+    '(absent)' for it, so the readers see every difference."""
+    recs = {g: record_dict(r) for g, r in sample_records.items()}
+    keys = sorted({k for d in recs.values() for k, v in d.items()
+                   if PROTOCOL_FIELD.fullmatch(k) and not NOT_STAGE.fullmatch(k)})
+    return {g: {k: field_sha256(k, d[k]) if k in d else "(absent)" for k in keys} for g, d in sorted(recs.items())}

@@ -841,10 +841,16 @@ def test_clearance_is_outside_the_entry_hash_and_pins_are_inside():
     assert cm.entry_sha256(ACC, c2) != cm.entry_sha256(ACC, c3)
 
 
-def test_committed_atlases_yaml_holds_no_pins_yet():
+def test_committed_atlases_yaml_pins_only_named_samples():
+    # holds before and after the placement commit: no pins, or exactly the samples the atlas names (load_atlases
+    # checks each pin's form and the strict form's completeness is checked by the plan)
     cfg = cm.load_atlases()
     for acc, a in cfg["atlases"].items():
-        assert not (a.get("pinned") or {}).get("samples"), acc
+        pinned = {p["accession"] for p in (a.get("pinned") or {}).get("samples") or []}
+        if a["status"] not in cm.FETCHABLE:
+            assert not pinned, acc
+        else:
+            assert pinned in (set(), set(cm.named_gsms({**a, "accession": acc}))), acc
 
 
 def test_plan_and_fetch_never_write_inside_the_repository():

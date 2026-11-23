@@ -30,26 +30,28 @@ Two lines of defence keep window samples out (README, "Pinned samples"):
                         writes the processing text they give to meta/<ACC>/processing_text_pinned.txt). No hash is
                         typed by hand. read_by and date are placeholders the atlas check refuses until the readers
                         replace them. It never writes atlases.yaml.
-  heads ACC --dest D --plan-sha256 S
-                        S must be the sha256 of the stored plan.json (a plan nobody read cannot be fetched). The plan
-                        must have passed under the current atlas entry (pins included) and clearance; the series'
-                        metadata is then downloaded and planned AGAIN, and the live plan must pass with the same
-                        processing text, USED samples, records (each hashing to its pin), files and series-wide
-                        fields. Only then are the USED samples' barcode and feature files downloaded, never a matrix,
-                        to D/raw/<ACC>/<GSM>/, with D/raw/<ACC>/HEADS.json; screens.py runs on them.
+  fetch-meta ACC --dest ~/v/scratch/t72_screen --plan-sha256 S
+                        THE SCREENS' FETCH (row T72, cell 3), before the row's commit and before any matrix: S is the
+                        sha256 of the stored plan.json (a plan nobody read cannot be fetched); the named samples
+                        (cm.SCREEN_SAMPLES, the six of the row) must be candidates of that plan at their ends; the
+                        series' metadata is downloaded and planned again and their records and files must be unchanged.
+                        Only then are their barcodes and features files, and nothing else, downloaded from each sample's
+                        own folder to ~/v/scratch/t72_screen/screen/<ACC>/<GSM>/ with FETCH_META.json; every
+                        never-fetched accession (cm.NEVER_FETCHED), every matrix and every RAW.tar is refused by name.
+                        It prints each file's name, bytes and sha256, then runs screens.py (the facts of checks (a) to
+                        (d) and the yaml screen block).
   fetch ACC --dest D --plan-sha256 S
-                        The same checks; for an atlas with screens, only while experiments/t1_ext/screens.yaml records
-                        the member kept with the sha256 of a screen file that says every check passed on the heads on
-                        disk: the heads are re-hashed and only the matrices are fetched. Every data file comes from
-                        the sample's own GEO folder only (never a series RAW.tar, a bigwig, a never-fetch sample's or
-                        file's name); D/raw/<ACC>/MANIFEST.json holds url, bytes and sha256 per file, each sample's
-                        full record, its record_sha256 and pin, the series records, the series-wide fields and the
-                        screen.
+                        Every check of the stored and the live plan (pins included); for an atlas with screens only
+                        while atlases.yaml records its screen kept, and every fetched barcodes and features file must
+                        have the sha256 of the screened file the yaml records. Every data file comes from the sample's
+                        own GEO folder only (never a series RAW.tar, a bigwig, a never-fetch sample's or file's name);
+                        D/raw/<ACC>/MANIFEST.json holds url, bytes and sha256 per file, each sample's full record, its
+                        record_sha256 and pin, the series records, the series-wide fields and the screen.
 
 Requests go only to ftp.ncbi.nlm.nih.gov over https with a generic user agent (geo.get). Exit status 2 on a
 refusal.
 
-  uv run --frozen --no-sync python -I -B experiments/t1_ext/fetch.py plan GSE230531 --dest ~/v/vec-ext/t1
+  uv run --frozen --no-sync python -I -B experiments/t1_ext/fetch.py plan GSE230531 --dest ~/v/scratch/t72_screen
 """
 
 from __future__ import annotations
@@ -276,6 +278,8 @@ def plan_from_meta(acc: str, metas: Mapping[str, Mapping], cfg: Mapping | None =
     a = cm.atlas(acc, cfg)
     if a["status"] == "in_use":
         raise Refused(f"{acc} is the atlas in use: it is read only through its recomputed file, never planned")
+    if a["status"] == "dropped":
+        raise Refused(f"{acc} was dropped by the readers' screens: it is never planned or fetched again")
     if set(metas) != set(a["series"]):
         raise Refused(f"{acc}: metadata given for {sorted(metas)}, the atlas lists {a['series']}")
     pins = cm.check_pins(acc, a)
@@ -287,6 +291,9 @@ def plan_from_meta(acc: str, metas: Mapping[str, Mapping], cfg: Mapping | None =
     # the stage-parser exception (ruling row R27): per series, the protocol and processing fields byte-identical
     # across EVERY sample record of that series (all of them, in-window and other-assay samples included)
     series_text = {s: cm.series_wide_fields(metas[s]["samples"]) for s in a["series"]}
+    # row T72, cell 3: the sha256 of each protocol and processing field of EVERY sample record of the series (window
+    # samples included, and nothing else of a window sample), for the readers' byte-identity comparison
+    field_sha = {s: cm.protocol_field_sha256(metas[s]["samples"]) for s in a["series"]}
     for series in a["series"]:
         for gsm, rec in metas[series]["samples"].items():
             if gsm in seen:
@@ -345,7 +352,7 @@ def plan_from_meta(acc: str, metas: Mapping[str, Mapping], cfg: Mapping | None =
             "marks": marks, "protocol_gate": gate, "series_protocol_hits": series_hits, "samples": rows,
             "series_records": {s: cm.stored_record(series_records[s]) for s in a["series"]},
             "series_record_sha256": series_sha, "series_protocol": series_protocol, "series_text": series_text,
-            "processing_text": text, "processing_sha256": sha,
+            "protocol_field_sha256": field_sha, "processing_text": text, "processing_sha256": sha,
             "processing_clearance": why if ok else "not cleared", "tasks": list(cm.TASKS)}
 
 
@@ -419,7 +426,19 @@ def write_table(pl: Mapping, mdir: Path) -> Path:
     tp.write_bytes(pl["processing_text"].encode("utf-8"))
     if cm.sha256_file(tp) != pl["processing_sha256"]:
         raise Refused("processing_text.txt does not hash to the plan's processing_sha256")
+    cm.outside_repo(Path(mdir) / "protocol_field_sha256.tsv").write_text(
+        "".join(ln + "\n" for ln in field_sha_lines(pl)), encoding="utf-8")
     return path
+
+
+def field_sha_lines(pl: Mapping) -> list[str]:
+    """One line per sample record of every series and per protocol or processing field: 'field_sha256 <GSE> <GSM>
+    <field> <sha256 or (absent)>' (row T72, cell 3; window samples included, nothing else of them)."""
+    out = []
+    for s in pl["series"]:
+        for g, fields in sorted((pl.get("protocol_field_sha256") or {}).get(s, {}).items()):
+            out += [f"field_sha256\t{s}\t{g}\t{k}\t{h}" for k, h in sorted(fields.items())]
+    return out
 
 
 def default_getter(url: str, dst: Path) -> None:
@@ -655,67 +674,107 @@ def _get_data(a: Mapping, gsm: str, f: Mapping, dst_dir: Path, getter) -> dict:
     return {"name": f["name"], "url": u, "bytes": dst.stat().st_size, "sha256": cm.sha256_file(dst)}
 
 
-HEAD_ROLES = ("barcodes", "features")
+SCREEN_ROLES = cm.SCREEN_ROLES
 
 
-def heads(acc: str, dest: Path, plan_sha256: str, getter=None, cfg: Mapping | None = None) -> dict:
-    """The screens' inputs: each USED sample's barcode and feature files only (never a matrix), after every check of
-    the fetch (_live_checked). Writes D/raw/<ACC>/HEADS.json (url, bytes, sha256 per file; the plan's sha256 and the
-    atlas entry's). screens.py reads them; the matrices are fetched only after the main session has committed a kept
-    verdict in screens.yaml."""
+def screen_dir_ok(dest: Path, screen_root: Path | None = None) -> Path:
+    """The screens' folder: exactly ~/v/scratch/t72_screen (cm.SCREEN_ROOT; row T72, cell 3), outside every checkout."""
+    root = Path(screen_root or cm.SCREEN_ROOT).expanduser().resolve()
+    d = cm.outside_repo(dest)
+    if d != root:
+        raise Refused(f"the screens write only under {root}, not {d}")
+    return d
+
+
+def _requested(a: Mapping, gsm: str, role: str, f: Mapping, matrix_rx: str) -> str:
+    """One barcodes or features file of a named sample, refused by name when it is a matrix, a series archive, a
+    never-fetched accession's (row T72's literal list or the yaml's), outside the sample's own folder or denied."""
+    if role not in SCREEN_ROLES:
+        raise Refused(f"{gsm}: role {role!r}: the screens fetch barcodes and features only")
+    name = f["name"]
+    if re.search(matrix_rx, name, re.IGNORECASE) or re.search(r"matrix|\.mtx|\.h5$", name, re.IGNORECASE):
+        raise Refused(f"{gsm}: {name} is a matrix file: no matrix is fetched before the row's commit")
+    u, why = geo.own_file(gsm, f["url"])
+    if u is None or geo.DENY.search(name):
+        raise Refused(f"{gsm}: {name} is not fetchable ({why or 'a denied or archive type'})")
+    nf = cm.never_fetched_refusal(gsm, name, u) or cm.never_fetch_refusal(a, gsm=gsm, url=u)
+    if nf:
+        raise Refused(f"{gsm}: {nf}")
+    return u
+
+
+def fetch_meta(acc: str, dest: Path, plan_sha256: str, getter=None, cfg: Mapping | None = None,
+               screen_root: Path | None = None, samples: Mapping[str, Mapping[str, str]] | None = None) -> dict:
+    """THE SCREENS' FETCH (row T72, cell 3), before the row's commit and before any matrix: only the barcodes and
+    features files of the six named samples (cm.SCREEN_SAMPLES), each from the sample's own folder, into
+    ~/v/scratch/t72_screen/screen/<ACC>/<GSM>/ (never the row's data folders). Before any request: the stored plan
+    (meta/<ACC>/plan.json under the same folder) hashes to `plan_sha256` and was made under the atlas entry in force;
+    every named sample is a candidate of the plan at its named end, its stored record hashing to the plan's value and
+    read by the stage rule as permitted at that stage; the series' metadata is downloaded again and planned again and
+    the named samples' records and files are unchanged. Every never-fetched accession, every matrix and every RAW.tar
+    is refused by name. Writes screen/<ACC>/FETCH_META.json (url, bytes, sha256 per file) and returns it."""
     cfg = cfg or cm.load_atlases()
-    a0 = cm.atlas(acc, cfg)
-    if not a0.get("screens") or a0.get("form") != "tenx_mtx":
-        raise Refused(f"{acc}: heads are fetched only for a 10x atlas with screens")
-    pl, a, pins = _live_checked(acc, dest, plan_sha256, getter, cfg)
-    rdir = cm.outside_repo(Path(dest) / "raw" / acc)
-    rdir.mkdir(parents=True, exist_ok=True)
+    a = cm.atlas(acc, cfg)
+    want = dict((samples or cm.SCREEN_SAMPLES).get(acc) or {})
+    if a["status"] not in cm.FETCHABLE or a.get("form") != "tenx_mtx" or not a.get("screens") or not want:
+        raise Refused(f"{acc}: the screens' fetch is for row T72's two 10x members only")
+    if dict(cm.named_gsms(a)) != want:
+        raise Refused(f"{acc}: the atlas names {cm.named_gsms(a)}, not row T72's samples {want}")
+    root = screen_dir_ok(dest, screen_root)
+    pp = root / "meta" / acc / "plan.json"
+    if not pp.is_file() or cm.sha256_file(pp) != plan_sha256:
+        raise Refused(f"{acc}: {pp} is missing or does not hash to the plan sha256 given (read the plan, then pass "
+                      f"its sha256)")
+    pl = json.loads(pp.read_text())
+    if pl.get("atlas_entry_sha256") != cm.entry_sha256(acc, cfg):
+        raise Refused(f"{acc}: the plan was made under another atlas entry: plan again")
+    rows = {r["gsm"]: r for r in pl.get("samples", [])}
+    for g, end in want.items():
+        r = rows.get(g)
+        if r is None or "record" not in r or not r.get("candidate") or r["candidate"]["end"] != end:
+            raise Refused(f"{g}: not a candidate of the plan at the {end} end: nothing is fetched")
+        if cm.record_sha256("SAMPLE", g, r["record"]) != r["record_sha256"]:
+            raise Refused(f"{g}: the stored record does not hash to the plan's value: plan again")
+        st = cm.record_stage(r["record"], pl["series_protocol"][r["series"]],
+                             (pl.get("series_text") or {}).get(r["series"]))
+        if st["mark"] != "PERMITTED" or st["nominal_low"] != st["nominal_high"] or \
+                st["nominal_low"] != cm.label_day(r["candidate"]["label"]):
+            raise Refused(f"{g}: the stage rule no longer reads it as {r['candidate']['label']} ({st['reason']})")
+    matrix_rx = cfg["forms"][a["form"]]["roles"]["matrix"]
+    todo = []
+    for g, end in want.items():
+        for role in SCREEN_ROLES:
+            f = rows[g]["role_files"][role]
+            todo.append((g, end, role, f, _requested(a, g, role, f, matrix_rx)))  # every refusal before any request
+    live_dir = cm.outside_repo(root / "meta" / acc / "live")
+    live_dir.mkdir(parents=True, exist_ok=True)
+    live = plan_from_meta(acc, {s: read_series(s, live_dir, getter)[0] for s in a["series"]}, cfg)
+    lrows = {r["gsm"]: r for r in live["samples"]}
+    for g in want:
+        lr = lrows.get(g) or {}
+        if lr.get("record_sha256") != rows[g]["record_sha256"] or lr.get("role_files") != rows[g].get("role_files") \
+                or lr.get("candidate") != rows[g]["candidate"]:
+            raise Refused(f"{g}: the live record or its files differ from the plan that was read: plan again")
+    out_dir = cm.outside_repo(root / "screen" / acc)
     out = {"accession": acc, "plan_sha256": plan_sha256, "atlas_entry_sha256": pl["atlas_entry_sha256"],
-           "tasks": list(cm.TASKS), "roles": list(HEAD_ROLES), "samples": {}}
-    for r in pl["samples"]:
-        if r["mark"] != "USED":
-            continue
-        out["samples"][r["gsm"]] = {"end": r["end"], "label": r["label"],
-                                    "files": {role: _get_data(a, r["gsm"], r["role_files"][role], rdir, getter)
-                                              for role in HEAD_ROLES}}
-    cm.dump_json(out, rdir / "HEADS.json")
+           "tasks": list(cm.TASKS), "roles": list(SCREEN_ROLES), "samples": {}}
+    for g, end, role, f, u in todo:
+        dst = cm.outside_repo(out_dir / g / f["name"])
+        (getter or default_getter)(u, dst)
+        out["samples"].setdefault(g, {"end": end, "files": {}})["files"][role] = {
+            "name": f["name"], "url": u, "bytes": dst.stat().st_size, "sha256": cm.sha256_file(dst)}
+    cm.dump_json(out, out_dir / "FETCH_META.json")
     return out
 
 
-def screened(acc: str, a: Mapping, dest: Path, plan_sha256: str, pl: Mapping) -> tuple[dict, dict]:
-    """For an atlas with screens: its screens.yaml verdict is kept, D/screens/<ACC>/screen.json hashes to the
-    recorded screen_sha256 and says every check passed, it was run on the HEADS.json on disk, and that heads file was
-    fetched under this plan for exactly the USED samples. Returns (the record entry, the heads)."""
-    e = cm.screened_kept(acc, a)
-    sp = cm.outside_repo(Path(dest) / "screens" / acc / "screen.json")
-    hp = cm.outside_repo(Path(dest) / "raw" / acc / "HEADS.json")
-    if not sp.is_file() or cm.sha256_file(sp) != e["screen_sha256"]:
-        raise Refused(f"{acc}: {sp} is missing or does not hash to the screen_sha256 in screens.yaml")
-    sc = json.loads(sp.read_text())
-    if sc.get("accession") != acc or sc.get("passed") is not True or \
-            set(sc.get("checks") or {}) != set(a["screens"]) or \
-            not all(c.get("passed") is True for c in sc["checks"].values()):
-        raise Refused(f"{acc}: the screen file does not say that every screen of the atlas passed: no matrix is "
-                      f"fetched")
-    if not hp.is_file() or cm.sha256_file(hp) != sc.get("heads_sha256"):
-        raise Refused(f"{acc}: HEADS.json is missing or is not the file the screens ran on")
-    hd = json.loads(hp.read_text())
-    used = {r["gsm"] for r in pl["samples"] if r["mark"] == "USED"}
-    if hd.get("plan_sha256") != plan_sha256 or hd.get("atlas_entry_sha256") != pl["atlas_entry_sha256"] or \
-            set(hd.get("samples") or {}) != used:
-        raise Refused(f"{acc}: the heads were fetched under another plan or for other samples")
-    return e, hd
-
-
 def fetch(acc: str, dest: Path, plan_sha256: str, getter=None, cfg: Mapping | None = None) -> dict:
-    """The USED samples' files, after every check of _live_checked. For an atlas with screens, the barcode and
-    feature files are the ones the screens ran on (re-hashed, not fetched again) and only the matrices are fetched,
-    and only while screens.yaml records the member as kept (screened). Writes D/raw/<ACC>/MANIFEST.json."""
+    """The USED samples' files, after every check of _live_checked. For an atlas with screens, only while atlases.yaml
+    records the screen kept, and each fetched barcodes and features file must have the sha256 of the screened file
+    the yaml records (row T72, cell 3: the fetched files are tied to the screened copies). Writes
+    D/raw/<ACC>/MANIFEST.json."""
     cfg = cfg or cm.load_atlases()
     pl, a, pins = _live_checked(acc, dest, plan_sha256, getter, cfg)
-    screen, hd = (None, None)
-    if a.get("screens"):
-        screen, hd = screened(acc, a, dest, plan_sha256, pl)
+    screen = cm.screen_kept(acc, a)
     rdir = cm.outside_repo(Path(dest) / "raw" / acc)
     rdir.mkdir(parents=True, exist_ok=True)
     man = {"accession": acc, "plan_sha256": plan_sha256, "atlas_entry_sha256": pl["atlas_entry_sha256"],
@@ -724,22 +783,18 @@ def fetch(acc: str, dest: Path, plan_sha256: str, getter=None, cfg: Mapping | No
            "series_text": pl.get("series_text") or {},
            "processing_sha256": pl["processing_sha256"], "pins": {"samples": pins["samples"],
                                                                   "series": pins["series"]},
-           "screen": None if screen is None else {"verdict": screen["verdict"],
-                                                  "screen_sha256": screen["screen_sha256"]},
-           "samples": {}}
+           "screen": screen, "samples": {}}
     for r in pl["samples"]:
         if r["mark"] != "USED":
             continue
         files = {}
         for role, f in r["role_files"].items():
-            if hd is not None and role in HEAD_ROLES:
-                h = hd["samples"][r["gsm"]]["files"][role]
-                p = cm.outside_repo(rdir / r["gsm"] / h["name"])
-                if h["name"] != f["name"] or not p.is_file() or cm.sha256_file(p) != h["sha256"]:
-                    raise Refused(f"{r['gsm']}: {f['name']} is not the file the screens ran on")
-                files[role] = dict(h)
-                continue
             files[role] = _get_data(a, r["gsm"], f, rdir, getter)
+            if screen is not None and role in SCREEN_ROLES:
+                want = screen[r["gsm"]][role]
+                if files[role]["name"] != want["name"] or files[role]["sha256"] != want["sha256"]:
+                    raise Refused(f"{r['gsm']}: {f['name']} is not the file the readers screened (sha256 "
+                                  f"{files[role]['sha256']}, the yaml records {want['sha256']})")
         man["samples"][r["gsm"]] = {"series": r["series"], "end": r["end"], "label": r["label"],
                                     "record": r["record"], "record_sha256": r["record_sha256"],
                                     "series_protocol": pl["series_protocol"][r["series"]],
@@ -755,7 +810,7 @@ def main(argv=None) -> int:
     p1 = sub.add_parser("plan")
     p1.add_argument("accession")
     p1.add_argument("--dest", required=True, type=Path)
-    for name in ("heads", "fetch"):
+    for name in ("fetch-meta", "fetch"):
         p2 = sub.add_parser(name)
         p2.add_argument("accession")
         p2.add_argument("--dest", required=True, type=Path)
@@ -769,16 +824,17 @@ def main(argv=None) -> int:
         if a.cmd == "plan":
             pl = plan(a.accession, a.dest)
             print(json.dumps({k: pl[k] for k in ("accession", "status", "refusals", "chosen", "marks")}, indent=1))
+            print("\n".join(field_sha_lines(pl)))
             return 0 if pl["status"] == "passed" else 2
         if a.cmd == "pin-template":
             print(pin_template(a.accession, a.dest, a.gsm), end="")
             return 0
-        if a.cmd == "heads":
-            hd = heads(a.accession, a.dest, a.plan_sha256)
-            print(json.dumps({"accession": a.accession, "samples": sorted(hd["samples"]),
-                              "heads_sha256": cm.sha256_file(Path(a.dest) / "raw" / a.accession / "HEADS.json")},
-                             indent=1))
-            return 0
+        if a.cmd == "fetch-meta":
+            fm = fetch_meta(a.accession, a.dest, a.plan_sha256)
+            for g, s in sorted(fm["samples"].items()):
+                for role, f in sorted(s["files"].items()):
+                    print(f"fetched\t{a.accession}\t{g}\t{role}\t{f['name']}\tbytes {f['bytes']}\tsha256 {f['sha256']}")
+            return cm.sibling("screens").main([a.accession, "--dest", str(a.dest)])
         man = fetch(a.accession, a.dest, a.plan_sha256)
         print(json.dumps({"accession": a.accession, "samples": sorted(man["samples"])}, indent=1))
         return 0
