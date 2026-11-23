@@ -91,6 +91,16 @@ machine, and an official upload needs the captain's go-ahead.
           captain's order naming the option, with --g-mom-damping, --feng-fraction-mult, --released-bet,
           --bet-strength or --no-hold-unbracketed, on any other command or seed and on a dry run. Its record's
           t1_candidate field names row R23, the momentum's constants and fit stages, and the command
+          --feng-fraction-mult 1.5 --direction-momentum all --captain-ruling R26 (row R26 of
+          experiments/harness/TRIES.md, the captain's order of 2026-11-23, "combine MS"; docs/PLAN.md decision log
+          2026-11-23 (j), the T1 combined MS list's one file T1_s2rcMSB): candidate MS's step exactly as row R23 fixes
+          it, on candidate B's command exactly as B has it (the atlas step at 1.5 times the calendar fraction, g_mom's
+          damping 0.5), nothing else changed. Refused unless row R26's first cell is the captain's order naming
+          `--feng-fraction-mult 1.5 --direction-momentum all` and `--captain-ruling R26`, with --g-mom-damping (any
+          value), --released-bet, --bet-strength or --no-hold-unbracketed, on any other command or seed and on a dry
+          run; the pair without R26 is refused as row R23's path refuses it, --direction-momentum all with any other
+          multiplier stays refused, and R26 with any other option set is refused. Its record's t1_candidate field names
+          row R26, the list's file, B's two values, the momentum's record and the command.
   heart B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
           procedure: --entry s1 = scope hypothesis H1; s2_trim = the s2 of docs/S2_RULES.md (H2 as a trim to half
           E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`). --trend
@@ -589,8 +599,8 @@ def _bet_refusals(a) -> None:
     bet = getattr(a, "released_bet", None)
     if bet is None:
         ruling = getattr(a, "captain_ruling", None)
-        if ruling is not None and (_ruled_fraction_ordered(a) or _ruled_damping_ordered(a)  # rows R20, R22, R23:
-                                   or _ruled_line3_ordered(a) or _ms_ordered(a)):
+        if ruling is not None and (_ruled_fraction_ordered(a) or _ruled_damping_ordered(a)  # rows R20, R22, R23, R26:
+                                   or _ruled_line3_ordered(a) or _ms_ordered(a) or _msb_ordered(a)):
             return  # _t1_candidate refused every other use
         if ruling is not None or getattr(a, "bet_strength", None) is not None:
             sys.exit("--captain-ruling and --bet-strength go with --released-bet only")
@@ -683,6 +693,22 @@ T1_MS_ORDER = ("experiments/harness/TRIES.md row R23, the captain's order of 202
                "2026-11-23 (c)): candidate MS, R13's file with B0's released per-category damped mean momentum added "
                "on the cells whose label's group has a recomputed direction, before the atlas step and g_mom (arm "
                "'all'); nothing else changed")
+# Row R26 of experiments/harness/TRIES.md (the captain's order of 2026-11-23, "combine MS"; docs/PLAN.md decision log
+# 2026-11-23 (j), the T1 combined MS list): one file, T1_s2rcMSB, candidate MS's step exactly as row R23 fixes it
+# (_t1_ms_step, unchanged) put on candidate B's command exactly as B has it (the atlas step at 1.5 x the calendar
+# fraction, g_mom's within-type damping 0.5 passed as B's build passes it), nothing else changed. Kept apart from row
+# R23's constants, which stay as they are: the pair is taken only with --captain-ruling R26, and only while row R26's
+# first cell is the captain's order naming the pair exactly. No constant is new: the multiplier is candidate B's.
+T1_R26_ROW = "R26"
+T1_MSB_MULT = FENG_FRACTION_MULTS[1]  # candidate B's multiplier, 1.5
+T1_R26_OPTION = "`--feng-fraction-mult 1.5 --direction-momentum all`"
+T1_MSB_FILE = "T1_s2rcMSB.h5ad"
+T1_MSB_COMMAND = (f"{T1_CANDIDATE_COMMAND} --feng-fraction-mult 1.5 --direction-momentum all "
+                  f"--captain-ruling {T1_R26_ROW}")
+T1_MSB_ORDER = ("experiments/harness/TRIES.md row R26, the captain's order of 2026-11-23 (\"combine MS\"; docs/PLAN.md "
+                "decision log 2026-11-23 (j), the T1 combined MS list): its one file, T1_s2rcMSB, candidate MS's step "
+                "exactly as row R23 fixes it put on candidate B's command exactly as B has it (the atlas step at 1.5 x "
+                "the calendar fraction, g_mom's within-type damping 0.5); nothing else changed")
 
 
 def _captain_order_names(row: str, option: str, path: Path | None = None) -> bool:
@@ -871,13 +897,56 @@ def _ms_ordered(a) -> bool:
             and _captain_order_names(T1_R23_ROW, T1_R23_OPTION))
 
 
+def _is_msb(a) -> bool:
+    """Whether the command gives row R26's pair with its ruling: --direction-momentum all, --feng-fraction-mult 1.5 and
+    --captain-ruling R26. Any other use of the pair (no ruling, R23 or another row) keeps row R23's path and
+    refusals."""
+    return (getattr(a, "direction_momentum", None) in DIRECTION_MOMENTUM_ARMS
+            and getattr(a, "feng_fraction_mult", None) == T1_MSB_MULT
+            and getattr(a, "captain_ruling", None) == T1_R26_ROW)
+
+
+def _msb_ordered(a) -> bool:
+    """The command row R26 orders, as _t1_msb holds it: the pair with --captain-ruling R26, no --g-mom-damping, no
+    released bet's option, and row R26 the captain's order naming the pair."""
+    return (_is_msb(a) and getattr(a, "g_mom_damping", None) is None
+            and getattr(a, "released_bet", None) is None and getattr(a, "bet_strength", None) is None
+            and _captain_order_names(T1_R26_ROW, T1_R26_OPTION))
+
+
+def _t1_msb(a) -> dict:
+    """--feng-fraction-mult 1.5 --direction-momentum all --captain-ruling R26 (row R26, the T1 combined MS list's one
+    file): refused before anything is read unless row R26 is the captain's order naming the pair, with --g-mom-damping
+    (any value: B's command has none), --released-bet, --bet-strength or --no-hold-unbracketed, and on any command but
+    T1_CANDIDATE_COMMAND at the default seed on the test board (never a dry run). Returns the record's candidate values,
+    naming the row, the list's file and B's two values."""
+    row, option = T1_R26_ROW, T1_R26_OPTION
+    what = f"--feng-fraction-mult {T1_MSB_MULT:g} with --direction-momentum all"
+    if not _captain_order_names(row, option):
+        sys.exit(f"{what} is refused: experiments/harness/TRIES.md has no single row {row} whose first cell is the "
+                 f"captain's order (\"ruling, no run\") naming {option} and `--captain-ruling {row}`")
+    stacked = [flag for flag, attr in MS_STACKED if attr != "feng_fraction_mult" and getattr(a, attr, None) is not None]
+    if stacked:
+        sys.exit(f"{what} is refused with {', '.join(stacked)}: row {row}'s file is candidate MS's step on candidate "
+                 "B's command, nothing else changed")
+    if not getattr(a, "hold_unbracketed", True):
+        sys.exit(f"{what} is refused with --no-hold-unbracketed: the cells without a group keep R1's hold (row {row})")
+    if (getattr(a, "feng_groups", FENG_GROUPS_DEFAULT) != "recomputed" or a.seed != harness.BUILD_SEED_OFFSET + 1
+            or a.board is not None):
+        sys.exit(f"{what} changes T1's recomputed last file only: it needs the command {T1_CANDIDATE_COMMAND} at the "
+                 f"default seed on the test board (row {row})")
+    return {"direction_momentum": a.direction_momentum, "captain_ruling": row, "g_mom_damping": G_MOM_DAMPINGS[0],
+            "feng_fraction_mult": float(T1_MSB_MULT), "list_file": T1_MSB_FILE, "order": T1_MSB_ORDER}
+
+
 def _t1_ms(a) -> dict | None:
     """--direction-momentum all (candidate MS, row R23): refused before anything is read without --captain-ruling R23,
     with any other row, unless row R23 is the captain's order naming the option (`_captain_order_names`, as the R20 and
     R22 options), with --g-mom-damping, --feng-fraction-mult, --released-bet or --bet-strength (MS is never stacked on
     A, B or C), with --no-hold-unbracketed, and on any command but T1_CANDIDATE_COMMAND at the default seed on the test
     board (never a dry run). Returns None when the option is not given (today's path and record exactly), else the
-    record's candidate values, naming the row."""
+    record's candidate values, naming the row. With --feng-fraction-mult 1.5 and --captain-ruling R26 it is row R26's
+    combined file instead (_t1_msb); every other use, R23's included, is taken or refused as before."""
     arm = getattr(a, "direction_momentum", None)
     if arm is None:
         return None
@@ -885,6 +954,8 @@ def _t1_ms(a) -> dict | None:
     what = f"--direction-momentum {arm}"
     if arm not in DIRECTION_MOMENTUM_ARMS:
         sys.exit(f"{what} is refused: row {row} names the arm 'all' only")
+    if _is_msb(a):  # row R26's pair with its ruling (the combined MS list); every other use goes on as before
+        return _t1_msb(a)
     ruling = getattr(a, "captain_ruling", None)
     if ruling is None:
         sys.exit(f"{what} is the captain's order of row {row} alone and needs --captain-ruling {row}")
@@ -1294,7 +1365,8 @@ def build_t1(a) -> dict:
         shares, bet_record = _t1_trend(ref, library != T1_DISSECTED_LIBRARY, shares, a.bet_strength)
     ms_record = None
     if ms is not None:  # candidate MS (refused above unless the recomputed command with --g-mom): the same draw, then
-        # the momentum and the atlas step on the covered cells, then g_mom's hook, all inside post_cells
+        # the momentum and the atlas step on the covered cells, then g_mom's hook, all inside post_cells. Under row
+        # R26 (the pair) the same calls, with `fraction` and g_mom's damping candidate B's from _t1_candidate above
         ms_step, ms_record = _t1_ms_step(ref, library, directions, fraction, groups, held, a.seed)
         g_mom_hook = within_type["post_cells"]
         sub, rep = t1_scope.build_submission(pool, board, shares, n, a.seed, held_flat=held, ref_source="E10.5_RNA",
@@ -1347,8 +1419,9 @@ def build_t1(a) -> dict:
         rec["t1_candidate"] = {**candidate, "calendar_fraction": calendar, "applied_fraction": fraction,
                                "command": T1_CANDIDATE_COMMAND}
     if ms is not None:  # written only with --direction-momentum, so every other file's record is as before
+        # row R26's file (the pair; candidate B's values came through _t1_candidate above) names its own command
         rec["t1_candidate"] = {**ms, "momentum": ms_record, "calendar_fraction": calendar, "applied_fraction": fraction,
-                               "command": T1_MS_COMMAND}
+                               "command": T1_MSB_COMMAND if ms["captain_ruling"] == T1_R26_ROW else T1_MS_COMMAND}
     if mid_record is not None:  # likewise: shares only, no cell number
         rec["mid_base"] = {"stream": [int(a.seed), T1_MID_STREAM], "categories": mid_record}
     if a.g_mom:
@@ -1867,7 +1940,9 @@ def build_parser() -> argparse.ArgumentParser:
                                 "label's group has a recomputed direction also get B0's per-category damped mean "
                                 "momentum (fitted from E9.5 to E10.5's libraries 1 and 2), before the atlas step and "
                                 f"g_mom. Needs --captain-ruling {T1_R23_ROW}; refused with --g-mom-damping, "
-                                "--feng-fraction-mult, --released-bet, --bet-strength or --no-hold-unbracketed")
+                                "--feng-fraction-mult, --released-bet, --bet-strength or --no-hold-unbracketed. "
+                                f"With --feng-fraction-mult {T1_MSB_MULT:g} and --captain-ruling {T1_R26_ROW} only: "
+                                f"row {T1_R26_ROW}'s combined file, the same step on candidate B's command")
             p.add_argument("--bet-strength", type=float, default=None,
                            help="with --released-bet: lambda (share_trend) or tau (advance), one of row T61's values")
             p.add_argument("--captain-ruling", default=None,
@@ -1881,7 +1956,8 @@ def build_parser() -> argparse.ArgumentParser:
                                 f"--feng-fraction-mult {FENG_FRACTION_MULTS_LINE3[0]:g} or "
                                 f"{FENG_FRACTION_MULTS_LINE3[1]:g}: {T1_R22_ROW}, the captain's order for the third "
                                 f"T1 search line; with --direction-momentum all: {T1_R23_ROW}, the captain's order "
-                                "for candidate MS")
+                                f"for candidate MS; with --feng-fraction-mult {T1_MSB_MULT:g} --direction-momentum "
+                                f"all: {T1_R26_ROW}, the captain's order for the combined MS file")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim", "core_trim", "organ_scope"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "
