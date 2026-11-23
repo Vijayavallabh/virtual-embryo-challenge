@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-23, 22:58 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-23, 23:45 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 this sheet was written. No file here has a score. The order is the order on record in `docs/S2_RULES.md` and the
@@ -6,10 +6,9 @@ decision log; the captain may use any other order. At most two uploads a board a
 unused daily slot is lost; a lower score never replaces a board's best. This sheet holds no score: where a file waits
 on a condition, the condition is given in words.
 
-Four files were uploaded and their scores reported on 2026-11-23, one per board (`docs/PLAN.md` decision log
-2026-11-23 (cc)): `T1_s2rcC.h5ad` (C), `T3_c1_s2.h5ad` (C1) and `T2heart_organ_half.h5ad` (D) each took their board's
-best headline; `T2embryo_s2x_cr.h5ad` did not, and the embryo's best stays with `T2embryo_s2x_ov.h5ad`. The four have
-left the orders below.
+Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
+2026-11-23 (cc) and (gg)). They have left the orders below. The boards' best headlines now stand with `T1_s2rcB2.h5ad`
+(the 2.0 file), `T3_c2_s2.h5ad` (C2), `T2heart_organ_half.h5ad` (D) and `T2embryo_s2x_ov.h5ad`.
 
 Three files are skipped by the captain's word of 2026-11-23: they hold no place in any order below and stand in a
 section of their own at the end.
@@ -19,17 +18,17 @@ section of their own at the end.
 Data used, for every Task 1 file in the order below: released challenge data and the outside heart atlas on recomputed
 groups (GEO GSE193346, register row X002).
 
-The two numbered files go first. After them, each slot takes the due file of the first search, then of the second,
-then of the third, unless the captain says otherwise; a search's next file is due once the score its condition needs
-has been reported. `T1_s2rcCm20.h5ad` is the next step on C, the file that now holds the board's best; it stands
-behind the others by that order rule alone, and the captain may move it.
+The numbered file goes first. After it, each slot takes the due file of the first search, then of the second, then of
+the third, unless the captain says otherwise; a search's next file is due once the score its condition needs has been
+reported. Two ready files are each one step from the 2.0 file, which now holds the board's best: `T1_s2rcB25.h5ad`
+(the atlas step one notch stronger) and `T1_s2rcCm20.h5ad` (the same atlas step with g_mom's damping at 1.0 instead of
+0.5). The captain may put any file first.
 
 | Order | File | sha256 | Condition |
 |---|---|---|---|
-| 1 | `T1_s2rcB2.h5ad` (the 2.0 file) | `52897fe375b8a81afffa788592047c30361824148b00a8176514385060518837` | none |
-| 2 | `T1_s2rcMSB.h5ad` (combined momentum) | `78bb17eea5721e590cfd2c9f707e9cd6f2f496e081acede4f697dc4035871da2` | none |
-| first search | `T1_s2rcB25.h5ad` | `ccb7c457c0e8ac8ac668bcea17bc61ed22f414f58ab5a63e946cb2f08c4f4e77` | only if the 2.0 file scores strictly above B (`T1_s2rcB.h5ad`, the first search's best so far; C's score does not enter this search) |
-| first search | `T1_s2rcB30.h5ad` | `b639de29bd13d7005450ca53e7cd3dacb2e362a55beca8545937858e6582a024` | only if the 2.5 file scores strictly above the 2.0 file |
+| 1 | `T1_s2rcMSB.h5ad` (combined momentum) | `78bb17eea5721e590cfd2c9f707e9cd6f2f496e081acede4f697dc4035871da2` | none |
+| first search | `T1_s2rcB25.h5ad` | `ccb7c457c0e8ac8ac668bcea17bc61ed22f414f58ab5a63e946cb2f08c4f4e77` | none (its condition is met: the 2.0 file scored strictly above B) |
+| first search | `T1_s2rcB30.h5ad` | `b639de29bd13d7005450ca53e7cd3dacb2e362a55beca8545937858e6582a024` | only if the 2.5 file scores strictly above the 2.0 file (`T1_s2rcB2.h5ad`) |
 | second search | `T1_s2rcA15.h5ad` | `e2334137b54d98b04e9dece90213987e61fe9aa15a3fb8d85e6c262d8fb5ba75` | none (its condition is already met) |
 | second search | `T1_s2rcA20.h5ad` | `372713686782be273a52427140eab652517e35b679f54fc2a969484dee730218` | only if A15 scores strictly above A |
 | third search | `T1_s2rcCm20.h5ad` | `acce5f5f7097269bffebbfd583833e4c9c1c5ae77f1d5294dde6d13e197f863e` | none (its condition is met: C scored strictly above A) |
@@ -41,9 +40,8 @@ Never uploaded: `builds/T1_s2.h5ad`.
 
 | Order | File | sha256 | Condition | Data used |
 |---|---|---|---|---|
-| 1 | `T3_c2_s2.h5ad` (C2) | `47111ac1d07e73c0c26e990a474dff0de94ae22d6a4474a569bcb674ae2b85a7` | none | released challenge data only: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files the team unlocked; no outside data |
-| 2 | `T3_k23_s2.h5ad` (K23) | `77ff0b947f7f409c9ce171bdc59a44de3d3c2ef2f3e5a7332011a459ce9ee9c3` | none | released challenge data (the wild-type E8.75 cells and the released Mab21l2 knockout) and two public single-cell knockout studies of other genes, GEO GSE204906 (Dnmt3a and Dnmt3b nulls, E8.5) and GEO GSE277839 (a Usb1 knockout, E9.5), each as knockout-over-its-own-control changes on the panel genes. No data on a perturbation of beta-catenin or Gata4 from outside the release |
-| 3 | `T3_ck_s2.h5ad` (CK) | `e470aaeeab28918e157fb57cdc771122af35e46f0916cd1c6d63650c31faae26` | only after C2 and K23 have both been uploaded and each has scored strictly above the barred s2 (`barred_s2.h5ad`), the base all three are built on; C1's score does not raise this bar | released challenge data (the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files the team unlocked) and the two studies named for K23, in the same form. No data on a perturbation of beta-catenin or Gata4 from outside the release |
+| 1 | `T3_k23_s2.h5ad` (K23) | `77ff0b947f7f409c9ce171bdc59a44de3d3c2ef2f3e5a7332011a459ce9ee9c3` | none | released challenge data (the wild-type E8.75 cells and the released Mab21l2 knockout) and two public single-cell knockout studies of other genes, GEO GSE204906 (Dnmt3a and Dnmt3b nulls, E8.5) and GEO GSE277839 (a Usb1 knockout, E9.5), each as knockout-over-its-own-control changes on the panel genes. No data on a perturbation of beta-catenin or Gata4 from outside the release |
+| 2 | `T3_ck_s2.h5ad` (CK) | `e470aaeeab28918e157fb57cdc771122af35e46f0916cd1c6d63650c31faae26` | only if K23 scores strictly above the barred s2 (`barred_s2.h5ad`), the base all three are built on; C2 has been uploaded and has scored above it, so K23's score alone now decides | released challenge data (the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files the team unlocked) and the two studies named for K23, in the same form. No data on a perturbation of beta-catenin or Gata4 from outside the release |
 | then | `T3_k23_s2_e4.h5ad` | `9934f1b104fafed0514cff7bb1dec3f5e362e6a5068ae32711cbfc67f62b90f1` | only if K23 scores strictly above the barred s2 (`barred_s2.h5ad`) | as K23 |
 
 ## Task 2, embryo
@@ -55,20 +53,21 @@ use fewer, none, or another order.
 
 | Order | File | sha256 |
 |---|---|---|
-| 1 | `T2embryo_s2x_crs.h5ad` (sized copy-rows) | `323f2acc32f731819b1a3cc0da32478a51d9e9a10f13dbd940773b113b5644fa` |
-| 2 | `T2embryo_s2xs_ov.h5ad` (SO) | `77062082d97555961901c811d8a1aaf9b5b2403417c19a6988c816ff553f1165` |
-| 3 | `T2embryo_s2.h5ad` | `41982d8afd784ecb07a4021077f701c3806c3bdb06eda92c2cb99fcc41b19b73` |
-| 4 | `T2embryo_s2x_ovhi.h5ad` (O_hi) | `7e4d1eaafc40080d9d9c461d4b9396f0cee6353686538e79fb92ca31d1d2deeb` |
+| 1 | `T2embryo_s2xs_ov.h5ad` (SO) | `77062082d97555961901c811d8a1aaf9b5b2403417c19a6988c816ff553f1165` |
+| 2 | `T2embryo_s2.h5ad` | `41982d8afd784ecb07a4021077f701c3806c3bdb06eda92c2cb99fcc41b19b73` |
+| 3 | `T2embryo_s2x_ovhi.h5ad` (O_hi) | `7e4d1eaafc40080d9d9c461d4b9396f0cee6353686538e79fb92ca31d1d2deeb` |
 
 ## Task 2, heart
 
 Data used, for every heart file: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data.
 
+`T2heart_core_ts10_half.h5ad` is built on the full trim; `T2heart_organ_ts05_half.h5ad` is built on D, which holds the
+board's best. The captain may put either first.
+
 | Order | File | sha256 | Condition |
 |---|---|---|---|
-| 1 | `T2heart_core_ts05_half.h5ad` (TS05, the first heart search's first file) | `b6b8155be9b5469a2dbc8943a59df567f52c7cbe013bbf0b55e4da706fda27b7` | none |
-| 2 | `T2heart_organ_ts05_half.h5ad` (OTS05, the second heart search's first file) | `f918e76731aac18eda3b46c8a35c18f26ae00a1a6a1db36d33e7515704cc43ea` | none (D has been uploaded and its score reported); it goes after TS05 |
-| then | `T2heart_core_ts10_half.h5ad` (TS10) | `cf53b0c0afe7d18b8f7c84d7595729e4fc46e15e6077e645b6dc0a2fbfed39af` | only if TS05 scores strictly above the full trim (`T2heart_s2core_half.h5ad`), whatever D scored; when due at the same slot as a second-search file, it goes first |
+| 1 | `T2heart_core_ts10_half.h5ad` (TS10, the first heart search's last file) | `cf53b0c0afe7d18b8f7c84d7595729e4fc46e15e6077e645b6dc0a2fbfed39af` | none (its condition is met: TS05 scored strictly above the full trim); by the searches' slot order it goes before the second search's file |
+| 2 | `T2heart_organ_ts05_half.h5ad` (OTS05, the second heart search's first file) | `f918e76731aac18eda3b46c8a35c18f26ae00a1a6a1db36d33e7515704cc43ea` | none (D has been uploaded and its score reported) |
 | then | `T2heart_organ_ts10_half.h5ad` (OTS10) | `ee9e0e68d62e8d1448f1dbbbce1146dc5fb4877e94d77fc289fa82744acb06a9` | only if OTS05 scores strictly above D |
 
 ## Skipped by the captain's word of 2026-11-23: not uploaded unless the captain says otherwise

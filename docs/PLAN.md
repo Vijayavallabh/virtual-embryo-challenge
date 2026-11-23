@@ -12352,3 +12352,55 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     is not computed; by the text it is computed before any build and ends the line if it fails. Build times and the
     hours named are the analysts' estimates.
   - **Nothing is coded, built or queued by this entry,** and no file, rule or order changes.
+- 2026-11-23 (gg), the second scores of the day, one per board; each board's pre-set rule applied (state at 23:45 UTC,
+  2026-11-23). Written by the AI assistant, which is recused on the heart's scope and size and on the embryo's
+  occupancy term and shape forms, and states no preference on either.
+  - **What the captain pasted:** for each board the file uploaded and a table with a headline score, a board rank and
+    per-metric rows; no other words. **Only the four headlines are recorded:** T1 72.29; embryo 66.42; heart 56.51; T3
+    63.94. The per-metric rows and the ranks are written nowhere in the repository and are used for nothing. The files
+    are the ones the paste names: `T1_s2rcB2.h5ad`, `T2embryo_s2x_crs.h5ad`, `T2heart_core_ts05_half.h5ad` and
+    `T3_c2_s2.h5ad`, each the next file of the upload sheet of entry (cc); the embryo's and the heart's pasted paths
+    have a misspelt folder and exact file names; each sha256 on disk equals the recorded one.
+  - **T1.** The 2.0 file returned 72.29, T1's highest headline so far (C returned 71.8). Line 1 (row R22): the 2.0
+    file's headline is strictly above the line's best so far (B's 71.59), so the line's next file is the 2.5 file
+    `T1_s2rcB25.h5ad` (ccb7c457c0e8); the 3.0 file follows only if the 2.5 file's headline is strictly above the
+    line's best, now the 2.0 file's. Lines 2 and 3 are untouched: `T1_s2rcA15.h5ad` and `T1_s2rcCm20.h5ad` stay due,
+    and line 3's best is still C's headline. Order by the texts on record: the combined momentum file
+    `T1_s2rcMSB.h5ad` (in the plain momentum file's place, entry (m)), then at each slot line 1's due file, then line
+    2's, then line 3's, unless the captain says otherwise.
+  - **The AI assistant's order recommendation for T1, replaced.** In its reply to entry (cc) it recommended 'Cm20
+    next' because C then held the best and Cm20 was the only ready file stepping from it. The 2.0 file now holds the
+    best. Two ready files are each one step from it: the 2.5 file (the atlas multiplier one step on) and Cm20 (the
+    same multiplier with g_mom's damping at 1.0 instead of 0.5). The recommendation now is those two first, the 2.5
+    file then Cm20, ahead of the combined momentum file and A15, which step from files that stand third and fifth. It
+    rests on which file stands above which and on nothing else, it is an order of files already built and named before
+    their scores, and it is the AI assistant's own. The order is the captain's; without the captain's words the order
+    on record stands.
+  - **T1 line 4 (entry (ff)), not in force.** Its void clause asks that its entry be in the log before any T1 headline
+    beyond the five then reported is returned. The entry was committed at 23:28 UTC; the 2.0 file's headline reached
+    the main session with this paste, after that; when the site returned it to the captain is not reported. If that
+    was before 23:28 UTC the line is void by its letter. Its opening fact (C above B) still holds, but C no longer
+    holds the board's best, and the files already built cover both single steps from the file that does. Unless the
+    captain asks for the line and says when that score came back, it lapses; nothing of it is coded or built.
+  - **Heart** (rows R28 and R29; the main session executes and states nothing more): TS05 returned 56.51. It is
+    strictly above the first line's best, the full trim's 56.4 (above every value that rounds to 56.4), so TS10
+    (`T2heart_core_ts10_half.h5ad`) is the first line's next file, and the line ends at TS10. D's 60.4 stays the
+    board's highest. Second line: `T2heart_organ_ts05_half.h5ad` stays due. At a slot where both lines have a due file
+    the first line's goes first: TS10, then OTS05, unless the captain says otherwise.
+  - **Embryo** (entries 2026-11-21 (l) and (y); the main session executes and states nothing more): the sized
+    copy-rows file returned 66.42; O's 69.9 stays the board's highest. Next by the order on record: SO
+    (`T2embryo_s2xs_ov.h5ad`), then `T2embryo_s2.h5ad`, then O_hi; no headline decides, and the captain may use fewer,
+    none, or another order.
+  - **T3.** C2 returned 63.94, T3's highest headline so far (C1 returned 63.8; 63.94 is above every value that rounds
+    to 63.8). Row K23's file (`T3_k23_s2.h5ad`) goes next. CK: C2 has been uploaded and its headline is strictly above
+    B's 62.30, so CK now waits only on the K23 file being uploaded with a headline strictly above B's; the E = 4 file
+    waits on the same.
+  - **T3's second line (entry (ff)), void without the captain's yes.** No word of the captain's on it came with this
+    paste. One ordinal fact is new since its text was written: C2, the two-knockout file held at the base's size,
+    stands above C1, the file the line steps from.
+  - **Standing by the record's best headline per board:** T1 72.29, T3 63.94, heart 60.4, embryo 69.9; the total is
+    72.29 + 63.94 + (60.4 + 69.9) / 2 = 201.38 (200.75 after the first uploads of the day, 197.04 before; labelled
+    arithmetic from reported headlines).
+  - **What is written.** Four rows in `results/manual_uploads.csv` (headline only); `docs/UPLOAD_SHEET.md` without the
+    four uploaded files and with each condition in its rule's own terms. No rule text, ledger row or built file is
+    touched; the three files skipped by the captain's word of entry (bb) stay skipped.
