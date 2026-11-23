@@ -26,10 +26,10 @@ Order, per atlas (D/raw/<ACC>/MANIFEST.json, written by fetch.py):
   5. The atlas's fixed cell call (atlases.yaml qc: UMI, genes and mitochondrial fraction), the same for every sample.
   6. Genes by symbol: duplicated symbols in a sample are dropped (as dirlib.sym_index), the atlas keeps the symbols
      every sample has.
-Outputs (D/reduced/<ACC>/, outside the repository): counts.npz (CSR int32, cells x genes), genes.txt, cells.csv (cell,
-gsm, stage label, stage day), qc.json, MANIFEST.json (each output's sha256, the inputs' sha256, tasks ["T1"]).
+Outputs (D/reduced/<ACC>/; at row T72 D is data/external/t1_ext_t72): counts.npz (CSR int32), genes.txt, cells.csv
+(cell, gsm, stage, day, total_ge), qc.json, MANIFEST.json (the sha256 of each output and input; tasks ["T1"]).
 
-  uv run --frozen --no-sync python -I -B experiments/t1_ext/load.py GSE230531 --dest ~/v/vec-ext/t1 [--delete-raw]
+  uv run --frozen --no-sync python -I -B experiments/t1_ext/load.py --commit <row commit>   (row T72: row_load; README)
 """
 
 from __future__ import annotations

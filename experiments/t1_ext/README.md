@@ -1,150 +1,192 @@
-# Task 1 outside heart atlases (stage 1), strict form
+# Task 1 outside heart atlases, row T72 (candidate MX2s)
 
 Candidate MX2s of the outside-data round of 2026-11-23: a within-study sign-agreement consensus of three heart atlases
-for the CM, Endocardium and Endothelium directions of the T1 direction step, at the ruled step's size. The captain's
-word (ruling row R27 in `experiments/harness/TRIES.md`) reopened this parked line in its strict form, practice read
-only, with the stage-parser exception below; register rows X019 (GSE244783) and X020 (GSE230531) and X002's MX2s
-amendment are in `EXTERNAL_DATA.md`. This folder is stage 1: the code that plans, pins, screens, fetches, loads,
-labels and tables the atlases (the specification's METHOD steps 1 to 3 and its SCREENS). The consensus tables of the
-specification (its steps 4 to 6) and the practice read (steps 7 and 8) are other engineers' work after this one.
-Nothing here changes a submission file. Task 1 only: E8.5 lies inside the T2 heart's interpolation window, so every
-manifest says `tasks: ["T1"]` and no code outside this folder names it (`tests/test_t1_ext_mx2s.py`).
+for the CM, Endocardium and Endothelium directions of the T1 direction step, at the ruled step's size; practice read
+only, under the captain's word of ruling row R27 (`experiments/harness/TRIES.md`; its third cell words the stage-parser
+exception). Register rows X002 (its MX2s amendment), X019 (GSE244783) and X020 (GSE230531) are in `EXTERNAL_DATA.md`.
+This folder is the row's DATA SIDE: it plans, pins, screens, fetches, loads, labels and writes the MEMBER TABLES of the
+two new atlases. The consensus, the rescale, the two controls (`mx_mask`, `mx_perm`), the pre-gate, the runs and the
+read are the practice-read script's (`experiments/t1_m1/mx2s_read.py`, launcher `experiments/t1_m1/mx2s.sh`), which
+reads the tables in section B's format below. Nothing here changes a submission file. Task 1 only: E8.5 lies inside the
+T2 heart's interpolation window, so every manifest says `tasks: ["T1"]` and no shared-core, T2, T3 or builder path
+names this folder or its data (`tests/test_t1_ext_imports.py`).
 
-Written by the AI assistant (an engineer agent of the main session) on 2026-11-20 from a planner's design and a
-challenger's review; third version 2026-11-21 (pinned samples as the first line); strict form 2026-11-24 from the cold
-challenger's final specification of MX2s. No data file was fetched or read to write it, and no GEO record was opened;
-the tests use synthetic records and synthetic files only.
+Written by the AI assistant (engineer agents of the main session): the parked branch 2026-11-20 and 2026-11-21, the
+strict form's port 2026-11-23, the row's data side 2026-11-24 from row T72's cells as revised after the cold attack
+and the rule writer's engineer notes. No data file was fetched or read to write it, and no GEO record was opened; the
+tests use synthetic records and synthetic files only.
 
-**Who may read records.** Only two independent readers (two screening agents, neither the engineer who wrote this
-code) read the GEO records, the processing text and the screens' output; the main session alone commits their pins,
-the processing clearance and the screens record.
+**Who may read records.** Only two independent readers (two screening agents, neither the main session nor the
+engineer who wrote this code) read the GEO records, the per-field hashes, the processing text and the screens' facts;
+the main session alone commits their pins, the processing clearance and the screen blocks.
 
 ## Atlases (`atlases.yaml`)
 
-| Accession | Status | Ends used (samples named) | Tissue | Groups formed | Cell call (UMIs, genes, mito share) |
-|---|---|---|---|---|---|
-| GSE193346 (X002) | in use | E9.5, E14.5 | chambers | CM, Endocardium, Endothelium, Epicardium (its ruled file, row N54) | as N54 |
-| GSE244783 (X019) | use | E8.5 (GSM7829699), E16.5 (GSM7829703) | heart, Multiome RNA part | CM, Endocardium, Endothelium | 500, 300, 0.05 |
-| GSE230531 (X020) | use | E8.5 (GSM7226268, GSM7226269), E16.5 (GSM7226274, GSM7226276) | E8.5 embryo, E16.5 heart, 10x 3' v2 unfiltered | CM | 1000, 500, 0.20 |
-| GSE176063 + GSE153562 | held | | Microwell-seq | | |
-| GSE216970 | held | | 10x, MACS-enriched at E9.5 | | |
+| Accession | Register | Status | Ends used (samples named) | Tissue | Groups tabled | Cell call (UMIs, genes, mito share) |
+|---|---|---|---|---|---|---|
+| GSE193346 | X002 | in use | E9.5, E14.5 | chambers | (its ruled file, row N54; read by the practice script) | as N54 |
+| GSE244783 | X019 | use | E8.5 (GSM7829699), E16.5 (GSM7829703) | heart, Multiome RNA part | CM, Endocardium, Endothelium | 500, 300, 0.05 |
+| GSE230531 | X020 | use | E8.5 (GSM7226268, GSM7226269), E16.5 (GSM7226274, GSM7226276) | E8.5 embryo, E16.5 heart, 10x 3' v2 unfiltered | CM | 1000, 500, 0.20 |
+| GSE176063 + GSE153562 | | held | | Microwell-seq | | |
+| GSE216970 | | held | | 10x, MACS-enriched at E9.5 | | |
 
-Never fetched, by name (`never_fetch`; the fetch refuses them, and a pin naming one is refused): GSE244783's
-GSM7829701 (E10.5), its ATAC samples GSM7829700, GSM7829702 and GSM7829704, and GSE244783_RAW.tar; GSE230531's
-GSM7226279 and GSM7226280 (E10.5), GSM7226270 and GSM7226271 (E12.5), GSM7226272 and GSM7226273 (E14.5, dropped
-under the strict form) and GSE230531_RAW.tar. GSE230531's P3 samples are not listed by accession (none was read here):
-they are not named, so they can never be pinned, and only pinned samples are fetched. Every series archive
-(`<GSE>_RAW.tar`) of an atlas is refused by name whether listed or not, and every data file must lie in its own
-sample's GEO folder.
+A member the readers' screens drop gets `status: dropped` with `screen: {verdict: dropped, failed: [points]}`: it is
+never planned, fetched, loaded or tabled again, and no exception is granted on the spot.
+
+NEVER FETCHED, by name, from a literal list in code (`t1x_common.NEVER_FETCHED`, row T72's cells 3 and 8; the yaml's
+`never_fetch` lists must name exactly the same): GSM7829701 (E10.5), the ATAC samples GSM7829700, GSM7829702 and
+GSM7829704, and GSE244783_RAW.tar; GSM7226279 and GSM7226280 (E10.5), GSM7226270 and GSM7226271 (E12.5), GSM7226272
+and GSM7226273 (E14.5, dropped under the strict form) and GSE230531_RAW.tar. GSE230531's P3 samples are not listed by
+accession (none was read here): they are not named, so they can never be pinned, and only pinned samples are fetched.
+Every `_RAW.tar` is refused by name whether listed or not, and every data file must lie in its own sample's folder.
 
 E8.5 and E16.5 lie outside (E9.5, E13.5] under any plug-day convention in [-1.0, +0.5] day (E8.5 reads at most 9.0,
-E16.5 at least 15.5). The dissection differs between GSE230531's ends (whole embryo, then heart): recorded, and guarded
-by the competing classes and the purity gate. No composition is computed: the composition block (level and change
-forms) is deleted from `tables.py` and `atlases.yaml`, and no share is written.
+E16.5 at least 15.5). GSE230531's ends differ in dissection (whole embryo, then heart): recorded (check (e)), guarded at
+the E8.5 end by the derived competing classes and at the E16.5 end by the skm class and the purity clause. No
+composition, level or share is computed or written.
 
 ## Two lines of defence
 
-Two rounds of review showed that a text parser cannot be the only guard of the window rule: each round found more ways
-a real record words a stage that the parser read as permitted. The same problem was closed in `experiments/t3_ext` by
-a pinned list, and it is closed the same way here.
+Two rounds of review showed that a text parser cannot be the only guard of the window rule. The same problem was closed
+in `experiments/t3_ext` by a pinned list, and it is closed the same way here.
 
 1. **The pins (first line).** A sample is used only when `atlases.yaml` names it and pins it with the sha256 of its
-   full verbatim record, after two readers have read that record line by line (the checklist below). Each series of
-   the atlas is pinned by the sha256 of its series record. The plan, the fetch (on the live record), the loader and
-   the tables' read of a reduction refuse a record that no longer hashes to its pin.
+   full verbatim record, after two readers have read that record line by line. Each series of the atlas is pinned by
+   the sha256 of its series record. The plan, the fetch (on the live record), the loader and the tables' read of a
+   reduction refuse a record that no longer hashes to its pin.
 2. **The stage rule (second line).** `t1x_common.record_stage` reads the whole record and can only refuse: a pinned
    sample it reads as WINDOW or UNKNOWN, or at a stage other than its pin's, refuses the atlas. It never makes an
    unpinned sample usable.
 
-A sample is **USED** only when it is pinned AND the rule does not refuse it. Nothing is fetched or loaded for an atlas
-whose pinned samples do not cover every named sample at both of its ends.
+## The stage-parser exception (ruling row R27; row T72, cell 3)
 
-## The stage-parser exception (ruling row R27)
+"A protocol or processing field that is byte-identical across every sample record of the series is read as series
+text: it gives no stage reading and still refuses on pooling words; the sample's stage must then be stated both by its
+own title and by its own characteristics, and the two must be the same stage; a sample whose title or characteristics
+state no stage is refused; every other part of the stage rule still refuses." As coded (`t1x_common.series_wide_fields`,
+`record_stage`, `stage_reading`, `pooling_in_series_text`), and no wider:
 
-In the ruling's words: "a protocol or processing field that is byte-identical across every sample record of a series
-is read as series text: it gives no stage reading, and it still refuses on pooling words; the sample's stage must then
-come from its own title and characteristics, which must agree". As coded (`t1x_common.series_wide_fields`,
-`record_stage`, `stage_reading`), and no wider:
+- A field is one key of the record with all its values; only the protocol and processing fields (`*protocol*`,
+  `data_processing`) can be series text. It is series text when every sample record of the series in the family SOFT
+  (window and other-assay samples included) holds that key with the same values in the same order. A series with one
+  sample has none. The plan computes it in code; the fetch's live re-plan must give the same; it is printed in the
+  processing text (`series_text <key>[<i>]: <value>`), so the readers' clearance covers it.
+- THE PER-FIELD HASHES. The plan prints, for every sample record of the series (window samples included), the sha256
+  of each protocol and processing field and nothing else of a window sample: one line `field_sha256 <GSE> <GSM>
+  <field> <sha256 or (absent)>` per field on stdout and in `meta/<ACC>/protocol_field_sha256.tsv`. A field's sha256
+  is that of its canonical lines (`<key>[<i>]: <value>`, with the `escaped:` line under a non-ASCII value), joined by
+  newlines with one at the end, as in the canonical record text. The readers compare these hashes and open no record
+  of a never-fetched sample. The exception applies only where the code's test and both readers' comparison agree.
+- Series text gives no stage reading, no leftover and no companion integer; it still feeds the plug-day convention.
+- THE POOLING CLAUSE (the reviews of 290da3f and 75356ec). Each value of series text is read as written and with its
+  Unicode format characters (category Cf) removed; a match in either refuses (UNKNOWN). (i) A form of pool or merge
+  anywhere refuses. (ii) A staged pooling word (`POOLING_WORDS_STAGED`: combine, combination(s), in combination, mix,
+  mixes, mixed, mixing, mixture(s), multiplex..., superload..., aggregat..., also with a glued or hyphenated prefix
+  pre, inter, ad, co or re: premixed, intermixed, admixed, co-mixed, recombined) in ANY sentence of a value refuses
+  when the value AS A WHOLE names stages: any of its sentences gives a stage reading or a leftover in protocol mode,
+  or the value names a stage, an age, a time point (time point, time-point, timepoint) or a time course (time
+  course, time-course, timecourse). The U+2010 and U+2011 hyphens count as hyphens.
+- Benign prose that stays PERMITTED: "cDNA was combined with RT Master Mix.", "Cells were mixed with Trypan blue and
+  counted.", "Libraries were prepared with the Single Cell Multiome kit.", and the same reagent prose in a value of
+  several sentences none of which names a stage. Benign prose the whole-value rule now REFUSES (fails closed; tested):
+  "Hearts were dissected at E16.5. cDNA was combined with RT Master Mix.", "cDNA was combined with RT Master Mix and
+  incubated for 2 days." and "Samples were mixed by pipetting at each stage of the protocol.".
+- When a sample has a field read as series text, its stage must be stated by its own title AND its own
+  characteristics: each must give a reading and the two must be the same nominal interval, else UNKNOWN. Every other
+  field is still read and can still refuse; a sample whose own title or characteristics read in the window stays
+  WINDOW or UNKNOWN.
 
-- A field is one key of the record with all its values (GEO's repeated `!Sample_<key>` lines, in order); only the
-  protocol and processing fields (`*protocol*`, `data_processing`) can be series text. It is series text when every
-  sample record of the series (window and other-assay samples included) holds that key with the same values in the
-  same order; a field missing from one sample or differing by one character is not. A series with one sample has
-  none. The plan computes it from the whole family SOFT; the fetch's live re-plan must give the same; it is stored in
-  the manifest and printed in the processing text (`series_text <key>[<i>]: <value>`, or `series_text: (none)`), so
-  the readers' clearance covers it.
-- Series text gives no stage reading, no leftover and no companion integer. It still feeds the plug-day convention
-  (as the series' own summary and design do). A pooling word in it (pool, pools, pooled, pooling, merge, merges,
-  merged, merging) makes the sample UNKNOWN.
-- When a sample has a field read as series text, its stage must come from its own title AND its own characteristics:
-  each must give a reading and the two must be the same nominal interval, else UNKNOWN. Every other field (source
-  name, description, file names, the sample's own non-series protocol text) is still read and can still refuse.
-- The exception can only turn a refusal into a reading from the title and characteristics; a sample whose own title
-  or characteristics read in the window or unknown stays WINDOW or UNKNOWN. The rule stays the second line: it never
-  makes an unpinned sample usable.
+## The screens (before the row's commit, before any matrix)
 
-## Screens (`screens.py`, `screens.yaml`)
+`fetch.py fetch-meta ACC --dest ~/v/scratch/t72_screen --plan-sha256 S` requests only the barcodes and features files
+of the six named samples (`t1x_common.SCREEN_SAMPLES`: GSM7829699, GSM7829703, GSM7226268, GSM7226269, GSM7226274,
+GSM7226276), each from the sample's own folder; it refuses by name every never-fetched accession, every matrix and
+every RAW.tar before any request; it writes only under `~/v/scratch/t72_screen` (exactly that folder: never the row's
+data folders), and prints each file's name, bytes and sha256. It then runs `screens.py`, which prints, counts and
+yes/no facts only (never a cell, a barcode or a gene):
 
-The specification's SCREENS, run on the fetched barcode and feature files before any matrix is fetched or opened; each
-returns yes or no with counts and never a cell. The checks per atlas are its `screens` list; their constants are
-`screen_rules` in `atlases.yaml`.
+- (a) `suffix`: per barcodes file its line count (as `zcat | wc -l`) and the count of barcodes not ending in -1;
+- (b) `own_peaks` (GSE244783): whether the two features files have different sha256; whether at least one Peaks
+  interval of each file overlaps an interval of the other without being identical to it (per-library peak calls;
+  subsets of one merged peak set never partly overlap; the relation is symmetric, so one answer serves both files);
+  whether the two files' Gene Expression rows are the same features in the same order;
+- (c) `no_hashing`: the feature_type counts per features file, rows of a type outside the assay, hashtag-like names,
+  column counts, barcode lines with more than one column;
+- (d) `whitelist_sized` (GSE230531): whether each barcodes file has exactly 737,280 lines (the 10x 3' v2 whitelist,
+  `screens.WHITELIST_V2`; the 3' v3 size of the port is dropped: the row names v2 only);
+- and the yaml `screen:` block to fill (`verdict: READERS_VERDICT`, the files' names and sha256, `READER_1`,
+  `READER_2`, the date: placeholders the yaml check refuses).
 
-- (a) `suffix`: every barcode of every sample ends in -1 (no aggr).
-- (b) `own_peaks` (GSE244783): the two samples' features files have different sha256 and different sets of Peaks rows
-  (cellranger-arc count per library, not aggr), and each has Peaks and Gene Expression rows; the Peaks ids are hashed
-  in memory only to compare the sets. Only Gene Expression rows are ever read as expression (by the loader).
-- (c) `no_hashing`: one column per barcode line (no per-cell sample, stage or tag column); features files of 2 or 3
-  columns (Multiome: 3 or 6); no feature type outside the assay's (Gene Expression; Multiome also Peaks); no hashtag,
-  CMO or antibody-tag-like feature name.
-- (d) `whitelist_sized` (GSE230531): every barcode file has a 10x whitelist's number of lines (737,280 or 6,794,880;
-  general knowledge, not checked against a source): unfiltered matrices, and the team's own cell call applies.
-
-A failing check marks the member dropped in `screens.yaml` (committed by the main session); the fetch of its matrices,
-its load and its tables then refuse.
+The two readers decide by their checklist (points 1 to 7 and (a) to (e)); a reader who doubts does not pin. The main
+session writes, per atlas, either `screen: {verdict: kept, files: {GSM: {barcodes: {name, sha256}, features: {name,
+sha256}}}, read_by: [two readers], date}` or `status: dropped` with `screen: {verdict: dropped, failed: [points]}`.
 
 ## Steps
 
-In order; the main session commits between steps, and every output lies under `D` (`~/v/vec-ext/t1` on the DGX),
-outside every checkout. `run_dgx.sh CHECKOUT MODE` runs each step detached on the DGX (modes plan, derive, heads,
-screens, fetch, load, tables, rest).
+BEFORE THE ROW'S COMMIT, on the DGX in a campaign checkout (`run_dgx.sh CHECKOUT MODE`, modes plan, fetch-meta,
+screens, derive; outputs under `~/v/scratch/t72_screen`):
 
-1. `fetch.py plan ACC --dest D`: family SOFT metadata only. Every sample of every listed series is marked USED,
-   WINDOW (never fetched; only the fields that gave a reading are kept), NOT_USED (permitted but not pinned, not
-   named, on the never-fetch list, or not needed) or UNKNOWN. The plan computes each series' series-wide fields (the
-   exception below) and writes `plan_table.tsv`, `records.txt` (every series record with its series-wide fields
-   listed, and the full record of every sample the rule lets through, each under a header with its sha256),
-   `records/<ACC>.txt` (each record's exact bytes) and `processing_text.txt`. Before any pin the plan refuses ("not
-   pinned", "do not cover both ends", "named samples not pinned").
-2. Two independent readers read every record of the named samples, every series record and the processing text, by
-   the checklist below. `fetch.py pin-template ACC --dest D --gsm GSMa --gsm GSMb ...` prints, from the stored plan,
-   the ready-to-paste `pinned:` block for exactly the samples the atlas names (no bulk selector; any other set is
-   refused) and every series, and the `processing_cleared` line for those samples. `read_by` and `date` are
-   placeholders (`READER_1`, `YYYY-MM-DD`) that the atlas check refuses until replaced.
-3. The main session commits the pins and the clearance, syncs, and plans again: the plan must now pass.
-4. `groups.py derive`: the extra competing classes for GSE230531's whole-embryo early end, from the released E8.5 by
-   a fixed rule. The main session commits the output, pins its sha256 and freezes `atlases.yaml`.
-5. `fetch.py heads ACC --dest D --plan-sha256 S`: every check of the fetch (the plan's sha256, its atlas entry with
-   the pins, the clearance, a live re-plan that must give the same processing text, USED samples, records, files and
-   series-wide fields), then each USED sample's barcode and feature files only, from its own GEO folder; never a
-   matrix. Writes `D/raw/<ACC>/HEADS.json`.
-6. `screens.py ACC --dest D`: the SCREENS below, on those files, before any matrix is fetched or opened. It writes
-   `D/screens/<ACC>/screen.json` and prints yes or no per check with counts (never a cell, barcode or gene) and the
-   line to paste into `screens.yaml`: `kept` when every check said yes, `dropped` otherwise.
-7. The main session commits `screens.yaml`. A dropped member is dropped before any table is made; no exception is
-   granted on the spot.
-8. `fetch.py fetch ACC --dest D --plan-sha256 S`: the same checks as heads, then only for a member `screens.yaml`
-   records kept, with a screen file that hashes to the record, says every check passed and ran on the heads on disk:
-   the heads are re-hashed (not fetched again) and only the matrices are fetched. Writes `D/raw/<ACC>/MANIFEST.json`
-   (with the series-wide fields and the screen).
-9. `load.py ACC --dest D`: window removal FIRST (each stored record re-read by the rule, with its series-wide fields,
-   before any file is opened); then every manifest sample pinned, its record hashing to its pin, both ends covered;
-   the processing text rebuilt from the records (series-wide fields included) and checked against the clearance; the
-   screens record kept for this member; then the file gates (sha256, integer counts, every 10x barcode ending in -1,
-   Multiome feature_type with only Gene Expression rows read), the whitelisted columns only, the fixed cell call and
-   the QC record.
-10. `tables.py`: each reduction is read by `load.read_reduced` under the atlas entry, pins, clearance and screens
-    record in force (the parked branch's known blocker, closed below); the labeller on a derived config, the checks,
-    the directions, the rescale to 5 days, the consensus variants. No composition, no share.
+1. `fetch.py plan ACC --dest ~/v/scratch/t72_screen`: the family SOFT only (a bounded retry with a pause on HTTP 403,
+   429, 5xx and timeouts; one host over https; no redirect followed). Writes `meta/<ACC>/plan.json`,
+   `plan_table.tsv`, `records.txt`, `records/<ACC>.txt`, `processing_text.txt`, `protocol_field_sha256.tsv`; prints
+   the summary and the per-field hashes. Exit 2 before pins (expected: "not pinned", "named samples not pinned").
+2. `fetch.py fetch-meta ACC --dest ~/v/scratch/t72_screen --plan-sha256 <sha256 of meta/ACC/plan.json>`, then (or
+   again) `screens.py ACC --dest ~/v/scratch/t72_screen`.
+3. Two readers read and hand back; `fetch.py pin-template ACC --dest ~/v/scratch/t72_screen --gsm ...` prints the
+   `pinned:` block and the `processing_cleared` line for the named samples.
+4. `groups.py derive --released-e85 data/raw/T1/E8.5_RNA.h5ad --out experiments/t1_ext/results/extra_competing.json`
+   (the released E8.5, a training stage; target-free; `--out` must be the path the yaml names).
+5. THE PLACEMENT COMMIT (the main session; the row's commit): the pins, the clearances, the screen blocks, the derived
+   file and its sha256 in the yaml, `status: frozen`, `row_t72.FROZEN_YAML_SHA256` set to the frozen yaml's sha256,
+   the register amendments naming row T72, and row T72 in the ledger, in one commit.
+
+THE ROW'S OWN DATA STEPS, at the row's commit, started by `experiments/t1_m1/mx2s.sh` (each only after the one before
+exited 0; `--commit` is the row's commit, full sha):
+
+6. `fetch.py fetch --commit C`: the guards; creates `data/external/t1_ext_t72/` exclusively; per kept member, the plan
+   made again from the live metadata (into `meta/` there) must pass under the frozen yaml; then the pinned samples'
+   barcodes, features and matrix files, each from its own folder (`raw/<ACC>/<GSM>/`, `raw/<ACC>/MANIFEST.json`,
+   each barcodes and features file marked `screened_copy` true or false); writes `FETCH.json`.
+7. `load.py --commit C`: the guards; creates `data/external/t1_ext_t72/reduced/` exclusively; per fetched member:
+   window removal first; only pinned samples whose records still hash to their pins; each barcodes and features file
+   with the sha256 of the screened copy the yaml records; checks (a), (b) and (d) again on the fetched files; Gene
+   Expression rows only; the cell call on each cell's Gene Expression rows; every pinned sample loaded. Any failure is
+   a failed (p1) for that member, recorded in `reduced/LOAD.json` (the step still exits 0; the pre-gate reads it).
+8. `tables.py --commit C --released-dir data/raw/T1`: the guards; creates `data/derived/t1_ext_t72/` exclusively;
+   labels and member tables (below) for each member whose load passed; `MANIFEST.json`.
+
+THE GUARDS (`row_t72.guards`, row T72's cell 8), before any download or file open, each step: row T72 in the ledger;
+the register strings (X002 'consensus member of T1 candidate MX2s' and 'row T72'; X019 and X020 'Candidate MX2s' and
+'row T72'; X010 'skeletal-muscle competing class of row T71'); the yaml's sha256 equal to `FROZEN_YAML_SHA256`, status
+frozen, equal to its version at HEAD; the derived file's sha256 the yaml's; HEAD the given commit, which must be the
+commit that adds row T72 to the ledger (its parent's ledger has no row T72), on a clean tree; the step's output folder
+absent and inside the checkout's own `data/` (a real directory, not a link); and the literal never-fetched list on
+every request. A folder left by a stopped data step blocks a rerun (a rerun is a new row).
+
+## The tables (section B's format)
+
+Labels: `feng_relabel.relabel` (imported, never copied) on row N54's frozen yaml unchanged (log1p CP10k; control sets
+of 25 bins and 10 genes per set gene, seed 20261119; min_genes_found 2; min_score 0.3, min_margin 0.25, split_margin
+0.1; its label-to-group map), plus the competing class skm (Tnnt3, Tnni2, Mylpf, Myl1, Tnnc2; label r_skm; a set gene
+is never a control gene) on both new atlases, plus, on X020's E8.5 samples only, the derived neural, paraxial and EXEM
+classes. X019 is labelled in one run over both ends (as N54); X020 in two runs (E8.5 with skm and the derived classes,
+E16.5 with skm only), since the derived classes are the E8.5 samples' only.
+
+Per atlas a and group g (X019: CM, Endocardium, Endothelium; X020: CM) with at least 10 cells at each end and at least
+one in every sample of the end: m_end = the equal-weight mean over the end's samples of each sample's mean over the
+group's cells of the cell's CP10k (counts x 10^4 over the cell's total on ALL its Gene Expression rows, `total_ge` in
+`cells.csv`), no downsampling; D = log((m_late + 0.5) / (m_early + 0.5)) x 5/8; mapped to T1's genes (the released
+E9.5 file's gene names only) by unique symbol (a symbol T1 or the atlas holds twice gets no value); ^Hb[ab]- and ^mt-
+genes NaN in D.
+
+- `data/derived/t1_ext_t72/tables/<ACC>/<group>.npz`: `genes` (T1 order), `m_early`, `m_late`, `D`, `n_cells_early`,
+  `n_cells_late`, `samples_early`, `samples_late`, `per_sample_early`, `per_sample_late` (samples x genes).
+- `data/derived/t1_ext_t72/MANIFEST.json`: the guards' record (row, commit, clean, the yaml's and the derived file's
+  sha256, tasks ["T1"]), (p1) per atlas and the screens' drops, the constants, the T1 gene file's sha256; per atlas its
+  register row, ends, factor 5/8, the labeller runs (each config's sha256, the sets found), the load QC per sample
+  (barcodes, cells called, cells kept), the skm purity figure of (m2) for a CM member (`skm_purity_late`: the late
+  end's r_cm cells, those with skm score at least 0.3, the share); per group the table's path and sha256 and the
+  cells per end and per sample, or why no table was written.
 
 ## Pinned samples
 
@@ -246,16 +288,6 @@ GD followed by digits; a number with a d suffix; embryonic or stage before a num
 week, month and gestation (midgestation too) in descriptive fields; a half-day number no pattern read; and, in a value
 or sentence that gave a reading, an integer from 5 to 21 (blocker 2).
 
-## The known blocker of the parked branch, closed
-
-The parked branch's tables step read a reduction left on disk (`load.read_reduced`) with its file hashes and window
-checks but without a pin check, so a reduction made under earlier pins, another atlas entry, a lapsed clearance or a
-later drop could be tabled. `read_reduced(acc, dest, cfg)` now refuses unless the reduction was made under the atlas
-entry in force (pins included), every sample it holds is pinned now with its record hashing to its pin and its stage
-its pin's, the pins cover every named sample at both ends, the clearance holds for its processing text, and a screened
-member is still recorded kept (`tests/test_t1_ext_mx2s.py::test_the_tables_step_reads_no_reduction_made_under_other_pins`).
-The launcher no longer deletes an old reduction before a load (it deletes nothing); the check above is the guard.
-
 ## Processing clearance
 
 The plan prints `D/meta/<ACC>/processing_text.txt` (also at the end of `plan_table.tsv`), and `pin-template` prints the
@@ -281,69 +313,49 @@ the processing of all USED samples and the series' file names side by side, whic
 the brief asked that it stay as it was unless folding was argued. `pin-template` prints its hash with the pins, so the
 pins and the clearance are written and committed together.
 
-## Fixed rules
+## The known blocker of the parked branch, closed
 
-- Consensus: members with a finite non-zero value count (an exact zero does not); the majority sign must be held by
-  at least two members and more than half; c = (1 / k) times the sum of the agreeing values, else 0. Equal weights.
-- Variants: `deciding` (each group rescaled to the ruled direction's L2 norm), `raw`, `noX002`, `noE85start`. A group
-  with fewer than two members in a variant is the ruled vector unchanged. (The specification's own rescale, over the
-  non-held genes where the ruled direction is finite, is its step 6: other engineers' work after this one.)
-- Composition: deleted in the strict form. No share, level or change form is computed or written, and `groups.py` has
-  no share check.
+The parked branch's tables step read a reduction left on disk (`load.read_reduced`) with its file hashes and window
+checks but without a pin check, so a reduction made under earlier pins, another atlas entry, a lapsed clearance or a
+later drop could be tabled. The port (c34d8a6) closed it: `read_reduced(acc, dest, cfg)` refuses unless the reduction
+was made under the atlas entry in force (pins included), every sample it holds is pinned now with its record hashing
+to its pin and its stage its pin's, the pins cover every named sample at both ends, the clearance holds for its
+processing text, and the member is still recorded kept with the same screened files
+(`tests/test_t1_ext_mx2s.py::test_the_tables_step_reads_no_reduction_made_under_other_pins`). At the row's run the
+reduction folder is also created exclusively, so no earlier reduction can sit there.
 
-## Where this differs from the plan, the reviews and the verifier
+## Where this differs from the texts (each refuses more, or is forced by another text)
 
-- The challenger's changes are all taken except where noted here.
-- A conflicting reading makes the sample UNKNOWN even when one reading lies in the window; a window mark never hides a
-  conflict. An UNKNOWN sample refuses the atlas only if the atlas would use it.
-- The verifier's half-day leftover is applied as written in descriptive fields. In protocol and processing prose it
-  counts only half-day numbers from 9.5 to 14.5 (any number that could touch the window under some convention): 0.5,
-  1.5 and 2.5 are everywhere in protocols (0.5 mg/ml, 1.5 ml tubes, clustering resolution 0.5). Both forms skip a
-  number followed by a unit (%, ml, mg, min, h, x, ...) or preceded by v (a version).
-- The verifier's companion-integer rule is applied as written (5 to 21, in a value that gave a reading), with a
-  protocol sentence counting as a value, and numbers glued to letters (rep12, 10x) or followed by a unit skipped.
-- In protocol and processing prose the rule reads no weeks, months, adult, neonatal or postnatal forms: none can meet
-  the window, and in protocols they describe the dams ("8-12 weeks old females") or reagents ("primer P3"). Embryonic
-  forms, Theiler stages, somites and days are read there as anywhere else.
-- "stage" (or "embryonic" without "day") before a number is a leftover (UNKNOWN), not read as an E-day as the
-  verifier offered: a bare "stage 12" may be a Theiler, Carnegie or day count. "day" before a number, glued or not
-  (Heartday12.5), is read as days, either reading, as the verifier asked.
-- Blocker 3 is closed by the brief's wording rather than the verifier's narrower fix: a stage read in the sample's own
-  protocol text is a reading like any other (it can give WINDOW, UNKNOWN by conflict, or a leftover), not only an
-  UNKNOWN after a USED decision. The default for shared protocol text listing every stage of a series is therefore
-  that each sample reads UNKNOWN; ruling row R27 then set the one exception, coded above.
-- Dense-table row names are matched whole, or token by token for names with separators, not as substrings: the
-  labeller's pattern as a substring would refuse every real table (Epcam holds "pca"). Snn (stannin) is the one gene
-  exempted from a whole-name match.
-- The deciding variant uses the second review's norm rule: the ruled norm over genes where the consensus is finite and
-  non-zero. Its record holds the factor, the share of genes at zero and the largest |deciding| / largest member.
-- The extra competing classes are added only to whole-embryo atlases' configs, not to heart-dissected ones.
-- The purity gate scores released cells with the atlas's derived config, whose controls come from the released file's
-  own gene means; the atlas's cells use controls from the atlas. The midpoint comparison is across two control draws.
+- The guards' "output folders absent" is read per step: fetch needs both folders absent, load needs `reduced/` and the
+  derived folder absent, tables needs the derived folder absent (a literal reading would let no step after fetch run).
+- "HEAD is this row's commit": the commit is given on the command line and must be HEAD and the commit that adds row
+  T72 to the ledger (its parent's ledger lacks it).
+- "follows no redirect off it" is read as: no redirect is followed at all (a same-host redirect refuses too).
+- The standard slash field names accepted are a literal list of one, `contact_zip/postal_code` (under Series_ or
+  Sample_); any other key with a slash still refuses the series.
+- The retry: at most 4 requests per file, 20 s apart, on HTTP 403, 429, 5xx and timeouts only.
+- A group's table needs at least 10 cells at each end AND at least one in every sample of the end (a sample without a
+  cell of the group has no mean to weigh equally).
+- The cell call and each cell's CP10k use the cell's counts on ALL its Gene Expression rows, before duplicated
+  symbols are dropped (the port called cells after the drop).
+- X020 is labelled in two runs (the derived classes on its E8.5 samples only), so its controls are drawn per end;
+  X019 in one run over both ends, as row N54.
+- T1's gene names are read from the released E9.5 file (a reference stage of every practice task), not E10.5.
+- (d) is the 3' v2 whitelist's 737,280 lines only; the port also allowed the 3' v3 size.
+- A fetched barcodes or features file that is not the screened copy is recorded by the fetch and refused by the load
+  (a failed (p1)), as the row's LOAD clause places it.
 
 ## Not checked
 
-- No GSM or GSE record was opened. The stage field names, the plug-day statements, the per-sample chemistry and
-  enrichment text, the file names and whether GSE176063's fetal heart record states a day are all unknown until the
-  plan runs. The pins guard against what the rule misses only as well as the two readers read.
-- False refusals. The rule fails closed on ordinary text that looks like a stage token, and it now reads protocol text
-  and every field, so more real records may refuse: TIE2 in capitals, E2f1, a "D1" lane name, "the same day", "3D",
-  "stage 2", a count such as "12 hearts" beside a stage, "timed-mated females" in a sentence that also names a stage
-  (a convention sentence with a day and no recognised convention). A protocol shared by every sample that lists every
-  stage is now read as series text (R27), but a series-wide field that also says "pooled" (as in "libraries were
-  pooled and sequenced") refuses every sample of the series, and a protocol that differs by one character between
-  samples is not series text. Its false-refusal rate on real GEO records is unknown. A refusal shows its reason in the
-  plan table; no clearance or pin can override it.
-- The screens' constants (the whitelist sizes, the hashtag-like names) are general knowledge, not checked against a
-  source; the screens ran only on synthetic files.
-- The verifier's lesser point 5: "genotype: Nkx2-5 E1 enhancer KO" reads E1 as a stage and conflicts (UNKNOWN), and a
-  somite key such as "somite number: ..." is always a leftover. Both fail closed (usability costs only).
-- The verifier's lesser point 1: the rule is not applied to the atlas in use. Without a stated E0.5 the unstated
-  widening makes any E9.5 or E14.5 end WINDOW, but X002 (GSE193346, E9.5 and E14.5) is not planned here, so it is
-  never checked the same way. Whether X002's own records state its plug convention is for the main session. The
-  verifier's replacement text for the register amendment: "X002's ends (E9.5, E14.5) were not re-read under the T1-ext
-  stage rule of bcd5832; under that rule they are permitted only if the plug convention is stated as E0.5 (E0 also for
-  E14.5)."
-- The Theiler and somite tables are general knowledge, widened, not checked against a source. Whether the Microwell-seq
-  gene symbols hold every set gene (min_genes_found) is unknown.
-- feng_member and released_inputs were tested only on stubs; groups and tables were not run end to end on real files.
+- No GSM or GSE record was opened. The stage field names, the plug-day statements, the per-sample text, the file names
+  and the files' contents are unknown until the plan and the screens run. The pins guard against what the rule misses
+  only as well as the two readers read.
+- False refusals. The rule fails closed on ordinary text that looks like a stage token; the pooling clause refuses
+  benign values that name a stage in one sentence and mix a reagent in another (listed above). Its false-refusal rate
+  on real GEO records is unknown. A refusal shows its reason in the plan table; no clearance or pin can override it.
+- Whether GSE244783's RNA samples' features files carry Peaks rows at all is unknown: if not, (b) says no and X019 is
+  dropped by the readers.
+- The hashtag-like names and the Theiler and somite tables are general knowledge, not checked against a source; the
+  whitelist size is the row's.
+- The labeller, the tables and the three steps ran only on synthetic data (`tests/test_t1_ext_tables.py`,
+  `tests/test_t1_ext_row.py`); the labeller's set sizes on the real atlases (min_genes_found) are unknown.
