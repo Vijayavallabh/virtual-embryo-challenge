@@ -598,15 +598,31 @@ def test_made_up_capital_digits_capital_names_drop_only_as_point_mutation_names(
     """The sweep of the made-up-symbols test on the capital-digit(s)-capital shape. A made-up name drops exactly when it
     spells the point-mutation notation: a residue code, a position of two to four digits with no leading zero, and a
     residue code or a stop (X); it drops by i:mutant and by nothing else. One-digit, leading-zero and five-digit
-    positions, and B, J, O, U or Z at either end (no residue code; X only at the end), are kept."""
+    positions, and B, J, O, U or Z at either end (no residue code; X only at the end), are kept. Since fix 3 the same
+    names drop written joined after a lower-case letter, a digit or a dot ("xG12D", "7G12D", ".G12D": the joined form
+    "KrasG12D", "H3K27M", "H3.3K27M"), and none drops after a capital ("QG12D": the all-capitals limit)."""
     up = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     digits = ("1", "9", "0", "05", "10", "12", "27", "99", "100", "600", "1000", "9999", "12345")
-    names = [a + d + b for a in up for d in digits for b in up]
-    dropped = {s for s in names if not cf.keep_row([s])}
-    want = {a + d + b for a in cf._AA for d in digits if d[0] != "0" and 2 <= len(d) <= 4 for b in cf._AA + "X"}
-    assert dropped == want, (sorted(dropped - want), sorted(want - dropped))
-    assert all(cf.dropped_by([s]) == ["i:mutant"] for s in dropped)
-    assert len(dropped) == 20 * 8 * 21   # 20 residue codes, 8 positions, 20 residue codes or X
+    bare = {a + d + b for a in up for d in digits for b in up}
+    spelled = {a + d + b for a in cf._AA for d in digits if d[0] != "0" and 2 <= len(d) <= 4 for b in cf._AA + "X"}
+    assert len(spelled) == 20 * 8 * 21   # 20 residue codes, 8 positions, 20 residue codes or X
+    for prefix, want in (("", spelled), ("x", spelled), ("7", spelled), (".", spelled), ("Q", set())):
+        dropped = {s for s in bare if not cf.keep_row([prefix + s])}
+        assert dropped == want, (prefix, sorted(dropped - want), sorted(want - dropped))
+        assert all(cf.dropped_by([prefix + s]) == ["i:mutant"] for s in dropped), prefix
+
+
+# the keyword-variants reviewer's second blocker: a point-mutation name joined to its gene symbol drops
+@pytest.mark.parametrize("text", ["KrasG12D", "KrasG12D/+", "Trp53R172H", "BrafV600E", "H3K27M", "H3.3K27M"])
+def test_point_mutation_names_joined_to_their_gene_drop(text):
+    assert "i:mutant" in cf.dropped_by([text]), (text, cf.dropped_by([text]))
+
+
+@pytest.mark.parametrize("text", ["C3H10T1/2", "HEK293T", "MCF10A", "E14Tg2a", "BRAFV600E"])
+def test_joined_look_alikes_and_the_all_capitals_form_are_kept(text):
+    # cell-line names that hold a capital-digits-capital run after a capital or a one-digit run are kept; the
+    # all-capitals joined form (BRAFV600E) is kept too, a noted limit: a capital before would drop HEK293T and MCF10A
+    assert cf.keep_row([text]), (text, cf.dropped_by([text]))
 
 
 def test_the_filter_reads_the_metadata_fields_only():

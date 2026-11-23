@@ -125,11 +125,14 @@ DROP_CLASSES = {
 DROP_PATTERNS: tuple[tuple[str, str, str], ...] = (
     # (class, the quoted word, pattern)
     # "mutagenized" shares the stem (kwdecide). A point-mutation name, residue-position-residue ("S33Y", "V600E", a stop
-    # as "*" or "X"), is the notation of a mutation, as +/- is of a mutant: case-sensitive, with no letter or digit on
-    # either side and two to four position digits. A one-digit position is not read as one: it would drop strain,
-    # antigen, receptor and tag names and named agents that spell no mutation (C3H, N2A, H2A.Z, E2A, G9A, S5P, D1R,
-    # P2A, G2M, S1P, I3C). Look-alikes with two or more digits (T47D, S100A, R26R) still drop and only thin the pool.
-    ("i", "mutant", r"mutant|mutat(?:ed|ion)|mutagen|(?-i:(?<![A-Za-z0-9])[" + _AA + r"][1-9][0-9]{1,3}[" + _AA
+    # as "*" or "X"), is the notation of a mutation, as +/- is of a mutant: case-sensitive, with two to four position
+    # digits, no capital letter before (a lower-case letter or a digit may come before: the name written joined to its
+    # gene symbol, "KrasG12D", "Trp53R172H", "H3K27M") and no letter or digit after. A one-digit position is not read
+    # as one: it would drop strain, antigen, receptor and tag names and named agents that spell no mutation (C3H, N2A,
+    # H2A.Z, E2A, G9A, S5P, D1R, P2A, G2M, S1P, I3C). Look-alikes with two or more digits (T47D, S100A, R26R) still drop
+    # and only thin the pool. Limit: a name joined to an all-capitals symbol ("BRAFV600E") is kept, since a capital
+    # before would read cell-line names (HEK293T, MCF10A) as mutations.
+    ("i", "mutant", r"mutant|mutat(?:ed|ion)|mutagen|(?-i:(?<![A-Z])[" + _AA + r"][1-9][0-9]{1,3}[" + _AA
      + r"X*](?![A-Za-z0-9]))"),
     # fl/fl, fl/+ and fl/- (floxed over null), and f/f, the short form of fl/fl (kwdecide)
     ("i", "flox", r"flox|" + _L + r"fl\s*/\s*(?:fl|\+|[" + _MINUS + r"])(?![a-z])|" + _L + r"f\s*/\s*f" + _E),
