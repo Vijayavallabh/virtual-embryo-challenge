@@ -2,7 +2,43 @@
 
 ## Current Objective
 
-- **State at 2026-11-23, 22:33 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-23, 23:10 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-23 (cc); next label (dd). Ruling rows through R29; next R30. Register through X020; next X021. T1's next row
+  is T73. Tries unchanged: T1 463, embryo 88, heart 97, T3 74. TWO WORKFLOWS ARE OPEN (below); nothing runs on the
+  DGX. Main at the commit of this note.
+  - **FOUR HEADLINES REPORTED** (log (cc); `results/manual_uploads.csv`, headline only; the paste's per-metric lines
+    and ranks are not recorded and not used): T1 `T1_s2rcC.h5ad` 71.8 (new best), heart `T2heart_organ_half.h5ad` (D)
+    60.4 (new best), T3 `T3_c1_s2.h5ad` 63.8 (new best), embryo `T2embryo_s2x_cr.h5ad` 63.99 (the board keeps 69.9).
+    Standing 71.8 + 63.8 + (60.4 + 69.9) / 2 = 200.75 (197.04 before).
+  - **ORDERS NOW** (`docs/UPLOAD_SHEET.md`: 20 files in the orders, 3 skipped). T1: `T1_s2rcB2.h5ad`,
+    `T1_s2rcMSB.h5ad`, then at each slot line 1's due file (B25 only if the 2.0 file is strictly above B's 71.59, C's
+    headline does not enter; B30 only if B25 above the 2.0 file), then line 2's (`T1_s2rcA15.h5ad`, due; A20 only if
+    A15 above A's 70.8), then line 3's (`T1_s2rcCm20.h5ad`, DUE NOW since C is strictly above A; Cm25 only if Cm20
+    above C's 71.8). T3: `T3_c2_s2.h5ad`, `T3_k23_s2.h5ad`; CK only after both are uploaded and each is strictly above
+    the barred s2's 62.30 (the rule names base B's headline, NOT the board's best: the sheet's and the reply's earlier
+    wording is corrected, log (cc)); the e4 file only if K23 is above 62.30. Embryo, no conditions:
+    `T2embryo_s2x_crs.h5ad`, `T2embryo_s2xs_ov.h5ad`, `T2embryo_s2.h5ad`, `T2embryo_s2x_ovhi.h5ad`. Heart:
+    `T2heart_core_ts05_half.h5ad` (TS05), then `T2heart_organ_ts05_half.h5ad` (OTS05, due since D's headline is
+    reported); TS10 only if TS05 above the full trim's 56.4; OTS10 only if OTS05 above D's 60.4.
+  - **PUT TO THE CAPTAIN, NOT ANSWERED:** Cm20 is the next step on the file that holds T1's best and stands last among
+    T1's ready files by line 3's own order rule; the order is the captain's to change; the main session gave no lean.
+  - **OPEN WORKFLOW 1, wf_61761ec3-e4f:** a re-reading of which waiting files the record expects below the NEW bests
+    (four readers, four cold verifiers; the definitions of log (aa), with the rule that a pattern across test
+    headlines is not evidence) plus one independent check of the rule application in the sheet and in entry (cc). When
+    it returns: a log entry, a corrected sheet if the checker found a difference, and the report to the captain; no
+    queue changes without the captain's word.
+  - **OPEN WORKFLOW 2, wf_5a8901fb-2a7:** a score-blind design round for T1 and T3 under R22's 'Other lines' clause
+    (designer, then cold challenger, per board; inputs `lift8/round_1123/inputs_T1.txt` and `inputs_T3.txt`, which
+    hold ordinal facts only). If a line comes back 'place_as_final': place it in the log and the rules note before any
+    build (row R22's first cell must name the option strings), then a blind engineer and reviewer, the identity builds
+    and two builds with one sha256, all by 2026-11-25 12:00 UTC. The heart and the embryo got no round: a new file
+    there needs the captain's named order.
+  - **Blind analysts, widened today:** the ledger cells with first-day headlines are in rows R8, R9, R10 to R15, R17,
+    K18 and T61 to T63; blind analysts read the ledger only through `lift8/ledger_blind.py` (ruling rows: first cell
+    only), never open `progress.md`, `session-handoff.md`, `METHOD_SUMMARY.md`, `feature_list.json`, the top-level
+    `results/`, `experiments/builds/results/t3two_fb01487.txt` or `tests/test_h28_heart_trend_strength.py`, and never
+    run git log, show or diff.
+- **State at 2026-11-23, 22:33 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-23 (bb); next label (cc). Ruling rows through R29; next R30. Register through X020; next X021. T1's next row
   is T73. Tries unchanged: T1 463, embryo 88, heart 97, T3 74. NOTHING RUNS, here or on the DGX; no workflow is open.
   Main at the commit of this note.

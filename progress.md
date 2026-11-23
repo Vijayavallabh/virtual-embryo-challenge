@@ -2,6 +2,14 @@
 
 ## Current State
 
+- **2026-11-23, 23:10 UTC.** The captain reported four headlines, one per board. T1's file C (71.8), the heart's
+  organ-cut file D (60.4) and T3's C1 (63.8) each took their board's best; the embryo's copy-rows file returned 63.99
+  under the board's 69.9. Standing by best headline per board: 200.75 (197.04 before). Each board's pre-set rule was
+  applied: T1's `T1_s2rcCm20.h5ad` and the heart's `T2heart_organ_ts05_half.h5ad` are now due, and T3's two
+  conditional files stay tied to the barred s2's headline. `docs/UPLOAD_SHEET.md` was rewritten (20 files in the
+  orders, 3 skipped). Two rounds are open: a checked re-reading of the waiting files against the new bests, and a
+  score-blind design round for T1 and T3. Decision log 2026-11-23 (cc).
+
 - **2026-11-23, 22:33 UTC.** The captain set an upload condition (expected score closer to per-board targets; the
   targets are not in the repository) and asked for a comparison; a checked reading of the record (four readers, four
   cold verifiers) found three waiting files that the record itself expects below their board's best, two it does not
