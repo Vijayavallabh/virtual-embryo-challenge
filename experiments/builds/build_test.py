@@ -79,8 +79,19 @@ machine, and an official upload needs the captain's go-ahead.
           (`--g-mom-damping 1.0 --feng-fraction-mult 2.0` or `... 2.5`; the bare multiplier's option does not count),
           with --released-bet, on any other command or seed and on a dry run. The pair is tested before the
           multiplier's own routing; every other pair of the two values is taken or refused as before. Its record's
-          t1_candidate field names row R22
-  heart  B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
+          t1_candidate field names row R22.
+          --direction-momentum all --captain-ruling R23 (row R23 of experiments/harness/TRIES.md, the captain's order
+          of 2026-11-23, docs/PLAN.md decision log 2026-11-23 (c): candidate MS): R13's file with one change, the
+          drawn cells whose label's group has a recomputed direction also get B0's per-category damped mean momentum
+          (harness.B0_DAMPING, pseudocount 0.5, keep_depth, stream [seed, 1], the build's held genes; fitted from E9.5
+          to E10.5's portion libraries 1 and 2, library 3 never in the fit), applied before the atlas step ([seed, 2],
+          the calendar fraction) and g_mom ([seed, 5]), which stay as they are; cells without a group keep R1's hold.
+          As the practice arm m1rc_gmom_mom of experiments/t1_m1/ms_read.py (row T65) builds it, the fit on the test's
+          stages. Refused without --captain-ruling R23, with any other row, unless row R23's first cell is the
+          captain's order naming the option, with --g-mom-damping, --feng-fraction-mult, --released-bet,
+          --bet-strength or --no-hold-unbracketed, on any other command or seed and on a dry run. Its record's
+          t1_candidate field names row R23, the momentum's constants and fit stages, and the command
+  heart B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
           procedure: --entry s1 = scope hypothesis H1; s2_trim = the s2 of docs/S2_RULES.md (H2 as a trim to half
           E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`). --trend
           (both heart files since the captain's ruling of 2026-11-13, docs/PLAN.md decision log (w); row H11 of
@@ -578,8 +589,8 @@ def _bet_refusals(a) -> None:
     bet = getattr(a, "released_bet", None)
     if bet is None:
         ruling = getattr(a, "captain_ruling", None)
-        if ruling is not None and (_ruled_fraction_ordered(a) or _ruled_damping_ordered(a)  # rows R20, R22:
-                                   or _ruled_line3_ordered(a)):
+        if ruling is not None and (_ruled_fraction_ordered(a) or _ruled_damping_ordered(a)  # rows R20, R22, R23:
+                                   or _ruled_line3_ordered(a) or _ms_ordered(a)):
             return  # _t1_candidate refused every other use
         if ruling is not None or getattr(a, "bet_strength", None) is not None:
             sys.exit("--captain-ruling and --bet-strength go with --released-bet only")
@@ -651,6 +662,27 @@ T1_R22_LINE3_OPTIONS = {2.0: "`--g-mom-damping 1.0 --feng-fraction-mult 2.0`",
 T1_LINE3_ORDER_R22 = ("experiments/harness/TRIES.md row {row}, the captain's order of 2026-11-22 (docs/PLAN.md "
                       "decision log 2026-11-22), the third T1 search line: on file C's command, g_mom's within-type "
                       "damping held at 1.0 and the direction at {v:.1f} x the calendar fraction, nothing else changed")
+# Row R23 of experiments/harness/TRIES.md (the captain's order of 2026-11-23, docs/PLAN.md decision log 2026-11-23 (c)):
+# candidate MS, T1_CANDIDATE_COMMAND with one change. The drawn cells whose label's group has a recomputed direction
+# (build_submission's covered cells) also get B0's per-category damped mean momentum (vec.t1_scope.momentum_shift at
+# harness.B0_DAMPING with its own pseudocount eps 0.5, min_cells 20 and keep_depth, on build_submission's momentum stream
+# [seed, 1], held genes the build's held list: R2's union joined with the pre-registered list), fitted from E9.5 to
+# E10.5's portion libraries 1 and 2 (library 3, the dissected heart, never enters the fit), applied before the atlas step
+# ([seed, 2], the calendar fraction) and g_mom ([seed, 5]), which stay as they are. Cells without a group keep R1's
+# hold. As the practice arm m1rc_gmom_mom of experiments/t1_m1/ms_read.py (row T65) builds it, with the fit's stages
+# the test's. Off by default; taken only with --captain-ruling R23 while that row is the captain's order naming the
+# option, never with candidate A, B or C's options or a released bet.
+DIRECTION_MOMENTUM_ARMS = ("all",)  # the one arm row R23 names
+T1_R23_ROW = "R23"
+T1_R23_OPTION = "`--direction-momentum all`"
+T1_MS_COMMAND = f"{T1_CANDIDATE_COMMAND} --direction-momentum all --captain-ruling {T1_R23_ROW}"
+T1_MS_STREAM = 1  # build_submission's momentum stream, [seed, 1]
+T1_MS_DIRECTION_STREAM = 2  # build_submission's direction stream, [seed, 2]
+T1_MS_FIT_LIBRARIES = ("1", "2")  # E10.5's portion libraries, the fit's later end; library 3 never enters it
+T1_MS_ORDER = ("experiments/harness/TRIES.md row R23, the captain's order of 2026-11-23 (docs/PLAN.md decision log "
+               "2026-11-23 (c)): candidate MS, R13's file with B0's released per-category damped mean momentum added "
+               "on the cells whose label's group has a recomputed direction, before the atlas step and g_mom (arm "
+               "'all'); nothing else changed")
 
 
 def _captain_order_names(row: str, option: str, path: Path | None = None) -> bool:
@@ -824,6 +856,111 @@ def _t1_candidate(a) -> dict | None:
             "feng_fraction_mult": FENG_FRACTION_MULTS[0] if mult is None else float(mult),
             "order": "docs/PLAN.md decision log 2026-11-20 (i): A = damping 1.0, B = 1.5 x the calendar fraction, C = "
                      "both; no ruling"}
+
+
+MS_STACKED = (("--g-mom-damping", "g_mom_damping"), ("--feng-fraction-mult", "feng_fraction_mult"),
+              ("--released-bet", "released_bet"), ("--bet-strength", "bet_strength"))
+
+
+def _ms_ordered(a) -> bool:
+    """The command row R23 orders, as _t1_ms holds it: --direction-momentum all with --captain-ruling R23, none of
+    candidate A, B or C's options or a released bet's, and row R23 the captain's order naming the option."""
+    return (getattr(a, "direction_momentum", None) in DIRECTION_MOMENTUM_ARMS
+            and getattr(a, "captain_ruling", None) == T1_R23_ROW
+            and all(getattr(a, attr, None) is None for _, attr in MS_STACKED)
+            and _captain_order_names(T1_R23_ROW, T1_R23_OPTION))
+
+
+def _t1_ms(a) -> dict | None:
+    """--direction-momentum all (candidate MS, row R23): refused before anything is read without --captain-ruling R23,
+    with any other row, unless row R23 is the captain's order naming the option (`_captain_order_names`, as the R20 and
+    R22 options), with --g-mom-damping, --feng-fraction-mult, --released-bet or --bet-strength (MS is never stacked on A,
+    B or C), with --no-hold-unbracketed, and on any command but T1_CANDIDATE_COMMAND at the default seed on the test
+    board (never a dry run). Returns None when the option is not given (today's path and record exactly), else the
+    record's candidate values, naming the row."""
+    arm = getattr(a, "direction_momentum", None)
+    if arm is None:
+        return None
+    row, option = T1_R23_ROW, T1_R23_OPTION
+    what = f"--direction-momentum {arm}"
+    if arm not in DIRECTION_MOMENTUM_ARMS:
+        sys.exit(f"{what} is refused: row {row} names the arm 'all' only")
+    ruling = getattr(a, "captain_ruling", None)
+    if ruling is None:
+        sys.exit(f"{what} is the captain's order of row {row} alone and needs --captain-ruling {row}")
+    if ruling != row:
+        sys.exit(f"{what} is refused with --captain-ruling {ruling}: only row {row} orders it")
+    if not _captain_order_names(row, option):
+        sys.exit(f"{what} is refused: experiments/harness/TRIES.md has no single row {row} whose first cell is the "
+                 f"captain's order (\"ruling, no run\") naming {option} and `--captain-ruling {row}`")
+    stacked = [flag for flag, attr in MS_STACKED if getattr(a, attr, None) is not None]
+    if stacked:
+        sys.exit(f"{what} is refused with {', '.join(stacked)}: candidate MS is one change to R13's file and is never "
+                 f"stacked on candidate A, B or C or a released bet (row {row})")
+    if not getattr(a, "hold_unbracketed", True):
+        sys.exit(f"{what} is refused with --no-hold-unbracketed: the cells without a group keep R1's hold (row {row})")
+    if (getattr(a, "feng_groups", FENG_GROUPS_DEFAULT) != "recomputed" or a.seed != harness.BUILD_SEED_OFFSET + 1
+            or a.board is not None):
+        sys.exit(f"{what} changes T1's recomputed last file only: it needs the command {T1_CANDIDATE_COMMAND} at the "
+                 f"default seed on the test board (row {row})")
+    return {"direction_momentum": arm, "captain_ruling": row, "order": T1_MS_ORDER}
+
+
+def _t1_ms_step(ref, library: np.ndarray, directions, fraction: float, groups, held, seed: int):
+    """Candidate MS's step on the drawn population, before g_mom: on the cells whose label's group has a direction
+    (build_submission's covered test, `groups.get(label) in directions`), B0's per-category damped mean momentum
+    (`t1_scope.momentum_shift` at harness.B0_DAMPING with its defaults: eps 0.5, min_cells 20, keep_depth; the held
+    genes `held`; stream [seed, T1_MS_STREAM]; the chamber config's E9.5 and E10.5 stand-ins), fitted from E9.5 to the
+    reference's portion libraries T1_MS_FIT_LIBRARIES (`library`: each reference row's library), then the atlas step on
+    the same cells exactly as build_submission takes it (`t1_scope.external_shift`, the same directions, fraction,
+    groups and held genes, stream [seed, T1_MS_DIRECTION_STREAM]); every other cell as drawn; stacked by
+    `t1_scope._stack_rows`, covered cells first, as build_submission stacks them. The same calls in the same order as
+    experiments/t1_m1/ms_read.py's `ms_population` (the practice arm m1rc_gmom_mom), whose fit runs on the practice
+    task's own stages. Refused unless the reference's libraries other than the dissected one are exactly
+    T1_MS_FIT_LIBRARIES. E9.5 is loaded here. Returns the step and its record (constants and stages; no cell number)."""
+    portions = sorted(set(library.tolist()) - {T1_DISSECTED_LIBRARY})
+    if portions != list(T1_MS_FIT_LIBRARIES):
+        sys.exit(f"--direction-momentum is refused: E10.5's libraries other than {T1_DISSECTED_LIBRARY} are "
+                 f"{portions}, not the fit's {list(T1_MS_FIT_LIBRARIES)} (row {T1_R23_ROW})")
+    spec = t1_scope.load_spec()
+    start = harness._shallow(load_stage(DATA / "T1/E9.5_RNA.h5ad", lineage=False))
+    later = ref[np.flatnonzero(np.isin(library, T1_MS_FIT_LIBRARIES))].copy()
+    t1_scope.classify(start, source="E9.5_RNA", spec=spec)
+    t1_scope.classify(later, source="E10.5_RNA", spec=spec)
+    kw = {"start_fallback": spec.fallbacks("E9.5_RNA"), "ref_fallback": spec.fallbacks("E10.5_RNA")}
+    held = list(held)
+
+    def step(pop):
+        labels = pop.obs[t1_scope.LABEL_KEY].astype(str).to_numpy()
+        cov = np.array([groups.get(lab) in directions for lab in labels], dtype=bool)
+        parts = []
+        if cov.any():
+            idx = np.flatnonzero(cov)
+            mom, _ = t1_scope.momentum_shift(start, later, pop[idx].copy(), harness.B0_DAMPING, held,
+                                             label_key=t1_scope.LABEL_KEY, seed=[seed, T1_MS_STREAM], **kw)
+            moved, _ = t1_scope.external_shift(mom, directions, fraction, groups, held, label_key=t1_scope.LABEL_KEY,
+                                               seed=[seed, T1_MS_DIRECTION_STREAM])
+            parts.append((idx, moved))
+        if not cov.all():
+            idx = np.flatnonzero(~cov)
+            parts.append((idx, pop[idx].copy()))
+        return t1_scope._stack_rows(parts, pop.n_obs)
+
+    record = {"rule": "B0's per-category damped mean momentum (vec.t1_scope.momentum_shift: log f = damping x "
+                      "log((m_later + eps) / (m_start + eps)) per category over its own cells; f = 1 on the held genes "
+                      "and for a category with fewer than min_cells own cells or drawn from stand-ins at either stage) "
+                      "on the drawn cells whose label's group has a recomputed direction, then the atlas step on the "
+                      "same cells, then g_mom; every other cell as drawn (R1's hold)",
+              "damping": float(harness.B0_DAMPING), "eps": 0.5, "min_cells": 20, "keep_depth": True,
+              "stream": [int(seed), T1_MS_STREAM], "direction_stream": [int(seed), T1_MS_DIRECTION_STREAM],
+              "fit": {"start": "E9.5_RNA", "later": "E10.5_RNA", "later_libraries": list(T1_MS_FIT_LIBRARIES),
+                      "library_3_in_fit": False},
+              "held": "the build's held list: R2's union joined with the pre-registered list",
+              "covered": "build_submission's covered cells: the label's group has a recomputed direction "
+                         f"({sorted(directions)})",
+              "practice_arm": "experiments/t1_m1/ms_read.py m1rc_gmom_mom (row T65), whose fit runs on the practice "
+                              "task's own stages"}
+    return step, record
 
 
 def _feng_group_names(feng_groups: str = FENG_GROUPS_DEFAULT) -> list[str]:
@@ -1070,6 +1207,7 @@ def _bet_median_library(pool, base_shares: dict, bet_pop, n: int, seed: int) -> 
 
 def build_t1(a) -> dict:
     feng_groups = getattr(a, "feng_groups", FENG_GROUPS_DEFAULT)
+    ms = _t1_ms(a)  # None unless --direction-momentum is given (candidate MS, row R23); its refusals read nothing
     candidate = _t1_candidate(a)  # None unless --g-mom-damping or --feng-fraction-mult is given; refusals read nothing
     _bet_refusals(a)  # nothing at all unless --released-bet (or one of its two companions) is given
     if feng_groups == "none":
@@ -1154,7 +1292,14 @@ def build_t1(a) -> dict:
     own_shares = shares
     if bet == "share_trend":  # refused above unless --feng-groups none, so the pool is library 3's (row R8's command)
         shares, bet_record = _t1_trend(ref, library != T1_DISSECTED_LIBRARY, shares, a.bet_strength)
-    if bet == "advance":
+    ms_record = None
+    if ms is not None:  # candidate MS (refused above unless the recomputed command with --g-mom): the same draw, then
+        # the momentum and the atlas step on the covered cells, then g_mom's hook, all inside post_cells
+        ms_step, ms_record = _t1_ms_step(ref, library, directions, fraction, groups, held, a.seed)
+        g_mom_hook = within_type["post_cells"]
+        sub, rep = t1_scope.build_submission(pool, board, shares, n, a.seed, held_flat=held, ref_source="E10.5_RNA",
+                                             herd=a.herd, post_cells=lambda pop: g_mom_hook(ms_step(pop)))
+    elif bet == "advance":
         sub, rep, bet_record, bet_pop = _t1_advance(ref, pool, library != T1_DISSECTED_LIBRARY, shares, n, a.seed,
                                                     held, board, within_type["post_cells"], a.bet_strength)
     else:
@@ -1201,6 +1346,9 @@ def build_t1(a) -> dict:
     if candidate is not None:  # written only with --g-mom-damping or --feng-fraction-mult ("fraction" is the applied)
         rec["t1_candidate"] = {**candidate, "calendar_fraction": calendar, "applied_fraction": fraction,
                                "command": T1_CANDIDATE_COMMAND}
+    if ms is not None:  # written only with --direction-momentum, so every other file's record is as before
+        rec["t1_candidate"] = {**ms, "momentum": ms_record, "calendar_fraction": calendar, "applied_fraction": fraction,
+                               "command": T1_MS_COMMAND}
     if mid_record is not None:  # likewise: shares only, no cell number
         rec["mid_base"] = {"stream": [int(a.seed), T1_MID_STREAM], "categories": mid_record}
     if a.g_mom:
@@ -1712,6 +1860,14 @@ def build_parser() -> argparse.ArgumentParser:
                                 "inside each category towards the released momentum axis). Composition, a lever "
                                 "closed by the post-exposure block: refused unless --captain-ruling names the "
                                 "captain's ruling row for the arm")
+            p.add_argument("--direction-momentum", choices=DIRECTION_MOMENTUM_ARMS, default=None,
+                           help=f"candidate MS (row {T1_R23_ROW} of experiments/harness/TRIES.md, the captain's order "
+                                "of 2026-11-23; off by default): on the command "
+                                f"{T1_CANDIDATE_COMMAND} at the default seed on the test board, the drawn cells whose "
+                                "label's group has a recomputed direction also get B0's per-category damped mean "
+                                "momentum (fitted from E9.5 to E10.5's libraries 1 and 2), before the atlas step and "
+                                f"g_mom. Needs --captain-ruling {T1_R23_ROW}; refused with --g-mom-damping, "
+                                "--feng-fraction-mult, --released-bet, --bet-strength or --no-hold-unbracketed")
             p.add_argument("--bet-strength", type=float, default=None,
                            help="with --released-bet: lambda (share_trend) or tau (advance), one of row T61's values")
             p.add_argument("--captain-ruling", default=None,
@@ -1724,7 +1880,8 @@ def build_parser() -> argparse.ArgumentParser:
                                 "order for the second T1 search line; with --g-mom-damping 1.0 and "
                                 f"--feng-fraction-mult {FENG_FRACTION_MULTS_LINE3[0]:g} or "
                                 f"{FENG_FRACTION_MULTS_LINE3[1]:g}: {T1_R22_ROW}, the captain's order for the third "
-                                "T1 search line")
+                                f"T1 search line; with --direction-momentum all: {T1_R23_ROW}, the captain's order "
+                                "for candidate MS")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim", "core_trim", "organ_scope"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "
