@@ -2,7 +2,33 @@
 
 ## Current Objective
 
-- **State at 2026-11-23, 20:10 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-23, 20:18 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-23 (w); next label (x). Ruling rows through R28; R29 is reserved for the second heart line (not placed yet).
+  Everything else as the bullet below.
+  - **THE CAPTAIN ORDERED THE TREND TRIED ON FILE D TOO** (own words "i want it too" under a side note; log (w): my
+    reading = the named exception for D's command with the trend step at strength 0.5 and 1.0, two files, built before
+    any score of D or of them; not an order that lets a score pick the base). The AI assistant is recused on the
+    heart's scope and size and designs no line.
+  - **RUNNING: workflow w3hq5inzx** (four agents, blind to test scores). Chain A: a rule writer
+    (`lift8/heart_line_d/rule_text_draft.txt`) then a cold challenger (`lift8/heart_line_d/rule_text_final.txt`; a
+    background waiter saves the challenger's hand-back to `lift8/heart_line_d/attack_final.json`). Chain B: an
+    engineer on `campaign/heart-trend-line-d` (the option as `heart --entry organ_scope --trend-strength S --z-mode
+    raw --captain-ruling R29`; files `T2heart_organ_ts05.h5ad`, `T2heart_organ_ts10.h5ad` and their halves; launcher
+    `experiments/builds/heart_trend_line_d.sh <COMMIT> <RUN>` with identity steps for D and for the first line's TS05;
+    scratch `~/v/scratch/heartlined/<RUN>`, output `runs/heartlined_<commit7>_<RUN>`) and a reviewer.
+  - **NEXT, IN ORDER.** (1) When the challenger's final text is in (verdict place_as_final): `python3 -I -B
+    lift8/place_r29.py <repo> <lift8> x <HH:MM>` places ruling row R29 (its first cell names the four strings the
+    builder's check needs), the rules note's amendment with the final text verbatim, the pin and log (x); then the pin
+    and ledger tests, commit, push. If the challenger put a question for the captain, pass it on unchanged with its
+    default. If the verdict is do_not_place: no row; tell the captain why. (2) When the code review is ready: merge to
+    main with the targeted tests, push, deliver to the DGX (`git push PrakashDGX_H2:v/vec-campaign
+    <commit>:refs/heads/<name>`), check out in `~/v/scratch/h29b-wt` (idle, own environment), trace the launcher's
+    refusal path under a throwaway HOME (forty zeros: expect a gate exit record), launch detached with PATH exported,
+    wait with a background waiter. (3) Read exit files, the sha256 list and the stamps file only; copy the two halves
+    to `runs/manual_upload/`, check sha256; record (build record, row R29's last cell, rules note and pin,
+    `docs/UPLOAD_SHEET.md`, log) BEFORE any score; hand over with path, sha256, board and the Data-used text (released
+    Task 2 heart stages and the unlocked E10.5 validation file only; no outside data).
+- **State at 2026-11-23, 20:10 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-23 (v); next label (w). Ruling rows through R28; next R29. Register through X020; next X021. T1's next row
   is T73 (the name T72 belongs to the MX2s row that was never placed). Tries unchanged: T1 463, embryo 88, heart 97,
   T3 74. NOTHING RUNS, here or on the DGX; no workflow is open.
