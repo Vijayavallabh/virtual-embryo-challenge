@@ -1,0 +1,3 @@
+OUTCOME Try K27: STOP at P1: the database bars are not met; no fold read, no try, no file.
+tries counted: 0
+P1 (Ctnnb1, database only): kept 5, bound set 1, exit 3

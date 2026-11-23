@@ -11468,3 +11468,31 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     place it takes the plain momentum file's place, after C and the 2.0 file, and MS follows it. It reads no score to
     go and its headline enters no search line. No score of MS or of this file has been reported to the main session.
     Handed over to the captain with path, sha256, board and the Data-used text (as R13's file).
+- 2026-11-23 (q), T3: row K27 (candidate CHIPQ-S) stops at its first gate; no try, no file (state at 18:11 UTC,
+  2026-11-23). Written by the AI assistant, which designed none of it.
+  - **Outcome, in the row's fixed words: "Try K27: STOP at P1: the database bars are not met; no fold read, no try, no
+    file."** P1 printed its two counts: 5 kept experiments of the test's gene (bar 3, met) and a bound set of 1 panel
+    gene (bar 15, not met). The launcher's database part ran at the registration commit 4b11323 in
+    `~/v/vec-campaign-c` from 18:07 to 18:08 UTC: tests 0, the manifest's check 0, P1 exit 3, the stop reading written
+    once, all.exit 28. P2 did not run: no table exists, the listing is empty, the pins are None, and nothing was
+    compared with a fold or with the barred factor. Tries counted: none (T3 stays at 74). The two reading files are
+    committed (`experiments/t3_decomp/results/k27_chip_query/`).
+  - **The download before it.** The fixed fetch completed at 18:05 UTC: 423 target files (the two query antigens' and
+    421 placebo antigens'), 78 placebo antigens without a file at the archive (each answered with a redirect that was
+    never followed), recorded by count only; the manifest verified.
+  - **One check after the stop, of the code and not of the candidate.** Because the bound-set code had never run on
+    the real files, the AI assistant ran it on the 421 fetched placebo antigens only (no query antigen opened, no name
+    printed, no fold read; script kept in the DGX scratch): bound-set sizes run from 0 to 423 panel genes, median 5;
+    158 antigens have 15 or more, 149 have at most 1; all 500 panel genes map. So the gene mapping and the rule work,
+    a bound set of 1 is an ordinary value under this rule, and the stop is a property of the test gene's five kept
+    experiments under the fixed rule (bound in at least half of them), not a fault in the code. Nothing about the test
+    gene's table beyond P1's two counts was read.
+  - **What it means (the AI assistant's reading).** The cold challenger put this gate's odds at 0.45 and named the
+    reason it could fail: most public experiments for this gene are in mutant or stimulated samples, which the screen
+    drops. The gate did what it was written for: it ended the line within a minute of running, at no cost in tries. By
+    the row the candidate is not rerun under another row and the database is not read again on this fold. The
+    test-board build path was never started.
+  - **Where the outside-data round of entry (b) now stands.** T3: its one kept candidate is closed here. T1: its one
+    kept candidate (the three-atlas sign consensus) needs the captain's word before any code and has had none; its
+    challenger said it fits the deadline only if started on the evening of 23 Nov. The two T2 boards: nothing was
+    kept. The files that can still raise a mark are the ones already built and handed over.

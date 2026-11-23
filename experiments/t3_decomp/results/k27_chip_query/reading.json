@@ -1,0 +1,29 @@
+{
+ "incomplete": false,
+ "void": false,
+ "stop": "P1",
+ "p1": {
+  "exit": "3",
+  "kept": 5,
+  "bound": 1
+ },
+ "p2": null,
+ "p2_sha256": null,
+ "tries_counted": 0,
+ "outcome": "Try K27: STOP at P1: the database bars are not met; no fold read, no try, no file.",
+ "passes": false,
+ "reading_code": {
+  "script": "experiments/t3_decomp/k27_chip_query.py",
+  "script_sha256": "09ccf34aefbbe1a5377256f7d0b158ac96c9fcd248170a6ac9b95922a5b25f16",
+  "chipq_sha256": "d7e9689f78d4aef2d2da1249c86c8909872ba5e9c0544a206ec719708b7cff70",
+  "chipq_fetch_sha256": "f41ff076f6341671a42009b4f06b722e1cefd8e0e2919fe5575039067c8f03e7",
+  "outside_forms_sha256": "4837687d47f134ff690177ecaaec7c712952c238d0e7c806c5c8ef2cecb3ceb5",
+  "k22_sha256": "6482585242ad6213eb550ceac54f3b9f911da6f8b0c2901216ea74ff24c7dc19",
+  "k23_sha256": "98bdac5b9f2413bc6d11e470fdbd2202df5ab3dc22548c8940812ac1f455eb98",
+  "k21_sha256": "97ce564ddea8b03ad017f0d029b27c7d453ce75615d287e54860b8680f23c8c6",
+  "k18_sha256": "4355e6d21fec4c7f9b89eef8508cc06c0174d9a36f120e75028a98d2ecc6c6a8",
+  "commit": "4b11323e8da674804e944d4d16e770a095284cd1",
+  "tree_clean": true,
+  "machine": "p01r10srv05"
+ }
+}
