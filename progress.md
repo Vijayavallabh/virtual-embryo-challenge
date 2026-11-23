@@ -2,6 +2,13 @@
 
 ## Current State
 
+- **2026-11-23, 20:10 UTC.** The Task 1 three-atlas line is closed with no try: on the two series' metadata the plan
+  step refused every sample on series-wide wording (a form of 'pool' in one series, the token 'mix' in the other), and
+  two independent readers answered no on two checklist points for both series; no data file was requested and the
+  practice row was never placed. The outside-data round is thereby finished on every board. The heart search line's
+  two files (TS05, then TS10 on its condition) wait with the other built files: `docs/UPLOAD_SHEET.md` lists 25.
+  Nothing runs. Decision log 2026-11-23 (u), (v).
+
 - **2026-11-23, 20:03 UTC.** The heart search line's two files are built and handed over (TS05 and TS10; builder
   option reviewed ready with no blocker; each built twice on the DGX after the full trim's identity rebuild; sha256 in
   the log before any score; decision log (u)). The Task 1 three-atlas line: a trial of the metadata plan step now runs

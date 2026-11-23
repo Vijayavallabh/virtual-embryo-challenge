@@ -2,7 +2,33 @@
 
 ## Current Objective
 
-- **State at 2026-11-23, 20:03 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-23, 20:10 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-23 (v); next label (w). Ruling rows through R28; next R29. Register through X020; next X021. T1's next row
+  is T73 (the name T72 belongs to the MX2s row that was never placed). Tries unchanged: T1 463, embryo 88, heart 97,
+  T3 74. NOTHING RUNS, here or on the DGX; no workflow is open.
+  - **WAITING ON THE CAPTAIN'S UPLOADS.** `docs/UPLOAD_SHEET.md` lists 25 built files with sha256, condition and
+    Data-used text (checked against disk at 19:55 UTC). No score has been reported since 21 Nov. When the captain
+    pastes scores: the headline per board only into `results/manual_uploads.csv`, one log entry, each board's pre-set
+    rule applied mechanically (T1 line 1: 2.5 only if the 2.0 file strictly beats B's; line 2: A20 only if A15
+    strictly beats A's; line 3: Cm20 only if C strictly beats A's, Cm25 if Cm20 beats C's; T3: CK only if C2 and K23
+    each strictly beat the current best, e4 only if K23 does; heart: TS10 only if TS05 strictly beats the full trim
+    C's headline, whatever D scores; MSB, MS, D, embryo files: best-headline mark only), then the sheet updated.
+  - **MX2s (T1 three-atlas line): CLOSED WITH NO TRY** (log (v); ruling row R27's last cell; register rows X019, X020;
+    `docs/DATA_POLICY.md` note 2026-11-23 (d)). The plan step refused every sample of both new series on series-wide
+    wording and two independent readers answered no on checklist points 2 and 5 for both. No data file was ever
+    requested; row T72 never placed. Code on pushed, unmerged branches `campaign/t1-mx2s`, `-2`, `-3`, `-read`,
+    `-read-2`. Scratch: `lift8/t72_row_cells_v3.json`, `lift8/t72_rule_v2/`, `lift8/t72_series_text_readers.json`,
+    `lift8/t72_trial/`. A reopening needs the captain's own word and, for the series refused on a pooling word, a new
+    named exception. DGX: `~/v/scratch/t1line-wt` at 02562e4 (clean), metadata in `~/v/scratch/t72_trial_plan` and
+    `~/v/vec-ext/t1/meta` (kept).
+  - **HEART: as the bullet below** (TS05 and TS10 handed over; DGX worktree `~/v/scratch/h29b-wt` at d41cd14 with
+    `runs/heartline_d41cd14_ts1`).
+  - **STILL OFF UNLESS THE CAPTAIN NAMES THEM:** T1 line 1's step back; the turn order of T1's third line; the T3
+    pathway tier (stays out unless the captain says "build the T file"); MX2s (closed). Known, not yet fixed:
+    `build_combination.sh`, `run_k22.sh`, `run_k23.sh` name the old T3 tables folder (fix before any new launch).
+    About 390 agent worktrees sit under the repository (disks: / 37 GB, /mnt/md0 55 GB free; the background disk
+    watcher still runs).
+- **State at 2026-11-23, 20:03 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-23 (u); next label (v). Ruling rows through R28; next R29. Nothing of ours runs on the DGX.
   - **HEART SEARCH LINE: BUILT AND HANDED OVER** (log (u); record
     `experiments/builds/results/heartline_d41cd14_ts1.txt`). `runs/manual_upload/T2heart_core_ts05_half.h5ad` sha256
