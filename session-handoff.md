@@ -2,7 +2,37 @@
 
 ## Current Objective
 
-- **State at 2026-11-23, 16:32 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-23, 16:53 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-23 (n); next label (o). Local main = origin/main at f2a0bdf or one notes commit after it. The combined MS
+  build (run m1, waiter bcqv7ks8j) is still running; see the bullet below for what to do on done=0.
+  - **CHIPQ-S, WHERE IT STANDS.** Database code merged (f3cc4d7); lists and rows fetched on the DGX; the screen done
+    (two readers agree: 5 of 20 Ctnnb1 experiments kept, 7 of 32 Gata4); kept list pinned
+    (`experiments/t3_ext/chipq_kept.yaml`, f2a0bdf); X018 amended. The `targets` download stopped at the fifth file:
+    the archive answers a placebo antigen it has no file for with a 302 to another host. **RUNNING:** wrrab9haf
+    (branch `campaign/t3-chipq-5`: the fetch records such placebo antigens in `screen/placebo_unfetched.json` and goes
+    on; the pool leaves them out; reviewer follows); wgt8p6ct5 (branch `campaign/t3-k27-read-2`: the read script's
+    tests made independent of the committed pin state, the one blocker of its review; reviewer follows). A safety
+    classifier stopped a rule agent's answer on six small points (and very likely the first rule writer's): not
+    pressed; they stand as the reviewed code has them (entry (n)).
+  - **THE LAUNCH PLAN FOR ROW K27** (hand-backs in scratch: `lift8/k27_read_build.json`; row cells
+    `lift8/k27_row_cells_v2.json`; rule files `lift8/k27_rule_v2/`). (1) Merge `campaign/t3-chipq-5` when ready;
+    deliver; in `~/v/scratch/k27-wt` check out the merged commit and rerun `chipq_fetch.py targets` (it takes up from
+    the four files), then `verify`. (2) Merge `campaign/t3-k27-read-2` when ready (new files only). (3) REGISTRATION
+    COMMIT on main: place row K27 from the v2 cells (after T71's neighbours, as the last K row), commit the rule files
+    for the record, the listing empty, the pins None. Departures of the read engineer to accept in the log:
+    `run_k27.sh db REG` then `run_k27.sh run SECOND REG`; the listing empty at REG; listing lines `<sha256> <name>`
+    without .csv; P2 loads the barred factor for the gene order only. (4) On the DGX: `mkdir -p
+    ~/v/vec-ext/t3/tables_k27`; the run is in `~/v/vec-campaign-c` ITSELF (the row names it; K23's run folder
+    `runs/k23_b706e82` is there; nothing else runs there; move aside untracked files that the new commit tracks, then
+    check out REG); trace a refusal path under a throwaway HOME; `bash experiments/t3_decomp/run_k27.sh db <REG>`
+    detached with PATH exported; waiter on `~/v/scratch/k27_<REG7>/db/all.exit` (0 ok; 28 P1 stop; 29 P2 stop). (5)
+    SECOND COMMIT: ONLY the listing and the script's pin lines, from `~/v/scratch/k27_<REG7>/db/second_commit.txt`;
+    make it on a SIDE BRANCH cut at REG (invocation 2 refuses any other difference between REG and SECOND, and main
+    will have moved); deliver; `run_k27.sh run <SECOND> <REG>`; waiter on `.../run/all.exit`. (6) Read only the
+    OUTCOME line (`grep '^OUTCOME'` of reading.txt); a PASS goes to the captain as one question (section 4.4's
+    provenance rule, A15, share-alike) and the build path is then written; P1 passing is the trigger to start the
+    build-path engineer.
+- **State at 2026-11-23, 16:32 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-23 (m); next label (n). Local main = origin/main at a3e879a or one notes commit after it.
   - **THE CAPTAIN: "[try it]" (entry (m)).** The combined file `T1_s2rcMSB` leaves the end of the T1 queue: unless the
     captain names another place it takes the plain momentum file's place (after C and the 2.0 file) and MS follows it.
