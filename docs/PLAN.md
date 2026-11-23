@@ -10981,3 +10981,24 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     need the captain's named exception; the held-out gene's own pathway tier of outside knockouts is treated as held
     out unless the rule's words show otherwise. The main session designs none of it; kept candidates go to engineers
     and reviewers, then to practice reads under ledger rows.
+- 2026-11-23 (c), the captain approves the four items put by name: MS, SO, O_hi and the heart's file D (state at 14:46
+  UTC, 2026-11-23). Written by the AI assistant, which is recused on three of the four and gave no lean on any.
+  - **The captain's words, verbatim:** "ultrathink You have my approval for all".
+  - **What they answered.** The message before them ended with the items "waiting on your word": name SO and O_hi
+    (embryo); decide on file D (heart) and the momentum file MS (T1); upload the queued files. Each of the four had
+    been put as its own question with its price: SO and O_hi on 2026-11-22 in the analysts' text, file D on 2026-11-22
+    in the analysts' text, MS as Q-MS (entry 2026-11-22 (bb)).
+  - **The AI assistant's reading (its own).** The words are the captain's yes to each of those four by name: ruling
+    rows R23 (MS), R24 (SO and O_hi; for O_hi the embryo's depth line is lifted for that one file) and R25 (file D),
+    and three amendments to `docs/S2_RULES.md`. File D sits on closed levers; it was built under the named exception
+    of row R21 and nothing new is built on them by this reading; the upload is the captain's own act and final word,
+    and the captain is told so. The words are NOT read as covering two questions that message did not put: the step
+    back for T1's first search line (it must be named before the 2.0 file's score, and departs from the framework's
+    round steps) and the heart search line's exception for two new files on the full trim's scope and size (a closed
+    lever). Those stay as they are unless the captain names them; nor do the words change the turn order of T1's third
+    line.
+  - **What follows.** SO, O_hi and file D are handed over for upload with path, sha256, board and the Data-used text.
+    MS: an engineer and a reviewer write the builder option exactly as its specification fixes it (never stacked on A,
+    B or C), the launcher is traced, and the file is built twice. The AI assistant has told the captain that MS sits
+    on R13's file and so raises T1's mark only by passing the board's best, and that a combined form would need a list
+    of its own by the order rule.

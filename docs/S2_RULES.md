@@ -2077,3 +2077,45 @@ C's command (g_mom's damping at 1.0) the multipliers 1.0 and 1.5 and each of 2.0
 names any file built and not uploaded, and says that the best headline was kept. Data used: as R13's file (released
 challenge data and the outside heart atlas on recomputed groups, register row X002). Each upload is the captain's own
 act. The line is void unless this entry is committed to the decision log before C's headline is returned.
+
+## Amendment of 2026-11-23: T1's candidate MS is named (the captain's ruling; row R23; decision log 2026-11-23 (c))
+
+The captain, to a message that named T1's candidate MS among four items waiting on the captain's word, verbatim: "You
+have my approval for all" (`docs/PLAN.md` decision log 2026-11-23 (c); ruling row R23). Row T65 had read MS AHEAD on
+practice, and by the T1 order rule of decision log 2026-11-21 (y) only the captain's ruling naming the arm puts it in
+a file. **The file:** `build_test.py t1 --g-mom --base lib3 --feng-groups recomputed --direction-momentum all
+--captain-ruling R23 --out <O>/T1_s2rc_MS.h5ad`: R13's file with the released per-category damped mean momentum added
+on the direction-group cells before the atlas step and g_mom, and nothing else changed. It counts only after the
+builder takes the option under `--captain-ruling R23` alone, an independent reviewer has passed the change, the
+launcher has been traced on a harmless path, the default command has rebuilt R13's bytes (ad8f24c71c90...) in the same
+checkout, and the file has been built twice from one clean commit with one sha256 and has passed the format check. Its
+place is after the files of decision log 2026-11-20 (r)'s list. It is never stacked on A, B or C: a combination needs
+a list of its own, fixed before its score. Nothing is rebuilt, re-seeded or changed after a score. Data used: as R13's
+file (released challenge data and the outside heart atlas on recomputed groups, register row X002). Each upload is the
+captain's own act.
+
+## Amendment of 2026-11-23: the embryo's candidates SO and O_hi are named (the captain's ruling; row R24; decision log 2026-11-23 (c))
+
+The captain, to a message that asked for SO and O_hi to be named, verbatim: "You have my approval for all" (decision
+log 2026-11-23 (c); ruling row R24). Both candidates passed row E51's pre-set rules on practice, and the question,
+with the read's figures, was written by analysts other than the main session, which is recused on the embryo's shape
+forms and occupancy term and states no preference. **SO** is `T2embryo_s2xs_ov.h5ad`, sha256
+77062082d97555961901c811d8a1aaf9b5b2403417c19a6988c816ff553f1165; **O_hi** is `T2embryo_s2x_ovhi.h5ad`, sha256
+7e4d1eaafc40080d9d9c461d4b9396f0cee6353686538e79fb92ca31d1d2deeb; each was built twice with one sha256 on 2026-11-22
+and its identity checks hold. For O_hi the naming also lifts the embryo's depth line, which the ledger had closed for
+files, for this one file and for nothing else. By the embryo's order rule (decision log 2026-11-21 (y)) their places
+are SO, then `T2embryo_s2`, then O_hi, after C and the sized copy-rows file; the captain may use fewer, none, or
+another order. Neither is rebuilt, re-seeded or changed after a score. Data used: released challenge data only; no
+outside data. Each upload is the captain's own act.
+
+## Amendment of 2026-11-23: the heart's organ-cut file D may be uploaded (the captain's yes; row R25; decision log 2026-11-23 (c))
+
+The captain, to a message that asked for a decision on file D, verbatim: "You have my approval for all" (decision log
+2026-11-23 (c); ruling row R25). The amendment of 2026-11-22 above let file D be coded and read under the captain's
+named exception on the heart's scope and size; its practice read (row H29b) was a READ, the question with the read's
+figures was written by analysts other than the main session, and the file was built twice with one sha256:
+`T2heart_organ_half.h5ad`, sha256 1b4342c151c19dfc827d4b7a310c6a0fa8908f1e369836ebffb22c27c93b4f00. The main session,
+recused on the heart's scope and size, reads the captain's words as the yes to file D by name and has said so to the
+captain; the upload is the captain's own act and final word. File D enters the heart's order after the full trim C; it
+is not rebuilt, re-seeded or changed after a score. Data used: released Task 2 heart stages and the unlocked E10.5
+validation file only; no outside data.
