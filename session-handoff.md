@@ -2,7 +2,36 @@
 
 ## Current Objective
 
-- **State at 2026-11-23, 18:14 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-23, 18:40 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-23 (r); next label (s). Next ruling row R28; next register row X021; T1's next row T72; T3's next K28. Local
+  main = origin/main at ab7444d or one notes commit after it. `docs/UPLOAD_SHEET.md` lists every waiting file with
+  sha256, condition and Data-used text (no score in it; update it when a file is added or a score changes a
+  condition).
+  - **THE CAPTAIN: "You have my approval and word for all the above" (entry (r)).** Read as: (1) the word T1 candidate
+    MX2s needed, with the stage-parser exception: ruling row R27, `docs/DATA_POLICY.md` note 2026-11-23 (c); practice
+    read only, a file needs a further question after AHEAD. (2) The T3 pathway tier STAYS OUT (a general approval is
+    not an order to build on an item under the organisers' genotype clause; the captain was told to say 'build the T
+    file' if that was meant). Nothing else changes.
+  - **MX2s IS RUNNING.** Register rows X019 (GEO GSE244783) and X020 (GEO GSE230531) are placed; X002 amended. Texts
+    for agents in scratch: `lift8/drastic_spec_t1_1.txt` (governs), `drastic_t1_challenger_notes.txt`,
+    `drastic_t1_designer_mx2.txt`. Workflow w7wcujlu0 (journal folder wf_3689f154-f29): chain 1 rule writer -> cold
+    attack -> reviser (files under `lift8/t72_rule/` and `lift8/t72_rule_v2/`); chain 2 engineer (branch
+    `campaign/t1-mx2s`: the parked `experiments/t1_ext` on main, strict form, parser exception, screens, the known
+    blocker) -> reviewer. Waiter bktlrykz5 saves the port's review to `lift8/mx2s_port_review.json`.
+  - **MX2s, NEXT STEPS IN ORDER.** (a) Port review ready: merge `campaign/t1-mx2s`, deliver to `v/vec-campaign-d`,
+    make a detached worktree with its own env; run the plan step on the DGX (family SOFT metadata only); copy the
+    plan's records to local scratch WITHOUT reading them; two independent readers apply
+    `lift8/t72_rule_v2/readers_checklist.md` (or v1) and hand back accessions, record sha256 and yes/no per check;
+    `pin-template`; commit pins; plan again; `groups.py derive` (commit its output and sha256); fetch barcodes and
+    features first, the screens (a) to (d), then matrices; add file names and sha256 to X019/X020. (b) Launch the
+    engineers for the consensus tables (the specification's steps 4 to 6, in `experiments/t1_ext`) and for the
+    practice read (steps 7 and 8: a generalised `cmjax_read.py`, its launcher, tests), each with a reviewer, blocker
+    standard up front, briefs pointing at the rule files. (c) Place row T72 from the revised cells (factual updates
+    only at placement, declared in the log) BEFORE the reducer runs; trace the launcher; run in a DGX worktree with
+    PATH exported; read the OUTCOME line only. (d) AHEAD: one priced question to the captain (the file, the
+    X002/X019/X020 upload amendments); then the builder option, review, two builds, all by 25 Nov 12:00 UTC. NOT AHEAD
+    or a failed pre-gate: the line closes.
+- **State at 2026-11-23, 18:14 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-23 (q); next label (r). Next ruling row R27; next register row X019; T3's next row K28. Local main =
   origin/main at 56ff9c4 or one notes commit after it. Nothing is running on the DGX and no workflow is running.
   Tries: T1 463, embryo 88, heart 97, T3 74 (unchanged today).

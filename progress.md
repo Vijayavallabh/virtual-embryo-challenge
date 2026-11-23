@@ -2,6 +2,11 @@
 
 ## Current State
 
+- **2026-11-23, 18:40 UTC.** The captain gave the word the Task 1 three-atlas line needed (ruling row R27); it is
+  running: register rows X019 and X020 placed, a rule writer and a cold challenger on its ledger row, an engineer and
+  a reviewer on the parked code. The Task 3 pathway tier stays out. `docs/UPLOAD_SHEET.md` lists the 23 built files
+  that wait for an upload. Decision log 2026-11-23 (r).
+
 - **2026-11-23, 18:14 UTC.** The outside-data round's T3 candidate (the knocked-out gene's binding set from a public
   ChIP database) stopped at its first, free gate: after the screen the test gene's five kept experiments share a bound
   set of one panel gene against a bar of fifteen. No try was counted and no file exists. A counts-only check on 421
