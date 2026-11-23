@@ -649,7 +649,7 @@ def cmd_pregate(a) -> int:
     res = {"label": LABEL, "row": ROW, "reading": _jsonable(reading), "arm_tables": arm_tables,
            "member_tables": {f"{m} {g}": {"file": t["file"], "sha256": t["sha256"]} for (m, g), t in tables.items()},
            "tables_manifest_sha256": sha256_file(TABLES_MANIFEST), "yaml_sha256": man.get("yaml_sha256"),
-           "samples": {acc: sorted((x.get("samples") or {})) for acc, x in (man.get("atlases") or {}).items()},
+           "samples": {acc: sorted(x.get("samples") or {}) for acc, x in (man.get("atlases") or {}).items()},
            "author_labels_read": man.get("author_labels_read"), "data_constants": man.get("constants"),
            "constants": pregate_constants(), "held_m1_genes": len(held_m1), "open": list(OPEN),
            "stamp": gv.stamp(started, [TABLES_MANIFEST, t1_scope.HELD_FLAT_GENES, feng_dirs.recomputed_stats_path(),
@@ -1226,6 +1226,10 @@ def _line(name: str, p: Mapping) -> str:
             f"{p['of']}, per seed {p['range'][0]:+.2f} to {p['range'][1]:+.2f}; by group: {g}")
 
 
+def _fmt(x) -> str:
+    return f"{x:.4g}" if isinstance(x, (int, float)) else str(x)
+
+
 def t72_text(res: Mapping) -> str:
     r = res["reading"]
     lines = [res["label"], f"OUTCOME {r['outcome']}", *outcome_lines(r)]
@@ -1249,9 +1253,8 @@ def t72_text(res: Mapping) -> str:
         for g, ga in (pg.get("groups") or {}).items():
             lines.append(f"  {g}: members {ga.get('members')}, gene counts {ga.get('member_gene_counts')}")
             for a, v in (ga.get("arms") or {}).items():
-                k = v.get("k_g")
-                lines.append(f"    {a}: k_g {'none' if k is None else f'{k:.4g}'}, zero share {v['zero_share']:.3f}, "
-                             f"Spearman with X002 over S_g {v['spearman_x002']:.3f}")
+                lines.append(f"    {a}: k_g {_fmt(v.get('k_g'))}, zero share {_fmt(v.get('zero_share'))}, Spearman "
+                             f"with X002 over S_g {_fmt(v.get('spearman_x002'))}")
         for g, d in (pg.get("members") or {}).items():
             for m, f in d.items():
                 lines.append(f"  member {m} {g}: Spearman with X002 {f.get('spearman')}, cells {f.get('n_early')} and "
