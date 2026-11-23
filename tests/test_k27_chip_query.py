@@ -1087,3 +1087,19 @@ def test_the_script_opens_no_target_file_and_names_no_held_out_fact():
     assert "rmtree" not in src and "unlink(" not in src
     with contextlib.redirect_stdout(io.StringIO()):
         assert k27.TRY_ARMS and k27.S_VOID.format(clause="x").endswith("(plus the failed guard arms).")
+
+
+def test_genes_changed_per_arm_and_world_are_reported(tmp_path):
+    runs = tmp_path / "runs"
+    for s in SEEDS:
+        f = runs / "plain_g1" / f"seed_{s}.json"
+        f.parent.mkdir(parents=True, exist_ok=True)
+        f.write_text(json.dumps({"world_figures": {"x_e2": {"genes_changed": 7},
+                                                   "chip_rand_s1": {str(s): {"genes_changed": 10 + s}}}}))
+    d = runs / "dm" / "g1_seed_0.json"
+    d.parent.mkdir(parents=True)
+    d.write_text(json.dumps({"world_figures": {"chip_q_s4": {"genes_changed": 9},
+                                               "chip_rand_s4": {str(s): {"genes_changed": 20 + s} for s in SEEDS}}}))
+    got = k27.genes_changed(runs)
+    assert got["plain"]["x_e2"] == 7 and got["plain"]["chip_rand_s1"] == {str(s): 10 + s for s in SEEDS}
+    assert got["dm"]["chip_q_s4"] == 9 and got["dm"]["chip_rand_s4"]["9"] == 29

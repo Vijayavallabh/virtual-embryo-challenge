@@ -1606,6 +1606,26 @@ def _tables_ok(erec: dict, k23_read: dict | None) -> list[str]:
     return why
 
 
+def genes_changed(runs: Path) -> dict:
+    """Reported: genes changed against phi_M by each arm per world, from the scoring parts' world figures (plain: the
+    g1 task files, one seed each, so chip_rand per seed; dm: the g1 seed 0 file, which records every seed)."""
+    out: dict = {"plain": {}, "dm": {}}
+    for s in SEEDS:
+        p = Path(runs) / f"plain_g1/seed_{s}.json"
+        wf = (json.loads(p.read_text()).get("world_figures") or {}) if p.is_file() else {}
+        for a, v in wf.items():
+            if kind_of_arm(a) == "chip_rand":
+                out["plain"].setdefault(a, {}).update({k: x.get("genes_changed") for k, x in v.items()})
+            else:
+                out["plain"][a] = v.get("genes_changed")
+    p = Path(runs) / "dm/g1_seed_0.json"
+    wf = (json.loads(p.read_text()).get("world_figures") or {}) if p.is_file() else {}
+    for a, v in wf.items():
+        out["dm"][a] = ({k: x.get("genes_changed") for k, x in v.items()} if kind_of_arm(a) == "chip_rand"
+                        else v.get("genes_changed"))
+    return out
+
+
 def _void(common: dict, clauses: list[str], tries: int) -> dict:
     clause = clauses[0].replace(";", ",") if clauses else "unrecorded"
     return {"incomplete": False, **common, "void": True, "why": clauses, "tries_counted": tries,
@@ -1716,7 +1736,7 @@ def reading(runs: Path, refs: Path = K18_TASKS, u3d: Path = k18.U3D_RECORDS, k23
                 why.append(f"guard match: {w} {n}: {x} in the scoring part is off the guard part's (limits "
                            f"{GUARD_MEAN} and {GUARD_SEED})")
     check = k18.dm_check({n: rows[("dm", n)] for n in TASKS}, u3d)
-    common |= {"guard_match": match, "dm_check_u3d_report_only": check}
+    common |= {"guard_match": match, "dm_check_u3d_report_only": check, "genes_changed": genes_changed(runs)}
     if why:
         return _void(common, why, N_TRIES) | {"worlds": per}
     return ({"incomplete": False, **common, "void": False, "why": [], "tries_counted": N_TRIES,
@@ -1775,6 +1795,9 @@ def text(res: dict) -> str:
                      f"{res['named_size'] or 'none'}")
     for k, d in (res.get("guard_match") or {}).items():
         lines.append(f"  scoring part against the guard part, {k}: {k21._dist(d)}")
+    for w, v in (res.get("genes_changed") or {}).items():
+        if v:
+            lines.append(f"genes changed against phi_M, {w} world: " + "; ".join(f"{a} {x}" for a, x in v.items()))
     if res.get("dm_check_u3d_report_only"):
         lines.append("U3d's check arm in the dm world, reported only: " + "; ".join(
             f"{n} {k21._dist(c['distance'])}" for n, c in res["dm_check_u3d_report_only"].items()))
