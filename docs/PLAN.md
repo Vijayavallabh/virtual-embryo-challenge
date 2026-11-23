@@ -11205,3 +11205,28 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the rule itself. The test-board build path is written only if the database-only pre-gate passes. Two background
     waiters release the rule writer's and the first reviewer's hand-backs as soon as each exists, so the fetch and the
     screen do not wait for the whole workflow.
+- 2026-11-23 (j), T1: the captain orders a combined MS file; its list is being written by score-blind analysts (state
+  at 16:02 UTC, 2026-11-23). Written by the AI assistant, which designs none of it and gives no lean on it.
+  - **What the captain sent.** A note from a side agent (MS sits on the older T1 file, so alone it raises the mark
+    only by passing the board's best; the rules forbid adding MS to the stronger files unless a combined file is named
+    before its score; "If you want it, say 'combine MS' in the main session soon"), and the captain's own words,
+    verbatim: "combine MS". The AI assistant had put the same choice to the captain in its hand-over of the approval
+    of entry (c) ("say 'combine MS' if you want score-blind analysts to write one (default: no)"). It reads the words
+    as the captain's order for a combined MS file under clause (5) of the T1 order rule of entry 2026-11-21 (y): "Any
+    combination needs its own list, fixed before its score."
+  - **State of the scores at this entry.** No score of MS, of C, of the 2.0 file or of any later T1 file has been
+    reported to the main session; the last T1 headlines on record are those of entry 2026-11-21 (w). No combined file
+    exists.
+  - **Started** (workflow t1-ms-combined, four agents, all blind to test scores; they are given ordinal facts only: B
+    holds the board's best headline, then the first upload, then A, then R13). A designer writes the list: which
+    stronger file or files MS is combined with, the exact options and values, each upload's condition in headline
+    terms, the turn order, what is void, and whether a practice read is needed first. A cold challenger attacks it
+    against the search framework of row R22, clauses (4) and (5) of the order rule and the closed levers, and hands
+    back the final text. Then an engineer makes the builder take the listed combinations only under a new ruling row
+    R26, with a launcher whose identity steps rebuild R13's, MS's and each base file's recorded bytes before any new
+    file, and a reviewer checks under a blocker standard fixed up front.
+  - **What the AI assistant does next.** When the challenger's final list is in: ruling row R26 with the exact option
+    strings in its first cell, the list verbatim in `docs/S2_RULES.md` (re-pinned) and in this log, all before any
+    build and so before any score of the list's files; then the merge, the dry-run trace, the builds (each file
+    twice), the sha256 into this log, and the hand-over. Uploads stay the captain's own acts; the captain may use any
+    order.
