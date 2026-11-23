@@ -139,8 +139,91 @@ def load_atlases(path: Path | None = None) -> dict:
             for s in a["series"]:
                 if not re.fullmatch(r"GSE\d+", s):
                     raise Refused(f"{acc}: series {s!r} is not a GEO series accession")
+        if a["status"] in FETCHABLE:
+            # the strict form (ruling row R27): every fetchable atlas names its samples per end, its never-fetch list,
+            # and, for 10x files, the screens run on barcodes and features before any matrix is fetched
+            for e in ("early", "late"):
+                if not a[e].get("gsms"):
+                    raise Refused(f"{acc}: the {e} end names no samples (gsms): the strict form names every sample")
+            if not isinstance(a.get("never_fetch"), Mapping):
+                raise Refused(f"{acc}: never_fetch missing")
+            if a["form"] == "tenx_mtx" and not a.get("screens"):
+                raise Refused(f"{acc}: a 10x atlas without screens is refused")
+        check_never_fetch(acc, a)
+        if a.get("screens"):
+            unknown = set(a["screens"]) - set(SCREENS)
+            if unknown:
+                raise Refused(f"{acc}: unknown screens {sorted(unknown)} (known: {SCREENS})")
         check_pins(acc, a)
     return cfg
+
+
+# ------------------------------------------------------------------------------------------------ the strict form
+#
+# Ruling row R27 reopened the line in its strict form: per atlas, the samples of each end are named (`gsms`), a pin may
+# name only those, and the pins must cover every named sample; the never-fetch list names samples and files that no
+# step may fetch (every sample of the series that is not named is also never fetched, since only pinned samples are).
+SCREENS = ("suffix", "own_peaks", "no_hashing", "whitelist_sized")
+
+
+def named_gsms(a: Mapping) -> dict[str, str]:
+    """GSM -> end, for the samples the atlas entry names (empty when it names none: synthetic test entries)."""
+    out: dict[str, str] = {}
+    for e in ("early", "late"):
+        for g in a.get(e, {}).get("gsms") or []:
+            if g in out:
+                raise Refused(f"{a.get('accession')}: {g} is named at both ends")
+            out[g] = e
+    return out
+
+
+def check_never_fetch(acc: str, a: Mapping) -> None:
+    nf = a.get("never_fetch")
+    if nf is None:
+        return
+    if not isinstance(nf, Mapping) or set(nf) - {"samples", "files"}:
+        raise Refused(f"{acc}: never_fetch holds only samples and files")
+    for g in nf.get("samples") or []:
+        if not isinstance(g, str) or not re.fullmatch(r"GSM\d+", g):
+            raise Refused(f"{acc}: never_fetch sample {g!r} is not a GSM accession")
+    clash = set(nf.get("samples") or []) & set(named_gsms({**a, "accession": acc}))
+    if clash:
+        raise Refused(f"{acc}: {sorted(clash)} are both named and never fetched")
+
+
+def never_fetch_refusal(a: Mapping, gsm: str | None = None, url: str | None = None) -> str | None:
+    """Why a sample or a file may not be fetched under the atlas's never-fetch list (None when it may): a listed sample
+    by accession, a listed file by name, any file whose name or path names a listed sample, and every series archive
+    (<GSE>_RAW.tar) of the atlas's series by name."""
+    nf = a.get("never_fetch") or {}
+    samples = set(nf.get("samples") or [])
+    files = set(nf.get("files") or []) | {f"{s}_RAW.tar" for s in a.get("series", [])}
+    if gsm is not None and gsm in samples:
+        return f"{gsm} is on the never-fetch list"
+    if url is not None:
+        name = file_name(url)
+        if name in files:
+            return f"{name} is on the never-fetch list (a series archive or a named file)"
+        for g in samples:
+            if re.search(rf"(?<!\d){g}(?!\d)", url):
+                return f"{name} names {g}, which is on the never-fetch list"
+    return None
+
+
+def pins_complete(a: Mapping, pins: Mapping) -> list[str]:
+    """Refusals when the atlas names its samples and the pins do not pin exactly those samples at their ends."""
+    named = named_gsms(a)
+    if not named:
+        return []
+    out = []
+    missing = sorted(set(named) - set(pins["samples"]))
+    if missing:
+        out.append(f"named samples not pinned: {missing} (the strict form uses every named sample or none)")
+    for g, p in pins["samples"].items():
+        if named.get(g) != p["end"]:
+            out.append(f"{g} is pinned at the {p['end']} end but the atlas names it "
+                       f"{'at the ' + named[g] + ' end' if g in named else 'nowhere'}")
+    return out
 
 
 def atlas(acc: str, cfg: Mapping | None = None) -> dict:
@@ -164,7 +247,9 @@ def entry_sha256(acc: str, cfg: Mapping | None = None) -> str:
     return sha256_json({"atlas": a, "forms": cfg["forms"], "protocol_terms": cfg["protocol_terms"],
                         "enrichment_terms": cfg["enrichment_terms"], "theiler": THEILER, "somites": SOMITES,
                         "conventions": CONVENTIONS, "unstated": UNSTATED, "window": WINDOW,
-                        "processing_canonical": PROCESSING_FORMAT, "record_canonical": RECORD_FORMAT})
+                        "processing_canonical": PROCESSING_FORMAT, "record_canonical": RECORD_FORMAT,
+                        "screen_rules": cfg.get("screen_rules"), "series_text_rule": SERIES_TEXT_RULE,
+                        "pooling_words": POOLING_WORDS.pattern})
 
 
 def require_frozen(cfg: Mapping) -> None:
@@ -518,13 +603,22 @@ def _values(name: str, values: Iterable[str]):
 
 
 def stage_reading(fields: Mapping[str, Iterable[str]], files: Iterable[str] = (),
-                  protocol: Iterable[str] = (), protocol_fields: Mapping[str, Iterable[str]] | None = None) -> dict:
+                  protocol: Iterable[str] = (), protocol_fields: Mapping[str, Iterable[str]] | None = None,
+                  series_fields: Mapping[str, Iterable[str]] | None = None) -> dict:
     """A sample's stage from its own record (see the rule above). `fields`: descriptive field name -> verbatim values;
     `files`: its supplementary file names; `protocol`: its and its series' text, read for the plug-day convention;
     `protocol_fields`: the sample's own protocol and processing fields, read sentence by sentence (protocol mode); a
-    reading there counts as one anywhere else. Returns {mark: WINDOW | UNKNOWN | PERMITTED, low, high (the widened
-    union), nominal_low, nominal_high (as written), readings, leftovers, convention, window_reading, reason,
-    fields_read, files_read}."""
+    reading there counts as one anywhere else. `series_fields`: the sample's protocol and processing fields that are
+    byte-identical across every sample record of its series (the stage-parser exception of ruling row R27, see
+    series_wide_fields): they give no stage reading, a pooling word in them refuses (UNKNOWN), and when there is one
+    the sample's stage must come from its own title and its own characteristics, which must both give a reading and
+    agree (else UNKNOWN). The exception can only turn a sample that would otherwise be refused into one that is read
+    from its title and characteristics; it never makes an unpinned sample usable. Returns {mark: WINDOW | UNKNOWN |
+    PERMITTED, low, high (the widened union), nominal_low, nominal_high (as written), readings, leftovers, convention,
+    window_reading, reason, fields_read, files_read, series_text_fields}."""
+    series_fields = {k: list(v) for k, v in (series_fields or {}).items()}
+    pooling = [{"field": k, "token": m.group(0)} for k, vals in series_fields.items() for v in vals
+                for m in POOLING_WORDS.finditer(_lower(nfkc(v)))]
     conv = convention(protocol)
     sh = conv["shift"] if conv["shift"] is not None else UNSTATED
     rs: list[dict] = []
@@ -562,6 +656,7 @@ def stage_reading(fields: Mapping[str, Iterable[str]], files: Iterable[str] = ()
         add(f"file {f}", [(re.sub(r"^GSM\d+_", " ", f, flags=re.IGNORECASE), False, True)], True)
     window_reading = any(touches_window(r["wlow"], r["whigh"]) for r in rs)
     base = {"readings": rs, "leftovers": left, "convention": conv, "window_reading": window_reading,
+            "series_text_fields": sorted(series_fields),
             "fields_read": sorted(fields_read), "files_read": sorted(x[len("file "):] for x in files_read),
             "low": min((r["wlow"] for r in rs), default=None), "high": max((r["whigh"] for r in rs), default=None),
             "nominal_low": min((r["low"] for r in rs), default=None),
@@ -572,6 +667,9 @@ def stage_reading(fields: Mapping[str, Iterable[str]], files: Iterable[str] = ()
 
     if conv["shift"] is None:
         return out("UNKNOWN", conv["reason"])
+    if pooling:
+        x = pooling[0]
+        return out("UNKNOWN", f"a pooling word in a field read as series text ({x['field']}: {x['token']!r})")
     if left:
         x = left[0]
         return out("UNKNOWN", f"an unparsed stage-like token ({x['field']}: {x['token']!r}, {x['what']})")
@@ -586,6 +684,17 @@ def stage_reading(fields: Mapping[str, Iterable[str]], files: Iterable[str] = ()
     if window_reading:
         return out("WINDOW", f"a reading, widened by the plug-day convention {conv['name']} {tuple(sh)}, meets the "
                              f"T1 window (E9.5, E13.5]")
+    if series_fields:
+        def span(sel):
+            got = [r for r in rs if sel(r["field"])]
+            return (min(r["low"] for r in got), max(r["high"] for r in got)) if got else None
+
+        t, c = span(lambda f: f == "title"), span(lambda f: f.startswith("characteristics"))
+        if t is None or c is None or t != c:
+            return out("UNKNOWN", f"fields read as series text ({sorted(series_fields)}): the stage must come from "
+                                  f"the sample's own title and characteristics, which must agree (title "
+                                  f"{t if t is not None else 'no reading'}, characteristics "
+                                  f"{c if c is not None else 'no reading'})")
     return out("PERMITTED", "")
 
 
@@ -656,10 +765,53 @@ def convention_text(rec, series_protocol: Iterable[str]) -> list[str]:
     return [*series_protocol, *own]
 
 
-def record_stage(rec, series_protocol: Iterable[str] = ()) -> dict:
-    """The stage rule on one sample's whole record (the plan, the fetch, the loader and read_reduced all call this)."""
+# The stage-parser exception (ruling row R27, third cell, in its words): "a protocol or processing field that is
+# byte-identical across every sample record of a series is read as series text: it gives no stage reading, and it
+# still refuses on pooling words; the sample's stage must then come from its own title and characteristics, which must
+# agree". Read here as: a FIELD is one key of the record with all its values (GEO's repeated `!Sample_<key>` lines,
+# in order); it is series text when every sample record of the series holds that key with the same list of values,
+# compared as the stored text (geo.parse_soft strips surrounding whitespace); a series with one sample has none. A
+# series-text field still feeds the plug-day convention (as the series' own summary and design do) and is still printed
+# in the processing text; it is never read for a stage, a leftover or a companion integer.
+SERIES_TEXT_RULE = "t1x-series-text-v1 (ruling row R27: whole field, every sample of the series, at least two)"
+# Pooling words: refused in series text (the exception's own clause). Word forms of pool and merge only; "combined"
+# and "mixed" are left out because 10x protocol prose uses them for reagents ("master mix", "combined with").
+POOLING_WORDS = re.compile(r"(?<![a-z])(?:pool(?:s|ed|ing)?|merg(?:e|es|ed|ing))(?![a-z])")
+
+
+def series_wide_fields(sample_records: Mapping[str, object]) -> dict[str, list[str]]:
+    """The protocol and processing fields (PROTOCOL_FIELD) that are byte-identical across EVERY sample record of one
+    series: key -> values. Empty for a series with fewer than two sample records; a field missing from one sample, or
+    differing in one value, one character or the order of its values, is not series text."""
+    recs = [record_dict(r) for r in sample_records.values()]
+    if len(recs) < 2:
+        return {}
+    out = {}
+    for k, v in recs[0].items():
+        if not v or not PROTOCOL_FIELD.fullmatch(k) or NOT_STAGE.fullmatch(k):
+            continue
+        if all(r.get(k) == v for r in recs[1:]):
+            out[k] = list(v)
+    return out
+
+
+def series_text_of(rec, series_text: Mapping[str, Iterable[str]] | None) -> dict[str, list[str]]:
+    """The sample's own protocol and processing fields that equal the series text given for its series."""
+    if not series_text:
+        return {}
+    own = protocol_fields(rec)
+    return {k: v for k, v in own.items() if k in series_text and list(series_text[k]) == v}
+
+
+def record_stage(rec, series_protocol: Iterable[str] = (), series_text: Mapping[str, Iterable[str]] | None = None
+                 ) -> dict:
+    """The stage rule on one sample's whole record (the plan, the fetch, the loader and read_reduced all call this).
+    `series_text`: the series-wide fields of the sample's series (series_wide_fields over every sample record of the
+    series, as the plan computed it); without it no field is read as series text."""
     names = [file_name(u) for u in supplementary(rec)]
-    return stage_reading(stage_fields(rec), names, convention_text(rec, list(series_protocol)), protocol_fields(rec))
+    st = series_text_of(rec, series_text)
+    own = {k: v for k, v in protocol_fields(rec).items() if k not in st}
+    return stage_reading(stage_fields(rec), names, convention_text(rec, list(series_protocol)), own, st)
 
 
 # Canonical record text (pinned by tests/test_t1_ext_stage.py::test_record_text_canonical_form; README, "Canonical
@@ -731,6 +883,7 @@ def check_pins(acc: str, a: Mapping) -> dict:
     if a.get("status") in ("in_use", "held") and (pb.get("samples") or pb.get("series")):
         raise Refused(f"{acc}: an atlas with status {a.get('status')!r} holds no pins")
     samples, series = {}, {}
+    named = named_gsms({**a, "accession": acc})
     for p in pb.get("samples") or []:
         if not isinstance(p, Mapping) or sorted(p) != sorted(SAMPLE_PIN_KEYS):
             raise Refused(f"{acc}: sample pin {p!r} must have exactly the keys {SAMPLE_PIN_KEYS}")
@@ -739,6 +892,12 @@ def check_pins(acc: str, a: Mapping) -> dict:
             raise Refused(f"{acc}: pinned accession {g!r} is not a GSM accession")
         if g in samples:
             raise Refused(f"{acc}: {g} is pinned twice")
+        why = never_fetch_refusal(a, gsm=g)
+        if why:
+            raise Refused(f"{acc}: {why}: it is never pinned")
+        if named and named.get(g) != p["end"]:
+            raise Refused(f"{acc}: {g} is not a sample the atlas names at the {p['end']} end (the strict form pins "
+                          f"only the named samples)")
         if p["end"] not in ("early", "late"):
             raise Refused(f"{acc}: {g}: end must be early or late")
         if p["stage"] not in a[p["end"]]["labels"]:
@@ -806,9 +965,13 @@ def _text_lines(key: str, values: Iterable[str]) -> list[str]:
     return out
 
 
-def processing_text(acc: str, series: Iterable[tuple[str, object]], samples: Mapping[str, Mapping]) -> str:
+def processing_text(acc: str, series: Iterable[tuple[str, object]], samples: Mapping[str, Mapping],
+                    series_text: Mapping[str, Mapping[str, Iterable[str]]] | None = None) -> str:
     """The canonical processing text. series: (GSE, its record) in the atlas's order; samples: GSM -> {"series": GSE,
-    "text": {key: values}} for the USED samples."""
+    "text": {key: values}} for the USED samples; series_text (given by the plan, the fetch and the load since the
+    stage-parser exception of ruling row R27): GSE -> its series-wide fields, printed after the series' file names as
+    "series_text <key>[<i>]: <value>" lines, keys sorted as text, or "series_text: (none)", so that the
+    readers' clearance covers which fields the exception reads as series text."""
     lines = [f"{PROCESSING_FORMAT} {acc}"]
     for s, rec in series:
         d = record_dict(rec)
@@ -816,6 +979,12 @@ def processing_text(acc: str, series: Iterable[tuple[str, object]], samples: Map
         for k in SERIES_TEXT:
             lines += _text_lines(k, d.get(k, []))
         lines += _text_lines("series_supplementary_file", [file_name(u) for u in supplementary(rec)])
+        if series_text is not None:
+            st = series_text.get(s) or {}
+            if not st:
+                lines.append("series_text: (none)")
+            for k in sorted(st):
+                lines += _text_lines(f"series_text {k}", st[k])
     for gsm in sorted(samples):
         lines.append(f"SAMPLE {gsm} ({samples[gsm]['series']})")
         for k in SAMPLE_TEXT:
@@ -856,3 +1025,46 @@ def bracket_ok(early: float, late: float) -> None:
             raise Refused(f"stage E{d:g} is inside the T1 window")
     if not early < late:
         raise Refused("the early end must come before the late end")
+
+
+# ------------------------------------------------------------------------------------------------ the screens record
+#
+# screens.yaml (committed by the main session only): per screened atlas, the verdict on the screens that screens.py ran
+# on the fetched barcode and feature files BEFORE any matrix was fetched (the specification's SCREENS (a) to (d)):
+#   <ACC>: {verdict: PENDING}                                          before the screens ran
+#   <ACC>: {verdict: kept, screen_sha256: <hex>, date: YYYY-MM-DD}     every check said yes
+#   <ACC>: {verdict: dropped, screen_sha256: <hex>, date: YYYY-MM-DD, failed: [<check>, ...]}
+# A dropped member's matrices are never fetched; it enters no load and no table. A failing screen cannot be recorded as
+# kept (the fetch reads the screen file itself), and no exception is granted on the spot.
+SCREENS_RECORD = HERE / "screens.yaml"
+VERDICTS = ("PENDING", "kept", "dropped")
+
+
+def load_screens(path: Path | None = None) -> dict:
+    d = yaml.safe_load(Path(path or SCREENS_RECORD).read_text()) or {}
+    if tuple(d.get("tasks") or ()) != TASKS:
+        raise Refused("screens.yaml must serve T1 only (tasks: [T1])")
+    members = d.get("members") or {}
+    for acc, e in members.items():
+        if not isinstance(e, Mapping) or e.get("verdict") not in VERDICTS:
+            raise Refused(f"screens.yaml {acc}: verdict must be one of {VERDICTS}")
+        if e["verdict"] != "PENDING":
+            if not isinstance(e.get("screen_sha256"), str) or not _SHA.fullmatch(e["screen_sha256"]):
+                raise Refused(f"screens.yaml {acc}: screen_sha256 must be 64 lower-case hex digits")
+            if not isinstance(e.get("date"), str) or not re.fullmatch(r"20\d\d-\d\d-\d\d", e["date"]):
+                raise Refused(f"screens.yaml {acc}: date must be YYYY-MM-DD (quoted as text)")
+        if e["verdict"] == "dropped" and not e.get("failed"):
+            raise Refused(f"screens.yaml {acc}: a dropped member names the checks that failed")
+    return members
+
+
+def screened_kept(acc: str, a: Mapping, screens: Mapping | None = None) -> dict | None:
+    """For an atlas with screens: its screens.yaml entry, which must say kept (else refused). None for an atlas without
+    screens (a synthetic test entry; load_atlases refuses a fetchable 10x atlas without them)."""
+    if not a.get("screens"):
+        return None
+    e = (load_screens() if screens is None else screens).get(acc)
+    if e is None or e.get("verdict") != "kept":
+        raise Refused(f"{acc}: screens.yaml records {e.get('verdict') if e else 'no entry'} for this member: its "
+                      f"matrices are not fetched, loaded or tabled")
+    return dict(e)

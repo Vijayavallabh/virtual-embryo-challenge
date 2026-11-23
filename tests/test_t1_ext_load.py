@@ -285,7 +285,7 @@ def test_load_atlas_end_to_end_on_files(tmp_path):
     with pytest.raises(cm.Refused):
         ld.write_reduced(ACC, ROOT / "data" / "derived" / "t1_ext_test", red, cfg)
     p = ld.write_reduced(ACC, tmp_path, red, cfg)
-    back = ld.read_reduced(ACC, tmp_path)
+    back = ld.read_reduced(ACC, tmp_path, cfg)
     assert back["C"].shape == red["C"].shape and json.loads(p.read_text())["tasks"] == ["T1"]
 
 
@@ -325,20 +325,20 @@ def test_read_reduced_rechecks_every_row(tmp_path):
     bad = "\n".join([lines[0], lines[1].rsplit(",", 1)[0] + ",12.5", *lines[2:]]) + "\n"
     tamper(bad)
     with pytest.raises(cm.Refused):
-        ld.read_reduced(ACC, tmp_path)
+        ld.read_reduced(ACC, tmp_path, cfg)
     # a row whose day is outside the window but is not its sample's stage
     bad = "\n".join([lines[0], lines[1].rsplit(",", 1)[0] + ",16.5", *lines[2:]]) + "\n"
     tamper(bad)
     with pytest.raises(cm.Refused):
-        ld.read_reduced(ACC, tmp_path)
+        ld.read_reduced(ACC, tmp_path, cfg)
     # a stored record that reads in the window
     recs = copy.deepcopy(man["stage_records"])
     recs["GSM12"]["record"].append(["description", ["E12.5 littermates"]])
     tamper(good, recs)
     with pytest.raises(cm.Refused):
-        ld.read_reduced(ACC, tmp_path)
+        ld.read_reduced(ACC, tmp_path, cfg)
     tamper(good, man["stage_records"])
-    assert ld.read_reduced(ACC, tmp_path)["C"].shape == red["C"].shape
+    assert ld.read_reduced(ACC, tmp_path, cfg)["C"].shape == red["C"].shape
 
 
 def test_stageless_sample_refuses_the_load(tmp_path):

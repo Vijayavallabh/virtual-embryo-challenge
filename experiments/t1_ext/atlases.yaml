@@ -1,5 +1,14 @@
 # Task 1 outside heart atlases (stage 1 of the multi-atlas program; decision log 2026-11-20 (g), (j), (y)).
 #
+# THE STRICT FORM (candidate MX2s of the outside-data round of 2026-11-23; ruling row R27, practice read only; register
+# rows X019 and X020). Two atlases are used: GSE244783 (E8.5 and E16.5 heart, CM, Endocardium and Endothelium) and
+# GSE230531 (E8.5 embryo and E16.5 heart, CM only); GSE176063 with GSE153562, and GSE216970, are held. Each used
+# atlas names its samples per end (`gsms`): a pin may name only those, and the pins must cover all of them. Its
+# never_fetch list names samples and files no step fetches; no sample that is not named is ever fetched either (only
+# pinned samples are). Screens (screens.py) run on the fetched barcode and feature files before any matrix is fetched;
+# their verdict is committed in screens.yaml by the main session. The composition block (level and change forms) is
+# deleted: no share is computed or written. The pins stay empty until the main session commits the readers' pins.
+#
 # Read by experiments/t1_ext/t1x_common.py, which refuses any accession that is not under `atlases` here. Every atlas
 # is TASK 1 ONLY: E8.5 lies inside the T2 heart's interpolation window (8.25, 8.75), so no table built here may serve
 # T2 or the shared core (every manifest says tasks ["T1"]).
@@ -7,8 +16,8 @@
 # Status of an atlas:
 #   in_use  - the atlas already in use (register row X002), read only through its permitted-only recomputed file
 #             (row N54); never fetched or relabelled again here.
-#   use     - wave 1: planned, fetched, loaded and tabled by run_dgx.sh's default accession list.
-#   second  - wave 2: planned by default; fetched, loaded and tabled only when named explicitly.
+#   use     - planned, fetched, loaded and tabled by run_dgx.sh's default accession list.
+#   second  - planned, fetched, loaded and tabled only when named explicitly (none in the strict form).
 #   held    - planned only (its plan table checks its gate); fetch refuses it whatever the command line says.
 #
 # PINNED SAMPLES, THE FIRST LINE (third version, 2026-11-21; README, "Pinned samples"). A sample is USED only when the
@@ -119,7 +128,6 @@ extra_competing:
 # Checks, fixed now (groups.py). A failing atlas-group pair is dropped from that group's consensus.
 checks:
   profile_min_cp10k: 1.0       # genes with mean CP10k >= 1 in either profile enter a profile comparison
-  share_logit_max: 1.0         # (c) early-end CM share within 1.0 logit of the released share (heart early ends)
   min_cells_ext: 10            # equal to the readout's (experiments/t1_direction/config.yaml)
   unassigned_cap_heart: 0.40   # heart-dissected samples only (the base yaml's cap)
   # released labels that count as a group's own, by category of configs/t1_chamber_classes.yaml
@@ -129,21 +137,28 @@ checks:
     Endothelium: [endocardium, vascular_endothelium]
     Epicardium: [epicardium]
 
-# The consensus and the composition rules, fixed now (tables.py).
+# The consensus rules, fixed now (tables.py). No composition rule: the block is deleted (strict form).
 consensus:
   feng_bracket_days: 5.0       # every member is rescaled to an E9.5 -> E14.5 equivalent: d * 5 / (late - early)
   eb_bins: 10
   held_modules: ['^Hb[ab]-', '^mt-']   # R2's A1 and N1, held (NaN) in every member of a consensus group
-composition:
-  heart_labels: [r_cm, r_endocardial_ec, r_vascular_ec, r_ec_ambiguous, r_lymphatic, r_epicardial, r_mural]
-  mesenchyme_label: r_mesenchyme
-  mesenchyme_from_day: 14.0    # the LEVEL form counts r_mesenchyme as heart at a late end from E14 on (fibroblasts,
-                               # valve cells); the CHANGE form never does, so it uses one label set at both ends (the
-                               # second review's point 3); at an early end r_mesenchyme holds second heart field,
-                               # pharyngeal mesoderm and ST cells, which the builder's categories place outside the heart
-  level_days: [14.0, 15.0]     # a late end inside this range gives a level
-  level_halfrange_max: 1.0
-  min_level_atlases: 2
+
+# The screens run by screens.py on the fetched barcode and feature files, before any matrix is fetched (the
+# specification's SCREENS (a) to (d)); each atlas lists the ones that apply to it. Each returns yes or no with a count,
+# never a cell or a gene.
+#   suffix          (a) every barcode of every sample ends in -1 (no aggr)
+#   own_peaks       (b) Multiome: the samples' features files have different sha256 and different Peaks rows (each
+#                   library its own peak set: cellranger-arc count per library); their Gene Expression rows are counted
+#   no_hashing      (c) no hashing or pooling field: one column per barcode line, no feature type outside the atlas's
+#                   assay, no hashtag-like feature name, a features file of 2, 3 or (Multiome) 6 columns
+#   whitelist_sized (d) every barcode file has a 10x whitelist's number of lines (unfiltered matrices; the team's own
+#                   cell call then applies)
+screen_rules:
+  # 10x barcode whitelists: 737,280 (737K-august-2016 and 737K-april-2014, 3' v2 and v1) and 6,794,880
+  # (3M-february-2018, 3' v3); general knowledge of the 10x whitelists, not checked against a source
+  whitelist_sizes: [737280, 6794880]
+  feature_types: {tenx: ['Gene Expression'], multiome: ['Gene Expression', 'Peaks']}
+  hashing_names: '^(?:hto|cmo\d|hashtag|totalseq|adt[_-]|cellplex|multiplex)'
 
 atlases:
   GSE193346:
@@ -154,39 +169,64 @@ atlases:
     early: {day: 9.5, label: E9.5, tissue: heart}
     late: {day: 14.5, label: E14.5, tissue: heart}
     groups_formed: [CM, Endocardium, Endothelium, Epicardium]
-    level_eligible: true
-    change_eligible: true
     files: the permitted-only recomputed statistics of row N54 (feng_dirs.recomputed_directions); nothing fetched
     licence: as register row X002
 
+  GSE244783:
+    status: use
+    register: X019
+    series: [GSE244783]
+    tissue: embryonic heart at E8.5 and E16.5, one library per stage
+    assay: 10x Multiome, the single-nucleus RNA part only (feature_type 'Gene Expression')
+    strain: CD1 wild type
+    form: tenx_mtx
+    multiome: true
+    early: {labels: [E8.5], tissue: 'heart', gsms: [GSM7829699]}    # 'E8.5-scRNA-Library'
+    late: {labels: [E16.5], tissue: 'heart', gsms: [GSM7829703]}    # 'E16.5-scRNA-Library'
+    never_fetch:
+      samples: [GSM7829701, GSM7829700, GSM7829702, GSM7829704]   # E10.5 (in the window); the three ATAC samples
+      files: [GSE244783_RAW.tar]                                  # the series archive (it holds E10.5)
+    screens: [suffix, own_peaks, no_hashing]
+    assay_rule: {library_strategy: 'RNA-Seq'}
+    early_tissue: heart
+    groups_formed: [CM, Endocardium, Endothelium]
+    qc: {min_umi: 500, min_genes: 300, max_mito: 0.05}
+    protocol_terms_cleared: {}
+    protocol_gate_cleared: {}
+    processing_cleared: {}     # written by the main session from pin-template output, after two readers read it
+    pinned: {samples: [], series: []}   # written from pin-template output after two readers read every record
+    licence: GEO standard terms (NCBI places no restriction on use; submitter rights may apply)
+
   GSE230531:
     status: use
-    wave: 1
+    register: X020
     series: [GSE230531]
-    tissue: whole embryo at E8.5; whole heart at E14.5 (E16.5 the fallback late end)
-    assay: 10x 3' v2 scRNA-seq (per the scout's record; checked against each sample's record by the plan)
+    tissue: whole embryo at E8.5 (head and limbs removed); heart at E16.5
+    assay: 10x 3' v2 scRNA-seq, unfiltered per-sample matrices (whitelist-sized barcode files)
     strain: C57BL/6J wild type
     form: tenx_mtx
-    early: {labels: [E8.5], tissue: 'embryo'}
-    late: {labels: [E14.5, E16.5], tissue: 'heart'}     # the first label with a USED sample is the late end
+    early: {labels: [E8.5], tissue: 'embryo', gsms: [GSM7226268, GSM7226269]}
+    late: {labels: [E16.5], tissue: 'heart', gsms: [GSM7226274, GSM7226276]}
+    never_fetch:
+      # E10.5 (in the window), E12.5 (in the window) and E14.5 (dropped under the strict form). The P3 samples are
+      # never fetched either: they are not named above, so they cannot be pinned (their accessions were not read here).
+      samples: [GSM7226279, GSM7226280, GSM7226270, GSM7226271, GSM7226272, GSM7226273]
+      files: [GSE230531_RAW.tar]                                  # the series archive
+    screens: [suffix, no_hashing, whitelist_sized]
     assay_rule: {library_strategy: 'RNA-Seq'}
     early_tissue: whole_embryo
     groups_formed: [CM]
-    level_eligible: true       # only if the late end is inside composition.level_days
-    change_eligible: false
-    qc: {min_umi: 1000, min_genes: 500, max_mito: 0.20}   # the matrices are probably unfiltered (whitelist-sized
-                                                           # barcode files; an inference from the listing)
+    qc: {min_umi: 1000, min_genes: 500, max_mito: 0.20}   # the team's own fixed cell call on unfiltered matrices
     protocol_terms_cleared: {}
     protocol_gate_cleared: {}
-    processing_cleared: {}     # written by the main session after reading meta/<ACC>/processing_text.txt
+    processing_cleared: {}     # written by the main session from pin-template output, after two readers read it
     pinned: {samples: [], series: []}   # written from pin-template output after two readers read every record
-    licence: GEO standard terms (not checked per study)
+    licence: GEO standard terms (NCBI places no restriction on use; submitter rights may apply)
 
   GSE176063:
-    status: use
-    wave: 1
+    status: held               # the strict form: its E9.5 and E14.5 ends touch the window under a widened convention
     series: [GSE153562, GSE176063]
-    tissue: whole embryo at E9.5 (GSE153562); fetal heart (GSE176063), used only if its own record states a permitted day
+    tissue: whole embryo at E9.5 (GSE153562); fetal heart (GSE176063)
     assay: Microwell-seq
     strain: C57BL/6
     form: dge_txt
@@ -195,42 +235,16 @@ atlases:
     assay_rule: {library_strategy: 'RNA-Seq'}
     early_tissue: whole_embryo
     groups_formed: [CM]
-    level_eligible: true
-    change_eligible: false
     qc: {min_umi: 500, min_genes: 200, max_mito: 1.0}
     protocol_terms_cleared: {}
     protocol_gate_cleared: {}
-    processing_cleared: {}     # written by the main session after reading meta/<ACC>/processing_text.txt
-    pinned: {samples: [], series: []}   # written from pin-template output after two readers read every record
-    licence: GEO standard terms (not checked per study)
-
-  GSE244783:
-    status: second
-    wave: 2
-    series: [GSE244783]
-    tissue: embryonic heart at E8.5 and E16.5, one library per stage
-    assay: 10x Multiome, the single-nucleus RNA part only (feature_type 'Gene Expression')
-    strain: CD1 wild type
-    form: tenx_mtx
-    multiome: true
-    early: {labels: [E8.5], tissue: 'heart'}
-    late: {labels: [E16.5], tissue: 'heart'}
-    assay_rule: {library_strategy: 'RNA-Seq'}
-    early_tissue: heart
-    groups_formed: [CM, Endocardium, Endothelium]
-    level_eligible: false      # nuclei, and E16.5 is outside composition.level_days
-    change_eligible: true
-    qc: {min_umi: 500, min_genes: 300, max_mito: 0.05}
-    protocol_terms_cleared: {}
-    protocol_gate_cleared: {}
-    processing_cleared: {}     # written by the main session after reading meta/<ACC>/processing_text.txt
-    pinned: {samples: [], series: []}   # written from pin-template output after two readers read every record
+    processing_cleared: {}
+    pinned: {samples: [], series: []}
     licence: GEO standard terms (not checked per study)
 
   GSE216970:
     status: held               # the challenger's point: the E9.5 end is MACS-enriched endothelium and the later ends
                                # are whole embryos; the protocol gate (enrichment terms) is expected to refuse it
-    wave: 3
     series: [GSE216970]
     tissue: MACS-enriched endothelium of the whole embryo at E9.5; whole embryo without tail, limbs and liver at E15.5
     assay: 10x 3' (v1/v2 per the record)
@@ -241,11 +255,9 @@ atlases:
     assay_rule: {library_strategy: 'RNA-Seq'}
     early_tissue: whole_embryo
     groups_formed: [Endocardium]
-    level_eligible: false
-    change_eligible: false
     qc: {min_umi: 1000, min_genes: 500, max_mito: 0.20}
     protocol_terms_cleared: {}
     protocol_gate_cleared: {}
-    processing_cleared: {}     # written by the main session after reading meta/<ACC>/processing_text.txt
-    pinned: {samples: [], series: []}   # written from pin-template output after two readers read every record
+    processing_cleared: {}
+    pinned: {samples: [], series: []}
     licence: GEO standard terms (not checked per study)

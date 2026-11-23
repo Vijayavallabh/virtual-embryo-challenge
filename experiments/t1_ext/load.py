@@ -289,7 +289,17 @@ def sample_stage(gsm: str, s: Mapping) -> dict:
     missing = [k for k in STAGE_RECORD_KEYS if k not in s]
     if missing:
         raise Refused(f"{gsm}: the manifest lacks {missing} of its own record: the atlas is refused")
-    return cm.record_stage(s["record"], s["series_protocol"])
+    # the series-wide fields (ruling row R27's exception) as the plan computed them; absent, no field is series text
+    return cm.record_stage(s["record"], s["series_protocol"], s.get("series_text"))
+
+
+def stage_record(s: Mapping) -> dict:
+    """What the reduction keeps of a sample to re-read its stage: its record, its series' text and its label (and the
+    series-wide fields when the fetch stored them)."""
+    out = {k: s[k] for k in STAGE_RECORD_KEYS}
+    if "series_text" in s:
+        out["series_text"] = s["series_text"]
+    return out
 
 
 def window_filter(samples: Mapping[str, Mapping]) -> tuple[dict, dict]:
@@ -339,14 +349,29 @@ def check_processing(acc: str, a: Mapping, man: Mapping) -> str:
     """The canonical processing text rebuilt from the fetch manifest must hash to the atlas's processing_cleared."""
     if "series_records" not in man or any("record" not in s for s in man["samples"].values()):
         raise Refused(f"{acc}: the fetch manifest holds no records: the atlas is refused")
+    st = man.get("series_text")
+    for g, s in man["samples"].items():
+        if "series_text" in s and (st is None or s["series_text"] != st.get(s["series"], {})):
+            raise Refused(f"{acc}: {g}: its series-wide fields are not its series' in the manifest")
     text = cm.processing_text(acc, [(s, man["series_records"].get(s, [])) for s in a["series"]],
                               {g: {"series": s["series"], "text": cm.sample_text(s["record"])}
-                               for g, s in man["samples"].items()})
+                               for g, s in man["samples"].items()}, st)
     sha = cm.text_sha256(text)
     ok, why = cm.clearance(a, sha)
     if not ok:
         raise Refused(f"{acc}: {why}")
     return sha
+
+
+def check_screen(acc: str, a: Mapping, man: Mapping, screens: Mapping | None = None) -> dict | None:
+    """For a screened atlas: screens.yaml records it kept, and the manifest was fetched under that screen."""
+    e = cm.screened_kept(acc, a, screens)
+    if e is None:
+        return None
+    got = man.get("screen") or {}
+    if got.get("screen_sha256") != e["screen_sha256"]:
+        raise Refused(f"{acc}: the files were not fetched under the screen screens.yaml records")
+    return {"verdict": e["verdict"], "screen_sha256": e["screen_sha256"]}
 
 
 def cells_in_window(gsm: np.ndarray, day: np.ndarray, records: Mapping[str, Mapping]) -> int:
@@ -431,7 +456,8 @@ def load_atlas(acc: str, dest: Path, cfg: Mapping | None = None, check_frozen: b
     kept, wrec = window_filter(man["samples"])  # FIRST: before any file is opened
     check_pinned(acc, a, man)  # the first line: every sample pinned, its record its pin's, both ends
     processing_sha = check_processing(acc, a, man)  # the cleared text, rebuilt from the manifest, before any file
-    records = {g: {k: s[k] for k in STAGE_RECORD_KEYS} for g, s in kept.items()}
+    screen = check_screen(acc, a, man)  # a screened member is loaded only while screens.yaml records it kept
+    records = {g: stage_record(s) for g, s in kept.items()}
     form = cfg["forms"][a["form"]]
     rd = Reader()
     parts, qc = [], {"per_sample": {}}
@@ -476,7 +502,7 @@ def load_atlas(acc: str, dest: Path, cfg: Mapping | None = None, check_frozen: b
     if in_window:
         raise Refused("a cell inside the window survived: nothing is written")
     return {"C": C, "genes": common, "cells": cells, "qc": qc, "fetch_manifest_sha256": cm.sha256_file(man_path),
-            "chosen": man["chosen"], "stage_records": records}
+            "chosen": man["chosen"], "stage_records": records, "screen": screen}
 
 
 def write_reduced(acc: str, dest: Path, red: Mapping, cfg: Mapping | None = None) -> Path:
@@ -499,15 +525,48 @@ def write_reduced(acc: str, dest: Path, red: Mapping, cfg: Mapping | None = None
            "inputs": {"fetch_manifest_sha256": red["fetch_manifest_sha256"]}, "chosen": red["chosen"],
            "atlas_entry_sha256": cm.entry_sha256(acc, cfg), "window": red["qc"]["window"],
            "columns_read": red["qc"]["columns_read"], "stage_records": red["stage_records"],
-           "processing_sha256": red["qc"]["processing_sha256"],
+           "processing_sha256": red["qc"]["processing_sha256"], "screen": red.get("screen"),
            "provenance": fio.provenance([Path(__file__), HERE / "t1x_common.py"])}
     return fio.write_manifest(out, man)
 
 
-def read_reduced(acc: str, dest: Path) -> dict:
-    """The reduction, each file checked against its manifest; refused unless it records zero cells in the window AND
-    every row of cells.csv, re-checked on read against its own sample's stored record (cells_in_window) and by
-    drop_window_cells, is outside the window."""
+def check_reduction_pins(acc: str, a: Mapping, man: Mapping, cfg: Mapping) -> None:
+    """THE PARKED BRANCH'S KNOWN BLOCKER, closed: a reduction is read only when it was made under the atlas entry in
+    force now (pins included) and every sample it holds is pinned now, its stored record hashing to its pin and its
+    label its pin's stage, the pinned samples covering both ends; its processing text is cleared now; and a screened
+    member is still recorded kept. A reduction left on disk from an earlier entry, other pins, a lapsed clearance or a
+    later drop is refused, not read."""
+    if a["status"] not in cm.FETCHABLE:
+        raise Refused(f"{acc} has status {a['status']!r}: its reduction is not read")
+    if man.get("atlas_entry_sha256") != cm.entry_sha256(acc, cfg):
+        raise Refused(f"{acc}: the reduction was made under another atlas entry (pins included): load again")
+    pins = cm.check_pins(acc, a)
+    recs = man.get("stage_records") or {}
+    if not recs:
+        raise Refused(f"{acc}: the reduction holds no stage records: it cannot be checked against the pins")
+    for g, r in recs.items():
+        p = pins["samples"].get(g)
+        if p is None:
+            raise Refused(f"{acc}: the reduction holds {g}, which is not pinned now")
+        if cm.record_sha256("SAMPLE", g, r.get("record", [])) != p["record_sha256"] or r.get("label") != p["stage"]:
+            raise Refused(f"{acc}: {g}: the reduction's record or stage is not its pin's")
+    if {pins["samples"][g]["end"] for g in recs} != {"early", "late"}:
+        raise Refused(f"{acc}: the reduction's samples do not cover both pinned ends")
+    bad = cm.pins_complete(a, pins)
+    if bad:
+        raise Refused(f"{acc}: {'; '.join(bad)}")
+    ok, why = cm.clearance(a, man.get("processing_sha256") or "")
+    if not ok:
+        raise Refused(f"{acc}: {why}")
+    check_screen(acc, a, man)
+
+
+def read_reduced(acc: str, dest: Path, cfg: Mapping | None = None) -> dict:
+    """The reduction, each file checked against its manifest and against the pins in force (check_reduction_pins);
+    refused unless it records zero cells in the window AND every row of cells.csv, re-checked on read against its own
+    sample's stored record (cells_in_window) and by drop_window_cells, is outside the window."""
+    cfg = cfg or cm.load_atlases()
+    a = cm.atlas(acc, cfg)
     out = cm.outside_repo(Path(dest) / "reduced" / acc)
     man = json.loads((out / "MANIFEST.json").read_text())
     for n, e in man["outputs"].items():
@@ -515,6 +574,7 @@ def read_reduced(acc: str, dest: Path) -> dict:
             raise Refused(f"{acc} {n}: does not match its manifest")
     if man.get("tasks") != list(cm.TASKS) or man["window"].get("cells_in_window_after") != 0:
         raise Refused(f"{acc}: the reduction does not record T1-only use with zero cells in the window")
+    check_reduction_pins(acc, a, man, cfg)
     z = np.load(out / "counts.npz")
     C = sparse.csr_matrix((z["data"], z["indices"], z["indptr"]), shape=tuple(z["shape"]))
     genes = (out / "genes.txt").read_text().split()
@@ -526,6 +586,8 @@ def read_reduced(acc: str, dest: Path) -> dict:
         raise Refused(f"{acc}: the reduction holds no stage records: it cannot be re-checked")
     if not drop_window_cells(day).all() or cells_in_window(gsm, day, man["stage_records"]):
         raise Refused(f"{acc}: a row of cells.csv is in the window or does not match its sample's record")
+    if not set(gsm) <= set(man["stage_records"]):
+        raise Refused(f"{acc}: a row of cells.csv names a sample the reduction holds no pinned record for")
     return {"C": C, "genes": genes, "cell": np.array([r["cell"] for r in rows]),
             "gsm": gsm, "stage": np.array([r["stage"] for r in rows]), "day": day, "manifest": man,
             "manifest_sha256": cm.sha256_file(out / "MANIFEST.json")}

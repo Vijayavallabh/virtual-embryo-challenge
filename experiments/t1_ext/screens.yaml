@@ -1,0 +1,12 @@
+# The screens record of the Task 1 outside atlases (candidate MX2s, ruling row R27). COMMITTED BY THE MAIN SESSION
+# ONLY, from the paste line `screens.py ACC --dest D` prints after it ran the specification's SCREENS (a) to (d) on the
+# fetched barcode and feature files, before any matrix is fetched (README, "Steps"). Read by t1x_common.load_screens.
+#   PENDING  the screens have not run: no matrix is fetched
+#   kept     every check said yes; screen_sha256 is the sha256 of D/screens/<ACC>/screen.json
+#   dropped  a check said no: the member's matrices are never fetched and it enters no load and no table
+# A dropped member stays dropped: no exception is granted on the spot.
+version: 1
+tasks: [T1]
+members:
+  GSE244783: {verdict: PENDING}
+  GSE230531: {verdict: PENDING}

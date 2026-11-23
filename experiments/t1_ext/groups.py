@@ -16,8 +16,7 @@ relaxes a threshold):
   (a) profile_check: a group's mean log1p CP10k profile at the atlas's early end correlates (Spearman, genes with mean
       CP10k >= 1 in either profile) best with a released same-stage label of its own category;
   (b) the same at the late end against the atlas in use's recomputed E14.5 group profiles;
-  (c) share_check: for heart-dissected early ends only, the CM share of heart cells within 1.0 logit of the released
-      same-stage share (else the atlas leaves the composition table only);
+  (c) the share check is deleted with the composition block (the strict form, ruling row R27): no share is computed;
   purity_gate: for every competing class with released labels at the early stage, the group's mean class score lies
       below the midpoint between the released CM labels' and the class's own released labels' mean scores;
   embryo_gene_gate: in a whole-embryo early end, a gene enters the atlas's CM direction only if its mean CP10k in the
@@ -33,7 +32,6 @@ from __future__ import annotations
 import argparse
 import copy
 import json
-import math
 import sys
 from collections.abc import Mapping, Sequence
 from pathlib import Path
@@ -194,20 +192,6 @@ def profile_check(group: Mapping, refs: Mapping[str, Mapping], own: Sequence[str
     finite = {k: v for k, v in rho.items() if np.isfinite(v)}
     best = max(finite, key=finite.get) if finite else None
     return {"rho": rho, "best": best, "own": list(own), "passed": best is not None and best in own}
-
-
-def logit(p: float) -> float:
-    if not 0.0 < p < 1.0:
-        raise Refused(f"a share of {p} has no logit")
-    return math.log(p / (1.0 - p))
-
-
-def share_check(share_atlas: float, share_released: float, max_logit: float) -> dict:
-    try:
-        d = abs(logit(share_atlas) - logit(share_released))
-    except Refused as e:
-        return {"passed": False, "reason": str(e)}
-    return {"logit_difference": d, "max": max_logit, "passed": d <= max_logit}
 
 
 def purity_gate(group_mean: Mapping[str, float], released_cm: Mapping[str, float],

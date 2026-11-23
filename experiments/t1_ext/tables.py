@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""The per-atlas direction and composition tables, the consensus direction and the composition forecast (Task 1 only).
+"""The per-atlas direction tables and the consensus direction (Task 1 only). The strict form (ruling row R27, candidate
+MX2s) deleted the composition block: no share (level or change form) is computed or written by this step.
 
 PER ATLAS (an outside atlas loaded by load.py, labelled by groups.py; or the atlas in use through its ruled file):
   - statistics in the clean reduction's layout (feng2022_geo.group_stats; keys 'stage|<GSM>|<recomputed label>|half'),
@@ -10,9 +11,7 @@ PER ATLAS (an outside atlas loaded by load.py, labelled by groups.py; or the atl
   - feng_dirs.eb_shrink on the group's own halves (decile basis: mean CP10k over both ends; consensus.eb_bins);
   - rescaled to the atlas in use's 5-day bracket: d * 5 / (late - early). The builder applies a table at
     bracket_fraction(10.5, 12.5) = 0.4, so each atlas's own per-day rate enters at 2 / (late - early) at the test and
-    1 / (late - early) on the E9.5 -> E10.5 practice step; both are recorded, and both assume linear calendar time;
-  - the CM share of heart cells at both ends: the change form uses composition.heart_labels at both ends (one label
-    set, the second review's point 3); the level form adds r_mesenchyme at a late end from E14.
+    1 / (late - early) on the E9.5 -> E10.5 practice step; both are recorded, and both assume linear calendar time.
 THE ATLAS IN USE: its ruled direction (feng_dirs.recomputed_directions, unshrunk, after its fallback) is kept byte for
 byte for every group no other atlas forms (k = 1 at group level), and for every group of a variant with fewer than two
 members. Its member in a consensus is its own eb_shrunk direction (factor 1, its bracket is 5 days).
@@ -26,27 +25,22 @@ non-zero) / (norm of c over the same genes), the second review's rule (the chall
 |deciding| / max over members |member| per group;
 'raw' = the consensus as computed; 'noX002' = deciding without the atlas in use; 'noE85start' = deciding without the
 members whose early end is before E9.5 (their per-day rate holds E8.5 -> E9.5 heart-tube maturation). Only 'deciding'
-is meant to decide a practice row; the others are counted sensitivities.
-COMPOSITION, fixed now: the forecast is the within-atlas CHANGE form (heart at both ends; a constant dissection or
-protocol offset cancels): logit(x) = logit(s_base) + days * median per-day logit slope (days 2 at the test, 1 on
-practice); the LEVEL form is a labelled sensitivity: logit(x) = logit(s_base) + f * (L - logit(s_base)), L the median
-late logit level over atlases whose late end lies in composition.level_days (f 0.5 at the test, 0.2 on practice). The
-option is offered only when the change form has an atlas, the level form has at least two levels with a half-range of
-at most 1.0 logit, and the two steps agree in sign. Disclosed: the atlas in use's shares on the authors' labels and its
-two strains' spread were seen before these rules were written.
+is meant to decide a practice row; the others are counted sensitivities. (The specification's own consensus and
+rescale, its steps 4 to 6, are other engineers' work after this one.)
+READING A REDUCTION: load.read_reduced checks each reduction against the atlas entry and pins in force, the clearance
+and the screens record before it is used (the parked branch's known blocker, closed).
 
 Every output goes under --dest (outside the repository) with a MANIFEST.json (sha256 of each output; atlases, GSMs,
 stages, derived configs, check outcomes; tasks ["T1"]). Nothing prints a gene-level value.
 
-  uv run --frozen --no-sync python -I -B experiments/t1_ext/tables.py --dest ~/v/vec-ext/t1 --atlases GSE230531 \\
-      GSE176063 --released-dir data/raw/T1 --name consensus_v1
+  uv run --frozen --no-sync python -I -B experiments/t1_ext/tables.py --dest ~/v/vec-ext/t1 --atlases GSE244783 \\
+      GSE230531 --released-dir data/raw/T1 --name consensus_v1
 """
 
 from __future__ import annotations
 
 import argparse
 import json
-import math
 import re
 import sys
 from collections.abc import Mapping, Sequence
@@ -154,87 +148,6 @@ def group_tables(members: Mapping[str, Mapping[str, np.ndarray]], ruled: Mapping
     return {"tables": out, "record": rec}
 
 
-def logit(p: float) -> float:
-    if not 0.0 < p < 1.0:
-        raise Refused(f"a share of {p} has no logit")
-    return math.log(p / (1.0 - p))
-
-
-def expit(x: float) -> float:
-    return 1.0 / (1.0 + math.exp(-x))
-
-
-def cm_share(counts: Mapping[str, int], day: float, rules: Mapping, form: str = "change") -> float | None:
-    """CM share of heart cells from recomputed label counts at one stage (None when the atlas has no heart cell). The
-    change form uses one label set at both ends (heart_labels, never r_mesenchyme: the second review's point 3); the
-    level form adds r_mesenchyme from mesenchyme_from_day on."""
-    if form not in ("change", "level"):
-        raise Refused(f"unknown share form {form!r}")
-    heart = list(rules["heart_labels"]) + ([rules["mesenchyme_label"]] if form == "level" and
-                                           day >= float(rules["mesenchyme_from_day"]) else [])
-    den = sum(int(counts.get(lab, 0)) for lab in heart)
-    return None if den == 0 else int(counts.get("r_cm", 0)) / den
-
-
-def composition_table(entries: Sequence[Mapping], rules: Mapping) -> dict:
-    """entries: per atlas {atlas, early_day, late_day, early_share, late_share, level_eligible, change_eligible}. An
-    atlas lacking a share (None, 0 or 1) is left out of that quantity, with the reason."""
-    levels, slopes, notes = {}, {}, {}
-    lo, hi = rules["level_days"]
-    for e in entries:
-        a = e["atlas"]
-        if e.get("level_eligible") and lo <= e["late_day"] <= hi:
-            ls = e.get("late_share_level", e["late_share"])
-            try:
-                levels[a] = logit(ls) if ls is not None else None
-            except Refused as err:
-                levels[a] = None
-                notes[f"{a} level"] = str(err)
-            if levels[a] is None:
-                levels.pop(a)
-                notes.setdefault(f"{a} level", "no heart cell at the late end")
-        if e.get("change_eligible"):
-            try:
-                if e["early_share"] is None or e["late_share"] is None:
-                    raise Refused("no heart cell at an end")
-                slopes[a] = (logit(e["late_share"]) - logit(e["early_share"])) / (e["late_day"] - e["early_day"])
-            except Refused as err:
-                notes[f"{a} change"] = str(err)
-    L = float(np.median(list(levels.values()))) if levels else None
-    half = (max(levels.values()) - min(levels.values())) / 2.0 if levels else None
-    level_ok = len(levels) >= int(rules["min_level_atlases"]) and half <= float(rules["level_halfrange_max"])
-    return {"levels_logit": levels, "L": L, "half_range": half, "level_ok": bool(level_ok),
-            "level_refusal": None if level_ok else "dissection-dominated or fewer than the minimum of levels",
-            "slopes_per_day": slopes, "slope": float(np.median(list(slopes.values()))) if slopes else None,
-            "change_atlases": sorted(slopes), "change_label": ("one atlas" if len(slopes) == 1 else
-                                                               f"{len(slopes)} atlases"), "notes": notes}
-
-
-MODES = {"test": {"days": 2.0, "fraction": 0.5}, "practice": {"days": 1.0, "fraction": 0.2}}
-
-
-def forecast(table: Mapping, s_base: float, mode: str) -> dict:
-    """The fixed rules at one base share (library 3's own E10.5 share at the test; the E9.5 reference's on practice)."""
-    m = MODES[mode]
-    lb = logit(s_base)
-    out = {"mode": mode, "x_change": None, "x_level": None, "offered": False, "reasons": []}
-    if table["slope"] is None:
-        out["reasons"].append("no change-form atlas")
-    else:
-        out["step_change"] = m["days"] * table["slope"]
-        out["x_change"] = expit(lb + out["step_change"])
-    if table["L"] is not None:
-        out["step_level"] = m["fraction"] * (table["L"] - lb)
-        out["x_level"] = expit(lb + out["step_level"])
-    if not table["level_ok"]:
-        out["reasons"].append(table["level_refusal"])
-    if out["x_change"] is not None and out["x_level"] is not None:
-        if np.sign(out["step_change"]) == 0 or np.sign(out["step_change"]) != np.sign(out["step_level"]):
-            out["reasons"].append("the change and level forms disagree in sign")
-    out["offered"] = not out["reasons"]
-    return out
-
-
 # ------------------------------------------------------------------------------------------------ members
 
 
@@ -254,7 +167,7 @@ def shrink_member(d: np.ndarray, h: Mapping[str, np.ndarray], held: np.ndarray, 
 
 def atlas_member(acc: str, cfg: Mapping, red: Mapping, lab: Mapping, cfg_a: Mapping, t1_genes: Sequence[str],
                  checks_in: Mapping) -> dict:
-    """One outside atlas's member: its directions on the groups it may form that pass the checks, and its shares."""
+    """One outside atlas's member: its directions on the groups it may form that pass the checks (no share)."""
     fd, dl, fg = _imports()
     a = cm.atlas(acc, cfg)
     early, late = cfg_a["stages"]
@@ -315,15 +228,6 @@ def atlas_member(acc: str, cfg: Mapping, red: Mapping, lab: Mapping, cfg_a: Mapp
     for g in keep:
         hg = held | (~gate if (gate is not None and g == "CM") else False)
         out[g], rec[g] = shrink_member(dirs[g], halves[g], hg, factor, int(cfg["consensus"]["eb_bins"]))
-    counts = {s: {k: int(v) for k, v in lab["label_counts"][s].items()} for s in (early, late)}
-    comp = cfg["composition"]
-    shares = {"early_share": cm_share(counts[early], e_day, comp) if a.get("early_tissue") == "heart" else None,
-              "late_share": cm_share(counts[late], l_day, comp),
-              "late_share_level": cm_share(counts[late], l_day, comp, "level")}
-    sc = None
-    if a.get("early_tissue") == "heart" and shares["early_share"] is not None and early in checks_in["released_share"]:
-        sc = cm.sibling("groups").share_check(shares["early_share"], checks_in["released_share"][early],
-                                             cfg["checks"]["share_logit_max"])
     return {"atlas": acc, "early": early, "late": late, "early_day": e_day, "late_day": l_day, "directions": out,
             "record": {"groups_formed": a["groups_formed"], "groups_kept": keep, "checks": checks, "shrink": rec,
                        "fractions": {"rescale_to_5_days": factor, "test": 2.0 / (l_day - e_day),
@@ -333,16 +237,14 @@ def atlas_member(acc: str, cfg: Mapping, red: Mapping, lab: Mapping, cfg_a: Mapp
                        "purity_unchecked_classes": {
                            g: sum(1 for x in (c["purity"].get("classes") or {}).values() if not x.get("checked"))
                            for g, c in checks.items()},
-                       "label_counts": counts, "per_sample": lab["per_sample"]},
-            "composition": {"atlas": acc, "early_day": e_day, "late_day": l_day, **shares,
-                            "level_eligible": bool(a.get("level_eligible")),
-                            "change_eligible": bool(a.get("change_eligible")) and (sc is None or sc["passed"]),
-                            "share_check": sc}}
+                       # per sample: cells, the unassigned split and score quantiles; never the label counts
+                       "per_sample": {g: {k: v for k, v in x.items() if k != "labels"}
+                                      for g, x in (lab.get("per_sample") or {}).items()}}}
 
 
-def feng_member(cfg: Mapping, t1_genes: Sequence[str], released_share: Mapping[str, float]) -> dict:
-    """The atlas in use: its ruled direction (every check of feng_dirs.recomputed_directions), its shrunk member, its
-    E14.5 group profiles (check (b)) and its recomputed label counts at both ends."""
+def feng_member(cfg: Mapping, t1_genes: Sequence[str]) -> dict:
+    """The atlas in use: its ruled direction (every check of feng_dirs.recomputed_directions), its shrunk member and
+    its E14.5 group profiles (check (b)). No label count or share."""
     fd, dl, _ = _imports()
     dir_cfg = fd.load_config()
     ruled, rec = fd.recomputed_directions(t1_genes, dir_cfg)
@@ -359,26 +261,13 @@ def feng_member(cfg: Mapping, t1_genes: Sequence[str], released_share: Mapping[s
         x = dl.feng_sel(st, "E14.5", labs)
         if x is not None:
             late_profiles[g] = {"genes": list(st["genes"]), "cp": x["cp"], "log": x["log"], "n": x["n"]}
-    counts: dict[str, dict[str, int]] = {"E9.5": {}, "E14.5": {}}
-    for k, n in zip(st["keys"], st["n"], strict=True):
-        s, _, lab, _ = str(k).split("|")
-        if s in counts:
-            counts[s][lab] = counts[s].get(lab, 0) + int(n)
-    comp = cfg["composition"]
-    shares = {"early_share": cm_share(counts["E9.5"], 9.5, comp), "late_share": cm_share(counts["E14.5"], 14.5, comp),
-              "late_share_level": cm_share(counts["E14.5"], 14.5, comp, "level")}
-    sc = (cm.sibling("groups").share_check(shares["early_share"], released_share["E9.5"],
-                                           cfg["checks"]["share_logit_max"])
-          if shares["early_share"] is not None and "E9.5" in released_share else None)
     return {"atlas": IN_USE, "early": "E9.5", "late": "E14.5", "early_day": 9.5, "late_day": 14.5, "ruled": ruled,
             "directions": out, "late_profiles": late_profiles,
             "record": {"ruled_record": {k: rec[k] for k in ("file", "sha256", "relabel_config_sha256", "fallbacks",
                                                             "with_direction", "route")},
-                       "shrink": srec, "label_counts": counts,
+                       "shrink": srec,
                        "fractions": {"rescale_to_5_days": 1.0, "test": 0.4, "practice": 0.2,
-                                     "assumes": "linear calendar time"}},
-            "composition": {"atlas": IN_USE, "early_day": 9.5, "late_day": 14.5, **shares, "level_eligible": True,
-                            "change_eligible": sc is None or sc["passed"], "share_check": sc}}
+                                     "assumes": "linear calendar time"}}}
 
 
 # ------------------------------------------------------------------------------------------------ the run
@@ -395,21 +284,14 @@ def t1_genes_from(path: Path) -> list[str]:
 
 
 def released_inputs(cfg: Mapping, released_dir: Path, cfgs: Mapping[str, Mapping]) -> dict:
-    """Released T1 training stages E8.5 and E9.5 (never a window stage): label profiles (check (a)), the CM share of
-    heart cells by the chamber config (check (c)), and, per atlas config, the released labels' mean class scores (the
-    purity gate)."""
+    """Released T1 training stages E8.5 and E9.5 (never a window stage): label profiles (check (a)) and, per atlas
+    config, the released labels' mean class scores (the purity gate). No share."""
     g = cm.sibling("groups")
     cats = g.chamber_categories()
-    import yaml as _y
-
-    heart = _y.safe_load(g.CHAMBER.read_text())["heart"]
-    out = {"categories": cats, "released_profiles": {}, "released_share": {}, "purity": {}}
+    out = {"categories": cats, "released_profiles": {}, "purity": {}}
     for stage in ("E8.5", "E9.5"):
         C, genes, labels = g.released_stage(released_dir / f"{stage}_RNA.h5ad")
         out["released_profiles"][stage] = g.label_profiles(C, genes, labels)
-        n_cm = sum(int(np.sum(labels == lab)) for lab in set(labels) if cats.get(lab) == "cm")
-        n_h = sum(int(np.sum(labels == lab)) for lab in set(labels) if cats.get(lab) in heart)
-        out["released_share"][stage] = n_cm / n_h if n_h else None
         for acc, cfg_a in cfgs.items():
             if cfg_a["stages"][0] != stage:
                 continue
@@ -442,11 +324,11 @@ def run(cfg: Mapping, dest: Path, accs: Sequence[str], released_dir: Path, name:
         a = cm.atlas(acc, cfg)
         if a["status"] not in cm.FETCHABLE:
             raise Refused(f"{acc}: status {a['status']!r} is not tabled")
-        reds[acc] = ld.read_reduced(acc, dest)
+        reds[acc] = ld.read_reduced(acc, dest, cfg)  # checked against the pins in force (the known blocker)
         ch = reds[acc]["manifest"]["chosen"]
         cfgs[acc], shas[acc] = g.derived_config(a, cfg, extra, ch["early"], ch["late"])
     rin = released_inputs(cfg, released_dir, cfgs)
-    feng = feng_member(cfg, t1_genes, rin["released_share"])
+    feng = feng_member(cfg, t1_genes)
     checks_in = {**rin, "feng_late_profiles": feng["late_profiles"]}
     members = {IN_USE: feng}
     for acc in accs:
@@ -459,7 +341,6 @@ def run(cfg: Mapping, dest: Path, accs: Sequence[str], released_dir: Path, name:
     for d in gt["record"].values():  # the second review's point 5: is the atlas in use's member a fallback?
         for grp, rr in d.items():
             rr["in_use_member_fallback"] = fallbacks.get(grp)
-    comp = composition_table([m["composition"] for m in members.values()], cfg["composition"])
     out = cm.outside_repo(Path(dest) / "tables" / name)
     out.mkdir(parents=True, exist_ok=True)
     arrays = {f"{v}|{grp}": vec for v, d in gt["tables"].items() for grp, vec in d.items()}
@@ -474,24 +355,17 @@ def run(cfg: Mapping, dest: Path, accs: Sequence[str], released_dir: Path, name:
               "extra_classes_sha256": cfg["extra_competing"]["derived_sha256"],
               "reductions": {a: {"manifest_sha256": reds[a]["manifest_sha256"],
                                  "fetch_manifest_sha256": reds[a]["manifest"]["inputs"]["fetch_manifest_sha256"],
-                                 "gsms": sorted(set(reds[a]["gsm"]))} for a in accs},
-              "released_share": rin["released_share"]}
+                                 "gsms": sorted(set(reds[a]["gsm"]))} for a in accs}}
     cm.dump_json(record, out / "directions.json")
-    cm.dump_json({"table": comp, "entries": [m["composition"] for m in members.values()], "tasks": list(cm.TASKS),
-                  "rules": cfg["composition"], "modes": MODES,
-                  "disclosure": "the atlas in use's shares on the authors' labels and its two strains' spread were "
-                                "seen before these rules were written"}, out / "composition.json")
     import filterio as fio
 
-    outputs = {n: {"sha256": cm.sha256_file(out / n)} for n in ("directions.npz", "directions.json",
-                                                                 "composition.json")}
+    outputs = {n: {"sha256": cm.sha256_file(out / n)} for n in ("directions.npz", "directions.json")}
     fio.write_manifest(out, {"source": "t1_ext_tables", "name": name, "tasks": list(cm.TASKS), "outputs": outputs,
                              "atlases": [IN_USE, *accs], "atlas_entries": {a: cm.entry_sha256(a, cfg) for a in accs},
                              "provenance": fio.provenance([Path(__file__), HERE / "groups.py", HERE / "load.py",
                                                            HERE / "t1x_common.py"])})
     return {"out": str(out), "outputs": outputs, "kept": {a: m["record"].get("groups_kept", sorted(m["directions"]))
-                                                          for a, m in members.items()},
-            "composition": {k: comp[k] for k in ("level_ok", "change_atlases", "half_range")}}
+                                                          for a, m in members.items()}}
 
 
 def main(argv=None) -> int:

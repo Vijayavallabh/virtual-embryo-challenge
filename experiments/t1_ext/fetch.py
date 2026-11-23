@@ -151,18 +151,20 @@ def would_use(a: Mapping, rec: Mapping) -> tuple[bool, str]:
     return True, f"the assay and the tissue of the {' and '.join(ends)} end"
 
 
-def classify(a: Mapping, cfg: Mapping, gsm: str, rec: Mapping, series_protocol: list[str]) -> dict:
+def classify(a: Mapping, cfg: Mapping, gsm: str, rec: Mapping, series_protocol: list[str],
+             series_text: Mapping[str, list[str]] | None = None) -> dict:
     """One sample's row before the pins are applied. Its stage is read from the whole of its own record
     (cm.record_stage), the plug-day convention from its own and its series' protocol text. A sample with any reading
     that touches the window keeps only the fields and file names that gave a reading or a leftover. A sample the rule
     lets through keeps its full record and its record_sha256. A sample at a bracket stage with the end's tissue, the
     assay and one file per role is a candidate (mark USED here; plan_from_meta keeps it USED only if it is pinned)."""
     names = [file_name(u) for u in supplementary(rec)]
-    r = cm.record_stage(rec, series_protocol)
+    r = cm.record_stage(rec, series_protocol, series_text)
     use, why_use = would_use(a, rec)
     base = {"gsm": gsm, "mark": r["mark"], "low": r["low"], "high": r["high"], "nominal_low": r["nominal_low"],
             "nominal_high": r["nominal_high"], "reason": r["reason"], "readings": r["readings"],
             "leftovers": r["leftovers"], "would_use": use, "would_use_reason": why_use,
+            "series_text_fields": r["series_text_fields"],
             "convention": {k: r["convention"][k] for k in ("name", "shift", "reason")}}
     if r["window_reading"] or r["mark"] == "WINDOW":
         read = {k: v for k, v in rec.items() if k in r["fields_read"]}
@@ -192,6 +194,10 @@ def classify(a: Mapping, cfg: Mapping, gsm: str, rec: Mapping, series_protocol: 
     if not re.search(a[end]["tissue"], tissue_txt, re.IGNORECASE):
         row["reason"] = f"not the {end} end's tissue ({a[end]['tissue']!r})"
         return row
+    nf = cm.never_fetch_refusal(a, gsm=gsm)
+    if nf:
+        row["reason"] = nf
+        return row
     files, why = role_files(gsm, rec, cfg["forms"][a["form"]]["roles"])
     if files is None:
         row["reason"] = why
@@ -208,7 +214,7 @@ def classify(a: Mapping, cfg: Mapping, gsm: str, rec: Mapping, series_protocol: 
     return row
 
 
-def apply_pins(acc: str, rows: list[dict], pins: Mapping) -> list[str]:
+def apply_pins(acc: str, rows: list[dict], pins: Mapping, a: Mapping | None = None) -> list[str]:
     """The first line: a candidate stays USED only when it is pinned and its record, end and stage match its pin;
     every other candidate is NOT_USED ('not pinned'). Returns the refusals (a pin that does not match, a pinned sample
     that is not a usable candidate, a pin whose sample is not in the atlas's series)."""
@@ -241,6 +247,7 @@ def apply_pins(acc: str, rows: list[dict], pins: Mapping) -> list[str]:
     if not cm.pins_cover_both_ends(pins):
         refusals.append(f"the pinned samples do not cover both ends (pinned ends: "
                         f"{sorted({p['end'] for p in pins['samples'].values()})}): nothing is fetched or loaded")
+    refusals += cm.pins_complete(a or {}, pins)
     return refusals
 
 
@@ -270,16 +277,20 @@ def plan_from_meta(acc: str, metas: Mapping[str, Mapping], cfg: Mapping | None =
     series_records = {s: metas[s].get("series", {}) for s in a["series"]}
     series_sha = {s: cm.record_sha256("SERIES", s, series_records[s]) for s in a["series"]}
     series_protocol = {s: protocol_text(series_records[s], SERIES_PROTOCOL) for s in a["series"]}
+    # the stage-parser exception (ruling row R27): per series, the protocol and processing fields byte-identical
+    # across EVERY sample record of that series (all of them, in-window and other-assay samples included)
+    series_text = {s: cm.series_wide_fields(metas[s]["samples"]) for s in a["series"]}
     for series in a["series"]:
         for gsm, rec in metas[series]["samples"].items():
             if gsm in seen:
                 continue  # a sample listed by two of the atlas's series is classified once
             seen[gsm] = series
-            rows.append({"series": series, **classify(a, cfg, gsm, rec, series_protocol[series])})
+            rows.append({"series": series, **classify(a, cfg, gsm, rec, series_protocol[series],
+                                                      series_text[series])})
     unknown = [r["gsm"] for r in rows if r["mark"] == "UNKNOWN" and r["would_use"]]
     if unknown:
         refusals.append(f"UNKNOWN stage in samples the atlas would use {unknown}: the atlas is refused")
-    refusals += apply_pins(acc, rows, pins)
+    refusals += apply_pins(acc, rows, pins, a)
     refusals += series_pin_refusals(a, series_sha, pins)
     chosen = {}
     for e in ("early", "late"):
@@ -313,7 +324,8 @@ def plan_from_meta(acc: str, metas: Mapping[str, Mapping], cfg: Mapping | None =
             cm.bracket_ok(cm.label_day(chosen["early"]), cm.label_day(chosen["late"]))
         except Refused as e:
             refusals.append(str(e))
-    text = processing_for(acc, a, series_records, {r["gsm"]: (r["series"], r["record"]) for r in used})
+    text = processing_for(acc, a, series_records, {r["gsm"]: (r["series"], r["record"]) for r in used},
+                          series_text)
     sha = cm.text_sha256(text)
     ok, why = cm.clearance(a, sha)
     if not ok:
@@ -325,15 +337,17 @@ def plan_from_meta(acc: str, metas: Mapping[str, Mapping], cfg: Mapping | None =
             "atlas_entry_sha256": cm.entry_sha256(acc, cfg), "series": a["series"], "chosen": chosen,
             "marks": marks, "protocol_gate": gate, "series_protocol_hits": series_hits, "samples": rows,
             "series_records": {s: cm.stored_record(series_records[s]) for s in a["series"]},
-            "series_record_sha256": series_sha, "series_protocol": series_protocol,
+            "series_record_sha256": series_sha, "series_protocol": series_protocol, "series_text": series_text,
             "processing_text": text, "processing_sha256": sha,
             "processing_clearance": why if ok else "not cleared", "tasks": list(cm.TASKS)}
 
 
-def processing_for(acc: str, a: Mapping, series_records: Mapping, samples: Mapping[str, tuple[str, object]]) -> str:
-    """The canonical processing text of these samples ({GSM: (GSE, record)})."""
+def processing_for(acc: str, a: Mapping, series_records: Mapping, samples: Mapping[str, tuple[str, object]],
+                   series_text: Mapping[str, Mapping[str, list[str]]]) -> str:
+    """The canonical processing text of these samples ({GSM: (GSE, record)}), with each series' series-wide fields."""
     return cm.processing_text(acc, [(s, series_records[s]) for s in a["series"]],
-                              {g: {"series": s, "text": cm.sample_text(rec)} for g, (s, rec) in samples.items()})
+                              {g: {"series": s, "text": cm.sample_text(rec)} for g, (s, rec) in samples.items()},
+                              series_text)
 
 
 TABLE_COLUMNS = ("gsm", "series", "mark", "would_use", "end", "label", "pinned", "record_sha256", "nominal_low",
@@ -352,6 +366,10 @@ def records_text(pl: Mapping) -> str:
     for s in pl["series"]:
         out.append(f"==== SERIES {s}  record_sha256 {pl['series_record_sha256'][s]}")
         out.append(cm.record_text("SERIES", s, pl["series_records"][s]).rstrip("\n"))
+        st = sorted((pl.get("series_text") or {}).get(s) or {})
+        out.append(f"==== SERIES-WIDE FIELDS of {s} (byte-identical in every sample record of the series, read as "
+                   f"series text under ruling row R27: no stage reading, pooling words refuse, the stage comes from "
+                   f"each sample's own title and characteristics): {', '.join(st) if st else '(none)'}")
     for r in pl["samples"]:
         if "record" not in r:
             continue
@@ -456,6 +474,11 @@ def pin_template(acc: str, dest: Path, gsms: list[str], cfg: Mapping | None = No
         raise Refused(f"{acc}: the stored plan holds no records: plan again")
     rows = {r["gsm"]: r for r in pl["samples"]}
     series_records = {s: pl["series_records"][s] for s in a["series"]}
+    series_text = pl.get("series_text") or {}
+    named = cm.named_gsms(a)
+    if named and set(gsms) != set(named):
+        raise Refused(f"the strict form pins exactly the samples the atlas names ({sorted(named)}), not "
+                      f"{sorted(gsms)}")
     picked = {}
     for g in gsms:
         r = rows.get(g)
@@ -466,10 +489,13 @@ def pin_template(acc: str, dest: Path, gsms: list[str], cfg: Mapping | None = No
         h = cm.record_sha256("SAMPLE", g, r["record"])
         if h != r["record_sha256"]:
             raise Refused(f"{g}: the stored record hashes to {h}, not to the plan's value: plan again")
-        st = cm.record_stage(r["record"], pl["series_protocol"][r["series"]])
+        st = cm.record_stage(r["record"], pl["series_protocol"][r["series"]], series_text.get(r["series"]))
         if st["mark"] != "PERMITTED" or st["nominal_low"] != st["nominal_high"] or \
                 st["nominal_low"] != cm.label_day(r["candidate"]["label"]):
             raise Refused(f"{g}: the stage rule no longer reads it as {r['candidate']['label']} ({st['reason']})")
+        if named and named[g] != r["candidate"]["end"]:
+            raise Refused(f"{g}: the atlas names it at the {named[g]} end, the rule places it at the "
+                          f"{r['candidate']['end']} end")
         picked[g] = r
     ends = {r["candidate"]["end"] for r in picked.values()}
     if ends != {"early", "late"}:
@@ -478,7 +504,8 @@ def pin_template(acc: str, dest: Path, gsms: list[str], cfg: Mapping | None = No
         st = {r["candidate"]["label"] for r in picked.values() if r["candidate"]["end"] == e}
         if len(st) > 1:
             raise Refused(f"the named samples of the {e} end are at two stages {sorted(st)}: name one stage")
-    text = processing_for(acc, a, series_records, {g: (r["series"], r["record"]) for g, r in picked.items()})
+    text = processing_for(acc, a, series_records, {g: (r["series"], r["record"]) for g, r in picked.items()},
+                          series_text)
     tp = cm.outside_repo(mdir / "processing_text_pinned.txt")
     tp.write_bytes(text.encode("utf-8"))
     out = [f"# pin-template {acc}: {len(gsms)} sample(s) named; from {pp} (sha256 {cm.sha256_file(pp)})",
@@ -565,12 +592,19 @@ def check_used_against_pins(acc: str, a: Mapping, pl: Mapping) -> dict:
         h = cm.record_sha256("SAMPLE", r["gsm"], r["record"])
         if not (h == r["record_sha256"] == p["record_sha256"]) or p["end"] != r["end"] or p["stage"] != r["label"]:
             raise Refused(f"{r['gsm']}: its record, end or stage is not its pin's: refused")
-        st = cm.record_stage(r["record"], pl["series_protocol"][r["series"]])
+        st = cm.record_stage(r["record"], pl["series_protocol"][r["series"]],
+                             (pl.get("series_text") or {}).get(r["series"]))
         if st["mark"] != "PERMITTED" or st["nominal_low"] != st["nominal_high"] or \
                 st["nominal_low"] != cm.label_day(r["label"]):
             raise Refused(f"{r['gsm']}: its stored record no longer reads as {r['label']} ({st['reason']})")
+        why = cm.never_fetch_refusal(a, gsm=r["gsm"])
+        if why:
+            raise Refused(f"{r['gsm']}: {why}: refused")
     if {r["end"] for r in used} != {"early", "late"}:
         raise Refused(f"{acc}: the USED samples do not cover both ends")
+    bad = cm.pins_complete(a, pins)
+    if bad:
+        raise Refused(f"{acc}: {'; '.join(bad)}")
     for s in a["series"]:
         h = cm.record_sha256("SERIES", s, pl["series_records"][s])
         if s not in pins["series"] or pins["series"][s]["record_sha256"] != h:
@@ -578,13 +612,11 @@ def check_used_against_pins(acc: str, a: Mapping, pl: Mapping) -> dict:
     return pins
 
 
-def fetch(acc: str, dest: Path, plan_sha256: str, getter=None, cfg: Mapping | None = None) -> dict:
-    """The USED samples' files. Before any data file: the stored plan is checked (its sha256, its atlas entry with the
-    pins, the processing clearance), then the series' metadata is downloaded again and planned again: the live plan
-    must pass, its processing text must still hash to processing_cleared, its USED samples, their full records (each
-    hashing to its pin) and files must be the stored plan's. Each USED sample's stage is then read again from its
-    stored record."""
-    cfg = cfg or cm.load_atlases()
+def _live_checked(acc: str, dest: Path, plan_sha256: str, getter, cfg: Mapping) -> tuple[dict, dict, dict]:
+    """Before any data file: the stored plan is checked (its sha256, its atlas entry with the pins, the processing
+    clearance), then the series' metadata is downloaded again and planned again: the live plan must pass, its
+    processing text must still hash to processing_cleared, its USED samples, their full records (each hashing to its
+    pin), their files and the series-wide fields must be the stored plan's. Returns (plan, atlas, pins)."""
     pl = check_plan(acc, dest, plan_sha256, cfg)
     a = cm.atlas(acc, cfg)
     check_used_against_pins(acc, a, pl)
@@ -594,31 +626,117 @@ def fetch(acc: str, dest: Path, plan_sha256: str, getter=None, cfg: Mapping | No
     if live["status"] != "passed":
         raise Refused(f"{acc}: the live metadata no longer plans as passed ({live['refusals']})")
     if live["processing_sha256"] != pl["processing_sha256"] or _used_signature(live) != _used_signature(pl) or \
-            live["series_record_sha256"] != pl["series_record_sha256"]:
+            live["series_record_sha256"] != pl["series_record_sha256"] or \
+            live["series_text"] != (pl.get("series_text") or {}):
         raise Refused(f"{acc}: the live metadata differs from the plan that was read (processing text, USED samples, "
-                      f"their records or files, the series records): plan again and read it")
+                      f"their records or files, the series records, the series-wide fields): plan again and read it")
     pins = check_used_against_pins(acc, a, live)
+    return pl, a, pins
+
+
+def _get_data(a: Mapping, gsm: str, f: Mapping, dst_dir: Path, getter) -> dict:
+    """One data file of one USED sample: only from the sample's own GEO folder, never a denied type, an archive or a
+    file the never-fetch list names."""
+    u, why = geo.own_file(gsm, f["url"])
+    if u is None or geo.DENY.search(f["name"]):
+        raise Refused(f"{gsm}: {f['name']} is not fetchable ({why or 'a denied or archive type'})")
+    nf = cm.never_fetch_refusal(a, gsm=gsm, url=u)
+    if nf:
+        raise Refused(f"{gsm}: {nf}")
+    dst = cm.outside_repo(dst_dir / gsm / f["name"])
+    (getter or default_getter)(u, dst)
+    return {"name": f["name"], "url": u, "bytes": dst.stat().st_size, "sha256": cm.sha256_file(dst)}
+
+
+HEAD_ROLES = ("barcodes", "features")
+
+
+def heads(acc: str, dest: Path, plan_sha256: str, getter=None, cfg: Mapping | None = None) -> dict:
+    """The screens' inputs: each USED sample's barcode and feature files only (never a matrix), after every check of
+    the fetch (_live_checked). Writes D/raw/<ACC>/HEADS.json (url, bytes, sha256 per file; the plan's sha256 and the
+    atlas entry's). screens.py reads them; the matrices are fetched only after the main session has committed a kept
+    verdict in screens.yaml."""
+    cfg = cfg or cm.load_atlases()
+    pl, a, pins = _live_checked(acc, dest, plan_sha256, getter, cfg)
+    if not a.get("screens") or a["form"] != "tenx_mtx":
+        raise Refused(f"{acc}: heads are fetched only for a 10x atlas with screens")
+    rdir = cm.outside_repo(Path(dest) / "raw" / acc)
+    rdir.mkdir(parents=True, exist_ok=True)
+    out = {"accession": acc, "plan_sha256": plan_sha256, "atlas_entry_sha256": pl["atlas_entry_sha256"],
+           "tasks": list(cm.TASKS), "roles": list(HEAD_ROLES), "samples": {}}
+    for r in pl["samples"]:
+        if r["mark"] != "USED":
+            continue
+        out["samples"][r["gsm"]] = {"end": r["end"], "label": r["label"],
+                                    "files": {role: _get_data(a, r["gsm"], r["role_files"][role], rdir, getter)
+                                              for role in HEAD_ROLES}}
+    cm.dump_json(out, rdir / "HEADS.json")
+    return out
+
+
+def screened(acc: str, a: Mapping, dest: Path, plan_sha256: str, pl: Mapping) -> tuple[dict, dict]:
+    """For an atlas with screens: its screens.yaml verdict is kept, D/screens/<ACC>/screen.json hashes to the
+    recorded screen_sha256 and says every check passed, it was run on the HEADS.json on disk, and that heads file was
+    fetched under this plan for exactly the USED samples. Returns (the record entry, the heads)."""
+    e = cm.screened_kept(acc, a)
+    sp = cm.outside_repo(Path(dest) / "screens" / acc / "screen.json")
+    hp = cm.outside_repo(Path(dest) / "raw" / acc / "HEADS.json")
+    if not sp.is_file() or cm.sha256_file(sp) != e["screen_sha256"]:
+        raise Refused(f"{acc}: {sp} is missing or does not hash to the screen_sha256 in screens.yaml")
+    sc = json.loads(sp.read_text())
+    if sc.get("accession") != acc or sc.get("passed") is not True or \
+            set(sc.get("checks") or {}) != set(a["screens"]) or \
+            not all(c.get("passed") is True for c in sc["checks"].values()):
+        raise Refused(f"{acc}: the screen file does not say that every screen of the atlas passed: no matrix is "
+                      f"fetched")
+    if not hp.is_file() or cm.sha256_file(hp) != sc.get("heads_sha256"):
+        raise Refused(f"{acc}: HEADS.json is missing or is not the file the screens ran on")
+    hd = json.loads(hp.read_text())
+    used = {r["gsm"] for r in pl["samples"] if r["mark"] == "USED"}
+    if hd.get("plan_sha256") != plan_sha256 or hd.get("atlas_entry_sha256") != pl["atlas_entry_sha256"] or \
+            set(hd.get("samples") or {}) != used:
+        raise Refused(f"{acc}: the heads were fetched under another plan or for other samples")
+    return e, hd
+
+
+def fetch(acc: str, dest: Path, plan_sha256: str, getter=None, cfg: Mapping | None = None) -> dict:
+    """The USED samples' files, after every check of _live_checked. For an atlas with screens, the barcode and
+    feature files are the ones the screens ran on (re-hashed, not fetched again) and only the matrices are fetched,
+    and only while screens.yaml records the member as kept (screened). Writes D/raw/<ACC>/MANIFEST.json."""
+    cfg = cfg or cm.load_atlases()
+    pl, a, pins = _live_checked(acc, dest, plan_sha256, getter, cfg)
+    screen, hd = (None, None)
+    if a.get("screens"):
+        screen, hd = screened(acc, a, dest, plan_sha256, pl)
     rdir = cm.outside_repo(Path(dest) / "raw" / acc)
     rdir.mkdir(parents=True, exist_ok=True)
     man = {"accession": acc, "plan_sha256": plan_sha256, "atlas_entry_sha256": pl["atlas_entry_sha256"],
            "chosen": pl["chosen"], "form": a["form"], "tasks": list(cm.TASKS),
            "series_records": pl["series_records"], "series_record_sha256": pl["series_record_sha256"],
+           "series_text": pl.get("series_text") or {},
            "processing_sha256": pl["processing_sha256"], "pins": {"samples": pins["samples"],
-                                                                  "series": pins["series"]}, "samples": {}}
+                                                                  "series": pins["series"]},
+           "screen": None if screen is None else {"verdict": screen["verdict"],
+                                                  "screen_sha256": screen["screen_sha256"]},
+           "samples": {}}
     for r in pl["samples"]:
         if r["mark"] != "USED":
             continue
         files = {}
         for role, f in r["role_files"].items():
-            u, why = geo.own_file(r["gsm"], f["url"])
-            if u is None or geo.DENY.search(f["name"]):
-                raise Refused(f"{r['gsm']}: {f['name']} is not fetchable ({why})")
-            dst = cm.outside_repo(rdir / r["gsm"] / f["name"])
-            (getter or default_getter)(u, dst)
-            files[role] = {"name": f["name"], "url": u, "bytes": dst.stat().st_size, "sha256": cm.sha256_file(dst)}
+            if hd is not None and role in HEAD_ROLES:
+                h = hd["samples"][r["gsm"]]["files"][role]
+                p = cm.outside_repo(rdir / r["gsm"] / h["name"])
+                if h["name"] != f["name"] or not p.is_file() or cm.sha256_file(p) != h["sha256"]:
+                    raise Refused(f"{r['gsm']}: {f['name']} is not the file the screens ran on")
+                files[role] = dict(h)
+                continue
+            files[role] = _get_data(a, r["gsm"], f, rdir, getter)
         man["samples"][r["gsm"]] = {"series": r["series"], "end": r["end"], "label": r["label"],
                                     "record": r["record"], "record_sha256": r["record_sha256"],
-                                    "series_protocol": pl["series_protocol"][r["series"]], "files": files}
+                                    "series_protocol": pl["series_protocol"][r["series"]],
+                                    "series_text": (pl.get("series_text") or {}).get(r["series"], {}),
+                                    "files": files}
     cm.dump_json(man, rdir / "MANIFEST.json")
     return man
 
@@ -629,10 +747,11 @@ def main(argv=None) -> int:
     p1 = sub.add_parser("plan")
     p1.add_argument("accession")
     p1.add_argument("--dest", required=True, type=Path)
-    p2 = sub.add_parser("fetch")
-    p2.add_argument("accession")
-    p2.add_argument("--dest", required=True, type=Path)
-    p2.add_argument("--plan-sha256", required=True)
+    for name in ("heads", "fetch"):
+        p2 = sub.add_parser(name)
+        p2.add_argument("accession")
+        p2.add_argument("--dest", required=True, type=Path)
+        p2.add_argument("--plan-sha256", required=True)
     p3 = sub.add_parser("pin-template")
     p3.add_argument("accession")
     p3.add_argument("--dest", required=True, type=Path)
@@ -645,6 +764,12 @@ def main(argv=None) -> int:
             return 0 if pl["status"] == "passed" else 2
         if a.cmd == "pin-template":
             print(pin_template(a.accession, a.dest, a.gsm), end="")
+            return 0
+        if a.cmd == "heads":
+            hd = heads(a.accession, a.dest, a.plan_sha256)
+            print(json.dumps({"accession": a.accession, "samples": sorted(hd["samples"]),
+                              "heads_sha256": cm.sha256_file(Path(a.dest) / "raw" / a.accession / "HEADS.json")},
+                             indent=1))
             return 0
         man = fetch(a.accession, a.dest, a.plan_sha256)
         print(json.dumps({"accession": a.accession, "samples": sorted(man["samples"])}, indent=1))
