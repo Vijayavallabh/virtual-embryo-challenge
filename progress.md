@@ -2,6 +2,11 @@
 
 ## Current State
 
+- **2026-11-23, 14:48 UTC.** The captain approved the four items put by name: the momentum file MS (T1), the embryo's
+  SO and O_hi, and the upload of the heart's organ-cut file D (ruling rows R23 to R25; rules amended). SO, O_hi and D
+  are handed over; MS's builder option is with an engineer and a reviewer. The drastic outside-data design round is
+  running. Decision log 2026-11-23 (c).
+
 - **2026-11-23, 14:40 UTC.** The captain set a bar of 200 for today's uploads and ordered a drastic improvement using
   outside datasets extensively (up to 1 TB on the DGX). The AI assistant answered that it does not believe today's
   ready files reach 200 (standing 197.04) and started a nine-agent, score-blind design round on all boards with cold

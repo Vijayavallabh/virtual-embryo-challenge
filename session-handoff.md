@@ -2,7 +2,31 @@
 
 ## Current Objective
 
-- **State at 2026-11-23, 14:40 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-23, 14:48 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-23 (c); the next label is 2026-11-23 (d). Local main = origin/main at ba05554 or one notes commit after it.
+  **THE CAPTAIN: "You have my approval for all" (entry (c)).** Read as the yes to the four items the message before it
+  put by name: MS (row R23), SO and O_hi (row R24; O_hi's naming lifts the embryo's depth line for that one file), the
+  heart's file D for upload (row R25); rules amended and re-pinned. NOT read as covering T1 line 1's step back, the
+  heart search line's exception or line 3's turn order: those stay as they are unless the captain names them (said to
+  the captain).
+  - **HANDED OVER FOR UPLOAD ON 23 NOV (all in `runs/manual_upload/`, sha256 checked on disk today).** Embryo: SO
+    `T2embryo_s2xs_ov.h5ad` (77062082...), O_hi `T2embryo_s2x_ovhi.h5ad` (7e4d1eaa...), beside C
+    `T2embryo_s2x_cr.h5ad`, the sized file `T2embryo_s2x_crs.h5ad` and `T2embryo_s2`. Heart: D
+    `T2heart_organ_half.h5ad` (1b4342c1...). T1 (my advice for the 200 goal: C and the 2.0 file before F):
+    `T1_s2rcC.h5ad`, `T1_s2rcB2.h5ad`, then `T1_s2rcA15.h5ad`. T3: `T3_c1_s2.h5ad`, `T3_c2_s2.h5ad`, then
+    `T3_k23_s2.h5ad`.
+  - **RUNNING.** wdfh9z62z: MS's builder (`campaign/t1-ms`; option `--direction-momentum all --captain-ruling R23`;
+    launcher `experiments/builds/t1_ms.sh <COMMIT> <RUN>`, steps gate, tests, D, MSa, MSb, done). On a ready review:
+    merge (keep both sides of the tests list), tests, commit, deliver to `v/vec-campaign-d`, check out in
+    `~/v/scratch/t1line-wt`, dry-run trace, launch with PATH exported, waiter on every step; on done 0 copy
+    `MSa/T1_s2rc_MS.h5ad` to `runs/manual_upload/`, record `experiments/builds/results/t1ms_<c7>_<RUN>.*`, fill row
+    R23's last cell by a log entry, hand over (place: after entry 2026-11-20 (r)'s list; Data used as R13's file).
+    wprn6jz7a: the drastic outside-data design round (see the bullet below).
+  - **WHEN SCORES ARE PASTED:** headline per board only; then each pre-set rule (T1 line 1: 2.5 if the 2.0 file
+    strictly beats 71.59; line 2: A20 if A15 strictly beats A's 70.8; line 3: Cm20 if C strictly beats A's 70.8, then
+    Cm25; T3: CK if C2 and K23 each strictly beat 62.30, the E = 4.0 file if K23 strictly beats 62.30; embryo and
+    heart: best-headline mark only).
+- **State at 2026-11-23, 14:40 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-23 (b); the next label is 2026-11-23 (c). **THE CAPTAIN'S INSTRUCTION OF 23 NOV (entry (b)):** "for the 2
   submissions of today, I will only submit it if it reaches the score more than 200. If you really believe that it
   doesn't, then improve it drastically and utilize external datasets extensively [Even if it takes 1TB of space in the
