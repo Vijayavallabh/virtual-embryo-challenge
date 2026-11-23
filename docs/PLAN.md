@@ -11620,3 +11620,51 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     headlines are compared; nothing is rebuilt, re-seeded, resized or changed after a score. `docs/UPLOAD_SHEET.md`
     lists both files with their conditions in words. Handed to the captain with path, sha256, board and the Data-used
     text; an upload is the captain's own act.
+- 2026-11-23 (v), T1 candidate MX2s closes with no try: both new atlases are out before any data file (state at 20:07
+  UTC, 2026-11-23). Written by the AI assistant, which designed none of the candidate.
+  - **Outcome, by the statement fixed before the readers answered** (the hand-off note of commit a407903, 20:03 UTC:
+    "IF X019 fails either point with either reader: both atlases are out, row T72 is NOT placed, the line closes with
+    no try"): both readers answered no on both points for both series. Row T72 is not placed, no try is counted (T1
+    stays at 463), no table and no file exists, and the line 'multi-atlas sign consensus' is closed.
+  - **What ran.** The data side's branch (`campaign/t1-mx2s-3`, 02562e4: the pooling clause after two review rounds,
+    the two faults of the first run fixed, the row's data-side work list) was checked out in the DGX worktree and its
+    plan step was tried at 19:56 UTC on a throwaway folder: metadata only, the two series' family files. Both earlier
+    faults are gone (the fetch completed, the parser read every record). **The plan's own verdict: every sample of
+    both series is UNKNOWN.** GSE230531 (X020): a form of 'pool' in the series-wide extraction protocol; ruling row
+    R27's exception says series text 'still refuses on pooling words', so this refusal is the exception as the captain
+    approved it. GSE244783 (X019): the token 'mix' in the series-wide extraction protocol, a word of the wider list
+    the reviewers added (it refuses when the same text names a stage).
+  - **The two readers.** Two independent screening agents, neither of them the main session, each read four files that
+    code had extracted (the series-wide protocol and processing fields of the candidate samples and the processing
+    text; the main session did not read them) and handed back a fixed block without quotes. The code's hit: for
+    GSE244783 both class it as a reagent or reaction mix; for GSE230531 one classes it as pooling within one stage and
+    the other as a reagent step. Neither found any wording that a library holds material of more than one stage. Each
+    found one occurrence in the processing field unclear. **Point 2** (the series-wide text free of cross-stage
+    wording; a doubt counts as no): no, both readers, both series. **Point 5** (each sample's matrix made from its own
+    library alone): no, both readers, both series; the cause both name is an aggregation step in the processing text,
+    and neither could tell whether it comes before or after the per-sample files. On points 2 and 5 the two agree;
+    they differ on the class of GSE230531's hit, as said, and on whether the text states one stage per library for
+    GSE244783 (one says stated, one not).
+  - **The limits of this result (the AI assistant's reading after the result).** It was not the row's formal screen:
+    the readers had the series-wide text only, from a trial of the plan step, and not the barcodes and features files
+    that the specification's checks (a) to (d) read and that are its evidence on whether per-sample files were cut
+    from an aggregated matrix. A formal screen with those files might have answered point 5 otherwise. Getting there
+    needed, in order: a change to the stage parser made after seeing which series it refuses (for GSE244783 a
+    clearance of the wider list's hit by both readers; for GSE230531 a new exception beyond R27's words, which only
+    the captain can give), the four blockers of the data side's review, the three of the read script's review, an
+    integration round with its own review, then the screen, the run, the read, a question to the captain, a builder
+    option and a file by 2026-11-25 12:00 UTC. The cold challenger's committed estimate before any of this was an
+    expected test gain of about 0.05 points (row R27). The AI assistant follows its pre-set statement and leaves the
+    line closed; the captain can order otherwise by naming it.
+  - **What exists.** No barcodes, features or matrix file of any sample of either series was ever requested; only the
+    family metadata was read, by code (one series at the first run of 19:07 UTC, both at the trial). Register rows
+    X019 and X020 say so; `docs/DATA_POLICY.md` change note 2026-11-23 (d). Code, all on campaign branches pushed to
+    the private remote and none merged: `campaign/t1-mx2s`, `-2`, `-3` (the data side; its last review: not ready,
+    four blockers) and `campaign/t1-mx2s-read`, `-read-2` (the practice-read script and launcher; its review: not
+    ready, three blockers; the fix round was stopped at this closing). Row T72's text (written by a score-blind rule
+    writer, attacked cold with fourteen faults, revised, its six open points settled) was never placed and stays in
+    the session's scratch. On the DGX the metadata stays in `~/v/scratch/t72_trial_plan` and `~/v/vec-ext/t1/meta`;
+    nothing was deleted.
+  - **Where the outside-data round of entry (b) stands: finished on every board.** T3's one kept candidate stopped at
+    its first gate (entry (q)); T1's closes here; nothing was kept for the two T2 boards. What can still raise a mark
+    is the list of built files in `docs/UPLOAD_SHEET.md` and the search lines' conditional files.

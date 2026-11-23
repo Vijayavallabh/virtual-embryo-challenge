@@ -1531,3 +1531,20 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     learned using protected cells" (a member whose files show processing together with an in-window library is dropped
     before any table); Task 1 only, because E8.5 lies inside the Task 2 heart window; a register row for each new
     series before any fetch; practice read only until the captain rules on a file.
+- 2026-11-23 (d), the T1 outside-atlas line is closed again, with no sample admitted (`docs/PLAN.md` decision log
+  2026-11-23 (v); ruling row R27's last cell). Written by the AI assistant.
+  - **What the exception of note (c) admitted: nothing.** The plan step read the two new series' family metadata by
+    code and refused every sample of both. One series' series-wide extraction protocol holds a form of 'pool', and the
+    exception as the captain approved it says series text still refuses on pooling words. The other's holds the token
+    'mix', which the code's reviewers had added to a wider list (combine, mix, multiplex, superload, aggregate) that
+    refuses when the same text names a stage. Two independent screening readers, on the series-wide text alone, each
+    answered no (a doubt counts as no) on the checklist's point 2 and point 5 for both series, the second because the
+    processing text names an aggregation step whose place before or after the per-sample files they could not tell.
+  - **What was and was not read or fetched.** Read by code: the two series' family metadata files. Read by the two
+    screening readers: the series-wide protocol and processing fields of the candidate samples, extracted by code.
+    Never requested: any barcodes, features or matrix file of any sample, any series archive, any in-window sample's
+    data. No sample was pinned. The main session read no record.
+  - **What stands.** The Task 1 window and every other clause of this note's section are as before. The exception of
+    note (c) stays written as it is and is in no code on main (the line's code is on unmerged campaign branches). A
+    reopening would need the captain's own word again, and for the series refused on a pooling word a further
+    exception that only the captain can name.
