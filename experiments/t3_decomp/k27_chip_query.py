@@ -508,6 +508,10 @@ def p2_compute(genes: list[str], root=None, kept=None, man: dict | None = None) 
     for n in PLACEBO_TABLE.values():
         if np.array_equal(tabs[n], tabs[QUERY_TABLE]):
             raise Refused("a placebo's finished table equals the query's: refused (nothing counted, before P3)")
+    names = list(tabs)
+    if any(np.array_equal(tabs[x], tabs[y]) for i, x in enumerate(names) for y in names[i + 1:]):
+        raise Refused("two placebos' finished tables are equal, so a sha256 would appear twice among the 11 listing "
+                      "lines: refused (nothing counted, before P3)")
     out["exponents"] = exponents_of({n: (T, {"exponents": {SIZE_OF_KEY[s]: cq.exponent(T, S)
                                                            for s, S in SIZES.items()}}) for n, T in tabs.items()})
     return out | {"passes": True}
