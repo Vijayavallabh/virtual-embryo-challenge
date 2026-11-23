@@ -657,9 +657,10 @@ def heads(acc: str, dest: Path, plan_sha256: str, getter=None, cfg: Mapping | No
     atlas entry's). screens.py reads them; the matrices are fetched only after the main session has committed a kept
     verdict in screens.yaml."""
     cfg = cfg or cm.load_atlases()
-    pl, a, pins = _live_checked(acc, dest, plan_sha256, getter, cfg)
-    if not a.get("screens") or a["form"] != "tenx_mtx":
+    a0 = cm.atlas(acc, cfg)
+    if not a0.get("screens") or a0.get("form") != "tenx_mtx":
         raise Refused(f"{acc}: heads are fetched only for a 10x atlas with screens")
+    pl, a, pins = _live_checked(acc, dest, plan_sha256, getter, cfg)
     rdir = cm.outside_repo(Path(dest) / "raw" / acc)
     rdir.mkdir(parents=True, exist_ok=True)
     out = {"accession": acc, "plan_sha256": plan_sha256, "atlas_entry_sha256": pl["atlas_entry_sha256"],
