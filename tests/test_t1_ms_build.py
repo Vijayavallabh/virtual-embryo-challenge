@@ -282,8 +282,8 @@ def test_the_ms_record_is_the_defaults_plus_its_candidate_field(bt, ms4, ledger,
     assert cand["calendar_fraction"] == cand["applied_fraction"] == rm["fraction"] == 0.4
     m = cand["momentum"]
     assert (m["damping"], m["eps"], m["min_cells"], m["keep_depth"]) == (0.5, 0.5, 20, True)
-    assert m["stream"] == [harness.BUILD_SEED_OFFSET + 1, 1] and m["direction_stream"] == [harness.BUILD_SEED_OFFSET + 1,
-                                                                                            2]
+    seed = harness.BUILD_SEED_OFFSET + 1
+    assert m["stream"] == [seed, 1] and m["direction_stream"] == [seed, 2]
     assert m["fit"] == {"start": "E9.5_RNA", "later": "E10.5_RNA", "later_libraries": ["1", "2"],
                         "library_3_in_fit": False}
     assert "R2's union" in m["held"] and "pre-registered" in m["held"]

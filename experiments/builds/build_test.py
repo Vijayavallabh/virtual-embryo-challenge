@@ -665,10 +665,10 @@ T1_LINE3_ORDER_R22 = ("experiments/harness/TRIES.md row {row}, the captain's ord
 # Row R23 of experiments/harness/TRIES.md (the captain's order of 2026-11-23, docs/PLAN.md decision log 2026-11-23 (c)):
 # candidate MS, T1_CANDIDATE_COMMAND with one change. The drawn cells whose label's group has a recomputed direction
 # (build_submission's covered cells) also get B0's per-category damped mean momentum (vec.t1_scope.momentum_shift at
-# harness.B0_DAMPING with its own pseudocount eps 0.5, min_cells 20 and keep_depth, on build_submission's momentum stream
-# [seed, 1], held genes the build's held list: R2's union joined with the pre-registered list), fitted from E9.5 to
-# E10.5's portion libraries 1 and 2 (library 3, the dissected heart, never enters the fit), applied before the atlas step
-# ([seed, 2], the calendar fraction) and g_mom ([seed, 5]), which stay as they are. Cells without a group keep R1's
+# harness.B0_DAMPING with its own pseudocount eps 0.5, min_cells 20 and keep_depth, on build_submission's momentum
+# stream [seed, 1], held genes the build's held list: R2's union joined with the pre-registered list), fitted from E9.5
+# to E10.5's portion libraries 1 and 2 (library 3, the dissected heart, never enters the fit), applied before the atlas
+# step ([seed, 2], the calendar fraction) and g_mom ([seed, 5]), which stay as they are. Cells without a group keep R1's
 # hold. As the practice arm m1rc_gmom_mom of experiments/t1_m1/ms_read.py (row T65) builds it, with the fit's stages
 # the test's. Off by default; taken only with --captain-ruling R23 while that row is the captain's order naming the
 # option, never with candidate A, B or C's options or a released bet.
@@ -874,8 +874,8 @@ def _ms_ordered(a) -> bool:
 def _t1_ms(a) -> dict | None:
     """--direction-momentum all (candidate MS, row R23): refused before anything is read without --captain-ruling R23,
     with any other row, unless row R23 is the captain's order naming the option (`_captain_order_names`, as the R20 and
-    R22 options), with --g-mom-damping, --feng-fraction-mult, --released-bet or --bet-strength (MS is never stacked on A,
-    B or C), with --no-hold-unbracketed, and on any command but T1_CANDIDATE_COMMAND at the default seed on the test
+    R22 options), with --g-mom-damping, --feng-fraction-mult, --released-bet or --bet-strength (MS is never stacked on
+    A, B or C), with --no-hold-unbracketed, and on any command but T1_CANDIDATE_COMMAND at the default seed on the test
     board (never a dry run). Returns None when the option is not given (today's path and record exactly), else the
     record's candidate values, naming the row."""
     arm = getattr(a, "direction_momentum", None)
