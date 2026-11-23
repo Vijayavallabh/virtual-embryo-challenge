@@ -44,8 +44,12 @@ R29_STRINGS = ("`--entry organ_scope`", "`--trend-strength 0.5`", "`--trend-stre
 # at bf1dac7 (before this option) by the same builds as below. A record may differ from its text only in the last bits
 # of floats. Every other heart command is pinned in BEFORE (tests/test_heart_trend_line.py) and rechecked here.
 TS_BEFORE = {
-    0.5: ("TS05_H5AD", "TS05_TEXT", "TS05_CANON"),
-    1.0: ("TS10_H5AD", "TS10_TEXT", "TS10_CANON"),
+    0.5: ("f3c4dc1de48e6fc5a140fa506add9446abd3ef569870d0d8c1eea07ccdc52b1d",
+          "7d6a5d4af506161c94dd0ff70e6696c157cc36adfe4a33b2daf3581a53331a11",
+          "f2b1eeb407d53a6550ad88ac9c3dcccc3a42c348cfa7b0854579189f4aae09d7"),
+    1.0: ("c4230bae0315fb1bb488354b278ac68d0bc15ae9ce4e51cbef20dffd4fe5026b",
+          "c393f55ec7c67fd9639e015591a57a5d5abdd98d5ededd56b7a32e66a303d4fa",
+          "e50d2c30ac40828c127e5fc77362bc1a87d3f257605258e9d6857b7b5dac0fbb"),
 }
 
 
@@ -283,7 +287,8 @@ def test_every_other_use_is_refused_before_anything_is_read(bt, organ_env, tmp_p
 def test_any_other_board_is_refused_before_anything_is_read(bt, organ_env, tmp_path, board, s):
     with pytest.raises(SystemExit) as e:
         bt.main(["heart", *OTS[s], "--board", board, "--out", str(tmp_path / "h_dry.h5ad")])
-    assert "test board only" in str(e.value)
+    # a heart validation board meets the line's own refusal; another task's board the builder's earlier one
+    assert "test board only" in str(e.value) or (board.startswith("T2:embryo") and "takes only" in str(e.value))
     assert organ_env == [] and not (tmp_path / "h_dry.h5ad").exists()
 
 
