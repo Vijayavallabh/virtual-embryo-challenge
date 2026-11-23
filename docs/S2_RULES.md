@@ -2248,3 +2248,18 @@ slots only after the queued files (K1, K2, D on its condition), at most two offi
 adds uploads, and the board keeps its best headline. H-T1, H-T1B and any variant of K1, K2 or D are outside this line.
 Data used: released challenge data only; no outside data. The method report states that strengths 0.5 and 1.0 of the
 trend step were tried on the full trim and that the best headline was kept.
+
+## Note of 2026-11-23: the heart search line's two files are built (row R28; decision log 2026-11-23 (u))
+
+The build clause of the amendment "the heart's search line" above now holds: the builder takes `--trend-strength 0.5`
+and `--trend-strength 1.0` only with `--entry core_trim --z-mode raw --captain-ruling R28` (merged at d41cd14; an
+independent reviewer passed the change with no blocker), the default command rebuilt the full trim C's reference bytes
+and its half's at that one clean commit, and each file was then built twice there with one sha256 and passed the
+format check. **The files:** `runs/manual_upload/T2heart_core_ts05_half.h5ad`, sha256
+b6b8155be9b5469a2dbc8943a59df567f52c7cbe013bbf0b55e4da706fda27b7 (TS05);
+`runs/manual_upload/T2heart_core_ts10_half.h5ad`, sha256
+cf53b0c0afe7d18b8f7c84d7595729e4fc46e15e6077e645b6dc0a2fbfed39af (TS10); build record
+`experiments/builds/results/heartline_d41cd14_ts1.txt`. No score of either file existed at this note's commit. Every
+clause of the line stands: TS05 first, after the queued file D; TS10 only if TS05's headline is strictly above C's;
+the line ends at TS10; nothing is rebuilt, re-seeded, resized or changed after a score. Data used: released Task 2
+heart stages and the unlocked E10.5 validation file only; no outside data.

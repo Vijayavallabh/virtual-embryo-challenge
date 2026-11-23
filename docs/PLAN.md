@@ -11591,3 +11591,32 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     command builds byte for byte as before) with a launcher whose first build step reproduces C's reference bytes; a
     reviewer checks under a blocker standard fixed up front; each file is built twice with one sha256, recorded here
     before any score, and handed to the captain.
+- 2026-11-23 (u), the heart search line's two files are built, before any score of them (state at 19:54 UTC,
+  2026-11-23). Written by the AI assistant, which is recused on the heart's scope and size, designed none of it and
+  states no preference.
+  - **The code.** An engineer blind to test scores wrote the builder option `--trend-strength` (the literal values 0.5
+    and 1.0; only with `--entry core_trim --z-mode raw --captain-ruling R28` and row R28's first cell naming the three
+    strings; off by default) and the launcher `experiments/builds/heart_trend_line.sh`; a second agent reviewed it
+    under a blocker standard fixed up front: ready, no blocker. Its checks: the step follows row H28's practice script
+    line for line and equals the harness's trend step bit for bit at strength 1.0; rows, coordinates, cell number,
+    size field and the half's rows equal C's, only the expression differs; thirteen existing heart commands give the
+    same bytes and records as before the change. Merged at d41cd14 (targeted tests: 408 passed). One lesser point is
+    left as a declared limit: the option does not refuse a hand-typed `--seed`; the launcher passes none, and the
+    files below were built by the launcher.
+  - **The builds.** On the DGX in the detached worktree `~/v/scratch/h29b-wt` at d41cd14 (clean), run ts1, 19:51 to
+    19:53 UTC, after the launcher's refusal path had been traced under a throwaway home folder (exit 96, the record
+    written). Every step exit 0: gate, tests, the identity step (the default command rebuilt the full trim C's bytes
+    and its half's, set heart3), TS05 twice, TS10 twice, the list. Each pair agrees byte for byte, file and half; all
+    five stamps say this commit and clean True. Read by exit codes, sha256 and the stamps' commit and clean fields
+    only.
+  - **The files, named here before any score of them:** `runs/manual_upload/T2heart_core_ts05_half.h5ad`, sha256
+    b6b8155be9b5469a2dbc8943a59df567f52c7cbe013bbf0b55e4da706fda27b7 (TS05);
+    `runs/manual_upload/T2heart_core_ts10_half.h5ad`, sha256
+    cf53b0c0afe7d18b8f7c84d7595729e4fc46e15e6077e645b6dc0a2fbfed39af (TS10). Record:
+    `experiments/builds/results/heartline_d41cd14_ts1.txt` and its sha256 list. Data used: released Task 2 heart
+    stages and the unlocked E10.5 validation file only; no outside data.
+  - **The rule, unchanged** (entry (t), the rules note's amendment): TS05 is uploaded after the queued file D; TS10
+    only if TS05's headline is strictly above the full trim C's; the line ends at TS10; only the team's own heart
+    headlines are compared; nothing is rebuilt, re-seeded, resized or changed after a score. `docs/UPLOAD_SHEET.md`
+    lists both files with their conditions in words. Handed to the captain with path, sha256, board and the Data-used
+    text; an upload is the captain's own act.

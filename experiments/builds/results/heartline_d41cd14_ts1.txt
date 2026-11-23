@@ -1,0 +1,37 @@
+The heart search line's two files (ruling row R28; the captain's order of 2026-11-23, "start the heart search";
+docs/S2_RULES.md, amendment of 2026-11-23 "the heart's search line"; decision log 2026-11-23 (t) and (u)): the set
+heartline, run ts1. BUILT; no score of either file exists
+=================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-23 in the detached worktree ~/v/scratch/h29b-wt (its own environment) at
+commit d41cd149a968b930e47b721dcfc4c50eff9f4bcd (clean tree), launched at 19:51 UTC and finished by 19:53 UTC:
+`bash experiments/builds/heart_trend_line.sh d41cd149a968b930e47b721dcfc4c50eff9f4bcd ts1`
+Step exit codes: gate 0, tests 0, C 0, TS05a 0, TS05b 0, TS10a 0, TS10b 0, done 0.
+  C      the identity step: the full trim by its committed default command, then its half; both reproduce the bytes of
+         set heart3 (341058344dbd..., 04cde6361c04...)
+  TS05a  T2heart_core_ts05.h5ad       a6edffa9ab27bd8740db54db652832cbf56278f09154d7ce33d72b884db7d741
+         T2heart_core_ts05_half.h5ad  b6b8155be9b5469a2dbc8943a59df567f52c7cbe013bbf0b55e4da706fda27b7
+  TS05b  the same two sha256: the two builds agree byte for byte, file and half
+  TS10a  T2heart_core_ts10.h5ad       d1cab1cca874efff90fc8ea97a4dfc9ac5c55da7efc87af0835aca020438762f
+         T2heart_core_ts10_half.h5ad  cf53b0c0afe7d18b8f7c84d7595729e4fc46e15e6077e645b6dc0a2fbfed39af
+  TS10b  the same two sha256: the two builds agree byte for byte, file and half
+Stamps (the commit and clean fields only): C, TS05a, TS05b, TS10a and TS10b each say d41cd149a968 and clean True.
+
+The builder commands (the line's rule text, with its ruling row):
+  TS05: build_test.py heart --entry core_trim --trend-strength 0.5 --z-mode raw --captain-ruling R28
+        --out <O>/T2heart_core_ts05.h5ad, then halve.py at seed 1000001
+  TS10: the same with --trend-strength 1.0 (T2heart_core_ts10.h5ad, then its half)
+Before the launch the launcher's refusal path was traced on the DGX under a throwaway home folder with a commit of
+forty zeros (exit 96, the exit record written).
+
+The upload files are the halves, copied to runs/manual_upload/ and checked against these sha256:
+  T2heart_core_ts05_half.h5ad  b6b8155be9b5469a2dbc8943a59df567f52c7cbe013bbf0b55e4da706fda27b7
+  T2heart_core_ts10_half.h5ad  cf53b0c0afe7d18b8f7c84d7595729e4fc46e15e6077e645b6dc0a2fbfed39af
+
+The line's rule (docs/S2_RULES.md, amendment of 2026-11-23): TS05 is uploaded first, after the queued file D; TS10 is
+uploaded only if TS05's headline is strictly above the full trim C's; the line ends at TS10. Nothing is rebuilt,
+re-seeded, resized or changed after a score. An upload is the captain's own act.
+
+Read by exit codes, sha256 and the stamps' commit and clean fields only (AGENTS.md): no build log, file size, cell
+count or sidecar record was read. Nothing was uploaded.
+Data used: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data.
