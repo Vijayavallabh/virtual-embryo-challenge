@@ -2,6 +2,11 @@
 
 ## Current State
 
+- **2026-11-23, 15:40 UTC.** The momentum file MS (T1) is built twice with one sha256 and handed over. The captain's
+  request to weigh the held T3 pathway tier is answered: three cold analysts say leave it out, a screened search found
+  no organiser statement that changes that, and one question is with the captain (default: it stays out). Decision log
+  2026-11-23 (e) to (h).
+
 - **2026-11-23, 15:16 UTC.** The outside-data design round handed back: no drastic gain exists inside the rules, in
   its challengers' words. One T3 candidate (the knocked-out gene's binding set from a generic ChIP database; register
   row X018) is being coded for its practice read; one T1 candidate (a three-atlas sign consensus) waits on the

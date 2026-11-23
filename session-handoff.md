@@ -2,7 +2,26 @@
 
 ## Current Objective
 
-- **State at 2026-11-23, 15:16 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-23, 15:40 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-23 (h); next label (i). Local main = origin/main at 56a357c or one notes commit after it. Next ruling row
+  R26; next register row X019; T3's next row K27.
+  - **MS IS BUILT AND HANDED OVER (entry (h)).** `runs/manual_upload/T1_s2rc_MS.h5ad`, sha256
+    6103d10535665634ee0cad3390590a5df132d1805682fb1d309bb19581fdaa5e (set t1ms, run r1, commit 6bc36d9; record
+    `experiments/builds/results/t1ms_6bc36d9_r1.txt`). Place: after the files of entry 2026-11-20 (r)'s list (C, and
+    the 2.0 file by the order of 2026-11-21 (y)), the captain may reorder; never stacked on A, B or C. No score of it
+    exists. The DGX worktree `~/v/scratch/t1line-wt` now sits at 6bc36d9.
+  - **THE T3 PATHWAY TIER IS WEIGHED (entries (e) to (g)); ONE QUESTION IS WITH THE CAPTAIN: should the tier stay out
+    of the Task 3 file? Default: it stays out.** Verdict of three cold analysts: leave it out (P(mistake) if used
+    0.80, if left out 0.12); the screened search found no organiser statement beyond the three on record. A no from
+    the captain means a file from the T knockout GSE205117 only (0.35 odds of being counted held out; about 0.4 to be
+    built in time; two new readers must pin it; a reviewed commit must cite the captain's ruling to move it off the
+    held list). The AI assistant has told the captain it would not build on GSE165300 in any case (the plan has
+    classed it as held out since October). Nothing of the tier is fetched or unheld without the captain's no.
+  - **RUNNING.** wh5dbcldb: CHIPQ-S rule writer then data-path engineer (see the bullet below for what follows its
+    hand-back). **OPEN WITH THE CAPTAIN:** the pathway-tier question; MX2s (reopen the parked T1 multi-atlas branch in
+    its strict form with a stage-parser exception; default no; must start tonight); unless named: T1 line 1's step
+    back, the heart search line's exception, line 3's turn order.
+- **State at 2026-11-23, 15:16 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-23 (e); next label (f). Next ruling row R26; next register row X019; T3's next row K27. The outside-data
   round handed back (entry (d)): T3 candidate CHIPQ-S kept (register row X018 placed), T1 candidate MX2s kept but
   waiting on the captain's word, nothing for the T2 boards. The captain asked for the held T3 pathway tier to be
