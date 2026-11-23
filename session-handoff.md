@@ -2,7 +2,35 @@
 
 ## Current Objective
 
-- **State at 2026-11-23, 17:08 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-23, 18:14 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-23 (q); next label (r). Next ruling row R27; next register row X019; T3's next row K28. Local main =
+  origin/main at 56ff9c4 or one notes commit after it. Nothing is running on the DGX and no workflow is running.
+  Tries: T1 463, embryo 88, heart 97, T3 74 (unchanged today).
+  - **T3 ROW K27 (CHIPQ-S) IS CLOSED: "Try K27: STOP at P1: the database bars are not met; no fold read, no try, no
+    file."** (entry (q)): 5 kept experiments of the test's gene, a bound set of 1 panel gene against a bar of 15.
+    Nothing counted; no table; listing empty, pins None; no second commit. A counts-only check on the 421 placebo
+    antigens showed the code path works (bound sets 0 to 423, median 5). Not to be rerun under another row; the
+    database is not read again on this fold. The build path was never started. DGX leftovers, all harmless:
+    `~/v/vec-campaign-c` sits at 4b11323 with the untracked folder `experiments/t3_decomp/results/k27_chip_query/`
+    (the two reading files, committed locally at 56ff9c4: move it aside before the next checkout there and compare);
+    `~/v/vec-ext/t3/chipatlas` (354 MB, kept for the record); `~/v/vec-ext/t3/tables_k27` (empty); worktree
+    `~/v/scratch/k27-wt`.
+  - **THE OUTSIDE-DATA ROUND OF 23 NOV IS FINISHED FOR T3 AND T2.** What is left of it: T1's MX2s, which needs the
+    captain's word before any code (default no). By today's measured pace (a candidate went from brief to gate in
+    about three and a half hours with four review rounds) it would still fit if ordered by about 24 Nov 12:00 UTC;
+    that is the AI assistant's estimate, not the challenger's (who said the evening of 23 Nov).
+  - **READY FOR UPLOAD, ALL IN `runs/manual_upload/` (the captain's own acts; at most two a board a day; no score has
+    been reported since 21 Nov).** T1: `T1_s2rcC.h5ad` (31477ef7...), `T1_s2rcB2.h5ad` (the 2.0 file, 52897fe3...),
+    `T1_s2rcMSB.h5ad` (78bb17ee..., in the plain momentum file's place by the captain's word), `T1_s2rc_MS.h5ad`
+    (6103d105...), then `T1_s2rcA15.h5ad` and the lines' next files on their conditions; `T1_s2none.h5ad` (F) cannot
+    raise the mark. T3: `T3_c1_s2.h5ad`, `T3_c2_s2.h5ad`, `T3_k23_s2.h5ad`, then CK and the E = 4.0 file on their
+    conditions, `T3_refused_s1.h5ad`. Embryo: `T2embryo_s2x_cr.h5ad` (C), `T2embryo_s2x_crs.h5ad`,
+    `T2embryo_s2xs_ov.h5ad` (SO), `T2embryo_s2.h5ad`, `T2embryo_s2x_ovhi.h5ad` (O_hi). Heart:
+    `T2heart_organ_half.h5ad` (D). WHEN SCORES ARE PASTED: the headline per board only, then each pre-set rule (see
+    the earlier bullet 'WHEN SCORES ARE PASTED'); MSB and MS serve the best-headline mark only.
+  - **OPEN WITH THE CAPTAIN (each default no change):** the T3 pathway tier (stays out; entries (e) to (g)); MX2s
+    (stays parked).
+- **State at 2026-11-23, 17:08 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-23 (p); next label (q). Local main = origin/main at e69d0e1 or one notes commit after it.
   - **T1: THE COMBINED FILE IS BUILT AND HANDED OVER (entry (p)).** `runs/manual_upload/T1_s2rcMSB.h5ad`, sha256
     78bb17eea5721e590cfd2c9f707e9cd6f2f496e081acede4f697dc4035871da2 (set t1msc, run m1, a3e879a; record

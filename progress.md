@@ -2,6 +2,11 @@
 
 ## Current State
 
+- **2026-11-23, 18:14 UTC.** The outside-data round's T3 candidate (the knocked-out gene's binding set from a public
+  ChIP database) stopped at its first, free gate: after the screen the test gene's five kept experiments share a bound
+  set of one panel gene against a bar of fifteen. No try was counted and no file exists. A counts-only check on 421
+  placebo genes showed the code works, so the stop is a property of the data. Decision log 2026-11-23 (q).
+
 - **2026-11-23, 17:08 UTC.** The combined momentum file for T1 (the best file's command plus the momentum step, ruling
   row R26) is built twice with one sha256 after six identity rebuilds and handed over; by the captain's word it takes
   the plain momentum file's place in the queue. The new T3 candidate's ledger row K27 is placed after a cold attack
