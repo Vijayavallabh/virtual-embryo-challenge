@@ -11319,3 +11319,44 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     Next: the engineer's builder change and launcher (running in the same workflow), the reviewer, the merge, the
     dry-run trace, the identity rebuilds and the two builds on `~/v/vec-campaign-d`'s worktree, and the file's sha256
     into this log before its score.
+- 2026-11-23 (l), T3 candidate CHIPQ-S: row K27 is written, attacked cold and corrected, and not yet placed; the
+  database code's review and fixes; the read script is being written (state at 16:19 UTC, 2026-11-23). Written by the
+  AI assistant, which designed none of it and gives no lean on it.
+  - **The database code's review** (branch `campaign/t3-chipq`, 4498ece): not ready, five blockers, none of them a
+    wrong table: the keyword filter missed variants of its own drop words (joined, inflected and abbreviated forms); a
+    redirect could have taken the fetch off the two hosts; refusal messages named a target file by its path, which for
+    a placebo is its antigen's name; the fetch took a fourth kind of file (the archive's README page, which the main
+    session's brief had asked for and the specification does not list: removed, so the licence words in register row
+    X018 stay as the designer recorded them until a reader confirms them); and a placebo experiment without a column
+    in its target file stopped the whole tables step. **Fixed** on `campaign/t3-chipq-2` (145f5d3; one commit per
+    blocker; every redirect is refused; a failed download is retried and its partial file moved aside, never deleted)
+    together with the two readings the rule writer changed (below); a second reviewer is checking the fixes. One
+    question the fix engineer left open, which further abbreviations and notations are variants of the challenger's
+    own drop words, is with a rule agent, then an engineer and a reviewer (workflow t3-chipq-keyword-variants); the
+    placebo filter is not run on the real list before it is settled.
+  - **The rule.** The first rule writer handed nothing back (entry (i)). A second one, writing small files, settled
+    every open point from the texts (two of the database engineer's ten literal readings change: the placebo draw goes
+    through the seeds without replacement, so ten seeds give ten different antigens and the pool must hold ten; the
+    tables go to one fixed folder with a committed listing and pins) and wrote row K27's eleven cells. **A cold
+    challenger then attacked the row before placement: 'place after the listed corrections', thirteen faults, each
+    with exact words.** The ones that change what can be named: a new clause (g), no size qualifies in a cell where
+    one of its controls is itself ahead of the base; the counted pre-gate also drops a table that correlates at 0.5 or
+    more with the named form's own outside table (the same bar, no new constant); a duplicated placebo table or
+    listing line refuses the run; an incomplete run after the pre-gate keeps its count and makes no new reading; a
+    guard failure is read once; the reported figures can never re-choose the size. The others make the row honest
+    about itself: no database fact asserted before the fetch, no hard-coded try numbers, the J5 label, what each
+    control does not separate, the readers' departure declared. Its noise arithmetic: an uninformative table is named
+    at either size with probability of order 1e-5 to 1e-4; the row's exposure is not noise but gate flips in one cell,
+    size instead of identity, and the two holes it closed. A reviser applied all thirteen with the challenger's words
+    (twelve verbatim, one with the main session's headroom check, which matches the ledger's block at 56a357c) and
+    listed the consistency edits they force. The corrected cells are in the session's scratch and enter the ledger at
+    placement.
+  - **Placement, as the challenger read the ledger's rule 1.** The row is committed before P1 (the registration
+    commit, with the script and its tests, the listing and pins named and empty); P1 and P2 run there, uncounted; a
+    second commit after P2 fills the listing's eleven lines and the pins, and every counted step runs at that commit.
+    So the first gate waits for the read script.
+  - **Running.** The read script and its two-step launcher (workflow t3-k27-read-script: an engineer on
+    `campaign/t3-k27-read`, cut from the fixed database code and not touching it, then a reviewer who checks the code
+    against the corrected row cell by cell). In order after that: the fixes' review, the merge, the fetch of the two
+    lists on the DGX, the two screening agents, the kept list, the target files; the registration commit; P1 and P2;
+    the second commit; the counted read. The test-board build path is written only if P1 passes.
