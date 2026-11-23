@@ -3,7 +3,9 @@
 Standard library only. Every file lives under one data root outside every checkout, by default ~/v/vec-ext/t3/chipatlas
 on whichever machine runs it (DATA_ROOT; the functions take the root as an argument, which is how the tests reach a
 temporary one, and no command-line option takes another path). Requests go to two hosts only, dbarchive.biosciencedbc.jp
-and chip-atlas.dbcls.jp, over https, with a generic client string that names no team, project, person or machine.
+and chip-atlas.dbcls.jp, over https, with a generic client string that names no team, project, person or machine. No
+redirect is followed: a redirect, or an answer from any other URL than the one asked for, is refused before a byte is
+written.
 Genome mm10 only; of the per-antigen files only the target-gene files within 5 kb of the TSS (<antigen>.5.tsv), and
 only through the URL the analysis list gives for that antigen. A signal, bigWig, bigBed or BED file is never fetched.
 
@@ -201,8 +203,22 @@ def https_url(url: str) -> str:
     return urllib.parse.urlunparse(("https", p.netloc, p.path, "", "", ""))
 
 
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    """Every redirect is refused: no request leaves the URL it was given, so none can leave the two hosts."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise Refused("the server answered with a redirect: refused (no redirect is followed)")
+
+
+def _opener(*extra):
+    """The one opener every request goes through: urllib's default handlers with the redirect handler replaced (the
+    tests add a fake https handler through `extra`)."""
+    return urllib.request.build_opener(_NoRedirect, *extra)
+
+
 def _download(url: str, dst: Path, max_bytes: int) -> tuple[int, str]:
-    """Stream the URL into dst via dst.part; refuses a URL off the allowed hosts and any existing dst or .part."""
+    """Stream the URL into dst via dst.part; refuses a URL off the allowed hosts, any redirect (no .part is made) and
+    any existing dst or .part."""
     url = https_url(url)
     part = dst.with_name(dst.name + ".part")
     if dst.exists() or dst.is_symlink() or part.exists() or part.is_symlink():
@@ -211,13 +227,17 @@ def _download(url: str, dst: Path, max_bytes: int) -> tuple[int, str]:
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     h = hashlib.sha256()
     n = 0
-    with urllib.request.urlopen(req, timeout=300) as r, open(part, "xb") as f:
-        while block := r.read(1 << 20):
-            n += len(block)
-            if n > max_bytes:
-                raise Refused(f"{dst.name}: over the byte limit ({max_bytes}); the .part is left for removal by hand")
-            h.update(block)
-            f.write(block)
+    with _opener().open(req, timeout=300) as r:
+        if r.geturl() != url:
+            raise Refused("the answer came from another URL than the one asked for: refused")
+        with open(part, "xb") as f:
+            while block := r.read(1 << 20):
+                n += len(block)
+                if n > max_bytes:
+                    raise Refused(f"{dst.name}: over the byte limit ({max_bytes}); the .part is left for removal by "
+                                  "hand")
+                h.update(block)
+                f.write(block)
     if dst.exists():
         raise Refused(f"{dst.name}: appeared while downloading: refused")
     part.rename(dst)

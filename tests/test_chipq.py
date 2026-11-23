@@ -7,12 +7,14 @@ download."""
 from __future__ import annotations
 
 import csv
+import http.client
 import importlib.util
 import io
 import json
 import re
 import sys
 import urllib.request
+import urllib.response
 import zipfile
 from pathlib import Path
 
@@ -138,24 +140,42 @@ def make_db():
     return files
 
 
-class FakeNet:
-    def __init__(self, files):
+class FakeNet(urllib.request.HTTPSHandler):
+    """A fake https handler inside the fetch's own opener (chipq_fetch._opener), so urllib's redirect and error
+    processing run as they would on the network. `redirects` maps a URL to the Location of a 302 answer."""
+
+    def __init__(self, files, redirects=None):
+        super().__init__()
         self.files = files
+        self.redirects = dict(redirects or {})
         self.calls = []
 
-    def __call__(self, req, timeout=None):
+    def https_open(self, req):
         url = req.full_url
         self.calls.append((url, req.get_header("User-agent")))
+        hdrs = http.client.HTTPMessage()
+        if url in self.redirects:
+            hdrs["Location"] = self.redirects[url]
+            r = urllib.response.addinfourl(io.BytesIO(b"moved"), hdrs, url, 302)
+            r.msg = "Found"
+            return r
         if url not in self.files:
             raise AssertionError(f"unexpected request {url}")
-        return io.BytesIO(self.files[url])
+        r = urllib.response.addinfourl(io.BytesIO(self.files[url]), hdrs, url, 200)
+        r.msg = "OK"
+        return r
+
+
+def use_net(monkeypatch, f):
+    real = cf._opener
+    monkeypatch.setattr(urllib.request, "urlopen", lambda *a, **k: pytest.fail("urlopen is never used"))
+    monkeypatch.setattr(cf, "_opener", lambda *extra: real(f, *extra))
+    return f
 
 
 @pytest.fixture
 def net(monkeypatch):
-    f = FakeNet(make_db())
-    monkeypatch.setattr(urllib.request, "urlopen", f)
-    return f
+    return use_net(monkeypatch, FakeNet(make_db()))
 
 
 @pytest.fixture
@@ -281,6 +301,37 @@ def test_urls_are_refused_off_the_two_hosts_and_for_signal_files():
                 "https://chip-atlas.dbcls.jp/data/mm10/eachData/bb05/SRX1.05.bb"):
         with pytest.raises(cf.Refused):
             cf.https_url(bad)
+
+
+@pytest.mark.parametrize("location", ["https://example.org/x", "http://example.org/chip_atlas_analysis_list.zip",
+                                      "https://dbarchive.biosciencedbc.jp/data/chip-atlas/other/x.zip", "/elsewhere"])
+def test_a_redirect_is_refused_with_no_part_and_no_manifest_entry(tmp_path, monkeypatch, location):
+    files = make_db()
+    url = cf.LISTS["chip_atlas_analysis_list.zip"]
+    f = use_net(monkeypatch, FakeNet(files, redirects={url: location}))
+    root = tmp_path / "chipatlas"
+    with pytest.raises(cf.Refused, match="redirect"):
+        cf.step_lists(root)
+    assert [u for u, _ in f.calls] == [url]   # the redirect was never followed
+    assert not list(root.rglob("*.part")) and not (root / "lists" / "chip_atlas_analysis_list.zip").exists()
+    assert not (root / "MANIFEST.json").exists() or cf.load_manifest(root)["files"] == {}
+    assert main_exit(cf.main, ["lists"], root) == 2
+
+
+def test_an_answer_from_another_url_is_refused(tmp_path, monkeypatch):
+    files = make_db()
+
+    class Moved(FakeNet):
+        def https_open(self, req):
+            r = super().https_open(req)
+            r.url = "https://example.org/x"   # as if a handler had followed a redirect
+            return r
+
+    use_net(monkeypatch, Moved(files))
+    root = tmp_path / "chipatlas"
+    with pytest.raises(cf.Refused, match="another URL"):
+        cf.step_lists(root)
+    assert not list(root.rglob("*.part")) and not (root / "MANIFEST.json").exists()
 
 
 def test_outputs_stay_outside_the_checkout():
