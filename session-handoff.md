@@ -2,7 +2,39 @@
 
 ## Current Objective
 
-- **State at 2026-11-23, 19:17 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-23, 20:03 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-23 (u); next label (v). Ruling rows through R28; next R29. Nothing of ours runs on the DGX.
+  - **HEART SEARCH LINE: BUILT AND HANDED OVER** (log (u); record
+    `experiments/builds/results/heartline_d41cd14_ts1.txt`). `runs/manual_upload/T2heart_core_ts05_half.h5ad` sha256
+    b6b8155be9b5469a2dbc8943a59df567f52c7cbe013bbf0b55e4da706fda27b7 (TS05: after file D);
+    `T2heart_core_ts10_half.h5ad` sha256 cf53b0c0afe7d18b8f7c84d7595729e4fc46e15e6077e645b6dc0a2fbfed39af (TS10: only
+    if TS05's headline is strictly above the full trim C's, whatever D scores; the line ends there).
+    `docs/UPLOAD_SHEET.md` lists 25 files (checked against disk). WHEN A HEART SCORE COMES BACK: headline only into
+    `results/manual_uploads.csv`; TS05 strictly above C's headline -> TS10 is next; otherwise the line ends and TS10
+    is never uploaded. Declared limit: the builder does not refuse a hand-typed `--seed` with `--trend-strength` (the
+    launcher passes none).
+  - **MX2s (T1): THE PLAN STEP REFUSES BOTH NEW ATLASES ON SERIES-WIDE WORDING.** A trial of the plan step at the
+    data-side branch's head (`campaign/t1-mx2s-3` 02562e4, DGX worktree `~/v/scratch/t1line-wt`, output in the
+    throwaway folder `~/v/scratch/t72_trial_plan`, metadata only) ran clean on the real records (the two first-run
+    faults are fixed) and marks every sample UNKNOWN: GSE230531 (X020) for a form of 'pool' in its series-wide
+    extraction protocol (the exception of ruling row R27 says series text 'still refuses on pooling words': final
+    under that wording); GSE244783 (X019) for the token 'mix' of the reviewers' WIDER word list (combine, mix,
+    multiplex, superload, aggregate), which may be a reagent mix. Two independent screening readers (workflow
+    whkom36i7; files in scratch `lift8/t72_trial/`, extracted by code, unread by the main session) classify the
+    wording and answer checklist points 2 and 5 on the series-wide text. IF X019 fails either point with either
+    reader: both atlases are out, row T72 is NOT placed, the line closes with no try: log it and tell the captain. IF
+    X019 clears: a score-blind rule agent and a cold challenger decide whether hits of the wider list alone may be
+    cleared by both readers pinning the field's sha256 (forms of pool and merge stay hard refusals); only then the
+    engineering round (below).
+  - **MX2s ENGINEERING STILL OWED IF THE LINE LIVES.** Data-side review (scratch `lift8/mx2s_data_review.json`): not
+    ready, four blockers (the pooling stage condition over the record's whole series text; the imports test's scan
+    restored with a literal allow-list; raw files after reduction: a README departure line; one test renamed and the
+    real one added). Read-script review (`lift8/mx2s_read_build.json`): three blockers; two are being fixed in
+    workflow w657mwmml (`campaign/t1-mx2s-read-2`), the third is the interface, closed at integration (one branch from
+    both, an integration test, the launcher's data-step command lines). Row T72 v3 in scratch (sha256 f8302ec2...).
+    Before placement also: run the launcher's test list on the DGX at the integration commit (every launcher step runs
+    once: a tests-step failure would end the row).
+- **State at 2026-11-23, 19:17 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-23 (t); next label (u). Ruling rows through R28; next R29. Main at the commit of this note; nothing of ours
   runs on the DGX.
   - **CORRECTION to the heart route below:** the DGX worktree `~/v/scratch/h29b-wt` belongs to `~/v/vec-campaign` (not

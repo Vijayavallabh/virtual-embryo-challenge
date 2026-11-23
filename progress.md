@@ -2,6 +2,13 @@
 
 ## Current State
 
+- **2026-11-23, 20:03 UTC.** The heart search line's two files are built and handed over (TS05 and TS10; builder
+  option reviewed ready with no blocker; each built twice on the DGX after the full trim's identity rebuild; sha256 in
+  the log before any score; decision log (u)). The Task 1 three-atlas line: a trial of the metadata plan step now runs
+  on the real records and refuses both new atlases on series-wide wording (a form of 'pool' in one, the token 'mix' in
+  the other); two independent readers are classifying the wording. If the second atlas does not clear, the line closes
+  with no try.
+
 - **2026-11-23, 19:17 UTC.** The captain switched on the heart search line ("start the heart search"; ruling row R28):
   two files on the full trim's command with the trend step at strength 0.5 and then, only if that file's headline is
   strictly above the full trim's, 1.0. The rule text is in the rules note (re-pinned) and the log before any code or
