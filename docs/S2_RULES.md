@@ -2119,3 +2119,16 @@ recused on the heart's scope and size, reads the captain's words as the yes to f
 captain; the upload is the captain's own act and final word. File D enters the heart's order after the full trim C; it
 is not rebuilt, re-seeded or changed after a score. Data used: released Task 2 heart stages and the unlocked E10.5
 validation file only; no outside data.
+
+## Note of 2026-11-23: T1's candidate MS is built (row R23; decision log 2026-11-23 (h))
+
+Every condition of the amendment "T1's candidate MS is named" above now holds: the builder takes `--direction-momentum
+all` under `--captain-ruling R23` alone (merged at 6bc36d9), an independent reviewer passed the change with no
+blocker, the launcher's refusal path was traced before its first launch, the default command rebuilt R13's bytes
+(ad8f24c71c90...) in the same checkout, and the file was built twice from that clean commit with one sha256 and passed
+the format check. **The file:** `runs/manual_upload/T1_s2rc_MS.h5ad`, sha256
+6103d10535665634ee0cad3390590a5df132d1805682fb1d309bb19581fdaa5e (build record
+`experiments/builds/results/t1ms_6bc36d9_r1.txt`). No score of it exists at this note's commit. Its place and its
+limits are the amendment's: after the files of decision log 2026-11-20 (r)'s list unless the captain uses another
+order; never stacked on A, B or C; nothing rebuilt, re-seeded or changed after a score. Data used: as R13's file
+(released challenge data and the outside heart atlas on recomputed groups, register row X002).

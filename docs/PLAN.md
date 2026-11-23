@@ -11159,3 +11159,21 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **What it changes.** Nothing: the odds of entry (f) stand (they were given without such a statement), the verdict
     stands, and the question to the captain keeps its default, the tier stays out. The captain is told.
     `docs/DATA_POLICY.md` change note 2026-11-23 (b).
+- 2026-11-23 (h), T1's candidate MS is built, before any score of it (state at 15:39 UTC, 2026-11-23). Written by the
+  AI assistant, which designed none of it and gives no lean on it.
+  - **The file.** `runs/manual_upload/T1_s2rc_MS.h5ad`, sha256
+    6103d10535665634ee0cad3390590a5df132d1805682fb1d309bb19581fdaa5e. Built on the DGX in the detached worktree
+    `~/v/scratch/t1line-wt` at 6bc36d9 (clean), run r1, 15:22 to 15:37 UTC; every step exit 0: gate, tests, the
+    default command (it rebuilt R13's bytes, ad8f24c71c90...), the MS file twice (one sha256), the list. All three
+    stamps say this commit and clean True. Record: `experiments/builds/results/t1ms_6bc36d9_r1.txt` and its sha256
+    list. Read by exit codes, sha256 and the stamps' commit and clean fields only.
+  - **What it is** (row R23; the specification of the score-blind challenger; row T65 read its practice arm AHEAD):
+    R13's file with the released per-category damped mean momentum, fitted from E9.5 to E10.5's libraries 1 and 2,
+    added on the direction-group cells before the atlas step and g_mom; nothing else changed. The test build fits the
+    momentum on the test's own stages and uses the test's fraction, as the specification says; the reviewer checked
+    the builder's step against the practice arm's code on the synthetic fixture (equal values for equal inputs).
+  - **Its place and its limits, as the rules note fixes them.** After the files of entry 2026-11-20 (r)'s list unless
+    the captain uses another order; it sits on R13's file, so it raises T1's mark only if its headline passes the
+    board's best; never stacked on A, B or C without a list of its own, fixed before its score; nothing rebuilt,
+    re-seeded or changed after a score. The row's last cell and a note in `docs/S2_RULES.md` (re-pinned) carry the
+    sha256. Handed over to the captain with path, sha256, board and the Data-used text (as R13's file).

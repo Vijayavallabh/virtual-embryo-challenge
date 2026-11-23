@@ -1,0 +1,25 @@
+T1's candidate MS (ruling row R23; the captain's order of 2026-11-23; docs/S2_RULES.md, "T1's candidate MS is
+named"; decision log 2026-11-23 (c) and (h)): the set t1ms, run r1. BUILT; no score of it exists
+=================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-23 in the detached worktree ~/v/scratch/t1line-wt (its own environment,
+row N54's relabelling output linked) at commit 6bc36d904069b2c8a935ebb59f9dd85d715ce75a (clean tree), launched at 15:22 UTC and finished by 15:37 UTC:
+`bash experiments/builds/t1_ms.sh 6bc36d904069b2c8a935ebb59f9dd85d715ce75a r1`
+Step exit codes: gate 0, tests 0, D 0, MSa 0, MSb 0, done 0.
+  D      the default command reproduces R13's file      ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f
+  MSa    T1_s2rc_MS.h5ad (--direction-momentum all --captain-ruling R23)  6103d10535665634ee0cad3390590a5df132d1805682fb1d309bb19581fdaa5e
+  MSb    the same sha256: the two builds agree byte for byte
+Stamps (the commit and clean fields only): all three say 6bc36d904069 and clean True.
+
+The builder command: build_test.py t1 --g-mom --base lib3 --feng-groups recomputed --direction-momentum all
+--captain-ruling R23 --out <O>/T1_s2rc_MS.h5ad. Before the first launch the launcher's refusal path was traced on the
+DGX under a throwaway home folder with a commit of forty zeros (exit 96, the exit record written).
+
+Copied to runs/manual_upload/T1_s2rc_MS.h5ad and checked against this sha256.
+
+Its place by the T1 order rule (decision log 2026-11-21 (y)): after the files of decision log 2026-11-20 (r)'s list;
+the captain may use another order. It sits on R13's file and is never stacked on A, B or C: a combination needs a list
+of its own, fixed before its score. Nothing is rebuilt, re-seeded or changed after a score.
+
+Read by exit codes, sha256 and the stamps' commit and clean fields only (AGENTS.md): no build log, file size, cell
+count or sidecar record was read. Nothing was uploaded: an upload is the captain's own act.
