@@ -11551,3 +11551,43 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Running:** the pooling fix; the practice-read script and its launcher with a reviewer (workflow
     t1-mx2s-read-script, written to the revised row; branch `campaign/t1-mx2s-read`). Next: the data-side engineer,
     the plan, the screens files, the two readers.
+- 2026-11-23 (t), the heart's search line is in force on the captain's named exception (state at 19:13 UTC,
+  2026-11-23). Written by the AI assistant, which is recused on the heart's scope and size and states no preference.
+  - **What the captain sent.** A note from a side agent (a general approval had not switched on three items that were
+    not named: the heart search, T1 line 1's step back and the turn order of T1's third line; "To turn one on, name
+    it, for example 'start the heart search'"), and the captain's own words, verbatim: "start the heart search". The
+    AI assistant reads them as the captain's own named exception for the two files of the heart search line, TS05 and
+    TS10, on the full trim C's scope and size, as the line's rule text of 2026-11-22 fixes them, and for nothing else:
+    T1 line 1's step back and the third line's turn order were not named and stay as they are.
+  - **The line's rule text** (a designer blind to test scores, then a cold challenger whose narrowed text this is,
+    verbatim; <R> is R28): Heart search line under R22: the trend step's strength on the full trim C. Fixed before any
+    of its files has a score, and valid only once the captain names the exception for these two files. Setting: the
+    strength s of b0_trend's expression step, as row H28 defines it (the H11 trend factor and the momentum_shift
+    fallback damping both multiplied by s, test budget 0.5 x s day, applied before the size step), on C's command with
+    nothing else changed. C (`build_test.py heart --entry core_trim --expression copy --z-mode raw`, then `halve.py`
+    at seed 1000001) is s = 0. Files: - TS05: `build_test.py heart --entry core_trim --trend-strength 0.5 --z-mode raw
+    --captain-ruling <R> --out <O>/T2heart_core_ts05.h5ad`, then `halve.py <O>/T2heart_core_ts05.h5ad
+    <O>/T2heart_core_ts05_half.h5ad` at seed 1000001. - TS10: the same with `--trend-strength 1.0`
+    (`T2heart_core_ts10_half.h5ad`). <R> is the ruling row that records the captain's named exception for these two
+    files. Its number is written here before any build. Build: each file built twice at one clean commit with one
+    sha256, after the default C command reproduces C's reference bytes. No file is rebuilt, re-seeded, resized or
+    changed after any score. Rule: the line's best is C's headline. TS05 is uploaded first. If TS05's headline is
+    strictly above the line's best, it becomes the best and TS10 is uploaded next; otherwise the line ends and TS10 is
+    not uploaded. If TS10's headline is strictly above the line's best, TS10 becomes the best. The line ends at TS10
+    in any case (cap s = 1.0). Only the headlines of the team's own heart uploads, as the captain reports them, are
+    compared. No value between or beyond these is tried, none is computed from the sizes of headlines, and no
+    per-metric value is read, recorded, compared or quoted. Precedence: the line's files take heart slots only after
+    the queued files (K1, K2, D on its condition), at most two official uploads a board a day, until 2026-11-26 11:59
+    UTC. What stays: C remains the ruled file, and the amendment of 2026-11-18 is not reversed. The line adds uploads,
+    and the board keeps its best headline. H-T1, H-T1B and any variant of K1, K2 or D are outside this line. Data
+    used: released challenge data only; no outside data. The method report states that strengths 0.5 and 1.0 of the
+    trend step were tried on the full trim and that the best headline was kept.
+  - **In force with this commit.** Ruling row R28 names the two option strings and the ruling; the rules note is
+    amended and re-pinned. No builder option exists yet and nothing is built. By the rule text the line's files take
+    heart slots only after the queued file D; TS10 is uploaded only if TS05's headline is strictly above C's.
+  - **Next.** An engineer blind to test scores writes the builder option exactly as the challenger's final
+    specification gives it (accepted only on C's command with the ruling; at strength 1.0 the expression equals the
+    harness's trend step bit for bit; rows, coordinates, cell number and half rows equal C's; every existing heart
+    command builds byte for byte as before) with a launcher whose first build step reproduces C's reference bytes; a
+    reviewer checks under a blocker standard fixed up front; each file is built twice with one sha256, recorded here
+    before any score, and handed to the captain.

@@ -2216,3 +2216,35 @@ main session at this note's commit. **Its place** (the captain's word of 2026-11
 is no longer last; unless the captain names another place it takes the plain momentum file's place and MS follows it.
 Every other clause of the list stands. Data used: as R13's file (released challenge data and the outside heart atlas
 on recomputed groups, register row X002).
+
+## Amendment of 2026-11-23: the heart's search line, the trend step's strength on the full trim C (row R28; the captain's named exception; decision log 2026-11-23 (t))
+
+Added under the amendment "a score-guided search of round steps may run" (row R22) and on the captain's own named
+exception of 2026-11-23, verbatim "start the heart search", for the two files of this line on the full trim C's scope
+and size, which are levers closed after the exposure of 2026-11-04. The line was written on 2026-11-22 by a designer
+blind to test scores and narrowed by a cold challenger; the text below is the challenger's, verbatim, and in it <R> is
+ruling row R28. The AI assistant is recused on the heart's scope and size, designed none of it and states no
+preference. It is committed at 19:13 UTC on 2026-11-23, before any code of the builder option and before any build; no
+score of either file exists.
+
+Heart search line under R22: the trend step's strength on the full trim C. Fixed before any of its files has a score,
+and valid only once the captain names the exception for these two files. Setting: the strength s of b0_trend's
+expression step, as row H28 defines it (the H11 trend factor and the momentum_shift fallback damping both multiplied
+by s, test budget 0.5 x s day, applied before the size step), on C's command with nothing else changed. C
+(`build_test.py heart --entry core_trim --expression copy --z-mode raw`, then `halve.py` at seed 1000001) is s = 0.
+Files: - TS05: `build_test.py heart --entry core_trim --trend-strength 0.5 --z-mode raw --captain-ruling <R> --out
+<O>/T2heart_core_ts05.h5ad`, then `halve.py <O>/T2heart_core_ts05.h5ad <O>/T2heart_core_ts05_half.h5ad` at seed
+1000001. - TS10: the same with `--trend-strength 1.0` (`T2heart_core_ts10_half.h5ad`). <R> is the ruling row that
+records the captain's named exception for these two files. Its number is written here before any build. Build: each
+file built twice at one clean commit with one sha256, after the default C command reproduces C's reference bytes. No
+file is rebuilt, re-seeded, resized or changed after any score. Rule: the line's best is C's headline. TS05 is
+uploaded first. If TS05's headline is strictly above the line's best, it becomes the best and TS10 is uploaded next;
+otherwise the line ends and TS10 is not uploaded. If TS10's headline is strictly above the line's best, TS10 becomes
+the best. The line ends at TS10 in any case (cap s = 1.0). Only the headlines of the team's own heart uploads, as the
+captain reports them, are compared. No value between or beyond these is tried, none is computed from the sizes of
+headlines, and no per-metric value is read, recorded, compared or quoted. Precedence: the line's files take heart
+slots only after the queued files (K1, K2, D on its condition), at most two official uploads a board a day, until
+2026-11-26 11:59 UTC. What stays: C remains the ruled file, and the amendment of 2026-11-18 is not reversed. The line
+adds uploads, and the board keeps its best headline. H-T1, H-T1B and any variant of K1, K2 or D are outside this line.
+Data used: released challenge data only; no outside data. The method report states that strengths 0.5 and 1.0 of the
+trend step were tried on the full trim and that the best headline was kept.
