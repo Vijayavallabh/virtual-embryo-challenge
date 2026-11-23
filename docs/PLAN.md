@@ -11139,5 +11139,6 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     merged at 6bc36d9; the engineer's own added refusal (the fit's libraries must be exactly 1 and 2) is fail-closed
     and stated. The launcher's refusal path was traced on the DGX under a throwaway home folder (exit 96, the exit
     record written). The build (run r1: gate, tests, the default command's identity with R13's bytes, the MS file
-    twice, the list) runs in the detached worktree `~/v/scratch/t1line-wt` at 6bc36d9 since about 15:40 UTC; its
+    twice, the list) runs in the detached worktree `~/v/scratch/t1line-wt` at 6bc36d9 since 15:22 UTC (the gate's exit
+    record; this entry first said "about 15:40", an error of the AI assistant's); its
     sha256 is recorded in this log before any score.
