@@ -326,15 +326,48 @@ def test_every_drop_class_word_drops():
 
 
 @pytest.mark.parametrize("text", ["untreated", "wild type", "Wild type", "wild-type", "WT untreated E14 cells",
-                                  "Untreated wild type ES cells", "neural crest", "Six1 ChIP", "SHH ChIP"])
+                                  "Untreated wild type ES cells", "neural crest", "Six1 ChIP", "SHH ChIP", "Creb1",
+                                  "Crebbp", "Crem", "CREB1", "Kdm5b", "Kdm1a", "Tokyo", "secreted", "+/+", "SKOV3"])
 def test_plain_words_do_not_drop(text):
     assert cf.keep_row(["TFs and others", "Pax3", "Embryo", "ES cells", text, text]), cf.dropped_by([text])
 
 
-def test_a_doubt_drops_variants():
-    for t in ("Non-targeting siRNA", "siGata", "sh-Ctrl", "KO mice", "OE line", "CreERT2", "fl/fl", "het +/-",
-              "Inhibition of", "pre-treated"):
+# the reviewer's cases (blocker 1): inflections, the KO/KD abbreviation with a prefix or a plural, fl/fl and OE straight
+# after a symbol's digit, the genotype notation with a Unicode minus or an en dash, Cre joined to a driver name
+VARIANT_DROPS = {
+    "knockout": ["knocked out", "cKO heart", "Gata4cKO", "dKO cells", "iKO", "KOs", "knock-outs", "SmadKO", "KO mice"],
+    "knockdown": ["knocked down", "knocking down", "cKD", "Gata4KD", "KDs"],
+    "flox": ["Ctnnb1fl/fl", "fl/fl", "Gata4 fl / fl", "fl/+"],
+    "overexpression": ["Gata4OE", "OE line"],
+    "mutant (genotype notation)": ["Gata4−/−", "Gata4 –/–", "Gata4+/−", "het +/-"],
+    "Cre": ["AlbCre", "Mesp1Cre heart", "Vil1cre", "LysMcre", "iCre", "CreERT2", "CRE line", "Mesp1-Cre"],
+}
+
+
+@pytest.mark.parametrize("word,text", [(w, t) for w, ts in VARIANT_DROPS.items() for t in ts])
+def test_a_doubt_drops_variants(word, text):
+    assert f"i:{word}" in cf.dropped_by([text]), (text, cf.dropped_by([text]))
+
+
+def test_a_doubt_drops_other_variants():
+    for t in ("Non-targeting siRNA", "siGata", "sh-Ctrl", "Inhibition of", "pre-treated"):
         assert not cf.keep_row([t]), t
+
+
+def test_a_named_agent_without_a_class_word_is_kept():
+    # points_settled A13 and B8: the filter matches the challenger's words and their variants only; it adds no word
+    for t in ("tamoxifen 1uM", "dox 2ug/ml", "Activin A", "4-OHT"):
+        assert cf.keep_row([t]), (t, cf.dropped_by([t]))
+
+
+def test_made_up_symbols_trip_no_pattern_unless_they_spell_a_drop_word():
+    """An antigen's own symbol is a screened field: made-up symbols (a capital, one or two lowercase letters, an
+    optional suffix) drop only when the symbol itself spells a drop word (Cre, Ko, Kd, Oe, Wnt, LiCl)."""
+    low = "abcdefghijklmnopqrstuvwxyz"
+    syms = [c.upper() + a + b + s for c in low for a in ("", *low) for b in low for s in ("", "1", "2a", "l1")]
+    dropped = sorted(s for s in syms if not cf.keep_row([s]))
+    assert all(re.fullmatch(r"(?:Cre|Kd|Ko|Oe|Wnt|Licl)[0-9a-z]*", s) for s in dropped), dropped
+    assert len(dropped) == 17
 
 
 def test_the_filter_reads_the_metadata_fields_only():

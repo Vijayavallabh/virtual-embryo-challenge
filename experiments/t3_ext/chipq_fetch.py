@@ -83,6 +83,8 @@ DENY = re.compile(r"bigwig|\.bw$|\.bed(\.gz)?$|bigbed|\.bb$|/eachdata/|/assemble
 
 _B = r"(?<![a-z0-9])"   # no letter or digit before
 _E = r"(?![a-z])"       # no letter after
+_L = r"(?<![a-z])"      # no letter before (a digit may come before: a gene symbol usually ends in one, "Gata4OE")
+_MINUS = "\\-\u2212\u2013"   # hyphen-minus, the minus sign and the en dash (text copied from papers)
 DROP_CLASSES = {
     "i": "any mutant, flox, Cre, knockout, knockdown, sh/si/shRNA, CRISPR, transgene, reporter or overexpression",
     "ii": ("any stabilised, activated, exon-3-deleted or constitutively active allele, and any sample described as "
@@ -94,17 +96,27 @@ DROP_CLASSES = {
 DROP_PATTERNS: tuple[tuple[str, str, str], ...] = (
     # (class, the quoted word, pattern)
     ("i", "mutant", r"mutant|mutat(?:ed|ion)"),
-    ("i", "flox", r"flox|" + _B + r"fl\s*/\s*fl" + _E),
-    ("i", "Cre", _B + r"cre(?:ert2?|er)?(?![a-z])"),
-    ("i", "knockout", r"knock[\s_-]*out|" + _B + r"ko" + _E),
-    ("i", "knockdown", r"knock[\s_-]*down|" + _B + r"kd" + _E),
+    ("i", "flox", r"flox|" + _L + r"fl\s*/\s*(?:fl|\+)" + _E),
+    # Cre joined to a driver name is the standard allele notation ("AlbCre", "Vil1cre", "LysMcre", "iCre"). The
+    # case-sensitive groups keep "secreted", symbols that begin with Cre+letter ("Creb1", "Crem") and symbols that
+    # begin with a capital and "cre" undropped: "cre" counts after a digit or a lowercase-capital pair, "Cre" after a
+    # lowercase letter or such a pair.
+    ("i", "Cre", r"(?-i:(?<![A-Za-z])(?:[Cc]re|CRE)|(?<=[0-9])cre|(?<=[a-z][A-Z])[Cc]re|(?<=[a-z])Cre)(?:ert2?|er)?"
+     + _E),
+    # "knocked out", "knock-outs", "KO" and "KOs", the KO abbreviation with a c/d/i prefix ("cKO", "dKO", "iKO") and KO
+    # straight after a symbol ("Gata4cKO", "SmadKO"). The prefixed and plural forms are case-sensitive, so symbols
+    # such as "Cko1", "Kos2" or "Pkd1" are kept. Knockdown the same with down and KD.
+    ("i", "knockout", r"knock(?:ed|ing)?[\s_-]*outs?|" + _L + r"ko" + _E
+     + r"|(?-i:(?<![A-Za-z])(?:[cdi]?KOs|[cdi]KO|[cdi]kos?|[CDI]KOs?)|(?<=[a-z])KOs?)" + _E),
+    ("i", "knockdown", r"knock(?:ed|ing)?[\s_-]*downs?|" + _L + r"kd" + _E
+     + r"|(?-i:(?<![A-Za-z])(?:[cdi]?KDs|[cdi]KD|[cdi]kds?|[CDI]KDs?)|(?<=[a-z])KDs?)" + _E),
     ("i", "sh/si/shRNA", _B + r"(?:sh|si)[\s_-]?rna|short[\s_-]*hairpin|small[\s_-]*interfering|"
                          r"(?-i:(?<![A-Za-z0-9])(?:sh|si)(?=[A-Z0-9_-]))"),
     ("i", "CRISPR", r"crispr"),
     ("i", "transgene", r"transgen"),
     ("i", "reporter", r"reporter"),
-    ("i", "overexpression", r"over[\s_-]*express|" + _B + r"oe" + _E),
-    ("i", "mutant (genotype notation)", r"[+-]\s*/\s*-"),
+    ("i", "overexpression", r"over[\s_-]*express|" + _L + r"oe" + _E),
+    ("i", "mutant (genotype notation)", "[+" + _MINUS + r"]\s*/\s*[" + _MINUS + "]"),
     ("ii", "stabilised", r"stabili[sz]"),
     ("ii", "activated", r"activated"),
     ("ii", "exon-3-deleted", r"exon[\s_-]*3|delet"),
