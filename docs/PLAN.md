@@ -11975,3 +11975,53 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **What is written.** Four rows in `results/manual_uploads.csv` (headline only); `docs/UPLOAD_SHEET.md` without the
     four uploaded files and with each condition in its rule's own terms. No rule text, ledger row or built file is
     touched; the three files skipped by the captain's word of entry (bb) stay skipped.
+- 2026-11-23 (dd), the checked reading redone against the new bests, and the rule application checked independently
+  (state at 23:12 UTC, 2026-11-23). Written by the AI assistant, which is recused on the heart's scope and size and on
+  the embryo's occupancy term and shape forms and states no preference on either.
+  - **Why.** The captain used the reading of entry (aa) to skip three files (entry (bb)), and the condition of entry
+    (z) stands. Three boards have a new best since entry (cc), so the same question was put again for the twelve files
+    that can go now: which does the committed record itself expect below its board's best headline?
+  - **How.** One reader per board, under entry (aa)'s definitions with one clause added in the brief before any
+    reading: a pattern across test headlines (the same step gained so much on another base at the test) is not
+    evidence, because the team's rules do not read the size of a difference between two test headlines as evidence of
+    anything; if only such a pattern points one way the verdict is no expectation. A cold verifier per board then
+    tried to refute each verdict (the quotation word for word, both headlines against the uploads record, the
+    arithmetic, a search for evidence against). One verdict was overturned. All twelve final verdicts passed the three
+    checks.
+  - **Below its board's best, by the record (1), on the heart; passed on with no preference.**
+    `T2heart_core_ts05_half.h5ad` (TS05, the first heart line's first file). Its base is the full trim, which returned
+    56.4; row H28's outcome cell gives the strength-0.5 step on the full trim +0.34 on practice (seeds +0.24 to
+    +0.47), rule J6 shows that as a range from zero to the practice value, and the widest figure anywhere in the
+    record for the step (row H28's pre-run ceiling, +1.38 at strength 1) gives 57.78 at most, under the 60.4 that the
+    organ cut D now holds. In entry (aa) the same evidence gave no expectation, because the board's best was then the
+    file's own base. The verdict does not touch row R28's rule, which compares TS05 only with the full trim's headline
+    and still names TS05 as the heart's next file.
+  - **Not below, by the record (2), both on the embryo, unchanged from entry (aa).** `T2embryo_s2x_ovhi.h5ad` (ahead
+    of the form that holds the best on practice, +1.06 merged, 10 of 10 seeds, with the record's caution of about a
+    point lost if the hidden stage was measured shallowly) and `T2embryo_s2.h5ad` (the plan table's range of about 67,
+    60 to 74: its top is above 69.9, its centre below).
+  - **No expectation either way (9).** T1: `T1_s2rcB2.h5ad`, `T1_s2rcMSB.h5ad`, `T1_s2rcA15.h5ad` and
+    `T1_s2rcCm20.h5ad` (not judged in (aa); its base is the file that holds the best, and no row reads the step). T3:
+    `T3_c2_s2.h5ad`, `T3_k23_s2.h5ad`. Embryo: `T2embryo_s2xs_ov.h5ad` and `T2embryo_s2x_crs.h5ad`. For the last one
+    the reader's below (the copy-rows file's 63.99 plus the +1.28 practice gain of the sizing step stays under 69.9)
+    was overturned: rule J6 gives a range only where the horizon ratio is above 1 on every counting task, two of that
+    row's practice tasks sit at the test's own bracket position, and the row and its note refuse to carry the figure
+    to the test, so the sum is the reader's arithmetic and not a range the record states. Heart:
+    `T2heart_organ_ts05_half.h5ad` (the step was never read on practice on the organ cut).
+  - **Not judged:** the eight files that wait on a headline (`T1_s2rcB25.h5ad`, `T1_s2rcB30.h5ad`, `T1_s2rcA20.h5ad`,
+    `T1_s2rcCm25.h5ad`, `T3_ck_s2.h5ad`, `T3_k23_s2_e4.h5ad`, `T2heart_core_ts10_half.h5ad`,
+    `T2heart_organ_ts10_half.h5ad`); their lines' rules decide them.
+  - **The rule application, checked independently.** A ninth reader worked out the next file and every condition on
+    each board from the rule texts and the reported headlines before opening the upload sheet or entry (cc), then
+    compared: no difference in substance from either, and every sha256 in the sheet equals the file on disk. It found
+    one loose text: the note of entry (bb) in `docs/S2_RULES.md` lists T1's order as C, the 2.0 file, the combined
+    momentum file and the A15 file, then the lines' files on their conditions. By the lines' own letter line 1's next
+    file, when it is due, goes before line 2's A15; the same note says every other file keeps its place and its
+    condition, the sheet follows the lines' letter, and that is the reading in force. No rule text is changed.
+  - **Disclosures.** Several of these readers and verifiers report that the harness placed the captain's pasted
+    message, with its per-metric lines and ranks, at the head of their task; each says it used the headlines only. One
+    reader's long search output was saved by the harness to a file it did not open. No reader wrote a file.
+  - **What follows.** Nothing changes in any file, rule or queue. If the captain applies the rule of entry (bb) again,
+    TS05 is the one file it adds; TS10 waits on TS05's headline by its line's rule, so with TS05 not uploaded TS10
+    never becomes due, and the heart's next file is `T2heart_organ_ts05_half.h5ad`. Uploads are the captain's own
+    acts.
