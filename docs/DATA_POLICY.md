@@ -1515,3 +1515,19 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     the plan's line on GSE165300 stands; one priced question is with the captain, default: the tier stays out. A cold
     rules reader's odds that an organiser counts a dataset as held out are in the decision log entry (f); they are
     odds, not a ruling.
+- 2026-11-23 (c), the T1 outside-atlas line is reopened in its strict form, with one exception to the stage parser
+  (`docs/PLAN.md` decision log 2026-11-23 (r); ruling row R27). Written by the AI assistant.
+  - **The captain's word**, to a message that named the line as needing it: "You have my approval and word for all the
+    above". The line (new heart atlases as further sources of the Task 1 directions) was parked on 2026-11-20 after
+    two cold checks; the strict form uses a sample only when its written label and every widened or converted reading
+    clear the Task 1 window, which leaves E8.5 and earlier and E15.5 and later.
+  - **The exception, exactly:** a protocol or processing field that is byte-identical across every sample record of a
+    series is read as series text: it gives no stage reading, and it still refuses on pooling words; the sample's
+    stage must then come from its own title and characteristics, which must agree. It exists because a series-wide
+    protocol sentence that lists every stage of the series made the parser refuse samples whose own records are clear.
+    It does not change which samples may be used: the two readers still pin every sample by its record, and no
+    in-window sample of a series is ever fetched (per-sample files only, never a series archive).
+  - **What stays as it is:** the windows above; "exclude annotations, clusters, embeddings, or fitted transformations
+    learned using protected cells" (a member whose files show processing together with an in-window library is dropped
+    before any table); Task 1 only, because E8.5 lies inside the Task 2 heart window; a register row for each new
+    series before any fetch; practice read only until the captain rules on a file.

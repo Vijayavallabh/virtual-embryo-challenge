@@ -11496,3 +11496,25 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     kept candidate (the three-atlas sign consensus) needs the captain's word before any code and has had none; its
     challenger said it fits the deadline only if started on the evening of 23 Nov. The two T2 boards: nothing was
     kept. The files that can still raise a mark are the ones already built and handed over.
+- 2026-11-23 (r), the captain's word on the two open items: the T1 outside-atlas line is reopened; the T3 pathway tier
+  stays out (state at 18:31 UTC, 2026-11-23). Written by the AI assistant.
+  - **The captain's words, verbatim:** "ultrathink You have my approval and word for all the above".
+  - **What they answered.** The message before them ended: "Still open with you, each defaulting to no change: the
+    pathway tier (stays out) and the Task 1 three-atlas line (stays parked)", and said of the second that it "needs
+    your word" and would still fit "if you say yes by about 24 Nov 12:00 UTC".
+  - **The AI assistant's reading (its own).** (1) The T1 three-atlas line, candidate MX2s: the captain's word is
+    given. The question had been put twice with its price and with what a yes also allows (the stage-parser exception
+    that loosens one of the team's own guards). Ruling row R27 and `docs/DATA_POLICY.md` change note 2026-11-23 (c)
+    record it. It is a practice read only; a file would need a further question after an AHEAD read. (2) The T3
+    pathway tier: the question was "should the pathway tier stay out?", the default and the AI assistant's stated view
+    were that it stays out, and the item touches the organisers' genotype clause. A general approval is read as
+    approving that, not as an order to build on the tier: it stays out, the held list and the plan's line stand, and
+    nothing of it is fetched. The captain is told in one line how to say otherwise. (3) The list of files ready for
+    upload was information; uploads stay the captain's own acts. (4) The three items of entry (c) that were not in
+    that message (T1 line 1's step back, the heart search line's exception, line 3's turn order) are not touched.
+  - **MX2s starts** under the challenger's final specification of entry (d): register rows for the two new series
+    before any fetch (they take X019 and X020, since X018 went to the T3 source); the parked code ported to main in
+    its strict form with the exception and its tests; two independent readers' pins; per-sample files only; a ledger
+    row for the practice read, written by a score-blind rule writer and attacked cold before placement; engineers and
+    reviewers with the blocker standard fixed up front; long texts written as small files. The AI assistant designs
+    none of it.
