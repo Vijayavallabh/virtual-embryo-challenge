@@ -140,7 +140,17 @@ machine, and an official upload needs the captain's go-ahead.
           with another row, and unless TRIES.md holds exactly one row R28 whose first cell is the captain's order
           naming `--trend-strength 0.5`, `--trend-strength 1.0` and `--captain-ruling R28`; --captain-ruling on the
           heart without --trend-strength is refused too. Its record's trend_strength field names the option, the
-          strength, the file, the ruling row, the order text, the command and the budgets
+          strength, the file, the ruling row, the order text, the command and the budgets. File D's line (row R29 of
+          experiments/harness/TRIES.md, the captain's order "i want it too"; docs/PLAN.md decision log 2026-11-23
+          (w); off by default): heart --entry organ_scope --trend-strength 0.5 | 1.0 --z-mode raw --captain-ruling
+          R29, files OTS05 and OTS10, D's command with --expression copy replaced by the same step at that strength
+          before the size step, on D's draw, organ-cut pool, count rule, size procedure and seed; then halve.py at
+          seed 1000001 as for D. The rows, coordinates, cell number, size field and half's rows are D's. Every refusal
+          of row R28's line holds here too, and core_trim with R29 or organ_scope with R28 is refused; it is refused
+          unless TRIES.md holds exactly one row R29 whose first cell is the captain's order ("ruling, no run") naming
+          `--entry organ_scope`, `--trend-strength 0.5`, `--trend-strength 1.0` and `--captain-ruling R29`. Its
+          record's trend_strength field names the option, the strength, the file, R29, the order text and the
+          command; its scope_option field stays D's own
   embryo  --method pseudobulk_shift | fgw | fgw_shape0 | fgw_shape1: E7.5 cells moved by the E7.25 -> E7.5 change, or
           the FGW interpolation between E7.5 and E8.0 at t = 1/2 (fgw_shape0, the s2 of docs/S2_RULES.md, keeps the
           mixture in E7.5's geometry); sized by the pre-registered embryo procedure (size_embryo_E7.75.json).
@@ -320,6 +330,26 @@ HEART_TS_ORDER = ("experiments/harness/TRIES.md row R28, the captain's order of 
 HEART_TS_STEP = ("row H28's strength-scaled b0_trend step: the vec.harness.b0_trend_factors mapping and "
                  "momentum_shift's fallback damping (vec.harness.B0_DAMPING) both multiplied by the strength, before "
                  "the size step, on C's draw, pool, count rule, size field and seed")
+# The heart search line on file D (row R29 of experiments/harness/TRIES.md, the captain's order "i want it too": the
+# trend tried on D as well; recorded in docs/PLAN.md decision log 2026-11-23 (w)): its two files OTS05 and OTS10 are the
+# organ cut D's command with --expression copy replaced by the same strength-scaled step (_trend_strength_step), before
+# the size step on D's own draw, organ-cut pool, count rule, size procedure and seed; the rows, coordinates, cell
+# number, size field and half's rows stay D's. Off by default; taken only with --entry organ_scope --z-mode raw
+# --captain-ruling R29, and only while TRIES.md holds exactly one row R29 whose first cell is the captain's order
+# ("ruling, no run") naming `--entry organ_scope`, both options and `--captain-ruling R29`. Row R28's line is unchanged:
+# core_trim with R29 and organ_scope with R28 are both refused.
+HEART_OTS_ROW = "R29"
+HEART_OTS_ENTRY = "`--entry organ_scope`"
+HEART_OTS_FILES = {0.5: "OTS05", 1.0: "OTS10"}
+HEART_OTS_COMMANDS = {s: f"heart --entry organ_scope --trend-strength {s:.1f} --z-mode raw --captain-ruling "
+                         f"{HEART_OTS_ROW}" for s in HEART_TS_OPTIONS}
+HEART_OTS_ORDER = ("experiments/harness/TRIES.md row R29, the captain's order (\"i want it too\"; docs/PLAN.md "
+                   "decision log 2026-11-23 (w)): the trend step tried on file D too, two files, OTS05 and OTS10, the "
+                   "organ cut D's command with --expression copy replaced by the trend step at strength 0.5 and 1.0 "
+                   "(row H28's strength), nothing else changed")
+HEART_OTS_STEP = ("row H28's strength-scaled b0_trend step: the vec.harness.b0_trend_factors mapping and "
+                  "momentum_shift's fallback damping (vec.harness.B0_DAMPING) both multiplied by the strength, before "
+                  "the size step, on D's draw, organ-cut pool, count rule, size procedure and seed")
 # --shape-interp (row E49 as drafted; no ruling): off by default; the fixed order of the steps when it is given
 SHAPE_INTERP_OFF = "none"
 SHAPE_INTERP_ORDER = ("floor_exact positions, the shape form, the size rule's RMS rescale, the duplicate jitter, the "
@@ -1470,26 +1500,48 @@ def _heart_line_ordered() -> bool:
     return all(_captain_order_names(HEART_TS_ROW, opt) for opt in HEART_TS_OPTIONS.values())
 
 
+def _heart_d_line_ordered() -> bool:
+    """Whether experiments/harness/TRIES.md holds exactly one row R29 whose first cell is the captain's order ("ruling,
+    no run") naming `--entry organ_scope`, `--trend-strength 0.5`, `--trend-strength 1.0` and `--captain-ruling R29`
+    (_captain_order_names)."""
+    return all(_captain_order_names(HEART_OTS_ROW, opt) for opt in (HEART_OTS_ENTRY, *HEART_TS_OPTIONS.values()))
+
+
 def _trend_strength_refusals(a) -> float | None:
-    """--trend-strength (the heart search line, row R28): its refusals, before anything is read. Returns the strength,
-    or None when the option is not given (today's commands exactly; --captain-ruling alone is refused)."""
+    """--trend-strength (the heart search line, row R28 on the full trim; row R29 on the organ cut): its refusals,
+    before anything is read. Returns the strength, or None when the option is not given (today's commands exactly;
+    --captain-ruling alone is refused)."""
     raw = getattr(a, "trend_strength", None)
     ruling = getattr(a, "captain_ruling", None)
+    commands = (f"{HEART_TS_COMMANDS[0.5]}, {HEART_TS_COMMANDS[1.0]}, {HEART_OTS_COMMANDS[0.5]} or "
+                f"{HEART_OTS_COMMANDS[1.0]}")
     if raw is None:
         if ruling is not None:
-            sys.exit(f"heart --captain-ruling goes with --trend-strength only ({HEART_TS_COMMANDS[0.5]} or "
-                     f"{HEART_TS_COMMANDS[1.0]})")
+            sys.exit(f"heart --captain-ruling goes with --trend-strength only ({commands})")
         return None
     if raw not in HEART_TS_CHOICES:
         sys.exit(f"--trend-strength {raw} is refused: it takes {' or '.join(HEART_TS_CHOICES)} only")
     s = float(raw)
-    if a.entry != "core_trim" or a.z_mode != "raw" or a.expression != "b0" or a.trend or a.depth or a.herd or a.cfm:
-        sys.exit(f"--trend-strength is refused except as {HEART_TS_COMMANDS[0.5]} or {HEART_TS_COMMANDS[1.0]}: "
-                 "--entry core_trim and --z-mode raw only, and with --expression copy, --trend, --depth, --herd and "
-                 "--cfm")
+    if (a.entry not in ("core_trim", "organ_scope") or a.z_mode != "raw" or a.expression != "b0" or a.trend or a.depth
+            or a.herd or a.cfm):
+        sys.exit(f"--trend-strength is refused except as {commands}: --entry core_trim or organ_scope and --z-mode raw "
+                 "only, and with --expression copy, --trend, --depth, --herd and --cfm")
     if a.board not in (None, TEST_BOARDS["heart"]):
         sys.exit(f"--trend-strength is refused on {a.board}: the heart search line builds on the test board only "
                  "(no dry run)")
+    if a.entry == "organ_scope":  # file D's line (row R29); row R28 never orders it
+        if ruling is None:
+            sys.exit(f"--entry organ_scope --trend-strength {raw} is the captain's order of row {HEART_OTS_ROW} alone "
+                     f"and needs --captain-ruling {HEART_OTS_ROW}")
+        if ruling != HEART_OTS_ROW:
+            sys.exit(f"--entry organ_scope --trend-strength {raw} is refused with --captain-ruling {ruling}: only row "
+                     f"{HEART_OTS_ROW} orders it")
+        if not _heart_d_line_ordered():
+            sys.exit(f"--entry organ_scope --trend-strength {raw} is refused: experiments/harness/TRIES.md must hold "
+                     f"exactly one row {HEART_OTS_ROW} whose first cell is the captain's order (\"ruling, no run\") "
+                     f"naming {HEART_OTS_ENTRY}, {HEART_TS_OPTIONS[0.5]}, {HEART_TS_OPTIONS[1.0]} and "
+                     f"`--captain-ruling {HEART_OTS_ROW}`")
+        return s
     if ruling is None:
         sys.exit(f"--trend-strength {raw} is the captain's order of row {HEART_TS_ROW} alone and needs "
                  f"--captain-ruling {HEART_TS_ROW}")
@@ -1526,12 +1578,18 @@ def _trend_strength_step(ctx: harness.BuildContext, strength: float) -> tuple:
     return harness.finish(ctx, pool, dense(shifted[:, ctx.board.genes].X), coords), rec
 
 
-def _trend_strength_record(s: float, rec: dict) -> dict:
+def _trend_strength_record(s: float, rec: dict, entry: str = "core_trim") -> dict:
     """What a heart search line file's record names: the option, the strength, the file, the ruling row and the order
     text, the command, the step, its budgets (B0's and the test budget, 0.5 x the strength day) and b0_trend's record
-    without any cell number (_trend_record)."""
-    return {"option": "--trend-strength", "strength": s, "file": HEART_TS_FILES[s], "captain_ruling": HEART_TS_ROW,
-            "order": HEART_TS_ORDER, "command": HEART_TS_COMMANDS[s], "step": HEART_TS_STEP,
+    without any cell number (_trend_record). On the organ cut (row R29) the file, row, order, command and step are
+    file D's line's; on the full trim they are row R28's as before."""
+    if entry == "organ_scope":
+        line = (HEART_OTS_FILES[s], HEART_OTS_ROW, HEART_OTS_ORDER, HEART_OTS_COMMANDS[s], HEART_OTS_STEP)
+    else:
+        line = (HEART_TS_FILES[s], HEART_TS_ROW, HEART_TS_ORDER, HEART_TS_COMMANDS[s], HEART_TS_STEP)
+    file, row, order, command, step = line
+    return {"option": "--trend-strength", "strength": s, "file": file, "captain_ruling": row,
+            "order": order, "command": command, "step": step,
             "budget_days": rec["budget_days"], "test_budget_days": s * rec["budget_days"],
             "trend": _trend_record(rec)}
 
@@ -1545,7 +1603,8 @@ def build_heart(a) -> dict:
     copy = a.expression == "copy"
     # The organ cut (HEART_ORGAN_SCOPE; off unless asked for): --entry organ_scope builds that one combination only
     organ = a.entry == "organ_scope"
-    if organ and (not (copy and a.z_mode == "raw") or a.trend or a.depth or a.herd or a.cfm):
+    # (with --trend-strength, _trend_strength_refusals has already held it to file D's line of row R29)
+    if organ and strength is None and (not (copy and a.z_mode == "raw") or a.trend or a.depth or a.herd or a.cfm):
         sys.exit(f"--entry organ_scope is refused except as {HEART_ORGAN_SCOPE} (the copy draw from the organ cut, "
                  "sized in the raw mode to the core forecast times rms(organ pool) / rms(core) on E10.5), and with "
                  "--trend, --depth, --herd and --cfm")
@@ -1610,7 +1669,8 @@ def build_heart(a) -> dict:
     trend_rec: dict = {}
     if copy:  # the copy baseline: B0's own draw (draw_copy, same context, seed and count) through finish, no step
         stage = harness._copy(ctx)
-    elif strength is not None:  # the heart search line (row R28): row H28's step at the strength, before the size step
+    elif strength is not None:  # the heart search line (row R28; row R29 on the organ cut): row H28's step at the
+        # strength, before the size step, on this entry's own context (C's or D's)
         stage, ts_rec = _trend_strength_step(ctx, strength)
     elif a.trend:
         stage = harness._b0_t2(ctx, trend=True, trend_record=trend_rec)  # b0_trend, the harness's B0 otherwise
@@ -1639,12 +1699,13 @@ def build_heart(a) -> dict:
             "seed": a.seed, "count_decision": count, "trim": trim, "depth_step": bool(a.depth),
             **({"cfm_step": t2_build.CFM_RULE} if a.cfm else {}),
             **({"trend": _trend_record(trend_rec)} if a.trend else {}),
-            **({"trend_strength": _trend_strength_record(strength, ts_rec)} if strength is not None else {}),
+            **({"trend_strength": _trend_strength_record(strength, ts_rec, a.entry)} if strength is not None else {}),
             **({"expression": "copy"} if copy else {}),
             **({"z_mode": z_mode} if z_mode is not None else {}),
+            # on the organ cut (row R29) scope_option stays file D's own record (_organ_option_record, below)
             **({"scope_option": {**_scope_option_record(a.entry, scope_option), "command": HEART_TS_COMMANDS[strength],
                                  "ruling": HEART_TS_ORDER}}
-               if strength is not None else
+               if strength is not None and not organ else
                {"scope_option": _scope_option_record(a.entry, scope_option)} if scope_option is not None else {}),
             **({"scope_option": _organ_option_record(trim)} if organ else {}),
             "size": {k: size[k] for k in size if not isinstance(size[k], (dict, list))}}
@@ -2113,9 +2174,13 @@ def build_parser() -> argparse.ArgumentParser:
                                 f"{HEART_TS_COMMANDS[0.5]}. Refused with any other value, entry or z mode, with "
                                 "--expression copy, --trend, --depth, --herd and --cfm, on any board but the test "
                                 "board, and unless row R28's first cell is the captain's order naming both values and "
-                                "--captain-ruling R28")
+                                "--captain-ruling R28. File D's line (row R29, off by default): "
+                                f"{HEART_OTS_COMMANDS[0.5]} (OTS05) or {HEART_OTS_COMMANDS[1.0]} (OTS10), D's command "
+                                "with the same step, refused alike and unless row R29's first cell is the captain's "
+                                "order naming --entry organ_scope, both values and --captain-ruling R29")
             p.add_argument("--captain-ruling", default=None,
-                           help=f"with --trend-strength only: {HEART_TS_ROW}, the row that orders it")
+                           help=f"with --trend-strength only: {HEART_TS_ROW} with --entry core_trim, {HEART_OTS_ROW} "
+                                "with --entry organ_scope, the row that orders it")
         if name == "embryo":
             p.add_argument("--method", choices=("pseudobulk_shift", *EMBRYO_T_POS), required=True,
                            help="fgw = s1; fgw_shape0 = the s2 of docs/S2_RULES.md (E7.5's geometry)")
