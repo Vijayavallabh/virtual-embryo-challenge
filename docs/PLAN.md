@@ -11379,3 +11379,37 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **State.** No score of MS or of any later T1 file has been reported to the main session. The combined file's
     builder is coded (branch `campaign/t1-ms-combined`) and with its reviewer; on a ready review it is merged, traced
     and built at once (six identity rebuilds, then the file twice), and its sha256 is logged before its score.
+- 2026-11-23 (n), T3 candidate CHIPQ-S: the database code is merged, the lists fetched, the screen done and the kept
+  list pinned; no table exists and no fold is read (state at 16:39 UTC, 2026-11-23). Written by the AI assistant,
+  which read no row of the screened files and designed none of this.
+  - **The database code** is merged at f3cc4d7 (`campaign/t3-chipq-4`): the first review's five blockers fixed; the
+    second review's two remaining gaps in the keyword patterns fixed; a rule agent's addendum on which further
+    abbreviations and notations are variants of the challenger's own drop words applied (no word and no class added),
+    its own two faults fixed; the last review ready with no blocker. Known limits of the placebo filter, declared by
+    its reviewers: names shaped like a point-mutation name with two or more digits drop although they are a cell line,
+    a reporter or a family name; a joined phospho-site name written with a capital P drops; a point-mutation name
+    joined to an all-capitals symbol and upper-case TG are kept.
+  - **Six small points for the rule got no ruling.** The rule agent asked to confirm them (pool membership counted on
+    experiments that have a column; upper-case TG; the listing's line form; the three limits above) handed back that a
+    safety classifier stopped its answer and that it would not send it again. The AI assistant does not press for an
+    answer a guardrail withheld. The points therefore stand as the reviewed code has them, as declared limits: the
+    pool counts an antigen's filter-kept experiments that have a column in its file, which is the first reviewer's fix
+    and the specification's own definition of E; the filter's limits are those above; the listing takes the form the
+    read script checks. The first rule writer's lost hand-back of entry (i) was very likely the same cause; the second
+    rule writer's text came through as files.
+  - **Fetched** (the DGX, a worktree of the campaign checkout at the merged commit, 16:20 to 16:34 UTC): the two
+    lists, then the rows step: 20 experiments of the test's gene, 32 of the practice gene, none for the third released
+    knockout's gene (so the x2 cell cannot be read, as the row already has it), and 499 other antigens with at least
+    two experiments that pass the keyword filter. The target-gene files are downloading; nothing opens one until the
+    kept list below is at its pinned sha256.
+  - **The screen.** Two independent screening agents read the two rows files (metadata only) under the specification's
+    screen paragraph and handed back experiment ids and drop classes, nothing of any row. They agree on every id: 5 of
+    20 experiments of the test's gene are kept (7 in class i, 6 in class ii, 0 in class iii, 2 on doubt), and 7 of 32
+    of the practice gene (19 in class i, 0 in class ii, 1 in class iii, 5 on doubt; the second reader put one on doubt
+    instead of class iii). The kept list is committed: `experiments/t3_ext/chipq_kept.yaml`, sha256
+    f0f3f1bf8000294412299830eccfc775ac4ca052c7a9019c0ab746409d170215, pinned by `CHIPQ_KEPT.sha256`. Register row X018
+    now carries the fetch date and hashes, the screen's counts and the licence as confirmed on the archive's licence
+    page (CC BY-SA 4.0; adapted material must carry the same or a compatible licence).
+  - **Where the first gate stands.** P1 needs at least three kept experiments of the test's gene and a bound set of at
+    least fifteen panel genes. The first bar is met by the count above; the second is read by code at P1, which by the
+    corrected row runs at the row's registration commit, after the read script is merged. Row K27 is not placed yet.
