@@ -2,6 +2,13 @@
 
 ## Current State
 
+- **2026-11-23, 22:33 UTC.** The captain set an upload condition (expected score closer to per-board targets; the
+  targets are not in the repository) and asked for a comparison; a checked reading of the record (four readers, four
+  cold verifiers) found three waiting files that the record itself expects below their board's best, two it does not
+  put below, and thirteen without an expectation, and corrected three statements of the first reply. The captain then
+  skipped those three files (the plain momentum file, file F, the refused T3 s1); `docs/UPLOAD_SHEET.md` holds 24
+  files in the orders and the 3 skipped. Nothing runs. Decision log 2026-11-23 (z), (aa), (bb).
+
 - **2026-11-23, 20:42 UTC.** The captain ordered the trend tried on the heart's file D too ("i want it too"; ruling
   row R29). A rule writer and a cold challenger, both blind to test scores, fixed that second line's rule (it waits
   for D's own upload and compares only with D; the first line keeps its slots first); an engineer and a reviewer

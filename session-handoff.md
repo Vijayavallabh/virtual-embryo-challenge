@@ -2,7 +2,28 @@
 
 ## Current Objective
 
-- **State at 2026-11-23, 20:42 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-23, 22:33 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-23 (bb); next label (cc). Ruling rows through R29; next R30. Register through X020; next X021. T1's next row
+  is T73. Tries unchanged: T1 463, embryo 88, heart 97, T3 74. NOTHING RUNS, here or on the DGX; no workflow is open.
+  Main at the commit of this note.
+  - **THE CAPTAIN SKIPPED THREE FILES** (own words "skip those three and update the upload sheet", log (bb); rules
+    note re-pinned; rows R23 and R8): `T1_s2rc_MS.h5ad`, `T1_s2none.h5ad` (F), `T3_refused_s1.h5ad` are NOT uploaded
+    unless the captain says otherwise; they stay on disk and stand in their own section of `docs/UPLOAD_SHEET.md`. The
+    sheet now holds 24 files in the orders and 3 skipped (all checked against disk).
+  - **ORDERS NOW.** T1: `T1_s2rcC.h5ad`, `T1_s2rcB2.h5ad` (the 2.0 file), `T1_s2rcMSB.h5ad`, `T1_s2rcA15.h5ad`; then
+    on conditions B25 (only if the 2.0 file strictly beats B's headline), B30 (only if 2.5 beats 2.0), A20 (only if
+    A15 strictly beats A's), Cm20 (only if C strictly beats A's), Cm25 (only if Cm20 beats C's). T3: `T3_c1_s2.h5ad`,
+    `T3_c2_s2.h5ad`, `T3_k23_s2.h5ad`; then CK (only if C2 and K23 each strictly beat the board's best at that time),
+    e4 (only if K23 does). Embryo: `T2embryo_s2x_cr.h5ad`, `T2embryo_s2x_crs.h5ad`, `T2embryo_s2xs_ov.h5ad`,
+    `T2embryo_s2.h5ad`, `T2embryo_s2x_ovhi.h5ad`. Heart: D, TS05, TS10 on its condition, OTS05 after D's score, OTS10
+    on its condition (rules in the bullet of 20:42 UTC below).
+  - **THE CAPTAIN'S UPLOAD CONDITION OF LOG (z) STANDS AS STATED** (upload only where the expected score is closer to
+    four per-board targets, which are NOT in the repository). The checked reading of log (aa)
+    (`lift8/record_expects_below.json`): the record expects the three skipped files below their board's best; not
+    below: `T2embryo_s2x_ovhi.h5ad`, `T2embryo_s2.h5ad`; no expectation for the other 13 that need no earlier score.
+    When the captain pastes scores: headline per board only into `results/manual_uploads.csv`, one log entry, each
+    rule applied mechanically, the sheet updated.
+- **State at 2026-11-23, 20:42 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-23 (y); next label (z), then (aa). Ruling rows through R29; next R30. Register through X020; next X021. T1's
   next row is T73. Tries unchanged: T1 463, embryo 88, heart 97, T3 74. NOTHING RUNS, here or on the DGX; no workflow
   is open. Main at the commit of this note.
