@@ -2314,3 +2314,20 @@ standing under R21. The line adds uploads, and the board keeps its best headline
 variant of C, K1, K2 or D beyond these two files are outside this line. Data used: released challenge data only; no
 outside data. The method report states that strengths 0.5 and 1.0 of the trend step were tried on the organ cut, as on
 the full trim, and that the best headline was kept.
+
+## Note of 2026-11-23: the heart's second search line's two files are built (row R29; decision log 2026-11-23 (y))
+
+The build clause of the amendment "the heart's second search line" above now holds: the builder takes
+`--trend-strength` with `--entry organ_scope` only under `--captain-ruling R29` (merged at 0d47a67; R29 opens no other
+entry and R28 does not open organ_scope; an independent reviewer passed the change with no blocker); at that one clean
+commit the default command rebuilt D's reference bytes and its half's, the first line's TS05 command rebuilt its
+recorded bytes, and the first line's launcher rebuilt C, TS05 and TS10 to their recorded bytes; each new file was then
+built twice with one sha256 and passed the format check; and both were built before any headline of D, TS05, TS10,
+OTS05 or OTS10 had been reported. **The files:** `runs/manual_upload/T2heart_organ_ts05_half.h5ad`, sha256
+f918e76731aac18eda3b46c8a35c18f26ae00a1a6a1db36d33e7515704cc43ea (OTS05);
+`runs/manual_upload/T2heart_organ_ts10_half.h5ad`, sha256
+ee9e0e68d62e8d1448f1dbbbce1146dc5fb4877e94d77fc289fa82744acb06a9 (OTS10); build record
+`experiments/builds/results/heartlined_0d47a67_od1.txt`. Every clause of the line stands: it waits for D's own upload
+and reported headline; OTS05 is then its next file; OTS10 only if OTS05's headline is strictly above D's; at each
+heart slot the first line's due file goes first; nothing is rebuilt, re-seeded, resized or changed after a score. Data
+used: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data.

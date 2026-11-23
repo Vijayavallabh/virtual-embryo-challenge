@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-23, 19:54 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-23, 20:41 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 this sheet was written. No file here has a score. The order is the order on record in `docs/S2_RULES.md` and the
@@ -59,6 +59,8 @@ Data used, for every heart file: released Task 2 heart stages and the unlocked E
 | 1 | `T2heart_organ_half.h5ad` (D) | `1b4342c151c19dfc827d4b7a310c6a0fa8908f1e369836ebffb22c27c93b4f00` | none |
 | 2 | `T2heart_core_ts05_half.h5ad` (TS05, the heart search's first file) | `b6b8155be9b5469a2dbc8943a59df567f52c7cbe013bbf0b55e4da706fda27b7` | none; after D |
 | then | `T2heart_core_ts10_half.h5ad` (TS10) | `cf53b0c0afe7d18b8f7c84d7595729e4fc46e15e6077e645b6dc0a2fbfed39af` | only if TS05 scores strictly above the full trim (`T2heart_s2core_half.h5ad`), whatever D scores |
+| then | `T2heart_organ_ts05_half.h5ad` (OTS05, the second heart search's first file) | `f918e76731aac18eda3b46c8a35c18f26ae00a1a6a1db36d33e7515704cc43ea` | only after D has been uploaded and its score reported; when a first-search file is due at the same slot, that file goes first |
+| then | `T2heart_organ_ts10_half.h5ad` (OTS10) | `ee9e0e68d62e8d1448f1dbbbce1146dc5fb4877e94d77fc289fa82744acb06a9` | only if OTS05 scores strictly above D |
 
 ## When a score comes back
 

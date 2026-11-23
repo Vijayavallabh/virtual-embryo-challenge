@@ -11790,3 +11790,38 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     amended and re-pinned; the first line's text (row R28) is unchanged. Nothing of the two files is built. The
     builder option is with an engineer and a reviewer, both blind to test scores; each file is then built twice with
     one sha256 after the default command has rebuilt D's recorded bytes, and the sha256 goes here before any score.
+- 2026-11-23 (y), the heart's second search line's two files are built, before any score of them or of D (state at
+  20:41 UTC, 2026-11-23). Written by the AI assistant, which is recused on the heart's scope and size, designed none
+  of it and states no preference.
+  - **The code.** An engineer blind to test scores extended the reviewed option to the organ cut's command (`heart
+    --entry organ_scope --trend-strength S --z-mode raw --captain-ruling R29`; the same step function as the first
+    line, on D's own pool, draw, count rule, size procedure and seed; the first line's commands keep their own check
+    on row R28; core_trim with R29 and organ_scope with R28 are both refused) and wrote the launcher
+    `experiments/builds/heart_trend_line_d.sh`; a second agent reviewed it under a blocker standard fixed up front:
+    ready, no blocker. Its checks: at strength 1.0 the expression equals the harness's trend step on D's context bit
+    for bit; rows, coordinates, cell number, size, the whole scope record and the half's rows equal D's, only the
+    expression differs; the thirteen earlier heart commands and the first line's two keep their bytes and records.
+    Merged at 0d47a67 (targeted tests: 507 passed). Declared, as the reviewer's lesser points: the new files' record
+    keeps D's own scope record and names its command under the trend field; the order text cites entry (w).
+  - **The builds.** On the DGX in the detached worktree `~/v/scratch/h29b-wt` at 0d47a67 (clean), run od1, 20:35 to
+    20:37 UTC, after the launcher's refusal path had been traced under a throwaway home folder (exit 96, the record
+    written). Every step exit 0: gate, tests, the identity step for D (the default command rebuilt D's bytes and its
+    half's), the identity step for the first line's TS05 (its recorded bytes), OTS05 twice, OTS10 twice, the list.
+    Each pair agrees byte for byte, file and half; all six stamps say this commit and clean True. Then the first
+    line's own launcher was rerun at the same commit (run ts2, 20:38 to 20:40 UTC): its sha256 list equals the
+    recorded list of run ts1 line for line, so C, TS05 and TS10 still build to their recorded bytes. Read by exit
+    codes, sha256 and the stamps' commit and clean fields only.
+  - **The files, named here before any score of them:** `runs/manual_upload/T2heart_organ_ts05_half.h5ad`, sha256
+    f918e76731aac18eda3b46c8a35c18f26ae00a1a6a1db36d33e7515704cc43ea (OTS05);
+    `runs/manual_upload/T2heart_organ_ts10_half.h5ad`, sha256
+    ee9e0e68d62e8d1448f1dbbbce1146dc5fb4877e94d77fc289fa82744acb06a9 (OTS10). Record:
+    `experiments/builds/results/heartlined_0d47a67_od1.txt` and its sha256 list. Data used: released Task 2 heart
+    stages and the unlocked E10.5 validation file only; no outside data.
+  - **The build clause's condition holds.** The rule text asks that both files be built before the first headline of
+    D, TS05, TS10, OTS05 or OTS10: none had been reported to the main session, and `results/manual_uploads.csv` holds
+    no row for any of them.
+  - **The rule, unchanged** (entry (x), the rules note's amendment): the line waits for D's own upload and reported
+    headline; OTS05 is then its next file; OTS10 only if OTS05's headline is strictly above D's; the line ends at
+    OTS10; at each heart slot the first line's due file goes before this line's; only the headlines of D, OTS05 and
+    OTS10 are compared in this line. `docs/UPLOAD_SHEET.md` lists both files with their conditions in words. Handed to
+    the captain with path, sha256, board and the Data-used text; an upload is the captain's own act.

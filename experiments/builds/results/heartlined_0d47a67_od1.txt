@@ -1,0 +1,49 @@
+The second heart search line's two files (ruling row R29; the captain's order of 2026-11-23, "i want it too";
+docs/S2_RULES.md, amendment of 2026-11-23 "the heart's second search line"; decision log 2026-11-23 (w), (x) and
+(y)): the set heartlined, run od1. BUILT; no score of either file exists
+=================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-23 in the detached worktree ~/v/scratch/h29b-wt (its own environment) at
+commit 0d47a67923f4a1218affe0094e50663d4d0fa69c (clean tree), launched at 20:35 UTC and finished by 20:37 UTC:
+`bash experiments/builds/heart_trend_line_d.sh 0d47a67923f4a1218affe0094e50663d4d0fa69c od1`
+Step exit codes: gate 0, tests 0, D 0, T 0, OTS05a 0, OTS05b 0, OTS10a 0, OTS10b 0, done 0.
+  D       the identity step: the organ cut D by its committed default command, then its half; both reproduce the
+          bytes of D's two builds under row R21 (76e21cd2c754..., 1b4342c151c1...)
+  T       the second identity step: the first line's TS05 by its command under row R28, then its half; both reproduce
+          the recorded bytes (a6edffa9ab27..., b6b8155be9b5...)
+  OTS05a  T2heart_organ_ts05.h5ad       c3b5fc9c7b47d0d0aafc4e5876bac7f06988cb2d628a0030b4b643806da8bceb
+          T2heart_organ_ts05_half.h5ad  f918e76731aac18eda3b46c8a35c18f26ae00a1a6a1db36d33e7515704cc43ea
+  OTS05b  the same two sha256: the two builds agree byte for byte, file and half
+  OTS10a  T2heart_organ_ts10.h5ad       efaaabe0b744d82dc40135ed9269a6baf8938c9cdd83f85fb3917c0b102e7a2b
+          T2heart_organ_ts10_half.h5ad  ee9e0e68d62e8d1448f1dbbbce1146dc5fb4877e94d77fc289fa82744acb06a9
+  OTS10b  the same two sha256: the two builds agree byte for byte, file and half
+Stamps (the commit and clean fields only): D, T, OTS05a, OTS05b, OTS10a and OTS10b each say 0d47a67923f4 and clean
+True.
+
+The builder commands (the line's rule text):
+  OTS05: build_test.py heart --entry organ_scope --trend-strength 0.5 --z-mode raw --captain-ruling R29
+         --out <O>/T2heart_organ_ts05.h5ad, then experiments/builds/halve.py at seed 1000001
+  OTS10: the same with --trend-strength 1.0 (T2heart_organ_ts10.h5ad, then its half)
+Before the launch the launcher's refusal path was traced on the DGX under a throwaway home folder with a commit of
+forty zeros (exit 96, the exit record written).
+
+Every earlier heart output still builds to its recorded bytes at this commit: besides the two identity steps above,
+the first line's own launcher was rerun at this commit (20:38 to 20:40 UTC, run ts2: `bash
+experiments/builds/heart_trend_line.sh 0d47a67923f4a1218affe0094e50663d4d0fa69c ts2`, every step exit 0) and its sha256 list equals the recorded
+list of run ts1 line for line (the full trim C and its half, TS05 and TS10 and their halves, each pair).
+
+The upload files are the halves, copied to runs/manual_upload/ and checked against these sha256:
+  T2heart_organ_ts05_half.h5ad  f918e76731aac18eda3b46c8a35c18f26ae00a1a6a1db36d33e7515704cc43ea
+  T2heart_organ_ts10_half.h5ad  ee9e0e68d62e8d1448f1dbbbce1146dc5fb4877e94d77fc289fa82744acb06a9
+
+The line's rule (docs/S2_RULES.md, amendment of 2026-11-23): the line waits until file D has been uploaded and its
+headline reported; OTS05 is then this line's next file; OTS10 is uploaded only if OTS05's headline is strictly above
+D's; the line ends at OTS10. At each heart slot the first line's due file goes before this line's. Nothing is rebuilt,
+re-seeded, resized or changed after a score. An upload is the captain's own act.
+
+The build clause's condition holds: both files were built before any headline of D, TS05, TS10, OTS05 or OTS10 had
+been reported (results/manual_uploads.csv holds no row for any of them).
+
+Read by exit codes, sha256 and the stamps' commit and clean fields only (AGENTS.md): no build log, file size, cell
+count or sidecar record was read. Nothing was uploaded.
+Data used: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data.
