@@ -128,7 +128,19 @@ machine, and an official upload needs the captain's go-ahead.
           at L, the 99th percentile of the core's nearest-core distances; an unmapped label refuses), sized by
           vec.t2_build.size_organ_scope to z_modes.raw.pred_rms_core times rms(organ pool) / rms(core) on E10.5; then
           halve.py at seed 1000001 as for the trims. Its record names the scope, the label config's sha256, L, the
-          pool's E10.5 rows and the size field
+          pool's E10.5 rows and the size field. The heart search line (row R28 of experiments/harness/TRIES.md, the
+          captain's order of 2026-11-23, "start the heart search"; docs/PLAN.md decision log 2026-11-23 (t); off by
+          default): heart --entry core_trim --trend-strength 0.5 | 1.0 --z-mode raw --captain-ruling R28, files TS05
+          and TS10, the full trim C's command with row H28's trend step at that strength (the b0_trend factors and
+          momentum_shift's fallback damping both times the strength, a test budget of 0.5 x the strength day) before
+          the size step, on C's draw, pool, count rule, size field and seed; then halve.py at seed 1000001 as for C.
+          At strength 1.0 the expression is vec.harness._b0_t2(ctx, trend=True) on the core-trim context bit for bit.
+          Refused before anything is read with any other value, entry or z mode, with --expression copy, --trend,
+          --depth, --herd and --cfm, on any board but the test board (no dry run), without --captain-ruling R28 or
+          with another row, and unless TRIES.md holds exactly one row R28 whose first cell is the captain's order
+          naming `--trend-strength 0.5`, `--trend-strength 1.0` and `--captain-ruling R28`; --captain-ruling on the
+          heart without --trend-strength is refused too. Its record's trend_strength field names the option, the
+          strength, the file, the ruling row, the order text, the command and the budgets
   embryo  --method pseudobulk_shift | fgw | fgw_shape0 | fgw_shape1: E7.5 cells moved by the E7.25 -> E7.5 change, or
           the FGW interpolation between E7.5 and E8.0 at t = 1/2 (fgw_shape0, the s2 of docs/S2_RULES.md, keeps the
           mixture in E7.5's geometry); sized by the pre-registered embryo procedure (size_embryo_E7.75.json).
@@ -288,6 +300,26 @@ HEART_SCOPE_OPTIONS = {
 HEART_ORGAN_SCOPE = "heart --entry organ_scope --expression copy --z-mode raw"
 HEART_ORGAN_RULING = ("row R21 of experiments/harness/TRIES.md: the captain's order to code and read file D; an "
                       "upload needs its gate, its read, two identical DGX builds and his yes by name")
+# The heart search line (row R28 of experiments/harness/TRIES.md, the captain's order of 2026-11-23, "start the heart
+# search"; docs/PLAN.md decision log 2026-11-23 (t)): its two files TS05 and TS10 are the full trim C's command with the
+# trend step at strength 0.5 and 1.0 and nothing else changed. The strength is row H28's: the b0_trend factors
+# (vec.harness.b0_trend_factors) and momentum_shift's fallback damping both multiplied by it, a test budget of 0.5 x
+# the strength day, applied before the size step on C's own draw, pool, count rule, size field and seed. Off by
+# default; taken only with --entry core_trim --z-mode raw --captain-ruling R28, and only while row R28 is the captain's
+# order naming both options and the ruling.
+HEART_TS_ROW = "R28"
+HEART_TS_OPTIONS = {0.5: "`--trend-strength 0.5`", 1.0: "`--trend-strength 1.0`"}
+HEART_TS_CHOICES = ("0.5", "1.0")  # the option's literal values, as row R28 names them
+HEART_TS_FILES = {0.5: "TS05", 1.0: "TS10"}
+HEART_TS_COMMANDS = {s: f"heart --entry core_trim --trend-strength {s:.1f} --z-mode raw --captain-ruling {HEART_TS_ROW}"
+                     for s in HEART_TS_OPTIONS}
+HEART_TS_ORDER = ("experiments/harness/TRIES.md row R28, the captain's order of 2026-11-23 "
+                  "(\"start the heart search\"; docs/PLAN.md decision log 2026-11-23 (t)): the heart search line's "
+                  "two files, TS05 and TS10, the full trim C's command with the trend step at strength 0.5 and 1.0 "
+                  "(row H28's strength), nothing else changed")
+HEART_TS_STEP = ("row H28's strength-scaled b0_trend step: the vec.harness.b0_trend_factors mapping and "
+                 "momentum_shift's fallback damping (vec.harness.B0_DAMPING) both multiplied by the strength, before "
+                 "the size step, on C's draw, pool, count rule, size field and seed")
 # --shape-interp (row E49 as drafted; no ruling): off by default; the fixed order of the steps when it is given
 SHAPE_INTERP_OFF = "none"
 SHAPE_INTERP_ORDER = ("floor_exact positions, the shape form, the size rule's RMS rescale, the duplicate jitter, the "
@@ -1432,7 +1464,80 @@ def build_t1(a) -> dict:
     return rec if strong is None else {**rec, "strong_null": strong}
 
 
+def _heart_line_ordered() -> bool:
+    """Whether experiments/harness/TRIES.md holds exactly one row R28 whose first cell is the captain's order naming
+    `--trend-strength 0.5`, `--trend-strength 1.0` and `--captain-ruling R28` (_captain_order_names)."""
+    return all(_captain_order_names(HEART_TS_ROW, opt) for opt in HEART_TS_OPTIONS.values())
+
+
+def _trend_strength_refusals(a) -> float | None:
+    """--trend-strength (the heart search line, row R28): its refusals, before anything is read. Returns the strength,
+    or None when the option is not given (today's commands exactly; --captain-ruling alone is refused)."""
+    raw = getattr(a, "trend_strength", None)
+    ruling = getattr(a, "captain_ruling", None)
+    if raw is None:
+        if ruling is not None:
+            sys.exit(f"heart --captain-ruling goes with --trend-strength only ({HEART_TS_COMMANDS[0.5]} or "
+                     f"{HEART_TS_COMMANDS[1.0]})")
+        return None
+    if raw not in HEART_TS_CHOICES:
+        sys.exit(f"--trend-strength {raw} is refused: it takes {' or '.join(HEART_TS_CHOICES)} only")
+    s = float(raw)
+    if a.entry != "core_trim" or a.z_mode != "raw" or a.expression != "b0" or a.trend or a.depth or a.herd or a.cfm:
+        sys.exit(f"--trend-strength is refused except as {HEART_TS_COMMANDS[0.5]} or {HEART_TS_COMMANDS[1.0]}: "
+                 "--entry core_trim and --z-mode raw only, and with --expression copy, --trend, --depth, --herd and "
+                 "--cfm")
+    if a.board not in (None, TEST_BOARDS["heart"]):
+        sys.exit(f"--trend-strength is refused on {a.board}: the heart search line builds on the test board only "
+                 "(no dry run)")
+    if ruling is None:
+        sys.exit(f"--trend-strength {raw} is the captain's order of row {HEART_TS_ROW} alone and needs "
+                 f"--captain-ruling {HEART_TS_ROW}")
+    if ruling != HEART_TS_ROW:
+        sys.exit(f"--trend-strength {raw} is refused with --captain-ruling {ruling}: only row {HEART_TS_ROW} orders "
+                 "it")
+    if not _heart_line_ordered():
+        sys.exit(f"--trend-strength {raw} is refused: experiments/harness/TRIES.md must hold exactly one row "
+                 f"{HEART_TS_ROW} whose first cell is the captain's order (\"ruling, no run\") naming "
+                 f"{HEART_TS_OPTIONS[0.5]}, {HEART_TS_OPTIONS[1.0]} and `--captain-ruling {HEART_TS_ROW}`")
+    return s
+
+
+def _trend_strength_step(ctx: harness.BuildContext, strength: float) -> tuple:
+    """Row H28's strength-scaled b0_trend step (experiments/harness/h28_heart_trend_strength.py trend_expression,
+    placebo off): `vec.harness._b0_t2(ctx, trend=True)` line by line with the b0_trend_factors mapping times strength
+    and momentum_shift's damping (B0's own factor for a lineage the mapping leaves out) times strength. At strength 1
+    it is `_b0_t2(ctx, trend=True)` bit for bit. Returns the stage and b0_trend_factors' record."""
+    harness._b0_trend_task_check(ctx.task)
+    s = float(strength)
+    pool, rows, _, coords = harness.draw_copy(ctx)
+    start, end = ctx.inputs["start"], pool
+
+    def typed(x, tag: str):
+        m = np.asarray(x.obs["merged"]).astype(str)
+        return harness._shallow(x, b0_type=np.where(m == "Untracked", f"Untracked@{tag}", m))
+
+    like = typed(pool, "end")[rows]
+    logf, rec = harness.b0_trend_factors(ctx, list(like.var_names),
+                                         sorted(set(np.asarray(like.obs["b0_type"]).astype(str))))
+    mapping = {k: s * v for k, v in logf.items()}
+    shifted, _ = t1_scope.momentum_shift(typed(start, "start"), typed(end, "end"), like, harness.B0_DAMPING * s, (),
+                                         key="b0_type", seed=[ctx.seed, 3], logf_by_type=mapping)
+    return harness.finish(ctx, pool, dense(shifted[:, ctx.board.genes].X), coords), rec
+
+
+def _trend_strength_record(s: float, rec: dict) -> dict:
+    """What a heart search line file's record names: the option, the strength, the file, the ruling row and the order
+    text, the command, the step, its budgets (B0's and the test budget, 0.5 x the strength day) and b0_trend's record
+    without any cell number (_trend_record)."""
+    return {"option": "--trend-strength", "strength": s, "file": HEART_TS_FILES[s], "captain_ruling": HEART_TS_ROW,
+            "order": HEART_TS_ORDER, "command": HEART_TS_COMMANDS[s], "step": HEART_TS_STEP,
+            "budget_days": rec["budget_days"], "test_budget_days": s * rec["budget_days"],
+            "trend": _trend_record(rec)}
+
+
 def build_heart(a) -> dict:
+    strength = _trend_strength_refusals(a)
     board, dry = _board("heart", a.board)
     genes = board.genes
     if a.trend and (a.entry == "s2" or a.depth or a.herd or a.cfm):
@@ -1455,7 +1560,7 @@ def build_heart(a) -> dict:
                  "mode for H2)")
     # The full trim (HEART_CORE_TRIM; off unless asked for): --entry core_trim builds that one combination only
     core_trim = a.entry == "core_trim"
-    if core_trim and (not (copy and a.z_mode == "raw") or a.trend or a.depth or a.herd or a.cfm):
+    if core_trim and strength is None and (not (copy and a.z_mode == "raw") or a.trend or a.depth or a.herd or a.cfm):
         sys.exit(f"--entry core_trim is refused except as {HEART_CORE_TRIM} (the copy draw from the full trim, sized "
                  "in the raw mode to the core's own forecast), and with --trend, --depth, --herd and --cfm")
     scope_option = HEART_SCOPE_OPTIONS[a.entry] if iso_trim or core_trim else None
@@ -1494,7 +1599,8 @@ def build_heart(a) -> dict:
                     organ_core_rms_ratio=organ_ratio)
     roles ={"ref": ("T2/E10.5.h5ad", 10.5), "start": ("T2/E9.5.h5ad", 9.5)}
     inputs = {"ref": pool, "start": start}
-    if a.trend:  # b0_trend (row H11): the earlier stages on the board's panel, loaded as the two above, never trimmed
+    if a.trend or strength is not None:  # b0_trend (row H11; row R28's strength): the earlier stages on the board's
+        # panel, loaded as the two above, never trimmed
         for role, (f, day) in HEART_TREND_STAGES.items():
             inputs[role] = load_stage(DATA / f, genes=genes, drop_duplicates=True)
             roles[role] = (f, day)
@@ -1504,6 +1610,8 @@ def build_heart(a) -> dict:
     trend_rec: dict = {}
     if copy:  # the copy baseline: B0's own draw (draw_copy, same context, seed and count) through finish, no step
         stage = harness._copy(ctx)
+    elif strength is not None:  # the heart search line (row R28): row H28's step at the strength, before the size step
+        stage, ts_rec = _trend_strength_step(ctx, strength)
     elif a.trend:
         stage = harness._b0_t2(ctx, trend=True, trend_record=trend_rec)  # b0_trend, the harness's B0 otherwise
     else:
@@ -1525,13 +1633,19 @@ def build_heart(a) -> dict:
     if not report.ok:
         raise SystemExit(f"the built file fails its check: {report.errors}")
     entry = f"copy {a.entry} ({hyp})" if copy else f"B0 {a.entry} ({hyp})"
+    if strength is not None:
+        entry = f"trend strength {strength:g} {a.entry} ({hyp})"
     return {"entry": entry, "board": board.key, "dry_run": dry, "n_cells": int(stage.n),
             "seed": a.seed, "count_decision": count, "trim": trim, "depth_step": bool(a.depth),
             **({"cfm_step": t2_build.CFM_RULE} if a.cfm else {}),
             **({"trend": _trend_record(trend_rec)} if a.trend else {}),
+            **({"trend_strength": _trend_strength_record(strength, ts_rec)} if strength is not None else {}),
             **({"expression": "copy"} if copy else {}),
             **({"z_mode": z_mode} if z_mode is not None else {}),
-            **({"scope_option": _scope_option_record(a.entry, scope_option)} if scope_option is not None else {}),
+            **({"scope_option": {**_scope_option_record(a.entry, scope_option), "command": HEART_TS_COMMANDS[strength],
+                                 "ruling": HEART_TS_ORDER}}
+               if strength is not None else
+               {"scope_option": _scope_option_record(a.entry, scope_option)} if scope_option is not None else {}),
             **({"scope_option": _organ_option_record(trim)} if organ else {}),
             "size": {k: size[k] for k in size if not isinstance(size[k], (dict, list))}}
 
@@ -1992,6 +2106,16 @@ def build_parser() -> argparse.ArgumentParser:
                                 "to that raw mode's own target RMS for the hypothesis (z_modes.raw, not the recorded "
                                 "mode's pre-registered target); refused when the size JSON is not valid (its "
                                 "fallback is already isotropic: build with recorded then)")
+            p.add_argument("--trend-strength", default=None, metavar="{0.5,1.0}",
+                           help="the heart search line (row R28 of experiments/harness/TRIES.md, the captain's order "
+                                "of 2026-11-23, \"start the heart search\"; off by default): the full trim C's command "
+                                "with row H28's trend step at strength 0.5 (TS05) or 1.0 (TS10), nothing else changed: "
+                                f"{HEART_TS_COMMANDS[0.5]}. Refused with any other value, entry or z mode, with "
+                                "--expression copy, --trend, --depth, --herd and --cfm, on any board but the test "
+                                "board, and unless row R28's first cell is the captain's order naming both values and "
+                                "--captain-ruling R28")
+            p.add_argument("--captain-ruling", default=None,
+                           help=f"with --trend-strength only: {HEART_TS_ROW}, the row that orders it")
         if name == "embryo":
             p.add_argument("--method", choices=("pseudobulk_shift", *EMBRYO_T_POS), required=True,
                            help="fgw = s1; fgw_shape0 = the s2 of docs/S2_RULES.md (E7.5's geometry)")
