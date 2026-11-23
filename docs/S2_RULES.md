@@ -2346,3 +2346,18 @@ the three, so no line's rule changes; the three files stay on disk as built, not
 own amendments above stand as written, set aside as to the order by this note. A later word of the captain's can put
 any of them back. With file F skipped, no T1 file without the outside atlas waits for an upload, and with the refused
 s1 skipped, no T3 file without the Gata4 validation files or the outside knockout table does.
+
+## Note of 2026-11-23: what 'blind to test scores' meant in the texts above (decision log 2026-11-23 (ee))
+
+Several amendments above say that a text was written by a designer, rule writer or challenger 'blind to test scores'.
+That describes their briefs, which gave no score, and the files they were barred from. An audit on 2026-11-23 found
+that the workflow harness had also placed the captain's message that triggered each run at the head of every agent's
+task. For three sets of texts above that message held test figures. **The order rules of decision log 2026-11-21 (y)**
+(the embryo's files beyond O, P and C; the heart's order rule, which names the organ-cut file D; T1's order rule;
+T3's): a forwarded note with one per-metric value of the embryo's uploads and the embryo's best headline. **T1's
+combined MS list** (amendment of 2026-11-23): a forwarded note with two T1 headlines. **The heart's second search
+line** (amendment of 2026-11-23, row R29): a forwarded note with one heart headline. The design rounds of T1's second
+and third lines, of T3's exponent line and of the first heart line carried no figure. No text above names a score
+value or makes anything depend on one, and each stands as written; what is corrected is the description of what its
+authors could see. From this note on, analysts who must work blind are started through a route that relays no message,
+with a tripwire in their briefs, and a round whose analyst reports an exposure is void.

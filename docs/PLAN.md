@@ -12025,3 +12025,59 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     TS05 is the one file it adds; TS10 waits on TS05's headline by its line's rule, so with TS05 not uploaded TS10
     never becomes due, and the heart's next file is `T2heart_organ_ts05_half.h5ad`. Uploads are the captain's own
     acts.
+- 2026-11-23 (ee), a design round is voided because the workflow harness had shown its analysts the captain's pasted
+  results; an audit of the earlier rounds; the words 'blind to test scores' corrected (state at 23:20 UTC,
+  2026-11-23). Written by the AI assistant. The fault is the AI assistant's.
+  - **What happened.** After entry (cc) the AI assistant started, under the 'Other lines' clause of the search
+    framework (row R22), a design round for T1 and T3 as a workflow: per board a designer and then a cold challenger,
+    briefed with ordinal facts only and barred from every file that holds a score. The T1 designer's hand-back
+    reported that the harness had placed the captain's pasted message, with headline scores, per-metric values and
+    ranks, at the head of its task. The AI assistant stopped the round (both designers and the T1 challenger had
+    started). Its drafts are void; the main session read none of them and knows only the T1 draft's title from the
+    hand-back; nothing of the round enters any file, rule or brief.
+  - **The mechanism, checked by two probes.** Every agent of a workflow receives, ahead of its brief and verbatim,
+    'the user request that triggered this workflow run'. An agent started with the plain agent tool receives no such
+    message. The AI assistant had not known this. Its own standing brief line told agents not to act on relayed notes
+    'and not to flag them', which kept agents from reporting what they had been shown.
+  - **The audit** (by code over the first record of each workflow agent's task: whether a relayed message is there,
+    which of the captain's messages it is, and a count of score-like figures in it; nothing else of any agent's record
+    was read). Of this session's workflows whose briefs told analysts that they worked blind to test scores, the
+    relayed message held score figures in twelve: (a) 2026-11-21, the score-blind candidates round on all four boards
+    (twelve agents; its cold challengers wrote the order rules of decision log 2026-11-21 (y), which name the heart's
+    organ-cut file D, the embryo's files beyond O, P and C, T1's order rule and T3's): a forwarded side note about the
+    embryo's copy-positions file that quotes one per-metric value of the embryo's uploads (its size term) and the
+    embryo's best headline. (b) 2026-11-21, that round's engineering workflow (ten agents: engineers and reviewers of
+    three practice reads): the captain's paste of the day's second scores, with headlines, ranks and per-metric values
+    for all four boards. (c) 2026-11-22, seven workflows started between 01:13 and 02:06 UTC (the organ-cut file's
+    code and read, the heart chord reader's fix, two outside-data rounds, the search lines' build, a K26 fix, the rc18
+    read): a forwarded side note with three heart headlines. (d) 2026-11-23, T1's combined MS list (four agents, among
+    them the list's designer and its cold challenger): a forwarded side note with two T1 headlines. (e) 2026-11-23,
+    the heart's second search line (four agents, among them the rule writer and the cold challenger): a forwarded side
+    note with one heart headline. (f) 2026-11-23, the design round after the scores of entry (cc) (three agents had
+    started): the captain's paste with headlines, ranks and per-metric values for all four boards. Stopped and voided.
+    In nine further such workflows the relayed message held no figure, and twenty-five carried no relayed message. The
+    search lines' own design rounds (T1's second and third lines, T3's exponent line, the first heart line) are among
+    those without a figure.
+  - **What this corrects.** Where the record says that a text of rounds (a), (d) or (e) was written by analysts 'blind
+    to test scores', read: their briefs gave them no score and barred the files that hold scores, and the harness had
+    also shown them the message named above. The hand-back of round (e)'s challenger said that no test score was seen;
+    the relayed note held one headline. The engineers and reviewers of (b) and (c), who implement a fixed
+    specification, were likewise not blind to the figures named.
+  - **What can and cannot be said about the effect.** No rule text of these rounds names a score value or makes
+    anything depend on one. In rounds (d) and (e) the files and values were fixed by the captain's orders ('combine
+    MS'; 'i want it too') and by lines already in force, so their authors chose no setting. Round (a) chose candidates
+    and orders with the note in view; whether the note's one per-metric value shaped any of its choices cannot be
+    shown either way from the record, and the AI assistant does not claim that it did not. The organisers' sentence
+    ('Returned scores may be used to choose among predictions, not to compute them') concerns computing a prediction
+    from scores; no file of these rounds takes a number from a score. What failed is the team's own safeguard, in the
+    form the record claimed for it.
+  - **What changes from now.** (1) Analysts who must work blind are started only through the route that relays
+    nothing, and their briefs carry a tripwire that overrides the 'do not flag' line: an agent that finds a score, a
+    rank or a results table in its context returns EXPOSED and does no work. (2) The round of today was restarted that
+    way with fresh analysts and fresh score-free inputs; both designers report that they met no score. (3) Blind
+    analysts read the ledger only through a reader that leaves out the cells holding first-day headlines (rows R8 to
+    R15, R17, K18, T61 to T63) and row H28's fifth cell, and they run no git command that prints commit messages. (4)
+    `docs/S2_RULES.md` carries a note with this correction (re-pinned) and `docs/DATA_POLICY.md` a change note.
+  - **For the captain.** The files of the affected rounds stay where they are unless the captain says otherwise: each
+    was named before its own score, and none computes anything from a score. The AI assistant's recommendation is to
+    keep them and to describe the process in the method report as it was, not as 'blind'. It is the captain's call.

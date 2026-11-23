@@ -1548,3 +1548,19 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     note (c) stays written as it is and is in no code on main (the line's code is on unmerged campaign branches). A
     reopening would need the captain's own word again, and for the series refused on a pooling word a further
     exception that only the captain can name.
+- 2026-11-23 (e), analysts described as blind to test scores had been shown the captain's messages by the workflow
+  harness (`docs/PLAN.md` decision log 2026-11-23 (ee)). Written by the AI assistant.
+  - **What was shown.** Every agent of a workflow receives, ahead of its brief, the captain's message that triggered
+    the run. In twelve workflows of analysts, engineers or reviewers who were told they worked blind to test scores,
+    that message held test figures: headlines in all twelve; per-metric values in three (the candidates round and its
+    engineering workflow of 2026-11-21, and the round of 2026-11-23 that was stopped and voided). The list is in
+    decision log 2026-11-23 (ee).
+  - **What was not shown, and what is not known.** No hidden target, board file or quarantined material is involved:
+    the figures are the team's own returned scores, which the organisers' rules let the team use to choose among
+    predictions. No file of the affected rounds takes a number from a score. Whether a figure in view shaped a design
+    choice of the candidates round of 2026-11-21 cannot be shown either way.
+  - **The procedure from now.** Analysts who must work blind to test scores are started only through the agent route
+    that relays no message; their briefs carry a tripwire (an agent that finds a score, a rank or a results table in
+    its context returns EXPOSED and does no work); they read the ledger only through the reader that leaves out the
+    cells with headlines; they run no git command that prints commit messages. A round whose analyst reports an
+    exposure is void.
