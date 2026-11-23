@@ -126,7 +126,25 @@ ZW = "\u200b"  # a zero-width space (Unicode category Cf): NFKC keeps it
                                       f"Hearts were poo{ZW}led from E8.5, E10.5 and E16.5 embryos.",
                                       f"Libraries were poo{ZW}led and sequenced.",
                                       f"Embryos from E8.5 and E10.5 were com{ZW}bined before loading.",
-                                      f"Hearts of all ages were me{ZW}rged."])
+                                      f"Hearts of all ages were me{ZW}rged.",
+                                      # the review of 75356ec, blocker 1: noun forms and glued prefixes
+                                      "A mixture of E8.5 and E10.5 embryos was loaded.",
+                                      "A combination of E8.5 and E10.5 embryos was loaded.",
+                                      "E8.5 and E10.5 embryos were loaded in combination.",
+                                      "E8.5 and E10.5 embryos were admixed.",
+                                      "E8.5 and E10.5 embryos were intermixed.",
+                                      "E8.5 and E10.5 embryos were premixed.",
+                                      "E8.5 and E10.5 embryos were recombined.",
+                                      "E8.5 and E10.5 embryos were co‐mixed.",  # a Unicode hyphen
+                                      # blocker 2: the hyphenated time point and the time course
+                                      "Embryos at multiple time-points were mixed.",
+                                      "Embryos across the timecourse were combined.",
+                                      "Embryos across the time course were combined.",
+                                      f"Embryos at multiple time{ZW}points were mixed.",
+                                      # blocker 3: stages in one sentence, the pooling word in the next
+                                      "Embryos were collected at E8.5 and E10.5; all were then mixed.",
+                                      "Embryos were collected at E8.5 and E10.5. They were then combined and loaded.",
+                                      "Embryos were collected at several stages. Cells were mixed and loaded."])
 def test_pooling_words_in_series_text_still_refuse(sentence):
     rs = recs(shared=sentence)
     st = cm.series_wide_fields(rs)
@@ -136,14 +154,31 @@ def test_pooling_words_in_series_text_still_refuse(sentence):
 
 
 @pytest.mark.parametrize("sentence", ["cDNA was combined with RT Master Mix.",
+                                      "Cells were mixed with Trypan blue and counted.",
                                       "Libraries were prepared with the Single Cell Multiome kit.",
-                                      f"cDNA was com{ZW}bined with RT Master Mix."])
-def test_a_staged_pooling_word_in_a_sentence_naming_no_stage_does_not_refuse(sentence):
+                                      f"cDNA was com{ZW}bined with RT Master Mix.",
+                                      # two sentences, neither naming a stage: the whole value names none
+                                      "Hearts were dissociated. cDNA was combined with RT Master Mix."])
+def test_a_staged_pooling_word_in_a_value_naming_no_stage_does_not_refuse(sentence):
     rs = recs(shared=sentence)
     st = cm.series_wide_fields(rs)
     assert st == {"extract_protocol_ch1": [sentence]}
     r = cm.record_stage(rs["GSM8801"], E05, st)
     assert r["mark"] == "PERMITTED" and r["nominal_low"] == r["nominal_high"] == 16.5, r["reason"]
+
+
+@pytest.mark.parametrize("sentence", [
+    # benign prose that the whole-value rule now refuses (fails closed; listed in the README): a stage in one sentence
+    # and reagent prose in another, a day count beside a mixing word, the word "stage" for a step of the protocol
+    "Hearts were dissected at E16.5. cDNA was combined with RT Master Mix.",
+    "cDNA was combined with RT Master Mix and incubated for 2 days.",
+    "Samples were mixed by pipetting at each stage of the protocol."])
+def test_benign_values_that_the_whole_value_rule_refuses(sentence):
+    rs = recs(shared=sentence)
+    st = cm.series_wide_fields(rs)
+    assert st == {"extract_protocol_ch1": [sentence]}
+    r = cm.record_stage(rs["GSM8801"], E05, st)
+    assert r["mark"] == "UNKNOWN" and "pooling word" in r["reason"], r["reason"]
 
 
 def test_a_sample_with_no_series_wide_field_reads_as_before():
@@ -167,6 +202,7 @@ def test_the_pooling_patterns_are_in_the_entry_hash():
     src = (EXT / "t1x_common.py").read_text()
     body = src[src.index("def entry_sha256"):src.index("def require_frozen")]
     assert "POOLING_WORDS.pattern" in body and "POOLING_WORDS_STAGED.pattern" in body
+    assert "POOLING_STAGE_WORDS.pattern" in body
 
 
 @pytest.mark.parametrize("title,chars", [

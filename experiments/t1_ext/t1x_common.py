@@ -781,13 +781,19 @@ SERIES_TEXT_RULE = "t1x-series-text-v1 (ruling row R27: whole field, every sampl
 # such as "combined" and "mixed", which 10x protocol prose also uses for reagents ("master mix", "combined with"), are
 # in POOLING_WORDS_STAGED below and refuse in a sentence about stages.
 POOLING_WORDS = re.compile(r"(?<![a-z])(?:pool(?:s|ed|ing)?|merg(?:e|es|ed|ing))(?![a-z])")
-# Pooling words refused only in a sentence about stages (the review of 290da3f, its one blocker): a sentence of series
-# text with one of these words refuses when it also gives a stage reading or a leftover (protocol mode) or names a
-# stage, an age or a time point, so "Embryos from E8.5 and E10.5 were combined" and "samples from all stages were
-# mixed" refuse while reagent prose that names no stage ("cDNA was combined with RT Master Mix.") does not.
-POOLING_WORDS_STAGED = re.compile(r"(?<![a-z])(?:combin(?:e|es|ed|ing)|mix(?:es|ed|ing)?|multiplex\w*|superload\w*|"
-                                  r"aggregat\w*)(?![a-z])")
-POOLING_STAGE_WORDS = re.compile(r"(?<![a-z])(?:stages?|ages?|time ?points?)(?![a-z])")
+# Pooling words refused where the value names stages (the reviews of 290da3f and of 75356ec): a value of series text
+# with one of these words in any of its sentences refuses when the value AS A WHOLE (any of its sentences, read in
+# protocol mode) gives a stage reading or a leftover, or names a stage, an age, a time point or a time course. So
+# "Embryos from E8.5 and E10.5 were combined", "Samples from all stages were mixed" and "Embryos were collected at E8.5
+# and E10.5; all were then mixed." refuse, while reagent prose in a value that names no stage ("cDNA was combined with
+# RT Master Mix.") does not. The word set takes noun forms and glued prefixes (mixture, combination, admixed,
+# intermixed, premixed, co-mixed, recombined): the review's pattern, with the Unicode hyphens U+2010 and U+2011 also
+# taken wherever it allows a hyphen (refuses more).
+_HYPHEN = "[-‐‑]"
+POOLING_WORDS_STAGED = re.compile(r"(?<![a-z])(?:pre|inter|ad|co|re)?" + _HYPHEN + r"?(?:combin(?:e|es|ed|ing|ations?)|"
+                                  r"mix(?:es|ed|ing|tures?)?|multiplex\w*|superload\w*|aggregat\w*)(?![a-z])")
+POOLING_STAGE_WORDS = re.compile(r"(?<![a-z])(?:stages?|ages?|time[ ‐‑-]?points?|"
+                                 r"time[ ‐‑-]?courses?)(?![a-z])")
 
 
 def strip_format_chars(text: str) -> str:
@@ -798,23 +804,25 @@ def strip_format_chars(text: str) -> str:
 
 def pooling_in_series_text(series_fields: Mapping[str, Iterable[str]]) -> list[dict]:
     """The pooling words of the fields read as series text: {field, token}, in field and value order. A word of
-    POOLING_WORDS anywhere; a word of POOLING_WORDS_STAGED in a sentence (protocol_sentences) that also gives a stage
-    reading or a leftover in protocol mode or matches POOLING_STAGE_WORDS. Each value is read both as written and with
-    its Cf characters removed, and a match in either counts: removing a character can only add a match that way, never
-    lose one (a Cf character between a letter and the word is a boundary as written)."""
+    POOLING_WORDS anywhere; a word of POOLING_WORDS_STAGED in any sentence (protocol_sentences) of a value when the
+    value AS A WHOLE names stages: any of its sentences gives a stage reading or a leftover in protocol mode, or the
+    value matches POOLING_STAGE_WORDS (the review of 75356ec, blocker 3: stages in one sentence and the pooling word in
+    the next refuse too). Each value is read both as written and with its Cf characters removed, and a match in either
+    counts: removing a character can only add a match that way, never lose one (a Cf character between a letter and the
+    word is a boundary as written)."""
     out = []
     for k, vals in series_fields.items():
         for v in vals:
             for text in dict.fromkeys((str(v), strip_format_chars(v))):
                 out.extend({"field": k, "token": m.group(0)} for m in POOLING_WORDS.finditer(_lower(nfkc(text))))
-                for sent in protocol_sentences(text):
-                    low = _lower(sent)
-                    m = POOLING_WORDS_STAGED.search(low)
-                    if m is None:
-                        continue
-                    r, lo = readings(sent, False, True, "protocol")
-                    if r or lo or POOLING_STAGE_WORDS.search(low):
-                        out.append({"field": k, "token": m.group(0)})
+                sents = protocol_sentences(text)
+                staged = [m.group(0) for sent in sents for m in POOLING_WORDS_STAGED.finditer(_lower(sent))]
+                if not staged:
+                    continue
+                names_stages = bool(POOLING_STAGE_WORDS.search(_lower(nfkc(text)))) or any(
+                    any(readings(sent, False, True, "protocol")) for sent in sents)
+                if names_stages:
+                    out.extend({"field": k, "token": t} for t in staged)
     return out
 
 
