@@ -2,6 +2,13 @@
 
 ## Current State
 
+- **2026-11-23, 20:42 UTC.** The captain ordered the trend tried on the heart's file D too ("i want it too"; ruling
+  row R29). A rule writer and a cold challenger, both blind to test scores, fixed that second line's rule (it waits
+  for D's own upload and compares only with D; the first line keeps its slots first); an engineer and a reviewer
+  extended the builder option to the organ cut's command (ready, no blocker). Both files were built twice on the DGX
+  after identity rebuilds of D and of the first line's file, before any score of D or of either line, and handed over.
+  `docs/UPLOAD_SHEET.md` lists 27 built files. Nothing runs. Decision log 2026-11-23 (w), (x), (y).
+
 - **2026-11-23, 20:10 UTC.** The Task 1 three-atlas line is closed with no try: on the two series' metadata the plan
   step refused every sample on series-wide wording (a form of 'pool' in one series, the token 'mix' in the other), and
   two independent readers answered no on two checklist points for both series; no data file was requested and the

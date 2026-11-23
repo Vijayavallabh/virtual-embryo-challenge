@@ -2,7 +2,35 @@
 
 ## Current Objective
 
-- **State at 2026-11-23, 20:18 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-23, 20:42 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-23 (y); next label (z), then (aa). Ruling rows through R29; next R30. Register through X020; next X021. T1's
+  next row is T73. Tries unchanged: T1 463, embryo 88, heart 97, T3 74. NOTHING RUNS, here or on the DGX; no workflow
+  is open. Main at the commit of this note.
+  - **THE HEART'S SECOND SEARCH LINE IS BUILT AND HANDED OVER** (the captain's words "i want it too"; log (w) the
+    order and my reading, (x) ruling row R29 and the challenger's final rule text in the rules note, (y) the builds;
+    record `experiments/builds/results/heartlined_0d47a67_od1.txt`). `runs/manual_upload/T2heart_organ_ts05_half.h5ad`
+    sha256 f918e76731aac18eda3b46c8a35c18f26ae00a1a6a1db36d33e7515704cc43ea (OTS05); `T2heart_organ_ts10_half.h5ad`
+    sha256 ee9e0e68d62e8d1448f1dbbbce1146dc5fb4877e94d77fc289fa82744acb06a9 (OTS10). Built before any headline of D,
+    TS05, TS10, OTS05 or OTS10 was reported (the rule's build clause). The first line's files were re-checked at the
+    same commit (run ts2: same sha256 as run ts1).
+  - **HEART RULES WHEN A SCORE COMES BACK (headline only; two independent lines; no headline of one line enters the
+    other's comparisons).** First line (R28): TS05 goes after D; TS10 only if TS05's headline is strictly above the
+    full trim C's (on record), whatever D scores; ends at TS10. Second line (R29): it waits until D is uploaded and
+    D's headline reported; the line's best is D's FIRST headline; OTS05 is then its next file; OTS10 only if OTS05's
+    headline is strictly above D's (a tie, a lower headline or no reported headline ends the line); if D is never
+    uploaded, neither OTS file is uploaded. Slot order at each heart slot: D, then the first line's due file, then the
+    second line's due file; at most two uploads a day until 2026-11-26 11:59 UTC; a file that finds no slot is not
+    uploaded. Nothing is rebuilt, re-seeded, resized or changed after a score.
+  - **UPLOAD SHEET:** `docs/UPLOAD_SHEET.md` lists 27 built files (checked against disk at 20:41 UTC). No score has
+    been reported since 21 Nov. The other boards' rules are in the bullet of 20:10 UTC below.
+  - **BRIEFING NOTE FOR SCORE-BLIND AGENTS (new):** ledger row H28's FIFTH cell describes in words (no values) on
+    which metrics the first heart upload stood above or below the floor: give blind agents H28's cells 1 to 4 and 6 to
+    9 only. The second line's challenger read it under my brief and reported it; it says nothing of it entered the
+    rule text (log (x)).
+  - **DGX:** `~/v/scratch/h29b-wt` at 0d47a67 (clean) with `runs/heartlined_0d47a67_od1` and
+    `runs/heartline_0d47a67_ts2`; `~/v/scratch/t1line-wt` at 02562e4. Still off unless the captain names them: T1 line
+    1's step back, the turn order of T1's third line, the T3 pathway tier, the closed T1 three-atlas line.
+- **State at 2026-11-23, 20:18 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-23 (w); next label (x). Ruling rows through R28; R29 is reserved for the second heart line (not placed yet).
   Everything else as the bullet below.
   - **THE CAPTAIN ORDERED THE TREND TRIED ON FILE D TOO** (own words "i want it too" under a side note; log (w): my
