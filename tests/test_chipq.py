@@ -491,6 +491,33 @@ def test_a_kept_id_without_a_column_is_refused(db, tmp_path):
         cq.open_target("Gata4", GENES, db, cq.load_kept(yp, sp, check_committed=False))
 
 
+def test_a_placebo_uses_its_kept_ids_that_have_a_column(db, kept):
+    """Review blocker 5: a placebo's filter-kept id without a column in its target file is left out, not refused; the
+    pool's two-experiment bar counts the columned ids; a query antigen keeps the refusal (test above)."""
+    pk = cf.placebo_kept(db)
+    k03, k07 = pk["P03"], pk["P07"]
+    assert len(k03) == 3 and len(k07) == 2
+    # P03 loses one kept column (2 remain: stays in the pool); P07 loses one (1 remains: leaves the pool)
+    _rewrite_target(db, "P03", target_file("P03", k03[1:], bound_rows(20, 2, 0, seed=3, offset=20)))
+    _rewrite_target(db, "P07", target_file("P07", k07[:1], bound_rows(18, 1, 0, seed=4, offset=18)))
+    E, ids = cq.open_target("P03", GENES, db)
+    assert ids == k03[1:] and E.shape == (len(GENES), 2)
+    E, ids = cq.open_target("P07", GENES, db)
+    assert ids == k07[:1] and E.shape == (len(GENES), 1)
+    r = cq.build("P03", GENES, db)
+    assert r["n_kept"] == 2 and r["n_bound"] == 20
+    with pytest.raises(cq.Refused, match="no column"):   # asked for by name: still refused
+        cq.open_target("P03", GENES, db, None, [k03[0]])
+    rq = cq.build("Gata4", GENES, db, kept)
+    pool = cq.placebo_pool("Gata4", rq["K"], GENES, db)
+    assert "P03" in pool and "P07" not in pool
+    # no kept column at all: E has no column, and the antigen is out of the pool
+    _rewrite_target(db, "P03", target_file("P03", ["SRX4242"], bound_rows(20, 1, 0, seed=3, offset=20)))
+    E, ids = cq.open_target("P03", GENES, db)
+    assert ids == [] and E.shape == (len(GENES), 0)
+    assert "P03" not in cq.placebo_pool("Gata4", rq["K"], GENES, db)
+
+
 def _rewrite_target(root, antigen, raw):
     """Replace a target file and its manifest entry (the test stands in for a fresh fetch)."""
     p = root / "targets" / f"{antigen}.5.tsv"

@@ -155,7 +155,12 @@ _EXP_COL = re.compile(r"([SDE]RX\d+)\|.*")
 def open_target(antigen: str, genes: list[str], root=None, kept: Kept | None = None, ids: list[str] | None = None,
                 man: dict | None = None) -> tuple[np.ndarray, list[str]]:
     """(E, ids): E[g, j] the score of panel gene g (in `genes`' order) in kept experiment ids[j]; 0 where the file has
-    no row for the gene. `ids` (default: every pinned kept id) must lie in the pinned kept list."""
+    no row for the gene. `ids` (default: every pinned kept id) must lie in the pinned kept list.
+
+    A query antigen's pinned ids (the readers' list) must each have a column, or the call is refused. For a placebo
+    antigen with the default `ids`, the experiments used are the filter-kept ids that have a column in its target file
+    (the specification's step 3: "E_q = the kept SRX columns of q's +/-5 kb file"), in the pinned order; that set may
+    be smaller than the kept list, or empty (E then has no column). Ids asked for by name must each have a column."""
     root = cf.root_of(root)
     man = cf.load_manifest(root) if man is None else man
     if antigen in QUERY_ANTIGENS:
@@ -172,6 +177,7 @@ def open_target(antigen: str, genes: list[str], root=None, kept: Kept | None = N
         if antigen not in pk:
             raise Refused("the antigen has no entry in placebo_kept.json: refused")
         pinned = list(pk[antigen])
+    columned_only = antigen not in QUERY_ANTIGENS and ids is None
     ids = list(pinned) if ids is None else list(ids)
     if any(i not in pinned for i in ids):
         raise Refused("an experiment not in the pinned kept list was asked for: refused")
@@ -195,6 +201,8 @@ def open_target(antigen: str, genes: list[str], root=None, kept: Kept | None = N
     if len(set(exp_ids)) != len(exp_ids):
         raise Refused("the target file holds an experiment column twice: refused")
     col = {e: 2 + j for j, e in enumerate(exp_ids)}
+    if columned_only:
+        ids = [i for i in ids if i in col]
     missing = sum(1 for i in ids if i not in col)
     if missing:
         raise Refused(f"{missing} kept experiment(s) have no column in the target file: refused")
@@ -286,16 +294,19 @@ def build(antigen: str, genes: list[str], root=None, kept: Kept | None = None, m
 
 
 def placebo_pool(q: str, K_q: int, genes: list[str], root=None, man: dict | None = None) -> list[str]:
-    """Antigens of placebo_kept.json with at least POOL_MIN_KEPT kept experiments and |B| in POOL_BAND * K_q, excluding
-    q and POOL_EXCLUDE; sorted by name."""
+    """Antigens of placebo_kept.json with at least POOL_MIN_KEPT kept experiments that have a column in their target
+    file (the experiments open_target uses for a placebo) and |B| in POOL_BAND * K_q, excluding q and POOL_EXCLUDE;
+    sorted by name."""
     root = cf.root_of(root)
     man = cf.load_manifest(root) if man is None else man
     lo, hi = POOL_BAND[0] * K_q, POOL_BAND[1] * K_q
     pool = []
     for a, ids in sorted(cf.placebo_kept(root, man).items()):
         if a == q or a in POOL_EXCLUDE or a in QUERY_ANTIGENS or len(ids) < POOL_MIN_KEPT:
+            continue   # fewer than two kept ids: its target file was never fetched
+        E, used = open_target(a, genes, root, None, None, man)
+        if len(used) < POOL_MIN_KEPT:
             continue
-        E, _ = open_target(a, genes, root, None, None, man)
         n_b = int(bound_rank(E)[1].sum())
         if lo <= n_b <= hi:
             pool.append(a)
