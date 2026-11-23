@@ -15,15 +15,20 @@
 #   cut chamber ROWC    the chamber cut         (after pregate)
 #   cut whole ROWC      the whole cut           (after cut chamber)
 #   lib 1|2|3 ROWC      the three library tasks (after cut whole, lib 1, lib 2)
-#   read ROWC           once, after lib 3 (or the runs entry) exited 0 at ROWC
+#   read ROWC           once, after pregate exited 0 at ROWC and either lib 3 (or the runs entry) exited 0 at ROWC
+#                       or the chain stopped: a task step's exit record at ROWC (cut_chamber, cut_whole, lib_1 to 3,
+#                       runs_<step>) is neither 0 nor running, at least one start record exists in the tasks folder,
+#                       and no step's exit record says running (the row's one VOID read after a stop; 94 otherwise)
 #   runs ROWC           the one allowed restart, once in all for this row: after cut chamber refused before anything
 #                       loaded (its exit is not 0), while no task file and no start record exists and the read has not
 #                       run; it checks pregate.json and the arm tables (mx2s_read.py check-pregate), then runs cut
 #                       chamber, cut whole and lib 1 to 3 in order, each only after the one before exited 0, writing
 #                       runs_<step>.exit and runs_<step>.head
 # Refusals write their code to ~/v/scratch/t72/<step>.refused and never touch <step>.exit or <step>.head (a call
-# without its arguments writes usage.refused, 2): 97 an unknown step; 98 an unclean tree (any change outside this row's
-# result folder); 96 not exactly one row T72 in the ledger; 95 ROWC is not a full hash or HEAD is not ROWC; 94 the step
+# without its arguments writes usage.refused, 2): 97 an unknown step; 98 an unclean tree (any change, or any untracked
+# path outside experiments/t1_m1/results/t72_mx2s/, whose untracked files are the run's own: pregate.json, the start
+# records and the task files stay untracked there until the read, nothing deletes them, and they are committed with
+# the read's files); 96 not exactly one row T72 in the ledger; 95 ROWC is not a full hash or HEAD is not ROWC; 94 the step
 # before did not exit 0 at ROWC; 93 an input is not in place; 92 the restart's conditions do not hold; 91 the step's
 # output exists or the step ran before (nothing is ever overwritten).
 # A step that runs writes "running" to <step>.exit and HEAD to <step>.head first, then its exit code to <step>.exit;
@@ -69,7 +74,7 @@ case "$NAME" in
   lib_1) PREV="cut_whole" ;;
   lib_2) PREV="lib_1" ;;
   lib_3) PREV="lib_2" ;;
-  read) PREV="lib_3" ;;
+  read) PREV="pregate" ;;
   runs) PREV="pregate" ;;
   *)
     echo "unknown step $NAME" >&2
@@ -100,15 +105,37 @@ passed() {  # step $1 exited 0 at HEAD
   [ "$(cat "$S/$1.exit" 2>/dev/null)" = 0 ] && [ "$(cat "$S/$1.head" 2>/dev/null)" = "$HEAD" ]
 }
 for P in $PREV; do
-  if [ "$NAME" = read ] && passed runs; then
-    continue
-  fi
   if ! passed "$P"; then
     echo "refused: step $P has not exited 0 at $HEAD" >&2
     refuse 94
   fi
 done
 [ -e "$S/$NAME.exit" ] && refuse 91
+if [ "$NAME" = read ]; then  # after pregate: the chain ended (lib 3 or runs exited 0) or stopped
+  RUNNING=no
+  for F in "$S"/*.exit; do
+    [ "$(cat "$F" 2>/dev/null)" = running ] && RUNNING=yes
+  done
+  STOPPED=no
+  for T in cut_chamber cut_whole lib_1 lib_2 lib_3 runs_cut_chamber runs_cut_whole runs_lib_1 runs_lib_2 runs_lib_3; do
+    E=$(cat "$S/$T.exit" 2>/dev/null)
+    if [ -n "$E" ] && [ "$E" != 0 ] && [ "$E" != running ] && [ "$(cat "$S/$T.head" 2>/dev/null)" = "$HEAD" ]; then
+      STOPPED=yes
+    fi
+  done
+  BEGUN=no
+  for F in "$TASKS"/*.started; do
+    [ -e "$F" ] && BEGUN=yes
+  done
+  if [ "$RUNNING" = yes ]; then
+    echo "refused: a step's exit record says running" >&2
+    refuse 94
+  fi
+  if ! passed lib_3 && ! passed runs && ! { [ "$STOPPED" = yes ] && [ "$BEGUN" = yes ]; }; then
+    echo "refused: lib 3 and runs have not exited 0 at $HEAD, and no task step stopped after a start record" >&2
+    refuse 94
+  fi
+fi
 for F in data/derived/feng_relabel_c/cd1_stats_relabel.npz data/raw/T1/E8.5_RNA.h5ad data/raw/T1/E9.5_RNA.h5ad \
     data/raw/T1/E10.5_RNA.h5ad experiments/t1_ext/atlases.yaml experiments/t1_ext/results/extra_competing.json; do
   [ -f "$F" ] || refuse 93

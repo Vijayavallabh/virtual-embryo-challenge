@@ -411,6 +411,27 @@ def test_the_pregate_passes_with_three_changed_groups_and_records_every_figure(m
         assert len({ga["arms"][a]["vector_sha256"] for a in mx.COUNTED}) == 3
     words = mx.pregate_words(r)
     assert words == ["Pre-gate: PASSES (changed groups: CM, Endocardium, Endothelium; members dropped: none)"]
+    assert r["x002_m1"] == {"source": "row N54's record (group_cells)", "cm_cells": {"E9.5": 700, "E14.5": 1767},
+                            "bar": 200, "failed_ends": []}
+    for g, ga in r["groups"].items():  # the seeds the pre-gate records are the row's formulas, as the read checks
+        assert mx.seed_problems(g, ga) == []
+        assert ga["mask_seed"] == 20261123 + mx.harness.LP_GROUPS.index(g)
+
+
+@pytest.mark.parametrize("n,fails", [({"E9.5": 200, "E14.5": 200}, []), ({"E9.5": 199, "E14.5": 900}, ["E9.5"]),
+                                     ({"E9.5": 900, "E14.5": 199}, ["E14.5"]), ({"E9.5": 900}, ["E14.5"]),
+                                     ({}, ["E9.5", "E14.5"])])
+def test_x002s_m1_count_is_recorded_and_a_count_below_200_at_either_end_fails_the_pregate(mx, n, fails):
+    r = _pg(mx, x002_n={"CM": n} if n else {})
+    assert r["x002_m1"]["cm_cells"] == {e: n.get(e) for e in ("E9.5", "E14.5")}
+    assert r["x002_m1"]["failed_ends"] == fails and r["passes"] is (not fails)
+    assert "X002" not in {d["member"] for d in r["drops"]}  # X002 is never dropped
+    for e in fails:
+        assert f"(m1) X002 CM at {e}: below 200 labelled cells in N54's record" in r["failed"]
+    if fails:
+        words = mx.pregate_words(r)
+        assert words[0].startswith("Pre-gate: FAILS ((m1) X002 CM at ") and words[1] == mx.FOLLOWS_PREGATE
+        assert not re.search(FIGURE, "\n".join(words))
 
 
 def test_one_member_dropped_leaves_the_others(mx):
@@ -706,14 +727,12 @@ def test_a_run_is_refused_without_a_passed_pregate_or_on_an_existing_task_file(m
     (tasks / "x.json").write_text("{}")
     with pytest.raises(SystemExit, match="exists"):
         mx.refuse(tasks, "x.json", C40)
-    monkeypatch.setattr(mx, "ATLASES_YAML_SHA256", None)
-    assert mx.yaml_problems.__name__ == "<lambda>" or True
     monkeypatch.setattr(mx.gv, "tree_state", lambda: {"commit": C40, "clean": False})
     with pytest.raises(SystemExit, match="not clean"):
         mx.refuse(tasks, "y.json", C40)
 
 
-def test_the_yaml_constant_is_a_placement_fill_and_every_step_refuses_without_it(mx, tmp_path, monkeypatch):
+def test_yaml_problems_names_an_unfilled_constant_and_a_file_off_it(mx, tmp_path, monkeypatch):
     y = tmp_path / "atlases.yaml"
     y.write_text("status: frozen\n")
     monkeypatch.setattr(mx, "ATLASES_YAML_SHA256", None)
@@ -722,6 +741,64 @@ def test_the_yaml_constant_is_a_placement_fill_and_every_step_refuses_without_it
     assert mx.yaml_problems(y) == []
     y.write_text("status: frozen\nx: 1\n")
     assert mx.yaml_problems(y)
+
+
+@pytest.mark.parametrize("const", ["unfilled", "wrong"])
+def test_the_pregate_refuses_on_the_yaml_constant_before_it_creates_anything(mx, tmp_path, monkeypatch, capsys, const):
+    real = mx.yaml_problems
+    a = _pregate_ready(mx, tmp_path, monkeypatch)
+    y = tmp_path / "atlases.yaml"
+    y.write_text("status: frozen\n")
+    monkeypatch.setattr(mx, "ATLASES_YAML", y)
+    monkeypatch.setattr(mx, "yaml_problems", real)
+    monkeypatch.setattr(mx, "ATLASES_YAML_SHA256", None if const == "unfilled" else "0" * 64)
+    with pytest.raises(SystemExit) as e:
+        mx.cmd_pregate(a)
+    assert e.value.code not in (0, 3, None) and "atlases.yaml" in str(e.value.code)
+    tasks = mx.RESULTS / "t72" / "tasks"
+    assert not (tasks / "pregate.json").exists() and not (tasks / "pregate.json.sha256").exists()
+    assert not mx.CONSENSUS.exists() and not tasks.exists()
+    assert "Pre-gate" not in capsys.readouterr().out
+    monkeypatch.setattr(mx, "ATLASES_YAML_SHA256", mx.sha256_file(y))  # filled and matching: the step runs
+    assert mx.cmd_pregate(a) == 0 and (tasks / "pregate.json").exists()
+
+
+def test_an_unfilled_yaml_constant_step_by_step(mx, tmp_path, monkeypatch, capsys):
+    """pregate: refuses (non-zero, not 3) before it creates anything (the test above); run-cut and run-lib: refuse
+    before their start record; check-pregate: refuses; read: follows the row (a void reason), reached only after a
+    passed pre-gate and a start record."""
+    real = mx.yaml_problems
+    a = _pregate_ready(mx, tmp_path, monkeypatch)
+    assert mx.cmd_pregate(a) == 0  # a passed pre-gate, made with the constant filled
+    capsys.readouterr()
+    tasks = mx.RESULTS / "t72" / "tasks"
+    y = tmp_path / "atlases.yaml"
+    y.write_text("status: frozen\n")
+    monkeypatch.setattr(mx, "ATLASES_YAML", y)
+    monkeypatch.setattr(mx, "yaml_problems", real)
+    monkeypatch.setattr(mx, "ATLASES_YAML_SHA256", None)
+    monkeypatch.setattr(mx.rc, "relabel_checks", lambda *a, **k: {"passes": True, "reasons": []})
+    monkeypatch.setattr(mx, "all_source_bad", lambda: [])
+    monkeypatch.setattr(mx, "load_boards", lambda: pytest.fail("nothing loads after a refusal"))
+    monkeypatch.setattr(mx, "get_board", lambda b: pytest.fail("nothing loads after a refusal"))
+
+    class Run:
+        out, commit, seeds, data = "t72", C40, "0", str(tmp_path)
+        cut, library = "chamber", "1"
+    for cmd, task in ((mx.cmd_run_cut, mx.CUT_FILES["chamber"]), (mx.cmd_run_lib, "lib1.json")):
+        with pytest.raises(SystemExit, match="placement"):
+            cmd(Run)
+        assert not (tasks / mx.started_name(task)).exists() and not (tasks / task).exists()
+    with pytest.raises(SystemExit, match="placement"):
+        mx.cmd_check_pregate(a)
+    # the read: the row's void list holds "atlases.yaml's sha256 is not the row's"
+    (tasks / "lib1.started").write_text("{}")
+    monkeypatch.setattr(mx, "committed", lambda f, *x: {s: 51.0 for s in range(10)})
+    res = mx.read(mx.RESULTS / "t72", C40)
+    assert res["reading"]["outcome"] == "VOID"
+    assert any("atlases.yaml's sha256 is not the row's" in x for x in res["reading"]["reasons"])
+    assert any("placement" in x for x in res["reading"]["reasons"])
+    assert capsys.readouterr().out.startswith("Outcome: VOID (")
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -745,9 +822,10 @@ PSHA = "p" * 64
 
 def _pregate(mx, passes=True, commit=C40, clean=True, **change):
     pg = {"reading": {"passes": passes, "changed_groups": ["CM"], "groups": {"CM": {
+        "group_index": 0, "members": ["X002", "X019", "X020"], "mask_seed": 20261123,
         "mask_bins": [{"consensus_zeros": 3, "mask_zeros": 3}] * 10,
-        "perm": {"X019": {"bins_keep_values": True, "nan_kept": True},
-                 "X020": {"bins_keep_values": True, "nan_kept": True}},
+        "perm": {"X019": {"bins_keep_values": True, "nan_kept": True, "seed": 20261134},
+                 "X020": {"bins_keep_values": True, "nan_kept": True, "seed": 20261144}},
         "arms": {a: {"vector_sha256": a[3] * 64} for a in mx.COUNTED}}}},
         "stamp": {"commit": commit, "tree_clean": clean}, "constants": json.loads(json.dumps(mx.pregate_constants())),
         "data_constants": {"direction_scale": 0.625, "pseudocount": 0.5, "min_cells": 10, "skm_score": 0.3,
@@ -863,12 +941,24 @@ def test_a_control_ahead_of_the_base_is_printed_and_decides_nothing(mx):
     assert "mx_mask would meet clause (i)" in mx.outcome_lines(r)[-2]
 
 
-def test_an_idle_task_is_named(mx):
+def test_an_idle_task_is_named_for_every_counted_arm(mx):
     loaded = _loaded(mx)
     for x in loaded["whole"]["rows"]:
         x["sha256"]["mx_cons"] = x["sha256"][mx.BASE]
+    for x in loaded["2"]["rows"]:
+        x["sha256"]["mx_mask"] = x["sha256"][mx.BASE]
+    for x in loaded["chamber"]["rows"]:
+        x["sha256"]["mx_perm"] = x["sha256"][mx.BASE]
+    loaded["3"]["rows"][4]["sha256"]["mx_perm"] = loaded["3"]["rows"][4]["sha256"][mx.BASE]  # one seed: not idle
     r = _read(mx, loaded)
-    assert "the arm moved no cell on whole: nothing is priced there" in mx.outcome_lines(r)
+    lines = mx.outcome_lines(r)
+    idle = [ln for ln in lines if "moved no cell" in ln]
+    assert idle == ["mx_cons: the arm moved no cell on whole: nothing is priced there",
+                    "mx_mask: the arm moved no cell on 2: nothing is priced there",
+                    "mx_perm: the arm moved no cell on chamber: nothing is priced there"]
+    txt = mx.t72_text({"reading": r, "label": "x", "tries": 15, "stamp": {"commit": C40, "tree_clean": True,
+                                                                          "utc": "x"}})
+    assert all(txt.count(ln) == 1 for ln in idle)
 
 
 VOID_CASES = ["missing_task", "started_no_task", "task_no_start", "missing_seed", "missing_arm", "missing_sha",
@@ -877,7 +967,8 @@ VOID_CASES = ["missing_task", "started_no_task", "task_no_start", "missing_seed"
               "route", "authors_relabel", "checks", "source", "yaml_task", "yaml_pregate", "yaml_read", "never",
               "unpinned", "author_labels", "mask_bin", "perm_values", "perm_nan", "mask_equals_cons",
               "perm_equals_cons", "byte", "pregate_missing", "pregate_failed", "pregate_unclean", "pregate_commit",
-              "pregate_tables", "pregate_sha", "pregate_bad"]
+              "pregate_tables", "pregate_sha", "pregate_bad", "mask_seed", "perm_seed_x019", "perm_seed_x020",
+              "perm_members", "group_index", "group_unknown"]
 
 
 @pytest.mark.parametrize("case", VOID_CASES)
@@ -976,6 +1067,18 @@ def test_every_void_reason_fires(mx, case):
         psha = "0" * 64
     elif case == "pregate_bad":
         kw["pregate_bad"] = ["pregate.json's sha256 is not the one kept beside it"]
+    elif case == "mask_seed":
+        pregate["reading"]["groups"]["CM"]["mask_seed"] = 20261124
+    elif case == "perm_seed_x019":
+        pregate["reading"]["groups"]["CM"]["perm"]["X019"]["seed"] = 20261135
+    elif case == "perm_seed_x020":
+        del pregate["reading"]["groups"]["CM"]["perm"]["X020"]["seed"]
+    elif case == "perm_members":
+        del pregate["reading"]["groups"]["CM"]["perm"]["X020"]
+    elif case == "group_index":
+        pregate["reading"]["groups"]["CM"]["group_index"] = 1
+    elif case == "group_unknown":
+        pregate["reading"]["groups"]["Epicardium"] = pregate["reading"]["groups"]["CM"]
     r = mx.t72_reading(loaded, gate, checks, pregate, psha, **kw)
     assert r["outcome"] == "VOID" and r["reasons"] and r["follows"] == mx.FOLLOWS_VOID, case
     lines = mx.outcome_lines(r)
@@ -1071,7 +1174,7 @@ def test_the_read_prints_only_words_writes_the_outcome_line_and_never_overwrites
         mx.read(out, C40)
 
 
-def test_the_read_says_void_when_a_start_record_has_no_task_file(mx, tmp_path, monkeypatch, capsys):
+def _read_ready(mx, tmp_path, monkeypatch, pregate=True, passes=True):
     monkeypatch.setattr(mx, "TRIES", _tries(tmp_path))
     monkeypatch.setattr(mx.gv, "tree_state", lambda: {"commit": C40, "clean": True})
     monkeypatch.setattr(mx.gv, "stamp", lambda started, fs: {"commit": C40, "tree_clean": True, "utc": "x"})
@@ -1079,12 +1182,34 @@ def test_the_read_says_void_when_a_start_record_has_no_task_file(mx, tmp_path, m
     monkeypatch.setattr(mx, "committed", lambda f, *a: {s: 51.0 for s in range(10)})
     out = mx.RESULTS / "t72"
     (out / "tasks").mkdir(parents=True)
+    if pregate:
+        text = json.dumps(_pregate(mx, passes=passes))
+        (out / "tasks" / "pregate.json").write_text(text)
+        (out / "tasks" / "pregate.json.sha256").write_text(hashlib.sha256(text.encode()).hexdigest() + "  x\n")
+    return out
+
+
+def test_the_read_says_void_when_a_start_record_has_no_task_file(mx, tmp_path, monkeypatch, capsys):
+    out = _read_ready(mx, tmp_path, monkeypatch)
     (out / "tasks" / "lib2.started").write_text("{}")
     res = mx.read(out, C40)
     assert res["reading"]["outcome"] == "VOID"
     assert any("2: no task file (its start record exists)" in x for x in res["reading"]["reasons"])
     assert capsys.readouterr().out.startswith("Outcome: VOID (")
     assert "\nOUTCOME VOID\n" in (out / "t72.txt").read_text()
+
+
+@pytest.mark.parametrize("case", ["pregate_missing", "pregate_failed", "no_start_record"])
+def test_the_read_refuses_and_writes_nothing_without_a_passed_pregate_or_a_start_record(mx, tmp_path, monkeypatch,
+                                                                                         capsys, case):
+    out = _read_ready(mx, tmp_path, monkeypatch, pregate=case != "pregate_missing", passes=case != "pregate_failed")
+    if case != "no_start_record":
+        (out / "tasks" / "T1_E9.5_E10.5_chamber.started").write_text("{}")
+    with pytest.raises(SystemExit) as e:
+        mx.read(out, C40)
+    assert e.value.code not in (0, None) and "nothing is written" in str(e.value.code)
+    assert not (out / "t72.json").exists() and not (out / "t72.txt").exists()
+    assert "the tries count" not in capsys.readouterr().out
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -1319,3 +1444,134 @@ def test_the_launcher_runs_the_tests_first_sets_path_and_never_prints_a_log_or_r
     assert not re.search(r"\brm\b|rmdir|unlink|:\?", sh)
     assert "/v/vec-campaign" not in sh and "cat \"$S/$NAME.out\"" not in sh
     assert subprocess.run(["bash", "-n", str(LAUNCHER)]).returncode == 0
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# The read after a stop (blocker 1), the clean-tree exemption and the start records (row v3)
+
+
+def _tasks_dir(repo):
+    t = repo / "experiments" / "t1_m1" / "results" / "t72_mx2s" / "tasks"
+    t.mkdir(parents=True, exist_ok=True)
+    return t
+
+
+def test_the_launchers_task_files_are_the_scripts(mx):
+    sh = LAUNCHER.read_text()
+    names = re.search(r'TASK_FILES="([^"]+)"', sh).group(1).split()
+    assert sorted(names) == sorted(mx.task_files().values())
+    assert {mx.CUT_FILES[c] for c in ("chamber", "whole")} == {"T1_E9.5_E10.5_chamber.json", "T1_E9.5_E10.5.json"}
+
+
+def test_a_stopped_second_task_step_with_the_first_steps_start_record_lets_the_read_run_and_it_says_void(
+        mx, tmp_path, monkeypatch, capsys):
+    repo, home, env, head = _repo(tmp_path)
+    _data(repo)
+    calls = _fake_uv(home)
+    _passed(home, head, "tests", "fetch", "load", "tables", "pregate", "cut_chamber")
+    _passed(home, head, "cut_whole", code="1")  # cut whole stopped after cut chamber loaded and wrote its file
+    tasks = _tasks_dir(repo)
+    (tasks / "T1_E9.5_E10.5_chamber.started").write_text("{}")
+    (tasks / "T1_E9.5_E10.5_chamber.json").write_text("{}")
+    for step in (("cut", "whole"), ("lib", "1")):  # the chain does not go on
+        assert _run(repo, env, *step, head) in (91, 94)
+    assert _run(repo, env, "read", head) == 0
+    assert calls.read_text().splitlines()[-1].endswith(f"mx2s_read.py read --out t72_mx2s --commit {head}")
+    assert (_s(home) / "read.exit").read_text().strip() == "0"
+    assert _run(repo, env, "read", head) == 91  # once
+    # the script's read on the same state: the row's one VOID, every missing task named
+    out = _read_ready(mx, tmp_path, monkeypatch)
+    (out / "tasks" / "T1_E9.5_E10.5_chamber.started").write_text("{}")
+    (out / "tasks" / "T1_E9.5_E10.5_chamber.json").write_text(json.dumps(_task(mx)))
+    res = mx.read(out, C40)
+    assert res["reading"]["outcome"] == "VOID"
+    for k in ("whole", "1", "2", "3"):
+        assert f"{k}: no task file" in res["reading"]["reasons"]
+    printed = capsys.readouterr().out.splitlines()
+    assert printed[0].startswith("Outcome: VOID (") and printed[-1] == mx.FOLLOWS_VOID
+
+
+def test_a_stop_inside_the_runs_entry_lets_the_read_run(tmp_path):
+    repo, home, env, head, calls, tasks = _runs_ready(tmp_path)  # cut chamber refused before it loaded (exit 1)
+    _passed(home, head, "runs_cut_chamber")
+    _passed(home, head, "runs_cut_whole", "runs", code="1")
+    (tasks / "T1_E9.5_E10.5_chamber.started").write_text("{}")
+    (tasks / "T1_E9.5_E10.5.started").write_text("{}")
+    assert _run(repo, env, "read", head) == 0
+
+
+@pytest.mark.parametrize("case", ["pregate_failed", "pregate_never", "pregate_other_commit", "no_start_record",
+                                  "running", "runs_running", "stop_at_other_commit", "no_stop"])
+def test_the_read_is_refused_outside_the_chains_end_or_stop(tmp_path, case):
+    repo, home, env, head = _repo(tmp_path)
+    _data(repo)
+    calls = _fake_uv(home)
+    _passed(home, head, "tests", "fetch", "load", "tables")
+    _passed(home, head, "pregate", code={"pregate_failed": "3"}.get(case, "0"))
+    if case == "pregate_never":
+        (_s(home) / "pregate.exit").rename(_s(home) / "moved")
+    if case == "pregate_other_commit":
+        (_s(home) / "pregate.head").write_text("0" * 40 + "\n")
+    _passed(home, head, "cut_chamber")
+    _passed(home, head, "cut_whole", code={"running": "running", "no_stop": "0"}.get(case, "1"))
+    if case == "stop_at_other_commit":
+        (_s(home) / "cut_whole.head").write_text("0" * 40 + "\n")
+    if case == "runs_running":
+        _passed(home, head, "runs_lib_1", code="running")
+    if case != "no_start_record":
+        (_tasks_dir(repo) / "T1_E9.5_E10.5_chamber.started").write_text("{}")
+    assert _run(repo, env, "read", head) == 94 and _refused(home, "read") == "94", case
+    assert _no_record(home, "read") and not calls.exists()
+
+
+def test_the_read_after_lib_3_still_needs_the_pregate(tmp_path):
+    repo, home, env, head = _repo(tmp_path)
+    _data(repo)
+    _fake_uv(home)
+    _passed(home, head, "tests", "fetch", "load", "tables", "cut_chamber", "cut_whole", "lib_1", "lib_2", "lib_3")
+    _passed(home, head, "pregate", code="3")
+    assert _run(repo, env, "read", head) == 94
+    _passed(home, head, "pregate")
+    assert _run(repo, env, "read", head) == 0
+
+
+@pytest.mark.parametrize("where,code", [
+    ("experiments/t1_m1/results/t72_mx2s/tasks/lib1.started", 94),
+    ("experiments/t1_m1/results/t72_mx2s/tasks/pregate.json", 94),
+    ("experiments/t1_m1/results/t72_mx2s/t72.txt", 94),
+    ("experiments/t1_m1/results/other/x.json", 98),
+    ("experiments/t1_m1/results/t72_mx2s_other/x.json", 98),
+    ("experiments/t1_m1/x.started", 98),
+    ("stray.txt", 98)])
+def test_the_clean_check_exempts_only_untracked_files_of_the_rows_results_folder(tmp_path, where, code):
+    repo, home, env, head = _repo(tmp_path)
+    _data(repo)
+    _passed(home, head, "tests")
+    (repo / where).parent.mkdir(parents=True, exist_ok=True)
+    (repo / where).write_text("x")
+    assert _run(repo, env, "load", head) == code  # 94: the tree passed and fetch has not run; 98: unclean
+    assert _refused(home, "load") == str(code)
+
+
+def test_a_changed_tracked_file_in_the_rows_results_folder_still_refuses(tmp_path):
+    repo, home, env, head = _repo(tmp_path)
+    _data(repo)
+    f = _tasks_dir(repo) / "kept.txt"
+    f.write_text("x")
+    for cmd in (["add", "-A"], ["commit", "-q", "-m", "tracked"]):
+        subprocess.run(["git", *cmd], cwd=repo, env=env, check=True)
+    head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, env=env, check=True, capture_output=True,
+                          text=True).stdout.strip()
+    f.write_text("changed")
+    assert _run(repo, env, "tests", head) == 98
+
+
+def test_nothing_deletes_or_moves_a_start_record():
+    for path in (SCRIPT, LAUNCHER):
+        text = path.read_text()
+        for token in (".unlink(", "os.remove(", "rmtree", ".rmdir(", ".rename(", "os.replace(", "shutil.move",
+                      "os.truncate"):
+            assert token not in text, (path, token)
+    sh = LAUNCHER.read_text()
+    assert not re.search(r"\b(rm|mv|rmdir|unlink|truncate)\b", sh)
+    assert "> \"$TASKS" not in sh  # the launcher never writes into the tasks folder

@@ -21,7 +21,9 @@ read only from the data side's tables (engineer_notes section B):
             controls (`mask_control`, `perm_member`), and the line clauses (p1) to (p6) and the record. Writes the
             consensus and control tables to data/derived/t1_ext_t72/consensus/ and pregate.json (with its own sha256
             beside it); prints only the fixed words; exit 3 on FAIL. It refuses before it reads anything if pregate.json
-            or the consensus folder exists, and creates both exclusively.
+            or the consensus folder exists, and creates both exclusively; after its HEAD and source guards it refuses
+            (non-zero, never 3, no pre-gate words) on an unfilled or wrong atlases.yaml constant before it creates
+            anything.
   run-cut   One E10.5 cut (chamber or whole); run-lib one library task (1, 2 or 3). The base m1rc_gmom_x2 (row T63's
             doubled step: the practice fraction 0.2 times 2.0) and each counted arm by the splice on the same draw;
             every cell outside the changed groups is checked byte for byte per seed and arm, or the run stops and
@@ -31,7 +33,9 @@ read only from the data side's tables (engineer_notes section B):
             The launcher's `runs` entry's check (no output beside an exit code and a refusal's reason): pregate.json
             passed at --commit and the arm tables' sha256 equal pregate.json's.
   read      Row T72's statement after the gate against row T63's committed per-seed m1rc_gmom_x2 within 1e-9 and the
-            void list; prints only the fixed words; writes t72.txt (with a line beginning OUTCOME) and t72.json.
+            void list; prints only the fixed words; writes t72.txt (with a line beginning OUTCOME) and t72.json. It
+            refuses, writing nothing, when pregate.json is missing or did not pass, or when no start record exists
+            (no try was counted, so no read may say the tries count).
 
 Usage: through experiments/t1_m1/mx2s.sh, from the root of a checkout that holds data/derived/feng_relabel_c/, the
 released T1 stages and the row's data folders, at the row's commit.
@@ -135,7 +139,9 @@ PINNED = {"GSE244783": {"early": ("GSM7829699",), "late": ("GSM7829703",)},
 NEVER_FETCHED = ("GSM7829701", "GSM7829700", "GSM7829702", "GSM7829704", "GSE244783_RAW.tar",
                  "GSM7226279", "GSM7226280", "GSM7226270", "GSM7226271", "GSM7226272", "GSM7226273",
                  "GSE230531_RAW.tar")
-# FILLED AT PLACEMENT (cell 3): the frozen atlases.yaml's sha256. Until it is filled every step refuses.
+# FILLED AT PLACEMENT (cell 3): the frozen atlases.yaml's sha256. Until it is filled (or while the file differs from
+# it) the pre-gate, the runs and the runs entry's check refuse before they create anything; at the read it is a void
+# reason (cell 8), reached only after a passed pre-gate and a start record.
 ATLASES_YAML_SHA256: str | None = None
 ATLASES_YAML = ROOT / "experiments" / "t1_ext" / "atlases.yaml"
 
@@ -173,13 +179,16 @@ LABEL = ("try T72, a labelled in-sample diagnostic, never an adoption result: T1
 
 # Points the row leaves open, and the reading taken (the one that refuses more)
 OPEN = (
-    "(m1) on X002: X002 is never dropped; a CM count below 200 at an end in N54's record fails the pre-gate",
     "a member with no table (fewer than 10 cells at an end) is dropped under (m1); a table the manifest names that is "
     "missing or off its sha256 fails the record",
     "a control whose rescale factor does not exist fails (p6) for that arm",
     "a task file without its start record is VOID, as a start record without its task file",
     "every launcher step runs once: its exit record blocks a second call (the runs entry is the one restart)",
-    "the idle-task words are printed for mx_cons; the controls' idle tasks are written to t72.txt only",
+    "the idle-task words are printed for every counted arm, each led by the arm's name",
+    "the read refuses, writing nothing, when pregate.json is missing or did not pass or no start record exists (no "
+    "read may say the tries count for a row with no counted try)",
+    "the pre-gate, the runs and the runs entry's check refuse (non-zero, never 3) on an unfilled or wrong atlases.yaml "
+    "constant before they create anything",
 )
 
 
@@ -319,6 +328,16 @@ def bins_of(idx: np.ndarray, level: np.ndarray, bins: int = BINS) -> list[np.nda
     return np.array_split(order, bins)
 
 
+def mask_seed(group_index: int) -> int:
+    """The mask's generator seed: 20261123 plus the group index."""
+    return MASK_SEED + int(group_index)
+
+
+def perm_seed(member_index: int, group_index: int) -> int:
+    """A permutation's generator seed: 20261124 plus 10 x the member index plus the group index."""
+    return PERM_SEED + 10 * int(member_index) + int(group_index)
+
+
 def mask_control(d_x002: np.ndarray, c: np.ndarray, level_e95: np.ndarray, free: np.ndarray, group_index: int,
                  bins: int = BINS) -> tuple[np.ndarray, list[dict]]:
     """X002's direction with, in each of `bins` equal-count bins of X002's E9.5 group mean CP10k over S'_g (S_g with
@@ -331,7 +350,7 @@ def mask_control(d_x002: np.ndarray, c: np.ndarray, level_e95: np.ndarray, free:
     s = s_genes(d, free)
     with np.errstate(invalid="ignore"):
         sp = s & (d != 0.0) & np.isfinite(level)
-    rng = np.random.default_rng(MASK_SEED + int(group_index))
+    rng = np.random.default_rng(mask_seed(group_index))
     out = d.copy()
     rec = []
     for b in bins_of(np.flatnonzero(sp), level, bins):
@@ -350,7 +369,7 @@ def perm_member(d: np.ndarray, m_early: np.ndarray, free: np.ndarray, member_ind
     d = np.asarray(d, dtype=np.float64)
     level = np.asarray(m_early, dtype=np.float64)
     g = np.asarray(free, dtype=bool) & np.isfinite(d) & np.isfinite(level)
-    seed = PERM_SEED + 10 * int(member_index) + int(group_index)
+    seed = perm_seed(member_index, group_index)
     rng = np.random.default_rng(seed)
     out = d.copy()
     same = True
@@ -539,7 +558,7 @@ def group_arms(g: str, d_x002: np.ndarray, members: Mapping[str, Mapping], x002_
     p0 = sign_consensus(d_x002, perms)
     perm, k_perm = rescale(p0, d_x002, s)
     out = {"group_index": gi, "members": ["X002", *names], "s_genes": int(s.sum()), "arms": {}, "mask_bins": mask_bins,
-           "perm": perm_rec, "vectors": {CONS: cons, MASK: mask, PERM: perm}}
+           "mask_seed": mask_seed(gi), "perm": perm_rec, "vectors": {CONS: cons, MASK: mask, PERM: perm}}
     for arm, v, k in ((CONS, cons, k_cons), (MASK, mask, k_mask), (PERM, perm, k_perm)):
         out["arms"][arm] = {"k_g": k, "zero_share": zero_share(v, s), "spearman_x002": spearman(v[s], d_x002[s]),
                             "held_share": held_share(v, held), "vector_sha256": vector_sha(v)}
@@ -558,9 +577,12 @@ def pregate_reading(genes: Sequence[str], d_x002: Mapping[str, np.ndarray], x002
     p1, record = manifest_problems(man, commit, genes_ok)
     record = [*record, *table_bad, *yaml_bad]
     failed = [*p1, *(f"record: {x}" for x in record)]
-    for e in X002_STAGES:  # (m1) on X002 (OPEN[0]): X002 is never dropped; too few cells fail the line
-        if not int((x002_n.get("CM") or {}).get(e, -1)) >= MIN_CELLS["CM"]:
-            failed.append(f"(m1) X002 CM at {e}")
+    # (m1) on X002 (cell 8): its CM end counts, from N54's record, are recorded in pregate.json; X002 is never
+    # dropped, so a count below 200 at either end fails the pre-gate
+    x002_cm = {e: (x002_n.get("CM") or {}).get(e) for e in X002_STAGES}
+    x002_m1_failed = [e for e in X002_STAGES
+                      if not (isinstance(x002_cm[e], int) and x002_cm[e] >= MIN_CELLS["CM"])]
+    failed += [f"(m1) X002 CM at {e}: below {MIN_CELLS['CM']} labelled cells in N54's record" for e in x002_m1_failed]
     atlases = man.get("atlases") or {}
     members, drops = {}, []
     for g, regs in GROUP_MEMBERS.items():
@@ -594,7 +616,8 @@ def pregate_reading(genes: Sequence[str], d_x002: Mapping[str, np.ndarray], x002
                 failed.append(f"(p6) {g}" + ("" if arm == CONS else f" {arm}"))
     return {"passes": not failed, "failed": failed, "changed_groups": changed, "drops": drops, "groups": groups,
             "members": {g: {m: v["figures"] for m, v in d.items()} for g, d in members.items()},
-            "x002_cm_cells": x002_n.get("CM")}
+            "x002_m1": {"source": "row N54's record (group_cells)", "cm_cells": x002_cm, "bar": MIN_CELLS["CM"],
+                        "failed_ends": x002_m1_failed}}
 
 
 def pregate_words(r: Mapping) -> list[str]:
@@ -639,6 +662,9 @@ def cmd_pregate(a) -> int:
     need_row()
     started = head_is(a.commit)
     bad = all_source_bad()
+    if bad:
+        sys.exit(f"{ROW} is refused: {bad}")
+    bad = yaml_problems()  # a placement slip stops the step (never exit 3): nothing is created, no pre-gate words
     if bad:
         sys.exit(f"{ROW} is refused: {bad}")
     tasks.mkdir(parents=True, exist_ok=True)
@@ -999,6 +1025,7 @@ def cmd_check_pregate(a) -> int:
     pg, _, bad = load_pregate(tasks)
     bad += pregate_problems(pg, a.commit) if pg is not None else []
     bad += arm_table_problems(pg) if pg is not None else []
+    bad += yaml_problems()
     for f in task_files().values():
         if (tasks / f).exists() or (tasks / started_name(f)).exists():
             bad.append(f"a task file or start record exists for {f}")
@@ -1034,6 +1061,28 @@ def row_task_constants(c: Mapping) -> bool:
             and json.loads(json.dumps(c.get("pregate_constants"))) == json.loads(json.dumps(pregate_constants())))
 
 
+def seed_problems(g: str, ga: Mapping) -> list[str]:
+    """The mask's and each permutation's seed in pregate.json, recomputed here from the row's formulas, written out
+    (the mask 20261123 plus the group index; a permutation 20261124 plus 10 x the member index plus the group index;
+    the group index from harness.LP_GROUPS, the member index from X002, X019, X020)."""
+    if g not in GROUP_MEMBERS or g not in harness.LP_GROUPS:
+        return [f"{g}: not a group of the row's consensus"]
+    gi = harness.LP_GROUPS.index(g)
+    bad = []
+    if ga.get("group_index") != gi:
+        bad.append(f"{g}: the recorded group index is not harness.LP_GROUPS's")
+    if ga.get("mask_seed") != 20261123 + gi:
+        bad.append(f"{g}: the mask's seed is not 20261123 plus the group index")
+    perm = ga.get("perm") or {}
+    if not perm or sorted(perm) != sorted((ga.get("members") or [])[1:]):
+        bad.append(f"{g}: the permutation records are not one per new member")
+    for m, p in perm.items():
+        if m not in NEW_MEMBERS or (p or {}).get("seed") != 20261124 + 10 * MEMBERS.index(m) + gi:
+            bad.append(f"{g}: the permutation seed of {m} is not 20261124 plus 10 x the member index plus the group "
+                       "index")
+    return bad
+
+
 def guards(loaded: Mapping[str, Mapping | None], gate: Mapping[str, Mapping[int, float]], checks: Mapping,
            pregate: Mapping | None, pregate_sha: str | None, pregate_bad: Sequence[str], started: Mapping[str, bool],
            source_bad: Sequence[str], yaml_bad: Sequence[str] = (), seeds: Sequence[int] = SEEDS,
@@ -1063,6 +1112,7 @@ def guards(loaded: Mapping[str, Mapping | None], gate: Mapping[str, Mapping[int,
         if pregate.get("author_labels_read") is not False:
             reasons.append("an author label, cluster or embedding entered")
         for g, ga in (pr.get("groups") or {}).items():
+            reasons += seed_problems(g, ga)
             if any(b.get("mask_zeros") != b.get("consensus_zeros") for b in ga.get("mask_bins") or []):
                 reasons.append(f"{g}: the mask's zero count in a bin differs from the consensus's")
             for m, p in (ga.get("perm") or {}).items():
@@ -1213,12 +1263,12 @@ def t72_reading(loaded: Mapping[str, Mapping | None], gate: Mapping, checks: Map
 
 
 def outcome_lines(r: Mapping) -> list[str]:
-    """The printed words: the outcome, the idle tasks of mx_cons, what is printed beside, the controls' standing
+    """The printed words: the outcome, the idle tasks of every counted arm, what is printed beside, the controls' standing
     (deciding nothing) and what follows. No figure."""
     if r["outcome"] == "VOID":
         return ["Outcome: VOID (" + "; ".join(r["reasons"]) + ")", r["follows"]]
     lines = [AHEAD_WORDS if r["outcome"] == "AHEAD" else "Outcome: MX2s is NOT AHEAD (" + "; ".join(r["failed"]) + ")"]
-    lines += [IDLE_WORDS.format(task=t) for t in r["idle_tasks"][CONS]]
+    lines += [f"{a}: " + IDLE_WORDS.format(task=t) for a in COUNTED for t in r["idle_tasks"][a]]
     lines += list(r["beside"])
     lines.append("Deciding nothing: " + "; ".join(
         f"{a} would {'meet' if ok else 'not meet'} clause (i) against the base"
@@ -1249,8 +1299,6 @@ def t72_text(res: Mapping) -> str:
             lines.append(f"  {k}: " + ", ".join(f"{a} {x:.2f}" for a, x in m.items()))
         for k, c in r["cells_changed"].items():
             lines.append(f"  {k}: cells changed per seed {c}")
-        for a in (MASK, PERM):
-            lines += [f"  {a}: " + IDLE_WORDS.format(task=t) for t in r["idle_tasks"][a]]
         lo, hi = r["j6_range"]
         lines.append(f"J6's range at the test: [{lo:+.2f}, {hi:+.2f}]")
         pg = res.get("pregate_reading") or {}
@@ -1278,8 +1326,14 @@ def read(out: Path, commit: str) -> dict:
     paths = {k: tasks / f for k, f in task_files().items()}
     loaded = {k: json.loads(p.read_text()) if p.exists() else None for k, p in paths.items()}
     begun = {k: (tasks / started_name(f)).exists() for k, f in task_files().items()}
-    gate = {k: committed(f) for k, f in task_files().items()}
     pregate, pg_sha, pg_bad = load_pregate(tasks)
+    if pregate is None or (pregate.get("reading") or {}).get("passes") is not True:
+        sys.exit(f"{ROW} is refused: pregate.json is missing or did not pass, so no try was counted and no read "
+                 "exists (nothing is written)")
+    if not any(begun.values()):
+        sys.exit(f"{ROW} is refused: no start record exists, so no task run loaded and no try was counted (nothing "
+                 "is written)")
+    gate = {k: committed(f) for k, f in task_files().items()}
     if pregate is not None:
         pg_bad = [*pg_bad, *arm_table_problems(pregate)]
     checks = rc.relabel_checks(need_stats=False)
