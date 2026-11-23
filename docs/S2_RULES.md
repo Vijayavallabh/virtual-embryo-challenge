@@ -2263,3 +2263,54 @@ cf53b0c0afe7d18b8f7c84d7595729e4fc46e15e6077e645b6dc0a2fbfed39af (TS10); build r
 clause of the line stands: TS05 first, after the queued file D; TS10 only if TS05's headline is strictly above C's;
 the line ends at TS10; nothing is rebuilt, re-seeded, resized or changed after a score. Data used: released Task 2
 heart stages and the unlocked E10.5 validation file only; no outside data.
+
+## Amendment of 2026-11-23: the heart's second search line, the trend step's strength on the organ cut D (row R29; the captain's named exception; decision log 2026-11-23 (x))
+
+Added under the amendment "a score-guided search of round steps may run" (row R22) and on the captain's own named
+exception of 2026-11-23, verbatim "i want it too", given in answer to a note that offered the trend tried on file D
+too, for the two files of this line on the organ cut D's scope and size, which are levers closed after the exposure of
+2026-11-04. The text below was drafted by a rule writer blind to test scores and corrected by a cold challenger; it is
+the challenger's final text, verbatim. The AI assistant is recused on the heart's scope and size, designed none of it
+and states no preference. It is committed at 20:23 UTC on 2026-11-23, before any build; no score of either file, and
+none of file D, had been reported. The first heart search line (row R28) stands as written.
+
+Second heart search line under R22: the trend step's strength on the organ cut D. Fixed before D, either of this
+line's files or either file of the first line has a score, and valid only for these two files, under the captain's own
+named exception on the heart's scope and size given in reply to the side note ("i want it too") and recorded in ruling
+row R29; this text and row R29 are written into the decision log before any build of either file. Setting: the
+strength s of b0_trend's expression step, as row H28 defines it (the H11 trend factor and the momentum_shift fallback
+damping both multiplied by s, test budget 0.5 x s day, applied before the size step), on D's command with nothing else
+changed; the step's reference is D's pool as D's command loads it, with earlier stages as the builder loads them. D
+(`build_test.py heart --entry organ_scope --expression copy --z-mode raw`, then `experiments/builds/halve.py` at seed
+1000001; row R21) is s = 0. Files: - OTS05: `build_test.py heart --entry organ_scope --trend-strength 0.5 --z-mode raw
+--captain-ruling R29 --out <O>/T2heart_organ_ts05.h5ad`, then `experiments/builds/halve.py <O>/T2heart_organ_ts05.h5ad
+<O>/T2heart_organ_ts05_half.h5ad` at seed 1000001. - OTS10: the same with `--trend-strength 1.0`
+(`T2heart_organ_ts10_half.h5ad`). The base is D and does not change: no score of D, C, K1, K2, TS05, TS10 or this
+line's own files moves either file to another base, scope, size or strength. Build: the heart builder takes
+`--trend-strength` with `--entry organ_scope` only under `--captain-ruling R29`; R29 opens no other entry and R28 does
+not open organ_scope; the change is reviewed, leaves every existing heart output (C, D, TS05, TS10 and the defaults)
+byte for byte as before, and each file's rows, coordinates, cell number and half rows equal D's, with X the only
+difference. Each file is built twice at one clean commit with one sha256, after D's default command has reproduced D's
+reference bytes (the one sha256 of D's two builds under R21). Both files are built before the first headline of D,
+TS05, TS10, OTS05 or OTS10, and in any case by 2026-11-25 12:00 UTC; a file not built with one sha256 by then is not
+built later and is not uploaded. If D has no reference bytes under R21, nothing of this line is built or uploaded. No
+file is rebuilt, re-seeded, resized or changed after any score. Rule: the line's best is D's first headline. The line
+waits until D has been uploaded under R21 and that headline is reported; if D is never uploaded, or its headline is
+never reported, neither file of this line is uploaded and the line ends without a score. D's headline is not compared
+with C's or any other file's to start, stop or move this line. Once D has a headline, OTS05 is this line's next file.
+If OTS05's headline is strictly above the line's best, it becomes the best and OTS10 is this line's next file;
+otherwise (a tie, a lower headline, or no headline reported) the line ends and OTS10 is not uploaded. If OTS10's
+headline is strictly above the line's best, OTS10 becomes the best. The line ends at OTS10 in any case (cap s = 1.0).
+Only the headlines of the team's own heart uploads of D, OTS05 and OTS10, as the captain reports them, are compared.
+No value between or beyond these is tried, none is computed from the sizes of headlines, and no per-metric value is
+read, recorded, compared or quoted. Beside the first line: no headline of either line enters the other's comparisons,
+and the first line's text, files and rule are unchanged. Precedence: a file is due when its line's rule names it next
+and every headline that rule needs has been reported; at each heart slot the due file goes in this order: the queued
+files (K1, K2, D on its condition), then the first line's due file, then this line's due file. The first line's
+results can therefore touch this line only through slot order. There are at most two official uploads a board a day
+until 2026-11-26 11:59 UTC; a file that finds no slot by then is not uploaded. Every upload goes in on the captain's
+word at the time. What stays: C remains the ruled file, the amendment of 2026-11-18 is not reversed, and D keeps its
+standing under R21. The line adds uploads, and the board keeps its best headline. H-T1, H-T1B, any other base and any
+variant of C, K1, K2 or D beyond these two files are outside this line. Data used: released challenge data only; no
+outside data. The method report states that strengths 0.5 and 1.0 of the trend step were tried on the organ cut, as on
+the full trim, and that the best headline was kept.
