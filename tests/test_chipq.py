@@ -578,6 +578,37 @@ def test_made_up_symbols_trip_no_pattern_unless_they_spell_a_drop_word():
     assert len(dropped) == 20
 
 
+# the keyword-variants reviewer's first blocker: a point-mutation name needs two or more position digits
+@pytest.mark.parametrize("text", ["S33Y", "G12D", "V600E", "R270*", "Q61L", "R172H", "K27M", "Kras G12D",
+                                  "Trp53 R172H", "LSL-G12D"])
+def test_point_mutation_names_with_two_or_more_position_digits_drop(text):
+    assert "i:mutant" in cf.dropped_by([text]), (text, cf.dropped_by([text]))
+
+
+@pytest.mark.parametrize("text", ["C3H", "C3H/HeJ", "strain: C3H", "N2A", "T2A", "P2A", "H2A.Z", "H2A.X", "E2A",
+                                  "G9A", "Pol II S5P", "RNAPII S2P", "S5P", "S2P", "D1R", "D2R", "M2R", "A2A", "G2M",
+                                  "S1P", "I3C", "G1E", "S2R", "S2R+", "N1E-115", "E2F", "S6K"])
+def test_one_digit_look_alikes_are_kept(text):
+    # strain and cell-line names, antigen names, receptor and tag names, a cell-cycle label and named agents (S1P,
+    # I3C): one position digit spells no mutation here, and a named agent without a class word is kept (A13)
+    assert cf.keep_row([text]), (text, cf.dropped_by([text]))
+
+
+def test_made_up_capital_digits_capital_names_drop_only_as_point_mutation_names():
+    """The sweep of the made-up-symbols test on the capital-digit(s)-capital shape. A made-up name drops exactly when it
+    spells the point-mutation notation: a residue code, a position of two to four digits with no leading zero, and a
+    residue code or a stop (X); it drops by i:mutant and by nothing else. One-digit, leading-zero and five-digit
+    positions, and B, J, O, U or Z at either end (no residue code; X only at the end), are kept."""
+    up = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    digits = ("1", "9", "0", "05", "10", "12", "27", "99", "100", "600", "1000", "9999", "12345")
+    names = [a + d + b for a in up for d in digits for b in up]
+    dropped = {s for s in names if not cf.keep_row([s])}
+    want = {a + d + b for a in cf._AA for d in digits if d[0] != "0" and 2 <= len(d) <= 4 for b in cf._AA + "X"}
+    assert dropped == want, (sorted(dropped - want), sorted(want - dropped))
+    assert all(cf.dropped_by([s]) == ["i:mutant"] for s in dropped)
+    assert len(dropped) == 20 * 8 * 21   # 20 residue codes, 8 positions, 20 residue codes or X
+
+
 def test_the_filter_reads_the_metadata_fields_only():
     f = ["SRX1", "mm10", "TFs and others", "P01", "Embryo", "ES cells", "NA", "1,2,3,4", CLEAN, CLEAN,
          *(["http://dbarchive.biosciencedbc.jp/kyushu-u/mm10/eachData/bed05/x.bed"] * 7)]
