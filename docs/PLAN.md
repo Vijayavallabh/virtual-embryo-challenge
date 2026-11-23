@@ -12404,3 +12404,42 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **What is written.** Four rows in `results/manual_uploads.csv` (headline only); `docs/UPLOAD_SHEET.md` without the
     four uploaded files and with each condition in its rule's own terms. No rule text, ledger row or built file is
     touched; the three files skipped by the captain's word of entry (bb) stay skipped.
+- 2026-11-23 (hh), the captain's yes to the two new-file questions and a renewed approval of outside data; T3's second
+  search line is in force (state at 23:54 UTC, 2026-11-23). Written by the AI assistant, which designed no line and
+  states no preference on any candidate.
+  - **The captain's words, verbatim:** "ultrathink Go ahead with yes for both if it would improve our scores. Also I
+    am fine with we using 500 external datasets for all the tasks relevantly and even if it takes 1 TB of space in the
+    dgx. We have to win this challenge at all drastic costs".
+  - **What they answered.** The AI assistant's message after entry (gg) ended with 'the two new-file questions': the
+    new T1 search of entry (ff) (two files; 'unless you ask for it, I will let it lapse', with the reasons) and the
+    new T3 file of entry (ff) ('still needs your yes; the default is no', with the new fact that C2 has scored above
+    the file it steps from).
+  - **T3's second search line: in force.** The words are the captain's own yes to the cold challenger's question,
+    which the text of entry (ff) carries at its end. The AI assistant reads the condition 'if it would improve our
+    scores' as the yes's purpose, not as a test it could apply first: no one can know before a score whether a file
+    improves the standing, a lower score never replaces a board's best, and T3 has free slots. Row R22's first cell is
+    amended, add-only, to name `--gata4-exponent 2.0` with `--captain-ruling R22`; `docs/S2_RULES.md` carries the
+    challenger's final text as an amendment (re-pinned). Next, by that text: an engineer and a reviewer, both blind to
+    test scores and started through the route that relays nothing; the guard computed from released wild-type data
+    before any build (a failure ends the line); the four identity gates; the file built twice with one sha256 on a DGX
+    campaign checkout; its sha256 into this log before any score; all by 2026-11-25 12:00 UTC.
+  - **T1 line 4: the yes is recorded and the line as written is not built.** Its own void clause may already have
+    ended it (the 2.0 file's headline may have come back before its entry was committed; the time is not reported), it
+    steps from C, which no longer holds the board's best, and seven built T1 files already wait for at most six slots.
+    Building it would spend the hours on files that cannot get a slot ahead of files stepping from the best file,
+    which is not what the captain's condition asks for. Instead a fresh round, blind to test scores and briefed with
+    today's order of the six reported headlines, is asked whether the framework admits a line that steps from the file
+    now holding the best. **The AI assistant's reading, for the captain to overrule:** a line that round writes on
+    T1's open settings is covered by this yes for the add-only amendment of row R22's first cell; its place in the
+    order stays a question for the captain.
+  - **Outside data.** The words renew the bulk approval of outside sources and of disk on the DGX. They lift cost
+    only: no rule of the organisers, no closed lever, not the register row before a source enters a model, not the
+    recusals. The same order was carried out on 2026-11-23 (entries (b) and (d)): six designers and three cold
+    challengers, all blind to test scores, found 'no drastic gain inside the rules'; the two candidates they kept
+    stopped at their own gates (row K27 at its first gate, entry (q); MX2s at the metadata screen, entry (v)). The one
+    large class left is the T3 pathway tier, which the weighing of entry (f) put at 0.80 to be a mistake to use under
+    the organisers' genotype clause; by the reading of entry (r) a general approval is not an order to build on it,
+    and it stays out. Started now: one cold completeness check of that round's coverage, by an analyst blind to test
+    scores, with the organisers' words and the round's own record; its result goes to the captain.
+  - **The four order items of the earlier replies** (T1's order, the heart's order) are not touched by these words;
+    the order on record stands until the captain names a file.

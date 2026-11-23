@@ -2361,3 +2361,89 @@ and third lines, of T3's exponent line and of the first heart line carried no fi
 value or makes anything depend on one, and each stands as written; what is corrected is the description of what its
 authors could see. From this note on, analysts who must work blind are started through a route that relays no message,
 with a tripwire in their briefs, and a round whose analyst reports an exposure is void.
+
+## Amendment of 2026-11-23: T3's second search line, the Gata4-table weight on C1 (row R22; the captain's own yes; decision log 2026-11-23 (ff) and (hh))
+
+Added under the amendment "a score-guided search of round steps may run" (row R22) and on the captain's own yes of
+2026-11-23, verbatim "Go ahead with yes for both if it would improve our scores", given in answer to the question at
+the end of the text below as the AI assistant had put it to the captain. The line was written by a designer and
+corrected by a cold challenger, both started through the route that relays no message and both reporting that they met
+no test score (decision log 2026-11-23 (ee) and (ff)); the text below is the challenger's, verbatim. The AI assistant
+designed none of it and states no preference. The text was in the decision log at 23:28 UTC on 2026-11-23; this
+amendment and row R22's amended first cell are committed at 23:54 UTC, before any code of the option and before any
+build. The AI assistant reads the captain's condition as the yes's purpose: no one can know before a score whether a
+file improves the standing, and a lower score never replaces a board's best.
+
+T3 search line 2 (R22): the Gata4-table weight on C1. Written blind to test scores; it holds no score value and quotes
+none. It stands only on the captain's own yes to the question at its end; without that yes it is void and nothing of
+it is coded or built. Setting: the weight w of the released Gata4 table phi_G (`gata4_pooled`, sha256
+36f2d65a36d2d4fd5307cddfadb56e9724c362c982795f30428eda752b4734ef) in C1's factor on base B, the barred s2, built by
+experiments/t3_decomp/build_two_knockout.py (decision file experiments/t3_decomp/results/gata4/gata4_decisions.json;
+phi_M = `transfer_mab21l2_all`, sha256 64b1e0b8572c7193ed1e1f0b7339a26081e601f1e706e6b08193e1718dc5c7e8; run folder
+~/v/virtual-embryo-challenge/runs/t3_decomp/gata4_20261028T122425Z; WT data/raw/T2/E8.75.h5ad; board T3:bcatenin; seed
+1000001; n 'max'). The factor is phi_M ** 1 * phi_G ** w, nothing rescaled or clipped after the product, applied once
+at w = 1 of the frozen build after the cells are drawn. Today w is the builder's fixed Gata4 weight of each form
+(identity-s2: 0; c1-s2: 1), not a command option; this line adds one option, `--gata4-exponent`, that takes the single
+value 2.0, on `--form c1-s2` only and only with `--captain-ruling R22`. Only w changes, in a round step of 1 on the
+scale the forms on record use. The Mab21l2 exponent stays 1; the cells, streams, composition, seed, count and board
+are B's. The existing forms, combine()'s identity, c1 and c2 paths and every byte they build stay unchanged
+(build_combination.py imports this module and its combine()). Members: B (w = 0; the barred s2, sha256
+1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f), C1 on B (w = 1; T3_c1_s2.h5ad, sha256
+8718330866429dc089eaffd2f96f66936fe54134eba2d50f8126266e6a3e54b8, as
+experiments/builds/results/t3two_fb01487.SHA256SUMS records c1-s2.h5ad), and the one new file T3_c1_s2_g2.h5ad (w =
+2.0), built by C1's command with `--gata4-exponent 2.0 --captain-ruling R22` and nothing else changed: python -I -B
+experiments/t3_decomp/build_two_knockout.py build experiments/t3_decomp/results/gata4/gata4_decisions.json --form
+c1-s2 --gata4-exponent 2.0 --captain-ruling R22 --wt data/raw/T2/E8.75.h5ad --run-dir
+~/v/virtual-embryo-challenge/runs/t3_decomp/gata4_20261028T122425Z --board T3:bcatenin --seed 1000001 --out
+<O>/<a|b>/T3_c1_s2_g2.h5ad (launcher form: `experiments/t3_decomp/build_two_knockout.sh <clean commit> s2 g2`, a new
+third argument whose only value is g2; on a DGX campaign checkout, never the reference checkout; uv run, 16 BLAS
+threads, NUMPY_MADVISE_HUGEPAGE=0, TMPDIR under ~/v/scratch; traced once with bash -x on a harmless path before the
+real launch). C2 (phi_M ** c * phi_G ** c, c computed) is a different form and not a member. Refusals (exit 2, nothing
+built): `--gata4-exponent` with any value other than 2.0, on any form other than c1-s2, or without `--captain-ruling
+R22`; `--captain-ruling R22` without `--gata4-exponent 2.0`; any other ruling; and the pair while
+experiments/harness/TRIES.md does not hold exactly one row R22 whose first cell starts with "R22 (the captain's
+order", says "ruling, no run" and names `--gata4-exponent 2.0` and `--captain-ruling R22` in backticks (the check
+build_outside_form.captain_order_names makes). The addition to R22's first cell keeps every option string already
+there word for word. Identity gates, at the same clean commit, on the same machine, before the new file is built:
+identity-s1 reproduces the barred s1 (3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2); identity-s2
+reproduces B (1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f); c1-s2 without the new option
+reproduces C1 (8718330866429dc089eaffd2f96f66936fe54134eba2d50f8126266e6a3e54b8); c2-s2 reproduces C2
+(47111ac1d07e73c0c26e990a474dff0de94ae22d6a4474a569bcb674ae2b85a7). These gate builds go to a gate folder, are byte
+reproductions only and replace no file. Then the w = 2 file is built twice into folders a and b, each format-checked,
+each stamp of that commit and clean, with one sha256. Guard, computed before the build from released wild-type E8.75
+data and the two pinned tables only (den = WT E8.75's mean within-cell proportions, load_stage with duplicates
+dropped, as build_outside_form.wt_den makes it): the den-weighted total of phi_M * phi_G ** 2 lies within 5% of that
+of phi_M, and the factor the build applies is the one the guard passed (its sha256). If it fails, the file is not
+built (exit 5, nothing written) and the line ends at w = 1. C1's own figure (w = 1) is recorded beside it and gates
+nothing. The guard and its 5% are fixed now and never changed after a score. Rule. The line's direction is fixed by
+the ordinal fact on record: C1's headline is strictly above B's, so w steps upward, and the line's next T3 file is the
+w = 2 file. Only the headlines of B, C1 and the w = 2 file enter this line, each as the captain reports it for the
+team's own T3 upload; no other file's headline enters it (C2, the K23 file, CK, the E = 4 file, the refused s1 and the
+barred s1 and its exponent files never do). If the w = 2 file's headline is strictly above C1's, it holds the line's
+best; otherwise (tie included) C1 holds it. The line ends at the w = 2 file whatever its headline: one new file, w =
+3, 4, 0.5 and 1.5 are never tried, and no other setting of C1 moves. If the w = 2 file is never built, never uploaded,
+or its headline is never reported, the line ends with C1 as its best. Nothing is computed from the size of any
+headline, no difference between headlines is read as evidence of anything, no per-metric value is read, recorded,
+compared or quoted, and no property of a hidden sample is inferred or bounded from a score. The best headline is kept.
+The file is never rebuilt, re-seeded, resized or changed after a score. Order and slot. The w = 2 file takes the first
+T3 slot free after C2 on B, row K23's file on B, CK on its condition and the line in force's E = 4 file on its
+condition; the refused s1 stays skipped. That makes it the third, fourth or fifth T3 upload from now, by whether CK's
+and the E = 4 file's conditions are met. With no slot left it is not uploaded. It moves ahead of any of them only on
+the captain's word. Void unless: the captain's yes to the question below and the addition to R22's first cell are
+committed before the w = 2 file is uploaded; this entry is in the decision log before its score; the identity gates
+and the two builds pass at one clean commit; and no byte changes after a score. Under any organiser restriction on the
+Gata4 validation files, no file of this line (C1 included, as entry (q) already says) is marked, and the mark is
+chosen as if it had not been uploaded. Practice record, as the ledger holds it: no practice read exists of C1 or of
+any Gata4 weight other than 1 inside a product. The one cross-knockout read of the Gata4 table itself, rows K2a and
+K2b (the same factor file at exponent 1, alone, on the Gata4 -> Mab21l2 fold), found no cross-knockout support: short
+of the adoption rule's bar against its permuted control, and not above the team's wild-type copy. The replicate fold
+cannot price the table, which is measured from it. The step rests on the framework's direction rule alone. Data used:
+released challenge data only (wild-type E8.75 cells, the released Mab21l2 knockout, and the released Gata4 validation
+knockout replicates as a per-gene factor at power 2; C1 uses the same table at power 1). No outside data, no
+beta-catenin perturbation data, no outside Gata4 data, no gene set. Method report: on T3, the Gata4-table weight of
+the two-knockout file on the barred s2 was tried at 0, 1 and 2, and the best headline was kept. Question for the
+captain (one, priced): "May one T3 file use the released Gata4 knockout table squared, the C1 file with its Gata4
+weight raised from 1 to 2 through a new builder option, which no file in force does (C1 uses it at power 1, C2 at its
+computed power c) and which the R22 framework admits only if you count that built-in weight as C1's open setting; cost
+about 6 to 12 hours of coding, review and DGX builds by 2026-11-25 12:00 UTC and, if uploaded, one T3 slot, third to
+fifth in the queue; default: no, and the line is void?" Every upload is the captain's own act.
