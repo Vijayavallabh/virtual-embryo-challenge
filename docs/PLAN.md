@@ -11360,3 +11360,22 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     against the corrected row cell by cell). In order after that: the fixes' review, the merge, the fetch of the two
     lists on the DGX, the two screening agents, the kept list, the target files; the registration commit; P1 and P2;
     the second commit; the counted read. The test-board build path is written only if P1 passes.
+- 2026-11-23 (m), T1: the captain wants the combined MS file tried; its place in the queue (state at 16:27 UTC,
+  2026-11-23). Written by the AI assistant, which gives no lean on the file.
+  - **What the captain sent.** A note from a side agent (the combined file `T1_s2rcMSB` is queued last by its list,
+    behind C, the 2.0 file, the plain momentum file and every search step, so by default it may get no upload; it is
+    untested together with the stronger atlas step; "Only you can move it up. If you want it tried, tell the main
+    session where it goes, for example in place of the plain momentum file"), and the captain's own words, verbatim:
+    "[try it]".
+  - **The AI assistant's reading (its own).** The list of entry (k) says the file is last "unless the captain says
+    otherwise" and that moving it up "stays the captain's choice alone". The captain has now said otherwise: the file
+    is to get an upload. The captain named no place; the only place the note offered is the plain momentum file's. So,
+    unless the captain names another place: `T1_s2rcMSB` takes the plain momentum file's place in the T1 order (after
+    C and the 2.0 file by the order of entries 2026-11-21 (y) and 2026-11-23 (h)), and the plain momentum file MS
+    follows it. Every other clause of the list stands: the file reads no score to go, its headline enters no search
+    line, it raises the mark only if its headline is strictly above the board's best, nothing is rebuilt or changed
+    after a score, and it drops if it is not built by 2026-11-25 12:00 UTC. The order of uploads stays the captain's
+    own act, and the captain may put the file first when it is handed over.
+  - **State.** No score of MS or of any later T1 file has been reported to the main session. The combined file's
+    builder is coded (branch `campaign/t1-ms-combined`) and with its reviewer; on a ready review it is merged, traced
+    and built at once (six identity rebuilds, then the file twice), and its sha256 is logged before its score.
