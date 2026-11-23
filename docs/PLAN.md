@@ -11825,3 +11825,36 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     OTS10; at each heart slot the first line's due file goes before this line's; only the headlines of D, OTS05 and
     OTS10 are compared in this line. `docs/UPLOAD_SHEET.md` lists both files with their conditions in words. Handed to
     the captain with path, sha256, board and the Data-used text; an upload is the captain's own act.
+- 2026-11-23 (z), the captain's condition for uploading, and the comparison the AI assistant gave from the record
+  (state at 22:02 UTC, 2026-11-23). Written by the AI assistant.
+  - **What the captain sent.** First a request for the locations of the files to upload (answered from
+    `docs/UPLOAD_SHEET.md`, every file rechecked against disk). Then, verbatim but for four figures: "I'll upload the
+    solutions myself, and only if the expected leaderboard scores are closer to these targets than our current scores:
+    [four per-board target figures] For each task, compare the current and expected scores and show how far each is
+    from the target. If you don't have enough information to tell whether a solution gets closer, say so." **The four
+    figures are not recorded here**: the AI assistant does not know their source, and if they are per-board
+    leaderboard figures this repository keeps none (`docs/DATA_POLICY.md`, Scores). It used them for one subtraction
+    per board in its reply and for nothing else: they enter no file, rule, estimate or design. Each lies well above
+    its board's best headline.
+  - **What the AI assistant answered, from the committed record only; no estimate was raised.** A board keeps its best
+    headline, so an upload cannot move a board away from a target; it moves closer only if a file beats the board's
+    best. For every waiting file the record's central figure is no change: either rule J6 counts a practice gain as
+    zero at the centre and shows it as a range from zero to its practice value, or the ruling row says "No gain is
+    estimated". The practice-sized upper ends on record: T1, about one to two points for a step on the best file's
+    base (the atlas step doubled read GAINS over the single step, row T63; the momentum +0.73 on the chamber cut, row
+    T65); T3, the outside-table file +0.19 to +0.93 over the barred form on the four practice cells (row K23), the
+    other T3 files without an estimate (rows R17, R18); heart, the trend at strength 0.5 and 1.0 over the copy on the
+    full trim +0.34 and +0.58 on one practice fold, neither beyond its placebo by the row's bar (row H28), file D and
+    the trend on D without an estimate (rows R21, R29); embryo, the analysts' own sentence for SO and O_hi, quoted:
+    "none of them forecasts a test score". Files whose record points below their board's best: T1's plain momentum
+    file (its range ends below the best headline, as entry (j)'s side note said), the embryo's two copy-rows files
+    (row E50: 2.70 board points below the uploaded form on practice, deciding nothing), and file D on its practice
+    analogues, which by the analysts' text cannot test its bet. For the rest the answer given was: not enough
+    information to tell.
+  - **Recusal kept.** To answer for the heart and the embryo the AI assistant opened the two analysts' question files
+    it had earlier passed on unread (`experiments/harness/results/h29b_heart_organ/question_for_the_captain.md`,
+    `experiments/coords/results/e51_so_ohi/question_for_the_captain.md`) and quoted their closing statements; it
+    restated none of their tables and gives no preference on the heart's scope and size or on the embryo's shape forms
+    and occupancy term.
+  - **What follows.** Uploads are the captain's own acts, on the captain's own condition. Nothing changes in any file,
+    rule or queue.

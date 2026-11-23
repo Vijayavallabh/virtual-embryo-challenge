@@ -6,6 +6,14 @@
   2026-11-23 (y); next label (z), then (aa). Ruling rows through R29; next R30. Register through X020; next X021. T1's
   next row is T73. Tries unchanged: T1 463, embryo 88, heart 97, T3 74. NOTHING RUNS, here or on the DGX; no workflow
   is open. Main at the commit of this note.
+  - **ADDED 22:02 UTC: THE CAPTAIN'S UPLOAD CONDITION** (log (z); next label is now (aa)). The captain uploads alone
+    and "only if the expected leaderboard scores are closer to these targets than our current scores", with four
+    per-board target figures that are NOT in the repository (possible per-board leaderboard figures: never record
+    them, use them for nothing but the subtraction asked). The comparison given: the record's central figure for every
+    waiting file is no change; practice-sized upper ends are about a point or two (T1), under a point (T3 K23, heart
+    trend), not forecastable (embryo, by the analysts' text), no estimate (D, the trend on D, most T3 files); nothing
+    on the shelf comes near the targets. No estimate was raised; do not raise one if asked again (lead with the
+    record). Uploads are the captain's acts.
   - **THE HEART'S SECOND SEARCH LINE IS BUILT AND HANDED OVER** (the captain's words "i want it too"; log (w) the
     order and my reading, (x) ruling row R29 and the challenger's final rule text in the rules note, (y) the builds;
     record `experiments/builds/results/heartlined_0d47a67_od1.txt`). `runs/manual_upload/T2heart_organ_ts05_half.h5ad`
