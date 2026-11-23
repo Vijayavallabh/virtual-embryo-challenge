@@ -12081,3 +12081,274 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **For the captain.** The files of the affected rounds stay where they are unless the captain says otherwise: each
     was named before its own score, and none computes anything from a score. The AI assistant's recommendation is to
     keep them and to describe the process in the method report as it was, not as 'blind'. It is the captain's call.
+- 2026-11-23 (ff), two search lines written by the restarted round, before any further headline; neither is in force
+  without the captain's word (state at 23:28 UTC, 2026-11-23). Written by the AI assistant, which designed neither
+  line and states no preference on either.
+  - **The round.** After the round voided in entry (ee), the AI assistant started fresh analysts through the route
+    that relays no message: per board a designer and then a cold challenger, each briefed with ordinal facts only
+    (which uploaded file stands above which), barred from every file that holds a score, and carrying the tripwire.
+    All four report that they met no test score. The question put was whether the framework of row R22 admits a new
+    line now that T1 and T3 have a new best file; an honest 'none' was a full answer. No T1 or T3 headline beyond
+    those of entry (cc) had been reported to the main session when this entry was committed.
+  - **T1: one line, the cold challenger's final text, verbatim.** T1 line 4 (under ruling row R22, a score-guided
+    search of round steps; designed by a score-blind analyst and amended by a score-blind cold challenger, whose text
+    this is; written after the order of the five reported T1 headlines was known and before any other T1 headline, and
+    fixed before any score of its new files): g_mom's within-type damping, stepped on file C's command `build_test.py
+    t1 --g-mom --base lib3 --feng-groups recomputed --g-mom-damping 1.0 --feng-fraction-mult 1.5`, with nothing else
+    changed (default seed 1000001, board T1:test, the outside heart atlas's direction step held at 1.5 times the
+    calendar fraction 2/5 in every file of the line). The line's files, each named here before its own score:
+    candidate B (damping 0.5, multiplier 1.5, `T1_s2rcB.h5ad`, command as B's decision-log entry records it (R13's
+    options with `--feng-fraction-mult 1.5`), sha256
+    c7240cb6a7f7ee93d037f437832efbaad004f1fbe608d80072f8efd5d20a0062); candidate C (damping 1.0, multiplier 1.5,
+    `T1_s2rcC.h5ad`, sha256 31477ef7df5d5374a74a8249c570217020c593916ab4d3780049b7b3f87b0620); `build_test.py t1
+    --g-mom --base lib3 --feng-groups recomputed --g-mom-damping 1.5 --feng-fraction-mult 1.5 --captain-ruling R22
+    --out <O>/T1_s2rcCd15.h5ad` (damping 1.5, multiplier 1.5); and the same with `--g-mom-damping 2.0` and
+    `T1_s2rcCd20.h5ad` (damping 2.0, multiplier 1.5). Neither new file is line 2's T1_s2rcA15 or T1_s2rcA20 (damping
+    1.5 and 2.0 at multiplier 1.0), line 3's T1_s2rcCm20 or T1_s2rcCm25 (damping 1.0 at multiplier 2.0 and 2.5), line
+    1's files (damping 0.5) or T1_s2rcMSB; the "d" in their names stands for the damping. This entry is also the list
+    of its own that the T1 order rule of 2026-11-21, clause (5), asks of any combination: each new file puts a damping
+    of line 2's scale on candidate B's multiplier. Stated plainly: the line's opening condition is already met. The
+    reported order has C's headline strictly above B's, and B and C differ only in this damping (0.5 against 1.0), so
+    by the framework's clause (3) the line steps on upward; its first file, T1_s2rcCd15, is due as soon as it counts.
+    The base, the setting and the step were chosen from that order alone (which file stands above which); no size of
+    any headline or difference entered. The rule: the line's best is the highest headline among the line's uploaded
+    files, starting from B's and C's (today C's). The next file of the line is T1_s2rcCd15. If T1_s2rcCd15's headline
+    is strictly above the line's best, the next file is T1_s2rcCd20; otherwise the line ends. The line ends after
+    T1_s2rcCd20 in any case. Ties do not beat. A file of the line that is never uploaded, or whose headline the
+    captain has not reported by 2026-11-26 11:59 UTC, does not beat: the line ends there, and no later file of the
+    line is uploaded while that headline is unreported. Only the headlines of the team's own T1 uploads of B, C,
+    T1_s2rcCd15 and T1_s2rcCd20, as the captain reports them, are compared. The headlines of the first upload, R13's
+    file, A, line 1's new files (T1_s2rcB2, T1_s2rcB25, T1_s2rcB30), line 2's new files (T1_s2rcA15, T1_s2rcA20), line
+    3's new files (T1_s2rcCm20, T1_s2rcCm25), T1_s2rcMSB and any other T1 file do not enter this line, and this line's
+    new files' headlines enter no other line. B and C are each one upload: their headlines serve the lines that
+    already name them and this line, and each is counted once on the board. No size of a difference, no per-metric
+    value and no interpolated value is read, and no value is fitted from the sizes of scores. No property of a hidden
+    sample is inferred or bounded from these scores, in code, text or reasoning; in particular no outcome of this
+    line, or of lines 2 and 3, is read as evidence on the depth of the hidden E12.5 sample, whatever the practice
+    record below says about depth. Order: every T1 file queued by an earlier decision-log entry (the 2.0 file of row
+    R20, T1_s2rcMSB, and any file an earlier entry queues on its own condition) keeps its place, and lines 1, 2 and 3
+    keep theirs. When more than one line has a next file ready, line 1's goes first, then line 2's, then line 3's,
+    then this line's, unless the captain says otherwise. So this line's file takes a slot only when no earlier-queued
+    file and no next file of lines 1, 2 or 3 is ready for it, and the line may get no upload at all. A different place
+    for T1_s2rcCd15 needs the captain's own words naming the file it goes ahead of; every file it passes moves back
+    one slot. A new file counts only after five conditions are met. First, row R22's first cell is amended by the
+    captain's order, adding and removing nothing else, to name `--g-mom-damping 1.5 --feng-fraction-mult 1.5` and
+    `--g-mom-damping 2.0 --feng-fraction-mult 1.5` each in backticks with `--captain-ruling R22`; and the builder
+    takes each pair only with `--captain-ruling R22` (refused without it and with R20, R23, R26 or any other row), and
+    only while row R22's first cell names that combined option (the bare `--g-mom-damping 1.5` and `--g-mom-damping
+    2.0` that line 2's entry names do not count). The pair's test stands in `_t1_candidate` before line 2's damping
+    routing, which keeps refusing any multiplier other than 1.0 for line 2's values; the pair has its own ordered
+    predicate in `_bet_refusals`. The pair is refused with `--direction-momentum`, `--released-bet`, `--bet-strength`,
+    `--no-hold-unbracketed`, a seed other than 1000001, a board other than the test board, a dry run, and any command
+    but R13's options plus the pair; every other pair of the two options is taken or refused exactly as before. The
+    file's record names this fourth line (its `t1_candidate` order text and g_mom's rule text both), not line 2's
+    second line, while the records of T1_s2rcA15 and T1_s2rcA20 stay as they were. Second, an independent reviewer has
+    passed the change and confirmed that it touches only option routing, refusals, the record texts, tests and the
+    launcher, and no constant or step of g_mom, the atlas step or any other file. Third, on ~/v/vec-campaign-d, at one
+    clean commit holding the reviewed change and the amended row R22, these commands rebuild these bytes:
+    `build_test.py t1 --g-mom --base lib3 --feng-groups recomputed` R13's
+    (ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f); the same with `--g-mom-damping 1.0` A's
+    (76865826f5a3741c7585f81c4241048ca1a95b5791ebb3c8feb1f2b536678ce4); B's command as its entry records it B's
+    (c7240cb6a7f7ee93d037f437832efbaad004f1fbe608d80072f8efd5d20a0062); with `--g-mom-damping 1.0 --feng-fraction-mult
+    1.5` C's (31477ef7df5d5374a74a8249c570217020c593916ab4d3780049b7b3f87b0620); with `--feng-fraction-mult 2.0
+    --captain-ruling R20` the 2.0 file's (52897fe375b8a81afffa788592047c30361824148b00a8176514385060518837); with
+    `--g-mom-damping 1.5 --captain-ruling R22` T1_s2rcA15's; with `--g-mom-damping 1.0 --feng-fraction-mult 2.0
+    --captain-ruling R22` T1_s2rcCm20's; with `--direction-momentum all --captain-ruling R23` MS's
+    (6103d10535665634ee0cad3390590a5df132d1805682fb1d309bb19581fdaa5e); and with `--feng-fraction-mult 1.5
+    --direction-momentum all --captain-ruling R26` T1_s2rcMSB's; the sha256 for T1_s2rcA15, T1_s2rcCm20 and T1_s2rcMSB
+    is the one their decision-log entries hold, and if an entry holds none, this condition is not met. Fourth, after
+    the launcher has been traced with bash -x on a harmless path, the file has been built twice there from that commit
+    with one sha256 and has passed the format check. Fifth, its sha256 has been added to this entry before its score.
+    A file not ready by 2026-11-25 12:00 UTC drops and the line ends. No free T1 slot before 2026-11-26 11:59 UTC also
+    ends the line. No value between the half steps and none above 2.0 is tried on this command, and the multiplier is
+    not moved in this line. No file is rebuilt, re-seeded or changed after a score. Void: the line is void unless this
+    entry is committed to the decision log before any T1 headline other than the five reported when it was written (C,
+    B, the first upload, A, R13's file) is returned, and in any case before T1_s2rcCd15 is uploaded. It is void if the
+    built file's record names a multiplier other than 1.5, a damping other than the file's, or another line, or if any
+    file is rebuilt, re-seeded, resized or changed after any score. Practice evidence, stated plainly: rows T49 and
+    T59 read g_mom's damping at 0.75 and 1.0 ahead of 0.5 on the two E9.5 -> E10.5 cuts, at the practice fraction's
+    1.0 multiple, a labelled in-sample diagnostic on one truth (the damping was a size chosen on the cuts that kept
+    g_mom, so the adoption rule cannot keep it), with a response close to straight in the damping; row T61 also holds
+    an arm at damping 1.0 (`gmom_s1`). No T row in the ledger reads any damping above 1.0, on any command, and none
+    reads any damping together with the 1.5x atlas step. Row T59's reading in thinned and thickened reference worlds
+    found the gain of damping 1.0 over 0.5 smaller where the reference is deeper; T1's depth stays closed, this line
+    moves no depth (each edited cell keeps its expected depth; the cells, their number, shares and scope are
+    untouched), and no outcome of this line is read about depth. At damping 1.5 and 2.0 entries zeroed at 0.5 come
+    back and more entries reach the clip at log 3, so the step is not a plain scaling of C's. So the sign of the step
+    above 1.0 is unmeasured on practice. The method report says that on file C's command (the atlas step at 1.5 times
+    the calendar fraction) g_mom's dampings 0.5 and 1.0 and each of 1.5 and 2.0 that was uploaded were tried, names
+    any file built and not uploaded, and says that the best headline was kept. Data used: as R13's file (released
+    challenge data and the outside heart atlas on recomputed groups, register row X002). Each upload is the captain's
+    own act.
+  - **What the T1 challenger corrected in the draft (10 faults):** (1) The header says 'fixed before any score of its
+    new files' and the rule opens 'If B and C have both been uploaded and C's headline is strictly above B's', hiding
+    that this condition is already met by the reported order and that the line's base, setting and direction were
+    chosen from that order. Correction: States plainly that the opening condition is met, that Cd15 is due as soon as
+    it counts, and that base, setting and step rest on the ordinal order alone (framework clause 3: step on in the
+    direction that improved). (2) Void condition too weak: the draft is void only if committed after a score of Cd15
+    or Cd20. If it were committed after further T1 headlines (B2, MSB, A15, Cm20) came back, its design could lean on
+    them. Correction: Void unless committed before any T1 headline other than the five reported, and in any case
+    before Cd15 is uploaded. (3) No handling of a headline that is never reported (only 'never uploaded' via the B/C
+    clause, which is now moot). Correction: A file never uploaded, or whose headline is unreported by 2026-11-26 11:59
+    UTC, does not beat; the line ends, and no later file goes while it is unreported. (4) Record mislabel the draft
+    does not catch: _t1_g_mom writes 'row R22's second T1 search line' into g_mom's rule text whenever damping is in
+    T1_R22_DAMPING_OPTIONS (1.5, 2.0), whatever the multiplier, so Cd15/Cd20 would carry line 2's label. Correction:
+    The change must make the record (t1_candidate order and g_mom rule text) name the fourth line for the pair, with
+    A15/A20 records unchanged (checked by A15's identity rebuild); void if the record names another line. (5) Identity
+    commands vague ('line 2's A15 command its recorded bytes ... the sha256 each entry holds') and incomplete: the
+    change edits _bet_refusals, which the R23 and R26 paths also pass through, yet MS and MSB are not rebuilt.
+    Correction: Each identity command named with its sha256 (R13, A, B, C, the 2.0 file, A15, Cm20, MS, MSB); an entry
+    holding no sha256 means the condition is not met. (6) The amendment of R22's first cell is mentioned only in the
+    JSON, not in the rule text, and not bound to add-only or to the build commit. Correction: Condition one now
+    requires the captain's add-only amendment of R22's first cell, present at the clean commit of the identity and the
+    new builds; routing placement spelled out (pair tested before line 2's damping routing; own predicate in
+    _bet_refusals). (7) The depth caution invites an inference: it says the larger damping's practice gain tracks the
+    truth's depth, beside a score-guided rule, without forbidding reading any outcome as evidence on the hidden
+    sample's depth. Correction: Added that no outcome of this line (or lines 2, 3) is read as evidence on the hidden
+    E12.5 sample's depth. (8) Practice record incomplete: it omits row T61's damping-1.0 arm (gmom_s1) and does not
+    say plainly that the sign above 1.0 is unmeasured. Correction: T61's arm named; 'no T row reads any damping above
+    1.0 or any damping with the 1.5x step' checked through the helper over all T rows; the sign of the step above 1.0
+    stated as unmeasured. (9) B's command is written as R13's options plus --feng-fraction-mult 1.5 without check; the
+    record I may read (inputs) only says B's damping is 'passed as B's build passes it'. Correction: B's command is
+    cited as its decision-log entry records it. (10) The slot question is not priced in slots and says nothing of A20
+    or Cd20. Correction: Plain question with a default and with what moves back (below); the rule text says any other
+    place needs the captain's words naming the file it passes.
+  - **T1 line 4's standing.** By its void clause it had to be in this log before any T1 headline other than the five
+    reported; it is. It is NOT in force: its first condition needs row R22's first cell amended by the captain's
+    order, add-only, to name `--g-mom-damping 1.5 --feng-fraction-mult 1.5` and `--g-mom-damping 2.0
+    --feng-fraction-mult 1.5` with `--captain-ruling R22`. Until then nothing of it is coded or built, and it has no
+    place in T1's order. **The challenger's question for the captain, put unchanged:** "T1 line 4 (g_mom damping 1.5,
+    then 2.0, on C's command) would stand last and may get no slot. Default: it stays last, and every other file keeps
+    its place. Or: T1_s2rcCd15 goes right after T1_s2rcMSB, ahead of line 2's T1_s2rcA15, which moves back one slot
+    (and A20 with it if A15 earns it); line 1's and line 3's files keep their order. Your words must name the file
+    Cd15 goes ahead of. Separately, the line needs your add-only amendment of row R22's first cell naming
+    `--g-mom-damping 1.5 --feng-fraction-mult 1.5` and `--g-mom-damping 2.0 --feng-fraction-mult 1.5` with
+    `--captain-ruling R22`; without it the builder refuses and the line does not exist. No option is recommended here:
+    lines 2 and 4 rest on the same kind of ordinal fact."
+  - **T3: one line that stands only on the captain's yes, the cold challenger's final text, verbatim (the question is
+    at its end).** T3 search line 2 (R22): the Gata4-table weight on C1. Written blind to test scores; it holds no
+    score value and quotes none. It stands only on the captain's own yes to the question at its end; without that yes
+    it is void and nothing of it is coded or built. Setting: the weight w of the released Gata4 table phi_G
+    (`gata4_pooled`, sha256 36f2d65a36d2d4fd5307cddfadb56e9724c362c982795f30428eda752b4734ef) in C1's factor on base
+    B, the barred s2, built by experiments/t3_decomp/build_two_knockout.py (decision file
+    experiments/t3_decomp/results/gata4/gata4_decisions.json; phi_M = `transfer_mab21l2_all`, sha256
+    64b1e0b8572c7193ed1e1f0b7339a26081e601f1e706e6b08193e1718dc5c7e8; run folder
+    ~/v/virtual-embryo-challenge/runs/t3_decomp/gata4_20261028T122425Z; WT data/raw/T2/E8.75.h5ad; board T3:bcatenin;
+    seed 1000001; n 'max'). The factor is phi_M ** 1 * phi_G ** w, nothing rescaled or clipped after the product,
+    applied once at w = 1 of the frozen build after the cells are drawn. Today w is the builder's fixed Gata4 weight
+    of each form (identity-s2: 0; c1-s2: 1), not a command option; this line adds one option, `--gata4-exponent`, that
+    takes the single value 2.0, on `--form c1-s2` only and only with `--captain-ruling R22`. Only w changes, in a
+    round step of 1 on the scale the forms on record use. The Mab21l2 exponent stays 1; the cells, streams,
+    composition, seed, count and board are B's. The existing forms, combine()'s identity, c1 and c2 paths and every
+    byte they build stay unchanged (build_combination.py imports this module and its combine()). Members: B (w = 0;
+    the barred s2, sha256 1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f), C1 on B (w = 1;
+    T3_c1_s2.h5ad, sha256 8718330866429dc089eaffd2f96f66936fe54134eba2d50f8126266e6a3e54b8, as
+    experiments/builds/results/t3two_fb01487.SHA256SUMS records c1-s2.h5ad), and the one new file T3_c1_s2_g2.h5ad (w
+    = 2.0), built by C1's command with `--gata4-exponent 2.0 --captain-ruling R22` and nothing else changed: python -I
+    -B experiments/t3_decomp/build_two_knockout.py build experiments/t3_decomp/results/gata4/gata4_decisions.json
+    --form c1-s2 --gata4-exponent 2.0 --captain-ruling R22 --wt data/raw/T2/E8.75.h5ad --run-dir
+    ~/v/virtual-embryo-challenge/runs/t3_decomp/gata4_20261028T122425Z --board T3:bcatenin --seed 1000001 --out
+    <O>/<a|b>/T3_c1_s2_g2.h5ad (launcher form: `experiments/t3_decomp/build_two_knockout.sh <clean commit> s2 g2`, a
+    new third argument whose only value is g2; on a DGX campaign checkout, never the reference checkout; uv run, 16
+    BLAS threads, NUMPY_MADVISE_HUGEPAGE=0, TMPDIR under ~/v/scratch; traced once with bash -x on a harmless path
+    before the real launch). C2 (phi_M ** c * phi_G ** c, c computed) is a different form and not a member. Refusals
+    (exit 2, nothing built): `--gata4-exponent` with any value other than 2.0, on any form other than c1-s2, or
+    without `--captain-ruling R22`; `--captain-ruling R22` without `--gata4-exponent 2.0`; any other ruling; and the
+    pair while experiments/harness/TRIES.md does not hold exactly one row R22 whose first cell starts with "R22 (the
+    captain's order", says "ruling, no run" and names `--gata4-exponent 2.0` and `--captain-ruling R22` in backticks
+    (the check build_outside_form.captain_order_names makes). The addition to R22's first cell keeps every option
+    string already there word for word. Identity gates, at the same clean commit, on the same machine, before the new
+    file is built: identity-s1 reproduces the barred s1
+    (3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2); identity-s2 reproduces B
+    (1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f); c1-s2 without the new option reproduces C1
+    (8718330866429dc089eaffd2f96f66936fe54134eba2d50f8126266e6a3e54b8); c2-s2 reproduces C2
+    (47111ac1d07e73c0c26e990a474dff0de94ae22d6a4474a569bcb674ae2b85a7). These gate builds go to a gate folder, are
+    byte reproductions only and replace no file. Then the w = 2 file is built twice into folders a and b, each
+    format-checked, each stamp of that commit and clean, with one sha256. Guard, computed before the build from
+    released wild-type E8.75 data and the two pinned tables only (den = WT E8.75's mean within-cell proportions,
+    load_stage with duplicates dropped, as build_outside_form.wt_den makes it): the den-weighted total of phi_M *
+    phi_G ** 2 lies within 5% of that of phi_M, and the factor the build applies is the one the guard passed (its
+    sha256). If it fails, the file is not built (exit 5, nothing written) and the line ends at w = 1. C1's own figure
+    (w = 1) is recorded beside it and gates nothing. The guard and its 5% are fixed now and never changed after a
+    score. Rule. The line's direction is fixed by the ordinal fact on record: C1's headline is strictly above B's, so
+    w steps upward, and the line's next T3 file is the w = 2 file. Only the headlines of B, C1 and the w = 2 file
+    enter this line, each as the captain reports it for the team's own T3 upload; no other file's headline enters it
+    (C2, the K23 file, CK, the E = 4 file, the refused s1 and the barred s1 and its exponent files never do). If the w
+    = 2 file's headline is strictly above C1's, it holds the line's best; otherwise (tie included) C1 holds it. The
+    line ends at the w = 2 file whatever its headline: one new file, w = 3, 4, 0.5 and 1.5 are never tried, and no
+    other setting of C1 moves. If the w = 2 file is never built, never uploaded, or its headline is never reported,
+    the line ends with C1 as its best. Nothing is computed from the size of any headline, no difference between
+    headlines is read as evidence of anything, no per-metric value is read, recorded, compared or quoted, and no
+    property of a hidden sample is inferred or bounded from a score. The best headline is kept. The file is never
+    rebuilt, re-seeded, resized or changed after a score. Order and slot. The w = 2 file takes the first T3 slot free
+    after C2 on B, row K23's file on B, CK on its condition and the line in force's E = 4 file on its condition; the
+    refused s1 stays skipped. That makes it the third, fourth or fifth T3 upload from now, by whether CK's and the E =
+    4 file's conditions are met. With no slot left it is not uploaded. It moves ahead of any of them only on the
+    captain's word. Void unless: the captain's yes to the question below and the addition to R22's first cell are
+    committed before the w = 2 file is uploaded; this entry is in the decision log before its score; the identity
+    gates and the two builds pass at one clean commit; and no byte changes after a score. Under any organiser
+    restriction on the Gata4 validation files, no file of this line (C1 included, as entry (q) already says) is
+    marked, and the mark is chosen as if it had not been uploaded. Practice record, as the ledger holds it: no
+    practice read exists of C1 or of any Gata4 weight other than 1 inside a product. The one cross-knockout read of
+    the Gata4 table itself, rows K2a and K2b (the same factor file at exponent 1, alone, on the Gata4 -> Mab21l2
+    fold), found no cross-knockout support: short of the adoption rule's bar against its permuted control, and not
+    above the team's wild-type copy. The replicate fold cannot price the table, which is measured from it. The step
+    rests on the framework's direction rule alone. Data used: released challenge data only (wild-type E8.75 cells, the
+    released Mab21l2 knockout, and the released Gata4 validation knockout replicates as a per-gene factor at power 2;
+    C1 uses the same table at power 1). No outside data, no beta-catenin perturbation data, no outside Gata4 data, no
+    gene set. Method report: on T3, the Gata4-table weight of the two-knockout file on the barred s2 was tried at 0, 1
+    and 2, and the best headline was kept. Question for the captain (one, priced): "May one T3 file use the released
+    Gata4 knockout table squared, the C1 file with its Gata4 weight raised from 1 to 2 through a new builder option,
+    which no file in force does (C1 uses it at power 1, C2 at its computed power c) and which the R22 framework admits
+    only if you count that built-in weight as C1's open setting; cost about 6 to 12 hours of coding, review and DGX
+    builds by 2026-11-25 12:00 UTC and, if uploaded, one T3 slot, third to fifth in the queue; default: no, and the
+    line is void?" Every upload is the captain's own act.
+  - **What the T3 challenger corrected in the draft (10 faults):** (1) Clause 1 by its letter: w is not a setting of
+    C1's command. It is the builder's hard-coded Gata4 weight per form (KINDS: identity 0, c1 1, c2 1 before c), and
+    the builder's docstring says no number is taken from the command line. The line in force moved an option that
+    already existed (--table-exponent, values 1, 2, 4 already accepted); this line must create the option. The draft
+    calls it a setting of the existing command without saying so. Correction: Stated plainly in the final text;
+    whether a built-in weight counts as C1's open setting is folded into the captain's one question; void without his
+    yes. (2) Data limit misread: the draft says squaring the Gata4 table is 'as C1 uses them' (Data used) and the
+    designer reads it as within the files' way of use. No file in force uses the released Gata4 table above power 1
+    (C1 at 1, the allowed s1 at 1, C2 at a computed c). Power 2 is a new way of use and needs the captain's own word;
+    the draft's default 'yes' leans the answer. Correction: Data-used text says power 2 against C1's power 1; the
+    question's default is 'no, the line is void'. (3) Practice record misstated: 'none, and none can exist'. Rows
+    K2a/K2b read the same Gata4 factor file (exponent 1, alone) on the cross-knockout fold Gata4 -> Mab21l2: no
+    cross-knockout support (short of the adoption bar against its permuted control, not above the WT copy).
+    Correction: Final text states K2a/K2b's outcome plainly, and that no read exists of C1 or of any Gata4 weight
+    inside a product. (4) Identity gate for C1 used an unnamed 'recorded sha256'. Correction: Named:
+    8718330866429dc089eaffd2f96f66936fe54134eba2d50f8126266e6a3e54b8
+    (experiments/builds/results/t3two_fb01487.SHA256SUMS, c1-s2.h5ad). (5) Shared-code collision not handled:
+    build_combination.py (CK) imports build_two_knockout.combine and its pins; editing combine() could change C2/CK
+    paths. Correction: Existing forms and combine()'s identity/c1/c2 paths stay unchanged; the new path is separate;
+    c2-s2 must reproduce 47111ac1d07e... as a fourth gate. (6) Slot case overstated: the draft makes it the fifth
+    upload in every case. CK and the E = 4 file are conditional; with neither due it is third. Correction: Third,
+    fourth or fifth by those conditions. (7) Mechanics gaps: no case for a file never built or a headline never
+    reported; the void clause keyed to the headline's return rather than the upload; headlines that never enter the
+    line not listed. Correction: All three added: never built/uploaded/reported ends the line with C1 best; void
+    unless the yes and R22 addition are committed before upload; non-entering files listed. (8) Guard under-specified:
+    no statement that den is computed in WT E8.75 gene order with duplicates dropped and that the applied factor must
+    be the one the guard passed; no exit code. Correction: Uses build_outside_form.wt_den's den, factor sha256 check,
+    exit 5 with nothing written, constants fixed now. (9) Launcher form vague ('the same option pair passed through');
+    build_two_knockout.sh takes only HEAD_SHA and BASE and has no C1 reference hash. Correction: Launcher form
+    build_two_knockout.sh <clean commit> s2 g2 with the four gates, two builds, stamps, and a bash -x dry trace before
+    launch. (10) R22 first-cell addition could drop existing option strings. Correction: Final text requires every
+    existing option string be kept word for word.
+  - **T3's second line's standing.** Void without the captain's yes to the question at the end of its text; the
+    default is no; nothing of it is coded or built before that yes.
+  - **What the challengers said of the brief and the inputs, which were the AI assistant's.** (1) The T3 inputs gave
+    the limit 'the released Gata4 validation knockout files may be used only in the way the files in force already use
+    them' and named ruling row R17's first cell as its source. The sentence is the AI assistant's own summary, not
+    that cell's text: the captain's reply recorded under R17 covered the two files C1 and C2. The challenger drew the
+    right consequence and made the line stand on the captain's own yes. (2) The inputs' list of closed levers is the
+    framework's, verbatim, and omits T3's composition, which the ledger's rule 6 lists as closed; the line moves no
+    composition. (3) The T3 brief's reading list opened with C1's and C2's builder and the ordinal facts name C1 as
+    the best file: a mild steer toward a setting of C1, inherent in the question. (4) T1: nothing beyond ordinal
+    facts; 'at most seven slots' depends on how a day is counted.
+  - **What the challengers could not check, and what the record holds.** The sha256 on record for the three built
+    files T1 line 4's identity condition names are those of the upload sheet: `T1_s2rcA15.h5ad` e2334137b54d,
+    `T1_s2rcCm20.h5ad` acce5f5f7097, `T1_s2rcMSB.h5ad` 78bb17eea572. Whether the T3 file's factor passes its 5% guard
+    is not computed; by the text it is computed before any build and ends the line if it fails. Build times and the
+    hours named are the analysts' estimates.
+  - **Nothing is coded, built or queued by this entry,** and no file, rule or order changes.
