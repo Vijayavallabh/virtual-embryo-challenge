@@ -2,7 +2,26 @@
 
 ## Current Objective
 
-- **State at 2026-11-23, 15:40 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-23, 15:45 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-23 (i); next label (j). CHIPQ-S step 2 is running: workflow w18fza0f9 (journal folder wf_916677f6-312): rule
+  writer 2 (files under scratch `lift8/k27_rule/`: points_settled.md, cell_01..11.txt, engineer_notes.md), data-path
+  reviewer, then read engineer (branch `campaign/t3-chipq-read` cut from `campaign/t3-chipq` 4498ece) and read
+  reviewer. Waiters: b8vke5ffw saves the data reviewer's hand-back to `lift8/chipq_data_review.json`; bakunpdcx saves
+  the rule writer's to `lift8/k27_rule_handback.json`.
+  - **ON THE DATA REVIEW (ready):** merge `campaign/t3-chipq` to main (tests: tests/test_chipq.py,
+    test_k24_wider_tables.py, test_build_k24_form.py, the rules pin), deliver to `v/vec-campaign-c`, check out in
+    `~/v/scratch/k26-wt` (detached, own env), run `python -I -B experiments/t3_ext/chipq_fetch.py lists` then `rows`
+    (PATH exported; prints counts only), copy `~/v/vec-ext/t3/chipatlas/screen/Ctnnb1.rows.tsv` and `Gata4.rows.tsv`
+    to local scratch `lift8/chipq_screen/` WITHOUT reading them, launch two independent screening agents with the
+    specification's SCREEN paragraph verbatim (they hand back kept ids and drop counts per class only), intersect by
+    code, commit `experiments/t3_ext/chipq_kept.yaml` + `CHIPQ_KEPT.sha256`, add the fetch date and hashes to register
+    row X018, run `targets` and `verify`. Not ready: fix round on the branch first.
+  - **ON THE RULE (eleven cells):** check the cells mechanically (11, no raw pipe, first cell opens 'K27 (one row, one
+    script;'), wait for the read reviewer's attack on the rule before placing the row; place row K27 before P1; then
+    P1 (`chipq.py p1`: two counts; exit 0 pass, 3 fail = line closed, no try). If P1 passes: launch the build-path
+    engineer and reviewer; build tables, commit `TABLES_K27.sha256`; run `run_k27.sh` on the DGX with a dry-run trace
+    first.
+- **State at 2026-11-23, 15:40 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-23 (h); next label (i). Local main = origin/main at 56a357c or one notes commit after it. Next ruling row
   R26; next register row X019; T3's next row K27.
   - **MS IS BUILT AND HANDED OVER (entry (h)).** `runs/manual_upload/T1_s2rc_MS.h5ad`, sha256

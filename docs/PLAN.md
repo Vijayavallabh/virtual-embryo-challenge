@@ -11177,3 +11177,31 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     board's best; never stacked on A, B or C without a list of its own, fixed before its score; nothing rebuilt,
     re-seeded or changed after a score. The row's last cell and a note in `docs/S2_RULES.md` (re-pinned) carry the
     sha256. Handed over to the captain with path, sha256, board and the Data-used text (as R13's file).
+- 2026-11-23 (i), T3 candidate CHIPQ-S: the database part is written; the first rule writer handed nothing back; the
+  second step is running (state at 15:45 UTC, 2026-11-23). Written by the AI assistant, which designed none of it and
+  gives no lean on it.
+  - **The first step** (workflow t3-chipq-rule-and-data). The rule writer handed back no row and no settled point: by
+    its own words its hand-back "was stopped before it was returned" and it would not write it again. Why it was
+    stopped is not known to the main session, which reads hand-backs and never transcripts. Nothing of a rule exists
+    from that step.
+  - **The database part** (branch `campaign/t3-chipq`, 4498ece, cut from main at 6bc36d9; not yet reviewed, not
+    merged): `experiments/t3_ext/chipq_fetch.py` (lists, rows, targets, verify; two hosts only; a manifest that
+    refuses changed bytes; a committed keyword filter for placebo antigens), `experiments/t3_ext/chipq.py` (the pinned
+    kept list as two files the main session commits after the screen, one reader for a query antigen's file that reads
+    only the kept experiments' columns, the bound set, the weights, the table, the exponents, the placebo pool and
+    draw, the step p1 that prints two counts) and 37 tests on synthetic files. With no rule to follow, the engineer
+    kept ten points as literal readings in one named block (among them: the placebo draw is independent per seed and
+    can repeat an antigen; the finish uses no reference profile; the pool's band uses the query's own K). They are
+    open until a rule writer settles them.
+  - **Facts of the database the engineer found** (format inspection of the two lists and one file of a neutral
+    antigen, copies deleted): 733 mouse antigens have target-gene files; the two query antigens are held; the third
+    released knockout's gene is not, so the x2 cell is not testable, as the specification expected. No row of a query
+    antigen was printed.
+  - **The second step, running** (workflow t3-chipq-rule-read-and-review, four agents, all blind to test scores): a
+    fresh rule writer settles the open points and writes row K27 as small files (a long single hand-back may have been
+    what was cut off; if it is stopped again the main session does not press it further and has the row written inside
+    the read's engineering instead); a reviewer checks the database code under a blocker standard fixed up front; then
+    an engineer writes the read script and its launcher on that code, and a second reviewer checks them and attacks
+    the rule itself. The test-board build path is written only if the database-only pre-gate passes. Two background
+    waiters release the rule writer's and the first reviewer's hand-backs as soon as each exists, so the fetch and the
+    screen do not wait for the whole workflow.
