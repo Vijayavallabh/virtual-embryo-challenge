@@ -746,9 +746,9 @@ def test_yaml_problems_names_an_unfilled_constant_and_a_file_off_it(mx, tmp_path
 @pytest.mark.parametrize("const", ["unfilled", "wrong"])
 def test_the_pregate_refuses_on_the_yaml_constant_before_it_creates_anything(mx, tmp_path, monkeypatch, capsys, const):
     real = mx.yaml_problems
-    a = _pregate_ready(mx, tmp_path, monkeypatch)
     y = tmp_path / "atlases.yaml"
     y.write_text("status: frozen\n")
+    a = _pregate_ready(mx, tmp_path, monkeypatch, man=_manifest(mx, yaml_sha256=mx.sha256_file(y)))
     monkeypatch.setattr(mx, "ATLASES_YAML", y)
     monkeypatch.setattr(mx, "yaml_problems", real)
     monkeypatch.setattr(mx, "ATLASES_YAML_SHA256", None if const == "unfilled" else "0" * 64)

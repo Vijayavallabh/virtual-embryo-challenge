@@ -1263,8 +1263,8 @@ def t72_reading(loaded: Mapping[str, Mapping | None], gate: Mapping, checks: Map
 
 
 def outcome_lines(r: Mapping) -> list[str]:
-    """The printed words: the outcome, the idle tasks of every counted arm, what is printed beside, the controls' standing
-    (deciding nothing) and what follows. No figure."""
+    """The printed words: the outcome, the idle tasks of every counted arm, what is printed beside, the controls'
+    standing (deciding nothing) and what follows. No figure."""
     if r["outcome"] == "VOID":
         return ["Outcome: VOID (" + "; ".join(r["reasons"]) + ")", r["follows"]]
     lines = [AHEAD_WORDS if r["outcome"] == "AHEAD" else "Outcome: MX2s is NOT AHEAD (" + "; ".join(r["failed"]) + ")"]
