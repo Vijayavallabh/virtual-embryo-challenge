@@ -92,13 +92,28 @@ DENY = re.compile(r"bigwig|\.bw$|\.bed(\.gz)?$|bigbed|\.bb$|/eachdata/|/assemble
 # they pass the same drops as a committed keyword filter in code"). One pattern per word of the drop classes, quoted
 # from the specification; each pattern also takes that word's spelling, hyphenation and inflection variants and its
 # common abbreviation, and nothing beyond. A row is dropped when ANY pattern matches ANY metadata field of the row (a
-# doubt drops). The plain words "untreated" and "wild type" match no pattern. Case-insensitive, except the
-# sh/si-prefix form, which is case-sensitive inside its own group so that a gene symbol in capitals is not read as one.
+# doubt drops). The plain words "untreated" and "wild type" match no pattern, nor does a field whose whole value
+# states no treatment (below). Case-insensitive, except the groups marked (?-i:...), which are case-sensitive so that a
+# gene symbol in capitals is not read as one. The forms marked kwdecide are the rule agent's A13 addendum: spellings,
+# notations or abbreviations of the paragraph's own words; no class and no word is added.
 
 _B = r"(?<![a-z0-9])"   # no letter or digit before
 _E = r"(?![a-z])"       # no letter after
 _L = r"(?<![a-z])"      # no letter before (a digit may come before: a gene symbol usually ends in one, "Gata4OE")
 _MINUS = "\\-\u2212\u2013"   # hyphen-minus, the minus sign and the en dash (text copied from papers)
+_AA = "ACDEFGHIKLMNPQRSTVWY"   # the one-letter residue codes
+# The reverse case of "treat" (rule agent kwdecide, A13 addendum): a field whose entire value states no treatment
+# ("treatment: none", "treatment=untreated", "treatment: no treatment", or the whole field "no treatment") states Tier
+# U's "untreated" and names no class (iii) treatment. Only that whole value is exempt: the key must open the field or
+# follow a "|", ";" or newline, the value must end the field or meet one of those separators, and "vehicle", "DMSO",
+# "control", "n/a" or an empty value are not exempt (a doubt drops).
+_VALUE_END = r"\s*(?:\Z|[|;\n])"
+_KEY_START = r"(?:\A|(?<=[|;\n])|(?<=[|;\n] ))"
+_NO_TREATMENT_KEY = (r"(?!" + _KEY_START + r"treatments?\s?[:=]\s?(?:none|untreated|no treatment)" + _VALUE_END + ")")
+_NO_TREATMENT_VALUE = ("(?!(?:(?<=^no )|"
+                       + "|".join(f"(?<=treatment{k}{a}{sep}{b}no )" for k in ("", "s") for sep in ":="
+                                  for a in ("", " ") for b in ("", " "))
+                       + r")treatment" + _VALUE_END + ")")
 DROP_CLASSES = {
     "i": "any mutant, flox, Cre, knockout, knockdown, sh/si/shRNA, CRISPR, transgene, reporter or overexpression",
     "ii": ("any stabilised, activated, exon-3-deleted or constitutively active allele, and any sample described as "
@@ -109,8 +124,13 @@ DROP_CLASSES = {
 }
 DROP_PATTERNS: tuple[tuple[str, str, str], ...] = (
     # (class, the quoted word, pattern)
-    ("i", "mutant", r"mutant|mutat(?:ed|ion)"),
-    ("i", "flox", r"flox|" + _L + r"fl\s*/\s*(?:fl|\+)" + _E),
+    # "mutagenized" shares the stem (kwdecide). A point-mutation name, residue-position-residue ("S33Y", "V600E", a stop
+    # as "*" or "X"), is the notation of a mutation, as +/- is of a mutant: case-sensitive, with no letter or digit on
+    # either side; a look-alike symbol it drops only thins the pool.
+    ("i", "mutant", r"mutant|mutat(?:ed|ion)|mutagen|(?-i:(?<![A-Za-z0-9])[" + _AA + r"][1-9][0-9]{0,3}[" + _AA
+     + r"X*](?![A-Za-z0-9]))"),
+    # fl/fl, fl/+ and fl/- (floxed over null), and f/f, the short form of fl/fl (kwdecide)
+    ("i", "flox", r"flox|" + _L + r"fl\s*/\s*(?:fl|\+|[" + _MINUS + r"])(?![a-z])|" + _L + r"f\s*/\s*f" + _E),
     # Cre joined to a driver name is the standard allele notation ("AlbCre", "Vil1cre", "LysMcre", "iCre"). The
     # case-sensitive groups keep "secreted", symbols that begin with Cre+letter ("Creb1", "Crem") and symbols that
     # begin with a capital and "cre" undropped: "cre" counts after a digit or a lowercase-capital pair, "Cre" after a
@@ -124,16 +144,27 @@ DROP_PATTERNS: tuple[tuple[str, str, str], ...] = (
      + r"|(?-i:(?<![A-Za-z])(?:[cdi]?KOs|[cdi]KO|[cdi]kos?|[CDI]KOs?)|(?<=[a-z])KOs?)" + _E),
     ("i", "knockdown", r"knock(?:ed|ing)?[\s_-]*downs?|" + _L + r"kd" + _E
      + r"|(?-i:(?<![A-Za-z])(?:[cdi]?KDs|[cdi]KD|[cdi]kds?|[CDI]KDs?)|(?<=[a-z])KDs?)" + _E),
-    ("i", "sh/si/shRNA", _B + r"(?:sh|si)[\s_-]?rna|short[\s_-]*hairpin|small[\s_-]*interfering|"
-                         r"(?-i:(?<![A-Za-z0-9])(?:sh|si)(?=[A-Z0-9_-]))"),
-    ("i", "CRISPR", r"crispr"),
-    ("i", "transgene", r"transgen"),
+    # esiRNA (endoribonuclease-prepared siRNA) and the lower-case control names (shctrl, sictrl, shscr) are notations
+    # of the word (kwdecide); B8's refusal of a broad case-insensitive sh/si prefix stands, so only sh/si followed by a
+    # control word is matched in any case.
+    ("i", "sh/si/shRNA", _B + r"(?:sh|e?si)[\s_-]?rna|short[\s_-]*hairpin|small[\s_-]*interfering|"
+                         r"(?-i:(?<![A-Za-z0-9])(?:sh|si)(?=[A-Z0-9_-]))|"
+                         + _B + r"(?:sh|si)[\s_-]?(?:ctrl|ctl|control|scr(?:ambled?)?)"),
+    # Cas9 and dCas9: Cas stands for CRISPR-associated (kwdecide). sgRNA alone is not matched: single guide RNA has no
+    # form of the word, and the filter adds no word (A13).
+    ("i", "CRISPR", r"crispr|cas[\s_-]?9(?![0-9])"),
+    # Tg, the allele-notation abbreviation of transgene/transgenic ("Tg(...)", "Tg/+"), as a whole token: case-sensitive
+    # Tg or tg, with no letter or digit before and no letter after (kwdecide)
+    ("i", "transgene", r"transgen|(?-i:(?<![A-Za-z0-9])[Tt]g(?![a-z]))"),
     ("i", "reporter", r"reporter"),
     ("i", "overexpression", r"over[\s_-]*express|" + _L + r"oe" + _E),
-    ("i", "mutant (genotype notation)", "[+" + _MINUS + r"]\s*/\s*[" + _MINUS + "]"),
+    # +/-, -/- and the reversed heterozygous -/+ (kwdecide)
+    ("i", "mutant (genotype notation)", "[+" + _MINUS + r"]\s*/\s*[" + _MINUS + "]|[" + _MINUS + r"]\s*/\s*\+"),
     ("ii", "stabilised", r"stabili[sz]"),
     ("ii", "activated", r"activated"),
-    ("ii", "exon-3-deleted", r"exon[\s_-]*3|delet"),
+    # ex3, delta-ex3, Δex3, dex3 and del(ex3) are notations of an exon-3 deletion (kwdecide; a bare ex3 drops as a
+    # doubt). "dex" takes no space before the 3, so "Dex 3uM" (a named drug) is not read as one.
+    ("ii", "exon-3-deleted", r"exon[\s_-]*3|delet|(?<![a-z0-9])(?:ex[\s_-]?3|d(?:elta)?[_-]?ex3)(?![0-9])"),
     ("ii", "constitutively active", r"constitutive"),
     ("ii", "Wnt-stimulated / Wnt3a / Wnt-ligand", r"wnt"),
     ("ii", "stimulated", r"stimulat"),
@@ -146,7 +177,7 @@ DROP_PATTERNS: tuple[tuple[str, str, str], ...] = (
     ("iii", "agonist", r"agonist"),
     ("iii", "ligand", r"ligand"),
     ("iii", "growth-factor", r"growth[\s_-]*factor"),
-    ("iii", "treatment", r"(?<!un)(?<!non)(?<!non-)(?<!non )treat"),
+    ("iii", "treatment", r"(?<!un)(?<!non)(?<!non-)(?<!non )" + _NO_TREATMENT_KEY + _NO_TREATMENT_VALUE + r"treat"),
 )
 _DROP = tuple((c, w, re.compile(p, re.IGNORECASE)) for c, w, p in DROP_PATTERNS)
 
