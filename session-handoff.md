@@ -2,7 +2,29 @@
 
 ## Current Objective
 
-- **State at 2026-11-23, 16:11 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-23, 16:32 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-23 (m); next label (n). Local main = origin/main at a3e879a or one notes commit after it.
+  - **THE CAPTAIN: "[try it]" (entry (m)).** The combined file `T1_s2rcMSB` leaves the end of the T1 queue: unless the
+    captain names another place it takes the plain momentum file's place (after C and the 2.0 file) and MS follows it.
+    **ITS BUILD IS RUNNING:** run m1 at a3e879a in `~/v/scratch/t1line-wt` since 16:31 UTC (launcher
+    `experiments/builds/t1_ms_combined.sh`; scratch `~/v/scratch/t1msc/m1`; output `runs/t1msc_a3e879a_m1`; steps
+    gate, tests, D, A, B, C, X2, MS, MSBa, MSBb, done; waiter bcqv7ks8j). The builder was reviewed ready with no
+    blocker; the refusal path was traced on the DGX (exit 96). ON done=0: read the sha256 list and stamps only; copy
+    `MSBa/T1_s2rcMSB.h5ad` to `runs/manual_upload/`; write `experiments/builds/results/t1msc_a3e879a_m1.*`; add the
+    sha256 to the log (the list's fifth condition: before its score), to row R26's last cell and a rules note
+    (re-pin); hand over with path, sha256, board, Data used (as R13's file).
+  - **CHIPQ-S.** The two lists are fetched on the DGX (`~/v/vec-ext/t3/chipatlas`, 16:21 UTC; hashes in scratch
+    `lift8/chipq_lists_manifest.txt`, to go into register row X018) from the worktree `~/v/scratch/k27-wt`
+    (vec-campaign-c's repo, at 145f5d3; run steps with `~/v/vec-campaign-c/.venv/bin/python -I -B`). The `rows` step
+    waits for the final keyword filter: workflow w6mzzh0vc applies the last three pattern fixes on
+    `campaign/t3-chipq-4` (cut from -3 = the rule agent's addendum on -2) and re-checks. Then: merge -4, deliver,
+    `rows`, copy the two query rows files to scratch unread, two screening agents, kept list, `targets`, `verify`.
+    Four one-line confirmations for a rule agent before P2: scratch `lift8/k27_rule_open_confirmations.txt`. The read
+    script: workflow wg1onofkg (`campaign/t3-k27-read`). The corrected row: `lift8/k27_row_cells_v2.json`; settled
+    points and engineer notes: `lift8/k27_rule_v2/`. The row names `~/v/vec-campaign-c` itself as the run checkout
+    (K23's run folder is there).
+  - **OPEN WITH THE CAPTAIN (each default no change):** the T3 pathway tier (stays out); MX2s (stays parked).
+- **State at 2026-11-23, 16:11 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-23 (k); next label (l). Next ruling row R27; next register row X019; T3's next row K27 (not placed). Local
   main = origin/main at 2646249 or one notes commit after it.
   - **THE CAPTAIN: "combine MS" (entries (j), (k)).** The combined MS list is in force since 16:10 UTC (row R26, rules
