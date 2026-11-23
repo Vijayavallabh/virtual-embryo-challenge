@@ -2,7 +2,28 @@
 
 ## Current Objective
 
-- **State at 2026-11-23, 18:40 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-23, 19:11 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-23 (s); next label (t). MX2s in progress; everything else as the bullets below say.
+  - **MX2s STATE.** Row T72 v2 (NOT placed): scratch `lift8/t72_row_cells_v2.json` (row sha256 as a ledger line
+    0e4ee2d1... before the placement fills), rule files `lift8/t72_rule_v2/` (points_settled.md, engineer_notes.md,
+    readers_checklist.md; open_points_settled.md when the rule agent hands back), the attack
+    `lift8/t72_rule/attack_faults.md`. Port: `campaign/t1-mx2s` 290da3f (hand-backs `lift8/mx2s_port_build.json`,
+    `mx2s_port_review.json`). RUNNING: w7xf07u2a (pooling fix on `campaign/t1-mx2s-2`, then a check); w101ygojc (read
+    script on `campaign/t1-mx2s-read` + reviewer; the open-points rule agent).
+  - **MX2s NEXT.** (1) When the pooling fix is ready: launch the DATA-SIDE engineer + reviewer on a branch cut from
+    `campaign/t1-mx2s-2`: the fetch retries a 403 or 5xx a bounded number of times with a pause (one host); the SOFT
+    parser accepts the repository's standard field names that hold a slash (`Sample_contact_zip/postal_code` refused
+    the whole of GSE230531); engineer_notes.md section A in full (per-field sha256 at the plan step for every sample
+    record; stage stated by title AND characteristics; `fetch.py fetch-meta` into `~/v/scratch/t72_screen`; member
+    tables without consensus variants; the labeller with the skm and derived classes; the guards; outputs
+    `data/external/t1_ext_t72/`, `data/derived/t1_ext_t72/`). (2) Merge; DGX worktree `~/v/scratch/t1line-wt`
+    (currently at 290da3f; the first plan left `~/v/vec-ext/t1` with one metadata file: the revised row wants the
+    screens under `~/v/scratch/t72_screen`); plan; fetch-meta; copy the records and the per-field hashes to local
+    scratch unread; TWO readers with `readers_checklist.md` and the row's sha256; pins through `pin-template`; freeze
+    the yaml. If both atlases drop: do not place the row; log; tell the captain. (3) Otherwise: merge the read script;
+    placement commit (row with its fills, pins, yaml, derived classes, X002/X019/X020 amendments naming row T72);
+    launcher trace; run; OUTCOME line only.
+- **State at 2026-11-23, 18:40 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-23 (r); next label (s). Next ruling row R28; next register row X021; T1's next row T72; T3's next K28. Local
   main = origin/main at ab7444d or one notes commit after it. `docs/UPLOAD_SHEET.md` lists every waiting file with
   sha256, condition and Data-used text (no score in it; update it when a file is added or a score changes a

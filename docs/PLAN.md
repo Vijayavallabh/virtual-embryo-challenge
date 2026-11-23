@@ -11518,3 +11518,36 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     row for the practice read, written by a score-blind rule writer and attacked cold before placement; engineers and
     reviewers with the blocker standard fixed up front; long texts written as small files. The AI assistant designs
     none of it.
+- 2026-11-23 (s), T1 candidate MX2s: the first hours (state at 19:11 UTC, 2026-11-23). Written by the AI assistant,
+  which designed none of it and gives no lean on it.
+  - **Registered before any fetch:** X019 (GEO GSE244783) and X020 (GEO GSE230531), with X002's amendment.
+  - **The parked code is ported** (branch `campaign/t1-mx2s`, 290da3f: `experiments/t1_ext` on today's main in its
+    strict form, the composition block removed, the stage-parser exception of ruling row R27, the screens as code, the
+    known blocker fixed). Its review: not ready, one blocker: the exception refused only forms of pool and merge in
+    series text, so a series-wide sentence saying stages were combined, mixed or multiplexed would have let a sample
+    through. The reviewer's exact fix is being applied and re-checked (workflow t1-mx2s-pooling-fix).
+  - **The row.** A score-blind rule writer wrote row T72 as small files; a cold challenger attacked it before
+    placement: 'place after the listed corrections', fourteen faults, none needing a new constant (two relaunch paths;
+    the truth about what the metadata file holds and a byte-identity test by per-field hashes so that no reader opens
+    a never-fetched record; a stronger check against a per-sample split of an aggregated matrix; the fetched files
+    tied to the screened copies by sha256; what the two controls do not hold; six undeclared departures). Its noise
+    arithmetic: seed noise alone cannot pass; a consensus that only echoes the atlas in use reads AHEAD with
+    probability about 0.03 to 0.08. A reviser applied all fourteen. The base is the practice analogue of R13's file at
+    the test's fraction (row T63's committed values, to 1e-9); where the file in force adds a step to R13's, that step
+    is outside this read and unpriced. Six small points the reviser left open are with a rule agent. The row is not
+    placed: by its own text the screens come first and the placement commit carries the pins.
+  - **The first real run of the plan step** (the DGX, metadata records only, at 290da3f; nothing else was downloaded):
+    one series' request was answered 403 by the repository (the same address answers 200 a moment later with another
+    client string: the fetch needs a bounded retry), and the other series' record was refused by the parser at a
+    standard field name that contains a slash. Both are faults of code that had never met a real record; an engineer
+    fixes them with the data-side changes the revised row asks for (per-field hashes at the plan step, a
+    barcodes-and-features-only fetch into a screens folder).
+  - **One fact seen in a record of a sample the line means to use, stated because it bears on the screen:** its
+    processing text says that counting 'and aggregation' were made with the vendor's software, and the challenger had
+    noted the same word in the other series' text. The readers' checklist drops an atlas when a reader doubts that its
+    per-sample files were made from that sample's own library alone; the file checks (barcode suffixes,
+    whitelist-sized barcode files, per-library peak sets) are the evidence either way. The readers decide, not the
+    main session; if both atlases drop, the row is not placed and the line closes with no try.
+  - **Running:** the pooling fix; the practice-read script and its launcher with a reviewer (workflow
+    t1-mx2s-read-script, written to the revised row; branch `campaign/t1-mx2s-read`). Next: the data-side engineer,
+    the plan, the screens files, the two readers.
