@@ -651,6 +651,61 @@ def test_gene_order_is_the_barred_factors_through_the_builders_loader(db, kept, 
         cq.barred_genes(tmp_path, run, tmp_path)
 
 
+PLACEBO_NAME = re.compile("|".join(sorted(PLACEBO)))
+
+
+def _main_tables(db, kept, monkeypatch, out):
+    monkeypatch.setattr(cq, "load_kept", lambda *a, **k: kept)
+    monkeypatch.setattr(cq, "barred_genes", lambda *a, **k: list(GENES))
+    monkeypatch.setattr(cf, "DATA_ROOT", db)
+    return cq.main(["tables", "--out", str(out)])
+
+
+@pytest.mark.parametrize("case", ["corrupted", "leftover_part"])
+def test_no_message_names_a_placebo_antigen(db, kept, tmp_path, monkeypatch, capsys, case):
+    """A corrupted placebo file, or a placebo file missing with a leftover partial download beside it: neither the
+    tables step of chipq.py nor the targets step of chipq_fetch.py names the antigen in what it prints."""
+    p = db / "targets" / "P07.5.tsv"
+    raw = p.read_bytes()
+    if case == "corrupted":
+        p.write_bytes(raw + b"x")
+    else:
+        p.rename(p.with_name("P07.5.tsv.part"))
+    assert _main_tables(db, kept, monkeypatch, tmp_path / "t") == 2
+    err = capsys.readouterr()
+    assert "REFUSED" in err.err and not PLACEBO_NAME.search(err.err + err.out), err
+    rec = json.loads((db / "MANIFEST.json").read_text())["files"]["targets/P07.5.tsv"]
+    assert rec["sha256"][:12] in err.err   # the non-identifying key
+    code = cf.main(["targets"])
+    err = capsys.readouterr()
+    assert code == 2 and not PLACEBO_NAME.search(err.err + err.out), err
+    # nothing was overwritten or deleted
+    if case == "corrupted":
+        assert p.read_bytes() == raw + b"x"
+    else:
+        assert (db / "targets" / "P07.5.tsv.part").read_bytes() == raw
+
+
+def test_a_placebo_download_refused_mid_way_names_no_antigen(tmp_path, monkeypatch, capsys):
+    files = make_db()
+    use_net(monkeypatch, FakeNet(files, redirects={
+        "https://dbarchive.biosciencedbc.jp/kyushu-u/mm10/target/P03.5.tsv": "https://example.org/P03.5.tsv"}))
+    root = tmp_path / "chipatlas"
+    monkeypatch.setattr(cf, "DATA_ROOT", root)
+    assert cf.main(["lists"]) == 0 and cf.main(["rows"]) == 0
+    capsys.readouterr()
+    assert cf.main(["targets"]) == 2
+    err = capsys.readouterr()
+    assert "redirect" in err.err and not PLACEBO_NAME.search(err.err + err.out), err
+
+
+def test_file_labels():
+    assert cf.file_label("lists/chip_atlas_analysis_list.zip") == "lists/chip_atlas_analysis_list.zip"
+    assert cf.file_label("targets/P01.5.tsv", {"sha256": "ab" * 32}) == \
+        "a target-gene file (manifest entry sha256 abababababab)"
+    assert "P01" not in cf.file_label("targets/P01.5.tsv")
+
+
 def test_tables_never_open_or_write_the_test_query(db, kept, tmp_path, monkeypatch):
     opened = []
     real = cq.open_target

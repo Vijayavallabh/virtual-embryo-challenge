@@ -27,6 +27,9 @@ entry and refused otherwise (also a file on disk that the manifest does not know
 bytes differ from its manifest entry is refused by every step that reads it. Only the manifest itself is rewritten
 (through a .part file and a rename) when a step adds entries; an entry once written is never changed.
 
+No message names a target-gene file by its path (the path is its antigen's name): file_label names it by its manifest
+entry's sha256 (first 12 hex) instead, and any other error prints its type only.
+
 Nothing here opens a target-gene file's content: targets downloads and hashes bytes. The only reader of such a file is
 chipq.open_target. Exit codes: 0 done, 2 refused.
 """
@@ -216,13 +219,30 @@ def _opener(*extra):
     return urllib.request.build_opener(_NoRedirect, *extra)
 
 
-def _download(url: str, dst: Path, max_bytes: int) -> tuple[int, str]:
+def file_label(rel: str, rec: dict | None = None, path: Path | None = None) -> str:
+    """How a message names a file. A target-gene file's path is its antigen's name, and no message may carry a placebo
+    antigen's name, so such a file is named by a non-identifying key: its manifest entry's sha256 (first 12 hex), or,
+    for a file the manifest does not know, the sha256 of its bytes on disk, or nothing. Other files keep their path."""
+    if not rel.startswith("targets/"):
+        return rel
+    if rec is not None and isinstance(rec.get("sha256"), str):
+        return f"a target-gene file (manifest entry sha256 {rec['sha256'][:12]})"
+    if path is not None and path.is_file() and not path.is_symlink():
+        return f"a target-gene file not in the manifest (its bytes' sha256 {sha256_file(path)[:12]})"
+    return "a target-gene file not in the manifest"
+
+
+def _download(url: str, dst: Path, max_bytes: int, label: str | None = None) -> tuple[int, str]:
     """Stream the URL into dst via dst.part; refuses a URL off the allowed hosts, any redirect (no .part is made) and
-    any existing dst or .part."""
-    url = https_url(url)
+    any existing dst or .part. Messages name the file by `label` (default: its name), never by its URL."""
+    label = dst.name if label is None else label
+    try:
+        url = https_url(url)
+    except Refused:
+        raise Refused(f"{label}: its URL is not an allowed URL: refused") from None
     part = dst.with_name(dst.name + ".part")
     if dst.exists() or dst.is_symlink() or part.exists() or part.is_symlink():
-        raise Refused(f"{dst.name}: already on disk (or a leftover .part): nothing is overwritten; remove it by hand")
+        raise Refused(f"{label}: already on disk (or a leftover .part): nothing is overwritten; remove it by hand")
     dst.parent.mkdir(parents=True, exist_ok=True)
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     h = hashlib.sha256()
@@ -234,12 +254,12 @@ def _download(url: str, dst: Path, max_bytes: int) -> tuple[int, str]:
             while block := r.read(1 << 20):
                 n += len(block)
                 if n > max_bytes:
-                    raise Refused(f"{dst.name}: over the byte limit ({max_bytes}); the .part is left for removal by "
+                    raise Refused(f"{label}: over the byte limit ({max_bytes}); the .part is left for removal by "
                                   "hand")
                 h.update(block)
                 f.write(block)
     if dst.exists():
-        raise Refused(f"{dst.name}: appeared while downloading: refused")
+        raise Refused(f"{label}: appeared while downloading: refused")
     part.rename(dst)
     return n, h.hexdigest()
 
@@ -277,12 +297,12 @@ def checked_bytes(root: Path, rel: str, man: dict | None = None) -> bytes:
     rec = man["files"].get(rel)
     p = root / rel
     if rec is None:
-        raise Refused(f"{rel}: not in the manifest: refused")
+        raise Refused(f"{file_label(rel)}: not in the manifest: refused")
     if p.is_symlink() or not p.is_file():
-        raise Refused(f"{rel}: missing or a symlink: refused")
+        raise Refused(f"{file_label(rel, rec)}: missing or a symlink: refused")
     raw = p.read_bytes()
     if len(raw) != rec["size"] or sha256_bytes(raw) != rec["sha256"]:
-        raise Refused(f"{rel}: its bytes differ from the manifest entry: refused")
+        raise Refused(f"{file_label(rel, rec)}: its bytes differ from the manifest entry: refused")
     return raw
 
 
@@ -293,10 +313,10 @@ def _fetch_one(root: Path, man: dict, rel: str, url: str, kind: str) -> int:
     rec = man["files"].get(rel)
     if rec is not None:
         if rec.get("url") != url:
-            raise Refused(f"{rel}: the manifest records another URL: refused")
+            raise Refused(f"{file_label(rel, rec)}: the manifest records another URL: refused")
         checked_bytes(root, rel, man)
         return rec["size"]
-    size, digest = _download(url, p, MAX_BYTES[kind])
+    size, digest = _download(url, p, MAX_BYTES[kind], file_label(rel, None, p))
     man["files"][rel] = {"url": url, "size": size, "sha256": digest,
                          "fetched": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime())}
     save_manifest(root, man)
@@ -517,6 +537,9 @@ def main(argv: list[str] | None = None) -> int:
             return 0 if step_verify() else 2
     except Refused as e:
         print(f"REFUSED: {e}", file=sys.stderr)
+        return 2
+    except Exception as e:  # noqa: BLE001  (an OS or network message could carry a file's path or URL: type only)
+        print(f"REFUSED: {type(e).__name__} during the step", file=sys.stderr)
         return 2
     return 0
 
