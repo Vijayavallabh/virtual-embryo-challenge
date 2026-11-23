@@ -11931,3 +11931,47 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **The captain's condition of entry (z)** (upload only where the expected score is closer to the targets) is not
     restated or withdrawn by these words; the AI assistant reads them as the skip and nothing more. Uploads remain the
     captain's own acts.
+- 2026-11-23 (cc), four scores reported by the captain, one per board; each board's pre-set rule applied (state at
+  22:58 UTC, 2026-11-23). Written by the AI assistant, which is recused on the heart's scope and size and on the
+  embryo's occupancy term and shape forms, and states no preference on either.
+  - **What the captain pasted:** the path of the one file uploaded on each board, and for each board a headline score,
+    a leaderboard rank and per-metric lines. **Only the four headlines are recorded:** T1 71.8; heart 60.4; embryo
+    63.99; T3 63.8. The per-metric lines and the ranks are written nowhere in the repository and are used for nothing
+    (entries 2026-11-18 (k), 2026-11-20 (q), 2026-11-21 (l) and (t)). The files are the ones the captain's message
+    names per board: `T1_s2rcC.h5ad`, `T2heart_organ_half.h5ad`, `T2embryo_s2x_cr.h5ad` and `T3_c1_s2.h5ad`; each
+    sha256 on disk equals the recorded one.
+  - **T1.** C returned 71.8, T1's highest headline so far (B returned 71.59). Line 3 (entry 2026-11-22 (nn)): A (70.8)
+    and C have both been uploaded and C's headline is strictly above A's, so the line's next file is
+    `T1_s2rcCm20.h5ad` (acce5f5f7097); `T1_s2rcCm25.h5ad` follows only if Cm20's headline is strictly above the line's
+    best, which is now C's. Line 1 is untouched: its best so far is B's headline, C's does not enter it, and the 2.5
+    file goes only if the 2.0 file's headline is strictly above B's. Order by the texts on record: the 2.0 file
+    (`T1_s2rcB2.h5ad`), then the combined momentum file (`T1_s2rcMSB.h5ad`, in the plain momentum file's place by the
+    captain's word of entry (m)), then at each slot line 1's due file, then line 2's (`T1_s2rcA15.h5ad`, due since
+    entry 2026-11-22 (o)), then line 3's, unless the captain says otherwise. **A fact for the captain, with no lean of
+    the AI assistant's:** Cm20 is the next step on the file that now holds the board's best, and by line 3's own order
+    rule it stands behind every other ready file; with fewer than all slots used it may get no upload. The order is
+    the captain's to change.
+  - **Heart** (rows R21, R28 and R29; the main session executes and states nothing more): D returned 60.4, the board's
+    highest so far (the full trim returned 56.4). First line (R28): its best stays the full trim's headline whatever D
+    scored; `T2heart_core_ts05_half.h5ad` is due and goes first; TS10 only if TS05's headline is strictly above 56.4.
+    Second line (R29): D has been uploaded and its first headline is reported, so the line's best is 60.4 and
+    `T2heart_organ_ts05_half.h5ad` is due; at a slot where both lines have a due file the first line's goes first;
+    OTS10 only if OTS05's headline is strictly above 60.4. No headline of one line enters the other's comparisons.
+  - **Embryo** (entries 2026-11-21 (l) and (y); the main session executes and states nothing more): the copy-rows file
+    C returned 63.99; O's 69.9 stays the board's highest. By entry (y) no headline decides whether, when or in what
+    order another embryo file goes: the sized copy-rows file (`T2embryo_s2x_crs.h5ad`) is next, then SO, `T2embryo_s2`
+    and O_hi; the captain may use fewer, none, or another order.
+  - **T3.** C1 returned 63.8, T3's highest headline so far (the barred s2, base B, returned 62.30). By entry
+    2026-11-21 (w)'s list C2 (`T3_c2_s2.h5ad`) goes next whatever C1 returned, then row K23's file (`T3_k23_s2.h5ad`).
+    CK goes only after C2 and the K23 file have both been uploaded and each returned a headline strictly above B's
+    62.30; the outside-table line's E = 4 file goes only if the K23 file's headline is strictly above B's. **A wording
+    corrected.** The upload sheet, and the AI assistant's messages to the captain of 2026-11-23, gave these two
+    conditions as 'strictly above the board's current best', which was the same thing while B held the board's best.
+    The rule texts name B's headline (`docs/S2_RULES.md`, the amendments of 2026-11-20 for CK and of 2026-11-22 for
+    the exponent line), so C1's headline does not raise the bar. The sheet now names the barred s2; no rule text
+    changes.
+  - **Standing by the record's best headline per board:** T1 71.8, T3 63.8, heart 60.4, embryo 69.9; the total is 71.8
+    + 63.8 + (60.4 + 69.9) / 2 = 200.75 (197.04 before these four; labelled arithmetic from reported headlines).
+  - **What is written.** Four rows in `results/manual_uploads.csv` (headline only); `docs/UPLOAD_SHEET.md` without the
+    four uploaded files and with each condition in its rule's own terms. No rule text, ledger row or built file is
+    touched; the three files skipped by the captain's word of entry (bb) stay skipped.
