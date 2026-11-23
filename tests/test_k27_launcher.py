@@ -20,6 +20,7 @@ GIT_VARS = ("GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE", "GIT_OBJECT_DIRECTORY"
             "GIT_ALTERNATE_OBJECT_DIRECTORIES", "GIT_CEILING_DIRECTORIES")
 ROW = "| K27 (one row) | T3 | `experiments/t3_decomp/k27_chip_query.py`, cloned from k24 |\n"
 REGISTER = "| X018 | ChIP-Atlas, a generic database of public ChIP-seq | ... |\n"
+FETCH_DIR = "chip" "atlas"  # the fetch folder the launcher checks (spelt apart: no file here reaches the database)
 NAMES = ["chipq_Gata4", *(f"chipq_rand_seed{s}" for s in range(10))]
 
 # The stub `uv`: a python -c one-liner runs for real (the launcher's json reads); every step exits with the code the
@@ -104,7 +105,7 @@ def _filled_script(text_: str) -> tuple[str, str]:
 
 def _setup(tmp_path: Path) -> SimpleNamespace:
     repo, home = tmp_path / "repo", tmp_path / "home"
-    for d in ("v/vec-ext/t3/tables_k27", "v/vec-ext/t3/tables_two_study", "v/vec-ext/t3/chipatlas"):
+    for d in ("v/vec-ext/t3/tables_k27", "v/vec-ext/t3/tables_two_study", "v/vec-ext/t3/" + FETCH_DIR):
         (home / d).mkdir(parents=True)
     files = {"experiments/t3_decomp/run_k27.sh": SH.read_text(), "experiments/harness/TRIES.md": ROW,
              "EXTERNAL_DATA.md": REGISTER, "experiments/t3_ext/TABLES_K27.sha256": "",

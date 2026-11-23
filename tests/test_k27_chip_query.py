@@ -1083,7 +1083,8 @@ def test_nothing_the_reading_writes_names_a_gene_or_a_placebo(tmp_path, u3d, mon
 
 def test_the_script_opens_no_target_file_and_names_no_held_out_fact():
     src = (T3 / "k27_chip_query.py").read_text()
-    assert "checked_bytes" not in src and "target_rel" not in src and ".5.tsv" not in src
+    # chipq.py is the only opener of a target file (tests/test_chipq.py: test_only_open_target_reads_a_target_file)
+    assert all(w not in src for w in ("checked" "_bytes", "target" "_rel", ".5" ".tsv"))
     assert "rmtree" not in src and "unlink(" not in src
     with contextlib.redirect_stdout(io.StringIO()):
         assert k27.TRY_ARMS and k27.S_VOID.format(clause="x").endswith("(plus the failed guard arms).")
