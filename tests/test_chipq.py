@@ -167,16 +167,52 @@ class FakeNet(urllib.request.HTTPSHandler):
         return r
 
 
+_OPENER = cf._opener   # the module's own opener, before any test patches it
+
+
 def use_net(monkeypatch, f):
-    real = cf._opener
+    real = _OPENER
     monkeypatch.setattr(urllib.request, "urlopen", lambda *a, **k: pytest.fail("urlopen is never used"))
     monkeypatch.setattr(cf, "_opener", lambda *extra: real(f, *extra))
     return f
 
 
+@pytest.fixture(autouse=True)
+def no_pause(monkeypatch):
+    pauses = []
+    monkeypatch.setattr(cf, "_sleep", pauses.append)
+    return pauses
+
+
 @pytest.fixture
 def net(monkeypatch):
     return use_net(monkeypatch, FakeNet(make_db()))
+
+
+class _Broken(io.BytesIO):
+    """A response body that fails half-way: the connection drops after the first block."""
+
+    def read(self, n=-1):
+        if self.tell() > 0:
+            raise http.client.IncompleteRead(b"")
+        return super().read(min(n, 10) if n and n > 0 else 10)
+
+
+class FlakyNet(FakeNet):
+    """FakeNet whose answers for `flaky` URLs fail: the first `fails` requests drop half-way (a .part is written)."""
+
+    def __init__(self, files, flaky, fails):
+        super().__init__(files)
+        self.flaky, self.left = set(flaky), dict.fromkeys(flaky, fails)
+
+    def https_open(self, req):
+        r = super().https_open(req)
+        u = req.full_url
+        if u in self.flaky and self.left[u] > 0:
+            self.left[u] -= 1
+            r = urllib.response.addinfourl(_Broken(self.files[u]), r.headers, u, 200)
+            r.msg = "OK"
+        return r
 
 
 @pytest.fixture
@@ -281,18 +317,75 @@ def main_exit(fn, argv, root, monkeypatch=None):
         cf.DATA_ROOT = old
 
 
-def test_fetch_refuses_unknown_files_and_leftover_parts(tmp_path, net):
+def test_fetch_sets_leftover_parts_aside_and_refuses_unknown_files(tmp_path, net):
     root = tmp_path / "chipatlas"
     (root / "lists").mkdir(parents=True)
     (root / "lists" / "chip_atlas_analysis_list.zip.part").write_bytes(b"half")
-    with pytest.raises(cf.Refused, match="nothing is overwritten"):
-        cf.step_lists(root)
+    (root / "lists" / "chip_atlas_analysis_list.zip.failed.1").write_bytes(b"older")
+    assert cf.step_lists(root) == {"files": 2}   # no removal by hand
+    assert (root / "lists" / "chip_atlas_analysis_list.zip.failed.1").read_bytes() == b"older"
+    assert (root / "lists" / "chip_atlas_analysis_list.zip.failed.2").read_bytes() == b"half"
+    assert not (root / "lists" / "chip_atlas_analysis_list.zip.part").exists()
+    assert cf.step_verify(root)   # the set-aside files are refused nowhere and never in the manifest
+    assert not any(".failed." in rel for rel in cf.load_manifest(root)["files"])
     root2 = tmp_path / "chipatlas2"
     (root2 / "lists").mkdir(parents=True)
     (root2 / "lists" / "chip_atlas_analysis_list.zip").write_bytes(b"not from the manifest")
     with pytest.raises(cf.Refused):
         cf.step_lists(root2)
     assert (root2 / "lists" / "chip_atlas_analysis_list.zip").read_bytes() == b"not from the manifest"
+
+
+P03_URL = "https://dbarchive.biosciencedbc.jp/kyushu-u/mm10/target/P03.5.tsv"
+
+
+def test_a_failed_download_is_retried_and_its_part_set_aside(tmp_path, monkeypatch, no_pause):
+    files = make_db()
+    f = use_net(monkeypatch, FlakyNet(files, [P03_URL], fails=2))
+    root = tmp_path / "chipatlas"
+    cf.step_lists(root), cf.step_rows(root), cf.step_targets(root)
+    t = root / "targets"
+    assert (t / "P03.5.tsv").read_bytes() == files[P03_URL] and cf.step_verify(root)
+    assert sorted(p.name for p in t.glob("P03.5.tsv.*")) == ["P03.5.tsv.failed.1", "P03.5.tsv.failed.2"]
+    assert [u for u, _ in f.calls].count(P03_URL) == 3
+    # a short pause before every request, a longer one before each retry
+    assert no_pause.count(cf.RETRY_PAUSE) == 2 and no_pause.count(cf.REQUEST_PAUSE) == len(f.calls) - 2
+    assert cf.REQUEST_PAUSE > 0 and cf.RETRY_PAUSE > 0 and cf.RETRIES == 3
+
+
+def test_a_download_failing_every_try_is_refused_and_a_rerun_needs_no_hand(tmp_path, monkeypatch, capsys):
+    files = make_db()
+    f = use_net(monkeypatch, FlakyNet(files, [P03_URL], fails=4))
+    root = tmp_path / "chipatlas"
+    monkeypatch.setattr(cf, "DATA_ROOT", root)
+    assert cf.main(["lists"]) == 0 and cf.main(["rows"]) == 0
+    capsys.readouterr()
+    assert cf.main(["targets"]) == 2
+    err = capsys.readouterr().err
+    assert "failed 4 times" in err and "IncompleteRead" in err and "P03" not in err
+    assert [u for u, _ in f.calls].count(P03_URL) == 4
+    t = root / "targets"
+    assert len(list(t.glob("P03.5.tsv.failed.*"))) == 4 and not (t / "P03.5.tsv").exists()
+    assert not list(t.glob("*.part")) and "targets/P03.5.tsv" not in cf.load_manifest(root)["files"]
+    # the network is back: the rerun fetches the file and keeps every set-aside file as it was
+    use_net(monkeypatch, FakeNet(files))
+    assert cf.main(["targets"]) == 0 and cf.main(["verify"]) == 0
+    assert (t / "P03.5.tsv").read_bytes() == files[P03_URL] and len(list(t.glob("P03.5.tsv.failed.*"))) == 4
+
+
+def test_a_refusal_is_not_retried(tmp_path, monkeypatch):
+    f = use_net(monkeypatch, FakeNet(make_db(), redirects={cf.LISTS["chip_atlas_analysis_list.zip"]: "/x"}))
+    with pytest.raises(cf.Refused, match="redirect"):
+        cf.step_lists(tmp_path / "chipatlas")
+    assert len(f.calls) == 1
+    # over the byte limit: refused at once, the partial file set aside (not left for removal by hand)
+    f = use_net(monkeypatch, FakeNet(make_db()))
+    monkeypatch.setattr(cf, "MAX_BYTES", {"list": 5, "target": 5})
+    root = tmp_path / "chipatlas2"
+    with pytest.raises(cf.Refused, match="byte limit"):
+        cf.step_lists(root)
+    assert len(f.calls) == 1 and not list(root.rglob("*.part"))
+    assert [p.name for p in (root / "lists").iterdir()] == ["chip_atlas_analysis_list.zip.failed.1"]
 
 
 def test_urls_are_refused_off_the_two_hosts_and_for_signal_files():
@@ -559,6 +652,29 @@ def test_the_reader_refuses_a_changed_file(db, kept):
         cq.open_target("Gata4", GENES, db, kept)
 
 
+# The read script (and its tests) may CALL chipq's functions (open_target, build, placebo_pool, ...), but nothing
+# outside chipq.py opens a target-gene file itself: no target file name or path, no target_rel, no checked_bytes.
+READ_CALLERS = ("experiments/t3_decomp/k27_chip_query.py", "tests/test_k27_chip_query.py")
+OPENS_A_TARGET = re.compile(r"\.5\.tsv|target_rel|checked_bytes|[\"']targets/|/\s*[\"']targets[\"']")
+NAMES_THE_READER = re.compile(r"chipatlas|open_target")
+
+
+def target_access(rel: str, text: str) -> bool:
+    """True when the file at `rel` (repository-relative) reaches a target-gene file in a way the rule forbids."""
+    if OPENS_A_TARGET.search(text):
+        return True
+    return rel not in READ_CALLERS and bool(NAMES_THE_READER.search(text))
+
+
+def test_the_static_rule_lets_the_read_script_call_chipq_but_not_open_a_file():
+    calls = "import chipq as cq\nE, ids = cq.open_target('Gata4', genes)\nr = cq.build('Gata4', genes)\n"
+    assert not target_access(READ_CALLERS[0], calls) and not target_access(READ_CALLERS[1], calls)
+    assert target_access("experiments/t3_decomp/k24_wider_tables.py", calls)   # any other file: not even a call
+    for opens in ("p = root / 'targets' / f'{a}.5.tsv'", "cq.cf.checked_bytes(root, cq.cf.target_rel(a))",
+                  "open(root / \"targets/\" + a)", "raw = cf.checked_bytes(root, rel)"):
+        assert target_access(READ_CALLERS[0], opens), opens
+
+
 def test_only_open_target_reads_a_target_file():
     src = (EXT / "chipq.py").read_text()
     assert src.count("checked_bytes(") == 1
@@ -569,8 +685,7 @@ def test_only_open_target_reads_a_target_file():
         for f in base.rglob("*.py"):
             if f.name in ("chipq.py", "chipq_fetch.py", "test_chipq.py"):
                 continue
-            t = f.read_text(errors="replace")
-            if re.search(r"\.5\.tsv|target_rel|chipatlas|open_target", t):
+            if target_access(f.relative_to(ROOT).as_posix(), f.read_text(errors="replace")):
                 hits.append(str(f.relative_to(ROOT)))
     assert hits == []
     assert "STRING" not in (EXT / "chipq_fetch.py").read_text()

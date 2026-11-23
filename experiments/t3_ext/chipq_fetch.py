@@ -24,7 +24,10 @@ Steps (python -I -B experiments/t3_ext/chipq_fetch.py <step>):
 
 The manifest (<root>/MANIFEST.json) records for every file its URL (None for a file the rows step derives), size,
 sha256 and fetch time. Nothing is deleted or overwritten: a file already on disk is kept when it matches its manifest
-entry and refused otherwise (also a file on disk that the manifest does not know, and a leftover .part). A file whose
+entry and refused otherwise (also a file on disk that the manifest does not know). A partial download (.part),
+left by a failed attempt or an earlier run, is moved aside as <name>.failed.<n>: never deleted, never read, refused
+nowhere. A failed download is tried again up to RETRIES times after a short pause, and every request waits
+REQUEST_PAUSE first. A file whose
 bytes differ from its manifest entry is refused by every step that reads it. Only the manifest itself is rewritten
 (through a .part file and a rename) when a step adds entries; an entry once written is never changed.
 
@@ -39,11 +42,13 @@ from __future__ import annotations
 
 import csv
 import hashlib
+import http.client
 import io
 import json
 import re
 import sys
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 import zipfile
@@ -65,7 +70,11 @@ ANALYSIS = "chip_atlas_analysis_list.zip"
 EXPERIMENTS = "chip_atlas_experiment_list.zip"
 QUERY_ANTIGENS = ("Ctnnb1", "Gata4", "Mab21l2")   # their rows go to the two readers; never through the keyword filter
 PLACEBO_MIN_KEPT = 2                              # the specification: "at least 2 screened-clean experiments"
-MAX_BYTES = {"list": 512 * 1024 ** 2, "target": 256 * 1024 ** 2}   # a download past this is refused (.part kept)
+MAX_BYTES = {"list": 512 * 1024 ** 2, "target": 256 * 1024 ** 2}   # a download past this is refused (.part set aside)
+RETRIES = 3            # a failed download (a network or OS error, not a refusal) is tried again up to three times
+RETRY_PAUSE = 10.0     # seconds before each retry
+REQUEST_PAUSE = 1.0    # seconds before every request, so hundreds of target files are fetched at a gentle pace
+_sleep = time.sleep    # (the tests replace it)
 
 # the analysis list's +/-5 kb column: its header cell and the one URL form taken from it (the archive serves the
 # same path over https). The antigen named in the URL must be the row's antigen.
@@ -242,7 +251,8 @@ def _download(url: str, dst: Path, max_bytes: int, label: str | None = None) -> 
         raise Refused(f"{label}: its URL is not an allowed URL: refused") from None
     part = dst.with_name(dst.name + ".part")
     if dst.exists() or dst.is_symlink() or part.exists() or part.is_symlink():
-        raise Refused(f"{label}: already on disk (or a leftover .part): nothing is overwritten; remove it by hand")
+        raise Refused(f"{label}: already on disk but not in the manifest (or a .part beside it): nothing is "
+                      "overwritten: refused")
     dst.parent.mkdir(parents=True, exist_ok=True)
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     h = hashlib.sha256()
@@ -254,14 +264,50 @@ def _download(url: str, dst: Path, max_bytes: int, label: str | None = None) -> 
             while block := r.read(1 << 20):
                 n += len(block)
                 if n > max_bytes:
-                    raise Refused(f"{label}: over the byte limit ({max_bytes}); the .part is left for removal by "
-                                  "hand")
+                    raise Refused(f"{label}: over the byte limit ({max_bytes}): refused")
                 h.update(block)
                 f.write(block)
     if dst.exists():
         raise Refused(f"{label}: appeared while downloading: refused")
     part.rename(dst)
     return n, h.hexdigest()
+
+
+def set_aside(part: Path) -> Path | None:
+    """Move a partial download aside under <name>.failed.<n> (the first n not on disk). Such a file is never deleted,
+    never read and refused nowhere; a rerun then needs no removal by hand. None when there is no .part."""
+    if not (part.exists() or part.is_symlink()):
+        return None
+    base = part.name[:-len(".part")] if part.name.endswith(".part") else part.name
+    n = 1
+    while (part.with_name(f"{base}.failed.{n}")).exists() or part.with_name(f"{base}.failed.{n}").is_symlink():
+        n += 1
+    dst = part.with_name(f"{base}.failed.{n}")
+    part.rename(dst)
+    return dst
+
+
+_TRANSIENT = (OSError, urllib.error.URLError, http.client.HTTPException)
+
+
+def _download_retried(url: str, dst: Path, max_bytes: int, label: str) -> tuple[int, str]:
+    """_download after a short pause, tried again up to RETRIES times on a network or OS error (never on a refusal).
+    A leftover .part from an earlier run, and the .part of every failed or refused attempt, is set aside first."""
+    part = dst.with_name(dst.name + ".part")
+    set_aside(part)
+    last = ""
+    for attempt in range(1 + RETRIES):
+        _sleep(REQUEST_PAUSE if attempt == 0 else RETRY_PAUSE)
+        try:
+            return _download(url, dst, max_bytes, label)
+        except Refused:
+            set_aside(part)
+            raise
+        except _TRANSIENT as e:
+            set_aside(part)
+            last = type(e).__name__
+    raise Refused(f"{label}: the download failed {1 + RETRIES} times (last: {last}): refused; partial files were "
+                  "set aside as .failed.<n>")
 
 
 def _rel(root: Path, p: Path) -> str:
@@ -308,7 +354,8 @@ def checked_bytes(root: Path, rel: str, man: dict | None = None) -> bytes:
 
 def _fetch_one(root: Path, man: dict, rel: str, url: str, kind: str) -> int:
     """Fetch url to root/rel once. An entry already in the manifest is kept when the file on disk matches it (no
-    request) and refused otherwise; a file on disk the manifest does not know is refused."""
+    request) and refused otherwise; a file on disk the manifest does not know is refused; a leftover .part is set
+    aside (set_aside) and the file fetched again."""
     p = root / rel
     rec = man["files"].get(rel)
     if rec is not None:
@@ -316,7 +363,7 @@ def _fetch_one(root: Path, man: dict, rel: str, url: str, kind: str) -> int:
             raise Refused(f"{file_label(rel, rec)}: the manifest records another URL: refused")
         checked_bytes(root, rel, man)
         return rec["size"]
-    size, digest = _download(url, p, MAX_BYTES[kind], file_label(rel, None, p))
+    size, digest = _download_retried(url, p, MAX_BYTES[kind], file_label(rel, None, p))
     man["files"][rel] = {"url": url, "size": size, "sha256": digest,
                          "fetched": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime())}
     save_manifest(root, man)
