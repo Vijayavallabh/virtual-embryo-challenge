@@ -2202,3 +2202,17 @@ adding (row R23's risk cell). The method report says that MS's released momentum
 one file, whether that file was uploaded, and that the best headline was kept. Data used: as R13's file (released
 challenge data and the outside heart atlas on recomputed groups, register row X002); the momentum uses released
 challenge data only. Each upload is the captain's own act.
+
+## Note of 2026-11-23: T1's combined MS file is built (row R26; decision log 2026-11-23 (p))
+
+The five conditions of the amendment "T1's combined MS list" above now hold: the builder takes `--feng-fraction-mult
+1.5 --direction-momentum all` only with `--captain-ruling R26` (merged at a3e879a), an independent reviewer passed the
+change with no blocker, the six identity commands rebuilt R13's, A's, B's, C's, the 2.0 file's and MS's recorded bytes
+at that one clean commit, the file was built twice there with one sha256 after the launcher's refusal path had been
+traced and passed the format check, and its sha256 is in the decision log before its score. **The file:**
+`runs/manual_upload/T1_s2rcMSB.h5ad`, sha256 78bb17eea5721e590cfd2c9f707e9cd6f2f496e081acede4f697dc4035871da2 (build
+record `experiments/builds/results/t1msc_a3e879a_m1.txt`). No score of it, and none of MS, had been reported to the
+main session at this note's commit. **Its place** (the captain's word of 2026-11-23, "try it", decision log (m)): it
+is no longer last; unless the captain names another place it takes the plain momentum file's place and MS follows it.
+Every other clause of the list stands. Data used: as R13's file (released challenge data and the outside heart atlas
+on recomputed groups, register row X002).

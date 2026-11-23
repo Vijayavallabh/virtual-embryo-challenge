@@ -11319,6 +11319,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     Next: the engineer's builder change and launcher (running in the same workflow), the reviewer, the merge, the
     dry-run trace, the identity rebuilds and the two builds on `~/v/vec-campaign-d`'s worktree, and the file's sha256
     into this log before its score.
+  - **Added on 2026-11-23 at 17:07 UTC, before any score of the file (the list's fifth condition):**
+    `T1_s2rcMSB.h5ad`, sha256 78bb17eea5721e590cfd2c9f707e9cd6f2f496e081acede4f697dc4035871da2; built twice at a3e879a
+    after the six identity rebuilds; entry (p).
 - 2026-11-23 (l), T3 candidate CHIPQ-S: row K27 is written, attacked cold and corrected, and not yet placed; the
   database code's review and fixes; the read script is being written (state at 16:19 UTC, 2026-11-23). Written by the
   AI assistant, which designed none of it and gives no lean on it.
@@ -11447,3 +11450,21 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     `~/v/vec-campaign-c` (its tests, the manifest's check, P1, P2), after a traced refusal path. P1 prints two counts.
     If P1 holds, the test-board build path is given to an engineer and a reviewer at once, so that a pass can be built
     in time; nothing of it runs without the captain's ruling.
+- 2026-11-23 (p), T1's combined MS file is built, before any score of it (state at 17:07 UTC, 2026-11-23). Written by
+  the AI assistant, which designed none of it and gives no lean on it.
+  - **The file.** `runs/manual_upload/T1_s2rcMSB.h5ad`, sha256
+    78bb17eea5721e590cfd2c9f707e9cd6f2f496e081acede4f697dc4035871da2. Built on the DGX in the detached worktree
+    `~/v/scratch/t1line-wt` at a3e879a (clean), run m1, 16:31 to 17:06 UTC; every step exit 0: gate, tests, the six
+    identity rebuilds (the default command gave R13's bytes, and A's, B's, C's, row R20's and row R23's commands gave
+    A's, B's, C's, the 2.0 file's and MS's recorded bytes), the combined file twice (one sha256), the list. All eight
+    stamps say this commit and clean True. Record: `experiments/builds/results/t1msc_a3e879a_m1.txt` and its sha256
+    list. Read by exit codes, sha256 and the stamps' commit and clean fields only.
+  - **The list's five conditions hold** (entry (k)): the builder under row R26 alone (reviewed ready, no blocker;
+    merged at a3e879a); the reviewer's pass; the identity rebuilds at one clean commit; two builds with one sha256
+    after a traced launch, format check passed; the sha256 added to entry (k) before its score. The reviewer's lesser
+    point that the file's record cites entry (j) and not also (k) is left as it is: (j) is the captain's order, and no
+    code changes after a review.
+  - **Its place, by the captain's words of entries (j) and (m).** No longer last: unless the captain names another
+    place it takes the plain momentum file's place, after C and the 2.0 file, and MS follows it. It reads no score to
+    go and its headline enters no search line. No score of MS or of this file has been reported to the main session.
+    Handed over to the captain with path, sha256, board and the Data-used text (as R13's file).

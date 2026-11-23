@@ -1,0 +1,33 @@
+T1's combined MS file (ruling row R26; the captain's order of 2026-11-23, "combine MS"; docs/S2_RULES.md, "T1's
+combined MS list"; decision log 2026-11-23 (j), (k) and (p)): the set t1msc, run m1. BUILT; no score of it exists
+=================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-23 in the detached worktree ~/v/scratch/t1line-wt (its own environment,
+row N54's relabelling output linked) at commit a3e879a998e0e59ee1932520cc64b4c453d161f1 (clean tree), launched at 16:31 UTC and finished at 17:06 UTC:
+`bash experiments/builds/t1_ms_combined.sh a3e879a998e0e59ee1932520cc64b4c453d161f1 m1`
+Step exit codes: gate 0, tests 0, D 0, A 0, B 0, C 0, X2 0, MS 0, MSBa 0, MSBb 0, done 0.
+  D     the default command reproduces R13's file                  ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f
+  A     `--g-mom-damping 1.0` reproduces candidate A               76865826f5a3741c7585f81c4241048ca1a95b5791ebb3c8feb1f2b536678ce4
+  B     `--feng-fraction-mult 1.5` reproduces B, this file's base  c7240cb6a7f7ee93d037f437832efbaad004f1fbe608d80072f8efd5d20a0062
+  C     both options reproduce candidate C                         31477ef7df5d5374a74a8249c570217020c593916ab4d3780049b7b3f87b0620
+  X2    row R20's command reproduces the 2.0 file                  52897fe375b8a81afffa788592047c30361824148b00a8176514385060518837
+  MS    row R23's command reproduces candidate MS                  6103d10535665634ee0cad3390590a5df132d1805682fb1d309bb19581fdaa5e
+  MSBa  T1_s2rcMSB.h5ad (--feng-fraction-mult 1.5 --direction-momentum all --captain-ruling R26)  78bb17eea5721e590cfd2c9f707e9cd6f2f496e081acede4f697dc4035871da2
+  MSBb  the same sha256: the two builds agree byte for byte
+Stamps (the commit and clean fields only): all eight say a3e879a998e0 and clean True.
+
+The builder command: build_test.py t1 --g-mom --base lib3 --feng-groups recomputed --feng-fraction-mult 1.5
+--direction-momentum all --captain-ruling R26 --out <O>/T1_s2rcMSB.h5ad. Before the first launch the launcher's refusal
+path was traced on the DGX under a throwaway home folder with a commit of forty zeros (exit 96, the exit record
+written).
+
+Copied to runs/manual_upload/T1_s2rcMSB.h5ad and checked against this sha256.
+
+The list's rule (decision log 2026-11-23 (k)): the file reads no score to go; it raises the board's mark only if its
+headline is strictly above the highest headline among the team's T1 uploads, and a tie keeps the earlier file; its
+headline enters no search line; nothing is rebuilt, re-seeded or changed after a score. Its place, by the captain's
+word of decision log 2026-11-23 (m): the plain momentum file's place unless the captain names another; the upload is
+the captain's own act.
+
+Read by exit codes, sha256 and the stamps' commit and clean fields only (AGENTS.md): no build log, file size, cell
+count or sidecar record was read. Nothing was uploaded.
