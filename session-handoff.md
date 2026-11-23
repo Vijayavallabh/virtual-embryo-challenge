@@ -2,7 +2,35 @@
 
 ## Current Objective
 
-- **State at 2026-11-23, 19:11 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-23, 19:17 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-23 (t); next label (u). Ruling rows through R28; next R29. Main at the commit of this note; nothing of ours
+  runs on the DGX.
+  - **THE HEART SEARCH LINE IS IN FORCE** (the captain's words "start the heart search", ruling row R28, the rules
+    note's amendment of 2026-11-23, log (t)). Two files on the full trim C's command with the trend step at strength
+    0.5 (TS05) and 1.0 (TS10), nothing else changed. Rule: TS05 is uploaded after the queued file D; TS10 only if
+    TS05's headline is strictly above C's (C's headline is on record in `results/manual_uploads.csv`: the line's
+    base); the line ends at TS10. The AI assistant is recused on the heart's scope and size and states no preference.
+    T1 line 1's step back and the third T1 line's turn order were NOT named and stay off.
+  - **HEART, NEXT.** Workflow wai2reyjh codes it (`campaign/heart-trend-line`: builder option `--trend-strength
+    {0.5,1.0}` only with `--entry core_trim --z-mode raw --captain-ruling R28`; launcher
+    `experiments/builds/heart_trend_line.sh <COMMIT> <RUN>`; a reviewer with the blocker standard up front;
+    specification in scratch `lift8/heart_line_final.txt`). On a ready review: merge to main with the targeted tests;
+    deliver the commit to the DGX (`git push PrakashDGX_H2:v/vec-campaign-d <commit>:refs/heads/<name>`), check it out
+    in a detached worktree with its own environment (file D was built in `~/v/scratch/h29b-wt`; nothing runs there),
+    trace the launcher's refusal path under a throwaway HOME, launch detached with PATH exported, wait with a
+    background waiter. Read exit files, sha256 and the stamps' commit and clean fields only. Then: build record under
+    `experiments/builds/results/`, the two halves copied to `runs/manual_upload/` and checked, their sha256 into the
+    log and the rules note BEFORE any score, `docs/UPLOAD_SHEET.md` updated (Data used: released challenge data only;
+    no outside data), and the files handed to the captain with path, sha256, board and that text.
+  - **MX2s (T1), RUNNING.** Workflow wai2reyjh also holds the data side (`campaign/t1-mx2s-3` cut from
+    `campaign/t1-mx2s-2` 75356ec: the three pooling blockers of the re-review in scratch
+    `lift8/mx2s_pooling_fix.json`, the two faults of the first real plan run (a 403 answered once by the repository:
+    bounded retry; the parser's refusal of the standard field name with a slash), and engineer_notes.md section A)
+    with a reviewer. Workflow w101ygojc holds the practice-read script (`campaign/t1-mx2s-read`) with a reviewer and
+    the rule agent on the six open points (`lift8/t72_rule_v2/open_points_settled.md`). Then as the bullet below says:
+    merge, the plan step on the DGX, the screens' files, two readers, pins; placement of row T72 only if at least one
+    new atlas survives.
+- **State at 2026-11-23, 19:11 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-23 (s); next label (t). MX2s in progress; everything else as the bullets below say.
   - **MX2s STATE.** Row T72 v2 (NOT placed): scratch `lift8/t72_row_cells_v2.json` (row sha256 as a ledger line
     0e4ee2d1... before the placement fills), rule files `lift8/t72_rule_v2/` (points_settled.md, engineer_notes.md,

@@ -2,6 +2,15 @@
 
 ## Current State
 
+- **2026-11-23, 19:17 UTC.** The captain switched on the heart search line ("start the heart search"; ruling row R28):
+  two files on the full trim's command with the trend step at strength 0.5 and then, only if that file's headline is
+  strictly above the full trim's, 1.0. The rule text is in the rules note (re-pinned) and the log before any code or
+  build; an engineer and a reviewer are on the builder option and its launcher. The Task 1 three-atlas line: row T72
+  is written, attacked and revised (not placed); the ported code's review found pooling-word gaps, and the first real
+  metadata run found two code faults (a 403 without retry; a standard field name refused); engineers are on the data
+  side and on the practice-read script, each with a reviewer. No score has been reported since 21 Nov;
+  `docs/UPLOAD_SHEET.md` lists the files that wait. Decision log 2026-11-23 (s), (t).
+
 - **2026-11-23, 18:40 UTC.** The captain gave the word the Task 1 three-atlas line needed (ruling row R27); it is
   running: register rows X019 and X020 placed, a rule writer and a cold challenger on its ledger row, an engineer and
   a reviewer on the parked code. The Task 3 pathway tier stays out. `docs/UPLOAD_SHEET.md` lists the 23 built files
