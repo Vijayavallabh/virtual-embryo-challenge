@@ -11668,3 +11668,27 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Where the outside-data round of entry (b) stands: finished on every board.** T3's one kept candidate stopped at
     its first gate (entry (q)); T1's closes here; nothing was kept for the two T2 boards. What can still raise a mark
     is the list of built files in `docs/UPLOAD_SHEET.md` and the search lines' conditional files.
+- 2026-11-23 (w), the captain orders the trend tried on the heart's file D too (state at 20:15 UTC, 2026-11-23).
+  Written by the AI assistant, which is recused on the heart's scope and size and states no preference.
+  - **What the captain sent.** A note from a side agent ("The heart search you just started builds only on the full
+    trim. If file D scores higher, trying the trend on D needs your separate order"; "The analysts fixed the search to
+    the full trim. It does not move to D, even if D scores higher"; "If you want the trend tried on D too, say so in
+    the main session soon. The main agent cannot suggest it"), and the captain's own words, verbatim: "i want it too".
+  - **The AI assistant's reading (its own).** The captain's own named exception, on the heart's scope and size, for
+    the trend step tried on the organ cut D as the search tries it on the full trim: D's command with the trend step
+    at strength 0.5 and at 1.0 and nothing else changed, two files at most. It is read as an order to build those
+    files now, before any score of D or of them, and not as an order that lets a score pick the base: the challenger
+    of 2026-11-22 struck the form in which the base was chosen by headline ("It lets test scores decide which
+    closed-lever scope new files carry, which framework (4) forbids"), and noted then that base D sat on row R21's
+    one-file exception; this order is the further exception that form lacked. The AI assistant designs no line:
+    analysts blind to test scores write the line's rule text (order, comparison, stop), and a cold challenger attacks
+    it before it is placed.
+  - **State at this entry.** File D is built and has no score reported; the first line's two files are built and have
+    none. No practice read tried the trend step on the organ cut (row H28 read the strengths on the full trim; row
+    H29b read the organ cut without the trend). No ruling row, rule text, code or build of the new files exists yet.
+    Cost, as fact: at most two more heart slots, and code, review and builds by 2026-11-25 12:00 UTC.
+  - **Next.** In parallel: a rule writer and a cold challenger, both blind to test scores, for the rule text; an
+    engineer and a reviewer, both blind to test scores, for the builder option on the organ cut's command (accepted
+    only under the ruling row to be placed, R29) and a launcher whose identity step rebuilds D's recorded bytes. Then
+    the ruling row and the rules note's amendment with the analysts' text, before any build; each file built twice
+    with one sha256, recorded here before any score.
