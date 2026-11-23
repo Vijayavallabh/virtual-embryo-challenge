@@ -139,12 +139,30 @@ def test_arms_sizes_and_constants_are_the_rows():
                               "max_at_clip": 45, "e_range": [0.125, 8.0]}
 
 
-def test_the_pins_and_the_listing_are_empty_until_the_second_commit():
-    assert k27.pins_state() == "empty" and k27.K27_LISTING_SHA256 is None
+def _empty_pins(monkeypatch, tmp_path) -> Path:
+    """The registration commit's state, set here whatever the checkout's pins are: every pin None and the listing an
+    empty file under tmp_path."""
+    p = tmp_path / "TABLES_K27_empty.sha256"
+    p.write_bytes(b"")
+    monkeypatch.setattr(k27, "K27_LISTING_SHA256", None)
+    monkeypatch.setattr(k27, "K27_TABLE_SHA256", {n: None for n in k27.TABLE_NAMES})
+    monkeypatch.setattr(k27, "LISTING_FILE", p)
+    return p
+
+
+def test_the_pins_and_the_listing_are_consistent():
+    """Either the registration commit's state (pins empty, listing empty) or the second commit's (pins filled, the
+    listing read against them); never a mix."""
     assert set(k27.K27_TABLE_SHA256) == set(k27.TABLE_NAMES)
-    assert k27.LISTING_FILE.read_bytes() == b""
-    with pytest.raises(k27.Refused, match="not filled"):
-        k27.read_listing()
+    state = k27.pins_state()
+    assert state in ("empty", "filled")
+    if state == "empty":
+        assert k27.K27_LISTING_SHA256 is None and k27.LISTING_FILE.read_bytes() == b""
+        with pytest.raises(k27.Refused, match="not filled"):
+            k27.read_listing()
+    else:
+        listing, sha = k27.read_listing()
+        assert listing == k27.K27_TABLE_SHA256 and sha == k27.K27_LISTING_SHA256
 
 
 def _listing(tmp_path, tables: dict) -> tuple[Path, str]:
@@ -184,6 +202,7 @@ def test_the_listing_against_the_pins(tmp_path):
 
 
 def test_p2_refuses_filled_pins_and_a_filled_listing(tmp_path, monkeypatch):
+    _empty_pins(monkeypatch, tmp_path)
     p = tmp_path / "TABLES_K27.sha256"
     p.write_bytes(b"")
     k27.listing_empty(p, check_tracked=False)
@@ -290,6 +309,7 @@ def test_p2_writes_the_eleven_tables_and_refuses_a_byte_equal_placebo(db, kept, 
 
 
 def _p2_env(tmp_path, monkeypatch, db, kept):
+    _empty_pins(monkeypatch, tmp_path)
     listing = tmp_path / "TABLES_K27.sha256"
     listing.write_bytes(b"")
     d = tmp_path / "tables_k27"
@@ -448,6 +468,7 @@ def test_the_counted_steps_refuse_without_the_listing_with_empty_pins_or_a_chang
     monkeypatch.setattr(k27, "row_present", lambda: "K27")
     monkeypatch.setattr(k27.k18, "stamp", lambda: st)
     # empty pins (the state at the registration commit)
+    _empty_pins(monkeypatch, tmp_path)
     with pytest.raises(SystemExit) as ex:
         k27.preconditions()
     assert ex.value.code == 2 and "not filled" in capsys.readouterr().err
@@ -1063,7 +1084,8 @@ def test_the_read_writes_once_and_records_its_code(tmp_path, u3d, monkeypatch, p
     assert ex.value.code == 4
 
 
-def test_a_pregate_with_empty_pins_refuses_the_read(tmp_path, u3d, capsys):
+def test_a_pregate_with_empty_pins_refuses_the_read(tmp_path, u3d, monkeypatch, capsys):
+    _empty_pins(monkeypatch, tmp_path)
     w = _write_run(tmp_path / "e")
     with pytest.raises(k27.Refused, match="pins are not filled"):
         k27.reading(w.root, w.refs, u3d, w.k23)

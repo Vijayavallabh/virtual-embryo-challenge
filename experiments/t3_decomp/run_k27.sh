@@ -6,6 +6,7 @@
 #
 #   bash experiments/t3_decomp/run_k27.sh db REG                 the database part, at the row's registration commit
 #   bash experiments/t3_decomp/run_k27.sh run SECOND REG         the counted part, at the row's second commit
+#   Before the database part runs, the folder ~/v/vec-ext/t3/tables_k27 must exist (mkdir -p, outside every checkout).
 #
 # REG: the full hash of the row's registration commit (the row is in TRIES.md; TABLES_K27.sha256 is tracked and empty;
 # the 11 table pins and K27_LISTING_SHA256 in the script are None). SECOND: the full hash of the row's second commit,

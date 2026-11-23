@@ -92,6 +92,13 @@ def _git(repo: Path, *args) -> str:
                           env=_env()).stdout.strip()
 
 
+def _empty_script(text_: str) -> str:
+    """The script's text with the 11 pins and the listing pin reset to None (the registration commit's state),
+    whatever state the checkout's script is in."""
+    t = re.sub(r'^K27_LISTING_SHA256: str \| None = .*$', 'K27_LISTING_SHA256: str | None = None', text_, flags=re.M)
+    return re.sub(r'^(    "chipq_(?:Gata4|rand_seed\d)"): .*,$', r'\1: None,', t, flags=re.M)
+
+
 def _filled_script(text_: str) -> tuple[str, str]:
     """The script's text with the 11 pins and the listing pin filled, and the matching listing."""
     tabs = {n: hashlib.sha256(n.encode()).hexdigest() for n in NAMES}
@@ -109,7 +116,7 @@ def _setup(tmp_path: Path) -> SimpleNamespace:
         (home / d).mkdir(parents=True)
     files = {"experiments/t3_decomp/run_k27.sh": SH.read_text(), "experiments/harness/TRIES.md": ROW,
              "EXTERNAL_DATA.md": REGISTER, "experiments/t3_ext/TABLES_K27.sha256": "",
-             "experiments/t3_decomp/k27_chip_query.py": SCRIPT.read_text(),
+             "experiments/t3_decomp/k27_chip_query.py": _empty_script(SCRIPT.read_text()),
              "experiments/t3_ext/chipq_kept.yaml": "Ctnnb1: []\n", "experiments/t3_ext/CHIPQ_KEPT.sha256": "x\n",
              "experiments/t3_decomp/results/k23_outside_exponents/pregate.json": "{}",
              "experiments/t3_decomp/results/k23_outside_exponents/reading.json": "{}"}
@@ -131,7 +138,7 @@ def _setup(tmp_path: Path) -> SimpleNamespace:
 
 def _second(L) -> str:
     """The row's second commit: the listing's 11 lines and the pins, nothing else."""
-    t, listing = _filled_script(SCRIPT.read_text())
+    t, listing = _filled_script(_empty_script(SCRIPT.read_text()))
     (L.repo / "experiments/t3_decomp/k27_chip_query.py").write_text(t)
     (L.repo / "experiments/t3_ext/TABLES_K27.sha256").write_text(listing)
     _git(L.repo, "commit", "-q", "-am", "second")
@@ -219,9 +226,10 @@ def test_each_gate_of_the_database_part(tmp_path):
 
     committed("experiments/harness/TRIES.md", "| K27 | another script |\n", 95, "no TRIES.md row")
     committed("experiments/t3_ext/TABLES_K27.sha256", "x\n", 22, "not empty")
-    filled, _ = _filled_script(SCRIPT.read_text())
+    filled, _ = _filled_script(_empty_script(SCRIPT.read_text()))
     committed("experiments/t3_decomp/k27_chip_query.py", filled, 22, "not empty")
-    half = SCRIPT.read_text().replace('    "chipq_rand_seed4": None,', f'    "chipq_rand_seed4": "{"a" * 64}",')
+    half = _empty_script(SCRIPT.read_text()).replace('    "chipq_rand_seed4": None,',
+                                                      f'    "chipq_rand_seed4": "{"a" * 64}",')
     committed("experiments/t3_decomp/k27_chip_query.py", half, 22, "not empty")
     committed("EXTERNAL_DATA.md", "| X017 | other |\n", 96, "X018")
     _git(L.repo, "rm", "-q", "--cached", "experiments/t3_ext/chipq_kept.yaml")
