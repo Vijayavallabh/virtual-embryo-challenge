@@ -11077,3 +11077,67 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     above and no view of the AI assistant's.
   - **What stays as it is until the captain answers that question:** the held list, the dataset statuses and the
     plan's line. Nothing of the tier is fetched or opened by the weighing.
+- 2026-11-23 (f), T3 pathway tier: the cold weighing's result and the question for the captain; the MS builder is
+  merged and its build is running (state at 15:25 UTC, 2026-11-23). Written by the AI assistant; the weighing is three
+  score-blind agents' (workflow t3-pathway-tier-weighing), and its own view is stated last and labelled.
+  - **The rules reader** (the organisers' words only). The clause's third limb, "a perturbation that phenocopies
+    them", is not limited to the held-out gene, so the framing of the question of 2026-11-20 ("the ruling bars only
+    the two held-out genes") was wrong for measured perturbation data: the ruling of 2026-10-15 it cited governs
+    literature and priors. The ruling of 2026-08-18 shows the organisers weigh distance in time generously, even for a
+    held-out gene itself; it says nothing on a near-stage, same-lineage perturbation of another gene. Odds that an
+    organiser who reads the method report counts a dataset as held out: GSE165300 (the same lineage driver as the
+    test, stages bracketing E8.75, and the dataset the team's own plan names as excluded) 0.70; the two T studies 0.35
+    and 0.30; a gastruloid double knockout whose own record states a resemblance to mutants of the held-out gene's
+    pathway 0.35; a far-stage double mutant 0.10; the 28 bulk lines withheld on doubt 0.10 as a class; the two studies
+    held for the validation genotype 0.20 and 0.15. The captain's answer of 2026-11-20 covers the risk the option
+    named (a discounted file) and is not a reading of the clause or of the plan's line, neither of which was shown.
+    The recorded rules call such use "Forbidden" and state no scale of sanction; sources must be disclosed, so a used
+    dataset is in front of the organisers.
+  - **The value analyst.** No practice read on released data can test the claim that a knockout in the knocked-out
+    gene's own pathway predicts its response better than unrelated knockouts do: the only same-pathway outside
+    knockouts for the validation genotype are themselves held under the same clause, and the dataset settings say "no
+    released truth can check the Wnt tier". On the practice record, outside-table steps are worth about +0.3 to +1
+    point, driven by size and a shared signature, and a different table at the same size has not beaten row K23's
+    named form (row K24). The one dataset that could be built in time is the T knockout GSE205117 (one library per
+    arm, pooled embryos with unstated editing status, both readers on record refused its review term): about 0.4 that
+    it is built and reviewed by 25 Nov 12:00 UTC, expected value about zero within a tenth, a tail of +2 or more at
+    about 0.05. GSE165300 needs a per-cell loader that does not exist (about 0.15 for both in time). "The value and
+    the risk come from the same property."
+  - **The cold challenger**, attacking both sides. Probability that using the tier is a mistake: 0.80. Probability
+    that leaving it out is a mistake: 0.12. No accession in the tier is both allowed by the words and worth building
+    in the time left (GSE165300: not allowed on the words, named as excluded in the plan; GSE205117: open, no practice
+    evidence, refused by both readers; the chimera: cannot be built in time; the far-stage double mutant: its only
+    files are atlas-integrated objects, which the ruling of 2026-11-16 likely bars; the rest are not knockouts or
+    would only widen a bulk table that did not beat its own control). It corrected both analysts: 0.70 for GSE165300
+    may be low (0.75 or more); the value analyst's near-zero expected value leaves the organisers' risk out, so with
+    it the value is negative; the 0.4 build odds assume readers who will clear a term two readers refused. Verdict:
+    "Leave the Wnt-pathway tier out of the Task 3 file." Its cheapest check that could change the answer: a screened
+    search of the team's digests and the public channel for an organiser statement on phenocopies or other genes'
+    perturbations.
+  - **The question for the captain, as the challenger wrote it (put today, default: the tier stays out):** "The 20 Nov
+    question about outside knockout data did not quote the organisers' rule that data "from a perturbation that
+    phenocopies" the held-out knockouts "counts as held out". It also did not quote the team plan's own line that
+    excludes GSE165300 (Wls knocked out in the same Mesp1 lineage). With those in view: should the Wnt-pathway tier
+    stay out of the Task 3 file? - Yes (keep it out) costs a possible gain that cannot be checked: about zero points
+    expected on practice evidence, with a small chance (about 0.03) of +2 to +5. The current Task 3 work is not
+    affected. - No (build a file from the T knockout, GSE205117) has about a 0.4 chance of being built and reviewed by
+    25 Nov 12:00 UTC, with about zero points expected. It carries about a 0.35 chance that the organisers count it as
+    held-out data, and the rules state no penalty: the outcome could run from the Task 3 file being set aside up to
+    the team's prize eligibility. Adding Wls raises that chance to about 0.7 and is unlikely to be ready in time. - If
+    there is no answer, the tier stays out."
+  - **The screened check is running** (workflow screened-read-phenocopy-statements: one screening reader of the
+    committed digests and the public channel for that one question, one auditor of the released block; the main
+    session reads only the audited block). Its outcome goes to the captain with the question or right after it; by the
+    challenger's reading it can move the T study's odds, not the verdict.
+  - **The AI assistant's own view, given after the cold weighing and labelled as its own.** Keep the tier out. On
+    GSE165300 it would not build in any case: the team's plan has classed that dataset as held-out data under the
+    organisers' clause since October, and using it would be using what the team itself reads as forbidden. On the T
+    study the choice is the captain's with the odds above; nothing of the tier is fetched, unheld or coded unless the
+    captain answers the question with a no.
+  - **T1 candidate MS (row R23).** The builder option `--direction-momentum all --captain-ruling R23` and the launcher
+    `experiments/builds/t1_ms.sh` (branch `campaign/t1-ms`, b3ff547) were reviewed ready with no blocker and are
+    merged at 6bc36d9; the engineer's own added refusal (the fit's libraries must be exactly 1 and 2) is fail-closed
+    and stated. The launcher's refusal path was traced on the DGX under a throwaway home folder (exit 96, the exit
+    record written). The build (run r1: gate, tests, the default command's identity with R13's bytes, the MS file
+    twice, the list) runs in the detached worktree `~/v/scratch/t1line-wt` at 6bc36d9 since about 15:40 UTC; its
+    sha256 is recorded in this log before any score.
