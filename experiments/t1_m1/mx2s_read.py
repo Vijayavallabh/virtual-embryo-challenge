@@ -399,10 +399,20 @@ def x002_counts(record: Path | None = None) -> dict:
     return {g: {s: int(v) for s, v in d.items()} for g, d in (rec.get("group_cells") or {}).items()}
 
 
+def data_constants_ok(c: Mapping | None) -> bool:
+    """The data side's constants as its manifest records them are the row's: the scale 5/8, the pseudocount 0.5,
+    at least 10 cells at each end for a table, the cell calls, and the skm score bar of the purity share."""
+    c = c or {}
+    return (c.get("direction_scale"), c.get("pseudocount"), c.get("min_cells"), c.get("skm_score"),
+            json.loads(json.dumps(c.get("cell_calls")))) == (DIRECTION_SCALE, PSEUDOCOUNT, MIN_TABLE_CELLS, SKM_SCORE,
+                                                             json.loads(json.dumps(CELL_CALLS)))
+
+
 def manifest_problems(man: Mapping, commit: str, genes_ok: bool = True) -> tuple[list[str], list[str]]:
     """The tables manifest against the row: returns (p1 failures, record failures). Fields read:
     tasks, row, commit, clean, yaml_sha256, author_labels_read (no author label, cluster or embedding),
-    constants {direction_scale, pseudocount, min_cells, cell_calls {ACC: {min_umi, min_genes, max_mito}}},
+    constants {direction_scale, pseudocount, min_cells, skm_score, cell_calls {ACC: {min_umi, min_genes,
+    max_mito}}},
     atlases {ACC: {register, status ('use' or 'dropped'), samples {GSM: {end, pinned, loaded}},
     tables {group: {file, sha256, n_cells_early, n_cells_late}}, skm_late_share (CM)}}."""
     p1, record = [], []
@@ -416,9 +426,7 @@ def manifest_problems(man: Mapping, commit: str, genes_ok: bool = True) -> tuple
         record.append("the tables were written under another atlases.yaml than the row's")
     if man.get("author_labels_read") is not False:
         record.append("the record does not say that no author label, cluster or embedding was read")
-    c = man.get("constants") or {}
-    if (c.get("direction_scale"), c.get("pseudocount"), c.get("min_cells"), c.get("cell_calls")) != (
-            DIRECTION_SCALE, PSEUDOCOUNT, MIN_TABLE_CELLS, CELL_CALLS):
+    if not data_constants_ok(man.get("constants")):
         record.append("a constant of the tables is not the row's")
     atlases = man.get("atlases") or {}
     if set(atlases) != set(PINNED):
@@ -1042,9 +1050,7 @@ def guards(loaded: Mapping[str, Mapping | None], gate: Mapping[str, Mapping[int,
         if (pregate.get("constants") is None or json.loads(json.dumps(pregate.get("constants")))
                 != json.loads(json.dumps(pregate_constants()))):
             reasons.append("a constant of the pre-gate is not the row's")
-        dc = pregate.get("data_constants") or {}
-        if (dc.get("direction_scale"), dc.get("pseudocount"), dc.get("min_cells"), dc.get("cell_calls")) != (
-                DIRECTION_SCALE, PSEUDOCOUNT, MIN_TABLE_CELLS, CELL_CALLS):
+        if not data_constants_ok(pregate.get("data_constants")):
             reasons.append("a constant of the tables (the scale, the pseudocount or a cell call) is not the row's")
         if not ATLASES_YAML_SHA256 or pregate.get("yaml_sha256") != ATLASES_YAML_SHA256:
             reasons.append("atlases.yaml's sha256 is not the row's")

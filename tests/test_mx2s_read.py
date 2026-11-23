@@ -379,7 +379,7 @@ def _manifest(mx, **change):
                                    "n_cells_late": 900} for g in groups}}
     man = {"tasks": ["T1"], "row": "T72", "commit": C40, "clean": True, "yaml_sha256": YSHA,
            "author_labels_read": False, "atlases": atl,
-           "constants": {"direction_scale": 0.625, "pseudocount": 0.5, "min_cells": 10,
+           "constants": {"direction_scale": 0.625, "pseudocount": 0.5, "min_cells": 10, "skm_score": 0.3,
                          "cell_calls": json.loads(json.dumps(mx.CELL_CALLS))}}
     man.update(change)
     return man
@@ -750,7 +750,7 @@ def _pregate(mx, passes=True, commit=C40, clean=True, **change):
                  "X020": {"bins_keep_values": True, "nan_kept": True}},
         "arms": {a: {"vector_sha256": a[3] * 64} for a in mx.COUNTED}}}},
         "stamp": {"commit": commit, "tree_clean": clean}, "constants": json.loads(json.dumps(mx.pregate_constants())),
-        "data_constants": {"direction_scale": 0.625, "pseudocount": 0.5, "min_cells": 10,
+        "data_constants": {"direction_scale": 0.625, "pseudocount": 0.5, "min_cells": 10, "skm_score": 0.3,
                            "cell_calls": json.loads(json.dumps(mx.CELL_CALLS))},
         "yaml_sha256": YSHA, "author_labels_read": False, "arm_tables": ARM_TABLES,
         "samples": {acc: sorted(g for e in ends.values() for g in e) for acc, ends in mx.PINNED.items()}}
