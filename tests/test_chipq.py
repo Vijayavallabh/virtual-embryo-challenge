@@ -503,6 +503,47 @@ def test_a_doubt_drops_other_variants():
         assert not cf.keep_row([t]), t
 
 
+# the rule agent's A13 addendum (kwdecide): spellings, notations and abbreviations of the paragraph's own words, each
+# hitting the pattern of the word it belongs to
+KWDECIDE_DROPS = {
+    "i:transgene": ["Tg(Myh6-cre) line", "Tg/+", "tg/+ embryos", "Tg"],
+    "i:sh/si/shRNA": ["esiRNA", "esiRNA pool", "shctrl", "sictrl", "shscr", "sh_ctrl", "si-control", "shScrambled"],
+    "i:flox": ["fl/-", "Gata4 fl/\u2212", "fl / \u2013", "f/f", "Gata4 f/f"],
+    "i:mutant (genotype notation)": ["-/+", "Gata4 \u2212/+", "het \u2013 / +"],
+    "ii:exon-3-deleted": ["ex3", "delta-ex3", "\u0394ex3", "dex3", "del(ex3)", "Ex3 allele", "ex-3"],
+    "i:mutant": ["ENU-mutagenized line", "mutagenized", "S33Y", "p.V600E knock-in", "R270* allele", "G12D"],
+    "i:CRISPR": ["Cas9", "dCas9-KRAB", "SpCas9 clone", "cas-9"],
+}
+
+
+@pytest.mark.parametrize("hit,text", [(h, t) for h, ts in KWDECIDE_DROPS.items() for t in ts])
+def test_kwdecide_forms_drop_by_their_word(hit, text):
+    assert hit in cf.dropped_by([text]), (text, cf.dropped_by([text]))
+
+
+@pytest.mark.parametrize("text", ["sgRNA", "sgRNA against Pax3", "sgRNAs", "Tgfb1", "Tgif1", "E14Tg2a", "SHC1",
+                                  "Sicily", "Shh", "Dex 3uM", "Exo3", "Ext1", "K562", "S33", "+/+", "fl"])
+def test_kwdecide_not_matched_and_look_alikes_are_kept(text):
+    # sgRNA alone is not a form of CRISPR (A13: a named agent without the challenger's word is kept); the rest are
+    # symbols or plain names near a new form that spell no drop word
+    assert cf.keep_row([text]), (text, cf.dropped_by([text]))
+
+
+@pytest.mark.parametrize("text", ["treatment: none", "treatment=untreated", "Treatment: No treatment", "no treatment",
+                                  "treatments = none", "treatment:none", "TREATMENT: NONE ",
+                                  "source=liver|treatment=none|strain=C57BL/6", "strain: B6; treatment: untreated"])
+def test_a_field_whose_whole_value_states_no_treatment_is_kept(text):
+    assert cf.keep_row([text]), (text, cf.dropped_by([text]))
+
+
+@pytest.mark.parametrize("text", ["treatment: vehicle", "treatment: DMSO", "treatment: control", "treatment: n/a",
+                                  "treatment:", "treatment: ", "treatment=none, then RA", "pre-treatment: none",
+                                  "treatment: none|agent: treated", "treatment: no treatment with RA",
+                                  "no treatment then RA", "treatment: none (RA 2 days later)"])
+def test_only_the_whole_no_treatment_value_is_exempt(text):
+    assert "iii:treatment" in cf.dropped_by([text]), (text, cf.dropped_by([text]))
+
+
 def test_a_named_agent_without_a_class_word_is_kept():
     # points_settled A13 and B8: the filter matches the challenger's words and their variants only; it adds no word
     for t in ("tamoxifen 1uM", "dox 2ug/ml", "Activin A", "4-OHT"):
@@ -511,12 +552,13 @@ def test_a_named_agent_without_a_class_word_is_kept():
 
 def test_made_up_symbols_trip_no_pattern_unless_they_spell_a_drop_word():
     """An antigen's own symbol is a screened field: made-up symbols (a capital, one or two lowercase letters, an
-    optional suffix) drop only when the symbol itself spells a drop word (Cre, Ko, Kd, Oe, Wnt, LiCl)."""
+    optional suffix) drop only when the symbol itself spells a drop word (Cre, Ko, Kd, Oe, Wnt, LiCl, and since the
+    A13 addendum Tg, the abbreviation of transgene: Tg, Tg1, Tg2a)."""
     low = "abcdefghijklmnopqrstuvwxyz"
     syms = [c.upper() + a + b + s for c in low for a in ("", *low) for b in low for s in ("", "1", "2a", "l1")]
     dropped = sorted(s for s in syms if not cf.keep_row([s]))
-    assert all(re.fullmatch(r"(?:Cre|Kd|Ko|Oe|Wnt|Licl)[0-9a-z]*", s) for s in dropped), dropped
-    assert len(dropped) == 17
+    assert all(re.fullmatch(r"(?:Cre|Kd|Ko|Oe|Wnt|Licl|Tg)[0-9a-z]*", s) for s in dropped), dropped
+    assert len(dropped) == 20
 
 
 def test_the_filter_reads_the_metadata_fields_only():
