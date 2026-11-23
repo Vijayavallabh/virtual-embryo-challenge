@@ -11002,3 +11002,51 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     B or C), the launcher is traced, and the file is built twice. The AI assistant has told the captain that MS sits
     on R13's file and so raises T1's mark only by passing the board's best, and that a combined form would need a list
     of its own by the order rule.
+- 2026-11-23 (d), the drastic outside-data round's hand-back: one T3 and one T1 candidate kept, none for the heart or
+  the embryo; the T3 source is registered (state at 15:06 UTC, 2026-11-23). Written by the AI assistant, which
+  designed none of it and gives no lean on any candidate.
+  - **The round** (entry (b); six score-blind designers with different lenses, then one cold challenger per track
+    checking each design against the organisers' recorded rules, the ledger, the clock and the disk). **Its plain
+    result, in the challengers' words: no drastic gain exists inside the rules.** T3: "there is no legal source that
+    is both large and useful"; the large perturbation atlases and pretrained models cannot be shown free of the
+    held-out genotypes, and more knockouts of unrelated genes carry only the generic response the ledger prices in
+    hundredths. T1: "nothing I found in this lens could plausibly move T1 by several points within the rules". The two
+    T2 boards: "the headroom that outside data could plausibly reach is under 1 Overall point". The candidates use
+    under 4 GB of the allowed disk.
+  - **T3, kept: CHIPQ-S.** The knocked-out gene's own binding set from a pinned generic ChIP database (wild-type,
+    untreated experiments only), queried by code with the gene's name, as a 500-gene table on top of row K23's named
+    form at two committed sizes, with placebo antigens, a decile permutation and a size twin as controls. The
+    challenger's committed estimates before any run: the database-only pre-gate passes 0.45; a practice pass given
+    that 0.25; overall 0.11; +0.5 to +2.0 T3 points on practice if it passes; 0.35 that a pass carries to the test;
+    "this does not take the entry past the captain's bar, and nothing I found on Task 3 does". Legality as the
+    challenger checked it against the ruling of 2026-10-15: a generic database, no set built from a knockout or
+    perturbation of the held-out gene (the screen drops those as a hard clause), no loss measured; the one judgement
+    is the uniform sign convention, which goes into the captain's question. Struck: a 12-knockout series with a
+    control from another series (the arms not processed alike; a new alignment path; no slack on the clock) and a
+    gene-property axis (row K21 already read that family as flat to negative).
+  - **T1, kept: MX2s.** A within-study sign consensus of three heart atlases (the atlas in use, GEO GSE244783 and
+    GSE230531, E8.5 and E16.5 ends only) for three direction groups, at the ruled step size. The challenger's
+    estimates: about 0.12 that it reads AHEAD; a few tenths to about one point on practice; about 0.05 expected at the
+    test; about 20 to 24 hours. It needs the captain's word before any code: it reopens the branch that entry
+    2026-11-20 (tt) parked (by the AI assistant's judgement; "one word from the captain reopens it in the strict
+    form"), and its stage parser needs an exception for a protocol sentence that is byte-identical across every sample
+    of a series, which loosens a guard two review rounds hardened. The question is put to the captain today with
+    default no; nothing of it is coded before the answer. Struck: an advance draw anchored on the atlas (it needs the
+    closed advance-draw lever, and its released analogue lost on the test-like library).
+  - **The two T2 boards: nothing kept.** The heart's one design was struck because no practice read can copy the
+    test's geometry without a leak the base code refuses by name; the embryo's designer offered no candidate.
+  - **What starts now (T3).** Register row X018 is placed in this commit, before any fetch. Then: code by engineers
+    and reviewers; the fetch; the screen; ledger row K27 before anything that reads a fold; the database-only pre-gate
+    (uncounted); the counted read. One handling differs from the specification, on the stricter side and by the AI
+    assistant's choice as keeper of the compliance route, not as a design change: the two readers of the
+    experiment-list rows are two independent screening agents instead of the main session and one agent, and they hand
+    back experiment ids and counts only, because experiment titles can carry statements about a held-out gene that the
+    team's bar keeps away from the main session. No file exists without the captain's own ruling (provenance rule of
+    section 4.4, A15, the share-alike duty); by the challenger's text that question goes to the captain with the
+    candidate file after a pass, never before the practice read.
+  - **What the agents met.** No test score, leaderboard figure or rank. Two challengers report that register row X002
+    quotes row T63's practice outcome, which their briefs had put out of bounds and which they had to pass while
+    reading the register in full; practice figures, used for nothing. One saw the previous commit's subject naming the
+    captain's bar, which is the captain's target and not a returned score.
+  - **The AI assistant's own estimate for the captain's bar is unchanged by this round** (its reading): the files
+    ready today do not reach 200, and no outside-data candidate found changes that by itself.
