@@ -249,7 +249,9 @@ def entry_sha256(acc: str, cfg: Mapping | None = None) -> str:
                         "conventions": CONVENTIONS, "unstated": UNSTATED, "window": WINDOW,
                         "processing_canonical": PROCESSING_FORMAT, "record_canonical": RECORD_FORMAT,
                         "screen_rules": cfg.get("screen_rules"), "series_text_rule": SERIES_TEXT_RULE,
-                        "pooling_words": POOLING_WORDS.pattern})
+                        "pooling_words": POOLING_WORDS.pattern,
+                        "pooling_words_staged": POOLING_WORDS_STAGED.pattern,
+                        "pooling_stage_words": POOLING_STAGE_WORDS.pattern})
 
 
 def require_frozen(cfg: Mapping) -> None:
@@ -610,15 +612,15 @@ def stage_reading(fields: Mapping[str, Iterable[str]], files: Iterable[str] = ()
     `protocol_fields`: the sample's own protocol and processing fields, read sentence by sentence (protocol mode); a
     reading there counts as one anywhere else. `series_fields`: the sample's protocol and processing fields that are
     byte-identical across every sample record of its series (the stage-parser exception of ruling row R27, see
-    series_wide_fields): they give no stage reading, a pooling word in them refuses (UNKNOWN), and when there is one
-    the sample's stage must come from its own title and its own characteristics, which must both give a reading and
-    agree (else UNKNOWN). The exception can only turn a sample that would otherwise be refused into one that is read
-    from its title and characteristics; it never makes an unpinned sample usable. Returns {mark: WINDOW | UNKNOWN |
-    PERMITTED, low, high (the widened union), nominal_low, nominal_high (as written), readings, leftovers, convention,
-    window_reading, reason, fields_read, files_read, series_text_fields}."""
+    series_wide_fields): they give no stage reading, a pooling word in them refuses (UNKNOWN; see
+    pooling_in_series_text), and when there is one the sample's stage must come from its own title and its own
+    characteristics, which must both give a reading and agree (else UNKNOWN). The exception can only turn a sample
+    that would otherwise be refused into one that is read from its title and characteristics; it never makes an
+    unpinned sample usable. Returns {mark: WINDOW | UNKNOWN | PERMITTED, low, high (the widened union), nominal_low,
+    nominal_high (as written), readings, leftovers, convention, window_reading, reason, fields_read, files_read,
+    series_text_fields}."""
     series_fields = {k: list(v) for k, v in (series_fields or {}).items()}
-    pooling = [{"field": k, "token": m.group(0)} for k, vals in series_fields.items() for v in vals
-                for m in POOLING_WORDS.finditer(_lower(nfkc(v)))]
+    pooling = pooling_in_series_text(series_fields)
     conv = convention(protocol)
     sh = conv["shift"] if conv["shift"] is not None else UNSTATED
     rs: list[dict] = []
@@ -772,11 +774,48 @@ def convention_text(rec, series_protocol: Iterable[str]) -> list[str]:
 # in order); it is series text when every sample record of the series holds that key with the same list of values,
 # compared as the stored text (geo.parse_soft strips surrounding whitespace); a series with one sample has none. A
 # series-text field still feeds the plug-day convention (as the series' own summary and design do) and is still printed
-# in the processing text; it is never read for a stage, a leftover or a companion integer.
+# in the processing text; it is never read for a stage, a leftover or a companion integer (pooling_in_series_text
+# reads its sentences for readings and leftovers only to decide a refusal, never to give the sample a stage).
 SERIES_TEXT_RULE = "t1x-series-text-v1 (ruling row R27: whole field, every sample of the series, at least two)"
-# Pooling words: refused in series text (the exception's own clause). Word forms of pool and merge only; "combined"
-# and "mixed" are left out because 10x protocol prose uses them for reagents ("master mix", "combined with").
+# Pooling words: refused anywhere in series text (the exception's own clause): word forms of pool and merge. Words
+# such as "combined" and "mixed", which 10x protocol prose also uses for reagents ("master mix", "combined with"), are
+# in POOLING_WORDS_STAGED below and refuse in a sentence about stages.
 POOLING_WORDS = re.compile(r"(?<![a-z])(?:pool(?:s|ed|ing)?|merg(?:e|es|ed|ing))(?![a-z])")
+# Pooling words refused only in a sentence about stages (the review of 290da3f, its one blocker): a sentence of series
+# text with one of these words refuses when it also gives a stage reading or a leftover (protocol mode) or names a
+# stage, an age or a time point, so "Embryos from E8.5 and E10.5 were combined" and "samples from all stages were
+# mixed" refuse while reagent prose that names no stage ("cDNA was combined with RT Master Mix.") does not.
+POOLING_WORDS_STAGED = re.compile(r"(?<![a-z])(?:combin(?:e|es|ed|ing)|mix(?:es|ed|ing)?|multiplex\w*|superload\w*|"
+                                  r"aggregat\w*)(?![a-z])")
+POOLING_STAGE_WORDS = re.compile(r"(?<![a-z])(?:stages?|ages?|time ?points?)(?![a-z])")
+
+
+def strip_format_chars(text: str) -> str:
+    """The text with every character of Unicode category Cf (zero-width spaces and joiners, soft hyphens ...) removed:
+    NFKC keeps them, and one inside a word would defeat a word match."""
+    return "".join(c for c in str(text) if unicodedata.category(c) != "Cf")
+
+
+def pooling_in_series_text(series_fields: Mapping[str, Iterable[str]]) -> list[dict]:
+    """The pooling words of the fields read as series text: {field, token}, in field and value order. A word of
+    POOLING_WORDS anywhere; a word of POOLING_WORDS_STAGED in a sentence (protocol_sentences) that also gives a stage
+    reading or a leftover in protocol mode or matches POOLING_STAGE_WORDS. Each value is read both as written and with
+    its Cf characters removed, and a match in either counts: removing a character can only add a match that way, never
+    lose one (a Cf character between a letter and the word is a boundary as written)."""
+    out = []
+    for k, vals in series_fields.items():
+        for v in vals:
+            for text in dict.fromkeys((str(v), strip_format_chars(v))):
+                out.extend({"field": k, "token": m.group(0)} for m in POOLING_WORDS.finditer(_lower(nfkc(text))))
+                for sent in protocol_sentences(text):
+                    low = _lower(sent)
+                    m = POOLING_WORDS_STAGED.search(low)
+                    if m is None:
+                        continue
+                    r, lo = readings(sent, False, True, "protocol")
+                    if r or lo or POOLING_STAGE_WORDS.search(low):
+                        out.append({"field": k, "token": m.group(0)})
+    return out
 
 
 def series_wide_fields(sample_records: Mapping[str, object]) -> dict[str, list[str]]:

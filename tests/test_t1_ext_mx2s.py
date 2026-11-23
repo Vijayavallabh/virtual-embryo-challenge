@@ -106,15 +106,67 @@ def test_a_field_identical_across_all_samples_but_one_is_not_series_text():
     assert cm.record_stage(rs["GSM8801"], E05, other)["mark"] in ("WINDOW", "UNKNOWN")
 
 
+ZW = "\u200b"  # a zero-width space (Unicode category Cf): NFKC keeps it
+
+
 @pytest.mark.parametrize("sentence", ["Hearts were pooled from E8.5, E10.5 and E16.5 embryos.",
                                       "Libraries were POOLED and sequenced.",
-                                      "Cells of all stages were merged before loading."])
+                                      "Cells of all stages were merged before loading.",
+                                      # the staged set: a pooling word in a sentence that names stages (the review of
+                                      # 290da3f, its one blocker)
+                                      "Embryos from E8.5 and E10.5 were combined before loading.",
+                                      "Embryos from E8.5 and E10.5 were mixed before loading.",
+                                      "Embryos from E8.5 and E10.5 were multiplexed in one lane.",
+                                      "Embryos from E8.5 and E10.5 were superloaded together.",
+                                      "Embryos from E8.5 and E10.5 were aggregated before loading.",
+                                      "Libraries of E8.5 and E10.5 embryos were multiplexed and sequenced.",
+                                      "Samples from all stages were mixed.",  # no stage label: the word stages
+                                      "Cells from every time point were combined.",
+                                      # a zero-width character inside the word
+                                      f"Hearts were poo{ZW}led from E8.5, E10.5 and E16.5 embryos.",
+                                      f"Libraries were poo{ZW}led and sequenced.",
+                                      f"Embryos from E8.5 and E10.5 were com{ZW}bined before loading.",
+                                      f"Hearts of all ages were me{ZW}rged."])
 def test_pooling_words_in_series_text_still_refuse(sentence):
     rs = recs(shared=sentence)
     st = cm.series_wide_fields(rs)
     assert st == {"extract_protocol_ch1": [sentence]}
     r = cm.record_stage(rs["GSM8801"], E05, st)
-    assert r["mark"] == "UNKNOWN" and "pooling word" in r["reason"]
+    assert r["mark"] == "UNKNOWN" and "pooling word" in r["reason"], r["reason"]
+
+
+@pytest.mark.parametrize("sentence", ["cDNA was combined with RT Master Mix.",
+                                      "Libraries were prepared with the Single Cell Multiome kit.",
+                                      f"cDNA was com{ZW}bined with RT Master Mix."])
+def test_a_staged_pooling_word_in_a_sentence_naming_no_stage_does_not_refuse(sentence):
+    rs = recs(shared=sentence)
+    st = cm.series_wide_fields(rs)
+    assert st == {"extract_protocol_ch1": [sentence]}
+    r = cm.record_stage(rs["GSM8801"], E05, st)
+    assert r["mark"] == "PERMITTED" and r["nominal_low"] == r["nominal_high"] == 16.5, r["reason"]
+
+
+def test_a_sample_with_no_series_wide_field_reads_as_before():
+    rs = recs(own={"GSM8800": {"extract_protocol_ch1": ["Hearts were dissected."]},
+                   "GSM8801": {"extract_protocol_ch1": ["Hearts were dissected and dissociated."]}})
+    st = cm.series_wide_fields(rs)
+    assert st == {}
+    r = cm.record_stage(rs["GSM8801"], E05, st)
+    assert r["mark"] == "PERMITTED" and r["series_text_fields"] == [], r["reason"]
+
+
+def test_a_cf_character_never_hides_a_pooling_word_that_matches_as_written():
+    # as written, the zero-width space is a boundary and "pooled" matches; with it removed "xpooled" would not: a match
+    # in either reading counts, so removing Cf characters never refuses less
+    assert cm.pooling_in_series_text({"f": [f"x{ZW}pooled"]})
+    assert cm.pooling_in_series_text({"f": [f"Embryos of E8.5 and E10.5 were x{ZW}mixed."]})
+    assert not cm.pooling_in_series_text({"f": ["Hearts were dissected."]})
+
+
+def test_the_pooling_patterns_are_in_the_entry_hash():
+    src = (EXT / "t1x_common.py").read_text()
+    body = src[src.index("def entry_sha256"):src.index("def require_frozen")]
+    assert "POOLING_WORDS.pattern" in body and "POOLING_WORDS_STAGED.pattern" in body
 
 
 @pytest.mark.parametrize("title,chars", [
