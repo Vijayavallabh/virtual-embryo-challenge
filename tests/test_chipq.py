@@ -489,13 +489,30 @@ VARIANT_DROPS = {
     "flox": ["Ctnnb1fl/fl", "fl/fl", "Gata4 fl / fl", "fl/+"],
     "overexpression": ["Gata4OE", "OE line"],
     "mutant (genotype notation)": ["Gata4−/−", "Gata4 –/–", "Gata4+/−", "het +/-"],
-    "Cre": ["AlbCre", "Mesp1Cre heart", "Vil1cre", "LysMcre", "iCre", "CreERT2", "CRE line", "Mesp1-Cre"],
+    "Cre": ["AlbCre", "Mesp1Cre heart", "Vil1cre", "LysMcre", "iCre", "CreERT2", "CRE line", "Mesp1-Cre",
+            # the data-fix reviewer's first blocker: Cre straight after a capital driver name, and mixed-case cre
+            "CAGGCre-ER", "CAGGCreER", "CAGCre", "CMVCre", "TCre", "GFAPCre", "hGFAPCre", "PGKCre", "UBCCreERT2",
+            "aMHCCre", "cRE", "CRe"],
 }
 
 
 @pytest.mark.parametrize("word,text", [(w, t) for w, ts in VARIANT_DROPS.items() for t in ts])
 def test_a_doubt_drops_variants(word, text):
     assert f"i:{word}" in cf.dropped_by([text]), (text, cf.dropped_by([text]))
+
+
+def test_the_cre_pattern_is_the_reviewers():
+    # the data-fix reviewer's pattern for its first blocker, as written; this one entry changed and nothing else
+    assert dict((w, p) for _, w, p in cf.DROP_PATTERNS)["Cre"] == (
+        r"(?-i:(?<![A-Za-z])(?i:cre)|(?<=[0-9])cre|(?<=[a-z][A-Z])[Cc]re|(?<=[a-z])Cre|(?<=[A-Z])Cre)(?:ert2?|er)?"
+        + cf._E)
+
+
+@pytest.mark.parametrize("text", ["CREB1", "CREBBP", "CREM", "Creb1", "Creld1", "Crebl2", "ACREB", "secreted",
+                                  "Secreted", "SECRETED"])
+def test_symbols_and_words_that_begin_or_hold_cre_are_kept(text):
+    # Cre after a capital counts only as "Cre" followed by no letter (beyond er/ert/ert2): a symbol going on is kept
+    assert cf.keep_row([text]), (text, cf.dropped_by([text]))
 
 
 def test_a_doubt_drops_other_variants():

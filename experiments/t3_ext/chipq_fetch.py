@@ -133,10 +133,11 @@ DROP_PATTERNS: tuple[tuple[str, str, str], ...] = (
     ("i", "flox", r"flox|" + _L + r"fl\s*/\s*(?:fl|\+|[" + _MINUS + r"])(?![a-z])|" + _L + r"f\s*/\s*f" + _E),
     # Cre joined to a driver name is the standard allele notation ("AlbCre", "Vil1cre", "LysMcre", "iCre"). The
     # case-sensitive groups keep "secreted", symbols that begin with Cre+letter ("Creb1", "Crem") and symbols that
-    # begin with a capital and "cre" undropped: "cre" counts after a digit or a lowercase-capital pair, "Cre" after a
-    # lowercase letter or such a pair.
-    ("i", "Cre", r"(?-i:(?<![A-Za-z])(?:[Cc]re|CRE)|(?<=[0-9])cre|(?<=[a-z][A-Z])[Cc]re|(?<=[a-z])Cre)(?:ert2?|er)?"
-     + _E),
+    # begin with a capital and "cre" undropped: "cre" counts in any case after a non-letter ("cRE", "CRe"), "cre" after
+    # a digit or a lowercase-capital pair, and "Cre" after any letter, a capital driver name included ("CMVCre",
+    # "GFAPCre", "CAGGCreER", "UBCCreERT2").
+    ("i", "Cre", r"(?-i:(?<![A-Za-z])(?i:cre)|(?<=[0-9])cre|(?<=[a-z][A-Z])[Cc]re|(?<=[a-z])Cre|(?<=[A-Z])Cre)"
+     r"(?:ert2?|er)?" + _E),
     # "knocked out", "knock-outs", "KO" and "KOs", the KO abbreviation with a c/d/i prefix ("cKO", "dKO", "iKO") and KO
     # straight after a symbol ("Gata4cKO", "SmadKO"). The prefixed and plural forms are case-sensitive, so symbols
     # such as "Cko1", "Kos2" or "Pkd1" are kept. Knockdown the same with down and KD.
