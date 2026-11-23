@@ -14,10 +14,12 @@ The specification (the cold challenger's final text for T3 candidate CHIPQ-S, re
   7. e = S / SD(ln C_q), population SD over the panel genes in file order, at S* and 4 S*.
 The placebo pool: antigens with at least 2 screened-clean experiments (the keyword filter of chipq_fetch.py) and |B|
 between 0.75 K and 1.25 K, excluding q, Ctnnb1, Gata4 and Gata6; for seed s one antigen drawn with seed 20261124 + s,
-built by steps 3 to 7.
+without replacement through the seeds in order (the rule writer's settled point A1), from a pool of at least 10, built
+by steps 3 to 7.
 
 Every constant the specification leaves to a reading is one named constant below, in this one place (the rule writer's
-hand-back settled none of them; see the block "READINGS"). No constant comes from a score.
+settled points, points_settled.md section B, say for each whether the first reading stands or changes; see the block
+"READINGS"). No constant comes from a score.
 
 ONE function opens a target-gene file: open_target. It checks the file's bytes against the fetch manifest (sha256),
 takes the experiments from the pinned kept list (a query antigen: chipq_kept.yaml; a placebo antigen: the keyword
@@ -74,7 +76,10 @@ POOL_MIN_KEPT = cf.PLACEBO_MIN_KEPT   # "at least 2 screened-clean experiments"
 POOL_EXCLUDE = ("Ctnnb1", "Gata4", "Gata6")   # and q itself
 POOL_BAND = (0.75, 1.25)       # |B_p| in [0.75 K_q, 1.25 K_q], both ends included, K_q = the query's K; open point
 PLACEBO_SEED_BASE = 20261124   # seed 20261124 + s
-PLACEBO_DRAW = "numpy.random.default_rng(20261124 + s).integers(len(pool)) over the pool sorted by name"   # open point
+POOL_MIN_SIZE = 10             # the pool holds at least 10 antigens, or the step refuses (settled A1, D's P2 bar)
+PLACEBO_DRAW = ("without replacement over the pool sorted by name: for s in vec.adoption.SEEDS in order, "
+                "remaining[numpy.random.default_rng(20261124 + s).integers(len(remaining))], remaining = the sorted "
+                "pool minus the antigens drawn for earlier seeds")   # settled A1 (reading B2 changed)
 P1_MIN_EXPERIMENTS = 3         # P1: at least 3 tier-U Ctnnb1 experiments
 P1_MIN_BOUND = 15              # P1: |B| at least 15
 TABLE_QUERY = "chipq_{q}"      # the tables step's file names (no rule-writer name was handed over); open point
@@ -313,12 +318,33 @@ def placebo_pool(q: str, K_q: int, genes: list[str], root=None, man: dict | None
     return pool
 
 
+def placebo_draws(pool: list[str]) -> list[tuple[int, str, int]]:
+    """[(seed, antigen, its index in the sorted pool)] for every seed of vec.adoption.SEEDS, in that order (settled
+    point A1): for seed s the antigen is remaining[default_rng(PLACEBO_SEED_BASE + s).integers(len(remaining))], where
+    remaining is the pool sorted by name minus the antigens drawn for earlier seeds. Ten seeds give ten different
+    placebo antigens. Refused unless the pool is sorted, unique and holds at least POOL_MIN_SIZE antigens."""
+    from vec.adoption import SEEDS
+
+    pool = list(pool)
+    if pool != sorted(set(pool)):
+        raise Refused("the placebo pool is not sorted by name and unique: refused")
+    if len(pool) < max(POOL_MIN_SIZE, len(SEEDS)):
+        raise Refused(f"the placebo pool holds {len(pool)} antigens, fewer than {POOL_MIN_SIZE}: refused")
+    remaining = list(pool)
+    out = []
+    for s in SEEDS:
+        a = remaining.pop(int(np.random.default_rng(PLACEBO_SEED_BASE + int(s)).integers(len(remaining))))
+        out.append((int(s), a, pool.index(a)))
+    return out
+
+
 def placebo_for_seed(pool: list[str], s: int) -> tuple[str, int]:
-    """(antigen, its index in the pool) for seed s: one draw with numpy's default_rng(PLACEBO_SEED_BASE + s)."""
-    if not pool:
-        raise Refused("the placebo pool is empty: refused")
-    i = int(np.random.default_rng(PLACEBO_SEED_BASE + int(s)).integers(len(pool)))
-    return pool[i], i
+    """(antigen, its index in the sorted pool) for seed s, from placebo_draws (the draws of the earlier seeds come
+    first, so a seed's antigen does not depend on which other seeds are asked for)."""
+    for seed, a, i in placebo_draws(pool):
+        if seed == int(s):
+            return a, i
+    raise Refused("the seed is not one of vec.adoption.SEEDS: refused")
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -367,8 +393,11 @@ def tables(genes: list[str], out, seeds=None, root=None, kept: Kept | None = Non
     rq = build(q, genes, root, kept, man)
     pool = placebo_pool(q, rq["K"], genes, root, man)
     jobs = [(TABLE_QUERY.format(q=q), rq, {"antigen": q})]
+    draws = {seed: (a, i) for seed, a, i in placebo_draws(pool)}
     for s in seeds:
-        a, i = placebo_for_seed(pool, s)
+        if int(s) not in draws:
+            raise Refused("the seed is not one of vec.adoption.SEEDS: refused")
+        a, i = draws[int(s)]
         rp = build(a, genes, root, None, man)
         jobs.append((TABLE_PLACEBO.format(s=s), rp,
                      {"seed": int(s), "pool_size": len(pool), "pool_index": i,
@@ -390,7 +419,7 @@ def readings() -> dict:
     return {"K_MAX": K_MAX, "BOUND_SHARE": BOUND_SHARE, "W": [W_TOP, W_BOTTOM], "RANK_TIES": RANK_TIES,
             "FINISH_DEN": "zero profile (no rescale)" if FINISH_DEN is None else "given", "SIZES": SIZES,
             "POOL_MIN_KEPT": POOL_MIN_KEPT, "POOL_EXCLUDE": list(POOL_EXCLUDE), "POOL_BAND": list(POOL_BAND),
-            "PLACEBO_DRAW": PLACEBO_DRAW}
+            "POOL_MIN_SIZE": POOL_MIN_SIZE, "PLACEBO_DRAW": PLACEBO_DRAW}
 
 
 def main(argv: list[str] | None = None) -> int:

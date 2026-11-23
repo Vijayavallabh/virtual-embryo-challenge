@@ -82,7 +82,9 @@ QUERY_IDS = {"Ctnnb1": ["SRX900", "SRX901", "SRX902", "SRX903"], "Gata4": ["SRX1
 KEPT = {"Ctnnb1": ["SRX900", "SRX901", "SRX902"], "Gata4": ["SRX100", "SRX101", "SRX102"]}
 # placebo stand-ins: (kept-row count, dropped-row count, bound genes). Gata4's K is 20, so the band is [15, 25].
 PLACEBO = {"P01": (2, 1, 15), "P02": (2, 0, 25), "P03": (3, 1, 20), "P04": (2, 0, 14), "P05": (2, 0, 26),
-           "P06": (1, 2, 20), "P07": (2, 0, 18), "Gata6": (2, 0, 20)}
+           "P06": (1, 2, 20), "P07": (2, 0, 18), "Gata6": (2, 0, 20),
+           **{f"P{n:02d}": (2, 0, 8 + n) for n in range(8, 14)}}   # P08..P13 in the band: a pool of 10
+POOL = ["P01", "P02", "P03", "P07", "P08", "P09", "P10", "P11", "P12", "P13"]
 CLEAN = "wild type untreated ES cells"
 DIRTY = ["Ctnnb1 shRNA knockdown", "treated with an inhibitor", "Mesp1-Cre; flox/flox", "CHIR99021 for 24h"]
 
@@ -213,13 +215,13 @@ def test_fetch_steps_hosts_agent_counts_and_manifest(tmp_path, net):
     assert set(cf.LISTS) == {"chip_atlas_analysis_list.zip", "chip_atlas_experiment_list.zip"}
     r = cf.step_rows(root)
     assert r["rows"] == {"Ctnnb1": 4, "Gata4": 4, "Mab21l2": 0}
-    # P01 (2 kept), P02, P03 (3), P04, P05, P07, Gata6 keep at least two; P06 keeps one
-    assert r["placebo_at_least_two"] == 7
+    # P01 (2 kept), P02, P03 (3), P04, P05, P07, P08..P13, Gata6 keep at least two; P06 keeps one
+    fetched = [a for a in PLACEBO if a != "P06"]
+    assert r["placebo_at_least_two"] == len(fetched) == 13
     t = cf.step_targets(root)
-    assert (t["query_files"], t["placebo_files"]) == (2, 7)
-    assert t["total_bytes"] == sum((root / "targets" / f).stat().st_size for f in
-                                   [f"{a}.5.tsv" for a in ["Ctnnb1", "Gata4", "P01", "P02", "P03", "P04", "P05",
-                                                           "P07", "Gata6"]])
+    assert (t["query_files"], t["placebo_files"]) == (2, 13)
+    assert t["total_bytes"] == sum((root / "targets" / f"{a}.5.tsv").stat().st_size
+                                   for a in ["Ctnnb1", "Gata4", *fetched])
     assert not (root / "targets" / "P06.5.tsv").exists() and not (root / "screen" / "Mab21l2.rows.tsv").exists()
     for url, agent in net.calls:
         assert url.startswith("https://") and re.match(r"https://(dbarchive\.biosciencedbc\.jp|chip-atlas\.dbcls\.jp)/",
@@ -622,16 +624,37 @@ def test_the_exponent_reaches_the_size_at_both_sizes(db, kept):
 def test_placebo_pool_band_exclusions_and_reproducible_draw(db, kept):
     rq = cq.build("Gata4", GENES, db, kept)
     pool = cq.placebo_pool("Gata4", rq["K"], GENES, db)
-    # band [15, 25] inclusive: P01 (15), P02 (25), P03 (20), P07 (18); P04 (14) and P05 (26) out; P06 keeps one
-    # experiment; Gata6 is excluded whatever its size
-    assert pool == ["P01", "P02", "P03", "P07"]
-    draws = [cq.placebo_for_seed(pool, s) for s in range(10)]
-    assert draws == [cq.placebo_for_seed(pool, s) for s in range(10)]
-    for s, (a, i) in enumerate(draws):
-        assert i == int(np.random.default_rng(20261124 + s).integers(len(pool))) and pool[i] == a
-    assert cq.placebo_pool("P03", 20, GENES, db) == ["P01", "P02", "P07"]
-    with pytest.raises(cq.Refused):
-        cq.placebo_for_seed([], 0)
+    # band [15, 25] inclusive: P01 (15), P02 (25), P03 (20), P07 (18), P08..P13 (16..21); P04 (14) and P05 (26) out;
+    # P06 keeps one experiment; Gata6 is excluded whatever its size
+    assert pool == POOL
+    assert cq.placebo_pool("P03", 20, GENES, db) == [a for a in POOL if a != "P03"]
+
+
+def test_the_placebo_draw_is_sequential_without_replacement():
+    """Settled point A1: seeds 0..9 in order; for seed s, remaining[default_rng(20261124 + s).integers(len(remaining))]
+    over the sorted pool minus earlier draws; ten different antigens; a pool under 10 refuses."""
+    from vec.adoption import SEEDS
+
+    pool = [f"A{n:02d}" for n in range(14)]
+    draws = cq.placebo_draws(pool)
+    remaining, expect = sorted(pool), []
+    for s in range(10):   # written out here, independently of the module
+        a = remaining.pop(int(np.random.default_rng(20261124 + s).integers(len(remaining))))
+        expect.append((s, a, sorted(pool).index(a)))
+    assert draws == expect and [d[0] for d in draws] == list(SEEDS)
+    assert len({a for _, a, _ in draws}) == 10
+    for s, a, i in draws:
+        assert cq.placebo_for_seed(pool, s) == (a, i) and pool[i] == a
+    assert cq.placebo_draws(pool) == draws   # reproducible
+    # exactly 10: every antigen drawn once
+    assert sorted(a for _, a, _ in cq.placebo_draws(pool[:10])) == pool[:10]
+    for bad in (pool[:9], [], pool[::-1], pool[:10] + ["A00"]):
+        with pytest.raises(cq.Refused):
+            cq.placebo_draws(bad)
+    with pytest.raises(cq.Refused, match="fewer than 10"):
+        cq.placebo_for_seed(pool[:9], 0)
+    with pytest.raises(cq.Refused, match="SEEDS"):
+        cq.placebo_for_seed(pool, 10)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -673,7 +696,10 @@ def test_gene_order_is_the_barred_factors_through_the_builders_loader(db, kept, 
         assert trec["sha256"] == sha and len(T) == len(GENES)
         m = json.loads((out / f"{stem}_manifest.json").read_text())
         assert m["files"][stem]["sha256"] == sha
-        assert not any(a in json.dumps(m) for a in ("P01", "P02", "P03", "P07"))
+        assert not PLACEBO_NAME.search(json.dumps(m))
+        if stem != "chipq_Gata4":
+            s = int(stem.rsplit("seed", 1)[1])
+            assert m["pool_size"] == 10 and POOL[m["pool_index"]] == cq.placebo_for_seed(POOL, s)[0]
     with pytest.raises(cq.Refused, match="nothing is overwritten"):
         cq.tables(genes, out, seeds=(0,), root=db, kept=kept)
     monkeypatch.setattr(k18, "load_barred_for_plain", lambda *a: {**rec, "sha256": "0" * 64})
@@ -681,7 +707,8 @@ def test_gene_order_is_the_barred_factors_through_the_builders_loader(db, kept, 
         cq.barred_genes(tmp_path, run, tmp_path)
 
 
-PLACEBO_NAME = re.compile("|".join(sorted(PLACEBO)))
+# the placebo stand-ins' names (Gata6, named in the code's own exclusion list, is not a drawn placebo)
+PLACEBO_NAME = re.compile("|".join(sorted(a for a in PLACEBO if a != "Gata6")))
 
 
 def _main_tables(db, kept, monkeypatch, out):
@@ -734,6 +761,13 @@ def test_file_labels():
     assert cf.file_label("targets/P01.5.tsv", {"sha256": "ab" * 32}) == \
         "a target-gene file (manifest entry sha256 abababababab)"
     assert "P01" not in cf.file_label("targets/P01.5.tsv")
+
+
+def test_tables_refuse_a_pool_under_ten_and_write_nothing(db, kept, tmp_path):
+    _rewrite_target(db, "P13", target_file("P13", cf.placebo_kept(db)["P13"], bound_rows(30, 2, 0, seed=5)))
+    with pytest.raises(cq.Refused, match="fewer than 10"):
+        cq.tables(GENES, tmp_path / "t", seeds=(0,), root=db, kept=kept)
+    assert not (tmp_path / "t").exists()
 
 
 def test_tables_never_open_or_write_the_test_query(db, kept, tmp_path, monkeypatch):
