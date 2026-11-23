@@ -1483,3 +1483,21 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     row N54's listing, which compares the recomputed direction with the authors', stays unopened and is used nowhere;
     nothing in the file is computed from a test score. The file is built only after row T63's read:
     Row T63 ran on 2026-11-20 and was read once (decision log 2026-11-20 (e)): the doubled step is AHEAD of the no-outside-data analogue (+3.73 and +3.30 on the cuts, +4.78, +2.00 and +4.29 on the libraries, each in 10 of 10 seeds); the epicardium step at the test's size PAYS (+0.80 on library 3); the placebo statement reads "a placebo gains as well; the direction more", so a part of the gain comes with any direction of this size profile. By the row's fixed line the ruled file is built as ruled..
+- 2026-11-23 (a), the second screened read for an answer to the seventh email (`docs/PLAN.md` decision log 2026-11-23
+  (a)); written by the AI assistant.
+  - **What ran.** The read the captain approved on 2026-11-13 for 23 November, at about 04:35 to 04:45 UTC, started by
+    the session reminder set that day. A screening agent got the brief of `docs/SCREENED_READ_SEVENTH_EMAIL.md` as
+    written, with two notes that narrow it (no leaderboard figure, total or rank is released and neither the Rules
+    page nor the leaderboard is opened, by the captain's instruction of 2026-11-20; organiser replies inside Slack
+    threads count as organiser posts, the gap the read of 2026-11-19 found). A second agent audited its block and
+    released it with removals. The main session opened none of the three sources and no transcript of either agent.
+  - **What came through the screen.** No answer on the Data Protocol page (reached without a sign-in; whether its text
+    on the two held-out samples changed since 2026-11-10 cannot be told), none among the organisers' posts and thread
+    replies in the public Slack channel since 2026-11-13, none in the organiser mail thread. Eight passages were
+    withheld and reach nobody: two on test-board limits, formats or scoring, one on scores from another participant,
+    one about another held-out sample, four unsure or off-topic. The auditor also removed three descriptions of what
+    the sources hold and the screening agent's topic notes on withheld passages; only counts by class were passed on.
+  - **What it changes.** Nothing, by the reading fixed on 2026-11-13 in `docs/ORGANIZER_QUESTIONS.md` ("Seventh
+    email"). No procedural fact about the hidden E7.75 sections or the hidden E12.5 libraries is known to the team
+    beyond the collection text released through the screen on 2026-11-10. No figure about a held-out sample was
+    released or used.

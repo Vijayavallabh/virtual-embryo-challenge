@@ -2,7 +2,14 @@
 
 ## Current Objective
 
-- **State at 2026-11-22, 11:05 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-23, 04:41 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-23 (a); the next label is 2026-11-23 (b). The second screened read for the seventh email ran (the captain's
+  approval of 13 Nov; reminder): NO ANSWER in the mail thread, the Slack channel or the Data Protocol page; by the
+  reading fixed beforehand nothing changes; recorded in `docs/ORGANIZER_QUESTIONS.md` and `docs/DATA_POLICY.md`.
+  Nothing runs on the DGX. Tries: T1 463, embryo 88, heart 97, T3 74. No score has been pasted since 20 Nov. Still
+  with the captain: the six questions (SO, O_hi, MS, file D, T1 line 1's step back, the heart line's exception), the
+  turn order of T1's third line, and the uploads of the handed-over files; all as in the bullets below.
+- **State at 2026-11-22, 11:05 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-22 (nn); the next label is 2026-11-22 (oo). Local main = origin/main at a6648c1 or one notes commit after
   it. Tries: T1 463, embryo 88, heart 97, T3 74. No score pasted today. Nothing runs on the DGX.
   - **T1'S THIRD SEARCH LINE IS IN FORCE (entry (nn); committed and pushed at 11:04 UTC on 22 Nov, eleven minutes

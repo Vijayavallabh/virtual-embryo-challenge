@@ -10921,3 +10921,25 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     Turn order when more than one line has a next file: line 1, then line 2, then this line, unless the captain says
     otherwise. Data used: as R13's file (released challenge data and the outside heart atlas on recomputed groups,
     register row X002).
+- 2026-11-23 (a), the second screened read for an answer to the seventh email: no answer; nothing changes (state at
+  04:41 UTC, 2026-11-23). Written by the AI assistant.
+  - **Why it ran.** A session reminder set on 2026-11-13 fired today. The captain approved the read that day ("yes to
+    the screened reads on 19 and 23 Nov", entry 2026-11-13 (d)); entries 2026-11-14 (a) and 2026-11-20 (a) kept it as
+    a check after the organisers' replies were assumed. The captain's later instruction of 2026-11-20 stopped a read
+    of the Rules page that the AI assistant had started unasked; this read was asked, touches neither the Rules page
+    nor the leaderboard, and was run as its brief says.
+  - **How.** Workflow wf_ebc342b3-564, at about 04:35 to 04:45 UTC: a screening agent under the brief of
+    `docs/SCREENED_READ_SEVENTH_EMAIL.md` as written, with two notes that narrow it (no leaderboard figure, total or
+    rank released, by the captain's instruction of 2026-11-20; organiser replies inside Slack threads read as
+    organiser posts); an auditor then released its block with removals. The main session read the audited block only.
+  - **The audited block.** The Data Protocol page was reached: no answer found; whether its text on the two held-out
+    samples changed since 2026-11-10 cannot be told. Organiser posts in the public Slack channel since 2026-11-13,
+    thread replies included: no answer found. The organiser mail thread: no answer found. Eight passages were withheld
+    by class (two on test-board limits, formats or scoring; one on scores from another participant; one about another
+    held-out sample; four unsure or off-topic).
+  - **The reading fixed beforehand, applied.** "No answer": the embryo advice stays as entry 2026-11-13 (a) put it and
+    R-B stays declined (`docs/ORGANIZER_QUESTIONS.md`, "Seventh email"). No file, rule, estimate or open question
+    changes. In particular what the embryo's candidates SO and O_hi depend on at the test (E7.75's profile and depth)
+    stays unknown, as the analysts' question of 2026-11-22 says. Recorded in `docs/ORGANIZER_QUESTIONS.md` and
+    `docs/DATA_POLICY.md` (entry 2026-11-23 (a)). This was the last read that could still change a build; none further
+    is scheduled by this entry.

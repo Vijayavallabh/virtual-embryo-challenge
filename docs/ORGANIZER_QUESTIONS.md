@@ -620,6 +620,16 @@ Screened read of 2026-11-18, about 15:40 to 15:46 UTC (the section at the top of
 mailbox, the Slack channel or the Data Protocol page.
 Screened read of 2026-11-19, about 04:38 UTC ("Screened reads of 2026-11-19" at the top of this file): no answer
 found in the organiser mail thread, the Slack channel (threads included) or the Data Protocol page.
+Screened read of 2026-11-23, about 04:35 to 04:45 UTC (the second read the captain approved on 2026-11-13; workflow
+wf_ebc342b3-564: a screening agent under the brief of `docs/SCREENED_READ_SEVENTH_EMAIL.md` as written, with two notes
+that narrow it, and an auditor who released its block with removals; the main session opened none of the sources): no
+answer found on the Data Protocol page (reached; whether its text on the two held-out samples changed since 2026-11-10
+cannot be told), in the Slack channel (organiser posts since 2026-11-13, replies inside threads included) or in the
+organiser mail thread. Eight passages were withheld, by class: two on test-board limits, formats or scoring; one on
+scores, from another participant; one about a held-out sample other than the two asked about; four unsure or
+off-topic; none on a measured property of a held-out sample; none gene-level. By the reading fixed below, nothing
+changes: the embryo advice stays as decision log 2026-11-13 (a) put it and R-B stays declined. This was the last read
+that could still change a build.
 
 **Classification, stated before any answer.** What it asks is procedure: which released sample a held-out sample was
 processed with, and whether a protocol was the same. That is the class of the collection text released through the

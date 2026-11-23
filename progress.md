@@ -2,6 +2,11 @@
 
 ## Current State
 
+- **2026-11-23, 04:41 UTC.** The second screened read for an organiser answer to the seventh email (approved on 13
+  Nov) ran: no answer in the mail thread, the Slack channel or the Data Protocol page, so by the reading fixed
+  beforehand nothing changes. The two files of T1's third search line (ordered by the captain on 22 Nov) are built.
+  Decision log 2026-11-22 (oo), (pp) and 2026-11-23 (a).
+
 - **2026-11-22, 11:05 UTC.** No new score. On a forwarded note the captain was asked one question and ordered a third
   T1 search line that starts from file C (both changes). A score-blind designer and a cold challenger wrote it (the
   atlas step at 2.0 then 2.5 with the correction held at 1.0); it was logged at 11:04 UTC, before file C's score, and
