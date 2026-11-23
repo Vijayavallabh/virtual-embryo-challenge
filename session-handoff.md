@@ -5,6 +5,19 @@
 - **State at 2026-11-23, 19:17 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
   2026-11-23 (t); next label (u). Ruling rows through R28; next R29. Main at the commit of this note; nothing of ours
   runs on the DGX.
+  - **CORRECTION to the heart route below:** the DGX worktree `~/v/scratch/h29b-wt` belongs to `~/v/vec-campaign` (not
+    `-d`): deliver heart commits with `git push PrakashDGX_H2:v/vec-campaign <commit>:refs/heads/<name>`.
+    `~/v/scratch/t1line-wt` belongs to `~/v/vec-campaign-d` (the T1 atlas line).
+  - **ROW T72 IS NOW v3 (scratch `lift8/t72_row_cells_v3.json`, as one ledger line sha256
+    f8302ec25e2fd06e08a87bef994ac4fbde794c6fc197a70269be0fb3da8dee14, also in `lift8/t72_row_v3.sha256`):** the rule
+    agent settled the six open points (`lift8/t72_rule_v2/open_points_settled.md`, hand-back
+    `lift8/t72_open_points.json`); its eight exact old-to-new wordings are applied by code, and the headroom check the
+    fifth cell asks of the main session is done and written into that cell (the ledger's tables, rerun at c4501f5).
+    This hash goes in the two readers' brief; after the screens start only the fills of cells 3, 4 and 10 may change.
+    Code consequences still to hand to the engineers in a fix round: the pre-gate fails when X002's own CM count is
+    below 200 at either end; the launcher's clean-tree check exempts only untracked files under
+    `experiments/t1_m1/results/t72_mx2s/`; start records are committed with the task files after the read; cell 3
+    names the screened files' sha256 as a placement fill.
   - **THE HEART SEARCH LINE IS IN FORCE** (the captain's words "start the heart search", ruling row R28, the rules
     note's amendment of 2026-11-23, log (t)). Two files on the full trim C's command with the trend step at strength
     0.5 (TS05) and 1.0 (TS10), nothing else changed. Rule: TS05 is uploaded after the queued file D; TS10 only if
