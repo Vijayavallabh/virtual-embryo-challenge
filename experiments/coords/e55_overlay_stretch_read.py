@@ -17,14 +17,14 @@ Path. harness.run_task on each task of nine_tasks.all_tasks() (half, late, new1,
 (reported only). A refusal of a form (vec.shape_interp.ShapeRefused, or the harness's cloud guard) is caught and
 recorded, and O's file of that seed stands in its place.
 
-Step 0, the gate record (the specification author's ruling 4). The target-free gate already ran at commit
-d145d7882e41 (branch campaign/emb-osr-gate, experiments/coords/osr_gate.py, merged here); its folder (the ten pair files
-and gate.json) is handed to the read with --gate-record, and the sha256 of its gate.json, quoted in the row, with
---gate-sha256. The launcher reruns osr_gate.py pair for the ten pairs at the run commit into <runs>/gate0 and
-osr_gate.py read there. The run and the read refuse or are void unless: the record's gate.json has that sha256 and
-says PASS, its pair files are from d145d78; the recompute's pair files are from the run commit and its gate.json says
-PASS (no stop clause S1 to S5); every pair's ten per-seed g equal the record's within 1e-9. P7's task set is fixed from
-the record's median g.
+Step 0, the gate record (the specification author's ruling 4). The target-free gate already ran at commit d145d7882e41
+(branch campaign/emb-osr-gate, experiments/coords/osr_gate.py, merged here); its folder (the ten pair files and
+gate.json) is the read's --gate-record (default experiments/coords/results/osr_gate_g1), and the sha256 of its
+gate.json, quoted in the row, its --gate-sha256 (default GATE_SHA256). The launcher reruns osr_gate.py pair for the ten
+pairs at the run commit into <runs>/gate0 and osr_gate.py read there. The run and the read refuse or are void unless:
+the record's gate.json has that sha256 and says PASS, its pair files are from d145d78; the recompute's pair files are
+from the run commit and its gate.json says PASS (no stop clause S1 to S5); every pair's ten per-seed g equal the
+record's within 1e-9. P7's task set is fixed from the record's median g.
 
 Steps (each refuses unless TRIES.md holds a row starting "| E55 ", the tree is clean and HEAD is the run commit):
   gate --task NAME --commit SHA  the floor, fgw_shape0x (C0) and O under main, ten seeds: the floor and C0 against E47's
@@ -43,6 +43,12 @@ test file or test anchor, and prints no count.
 Refusals (ruling 6): a refusal of the arm or of either placebo on any task-seed makes the arm unreadable; the outcome
 is STOP (no file), not VOID; O's file stands in; the three tries stay counted. P7 (ruling 5): the J4 merge over the
 truths that keep a four-truth task of recorded |median g| >= 0.05, at equal weight; above 0, no seeds-ahead count.
+Second set of rulings: the test's range is bounded by the J4 merge of the small-g test-like tasks (half, new1, new2)
+against O, 'no gain at the test' when at or below 0 (small_g_range); VOID wins over a STOP (the void conditions are
+checked before any clause); a step-0 failure makes the run step refuse to start (nothing counted), a void found after
+it starts leaves the three tries counted; a refusal of O, C0 or the floor is not caught (the task stops, the missing
+seeds void the read; nothing stands in for a control); the 1e-9 tolerance of the gate recompute is fixed (G_TOL, no
+option changes it); after a VOID nothing follows under this row and a rerun needs a new row (VOID_TEXT).
 """
 
 from __future__ import annotations
@@ -100,6 +106,8 @@ BAR, AHEAD = 0.3, 8
 G_MIN = 0.05  # P7: tasks whose gate |median g| is at least this
 G_TOL = 1e-9  # ruling 4: the recompute's per-seed g against the record's
 GATE_COMMIT = "d145d7882e4113b450c643a5c23ca225f7c57ff0"  # the target-free gate's run (branch campaign/emb-osr-gate)
+GATE_RECORD = REPO / "experiments" / "coords" / "results" / "osr_gate_g1"  # its ten pair files and gate.json
+GATE_SHA256 = "7c0fc6b6398092d54f6e4318bd8c79c1e092c4ec7e1edbbb6b86fcbede7b4d67"  # of that gate.json, as the row
 E47_DIR = REPO / "experiments" / "harness" / "results" / "e47_floor_exact"
 E47_RUN_COMMIT, E47_FILES_COMMIT = "9967cf1", "d5ee9b5"
 E49_DIR = REPO / "experiments" / "coords" / "results" / "e49_shape_interp"
@@ -160,6 +168,9 @@ VOID_CONDITIONS = (
 )
 VOID_AS_E49 = ("a missing task, seed, build or arm", "a gate file missing or failing (the O guard included)",
                "a file not identical across the two builds", "a refusal that differs between the builds")
+VOID_TEXT = ("VOID = read as nothing and no file. No task or seed is re-run selectively, and nothing further follows "
+             "under this row. A rerun needs a new row placed before it, and its tries count again. Tries counted at "
+             "the run step's start stay counted (rule 4).")
 RULINGS = {  # the specification author's rulings on its open points (embryo_osr_open_points.json), as coded here
     "O guard": "per task, the same-run ten-seed mean of O minus C0 under main within 0.01 of E49's committed "
                "tasks[name]['fgw_shape0x_ov'].board.mean; no per-seed check of O; C0 and the floor against E47 per "
@@ -771,8 +782,7 @@ def reading(recs: dict[str, list[dict]], why_in: list[str], commit: str, gate: d
     small = [n for n in TEST_LIKE if median_g.get(n) is not None and abs(float(median_g[n])) < G_MIN]
     statement = tp_statement(gate["median_g"], gate.get("test_pair_g", []))
     small_groups = e47.truths({n: nt.all_tasks()[n] for n in small}) if small else {}
-    statement["gain_on_small_g_test_like"] = (_stat(merged_D(recs, small_groups, ARM, O, "board"))
-                                              if small_groups else None)
+    statement.update(small_g_range(recs, small_groups))
     unreadable = [n for n in COUNTED if refused[n]]
     res = {"void": False, "why": [], "commit": commit, "truths": m, "refused_task_seeds": refused,
            "unreadable_because_refused": unreadable, "outcome": ("PASS" if dec["passes"] else "STOP"),
@@ -805,6 +815,19 @@ def reading(recs: dict[str, list[dict]], why_in: list[str], commit: str, gate: d
     return res
 
 
+def small_g_range(recs, small_groups: dict[str, list[str]]) -> dict:
+    """Ruling 1 (second set): the upper end of the test's range, the J4 merge of the small-g test-like tasks over their
+    truths at equal weight, the arm against O under main (mean over seeds of D_s); at or below 0 the statement is 'no
+    gain at the test'. The per-task figures are reported beside it and decide nothing."""
+    if not small_groups:
+        return {"gain_on_small_g_test_like": None, "no_gain_at_the_test": True, "small_g_per_task": {}}
+    D = merged_D(recs, small_groups, ARM, O, "board")
+    per = {n: float(np.mean(series(recs[n], ARM, "board") - series(recs[n], O, "board")))
+           for names in small_groups.values() for n in names}
+    return {"gain_on_small_g_test_like": _stat(D), "no_gain_at_the_test": bool(D.mean() <= 0),
+            "small_g_per_task": per}
+
+
 def _median(vals) -> float | None:
     v = [float(x) for x in vals if x is not None]
     return float(np.median(v)) if v else None
@@ -812,7 +835,7 @@ def _median(vals) -> float | None:
 
 def text(res: dict) -> str:
     if res["void"]:
-        return f"Row E55 (run commit {res['commit']}): VOID: " + "; ".join(res["why"]) + "\n"
+        return (f"Row E55 (run commit {res['commit']}): VOID: " + "; ".join(res["why"]) + "\n" + VOID_TEXT + "\n")
     m = res["merged"]
     L = [f"Row E55 (run commit {res['commit']}); {ROW_FIRST_LINE}.",
          f"The pre-run gate passed on all nine tasks (the floor and C0 under main within {res['gate']['tolerance']} of "
@@ -841,8 +864,11 @@ def text(res: dict) -> str:
                  + " on some task-seed; O's file stood in): STOP, not void; the three tries stay counted")
     tp = res["test_pair"]
     L.append("The recorded gate at the test pair, deciding nothing: " + tp["text"]
-             + ("" if tp.get("gain_on_small_g_test_like") is None else
-                f" The arm's board gain on those tasks: {tp['gain_on_small_g_test_like']['mean']:+.3f}."))
+             + (" No gain at the test." if tp.get("no_gain_at_the_test", True) else
+                f" The upper end of that range, the J4 merge of those tasks against O: "
+                f"{tp['gain_on_small_g_test_like']['mean']:+.3f}.")
+             + ("" if not tp.get("small_g_per_task") else " Per task, deciding nothing: "
+                + ", ".join(f"{k} {v:+.3f}" for k, v in tp["small_g_per_task"].items()) + "."))
     rep = res["reported_deciding_nothing"]
     L.append(f"Reported, deciding nothing: prefix board five-truth {rep['prefix_board5']['mean']:+.3f}, four-truth "
              f"{rep['prefix_board4']['mean']:+.3f}; per truth "
@@ -923,9 +949,9 @@ def main(argv=None) -> None:
 
 
 def _gate_args(p) -> None:
-    p.add_argument("--gate-record", required=True,
+    p.add_argument("--gate-record", default=str(GATE_RECORD),
                    help=f"the target-free gate's run folder at {GATE_COMMIT[:12]} (pair files, gate.json)")
-    p.add_argument("--gate-sha256", required=True, help="the sha256 of that run's gate.json, as the row quotes it")
+    p.add_argument("--gate-sha256", default=GATE_SHA256, help="the sha256 of that run's gate.json (the row's)")
 
 
 if __name__ == "__main__":
