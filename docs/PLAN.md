@@ -13517,3 +13517,24 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **No question is put to the captain**, as for a struck candidate (the precedent of entry (g)); the challenger's
     fallback text and words are in the round's scratch file `embryoc_attack.json`. The embryo's files stand as they
     are; nothing was coded, read or counted.
+- 2026-11-24 (y), ledger row H34 is placed: the practice read of the heart's fourth search line (OTS15), before any
+  read against a practice target (state at 05:28 UTC, 2026-11-24). Written by the AI assistant, which is recused on
+  the heart's scope and size, wrote none of the row and states no preference.
+  - **The row and who wrote it.** A rule writer blind to test scores wrote it from the line's text (entry (g), in
+    force by ruling row R32) and left five open points; a cold checker blind to test scores ruled on them (the
+    stricter reading where the texts did not settle it: what row H29b committed for D_f and what the gate must
+    reproduce, clause (b) stopping when the S1 bar fails in either world, a step that dies without a verdict is a
+    VOID, the gate, the run and the read each start once only) and made 24 further changes, the most important that
+    the draft let a VOID read reach the builder option. Both on the first model; the script's engineer on the second
+    model finished aligning the code with the final row, so the row's cell 3 names both branches.
+  - **What the AI assistant attests for the row's first condition:** ruling row R32 and the line's text were committed
+    at 02:08 UTC (e439189), before the first H34 code (begun at about 02:12 UTC from that commit), and no heart
+    headline beyond the six of entry 2026-11-23 (gg) has reached the main session up to this entry. The test the row's
+    cell 7 names, `test_g1_dry_runs_on_committed_results`, exists on the branch and passes.
+  - **What the row fixes.** Eight counted heart tries when the run step starts; the copy D_f is the control,
+    reproduced bit for bit from row H29b's committed figures in a gate that counts nothing; strengths 1.0 and 1.5 of
+    the trend step and a placebo of each; the stop rule of the line's text. NOT STOPPED leads to the builder option
+    under ruling row R32 and its review; STOPPED or VOID builds nothing. The file would still go only if OTS05's and
+    then OTS10's headlines each come back strictly above the one before.
+  - **Not yet:** the code on `campaign/heart-h34-2` (b6d43cf) is merged only after an independent review; the run goes
+    in a worktree with row H29b's own environment.
