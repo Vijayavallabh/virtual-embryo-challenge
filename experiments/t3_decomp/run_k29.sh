@@ -8,33 +8,39 @@
 #
 # COMMIT: the full hash of the run commit, row K29's commit (the row naming the script is in TRIES.md there). RUN names
 # the call's folders: the scratch folder S = ~/v/scratch/k29/RUN (exit records, the steps' logs, TMPDIR) and the run
-# folder R = runs/k29_RUN in the checkout (task files, guard.json); letters, digits, '.', '_' and '-' only, not starting
-# with '.' (else 90). A RUN made for another commit is refused (91); the same RUN at the same commit resumes: the runs
-# skip the seeds already written, and a guard.json already there is read again, never remade. A call without both
-# arguments exits 2. The gata4 run folder is fixed, no override: the reference checkout's
+# folder R = runs/k29_RUN in the checkout (gate.json, task files, guard.json); letters, digits, '.', '_' and '-' only,
+# not starting with '.' (else 90). A RUN made for another commit is refused (91); the same RUN at the same commit
+# resumes: the runs skip the seeds already written, and a gate.json or guard.json already there is read again, never
+# remade. A call without both arguments exits 2. The gata4 run folder is fixed, no override: the reference checkout's
 # runs/t3_decomp/gata4_20261028T122425Z, read only.
 # Steps, in order; the call stops at the first that does not exit 0. Each writes S/<step>.exit (first the word running,
 # then its code) and S/<step>.head (COMMIT), and runs only when the step before it wrote 0 at COMMIT (else 96).
-# S/done.exit holds running, then the call's code.
+# S/done.exit holds running, then the call's code. A failed gate or guard makes the VOID reading once (run_k24.sh's
+# rule; its code in S/void_read.exit) and ends the call under its own code, no later step started.
 #   preflight  HEAD is COMMIT (97), the tracked tree is clean (98), row K29 naming the script is in TRIES.md (95),
 #              K18's three committed task files are tracked and the gata4 run folder is a directory (96)
 #   tests      the targeted tests, synthetic data only, 8 BLAS threads (10)
+#   gate       the target-free gate, R/gate.json (its counts and ratios in S/gate.log): 0 passes; 5 a check fails:
+#              nothing is scored and no try counts, the VOID reading naming the check is made once and the call
+#              finishes 25; 1 a crash: INCOMPLETE, no reading (23); 2 refused (22); other 20. A gate.json already there
+#              is read again: passing at COMMIT goes on; failing finishes 25 (the VOID reading only when none is
+#              there); of another commit 21; unreadable 20
 #   guard      the guard part: oth_f only, both worlds, ten seeds, five parallel parts as in the run step, into
 #              R/guard/ (30 if a part did not exit 0); then the guard check, R/guard.json: 0 the guard holds; 6 it
-#              fails: the VOID reading is made once (it counts oth_f only, run_k24.sh's rule) and the call finishes
-#              26, no scoring part started; 2 refused (22: K18's files off their pins, the target-free composition
-#              gate failing, files of another commit or machine); 3 a guard file missing (30); other 20. A guard.json
-#              already there is read again: passing at COMMIT goes on; failing finishes 26 (the VOID reading only when
-#              none is there); of another commit 21; unreadable 20
-#   run        THE FIVE TRIES COUNT FROM THE START OF THIS STEP. Five parallel scoring parts, the six arms each: plain
-#              g1 and g2, each as seeds 0-4 and 5-9 (8 BLAS threads a process), and the depth-matched world (8 workers
-#              by 2 threads, 16 BLAS threads in its set-up), as rows K18 and K21 to K24 ran them; the script refuses
-#              without a passing guard.json of this commit and machine. Each part's code in R/exit/<part>, its log in
-#              R/logs/<part>.log (never printed); log lines other than the expected kinds are counted, never printed
-#              (30 if a part did not exit 0)
+#              fails: the VOID reading is made once (it counts one try, oth_f) and the call finishes 26, no scoring
+#              part started; 2 refused (22: K18's files off their pins, files of another commit or machine); 3 a guard
+#              file missing (30); other 20. A guard.json already there is read again: passing at COMMIT goes on;
+#              failing finishes 26 (the VOID reading only when none is there); of another commit 21; unreadable 20
+#   run        THE FIVE TRIES COUNT FROM THE START OF THIS STEP (the script writes R/run_started.json). Five parallel
+#              scoring parts, the six arms each: plain g1 and g2, each as seeds 0-4 and 5-9 (8 BLAS threads a
+#              process), and the depth-matched world (8 workers by 2 threads, 16 BLAS threads in its set-up), as rows
+#              K18 and K21 to K24 ran them; the script refuses without a passing gate.json and guard.json of this
+#              commit and machine. Each part's code in R/exit/<part>, its log in R/logs/<part>.log (never printed);
+#              log lines other than the expected kinds are counted, never printed (30 if a part did not exit 0)
 #   read       the fixed reading into experiments/t3_decomp/results/k29_cd7_read/ (output to /dev/null): 0 a reading
-#              (whatever it says, VOID included), 43 INCOMPLETE, 44 a reading is there already (never overwritten),
-#              42 refused (no row, a dirty tree, another HEAD), 41 a crash (masked traceback)
+#              (whatever it says, VOID included; at or after 2026-11-25 06:00 UTC a folder still missing a file gives
+#              the VOID reading 'INCOMPLETE past its cutoff'), 43 INCOMPLETE, 44 a reading is there already (never
+#              overwritten), 42 refused (no row, a dirty tree, another HEAD), 41 a crash (masked traceback)
 # 99: the call stopped unexpectedly (a failing command, a TERM, INT or HUP signal, or an exit that was not a finish).
 # NUMPY_MADVISE_HUGEPAGE=0; TMPDIR under S; no process above 16 BLAS threads. Nothing is deleted.
 set -u
@@ -85,16 +91,30 @@ K18_TASKS=experiments/t3_decomp/results/k18_built_files/tasks
 PASSES_CHECK='import json, sys; g = json.load(open(sys.argv[1])); c = (g.get("provenance") or {}).get("commit"); print("foreign" if c != sys.argv[2] else "pass" if g.get("passes") is True else "fail")'
 OK_LINE='^K29 (guard )?plain g[12] seed [0-9]+: (scored|present, skipped)$|^wrote [^ ]+\.json|^\[rep[12] seed [0-9]+\] K18 depth-matched: [0-9]+ arms and the check, [0-9]+s$|^self-check passed '
 
-# a failed guard: the VOID reading once (it counts oth_f only), then 26; no scoring part starts
+# void_read CODE: a failed gate (25) or guard (26): the VOID reading once, then CODE; no later step starts
 void_read() {
   rc=0
   $PY "$SCRIPT" read --commit "$COMMIT" --runs "$R" --out "$OUT" > /dev/null 2>&1 || rc=$?
-  echo "$rc" > "$S/guard.void_read.exit"
+  echo "$rc" > "$S/void_read.exit"
   if [ $rc = 3 ]; then finish 43; fi
   if [ $rc = 4 ]; then finish 44; fi
   if [ $rc = 2 ]; then finish 42; fi
   if [ $rc != 0 ]; then finish 41; fi
-  finish 26
+  finish "$1"
+}
+
+# again FILE CODE: a gate.json or guard.json already there, read again: passing at COMMIT goes on; failing finishes
+# CODE (the VOID reading only when none is there); another commit 21; unreadable 20
+again() {
+  local got
+  got=$($PY -c "$PASSES_CHECK" "$R/$1" "$COMMIT" 2> /dev/null) || got=unreadable
+  if [ "$got" = pass ]; then return 0; fi
+  if [ "$got" = fail ]; then
+    if [ -e "$OUT/reading.json" ] || [ -e "$OUT/reading.txt" ]; then finish "$2"; fi
+    void_read "$2"
+  fi
+  if [ "$got" = foreign ]; then finish 21; fi
+  finish 20
 }
 
 # parts PREFIX [ARGS...]: the five parallel parts (plain g1 and g2 as seeds 0-4 and 5-9, and dm); each part's code in
@@ -148,26 +168,32 @@ $PY -m pytest -q -p no:cacheprovider -o pythonpath=src --basetemp="$S/tmp/pytest
 if [ $rc != 0 ]; then finish 10; fi
 passed
 
-begin guard tests
+begin gate tests
 mkdir -p "$R/exit" "$R/logs"
+if [ ! -e "$R/gate.json" ]; then
+  rc=0
+  $PY "$SCRIPT" gate --commit "$COMMIT" --out "$R" --threads 8 > "$S/gate.log" 2>&1 || rc=$?
+  if [ $rc = 5 ]; then void_read 25; fi
+  if [ $rc = 1 ]; then finish 23; fi
+  if [ $rc = 2 ]; then finish 22; fi
+  if [ $rc != 0 ]; then finish 20; fi
+fi
+again gate.json 25
+passed
+
+begin guard gate
 if [ ! -e "$R/guard.json" ]; then
   rc=0
   parts guard_ --part guard || rc=$?
   if [ $rc != 0 ]; then finish 30; fi
   rc=0
   $PY "$SCRIPT" guard --commit "$COMMIT" --runs "$R" > "$S/guard.log" 2>&1 || rc=$?
-  if [ $rc = 6 ]; then void_read; fi
+  if [ $rc = 6 ]; then void_read 26; fi
   if [ $rc = 2 ]; then finish 22; fi
   if [ $rc = 3 ]; then finish 30; fi
   if [ $rc != 0 ]; then finish 20; fi
 fi
-gpass=$($PY -c "$PASSES_CHECK" "$R/guard.json" "$COMMIT" 2> /dev/null) || gpass=unreadable
-if [ "$gpass" = fail ]; then
-  if [ -e "$OUT/reading.json" ] || [ -e "$OUT/reading.txt" ]; then finish 26; fi
-  void_read
-fi
-if [ "$gpass" = foreign ]; then finish 21; fi
-if [ "$gpass" != pass ]; then finish 20; fi
+again guard.json 26
 passed
 
 begin run guard

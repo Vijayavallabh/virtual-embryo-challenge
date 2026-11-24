@@ -23,35 +23,51 @@ cuts the listed states by 2^-m before renormalising:
   oth_f                 the scenario at the second m: K18's barred_form value for value (its composition is checked
                         equal to the barred spec's, array for array). THE GUARD, not counted while inside it
 The three m are fixed here and checked against the committed decision file (the second is the barred s1's, the first
-half of it, the third the allowed s1's); the two lists are read from the frozen rules.yaml.
+half of it, the third and its depletion factor 0.3835131214774091 the allowed s1's); the two lists are read from the
+frozen rules.yaml. Every arm's composition is checked on each world's vocabulary before anything is drawn (the own list
+missing exactly V-CM and IFT-CM, the scenario missing nothing, every cut state at 2^-m before renormalising); a failed
+check raises, so no task file is written.
 
 Steps (each with --commit, the full hash of the run commit, which must be HEAD; outputs in the run folder R):
-  run --part guard --world plain --task g1|g2 [--seeds 0-4] --out R   the guard part: oth_f only, into R/guard/
-  run --part guard --world dm [--workers 8 --threads 2] --out R       (refused when K18's committed files are off)
-  guard --runs R          the guard check (R/guard.json, made once): the target-free composition gate on every guard
-                          file's record (all five scenario states found at 0.3835 of their wild-type share before
-                          renormalising; the own list missing exactly V-CM and IFT-CM), then the guard: oth_f within
-                          K17's tolerance (ten-seed mean 0.1, every seed 0.5) of K18's committed barred_form in all
-                          four cells. Exit 6 when the guard fails (VOID; the run step never starts)
-  run [--part score] --world plain|dm ... --out R   a scoring part: the six arms; refused without a passing guard.json
-                          of this commit and machine. THE FIVE TRIES COUNT FROM THE START OF THE RUN STEP
+  gate --out R            THE TARGET-FREE GATE, before the guard: the frozen builder's composition, given the decision
+                          file's submissions.allowed.s1 composition on WT E8.75's vocabulary (the builder's own
+                          load_reference), finds all five scenario states (a); each state's (f_i / p_i) / (f_j / p_j),
+                          for every uncut label j, equals the decision file's depletion factor 0.3835131214774091 within
+                          a relative 1e-12 (b); rule_comp with presets.gata4 cm_states finds exactly seven labels, V-CM
+                          and IFT-CM missing (c). R/gate.json; it prints counts and ratios only. Exit 5 when a check
+                          fails (nothing is scored, no try counts; the reading is VOID naming the check); a crash exits
+                          1 (INCOMPLETE)
+  run --part guard --world plain --task g1|g2 [--seeds 0-4] --out R   the guard part: oth_f only, into R/guard/;
+  run --part guard --world dm [--workers 8 --threads 2] --out R       refused without a passing gate.json of this commit
+                          and machine, or with K18's committed files off their pins
+  guard --runs R          the guard check (R/guard.json, made once): oth_f within K17's tolerance (ten-seed mean 0.1,
+                          every seed 0.5 board points) of K18's committed barred_form in all four cells. Exit 6 when it
+                          fails (VOID with one counted try, oth_f; the run step never starts)
+  run [--part score] --world plain|dm ... --out R   a scoring part: the six arms; refused without a passing gate.json
+                          and guard.json of this commit and machine. THE FIVE TRIES COUNT FROM THE START OF THE RUN
+                          STEP: the first scoring part to pass its refusals writes R/run_started.json
   read --runs R [--out DIR]   the fixed reading: DIR/reading.json and DIR/reading.txt (DIR defaults to
-                          experiments/t3_decomp/results/k29_cd7_read), never over an existing one
+                          experiments/t3_decomp/results/k29_cd7_read), never over an existing one; it prints the outcome
+                          line, the per-cell table of G, Gd and C and the labels
 
-Layout of R: guard/plain_<task>/seed_<s>.json, guard/dm/<task>_seed_<s>.json, guard.json, plain_<task>/seed_<s>.json,
-dm/<task>_seed_<s>.json, each with its <file>.prov.json (k18.write_task_file); dm/setup.json and guard/dm/setup.json. A
-rerun at the same commit on the same machine skips the seeds already written; a folder holding a file of another commit
-or machine is refused (k18.check_folder). No log holds a score: progress lines only, K18's timing line per dm row, the
-fixed self-check line; a crash prints its traceback with every decimal number masked (k18.masked).
+Layout of R: gate.json, guard/plain_<task>/seed_<s>.json, guard/dm/<task>_seed_<s>.json, guard.json, run_started.json,
+plain_<task>/seed_<s>.json, dm/<task>_seed_<s>.json: one task file per seed and cell, each with its <file>.prov.json
+(k18.write_task_file); dm/setup.json and guard/dm/setup.json. A rerun at the same commit on the same machine skips the
+seeds already written; a folder holding a file of another commit or machine is refused (k18.check_folder). No log holds
+a score: progress lines only, K18's timing line per dm row, the fixed self-check line, the gate's counts and ratios; a
+crash prints its traceback with every decimal number masked (k18.masked).
 
-The reading (fixed in row K29; `reading`, `decide`):
-  INCOMPLETE  guard.json, a guard file or (after a passing guard) a scoring file missing: not a reading; read opens
-              nothing more, writes nothing and exits 3.
-  VOID        checked first, and it wins: a seed file missing an arm (the plain ones the floor too) or not its task's
-              or seed's; mixed commits or machines; a dirty tree; K18's committed task files off their pins; the guard
-              failing (guard.json, the guard files read again, or the scoring part's oth_f). Outcome "Try K29: VOID:
-              [reasons]; no file." The five tries count when the run step has started (oth_f also, when outside the
-              guard); a guard that failed in the guard step counts oth_f only.
+The reading (fixed in row K29, cells 8a and 8b; `reading`, `decide`, `labels`):
+  INCOMPLETE  gate.json, guard.json or a seed file missing (the scoring part's only after a passing guard): not a
+              reading; read opens no seed file, writes nothing and exits 3. A read made at or after 2026-11-25 06:00
+              UTC with a file still missing writes instead the VOID reading "INCOMPLETE past its cutoff".
+  VOID        checked first, and it wins (no strike clause is applied): the gate failed ("the target-free gate failed
+              ([check])", no try counts); the guard failed at the guard step (one counted try, oth_f); a seed file that
+              misses an arm (the plain ones the floor too) or is not its part's, task's or seed's; mixed commits or
+              machines; a dirty tree; K18's committed task files off their pins; the guard step's oth_f, read again,
+              off K18's rows; the run step's oth_f off the guard step's beyond K17's tolerance. Outcome "Try K29: VOID:
+              [reasons]; no file." Once the run step has started, the five tries count, and oth_f also when it fails
+              its guard in the run step.
   Per cell, paired by seed: G = own_f - own_h; Gd = own_d - own_h; C = oth_d - oth_h. AHEAD: mean above 0.3 with at
               least 8 of 10 seeds positive. BEHIND: mean below -0.3.
   STRIKE      S1 Gd is AHEAD in no plain cell, or in no dm cell. S2 G is BEHIND in two or more cells. S3 C's four-cell
@@ -60,17 +76,22 @@ The reading (fixed in row K29; `reading`, `decide`):
               file; C2 stays."
   OTHERWISE   "Try K29: NOT STRUCK: the file may be built and uploaded under the captain's bound yes (ruling row
               R36)." with the per-cell table of G, Gd and C beside it.
-  LABELLED, deciding nothing: "a fit of this fold, not an effect" if C is AHEAD in as many cells as Gd, if Gd's gains
-              sit in dm g1's gate flips, or if they hold in one world only.
+  LABELLED, deciding nothing: "a fit of this fold, not an effect" if (L1) C is AHEAD in at least as many of the four
+              cells as Gd; (L2) Gd is AHEAD in a dm cell, and in each dm cell where it is AHEAD its mean over the seeds
+              without a gate flip is 0.3 or less (a gate flip: a seed where own_d and own_h have different severity
+              states; a cell with no flip-free seed counts as 0.3 or less); (L3) counting a dm cell for Gd only where
+              its flip-free mean is above 0.3, Gd's AHEAD cells (one at least) lie in one world, or G is AHEAD somewhere
+              and all its AHEAD cells lie in one world.
   REPORTED, deciding nothing: each arm against oth_f; own_d - own_f; per-term skills; gated counts; the realised
-              cut-state shares. Both files' gate bars belong to the file build, not to this read.
-Nothing changes after any score: the three magnitudes, 0.3, 8 of 10, -0.3, two cells, plus 1, the seeds, 0.1, 0.5.
+              cut-state shares. Both files' gate bars belong to the file build before upload, not to this read.
+Nothing changes after any score: the three magnitudes, 0.3, 8 of 10, -0.3, two cells, plus 1, the seeds, 0.1, 0.5, the
+relative 1e-12 and the cutoff of 2026-11-25 06:00 UTC.
 
-Exit codes: 0 done; 1 a crash (masked traceback; seeds written so far stay); 2 refused (no row K29, an unclean tree,
-another HEAD, the frozen T3 files off their pins, K18's committed files off their pins, a decision file or rules whose
-magnitudes or lists are not the row's, the target-free gate failing, a scoring part without a passing guard.json of
-this commit and machine); 3 INCOMPLETE; 4 a reading or guard.json is there already (never overwritten); 6 the guard
-failed (VOID).
+Exit codes: 0 done; 1 a crash (masked traceback; seeds written so far stay; the gate's: INCOMPLETE); 2 refused (no
+row K29, an unclean tree, another HEAD, the frozen T3 files off their pins, K18's committed files off their pins, a
+decision file or rules whose magnitudes, depletion factor or lists are not the row's, a part without the passing
+gate.json or guard.json it needs); 3 INCOMPLETE; 4 a reading, gate.json or guard.json is there already (never
+overwritten); 5 the gate failed; 6 the guard failed.
 """
 
 from __future__ import annotations
@@ -82,8 +103,10 @@ import json
 import re
 import sys
 import tempfile
+import time
 import traceback
 from contextlib import contextmanager
+from datetime import UTC, datetime
 from pathlib import Path
 
 import numpy as np
@@ -109,13 +132,16 @@ STREAM = k18.STREAM  # "t3_s2_form"
 TASKS = k18.TASKS  # g1, g2
 WORLDS = k18.WORLDS  # plain, dm
 CELLS = ("plain g1", "plain g2", "dm g1", "dm g2")
+DM_CELLS = ("dm g1", "dm g2")
 
 # The three magnitudes (log2 of the cut; the states go to 2^-m of their wild-type share before renormalising)
 L2_H = 0.358906935493353
 L2_F = 0.717813870986706
 L2_D = 1.3826521560990648
+DEPLETION_D = 0.3835131214774091  # the decision file's submissions.allowed.s1 depletion_factor, 2^-L2_D
 OWN, OTH = "own", "oth"  # rules.yaml presets.gata4 cm_states; its scenario's depleted_states
 OWN_ABSENT = ("V-CM", "IFT-CM")  # the own list's labels the vocabulary lacks (the gata4 run's meta lists them)
+OWN_FOUND = 7
 ARM_OF = {"own_h": (OWN, L2_H), "own_f": (OWN, L2_F), "own_d": (OWN, L2_D),
           "oth_h": (OTH, L2_H), "oth_f": (OTH, L2_F), "oth_d": (OTH, L2_D)}
 GUARD_ARM = "oth_f"
@@ -123,25 +149,34 @@ COUNTED = ("own_h", "own_f", "own_d", "oth_h", "oth_d")  # the five counted trie
 ARMS = (GUARD_ARM, *COUNTED)
 STEPS = {"G": ("own_f", "own_h"), "Gd": ("own_d", "own_h"), "C": ("oth_d", "oth_h")}
 GATED_PAIRS = (("own_d", "own_h"), ("oth_d", "oth_h"))  # S4
+FLIP_PAIR = ("own_d", "own_h")  # L2, L3: a gate flip compares these two arms' severity states seed by seed
 REPORTED_PAIRS = (*((x, GUARD_ARM) for x in COUNTED), ("own_d", "own_f"))
 MIN_GAIN, MIN_AHEAD = k7.MIN_GAIN, k7.MIN_AHEAD  # AHEAD: mean above 0.3 with at least 8 of 10 seeds positive
 MAX_BEHIND = -k7.MIN_GAIN  # BEHIND: mean below -0.3; S3's four-cell mean below -0.3
 MIN_CELLS = 2  # S2, S3: "two or more cells"
 MAX_EXTRA_GATED = 1  # S4: "plus 1"
 GUARD_MEAN, GUARD_SEED = k18.GUARD_MEAN, k18.GUARD_SEED  # 0.1 and 0.5 (K17's tolerance)
-GATE_ARM, GATE_SHARE, GATE_TOL = "oth_d", 0.3835, 5e-5  # the target-free gate: the five states at 0.3835 (4 places)
-REL_TOL = 1e-9  # a cut state's share before renormalising against 2^-m
+GATE_REL = 1e-12  # the gate: each cut over the uncut labels against the depletion factor, relative
+REL_TOL = 1e-9  # the arms' checks: a cut state's share before renormalising against 2^-m, relative
+GATE_CHECKS = {"a": "a: the five scenario states found, states_missing empty",
+               "b": "b: each state's (f_i / p_i) / (f_j / p_j) over the uncut labels j equals the depletion factor "
+                    "within a relative 1e-12",
+               "c": "c: rule_comp with presets.gata4 cm_states finds exactly seven labels, V-CM and IFT-CM missing"}
+CUTOFF = datetime(2026, 11, 25, 6, 0, tzinfo=UTC)
+CUTOFF_TEXT = "2026-11-25 06:00 UTC"
 K18_TASKS = k21.K18_TASKS  # experiments/t3_decomp/results/k18_built_files/tasks
 K18_SHA256 = {"plain_g1.json": "5ec09ef583862ab47ab078e72c7aed807c89b4d9c234c57e3b0727ff9e460ed9",
               "plain_g2.json": "cfc5ede7e7185ba5e16d4774d975b9e140e60bbd29736fb85c0fdb8e99f4634f",
               "dm.json": "1ef3e26347c65f915c1630130da02a655c155b912392180001cba315fe135b60"}
 RESULTS = HERE / "results" / "k29_cd7_read"
-GUARD_FILE, GUARD_DIR = "guard.json", "guard"
-EXIT_REFUSED, EXIT_INCOMPLETE, EXIT_EXISTS, EXIT_GUARD = 2, 3, 4, 6
+GATE_FILE, GUARD_FILE, GUARD_DIR, RUN_MARK = "gate.json", "guard.json", "guard", "run_started.json"
+EXIT_REFUSED, EXIT_INCOMPLETE, EXIT_EXISTS, EXIT_GATE, EXIT_GUARD = 2, 3, 4, 5, 6
 VOID_LINE = "Try K29: VOID: {}; no file."
 STRUCK_LINE = "Try K29: STRUCK ({}): no file; C2 stays."
 NOT_STRUCK_LINE = ("Try K29: NOT STRUCK: the file may be built and uploaded under the captain's bound yes (ruling row "
                    "R36).")
+GATE_VOID = "the target-free gate failed ({})"
+LATE = "INCOMPLETE past its cutoff"
 FIT_LABEL = "a fit of this fold, not an effect"
 _K29: dict = {}  # the two state lists, loaded before any arm builds
 
@@ -153,6 +188,14 @@ class Refused(Exception):
 def refuse(msg: str) -> None:
     print(f"refused: {msg}", file=sys.stderr, flush=True)
     sys.exit(EXIT_REFUSED)
+
+
+def _now() -> datetime:
+    return datetime.now(UTC)
+
+
+def past_cutoff() -> bool:
+    return _now() >= CUTOFF
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -195,6 +238,22 @@ def preconditions(commit: str) -> tuple[str, dict]:
     return rid, st
 
 
+def step_passed(out: Path, name: str, st: dict, what: str) -> None:
+    """A part starts only after a passing gate.json (guard.json) of this commit and machine (exit 2 otherwise)."""
+    p = Path(out) / name
+    if not p.is_file():
+        refuse(f"{p} is missing: {what} runs and passes first")
+    try:
+        g = json.loads(p.read_text())
+    except ValueError:
+        refuse(f"{p} is not JSON")
+    if not isinstance(g, dict) or g.get("passes") is not True:
+        refuse(f"{what} did not pass: no part runs after it")
+    prov = g.get("provenance") or {}
+    if prov.get("commit") != st["commit"] or prov.get("machine") != st["machine"]:
+        refuse(f"{name} is from another commit or machine: refused")
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 # The compositions
 
@@ -205,34 +264,84 @@ def state_lists(rules: dict) -> dict[str, list[str]]:
     return {OWN: [str(s) for s in pre["cm_states"]], OTH: [str(s) for s in pre["scenario"]["depleted_states"]]}
 
 
+def allowed_s1(dec: dict) -> dict:
+    return (((dec.get("submissions") or {}).get("allowed") or {}).get("s1") or {}).get("composition") or {}
+
+
 def check_spec(spec: dict, dec: dict, lists: dict) -> None:
     """The row's magnitudes and lists against the committed files: the barred s1's composition is the scenario's five
     states at the second magnitude, the first is half of it, and the decision file's allowed s1 composition is the
-    scenario at the third. Refused otherwise."""
+    scenario at the third with its depletion factor 0.3835131214774091. Refused otherwise."""
     comp = spec.get("composition") or {}
     if comp.get("kind") in (None, "none") or list(comp.get("depleted_states") or []) != lists[OTH]:
         raise Refused("the barred s1's composition is not the scenario's five depleted states")
     if comp.get("log2_magnitude") != L2_F or L2_H != L2_F * 0.5:
         raise Refused(f"the barred s1's magnitude {comp.get('log2_magnitude')!r} is not the row's second, {L2_F!r} "
                       "(and the first half of it)")
-    allowed = ((((dec.get("submissions") or {}).get("allowed") or {}).get("s1") or {}).get("composition") or {})
-    if list(allowed.get("depleted_states") or []) != lists[OTH] or allowed.get("log2_magnitude") != L2_D:
+    allowed = allowed_s1(dec)
+    if allowed.get("kind") in (None, "none") or list(allowed.get("depleted_states") or []) != lists[OTH] \
+            or allowed.get("log2_magnitude") != L2_D or allowed.get("depletion_factor") != DEPLETION_D:
         raise Refused("the decision file's allowed s1 composition is not the scenario at the row's third magnitude "
-                      f"{L2_D!r}")
+                      f"{L2_D!r} with the depletion factor {DEPLETION_D!r}")
     if len(lists[OTH]) != 5 or len(lists[OWN]) != 9 or any(s not in lists[OWN] for s in OWN_ABSENT):
         raise Refused("the frozen rules' lists are not the row's (five scenario states; nine own labels holding V-CM "
                       "and IFT-CM)")
 
 
-def load_lists(decision: Path) -> dict:
+def load_lists(decision: Path) -> tuple[dict, dict, dict]:
     """The barred spec, the decision file and the frozen rules as k18.barred_spec resolves them; the row's checks; the
-    two lists held in _K29 for fold_factors."""
+    two lists held in _K29 for fold_factors. Returns (spec, decision, rules)."""
     spec, dec, rules = k18.barred_spec(Path(decision))
     lists = state_lists(rules)
     check_spec(spec, dec, lists)
     _K29.clear()
     _K29.update(lists=lists)
-    return lists
+    return spec, dec, rules
+
+
+def gate_eval(bs, V, dec: dict, rules: dict) -> dict:
+    """The target-free gate, on a vocabulary (WT E8.75's, as the builder loads it), the decision file and the frozen
+    rules: (a) the builder's composition with the decision file's submissions.allowed.s1 composition finds all five
+    scenario states; (b) for each of them and every uncut label j, (f_i / p_i) / (f_j / p_j) equals the decision
+    file's depletion factor within a relative GATE_REL; (c) rule_comp with presets.gata4 cm_states finds exactly seven
+    labels, V-CM and IFT-CM missing. Counts and ratios only; no share is kept."""
+    comp = allowed_s1(dec)
+    lists = state_lists(rules)
+    f, info = bs.composition(V, {"composition": comp}, {})
+    p = np.asarray(V.p, dtype=np.float64)
+    f = np.asarray(f, dtype=np.float64)
+    found = [str(s) for s in info.get("states_found") or []]
+    missing = [str(s) for s in info.get("states_missing") or []]
+    cut = V.index(found)
+    uncut = np.setdiff1d(np.arange(p.size), cut)
+    D = float(comp.get("depletion_factor"))
+    ratios = {}
+    for t, i in zip(found, cut, strict=True):
+        r = (f[i] / p[i]) / (f[uncut] / p[uncut]) if uncut.size else np.array([np.nan])
+        ratios[t] = {"min": float(np.min(r)), "max": float(np.max(r))}
+    checks = {"a": not missing and sorted(found) == sorted(lists[OTH]) and len(found) == 5}
+    checks["b"] = bool(checks["a"] and uncut.size and D == DEPLETION_D and all(
+        abs(v["min"] / D - 1.0) <= GATE_REL and abs(v["max"] / D - 1.0) <= GATE_REL for v in ratios.values()))
+    _, own_missing = bs.t3d.rule_comp(V, {"deplete": dict.fromkeys(lists[OWN], 0.0)}, {}, L2_D)
+    own_missing = [str(s) for s in own_missing]
+    own_found = len(lists[OWN]) - len(own_missing)
+    checks["c"] = own_missing == list(OWN_ABSENT) and own_found == OWN_FOUND
+    failed = [GATE_CHECKS[k] for k in ("a", "b", "c") if not checks[k]]
+    return {"passes": not failed, "failed": failed, "checks": checks, "scenario_found": len(found),
+            "scenario_missing": missing, "ratios": ratios, "depletion_factor": D, "uncut_labels": int(uncut.size),
+            "own_found": own_found, "own_listed": len(lists[OWN]), "own_missing": own_missing}
+
+
+def gate_lines(res: dict) -> list[str]:
+    """The gate's printed lines: counts and ratios only."""
+    head = "passes" if res["passes"] else "FAILS (" + "; ".join(res["failed"]) + ")"
+    return [f"K29 target-free gate: {head}",
+            f"  scenario states found {res['scenario_found']} of 5, missing {res['scenario_missing'] or 'none'}",
+            "  (f_i / p_i) / (f_j / p_j) over the uncut labels j, least and most: " + ", ".join(
+                f"{t} {v['min']!r} {v['max']!r}" for t, v in res["ratios"].items())
+            + f"; the depletion factor {res['depletion_factor']!r}",
+            f"  rule_comp with cm_states: {res['own_found']} of {res['own_listed']} labels found, missing "
+            f"{', '.join(res['own_missing']) or 'none'}"]
 
 
 def arm_spec(spec: dict, arm: str, lists: dict) -> dict:
@@ -248,7 +357,7 @@ def arm_spec(spec: dict, arm: str, lists: dict) -> dict:
 
 def composition_figures(V, f, info: dict, l2: float) -> dict:
     """Target-free: each cut state's wild-type share, its share after renormalising, and its share before renormalising
-    relative to its wild-type share (the renormalising divisor recovered from the untouched labels)."""
+    relative to its wild-type share (the renormalising divisor recovered from the uncut labels)."""
     p = np.asarray(V.p, dtype=np.float64)
     f = np.asarray(f, dtype=np.float64)
     found = [str(s) for s in info.get("states_found") or []]
@@ -266,24 +375,15 @@ def composition_figures(V, f, info: dict, l2: float) -> dict:
 
 
 def composition_checks(figs: dict) -> list[str]:
-    """Why the arms' compositions are not the row's (empty: they are). The target-free gate: the scenario's five states
-    all found at 0.3835 of their wild-type share before renormalising (oth_d, the file's composition); the own list
-    missing exactly V-CM and IFT-CM; every cut state at 2^-m before renormalising."""
+    """Why the arms' compositions are not the row's (empty: they are): the own list missing exactly V-CM and IFT-CM,
+    the scenario missing nothing, every cut state at 2^-m of its wild-type share before renormalising."""
     why = []
-    g = figs.get(GATE_ARM) or {}
-    if g.get("states_missing") or len(g.get("states_found") or []) != 5:
-        why.append(f"the gate: the composition routine finds {len(g.get('states_found') or [])} of the five states "
-                   f"(missing {g.get('states_missing')})")
-    for t, v in (g.get("states") or {}).items():
-        r = v.get("ratio_before_renormalising")
-        if r is None or abs(r - GATE_SHARE) > GATE_TOL:
-            why.append(f"the gate: {t} is not at {GATE_SHARE} of its wild-type share before renormalising")
     for a in ARMS:
         v = figs.get(a) or {}
         which = ARM_OF[a][0]
         if which == OWN and list(v.get("states_missing") or []) != list(OWN_ABSENT):
             why.append(f"{a}: the own list misses {v.get('states_missing')}, not exactly {list(OWN_ABSENT)}")
-        if which == OTH and v.get("states_missing"):
+        if which == OTH and (v.get("states_missing") or len(v.get("states") or {}) != 5):
             why.append(f"{a}: the scenario misses {v.get('states_missing')}")
         cut = 2.0 ** -ARM_OF[a][1]
         if not v.get("states") or any(s.get("ratio_before_renormalising") is None
@@ -291,15 +391,6 @@ def composition_checks(figs: dict) -> list[str]:
                                       for s in v["states"].values()):
             why.append(f"{a}: a cut state is not at 2^-m of its wild-type share before renormalising")
     return why
-
-
-def gate_record(figs: dict) -> dict:
-    g = figs.get(GATE_ARM) or {}
-    return {"arm": GATE_ARM, "share": GATE_SHARE, "states_found": g.get("states_found"),
-            "states_missing": g.get("states_missing"),
-            "ratio_before_renormalising": {t: v.get("ratio_before_renormalising")
-                                           for t, v in (g.get("states") or {}).items()},
-            "passes": not composition_checks(figs)}
 
 
 def arm_compositions(bs, V, spec: dict, lists: dict) -> dict:
@@ -315,7 +406,7 @@ def arm_compositions(bs, V, spec: dict, lists: dict) -> dict:
     if not np.array_equal(np.asarray(f[GUARD_ARM]), np.asarray(f_barred)):
         why.append("oth_f's composition is not the barred s1's value for value")
     if why:
-        raise RuntimeError("the arms' compositions fail the row's target-free checks: " + "; ".join(why))
+        raise RuntimeError("the arms' compositions fail the row's checks: " + "; ".join(why))
     return {"specs": specs, "f": f, "figures": figs}
 
 
@@ -383,6 +474,38 @@ def candidates(arms: tuple[str, ...]) -> list:
 
 
 # ---------------------------------------------------------------------------------------------------------------------
+# The gate
+
+
+def cmd_gate(a) -> None:
+    """The target-free gate before the guard: R/gate.json (made once); exit 0 when it passes, 5 when a check fails
+    (nothing is scored; the reading is VOID naming the check), 1 on a crash (INCOMPLETE: no gate.json)."""
+    rid, st = preconditions(a.commit)
+    out = Path(a.out)
+    p = out / GATE_FILE
+    if p.exists():
+        print(f"refused: {p} exists: the gate is made once", file=sys.stderr, flush=True)
+        sys.exit(EXIT_EXISTS)
+    try:
+        spec, dec, rules = load_lists(Path(a.decision))
+        bs = harness._t3_head()
+        wt = Path(a.data) / "T2" / "E8.75.h5ad"
+        ref = bs.load_reference(wt, "gata4", rules, threads=a.threads)
+        res = gate_eval(bs, ref.V, dec, rules)
+        out.mkdir(parents=True, exist_ok=True)
+        k18.write_task_file(p, {**res, "row": rid, "composition": allowed_s1(dec), "wt_sha256": bs.sha256(wt),
+                                "decision_sha256": bs.sha256(Path(a.decision)), "provenance": st})
+    except Refused as e:
+        refuse(str(e))
+    except Exception:  # noqa: BLE001  (a crash of the gate: masked traceback, exit 1, INCOMPLETE)
+        print(k18.masked(traceback.format_exc()), file=sys.stderr, end="", flush=True)
+        sys.exit(1)
+    print("\n".join(gate_lines(res)), flush=True)
+    if not res["passes"]:
+        sys.exit(EXIT_GATE)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
 # Running
 
 
@@ -417,20 +540,15 @@ def guard_refs(refs: Path = K18_TASKS) -> dict:
     return rows
 
 
-def guard_passed(out: Path, st: dict) -> None:
-    """A scoring part starts only after a passing guard.json of this commit and machine."""
-    p = Path(out) / GUARD_FILE
-    if not p.is_file():
-        refuse(f"{p} is missing: the guard part runs and passes first")
+def mark_run_started(out: Path, st: dict) -> None:
+    """The run step's start, which counts the five tries: R/run_started.json, made once by the first scoring part
+    that passes its refusals (an exclusive create; the other parts find it there)."""
     try:
-        g = json.loads(p.read_text())
-    except ValueError:
-        refuse(f"{p} is not JSON")
-    if not isinstance(g, dict) or g.get("passes") is not True:
-        refuse("the guard did not pass: the run is VOID and no scoring part runs")
-    prov = g.get("provenance") or {}
-    if prov.get("commit") != st["commit"] or prov.get("machine") != st["machine"]:
-        refuse("guard.json is from another commit or machine: refused")
+        with open(Path(out) / RUN_MARK, "x") as fh:
+            json.dump({"row": ROW_LABEL, "counted": list(COUNTED), "commit": st["commit"], "machine": st["machine"],
+                       "utc": time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())}, fh)
+    except FileExistsError:
+        pass
 
 
 def run_plain(a, st: dict, out: Path, part: str) -> None:
@@ -553,16 +671,19 @@ def cmd_run(a) -> None:
         refuse("--task is for --world plain only")
     _, st = preconditions(a.commit)
     out = Path(a.out)
+    step_passed(out, GATE_FILE, st, "the target-free gate")
     if a.part == "guard":
         try:
             guard_refs()
         except Refused as e:
             refuse(str(e))
     else:
-        guard_passed(out, st)
+        step_passed(out, GUARD_FILE, st, "the guard part")
     try:
         load_lists(Path(a.decision))
         out.mkdir(parents=True, exist_ok=True)
+        if a.part == "score":
+            mark_run_started(out, st)
         (run_plain if a.world == "plain" else run_dm)(a, st, out, a.part)
     except Refused as e:
         refuse(str(e))
@@ -644,12 +765,24 @@ def guard_eval(rows: dict, refs: dict) -> dict:
     return {"cells": cells, "failed": [] if passes else [GUARD_ARM], "passes": passes}
 
 
+def match_eval(rows: dict, grows: dict) -> dict:
+    """The run step's oth_f against the guard step's, seed by seed, within the same tolerance in all four cells."""
+    cells = {}
+    for c in CELLS:
+        rr, gg = rows.get(c) or [], grows.get(c) or []
+        ok = [q["seed"] for q in rr] == list(SEEDS) and [q["seed"] for q in gg] == list(SEEDS)
+        d = k18.distance(rr, GUARD_ARM, gg, GUARD_ARM) if ok else None
+        cells[c] = {"distance": d, "passes": bool(ok and k18.guard_passes(d))}
+    return {"cells": cells, "passes": all(v["passes"] for v in cells.values())}
+
+
 def cmd_guard(a) -> None:
-    """The guard check over R/guard/: R/guard.json; exit 0 when the guard holds, 6 when it fails (VOID: no scoring part
-    starts), 3 when a guard file is missing, 2 when the files are not this commit's and machine's, K18's files are off
-    their pins or the target-free composition gate fails."""
+    """The guard check over R/guard/: R/guard.json (made once); exit 0 when the guard holds, 6 when it fails (VOID: no
+    scoring part starts; oth_f counts one try), 3 when a guard file is missing, 2 without a passing gate.json, when the
+    files are not this commit's and machine's or K18's files are off their pins."""
     rid, st = preconditions(a.commit)
     runs = Path(a.runs)
+    step_passed(runs, GATE_FILE, st, "the target-free gate")
     p = runs / GUARD_FILE
     if p.exists():
         print(f"refused: {p} exists: the guard check is made once", file=sys.stderr, flush=True)
@@ -664,25 +797,20 @@ def cmd_guard(a) -> None:
         refuse(str(e))
     try:
         why: list[str] = []
-        sha, prov, comps = {}, {}, {}
-        rows = rows_of(runs, guard_files(), f"{GUARD_DIR}/", "guard", (GUARD_ARM,), why, sha, prov, comps)
+        sha, prov = {}, {}
+        rows = rows_of(runs, guard_files(), f"{GUARD_DIR}/", "guard", (GUARD_ARM,), why, sha, prov)
         bad = [f for f, q in prov.items() if q.get("tree_clean") is not True or q.get("commit") != st["commit"]
                or q.get("machine") != st["machine"]]
         if bad or why:
             refuse(f"the guard files are not this commit's and machine's, or not well formed ({(bad + why)[:4]})")
-        gate_why = sorted({w for c in comps.values() for w in composition_checks(c or {})})
-        if gate_why:
-            refuse("the target-free composition gate fails before the run step: " + "; ".join(gate_why[:4]))
         res = guard_eval(rows, refs)
-        gate = {w: gate_record(next(c for f, c in comps.items() if f.startswith(f"{GUARD_DIR}/{w}"))) for w in
-                ("plain_g1", "plain_g2", "dm")}
-        k18.write_task_file(p, {**res, "gate": gate, "row": rid, "files_sha256": sha, "provenance": st})
+        k18.write_task_file(p, {**res, "row": rid, "files_sha256": sha, "provenance": st})
     except SystemExit:
         raise
     except Exception:  # noqa: BLE001
         print(k18.masked(traceback.format_exc()), file=sys.stderr, end="", flush=True)
         sys.exit(1)
-    print(f"guard: {'passes' if res['passes'] else 'FAILS'}; the target-free composition gate passes", flush=True)
+    print(f"guard: {'passes' if res['passes'] else 'FAILS'}", flush=True)
     if not res["passes"]:
         sys.exit(EXIT_GUARD)
 
@@ -691,16 +819,12 @@ def cmd_guard(a) -> None:
 # The reading
 
 
-def _gated_states(rows: list[dict], arm: str) -> list[bool]:
-    return [q["t3"][arm]["severity"]["state"] in SEVERITY_GATED for q in rows]
-
-
 def summarise(rows: list[dict], arms: tuple[str, ...]) -> dict:
     """Per arm: the score's mean and sd, each metric's mean skill, the severity states, seeds scored and gated, the
     median beta and r2. Paired (k7._paired): G, Gd and C; each counted arm against oth_f; own_d - own_f; oth_f against
-    the floor (plain). Per-term: each pair's mean per-seed skill difference. Gate flips: the seeds where own_d (oth_d)
-    and own_h (oth_h) differ in being gated."""
-    out: dict = {"arms": {}, "paired": {}, "per_term": {}, "flips": {}}
+    the floor (plain). Per-term: each pair's mean per-seed skill difference. Gate flips: the seeds where own_d and own_h
+    have different severity states, and Gd's mean over the other (flip-free) seeds, None when there is none."""
+    out: dict = {"arms": {}, "paired": {}, "per_term": {}}
     for x in arms:
         s = np.array([q["scores"][x] for q in rows], dtype=float)
         sev = [q["t3"][x]["severity"] for q in rows]
@@ -720,9 +844,14 @@ def summarise(rows: list[dict], arms: tuple[str, ...]) -> dict:
             continue
         out["per_term"][k] = {m: float(np.mean([q["skills"][x][m] - q["skills"][y][m] for q in rows]))
                               for m in rows[0]["skills"][y]}
-    for x, h in GATED_PAIRS:
-        out["flips"][f"{x} - {h}"] = [q["seed"] for q, gx, gh in zip(rows, _gated_states(rows, x),
-                                                                       _gated_states(rows, h), strict=True) if gx != gh]
+    x, h = FLIP_PAIR
+    same = [q["t3"][x]["severity"]["state"] == q["t3"][h]["severity"]["state"] for q in rows]
+    free = [q["scores"][x] - q["scores"][h] for q, s in zip(rows, same, strict=True) if s]
+    out["flips"] = {"seeds": [q["seed"] for q, s in zip(rows, same, strict=True) if not s],
+                    "flip_free_seeds": len(free), "flip_free_mean_gd": float(np.mean(free)) if free else None}
+    out["gated_flips"] = {f"{a} - {b}": [q["seed"] for q in rows if (q["t3"][a]["severity"]["state"] in SEVERITY_GATED)
+                                         != (q["t3"][b]["severity"]["state"] in SEVERITY_GATED)]
+                          for a, b in GATED_PAIRS}
     return out
 
 
@@ -734,32 +863,38 @@ def _behind(v: dict) -> bool:
     return bool(v["mean"] < MAX_BEHIND)
 
 
-def fit_label(per: dict, ahead: dict) -> dict:
-    """The labelled statement, deciding nothing: FIT_LABEL when C is AHEAD in as many cells as Gd (or more), when Gd's
-    dm gain sits in dm g1 alone and dm g1 holds gate flips between own_d and own_h, or when Gd's AHEAD cells lie in one
-    world only. With no AHEAD cell of Gd there is no gain to label."""
-    n_gd = sum(ahead["Gd"].values())
-    n_c = sum(ahead["C"].values())
-    reasons = []
-    if n_gd and n_c >= n_gd:
-        reasons.append(f"C is AHEAD in {n_c} cell(s), Gd in {n_gd}")
-    flips = per["dm g1"]["flips"]["own_d - own_h"]
-    if ahead["Gd"]["dm g1"] and not ahead["Gd"]["dm g2"] and flips:
-        reasons.append(f"Gd's dm gain sits in dm g1, where own_d and own_h differ in gate state on seeds {flips}")
-    worlds = sorted({c.split()[0] for c, v in ahead["Gd"].items() if v})
-    if len(worlds) == 1:
-        reasons.append(f"Gd's AHEAD cells hold in one world only ({worlds[0]})")
-    return {"statement": FIT_LABEL if reasons else None, "reasons": reasons, "ahead_cells_gd": n_gd,
-            "ahead_cells_c": n_c}
+def _worlds(cells: list[str]) -> list[str]:
+    return sorted({c.split()[0] for c in cells})
+
+
+def labels(per: dict, ahead: dict) -> dict:
+    """The labelled statement of cell 8b, deciding nothing: FIT_LABEL when any of L1 to L3 holds.
+    L1  C is AHEAD in at least as many of the four cells as Gd.
+    L2  Gd is AHEAD in a dm cell, and in each dm cell where it is AHEAD its mean over the flip-free seeds is 0.3 or
+        less (a cell with no flip-free seed counts as 0.3 or less).
+    L3  counting a dm cell for Gd only where its flip-free mean is above 0.3, Gd's AHEAD cells (one at least) lie in
+        one world; or G is AHEAD somewhere and all its AHEAD cells lie in one world."""
+    n_gd, n_c = sum(ahead["Gd"].values()), sum(ahead["C"].values())
+    l1 = n_c >= n_gd
+    ff = {c: per[c]["flips"]["flip_free_mean_gd"] for c in DM_CELLS}
+    up_dm = [c for c in DM_CELLS if ahead["Gd"][c]]
+    l2 = bool(up_dm) and all(ff[c] is None or ff[c] <= MIN_GAIN for c in up_dm)
+    gd_cells = [c for c in CELLS if ahead["Gd"][c] and (c.startswith("plain") or (ff[c] is not None
+                                                                                  and ff[c] > MIN_GAIN))]
+    g_cells = [c for c in CELLS if ahead["G"][c]]
+    l3 = len(_worlds(gd_cells)) == 1 or (bool(g_cells) and len(_worlds(g_cells)) == 1)
+    return {"L1": bool(l1), "L2": bool(l2), "L3": bool(l3), "statement": FIT_LABEL if (l1 or l2 or l3) else None,
+            "ahead_cells": {"Gd": n_gd, "C": n_c}, "flip_seeds": {c: per[c]["flips"]["seeds"] for c in DM_CELLS},
+            "flip_free_mean_gd": ff, "gd_cells_counted": gd_cells, "g_ahead_cells": g_cells}
 
 
 def decide(per: dict) -> dict:
-    """The strike rule fixed in row K29, on summarise()'s output per cell."""
+    """The strike rule fixed in row K29 (S1 to S4), on summarise()'s output per cell, then the labels L1 to L3."""
     d = {s: {c: per[c]["paired"][s] for c in CELLS} for s in STEPS}
     ahead = {s: {c: _ahead(v) for c, v in d[s].items()} for s in STEPS}
     behind = {s: {c: _behind(v) for c, v in d[s].items()} for s in STEPS}
-    plain, dm = [c for c in CELLS if c.startswith("plain")], [c for c in CELLS if c.startswith("dm")]
-    s1 = not any(ahead["Gd"][c] for c in plain) or not any(ahead["Gd"][c] for c in dm)
+    plain = [c for c in CELLS if c.startswith("plain")]
+    s1 = not any(ahead["Gd"][c] for c in plain) or not any(ahead["Gd"][c] for c in DM_CELLS)
     s2 = sum(behind["G"].values()) >= MIN_CELLS
     c_mean = float(np.mean([d["C"][c]["mean"] for c in CELLS]))
     s3 = c_mean < MAX_BEHIND or sum(behind["C"].values()) >= MIN_CELLS
@@ -773,57 +908,76 @@ def decide(per: dict) -> dict:
             "table": {s: {c: {"mean": float(v["mean"]), "sd": float(v["sd"]), "ahead_seeds": int(v["ahead"]),
                               "n": int(v["n"]), "AHEAD": ahead[s][c], "BEHIND": behind[s][c]}
                           for c, v in d[s].items()} for s in STEPS},
-            "gated": gated, "label": fit_label(per, ahead),
+            "gated": gated, "label": labels(per, ahead),
             "outcome": STRUCK_LINE.format(", ".join(clauses)) if clauses else NOT_STRUCK_LINE}
 
 
-INCOMPLETE = ("Try K29: INCOMPLETE: not a reading; guard.json, a guard file or a scoring file is missing (a crash, a "
-              "refusal such as a dirty tree, out of memory or a kill); nothing was written. If the cause is outside "
-              "the code, rerun the missing part into this folder at the run's commit on the same machine (the runs "
-              "skip what is there); after a committed code fix, rerun every step at the new commit into a fresh "
-              "folder and never read this one")
+INCOMPLETE = ("Try K29: INCOMPLETE: not a reading; gate.json, guard.json or a seed file is missing (a crash, a refusal "
+              "such as a dirty tree, out of memory or a kill); nothing was written. If the cause is outside the code, "
+              "rerun the missing part into this folder at the run's commit on the same machine (the runs skip what is "
+              "there); after a committed code fix, rerun every step at the new commit into a fresh folder and never "
+              f"read this one. At or after {CUTOFF_TEXT} a read writes the VOID reading '{LATE}' instead")
 
 
-def _incomplete(missing: list[str]) -> dict:
-    return {"incomplete": True, "void": False, "missing": missing, "outcome": INCOMPLETE}
+def run_started(runs: Path) -> bool:
+    """The run step has started: R/run_started.json, or a scoring file, is there."""
+    return (Path(runs) / RUN_MARK).exists() or any((Path(runs) / f).exists() for f in score_files())
 
 
-def _first_comps(comps: dict, world: str) -> dict | None:
-    """The first scoring file's composition record of a world (every file of a world records the same reference)."""
-    return next((c for f, c in comps.items() if f.split("/")[0].startswith(world)), None)
+def _missing(missing: list[str], counted: list[str], started: bool, base: dict) -> dict:
+    """Files missing: INCOMPLETE (not a reading) before the cutoff; at or after it, the VOID reading 'INCOMPLETE past
+    its cutoff', with the tries already counted."""
+    if not past_cutoff():
+        return {"incomplete": True, "void": False, "missing": missing, "outcome": INCOMPLETE}
+    why = [f"{LATE} ({CUTOFF_TEXT}): {len(missing)} file(s) missing, e.g. {', '.join(missing[:4])}"]
+    return base | {"void": True, "late": True, "missing": missing, "why": why, "tries_counted": len(counted),
+                   "counted_arms": counted, "run_step_started": started, "outcome": VOID_LINE.format(why[0])}
+
+
+def gate_report(g: dict) -> dict:
+    return {k: g.get(k) for k in ("passes", "failed", "checks", "scenario_found", "scenario_missing", "ratios",
+                                  "depletion_factor", "uncut_labels", "own_found", "own_listed", "own_missing")}
 
 
 def reading(runs: Path, refs: Path = K18_TASKS) -> dict:
-    """Apply the reading of row K29 to a run folder: the guard part, then the scoring part. VOID is checked first and
-    wins; the strike rule is applied only to a run that is not void."""
+    """Apply the reading of row K29 to a run folder: the gate, the guard step, then the run step. VOID is checked first
+    and wins; the strike rule is applied only to a run that is not void. No seed file is opened while one the reading
+    needs is missing."""
     runs = Path(runs)
-    if not (runs / GUARD_FILE).exists():
-        return _incomplete([GUARD_FILE])
-    gmiss = [f for f in guard_files() if not (runs / f).exists()]
-    if gmiss:
-        return _incomplete(gmiss)
-    why: list[str] = []
+    started = run_started(runs)
     sha, prov = {}, {}
+    base: dict = {"incomplete": False, "files_sha256": sha, "provenance": prov}
+    five = list(COUNTED) if started else []
+    if not (runs / GATE_FILE).exists():
+        return _missing([GATE_FILE], five, started, base)
+    gate, sha[GATE_FILE] = k21._read_json(runs / GATE_FILE)
+    prov[GATE_FILE] = gate.get("provenance") or {}
+    base["gate"] = gate_report(gate)
+    if gate.get("passes") is not True:
+        why = [GATE_VOID.format("; ".join(gate.get("failed") or ["unrecorded"]))]
+        return base | {"void": True, "why": why, "tries_counted": len(five), "counted_arms": five,
+                       "run_step_started": started, "outcome": VOID_LINE.format(why[0])}
+    if not (runs / GUARD_FILE).exists():
+        return _missing([GUARD_FILE], five, started, base)
     g, sha[GUARD_FILE] = k21._read_json(runs / GUARD_FILE)
     prov[GUARD_FILE] = g.get("provenance") or {}
-    gsha, gcomps = {}, {}
-    grows = rows_of(runs, guard_files(), f"{GUARD_DIR}/", "guard", (GUARD_ARM,), why, gsha, prov, gcomps)
+    base["guard_part"] = {k: g.get(k) for k in ("cells", "failed", "passes")}
+    guard_step = g.get("passes") is True
+    need = guard_files() + (score_files() if guard_step else [])
+    missing = [f for f in need if not (runs / f).exists()]
+    if missing:
+        return _missing(missing, five + ([] if guard_step else [GUARD_ARM]), started, base)
+    why: list[str] = []
+    gsha: dict = {}
+    grows = rows_of(runs, guard_files(), f"{GUARD_DIR}/", "guard", (GUARD_ARM,), why, gsha, prov)
     if gsha != g.get("files_sha256"):
         why.append("guard.json: its files' sha256 are not the guard files'")
     sha |= gsha
-    common = {"incomplete": False, "guard_part": {k: g.get(k) for k in ("cells", "failed", "passes", "gate")}}
-    if g.get("passes") is not True:
-        # the run step never starts after a failed guard: oth_f is counted (outside the guard), the five only if a
-        # scoring file exists all the same
-        started = any((runs / f).exists() for f in score_files())
-        counted = [*(COUNTED if started else ()), GUARD_ARM]
+    if not guard_step:  # the run step never starts after a failed guard: oth_f counts one try
+        counted = [*five, GUARD_ARM]
         why = ["the guard failed in the guard step: oth_f is off K18's committed barred_form", *why]
-        return common | {"void": True, "files_sha256": sha, "provenance": prov, "tries_counted": len(counted),
-                         "counted_arms": counted, "run_step_started": started, "why": why,
-                         "outcome": VOID_LINE.format("; ".join(why))}
-    missing = [f for f in score_files() if not (runs / f).exists()]
-    if missing:
-        return _incomplete(missing)
+        return base | {"void": True, "why": why, "tries_counted": len(counted), "counted_arms": counted,
+                       "run_step_started": started, "outcome": VOID_LINE.format("; ".join(why))}
     comps: dict = {}
     rows = rows_of(runs, score_files(), "", "score", ARMS, why, sha, prov, comps)
     for f, p in prov.items():
@@ -837,30 +991,29 @@ def reading(runs: Path, refs: Path = K18_TASKS) -> dict:
         why.append(f"results from different machines {sorted(map(str, machines))}")
     k18r, kwhy = k18_rows(refs)
     why += kwhy
-    guard: dict = {}
-    guard_ok = False
-    if not kwhy:
-        again = guard_eval(grows, k18r)
-        if not again["passes"]:
-            why.append("the guard: the guard part's oth_f, read again, is off K18's committed barred_form")
-        guard = guard_eval(rows, k18r)
-        for c, v in guard["cells"].items():
-            if not v["passes"]:
-                dd = v["distance"]
-                why.append(f"the guard: {c}: oth_f is off K18's committed barred_form" + (
-                    f" by {dd['mean_diff']:+.3f} in the mean and {dd['max_abs_diff']:.3f} in one seed" if dd else
-                    " (a seed is missing)") + f" (limits {GUARD_MEAN} and {GUARD_SEED})")
-        guard_ok = again["passes"] and guard["passes"]
+    again = None if kwhy else guard_eval(grows, k18r)
+    if again is not None and not again["passes"]:
+        why.append("the guard: the guard step's oth_f, read again, is off K18's committed barred_form")
+    match = match_eval(rows, grows)
+    for c, v in match["cells"].items():
+        if not v["passes"]:
+            dd = v["distance"]
+            why.append(f"the run step's oth_f is off the guard step's in {c}" + (
+                f" by {dd['mean_diff']:+.3f} in the mean and {dd['max_abs_diff']:.3f} in one seed" if dd else
+                " (a seed is missing)") + f" (limits {GUARD_MEAN} and {GUARD_SEED})")
+    out_of_guard = (again is not None and not again["passes"]) or not match["passes"]
     per: dict = {}
     for c, rr in rows.items():
         if [q["seed"] for q in rr] != list(SEEDS):
             why.append(f"{c}: not the ten seeds")
             continue
         per[c] = summarise(rr, (harness.FLOOR, *ARMS) if c.startswith("plain") else ARMS)
-    counted = [*COUNTED, *(() if guard_ok else (GUARD_ARM,))]
-    base = common | {"files_sha256": sha, "provenance": prov, "guard": guard, "tries_counted": len(counted),
-                     "counted_arms": counted, "run_step_started": True, "cells": per,
-                     "compositions": {w: _first_comps(comps, w) for w in WORLDS}}
+    counted = [*COUNTED, *((GUARD_ARM,) if out_of_guard else ())]
+    mark = runs / RUN_MARK
+    base |= {"guard": again, "guard_match": match, "tries_counted": len(counted), "counted_arms": counted,
+             "run_step_started": True, "run_started": json.loads(mark.read_text()) if mark.exists() else None,
+             "cells": per, "compositions": {w: next((c for f, c in comps.items() if f.split("/")[0].startswith(w)),
+                                                   None) for w in WORLDS}}
     if why:
         return base | {"void": True, "why": why, "outcome": VOID_LINE.format("; ".join(why))}
     dec = decide(per)
@@ -897,21 +1050,57 @@ def _comp_lines(comps: dict | None) -> list[str]:
     return lines
 
 
+def table_lines(dec: dict) -> list[str]:
+    """The per-cell table of G, Gd and C."""
+    lines = ["per cell, paired by seed (AHEAD: mean > 0.3 with >= 8 of 10 positive; BEHIND: mean < -0.3):"]
+    for s, cells in dec["table"].items():
+        a, b = STEPS[s]
+        lines.append(f"  {s} = {a} - {b}: " + "; ".join(
+            f"{c} {v['mean']:+.2f} (sd {v['sd']:.2f}, {v['ahead_seeds']} of {v['n']} positive)"
+            + (" AHEAD" if v["AHEAD"] else "") + (" BEHIND" if v["BEHIND"] else "") for c, v in cells.items()))
+    return lines
+
+
+def label_lines(dec: dict) -> list[str]:
+    lab = dec["label"]
+    ff = ", ".join(f"{c} {_f(v)}" for c, v in lab["flip_free_mean_gd"].items())
+    return [f"labelled, deciding nothing: {lab['statement'] or 'no label'}; L1 {lab['L1']} (AHEAD cells: C "
+            f"{lab['ahead_cells']['C']}, Gd {lab['ahead_cells']['Gd']}); L2 {lab['L2']} (gate flips of own_d and own_h "
+            f"{lab['flip_seeds']}; Gd's flip-free means {ff}); L3 {lab['L3']} (Gd's AHEAD cells counted "
+            f"{lab['gd_cells_counted'] or 'none'}; G's AHEAD cells {lab['g_ahead_cells'] or 'none'})"]
+
+
+def summary_lines(res: dict) -> list[str]:
+    """What `read` prints: the outcome line, then for a decided reading the table of G, Gd and C and the labels."""
+    lines = [res["outcome"]]
+    if not res.get("incomplete") and not res.get("void"):
+        lines += table_lines(res["decision"]) + label_lines(res["decision"])
+    return lines
+
+
 def text(res: dict) -> str:
     lines = [res["outcome"]]
     if res.get("incomplete"):
         miss = res["missing"]
         return "\n".join([*lines, f"missing: {len(miss)} file(s), e.g. " + ", ".join(miss[:6])]) + "\n"
-    lines.append(f"tries counted: {res['tries_counted']} ({', '.join(res['counted_arms'])}); the run step started: "
-                 f"{res['run_step_started']}")
+    lines.append(f"tries counted: {res['tries_counted']} ({', '.join(res['counted_arms']) or 'none'}); the run step "
+                 f"started: {res['run_step_started']}")
+    gt = res.get("gate")
+    if gt:
+        lines.append(f"target-free gate: passes {gt.get('passes')}; failed {gt.get('failed') or 'none'}; scenario "
+                     f"states found {gt.get('scenario_found')} of 5; the own list {gt.get('own_found')} of "
+                     f"{gt.get('own_listed')} (missing {gt.get('own_missing')}); depletion factor "
+                     f"{gt.get('depletion_factor')!r}; " + ", ".join(
+                         f"{t} {v['min']!r} to {v['max']!r}" for t, v in (gt.get("ratios") or {}).items()))
     gp = res.get("guard_part") or {}
-    gate = gp.get("gate") or {}
-    lines.append(f"guard step: passes {gp.get('passes')}, failed {gp.get('failed') or 'none'}; target-free gate "
-                 + ", ".join(f"{w} {'passes' if v.get('passes') else 'FAILS'}" for w, v in gate.items()))
-    for c, v in (gp.get("cells") or {}).items():
-        lines.append(f"  guard part {c}: passes {v['passes']}; {_dist(v.get('distance'))}")
+    if gp:
+        lines.append(f"guard step: passes {gp.get('passes')}, failed {gp.get('failed') or 'none'}")
+        for c, v in (gp.get("cells") or {}).items():
+            lines.append(f"  guard step {c}: passes {v['passes']}; {_dist(v.get('distance'))}")
     for c, v in ((res.get("guard") or {}).get("cells") or {}).items():
-        lines.append(f"  scoring part {c}: oth_f against K18's barred_form: passes {v['passes']}; "
+        lines.append(f"  the guard step's oth_f read again, {c}: passes {v['passes']}; {_dist(v['distance'])}")
+    for c, v in ((res.get("guard_match") or {}).get("cells") or {}).items():
+        lines.append(f"  the run step's oth_f against the guard step's, {c}: passes {v['passes']}; "
                      f"{_dist(v['distance'])}")
     if res["void"]:
         lines.append("VOID (checked first; no strike clause is applied): " + "; ".join(res["why"]))
@@ -920,17 +1109,9 @@ def text(res: dict) -> str:
         lines.append(f"commit {res['commit']}, machine {res['machine']}.")
         lines.append("strike: " + ", ".join(f"{k} {'yes' if v else 'no'}" for k, v in dec["strike"].items())
                      + f"; C's four-cell mean {dec['c_four_cell_mean']:+.2f}; S4 cells {dec['s4_cells'] or 'none'}")
-        lines.append("per cell, paired by seed (AHEAD: mean > 0.3 with >= 8 of 10 positive; BEHIND: mean < -0.3):")
-        for s, cells in dec["table"].items():
-            a, b = STEPS[s]
-            lines.append(f"  {s} = {a} - {b}: " + "; ".join(
-                f"{c} {v['mean']:+.2f} (sd {v['sd']:.2f}, {v['ahead_seeds']} of {v['n']} positive)"
-                + (" AHEAD" if v["AHEAD"] else "") + (" BEHIND" if v["BEHIND"] else "") for c, v in cells.items()))
-        lab = dec["label"]
-        lines.append(f"labelled, deciding nothing: {lab['statement'] or 'no label'}"
-                     + (f" ({'; '.join(lab['reasons'])})" if lab["reasons"] else ""))
+        lines += table_lines(dec) + label_lines(dec)
     lines.append("reported, deciding nothing (each arm against oth_f, own_d - own_f, per-term skills, gated counts, "
-                 "the realised cut-state shares; both files' gate bars belong to the file build, not to this read):")
+                 "the realised cut-state shares; both files' gate bars belong to the file build before upload):")
     for c, v in (res.get("cells") or {}).items():
         lines.append(f"{c}:")
         for a, s in v["arms"].items():
@@ -942,7 +1123,8 @@ def text(res: dict) -> str:
             lines.append(f"    {k}: {d['mean']:+.2f} (sd {d['sd']:.2f}, ahead {d['ahead']} of {d['n']})")
         for k, terms in v["per_term"].items():
             lines.append(f"    per-term skill, {k}: " + ", ".join(f"{m} {x:+.3f}" for m, x in terms.items()))
-        lines.append("    gate flips (seeds): " + "; ".join(f"{k} {s or 'none'}" for k, s in v["flips"].items()))
+        lines.append(f"    gate flips of own_d and own_h (seeds): {v['flips']['seeds'] or 'none'}; gated-state "
+                     "changes: " + "; ".join(f"{k} {s or 'none'}" for k, s in v["gated_flips"].items()))
     for w, comps in (res.get("compositions") or {}).items():
         lines.append(f"realised cut-state shares, {w} world (target-free):")
         lines += _comp_lines(comps)
@@ -974,6 +1156,7 @@ def cmd_read(a) -> None:
             res["row"] = rid
         t = text(res)
         js = json.dumps(res, indent=1, default=float)
+        shown = summary_lines(res)
     except Exception:  # noqa: BLE001  (a crash after the files were opened: masked traceback, nothing written)
         print(k18.masked(traceback.format_exc()), file=sys.stderr, end="", flush=True)
         sys.exit(1)
@@ -984,12 +1167,16 @@ def cmd_read(a) -> None:
     for p, body in zip(targets, (js, t), strict=True):
         with open(p, "x") as fh:  # exclusive: an existing reading is never overwritten
             fh.write(body)
+    print("\n".join(shown), flush=True)
     print(f"wrote {targets[0]} and {targets[1]}", flush=True)
 
 
 def main(argv=None) -> None:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
+    gt = sub.add_parser("gate")
+    gt.add_argument("--out", required=True)
+    gt.add_argument("--threads", type=int, default=8)
     r = sub.add_parser("run")
     r.add_argument("--part", choices=("guard", "score"), default="score")
     r.add_argument("--world", choices=WORLDS, required=True)
@@ -998,18 +1185,19 @@ def main(argv=None) -> None:
     r.add_argument("--out", required=True)
     r.add_argument("--workers", type=int, default=1)
     r.add_argument("--threads", type=int, default=8)
-    r.add_argument("--data", default=str(harness.DATA_DIR))
     r.add_argument("--run-dir", default=str(k18.RUN_DIR))
-    r.add_argument("--decision", default=str(k18.DECISION))
+    for q in (gt, r):
+        q.add_argument("--data", default=str(harness.DATA_DIR))
+        q.add_argument("--decision", default=str(k18.DECISION))
     gd = sub.add_parser("guard")
     gd.add_argument("--runs", required=True)
     d = sub.add_parser("read")
     d.add_argument("--runs", required=True)
     d.add_argument("--out", default=str(RESULTS))
-    for q in (r, gd, d):
+    for q in (gt, r, gd, d):
         q.add_argument("--commit", required=True)
     a = ap.parse_args(argv)
-    {"run": cmd_run, "guard": cmd_guard, "read": cmd_read}[a.cmd](a)
+    {"gate": cmd_gate, "run": cmd_run, "guard": cmd_guard, "read": cmd_read}[a.cmd](a)
 
 
 if __name__ == "__main__":
