@@ -13793,3 +13793,21 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     reached the main session.
   - **The upload sheet:** fourteen files due now (T1's eight search files, T3's three, the embryo's two, the heart's
     one), MSB and A15 reached, A20 waiting, `T3_c2_s2_g2.h5ad` at its rule's place.
+- 2026-11-24 (rr), the captain reports four more headlines, one per board, and each board's rule is applied by its
+  letter (state at 17:43 UTC, 2026-11-24). Written by the AI assistant, which records the headlines only.
+  - **The paste (headlines, each with its file named for its board):** T1:test `T1_s2rcB30.h5ad` 72.48;
+    T2:embryo:test_interp `T2embryo_s2.h5ad` 62.43; T2:heart:test_extrap `T2heart_organ_ts10_half.h5ad` 61.79;
+    T3:bcatenin `T3_ck_s2.h5ad` 63.60. Each file's sha256 on disk matches its sheet row. The paste also held
+    per-metric lines, ranks and each file's size: none is recorded or used (a test build's size is never read or
+    quoted, `docs/DATA_POLICY.md` 2026-11-13 (c), (e)). Rows added to `results/manual_uploads.csv`.
+  - **Each rule by its letter.** Heart: OTS10 scored strictly above OTS05, the line's best, so it becomes the line's
+    and the board's best; the line ends at OTS10 by its rule. T1: the 3.0 file scored below the 2.5 file, which keeps
+    the board's best; no condition turns on it (every other built T1 search file is due by row R43). T3: CK scored
+    below C2, which keeps the board's best; no condition turns on it. Embryo: by the embryo's order rule no score
+    decides another embryo file; O keeps the board's best.
+  - **Standing:** T1 72.66, T3 63.94, heart 61.79, embryo 69.9; overall 202.445 by the challenge's formula (it was
+    202.195).
+  - **Due now (10):** T1 `T1_s2rcCm20.h5ad`, `T1_s2rcCm25.h5ad`, `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`,
+    `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcCm30.h5ad`; T3 `T3_k23_s2_e4.h5ad`, `T3_c1_s2_g2.h5ad`; embryo
+    `T2embryo_s2x_ovhi.h5ad`. Reached as well: `T1_s2rcMSB.h5ad`, `T1_s2rcA15.h5ad`. Waiting: `T1_s2rcA20.h5ad`. Last
+    of all: `T3_c2_s2_g2.h5ad`.
