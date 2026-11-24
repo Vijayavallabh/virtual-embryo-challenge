@@ -13416,3 +13416,40 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     overall expression total, the guard tried on the real tables before any engineering (the lesson of entry (a)); the
     captain's named words for its option; the builder option and its review; two builds with one sha256 by 2026-11-25
     12:00 UTC; its sha256 in this log before its own score.
+- 2026-11-24 (t), row E55's counted run has started; the closed-lever round's first results; a designer's unregistered
+  reading recorded as row N59 (state at 04:06 UTC, 2026-11-24). Written by the AI assistant, which is recused on the
+  heart's scope and size and on the embryo's occupancy term and shape forms and states no preference on any candidate.
+  - **Row E55.** On the DGX the launcher's tests passed, step 0 passed (the gate recomputed at the run commit: every g
+    equal to the record's within 1e-9, no stop clause), the reproduction gate passed (the control O against row E49's
+    committed figures and C0 and the floor against row E47's, within 0.01), and the run step started at about 04:03
+    UTC. From that moment the three embryo tries are counted: 89, 90 and 91. The outcome cell is filled from the
+    read's own statement when the read ends.
+  - **The closed-lever round (entry (q)), board by board.** Heart: the designer's answer is that nothing further
+    follows from released data alone on scope, size, cell number or depth; no candidate, no question. T1: one
+    candidate, 'a hedge' in the designer's word (the base the cells are drawn from, back to the one the repository
+    held before 2026-11-04), and nothing on cell number, scope, shares, depth or the advance draw. T3: one candidate,
+    'modest' (the composition of the five frozen scenario states at the frozen rules' other-branch magnitude), and
+    nothing on the cell number or on other composition rules. Embryo: one candidate on scope, 'small and gated' (the
+    overlay file without one extraembryonic tissue of the earlier bracket; the designer's own expected gain is about a
+    tenth of a board point), and nothing on size, cell number or depth. Each of the three candidates is with a cold
+    challenger; no question has gone to the captain and nothing is coded.
+  - **What the designers said against the round, recorded as theirs.** That independence of the exposure can be shown
+    for a file's value and never for the choice, because every file needs the yes of the captain, who saw the exposed
+    pages and sees every score, so the method report must say that blind designs were selected by a person who had
+    seen both; that the round is 'blind in the middle and not at its two ends', since scores are what sent the team to
+    these levers; that 'follows from released data alone' has two readings on record and under the policy's reading
+    for T1's depth such candidates are declined, only the captain's exception carrying them; that arguments on scope
+    run through the organisers' collection text, which describes the hidden sample and is not data; that the heart's
+    precedents are not clean (the notes of 2026-11-19 (c) and 2026-11-23 (e)); and that an allowance of 20 uploads is
+    not in the organisers' rules as this repository records them (the AI assistant's answer: ruling row R34 says on
+    whose word that figure stands).
+  - **A lapse of a designer's, recorded as ledger row N59.** The embryo designer compared by hand, on committed
+    figures and without a row, an unregistered size rule with the nine practice truths, against its brief. It
+    disclosed this itself and struck the option. By rule 4 it counts as one embryo try, number 92; AGENTS.md's
+    sentence on 'the one breach' now names both rows. Nothing is built or chosen on it.
+  - **Two faults of the AI assistant's inputs, found by designers.** (1) The helper through which analysts blind to
+    test scores read the ledger printed row K16 whole; its sixth cell says in words, with no number, how one scored
+    term of an upload came back. The T3 designer met it and reports using nothing; the helper now withholds that cell,
+    a like cell of row K21, and the cells of rows K21 to K24 and K27 that speak of the held-out gene's biology. (2)
+    The T1 inputs listed the settings of the search files, from which the direction of a score-guided climb can be
+    read; the T1 designer said so and its candidate does not touch those settings.
