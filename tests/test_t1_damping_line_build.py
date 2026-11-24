@@ -244,8 +244,10 @@ def test_the_two_values_give_two_files_and_2_is_2_0_and_an_explicit_multiplier_1
     (["--captain-ruling", "R22", "--feng-fraction-mult", "0.8"], "with --feng-fraction-mult other than 1"),
     (["--captain-ruling", "R22", "--feng-fraction-mult", "2.5"], "with --g-mom-damping other than 0.5"),
     (["--captain-ruling", "R22", "--feng-fraction-mult", "3.0"], "with --g-mom-damping other than 0.5"),
-    (["--captain-ruling", "R22", "--feng-fraction-mult", "2.0"], "refused with --captain-ruling R22: only row R20"),
-    (["--captain-ruling", "R20", "--feng-fraction-mult", "2.0"], "with --g-mom-damping other than 0.5"),
+    # with 2.0 each value is the fifth line's pair (tests/test_t1_line5_build.py): refused unless row R22's first cell
+    # names the combined option (this ledger names the bare options only), and refused with R20 all the same
+    (["--captain-ruling", "R22", "--feng-fraction-mult", "2.0"], "refused: experiments/harness/TRIES.md has no single"),
+    (["--captain-ruling", "R20", "--feng-fraction-mult", "2.0"], "refused with --captain-ruling R20: only row R22"),
     (["--captain-ruling", "R22", "--bet-strength", "0.5"], "with --released-bet and --bet-strength"),
     (["--captain-ruling", "R22", "--released-bet", "share_trend", "--bet-strength", "0.5"],
      "with --released-bet and --bet-strength"),
