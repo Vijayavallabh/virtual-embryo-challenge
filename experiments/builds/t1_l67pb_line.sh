@@ -57,7 +57,7 @@
 # (AGENTS.md), never its log, size, cell count or sidecar record. Nothing here uploads anything.
 # Exit codes: 90 odd RUN, 91 run folder exists, 96 HEAD is not COMMIT, 98 tracked tree not clean, 97 S2_RULES.sha256,
 # 95 not exactly one row R22 in TRIES.md or its first cell does not name the three combined options and the ruling,
-# 94 not exactly one row R37 or its first cell is not the captain's named exception naming the pair and the ruling,
+# 94 not exactly one row R37, or its first cell is not the captain's named exception naming the pair and the ruling,
 # 92 no relabelling output, 93 output folder exists, 10 tests, 11 build, 13 vec check, 14 no stamp, 15 stamp not this
 # commit and clean, 20 D is not R13's bytes, 21 A is not candidate A's bytes, 22 B is not candidate B's bytes, 23 C is
 # not candidate C's bytes, 24 X2 is not the 2.0 file's bytes, 25 X25 is not T1_s2rcB25's bytes, 26 A15 is not
