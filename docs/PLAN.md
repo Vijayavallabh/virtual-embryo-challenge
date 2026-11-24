@@ -13906,3 +13906,14 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Due now (5):** T1 `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`,
     `T1_s2rcCm30.h5ad`. Reached as well: `T1_s2rcMSB.h5ad`, `T1_s2rcA15.h5ad`. Waiting: `T1_s2rcA20.h5ad`. Last of
     all: `T3_c2_s2_g2.h5ad`. In work: the files of rows R44 to R49.
+- 2026-11-24 (zz), the files of T3's fourth line are built, before any score (state at 19:28 UTC, 2026-11-24). Written
+  by the AI assistant, which designed none of it.
+  - **The code.** An engineer blind to test scores wrote the options; the challenger's fixes were applied (the
+    distinctness guard dropped, whole-string naming, the 5% check liftable by a named row); an independent review
+    found no blocker (its main lesser point: the existing C2 code computes and discards a correlation of the two
+    tables, never seen, recorded or used); merged at 466e94d.
+  - **The build** on `~/v/vec-campaign-c`, clean, after a traced refusal: the six identity gates gave the recorded
+    bytes; each file built twice with one sha256: **`T3_c2_s2_gonly.h5ad`** e3c1a9e6abed...;
+    **`T3_c2_s2_gonly_s067.h5ad`** f744f5dc7d0e...; **`T3_c2_s2_s067.h5ad`** 808700e11c25... (full sha256 in the rules
+    note and `experiments/builds/results/t3gonly_466e94d_g1.txt`).
+  - **Their standing.** Due now: the gonly pair goes up together; s067 whatever the pair reads.

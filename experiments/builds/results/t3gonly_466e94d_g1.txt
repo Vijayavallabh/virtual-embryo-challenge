@@ -1,0 +1,16 @@
+T3's fourth search line (row R47): T3_c2_s2_gonly, T3_c2_s2_gonly_s067, T3_c2_s2_s067
+==========================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-24 in ~/v/vec-campaign-c at commit 466e94d (main; clean tree) with `experiments/t3_decomp/t3_gonly_build.sh 466e94dd93bf4436ff181868deaddbe2d62fd9fe g1 R47`, after its refusal path was traced (exit 96).
+Every exit record is 0. The six identity gates rebuilt the recorded bytes:
+  gate/identity-s1.h5ad  3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2
+  gate/identity-s2.h5ad  1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f
+  gate/c1-s2.h5ad  8718330866429dc089eaffd2f96f66936fe54134eba2d50f8126266e6a3e54b8
+  gate/c2-s2.h5ad  47111ac1d07e73c0c26e990a474dff0de94ae22d6a4474a569bcb674ae2b85a7
+  gate/T3_c1_s2_g2.h5ad  e01e24facb6841a18a503655bcc5e9816304a993fe9a0dcfeca458c42ead1e16
+  gate/T3_c2_s2_g2.h5ad  014d2bf9d8ba7fdc56dcfba2a3b8aa77f0ea20bb806ebc2c1193e483d62712ac
+The new files, each built twice into separate folders with one sha256, format-checked, each stamp of this commit and clean (the 5% check lifted for each by row R47 through `--den-ruling R47`; the range guard passed):
+  T3_c2_s2_gonly.h5ad  e3c1a9e6abed8eaea4e3d047d4aac625779144c86e305005f90f76468a18b0ae
+  T3_c2_s2_gonly_s067.h5ad  f744f5dc7d0ecc3026f5d09f80ace1e2d661ede454f03b832e1969edcde508d3
+  T3_c2_s2_s067.h5ad  808700e11c25065ce45a6bea2b50eb15c132e02d314e826c4e05fb37bb6331cd
+The local copies under runs/manual_upload/ are the same bytes. No log, size, shape or sidecar of these builds was read. No score of any of them exists at this record.

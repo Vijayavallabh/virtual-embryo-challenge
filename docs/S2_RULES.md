@@ -3319,3 +3319,14 @@ chosen from single-cell clusters that include E12.5 cells), and S2 at E9.5 and E
 and E16.5 (doubts on the licence and the methods); a doubt counts as no, so no source enters, nothing is fetched, no
 register row is written and no file is built; the composition ruling of 2026-11-01 and A15 stand as before; reader A's
 answer is added when it lands.
+
+## Note of 2026-11-24: the files of T3's fourth line are built (row R47; decision log 2026-11-24 (zz))
+
+Merged at 466e94d after an independent review that found no blocker; at that clean commit, on `~/v/vec-campaign-c`,
+the six identity gates rebuilt the recorded bytes, and each file was built twice with one sha256, its 5% check lifted
+by row R47 and its range guard passed. **The files:** `runs/manual_upload/T3_c2_s2_gonly.h5ad`, sha256
+e3c1a9e6abed8eaea4e3d047d4aac625779144c86e305005f90f76468a18b0ae; `runs/manual_upload/T3_c2_s2_gonly_s067.h5ad`,
+sha256 f744f5dc7d0ecc3026f5d09f80ace1e2d661ede454f03b832e1969edcde508d3; `runs/manual_upload/T3_c2_s2_s067.h5ad`,
+sha256 808700e11c25065ce45a6bea2b50eb15c132e02d314e826c4e05fb37bb6331cd (build record
+`experiments/builds/results/t3gonly_466e94d_g1.txt`). Added before any score of any of them; no T3 headline beyond
+those of decision log 2026-11-24 (nn), (rr), (vv) and (yy) had reached the main session at this note's commit.
