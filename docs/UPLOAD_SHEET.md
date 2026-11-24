@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-24, 18:41 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-24, 18:47 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -40,7 +40,9 @@ words "yes, T3_c2_s2_g2 ahead of" and a queued file's name (for example `T3_k23_
 `T1_s2rcB25H20` only if H10 beats H05) and `T1_s2rcB25MS` (MS at 2.5); `T1_s2rcB25MSH05` is named and is coded only if
 H05 and MS each beat the banked file. T3 (row R47, decision log 2026-11-24 (tt)): `T3_c2_s2_gonly.h5ad` and
 `T3_c2_s2_gonly_s067.h5ad` (up together) and `T3_c2_s2_s067.h5ad`. Embryo (row R48): `T2embryo_s2x_ovsb.h5ad`, an
-extra file beside O, built only if its step 0 (row E56) passes.
+extra file beside O, built only if its step 0 (row E56) passes. Heart (rows R49 and R50, decision log 2026-11-24
+(uu)): `T2heart_organ_ts075.h5ad` and `T2heart_organ_ts125.h5ad` (up together); `T2heart_organ_ts05_ls.h5ad` or
+`T2heart_organ_ts10_ls.h5ad` (one, on the better base), only if its gates GA and GB pass and after a priced question.
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)), and eight on 2026-11-24, two per board (decision log 2026-11-24 (nn) and (rr)). The boards'

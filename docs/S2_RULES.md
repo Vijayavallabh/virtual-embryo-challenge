@@ -3266,3 +3266,47 @@ the cell-weighted SD over genes of log(E8.0 mean proportions / E7.5's), or if th
 lies more than 10% from E7.5's. Any STOP: no file, and the handed-over files stand.
 
 Data used: released challenge data only (the unlocked E7.5 validation file and the released E8.0); no outside data.
+
+## Amendment of 2026-11-24: the heart's fourth line, trend strengths 0.75 and 1.25 on D (row R49; decision log 2026-11-24 (uu))
+
+In force since this amendment's commit at 18:47 UTC on 2026-11-24, on the captain's words "yes for both and build
+too", in reply to the line's words: "Yes to OTS075 and OTS125: my named exception on the heart's scope and size for
+these two files, and the second line's cap at OTS10 and its no-other-value clause lifted for these two files only".
+The AI assistant, recused on the heart's scope and size, gave no view.
+
+Files: `T2heart_organ_ts075.h5ad` and `T2heart_organ_ts125.h5ad` (`build_test.py heart --entry organ_scope
+--trend-strength 0.75` or `1.25` `--z-mode raw --captain-ruling R49`, each then halved as OTS05 and OTS10 are). Both
+go up together; the heart keeps its best headline. Row R29's cap at OTS10 and its no-other-value clause are lifted for
+these two files only; row H34's outcome stands, so nothing at 1.5 or above, no finer step, no seed variant.
+
+Data used: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data.
+
+## Amendment of 2026-11-24: the heart's fifth line, lineage shares from two spatial sources (row R50; decision log 2026-11-24 (uu))
+
+In force since this amendment's commit, on the captain's words "yes for both and build too", in reply to the line's
+words: "Yes, OLS05 and OLS10: my named exception to the heart composition ruling of 2026-11-01 and to A15, for sources
+S1 and S2, these files only, bound to GA and GB". The AI assistant gave no view.
+
+Files (one goes up, on the base with the better headline): `T2heart_organ_ts05_ls.h5ad` (OLS05) and
+`T2heart_organ_ts10_ls.h5ad` (OLS10): `build_test.py heart --entry organ_scope --trend-strength 0.5` (or `1.0`)
+`--late-shares <table sha256> --z-mode raw --captain-ruling R50`, each halved. The shares: per source with both ends,
+heart cells typed into four groups (cardiomyocyte, endocardial, epicardial, vascular endothelium) by the design's
+five-class classifier, the per-day logit change g_k of each group's share, consensus the median over sources; E12.5
+shares logit s_k = logit s_k(D, E10.5) + 2 g_k, renormalised; a quota draw from D's pool at those shares, then the
+trend step.
+
+The line's fixed conditions (the challenger's D1 to D6): only S1 and S2 enter; GA as the design fixes it plus a
+stability check per source (g_CM keeps its sign and stays within a factor 2 under the top-probability threshold at 0.5
+and 0.9, the region rule at 10 neighbours with at least 3 cardiomyocytes and at 20 with at least 7, and each section
+left out in turn), S1 and S2 each passing or STOP; GB stricter (QS beats the control and each placebo by the bars, a
+group absent from a practice reference's pool held at zero and the rest renormalised, the read declared not blind to
+E10.5's composition); S2's licence confirmed before any fetch, or S2 drops and GA stops, at 2026-11-25 02:00 UTC; the
+line ends if GA has not passed by 2026-11-25 08:00 UTC; GB's row reports the drawn population's median library size
+against the control's, and a shift beyond 5% goes to the captain. Two readers pin both sources' stage labels and
+licences before any fetch, under the strict form of 2026-11-23 (c); no author annotation, cluster, embedding or fitted
+transformation is read; no E10.5 to E13.5 file is ever fetched; every source gets its register row before it enters
+any model. Built only if GA and then GB (a counted practice read, its row written first) pass; a pass sends a priced
+question to the captain before the file goes up.
+
+Data used, if built: released Task 2 heart stages, the unlocked E10.5 validation file, and two outside spatial sources
+(their register rows, written before they enter any model).

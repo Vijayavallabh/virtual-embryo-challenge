@@ -13849,3 +13849,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     Recorded as row R48 and the amendment of the embryo's file W; its step 0 has its counted row E56 (embryo try 93
     when its check (ii) runs), written before any of its code exists. An engineer blind to test scores is started on
     the option.
+- 2026-11-24 (uu), the captain says yes to both heart lines (state at 18:47 UTC, 2026-11-24). Written by the AI
+  assistant.
+  - **The captain's words, verbatim:** "yes for both and build too", in reply to the main session's message that gave
+    each line's exact words and price and no view (the assistant is recused on the heart's scope and size; the earlier
+    general answer "whatever option that improves our scores" was not taken as the exception).
+  - **Recorded:** row R49 ("Yes to OTS075 and OTS125: my named exception on the heart's scope and size for these two
+    files, and the second line's cap at OTS10 and its no-other-value clause lifted for these two files only") and row
+    R50 ("Yes, OLS05 and OLS10: my named exception to the heart composition ruling of 2026-11-01 and to A15, for
+    sources S1 and S2, these files only, bound to GA and GB"), with the amendments of the heart's fourth and fifth
+    lines in `docs/S2_RULES.md` (re-pinned). The trend pair's code is on `campaign/heart-ftrio`. The composition line
+    starts now: two readers pin the two sources' stage labels, licences and file lists before any fetch; then the
+    register rows; engineers blind to test scores write the reducers, the classifier, GA with its stability check,
+    GB's script (its counted row first) and the builder option. Its clock: S2's licence by 2026-11-25 02:00 UTC, GA's
+    pass by 08:00 UTC, or the line ends.
