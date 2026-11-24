@@ -6,15 +6,18 @@ OTS05's draw, organ-cut pool, count rule, size procedure and seed.
 
 On the synthetic stages and synthetic test board (its limit never shown) of tests/test_heart_trend_build.py, E10.5
 relabelled as tests/test_build_heart_organ_scope.py's `organ_stage` and that file's size stand-in, with a temporary
-ledger in place of TRIES.md (a synthetic row R44 stands for the ruling row): the log factors and the damping the step
-hands momentum_shift at each strength are exactly s times those at strength 1 (as row H34's G2 holds them); the step is
-row H28's own at each strength; the rows, coordinates, cell number, size field and, after halve.py at seed 1000001, the
-half's rows are OTS05's and only the expression differs; the same bytes twice; the record names the option, the
-strength, the file, the row, the order text, the row's first cell and the command, with 0.75 and 1.25 written as given;
-every refusal, before anything is read; the row check on temporary ledgers. Every heart path that existed before (rows
-R28's and R29's files, files C and D, the default build and the other heart commands) gives the bytes and record it gave
-before, and every refusal of an old path, 0.25's included (even under a row that names it), is word for word the one it
-gave before (pinned at main ed6722a, before this option). Nothing is read from data/ and nothing is scored."""
+ledger in place of TRIES.md (a synthetic first cell for row R49, the ruling row; the builder pins R49 since row R52's
+change, campaign/heart-ots15, and tests/test_heart_trend_line_g.py holds that pin): the log factors and the damping the
+step hands momentum_shift at each strength are exactly s times those at strength 1 (as row H34's G2 holds them); the
+step is row H28's own at each strength; the rows, coordinates, cell number, size field and, after halve.py at seed
+1000001, the half's rows are OTS05's and only the expression differs; the same bytes twice; the record names the
+option, the strength, the file, the row, the order text, the row's first cell and the command, with 0.75 and 1.25
+written as given; every refusal, before anything is read; the row check on temporary ledgers. Every heart path that
+existed before (rows R28's and R29's files, files C and D, the default build and the other heart commands) gives the
+bytes and record it gave before, and every refusal of an old path, 0.25's included (even under a row that names it), is
+word for word the one it gave before (pinned at main ed6722a, before this option; since row R52's change 1.5 is that
+row's value and left this set, and the stand-in row is R49: the set is pinned again at main b42442e, before that
+change). Nothing is read from data/ and nothing is scored."""
 
 from __future__ import annotations
 
@@ -37,7 +40,7 @@ from test_heart_trend_build import SECRET_MAX, install, sha  # noqa: E402
 from test_heart_trend_line import ARGV, BEFORE, R28_FIRST, TS  # noqa: E402
 from test_heart_trend_line_d import OTS, R29_FIRST, TS_BEFORE, _ctx_d, _organ_size  # noqa: E402
 
-ROW = "R44"  # a synthetic stand-in for the ruling row given on the command line
+ROW = "R49"  # the ruling row given on the command line, pinned since row R52's change (its first cell synthetic here)
 PAIR = (0.75, 1.25)
 VALUES = ("0.75", "1.25")
 ORG = ["--entry", "organ_scope"]
@@ -45,13 +48,13 @@ CORE = ["--entry", "core_trim"]
 OTSF = {s: [*ORG, "--trend-strength", v, "--z-mode", "raw", "--captain-ruling", ROW]
         for s, v in zip(PAIR, VALUES, strict=True)}
 FILES = {0.75: "OTS075", 1.25: "OTS125"}
-F_FIRST = ("R44 (the captain's order, a synthetic stand-in for the heart line's two further strengths on file D: "
+F_FIRST = ("R49 (the captain's order, a synthetic stand-in for the heart line's two further strengths on file D: "
            "ruling, no run, not a try; the heart builder is to take `--entry organ_scope` with "
-           "`--trend-strength 0.75` and `--trend-strength 1.25` only with `--captain-ruling R44`)")
+           "`--trend-strength 0.75` and `--trend-strength 1.25` only with `--captain-ruling R49`)")
 # the same row naming 0.25 as well (the design's first form): 0.25 stays refused even so
 F_FIRST_025 = F_FIRST.replace("with `--trend-strength 0.75` and",
                               "with `--trend-strength 0.25`, `--trend-strength 0.75` and")
-F_STRINGS = ("`--entry organ_scope`", "`--trend-strength 0.75`", "`--trend-strength 1.25`", "`--captain-ruling R44`")
+F_STRINGS = ("`--entry organ_scope`", "`--trend-strength 0.75`", "`--trend-strength 1.25`", "`--captain-ruling R49`")
 LEDGER = (f"| R27 (other) | T1 | x |\n| {R28_FIRST} | heart | the line's two files |\n"
           f"| {R29_FIRST} | heart | file D's two files |\n| {F_FIRST} | heart | file D's two further files |\n"
           "| H28 (row) | heart | x |\n")
@@ -60,10 +63,11 @@ LEDGERS = {"full": LEDGER, "no_r29": LEDGER.replace(f"| {R29_FIRST} | heart | fi
            "row_names_025": LEDGER.replace(F_FIRST, F_FIRST_025)}
 
 # sha256 of (the .h5ad, its .build.json text, the record's `canon`) that build_test.py heart wrote for row R29's two
-# commands on `organ_env`'s synthetic stages and size stand-in, with LEDGER (row R44 included), computed with the
-# builder of main at ed6722a (before this option) by the same builds as below. A record may differ from its text only in
-# the last bits of floats. Rows R28's files are pinned in TS_BEFORE (tests/test_heart_trend_line_d.py) and every other
-# heart command in BEFORE (tests/test_heart_trend_line.py); both are rechecked here.
+# commands on `organ_env`'s synthetic stages and size stand-in, with LEDGER (then with row R44 in R49's place; R29's
+# record holds no ledger text), computed with the builder of main at ed6722a (before this option) by the same builds as
+# below. A record may differ from its text only in the last bits of floats. Rows R28's files are pinned in TS_BEFORE
+# (tests/test_heart_trend_line_d.py) and every other heart command in BEFORE (tests/test_heart_trend_line.py); both are
+# rechecked here.
 OTS_BEFORE = {
     0.5: ("3de4e3a2d91a837ba8accf923de2d433df4d1b47284db69b75b8ad702a7df10a",
           "26ad4f98351f9c63fb76d75759ae7b1d67f6c44b20375bb521e0794af97fa1ac",
@@ -72,17 +76,19 @@ OTS_BEFORE = {
           "a919c214b29e07c8bc612680d7638e6aefcfa8711b8c4edb76a714fedf4ff03d",
           "a5c76b781c7a7e3ab0f154de62eb6e3a04604a490825fe0d9f107b591f0ec879"),
 }
-# Every refusal of an old path: case -> (argv, ledger). None uses 0.75 or 1.25, the two values this option adds; 0.25
-# is an old path (refused before, refused now). The messages were computed with the builder of main at ed6722a (before
-# this option), and OLD_REFUSALS_SHA256 is the sha256 of json.dumps({case: message}, sort_keys=True) over all of them.
-# OLD_MESSAGES spells out one case of each kind of refusal.
+# Every refusal of an old path: case -> (argv, ledger). None uses 0.75 or 1.25, the two values this option adds, or
+# 1.5, row R52's value since campaign/heart-ots15; 0.25 is an old path (refused before, refused now). The messages were
+# computed with the builder of main at ed6722a (before this option); with the stand-in row R44 renamed R49 and 1.5 taken
+# out by row R52's change they were computed again with the builder of main at b42442e (before that change), and
+# OLD_REFUSALS_SHA256 is the sha256 of json.dumps({case: message}, sort_keys=True) over all of them. OLD_MESSAGES spells
+# out one case of each kind of refusal.
 OLD_REFUSALS = {
     "ruling_alone_d": ([*ORGAN, "--captain-ruling", "R29"], "full"),
     "ruling_alone_row": ([*ORG, "--z-mode", "raw", "--captain-ruling", ROW], "full"),
     "ruling_alone_s1_trend": (["--entry", "s1", "--trend", "--captain-ruling", ROW], "full"),
     "ruling_alone_c": ([*CORE, "--expression", "copy", "--z-mode", "raw", "--captain-ruling", "R28"], "full"),
     **{f"value_{v}_{e[1]}_{r}": ([*e, "--trend-strength", v, "--z-mode", "raw", "--captain-ruling", r], "full")
-       for v in ("1.5", "0", "1", "0.50", "-1.0", "2.0", "0.2", "0.8", "1.2", "0.250", ".25", "1.25e0", "0.125", "",
+       for v in ("0", "1", "0.50", "-1.0", "2.0", "0.2", "0.8", "1.2", "0.250", ".25", "1.25e0", "0.125", "",
                  "0.25", "0.750", "1.250", ".75")
        for e, r in ((ORG, "R29"), (ORG, ROW), (CORE, "R28"))},
     **{f"value_0.25_row_names_025_{e[1]}": (
@@ -110,7 +116,7 @@ OLD_REFUSALS = {
     **{f"ledger_no_r29_{s}": (OTS[float(s)], "no_r29") for s in ("0.5", "1.0")},
     **{f"ledger_no_r28_{s}": (TS[float(s)], "no_r28") for s in ("0.5", "1.0")},
 }
-OLD_REFUSALS_SHA256 = "03c8f5776898abaaffc5865ca41b96338be7054481ba69d447e551acb436b8c0"
+OLD_REFUSALS_SHA256 = "7d05fb1e624a04794c52e2f64d22b02703c9f5e406ec5ba3ea92cb1da31ebac2"
 _COMMANDS = ("heart --entry core_trim --trend-strength 0.5 --z-mode raw --captain-ruling R28, heart --entry core_trim "
              "--trend-strength 1.0 --z-mode raw --captain-ruling R28, heart --entry organ_scope --trend-strength 0.5 "
              "--z-mode raw --captain-ruling R29 or heart --entry organ_scope --trend-strength 1.0 --z-mode raw "
@@ -118,11 +124,11 @@ _COMMANDS = ("heart --entry core_trim --trend-strength 0.5 --z-mode raw --captai
 OLD_MESSAGES = {
     "ruling_alone_d": f"heart --captain-ruling goes with --trend-strength only ({_COMMANDS})",
     "ruling_alone_row": f"heart --captain-ruling goes with --trend-strength only ({_COMMANDS})",
-    "value_1.5_organ_scope_R29": "--trend-strength 1.5 is refused: it takes 0.5 or 1.0 only",
-    "value_0.25_organ_scope_R44": "--trend-strength 0.25 is refused: it takes 0.5 or 1.0 only",
+    "value_2.0_organ_scope_R29": "--trend-strength 2.0 is refused: it takes 0.5 or 1.0 only",
+    "value_0.25_organ_scope_R49": "--trend-strength 0.25 is refused: it takes 0.5 or 1.0 only",
     "value_0.25_row_names_025_organ_scope": "--trend-strength 0.25 is refused: it takes 0.5 or 1.0 only",
-    "value_0.8_organ_scope_R44": "--trend-strength 0.8 is refused: it takes 0.5 or 1.0 only",
-    "value_1.250_organ_scope_R44": "--trend-strength 1.250 is refused: it takes 0.5 or 1.0 only",
+    "value_0.8_organ_scope_R49": "--trend-strength 0.8 is refused: it takes 0.5 or 1.0 only",
+    "value_1.250_organ_scope_R49": "--trend-strength 1.250 is refused: it takes 0.5 or 1.0 only",
     "noruling_organ_scope_0.25": "--trend-strength 0.25 is refused: it takes 0.5 or 1.0 only",
     "zmode_organ_scope_0.5": (f"--trend-strength is refused except as {_COMMANDS}: --entry core_trim or organ_scope "
                               "and --z-mode raw only, and with --expression copy, --trend, --depth, --herd and --cfm"),
@@ -130,7 +136,7 @@ OLD_MESSAGES = {
                                       "builds on the test board only (no dry run)"),
     "noruling_organ_scope_0.5": ("--entry organ_scope --trend-strength 0.5 is the captain's order of row R29 alone and "
                                  "needs --captain-ruling R29"),
-    "ruling_R44_organ_scope_0.5": ("--entry organ_scope --trend-strength 0.5 is refused with --captain-ruling R44: "
+    "ruling_R49_organ_scope_0.5": ("--entry organ_scope --trend-strength 0.5 is refused with --captain-ruling R49: "
                                    "only row R29 orders it"),
     "ledger_no_r29_0.5": ("--entry organ_scope --trend-strength 0.5 is refused: experiments/harness/TRIES.md must hold "
                           "exactly one row R29 whose first cell is the captain's order (\"ruling, no run\") naming "
@@ -138,7 +144,7 @@ OLD_MESSAGES = {
                           "`--captain-ruling R29`"),
     "noruling_core_trim_1.0": ("--trend-strength 1.0 is the captain's order of row R28 alone and needs "
                                "--captain-ruling R28"),
-    "ruling_R44_core_trim_1.0": "--trend-strength 1.0 is refused with --captain-ruling R44: only row R28 orders it",
+    "ruling_R49_core_trim_1.0": "--trend-strength 1.0 is refused with --captain-ruling R49: only row R28 orders it",
     "ledger_no_r28_1.0": ("--trend-strength 1.0 is refused: experiments/harness/TRIES.md must hold exactly one row R28 "
                           "whose first cell is the captain's order (\"ruling, no run\") naming `--trend-strength 0.5`, "
                           "`--trend-strength 1.0` and `--captain-ruling R28`"),
@@ -278,7 +284,7 @@ def test_every_old_refusal_is_word_for_word_as_before(bt, organ_env, ledger, tmp
             bt.main(["heart", *argv, "--out", str(out)])
         assert organ_env == [] and not out.exists(), name
         msgs[name] = str(e.value)
-    assert len(msgs) == len(OLD_REFUSALS) == 132
+    assert len(msgs) == len(OLD_REFUSALS) == 129
     for name, msg in OLD_MESSAGES.items():
         assert msgs[name] == msg, name
     assert hashlib.sha256(json.dumps(msgs, sort_keys=True).encode()).hexdigest() == OLD_REFUSALS_SHA256
@@ -408,9 +414,9 @@ def test_the_reads_are_ots05s(bt, organ_env, tmp_path):
 NEW_REFUSED = [
     *([*ORG, "--trend-strength", v, "--z-mode", "raw"] for v in VALUES),  # no ROW
     *([*ORG, "--trend-strength", "0.75", "--z-mode", "raw", "--captain-ruling", r]  # not a ruling row's id
-      for r in ("r44", "R-F", "44", "R44 ", " R44", "R44;", "R", "RR44", "R44ab", "R4.4", "", "R44`")),
+      for r in ("r49", "R-F", "49", "R49 ", " R49", "R49;", "R", "RR49", "R49ab", "R4.9", "", "R49`")),
     *([*ORG, "--trend-strength", v, "--z-mode", "raw", "--captain-ruling", r]  # a row that does not order the line
-      for v in VALUES for r in ("R45", "R29", "R28", "R27", "R4", "R440")),
+      for v in VALUES for r in ("R45", "R29", "R28", "R27", "R4", "R490")),
     *(["--entry", e, "--trend-strength", v, "--z-mode", "raw", "--captain-ruling", ROW]
       for e in ("s1", "s2", "s2_trim", "core_trim") for v in VALUES),
     *([*ORG, "--trend-strength", v, "--captain-ruling", ROW] for v in VALUES),
@@ -449,8 +455,8 @@ def test_the_two_values_refusals_say_why(bt, organ_env, ledger, tmp_path):
             f"--trend-strength {v} is refused except as heart --entry organ_scope --trend-strength {v} --z-mode raw "
             "--captain-ruling <ROW>: --entry organ_scope and --z-mode raw only, and with --expression copy, --trend, "
             "--depth, --herd and --cfm")
-    assert why(*ORG, "--trend-strength", "0.75", "--z-mode", "raw", "--captain-ruling", "r44") == (
-        "--entry organ_scope --trend-strength 0.75 is refused with --captain-ruling r44: <ROW> is a ruling row's id, R "
+    assert why(*ORG, "--trend-strength", "0.75", "--z-mode", "raw", "--captain-ruling", "r49") == (
+        "--entry organ_scope --trend-strength 0.75 is refused with --captain-ruling r49: <ROW> is a ruling row's id, R "
         "and its number (e.g. R44)")
     assert why(*ORG, "--trend-strength", "1.25", "--z-mode", "raw", "--captain-ruling", "R29").startswith(
         "--entry organ_scope --trend-strength 1.25 is refused: experiments/harness/TRIES.md must hold exactly one row "
@@ -495,11 +501,12 @@ def test_the_row_check_passes_on_a_ledger_of_the_required_form(bt, monkeypatch, 
     # a row that also names 0.25 still orders the two (0.25 itself stays refused: test_the_two_values_refusals_say_why)
     _use(bt, monkeypatch, tmp_path / "with025.md", f"| {F_FIRST_025} | heart | x |\n")
     assert bt._heart_further_ordered(ROW)
-    # the row is the one given: another id of the form, in a row of its own
-    _use(bt, monkeypatch, tmp_path / "r51.md", f"| {F_FIRST.replace('R44', 'R51')} | heart | x |\n")
+    # the check reads the row given: another id of the form, in a row of its own (the builder then refuses any row but
+    # R49 after this check, tests/test_heart_trend_line_g.py)
+    _use(bt, monkeypatch, tmp_path / "r51.md", f"| {F_FIRST.replace('R49', 'R51')} | heart | x |\n")
     assert bt._heart_further_ordered("R51") and not bt._heart_further_ordered(ROW)
-    _use(bt, monkeypatch, tmp_path / "r44a.md", f"| {F_FIRST.replace('R44', 'R44a')} | heart | x |\n")
-    assert bt._heart_further_ordered("R44a") and not bt._heart_further_ordered(ROW)
+    _use(bt, monkeypatch, tmp_path / "r49a.md", f"| {F_FIRST.replace('R49', 'R49a')} | heart | x |\n")
+    assert bt._heart_further_ordered("R49a") and not bt._heart_further_ordered(ROW)
 
 
 @pytest.mark.parametrize("drop", [*F_STRINGS, "ruling, no run", "the captain's order"])
@@ -520,14 +527,14 @@ def test_the_row_check_needs_the_strings_in_the_first_cell(bt, monkeypatch, tmp_
 def test_the_row_check_fails_with_two_rows_another_rows_number_or_another_form(bt, monkeypatch, tmp_path):
     _use(bt, monkeypatch, tmp_path / "two.md", LEDGER + f"| {F_FIRST} | heart | y |\n")
     assert not bt._heart_further_ordered(ROW)
-    _use(bt, monkeypatch, tmp_path / "other.md", LEDGER.replace("| R44 (", "| R45 ("))
-    assert not bt._heart_further_ordered(ROW) and not bt._heart_further_ordered("R45")  # R45's cell names R44's ruling
-    _use(bt, monkeypatch, tmp_path / "longer.md", LEDGER.replace(F_FIRST, F_FIRST.replace("R44", "R440")))
-    assert not bt._heart_further_ordered(ROW) and bt._heart_further_ordered("R440")
-    _use(bt, monkeypatch, tmp_path / "ruled.md", LEDGER.replace("`--captain-ruling R44`", "`--captain-ruling R45`"))
+    _use(bt, monkeypatch, tmp_path / "other.md", LEDGER.replace("| R49 (", "| R45 ("))
+    assert not bt._heart_further_ordered(ROW) and not bt._heart_further_ordered("R45")  # R45's cell names R49's ruling
+    _use(bt, monkeypatch, tmp_path / "longer.md", LEDGER.replace(F_FIRST, F_FIRST.replace("R49", "R490")))
+    assert not bt._heart_further_ordered(ROW) and bt._heart_further_ordered("R490")
+    _use(bt, monkeypatch, tmp_path / "ruled.md", LEDGER.replace("`--captain-ruling R49`", "`--captain-ruling R45`"))
     assert not bt._heart_further_ordered(ROW)
-    _use(bt, monkeypatch, tmp_path / "lower.md", f"| {F_FIRST.replace('R44', 'r44')} | heart | x |\n")
-    assert not bt._heart_further_ordered("r44")  # not a ruling row's id, whatever the ledger holds
+    _use(bt, monkeypatch, tmp_path / "lower.md", f"| {F_FIRST.replace('R49', 'r49')} | heart | x |\n")
+    assert not bt._heart_further_ordered("r49")  # not a ruling row's id, whatever the ledger holds
     _use(bt, monkeypatch, tmp_path / "none.md", "| R27 (x) | T1 | x |\n")
     assert not bt._heart_further_ordered(ROW)
     for strength in ("`--trend-strength 0.75`", "`--trend-strength 1.25`"):
@@ -545,7 +552,7 @@ def test_the_row_check_fails_with_two_rows_another_rows_number_or_another_form(b
     LEDGER.replace(F_FIRST, F_FIRST.replace("`--entry organ_scope`", "`--entry core_trim`")),
     LEDGER.replace(F_FIRST, F_FIRST.replace("`--trend-strength 0.75`", "`--trend-strength 0.8`")),
     LEDGER.replace(F_FIRST, F_FIRST.replace("`--trend-strength 1.25`", "`--trend-strength 1.2`")),
-    LEDGER.replace(F_FIRST, F_FIRST.replace("`--captain-ruling R44`", "`--captain-ruling R29`")),
+    LEDGER.replace(F_FIRST, F_FIRST.replace("`--captain-ruling R49`", "`--captain-ruling R29`")),
     LEDGER.replace(F_FIRST, F_FIRST.replace("ruling, no run", "awaiting a ruling"))])
 def test_the_build_is_refused_on_a_ledger_without_the_order(bt, organ_env, ledger, tmp_path, text):
     ledger.write_text(text)

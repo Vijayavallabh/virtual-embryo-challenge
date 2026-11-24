@@ -73,6 +73,7 @@ case "$STEP" in
       tests/test_heart_trend_line.py tests/test_heart_trend_line_launcher.py \
       tests/test_heart_trend_line_d.py tests/test_heart_trend_line_d_launcher.py \
       tests/test_heart_trend_line_f.py tests/test_heart_trend_line_f_launcher.py \
+      tests/test_heart_trend_line_g.py tests/test_heart_trend_line_g_launcher.py \
       tests/test_e55_overlay_stretch.py tests/test_h34_heart_organ_trend.py \
       tests/test_git_helpers.py experiments/external/test_filters.py
     finish $? ;;
