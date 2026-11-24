@@ -1,0 +1,40 @@
+Step 0: PASS
+(i) reported only: the factor's log SD 0.7916; genes beyond twofold 259 of 497; the matched labels' share of E8.0's cells 0.3841 (labels: Allantois, EXE-Endoderm, ExEM-1, ExEM-2)
+(ii) carry check over 6 embryonic labels: the cell-weighted SD over genes of log(E8.0 mean proportions / E7.5's) 1.5412 without the factor, 1.3300 with it: not raised
+     Caudal Epiblast: E8.0 share 0.0293, SD 1.5730 without, 1.4039 with
+     HEM-Endoth: E8.0 share 0.6341, SD 1.6044 without, 1.3708 with
+     LPM: E8.0 share 0.0690, SD 1.4906 without, 1.2743 with
+     Primitive Streak: E8.0 share 0.0752, SD 1.3056 without, 1.1766 with
+     SOM: E8.0 share 0.0564, SD 1.4538 without, 1.3705 with
+     Unknown: E8.0 share 0.1361, SD 1.4315 without, 1.2207 with
+(iii) depth: the rendered E8.0 cells' median counts per cell 59.00 against E7.5's 62.00 (ratio 0.9516, bound 10%): within
+
+Statement (fixed before any data were read): Step 0 of T2embryo_s2x_ovsb.h5ad (the file of row R48; this step is row E56), fixed before any data were read and not to be tuned. (i) Reported only: the factor's log SD, its count of genes beyond twofold, the matched labels' share of E8.0's cells. (ii) The carry check: apply the factor to E8.0's cells of the embryonic labels that both brackets hold with at least 100 cells; STOP if it raises the cell-weighted SD over genes of log(E8.0 mean proportions / E7.5's). (iii) STOP unless the rendered E8.0 cells' median depth lies within 10% of E7.5's. Any STOP: no file, and the handed-over files stand.
+
+How each is computed (METHOD, fixed with this script before it ever ran on data):
+  The brackets are loaded as the builder loads them: data/raw/T2/E7.5.h5ad and E8.0.h5ad through vec.prep.load_stage
+  with the embryo test board's gene panel (the public gene list, read by code) and drop_duplicates=True. The factor and
+  its matched extraembryonic labels are vec.t2_build.series_back_factor's, the ones the build applies (SERIES_RULE's
+  gene_factor from E8.0 to E7.5, weights E8.0's label shares).
+  (i)   the SD over the panel genes of log(factor) (population SD, as the build record's sd_log_factor); the genes with
+        |log factor| above log 2; the share of E8.0's cells whose label is a matched label.
+  (ii)  The embryonic labels are the labels both brackets hold with at least SERIES_MIN_CELLS (100) cells each that are
+        not matched extraembryonic labels. For each such label L: p75 and p80, the mean within-cell panel proportions
+        of L's cells at E7.5 and at E8.0 (series_factor's own proportions), and p80f, the same at E8.0 with the factor
+        applied; s(L) = the SD over the panel genes of log((p80 + eps) / (p75 + eps)), eps = SERIES_EPS (the factor's
+        own). The figure is the mean of s(L) over the labels weighted by E8.0's cells of each label, without and with
+        the factor. The factor is applied in expectation, as the build's count-space step applies it (vec.core
+        apply_gene_factor): a cell's panel counts c become phi c where phi < 1 (binomial thinning's mean), c + P n
+        (phi - 1) where phi > 1 (the Poisson top-up's mean; P the cell's kNN-smoothed panel proportions over the E8.0
+        bracket, RENDER_K neighbours, as the build smooths them; n its panel counts) and c where phi = 1, and its
+        proportions are those counts over their sum. In expectation, so that the check carries no sampling noise: the
+        build's own draws would add thinning and top-up noise to every label's mean proportions, which raises the SD
+        whatever the factor does. The thinning to E7.5's depth that follows changes no expected proportion and is left
+        out. STOP (ii) if the figure with the factor is above the figure without it; STOP (ii) as well when no
+        embryonic label qualifies (the check cannot pass).
+  (iii) Every E8.0 cell rendered by vec.t2_build.series_back_expression exactly as the build renders its drawn E8.0
+        rows (all of E8.0's cells in place of the draw, the build's seed and stream [BUILD_SEED_OFFSET + 1, 7]); the
+        rendered cells' median counts per cell (their library sizes) against E7.5's median counts per cell (over all
+        its cells, as series_back reads it). STOP (iii) unless |rendered - E7.5's| <= 0.10 x E7.5's.
+
+Code: commit 06741c0f23869baafcc467d27a65367064a04d85, clean True, script sha256 a111f8396420342cbbf3e2e6062c3a0dec29d8612316505be352a5d4e91241c5, t2_build sha256 d060b4bff3beaa4cba10d36c8d52454fffeb57985c727878dd25c16692c6fba8

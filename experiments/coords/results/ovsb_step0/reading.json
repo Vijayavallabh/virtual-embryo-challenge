@@ -1,0 +1,100 @@
+{
+ "outcome": "Step 0: PASS",
+ "row": "E56",
+ "ruling": "R48",
+ "file": "T2embryo_s2x_ovsb.h5ad",
+ "statement": "Step 0 of T2embryo_s2x_ovsb.h5ad (the file of row R48; this step is row E56), fixed before any data were read and not to be tuned. (i) Reported only: the factor's log SD, its count of genes beyond twofold, the matched labels' share of E8.0's cells. (ii) The carry check: apply the factor to E8.0's cells of the embryonic labels that both brackets hold with at least 100 cells; STOP if it raises the cell-weighted SD over genes of log(E8.0 mean proportions / E7.5's). (iii) STOP unless the rendered E8.0 cells' median depth lies within 10% of E7.5's. Any STOP: no file, and the handed-over files stand.",
+ "method": "How each is computed (METHOD, fixed with this script before it ever ran on data):\n  The brackets are loaded as the builder loads them: data/raw/T2/E7.5.h5ad and E8.0.h5ad through vec.prep.load_stage\n  with the embryo test board's gene panel (the public gene list, read by code) and drop_duplicates=True. The factor and\n  its matched extraembryonic labels are vec.t2_build.series_back_factor's, the ones the build applies (SERIES_RULE's\n  gene_factor from E8.0 to E7.5, weights E8.0's label shares).\n  (i)   the SD over the panel genes of log(factor) (population SD, as the build record's sd_log_factor); the genes with\n        |log factor| above log 2; the share of E8.0's cells whose label is a matched label.\n  (ii)  The embryonic labels are the labels both brackets hold with at least SERIES_MIN_CELLS (100) cells each that are\n        not matched extraembryonic labels. For each such label L: p75 and p80, the mean within-cell panel proportions\n        of L's cells at E7.5 and at E8.0 (series_factor's own proportions), and p80f, the same at E8.0 with the factor\n        applied; s(L) = the SD over the panel genes of log((p80 + eps) / (p75 + eps)), eps = SERIES_EPS (the factor's\n        own). The figure is the mean of s(L) over the labels weighted by E8.0's cells of each label, without and with\n        the factor. The factor is applied in expectation, as the build's count-space step applies it (vec.core\n        apply_gene_factor): a cell's panel counts c become phi c where phi < 1 (binomial thinning's mean), c + P n\n        (phi - 1) where phi > 1 (the Poisson top-up's mean; P the cell's kNN-smoothed panel proportions over the E8.0\n        bracket, RENDER_K neighbours, as the build smooths them; n its panel counts) and c where phi = 1, and its\n        proportions are those counts over their sum. In expectation, so that the check carries no sampling noise: the\n        build's own draws would add thinning and top-up noise to every label's mean proportions, which raises the SD\n        whatever the factor does. The thinning to E7.5's depth that follows changes no expected proportion and is left\n        out. STOP (ii) if the figure with the factor is above the figure without it; STOP (ii) as well when no\n        embryonic label qualifies (the check cannot pass).\n  (iii) Every E8.0 cell rendered by vec.t2_build.series_back_expression exactly as the build renders its drawn E8.0\n        rows (all of E8.0's cells in place of the draw, the build's seed and stream [BUILD_SEED_OFFSET + 1, 7]); the\n        rendered cells' median counts per cell (their library sizes) against E7.5's median counts per cell (over all\n        its cells, as series_back reads it). STOP (iii) unless |rendered - E7.5's| <= 0.10 x E7.5's.",
+ "i": {
+  "sd_log_factor": 0.7915712482101138,
+  "genes_beyond_2x": 259,
+  "n_genes": 497,
+  "matched_labels": [
+   "Allantois",
+   "EXE-Endoderm",
+   "ExEM-1",
+   "ExEM-2"
+  ],
+  "matched_share_e80": 0.384109205460273
+ },
+ "ii": {
+  "labels": [
+   "Caudal Epiblast",
+   "HEM-Endoth",
+   "LPM",
+   "Primitive Streak",
+   "SOM",
+   "Unknown"
+  ],
+  "per_label": [
+   {
+    "label": "Caudal Epiblast",
+    "weight": 0.029261744966442953,
+    "sd_without": 1.5729773496427748,
+    "sd_with": 1.4039220299075041
+   },
+   {
+    "label": "HEM-Endoth",
+    "weight": 0.6340939597315436,
+    "sd_without": 1.6044358862149712,
+    "sd_with": 1.370757143441789
+   },
+   {
+    "label": "LPM",
+    "weight": 0.06899328859060402,
+    "sd_without": 1.4906160067313563,
+    "sd_with": 1.2742781769402767
+   },
+   {
+    "label": "Primitive Streak",
+    "weight": 0.07516778523489932,
+    "sd_without": 1.3056108289472832,
+    "sd_with": 1.1765586936724743
+   },
+   {
+    "label": "SOM",
+    "weight": 0.056375838926174496,
+    "sd_without": 1.4538032584837357,
+    "sd_with": 1.3705294775342411
+   },
+   {
+    "label": "Unknown",
+    "weight": 0.13610738255033558,
+    "sd_without": 1.4315184113283763,
+    "sd_with": 1.220720201979872
+   }
+  ],
+  "sd_without": 1.5411731433586828,
+  "sd_with": 1.3300397671026452,
+  "raised": false
+ },
+ "iii": {
+  "rendered_median_e80": 59.0,
+  "median_e75": 62.0,
+  "median_e80": 212.0,
+  "ratio_to_e75": 0.9516129032258065,
+  "bound": 0.1,
+  "within": true,
+  "thinning_ratio": 0.29245283018867924,
+  "seed": [
+   1000001,
+   7
+  ]
+ },
+ "provenance": {
+  "commit": "06741c0f23869baafcc467d27a65367064a04d85",
+  "clean": true,
+  "script_sha256": "a111f8396420342cbbf3e2e6062c3a0dec29d8612316505be352a5d4e91241c5",
+  "t2_build_sha256": "d060b4bff3beaa4cba10d36c8d52454fffeb57985c727878dd25c16692c6fba8",
+  "inputs": {
+   "before": {
+    "file": "T2/E7.5.h5ad",
+    "sha256": "e8e47255ddeca96d5604c7cd4923bbf27765c24bc6a3cd44e800cd6ea05a7d54"
+   },
+   "after": {
+    "file": "T2/E8.0.h5ad",
+    "sha256": "17530e23fbfa6a139ff68d0353a489d83790f5b60f036b7d2f58303a1ff8a810"
+   }
+  }
+ }
+}

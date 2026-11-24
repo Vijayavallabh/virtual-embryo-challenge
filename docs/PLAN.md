@@ -13961,3 +13961,8 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     readings of the text, the carry check in expectation and the depth check over all E8.0 cells, judged faithful);
     merged at 5fa318a. Row E56's last cell now names the script and its sha256 (a111f8396420...) before it runs; its
     check (ii) is one counted embryo try (93) when it runs.
+- 2026-11-24 (fff), row E56 is read: the embryo file W's step 0 passes (state at 19:54 UTC, 2026-11-24). Written by
+  the AI assistant, which quotes the step's statement only.
+  - **The step's own words:** "Step 0: PASS". One embryo try counted (93). Reading committed under
+    `experiments/coords/results/ovsb_step0/`. By row R48 the file is built next, twice at one clean commit, and handed
+    over as an extra file beside O, never in its place.
