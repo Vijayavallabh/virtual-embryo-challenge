@@ -8,18 +8,23 @@
 # pair files and gate.json; default experiments/coords/results/osr_gate_g1), E55_GATE_SHA256, the sha256 of its
 # gate.json as the row quotes it (default 7c0fc6b6...7b4d67, the read's GATE_SHA256), E55_DATA (default
 # ~/v/vec-campaign/data/raw), E55_VENV (default ~/v/vec-campaign/.venv). A record without gate.json exits 93 (preflight).
-# Steps, in order; each writes RUN/<step>.exit, first the word running, then its exit code, and the call stops at the
-# first step that does not exit 0; RUN/done.exit holds running, then the last step's code (0 when all exited 0):
+# Steps, in order; each writes RUN/<step>.exit, first the word running, then its exit code; RUN/done.exit holds
+# running, then the call's code (0 when all exited 0). The call stops at the first step that does not exit 0; when that
+# step is gate0, gate or run, the read step is still called once (so the VOID reading, with its reasons and the
+# sentence that a rerun needs a new row, is written) and the call exits with the failing step's code:
 #   preflight  the tracked tree clean (else 98), HEAD = COMMIT (else 99)
 #   tests      the unit tests of the form, the builder option, the gate and the read (synthetic arrays only)
-#   gate0      osr_gate.py pair for the ten pairs at COMMIT into RUN/runs/gate0, one process per pair, then
-#              osr_gate.py read there (step 0: the read compares it with the d145d78 record, ruling 4)
+#   gate0      osr_gate.py pair for the ten pairs at COMMIT into RUN/runs/gate0, one process per pair (4 if one fails),
+#              osr_gate.py read there (5 if it fails), then the read script's step0: the run step's own checks of the
+#              d145d78 record and this recompute (ruling 4), RUN/runs/gate0/step0.json, 3 on failure
 #   gate       the floor, C0 and O under main against E47 and E49, one process per task (exit 3: some task fails)
 #   run        O, the arm and the placebos under both builds, one process per task (refused without the gate record,
 #              its recompute and the nine gate files; the script refuses without row E55)
-#   read       the reading into experiments/coords/results/e55_overlay_stretch/ (never overwritten)
-# BLAS threads 3 a process: at most ten at once, 30 threads. NUMPY_MADVISE_HUGEPAGE=0; TMPDIR under RUN. Every
-# process's output goes to /dev/null; per-process exit codes are RUN/rc/<step>-<name>. Nothing is deleted or uploaded.
+#   read       the reading into experiments/coords/results/e55_overlay_stretch/ (never overwritten: 95)
+# BLAS threads: 3 a process for tests and gate0 (ten at once, 30 threads; the recorded gate ran at 3), 8 a process for
+# gate, run and read (nine at once), as run_e49.sh did, since the 0.01 guards compare with runs made at 8.
+# NUMPY_MADVISE_HUGEPAGE=0; TMPDIR under RUN. Every process's output goes to /dev/null; per-process exit codes are
+# RUN/rc/<step>-<name>. Nothing is deleted or uploaded.
 set -u
 if [ "$#" -ne 2 ] || [ -z "$1" ] || [ -z "$2" ]; then
   echo "usage: run_e55.sh COMMIT RUN" >&2
@@ -96,6 +101,28 @@ parallel() {  # $1 = step: one process per task, all nine at once; 0 all exit 0,
   return 0
 }
 
+call_read() {  # the read step: writes reading.json and reading.txt (never overwritten); its code
+  begin read
+  export OMP_NUM_THREADS=8 OPENBLAS_NUM_THREADS=8 MKL_NUM_THREADS=8 NUMEXPR_NUM_THREADS=8
+  if [ -e "$OUT/reading.json" ] || [ -e "$OUT/reading.txt" ]; then
+    echo "refused: a reading exists under $OUT and is never overwritten" >&2
+    echo 95 > "$S/read.exit"
+    return 95
+  fi
+  $PY "$SCRIPT" read --commit "$COMMIT" --runs "$R" --out "$OUT" --gate-record "$GATE_RECORD" \
+    --gate-sha256 "$GATE_SHA" > /dev/null 2>&1
+  local e=$?
+  echo "$e" > "$S/read.exit"
+  return "$e"
+}
+fail_then_read() {  # $1 = the failing step's code: record it, call the read once, exit with that code
+  local code="$1"
+  echo "$code" > "$S/$STEP.exit"
+  call_read
+  echo "$code" > "$S/done.exit"
+  exit "$code"
+}
+
 begin tests
 $PY -m pytest -q -p no:cacheprovider -o pythonpath=src --basetemp="$S/tmp/pytest" \
   tests/test_e55_overlay_stretch.py tests/test_osr_gate.py tests/test_shape_interp.py \
@@ -119,27 +146,27 @@ bad=0
 for x in "${PAIRS[@]}"; do
   if [ "$(cat "$S/rc/gate0-$x" 2>/dev/null)" != 0 ]; then bad=1; fi
 done
-$PY "$GATE" read --out "$R/gate0" > /dev/null 2>&1 || finish 5
-[ "$bad" = 0 ] || finish 4
+$PY "$GATE" read --out "$R/gate0" > /dev/null 2>&1 || fail_then_read 5
+[ "$bad" = 0 ] || fail_then_read 4
+$PY "$SCRIPT" step0 --commit "$COMMIT" --runs "$R" --gate-record "$GATE_RECORD" --gate-sha256 "$GATE_SHA" \
+  > /dev/null 2>&1
+e=$?
+echo "$e" > "$S/rc/gate0-step0"
+[ "$e" = 0 ] || fail_then_read "$e"
 echo 0 > "$S/gate0.exit"
 
+export OMP_NUM_THREADS=8 OPENBLAS_NUM_THREADS=8 MKL_NUM_THREADS=8 NUMEXPR_NUM_THREADS=8
 begin gate
 parallel gate
 e=$?
-[ "$e" = 0 ] || finish "$e"
+[ "$e" = 0 ] || fail_then_read "$e"
 echo 0 > "$S/gate.exit"
 
 begin run
 parallel run
 e=$?
-[ "$e" = 0 ] || finish "$e"
+[ "$e" = 0 ] || fail_then_read "$e"
 echo 0 > "$S/run.exit"
 
-begin read
-if [ -e "$OUT/reading.json" ] || [ -e "$OUT/reading.txt" ]; then
-  echo "refused: a reading exists under $OUT and is never overwritten" >&2
-  finish 95
-fi
-$PY "$SCRIPT" read --commit "$COMMIT" --runs "$R" --out "$OUT" --gate-record "$GATE_RECORD" \
-  --gate-sha256 "$GATE_SHA" > /dev/null 2>&1
+call_read
 finish $?

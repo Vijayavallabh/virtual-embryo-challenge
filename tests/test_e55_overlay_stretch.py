@@ -171,7 +171,9 @@ def test_the_anti_placebo_takes_the_anti_target_and_nothing_else(pair):
     f = si.stretch_factors(s_o, t_anti, blocks)
     np.testing.assert_allclose(anti.Z, U.mean(0) + (U - U.mean(0)) @ si.stretch_matrix(V, f), atol=1e-13)
     assert [anti.record[f"target_sd{j}"] for j in (1, 2, 3)] == pytest.approx(list(t_anti))
-    assert np.sign(anti.record["g"]) == -np.sign(arm.record["g"])  # the step mirrored
+    # a property of this synthetic pair only: the anti target mirrors the spectrum about the earlier bracket, which
+    # here flips g's sign; it is not a sign reversal in general
+    assert np.sign(anti.record["g"]) == -np.sign(arm.record["g"])
     assert "axes_stream" not in anti.record
 
 
@@ -316,10 +318,12 @@ def test_overlay_stretch_on_a_test_board_needs_the_named_flag(bt, embryo_env, tm
                  "--out", str(out)])
 
 
-def test_overlay_stretch_builds_positions_only_and_records_its_block(bt, embryo_env, tmp_path, capsys):
+def test_overlay_stretch_builds_positions_only_and_records_its_block(bt, embryo_env, tmp_path, capsys, monkeypatch):
     from test_occupancy_frame import ARMS, SECRET_MAX, SECRET_TRUTH, _build, _file, _shows
 
     fe = ARMS["floor_exact"]
+    real = si.bracket_blocks
+    monkeypatch.setattr(si, "bracket_blocks", lambda Zb, Za: real(Zb, Za) and ((0,), (1, 2)))  # the test pair's 1|2,3
     base, _, _ = _build(bt, tmp_path, "base", *fe, "--shape-interp", "overlay", "--shape-interp-test-ok")
     out, rec, text = _build(bt, tmp_path, "osr", *fe, "--shape-interp", "overlay_stretch", "--shape-interp-test-ok")
     X0, C0_ = _file(base)
@@ -659,6 +663,10 @@ def _facts(refused=None):
     names = (O, ARM, ANTI, AXES)
     recs = {n: {"n_jittered": 0, "fallback": False} for n in names}
     recs[ARM]["shape_interp_g"] = 0.05
+    for i, n in enumerate(names):
+        recs[n]["shape_interp_thin_sd"] = 0.2 + 0.01 * i
+        if n != O:
+            recs[n]["shape_interp_thin_sd_union"] = 0.19
     return {"board_split": "pseudo", "x": dict.fromkeys(names, "x"), "n": dict.fromkeys(names, 100),
             "refused": {n: (refused or {}).get(n) for n in names[1:]}, "records": recs,
             "hands": {n: {"prefix_mode": "proper", "dice_proper": 0.8, "dice_mirror": 0.7, "dice_gap": 0.1}
@@ -932,3 +940,153 @@ def test_s6_a_void_reading_says_a_rerun_needs_a_new_row(e55):
     text = e55.text(res)
     assert res["void"] and "A rerun needs a new row placed before it" in text
     assert "No task or seed is re-run selectively" in text and "stay counted" in text
+
+
+# ------------------------------------------------------------------------------------------------ the review's items
+def test_f1_the_floor_means_and_the_thin_sds_are_reported_deciding_nothing(e55):
+    res = e55.reading(_recs(e55, GOOD, GOOD_S), [], COMMIT, GATE)
+    af = res["reported_deciding_nothing"]["against_floor"]
+    assert set(af) == {O, ARM, ANTI, AXES} and set(af[ARM]) == {"five", "four", "test_like"}
+    # the floor scores 50, O 47 + 0.01 s, the arm 0.8 above O: means over seeds 0..9
+    assert af[ARM]["four"]["mean"] == pytest.approx(47.045 + 0.8 - 50.0)
+    assert af[O]["five"]["mean"] == pytest.approx(47.045 - 50.0)
+    t = res["tasks"]["late"]
+    assert t["board_minus_floor"][ARM] == pytest.approx(47.845 - 50.0)
+    assert t["thin_sd"][ARM] == {"thin_sd": pytest.approx(0.21), "thin_sd_union": pytest.approx(0.19)}
+    assert t["thin_sd"][O] == {"thin_sd": pytest.approx(0.2), "thin_sd_union": None}
+    text = e55.text(res)
+    assert "minus the floor's under main" in text and "thin SD" in text
+    assert res["passes"]  # deciding nothing: the clauses are as before
+
+
+def test_f2_step0_makes_the_run_steps_checks_and_exits_3_on_failure(e55, gate_dirs):
+    rec, sha, new = gate_dirs
+    runs = new.parent
+    with pytest.raises(SystemExit) as e:
+        e55.main(["step0", "--commit", COMMIT, "--runs", str(runs), "--gate-record", str(rec), "--gate-sha256", sha])
+    assert e.value.code == 0
+    out = json.loads((new / "step0.json").read_text())
+    assert out["pass"] and out["why"] == [] and out["g_tolerance"] == 1e-9
+    r = json.loads((new / "x2.json").read_text())
+    r["per_seed"]["1000007"]["g"] += 2e-9
+    (new / "x2.json").write_text(json.dumps(r))
+    with pytest.raises(SystemExit) as e:
+        e55.main(["step0", "--commit", COMMIT, "--runs", str(runs), "--gate-record", str(rec), "--gate-sha256", sha])
+    assert e.value.code == 3
+    out = json.loads((new / "step0.json").read_text())
+    assert not out["pass"] and out["why"] == e55.gate0_problems(rec, sha, new, COMMIT)[0]
+    with pytest.raises(SystemExit) as e:
+        e55.main(["step0", "--commit", COMMIT, "--runs", str(runs), "--gate-record", str(rec), "--gate-sha256",
+                  "0" * 64])
+    assert e.value.code == 3
+
+
+def test_f2_the_committed_record_passes_its_own_check(e55):
+    why, gate = e55.gate0_problems(e55.GATE_RECORD, e55.GATE_SHA256, e55.GATE_RECORD, e55.GATE_COMMIT)
+    assert why == [] and set(gate["median_g"]) == set(e55.og.NAMES)
+
+
+def test_f4_the_stop_text_says_the_handed_over_files_stand(e55):
+    res = e55.reading(_recs(e55), [], COMMIT, GATE)
+    assert not res["passes"] and "The handed-over embryo files stand." in e55.text(res)
+
+
+def test_f5_the_stream_constant_is_named_new_stream():
+    assert si.NEW_STREAM == 56 == si.AXES_STREAM
+    assert "default_rng([int(seed), NEW_STREAM])" in (REPO / "src" / "vec" / "shape_interp.py").read_text()
+
+
+def test_f6_the_two_g_figures_are_labelled_as_different_quantities(e55):
+    res = e55.reading(_recs(e55, GOOD, GOOD_S), [], COMMIT, GATE)
+    q = res["reported_deciding_nothing"]["g_quantities"]
+    assert "run's build seeds" in q["run_median_g"] and "gate's build seeds" in q["gate_median_g"]
+    text = e55.text(res)
+    assert "run_median_g (the form's record on the built cloud, run seeds)" in text
+    assert "gate_median_g (the gate's own figure, its seeds; P7 reads it)" in text
+
+
+def test_f7_the_builder_refuses_overlay_stretch_on_a_test_board_without_blocks_1_23(bt, embryo_env, tmp_path,
+                                                                                   monkeypatch, capsys):
+    from test_occupancy_frame import ARMS, SECRET_MAX, SECRET_TRUTH, _shows
+
+    monkeypatch.setattr(si, "bracket_blocks", lambda Zb, Za: ((0,), (1,), (2,)))
+    out = tmp_path / "b" / "T2embryo.h5ad"
+    with pytest.raises(SystemExit, match="needs the brackets' blocks 1\\|2,3") as e:
+        bt.main(["embryo", *ARMS["floor_exact"], "--shape-interp", "overlay_stretch", "--shape-interp-test-ok",
+                 "--out", str(out)])
+    assert not out.exists() and bt.OSR_TEST_BLOCKS == "1|2,3"
+    assert not _shows(str(e.value) + capsys.readouterr().out, SECRET_MAX, SECRET_TRUTH)
+
+
+def test_f8_the_count_ruling_text():
+    import importlib.util as iu
+
+    spec = iu.spec_from_file_location("e55_f8", REPO / "experiments" / "coords" / "e55_overlay_stretch_read.py")
+    mod = iu.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    assert mod.RULINGS["count"] == (
+        "The gate's count equals the harness's on eight of the nine tasks and differs on new1 alone; P7's set, the "
+        "small-g set and step 0's recompute are fixed from or by the gate record and its count rule, so nothing in "
+        "the read changes.")
+
+
+# ------------------------------------------------------------------------------------------------ the launcher's flow
+FAKE_UV = """#!/usr/bin/env bash
+# stands in for uv: records its arguments and thread count, fails the step named in FAIL_AT
+echo "$OMP_NUM_THREADS $*" >> "$HOME/calls"
+case " $* " in
+  *"osr_gate.py pair "*) [ "${FAIL_AT:-}" = pair ] && exit 3; exit 0 ;;
+  *"osr_gate.py read "*) exit 0 ;;
+  *"e55_overlay_stretch_read.py step0 "*) [ "${FAIL_AT:-}" = step0 ] && exit 3; exit 0 ;;
+  *"e55_overlay_stretch_read.py gate "*) [ "${FAIL_AT:-}" = gate ] && exit 3; exit 0 ;;
+  *"e55_overlay_stretch_read.py run "*) [ "${FAIL_AT:-}" = run ] && exit 1; exit 0 ;;
+esac
+exit 0
+"""
+
+
+def _git(repo, *args):
+    env = {k: v for k, v in os.environ.items() if k not in ("GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE")}
+    env.update(GIT_AUTHOR_NAME="t", GIT_AUTHOR_EMAIL="t@t", GIT_COMMITTER_NAME="t", GIT_COMMITTER_EMAIL="t@t")
+    return subprocess.run(["git", "-C", str(repo), *args], env=env, capture_output=True, text=True, check=True).stdout
+
+
+@pytest.mark.parametrize("fail, want, ran", [
+    ("", "0", ("pytest", "pair", "osr_gate.py read", "step0", "read.py gate ", "read.py run ", "read.py read")),
+    ("step0", "3", ("pytest", "pair", "osr_gate.py read", "step0", "read.py read")),
+    ("gate", "3", ("pytest", "pair", "osr_gate.py read", "step0", "read.py gate ", "read.py read")),
+    ("run", "1", ("pytest", "pair", "osr_gate.py read", "step0", "read.py gate ", "read.py run ", "read.py read")),
+])
+def test_the_launchers_whole_flow_stubbed(tmp_path, fail, want, ran):
+    repo = tmp_path / "repo"
+    rec = repo / "experiments" / "coords" / "results" / "osr_gate_g1"
+    rec.mkdir(parents=True)
+    (rec / "gate.json").write_text("{}")
+    _git(repo, "init", "-q")
+    _git(repo, "add", ".")
+    _git(repo, "commit", "-qm", "x")
+    head = _git(repo, "rev-parse", "HEAD").strip()
+    bin_ = tmp_path / ".local" / "bin"
+    bin_.mkdir(parents=True)
+    (bin_ / "uv").write_text(FAKE_UV)
+    (bin_ / "uv").chmod(0o755)
+    r = _launch(tmp_path, head, "f1", cwd=repo, FAIL_AT=fail, GIT_CEILING_DIRECTORIES=str(tmp_path))
+    s = tmp_path / "v" / "scratch" / "e55" / "f1"
+    assert str(r.returncode) == want and (s / "done.exit").read_text().strip() == want
+    calls = (tmp_path / "calls").read_text().splitlines()
+    order = []
+    for c in calls:
+        key = next(k for k in ("pytest", "pair", "osr_gate.py read", "step0", "read.py gate ", "read.py run ",
+                               "read.py read") if k in c)
+        if not order or order[-1] != key:
+            order.append(key)
+    assert tuple(order) == ran
+    assert sum("stretch_read.py read" in c for c in calls) == 1  # the read is called once, failure or not
+    assert sum(" pair " in c for c in calls) == 10
+    assert all(c.startswith("3 ") for c in calls if " pair " in c or "osr_gate.py read" in c)
+    assert all(c.startswith("8 ") for c in calls if any(k in c for k in ("read.py gate ", "read.py run ",
+                                                                         "read.py read")))
+    assert (s / "read.exit").read_text().strip() == "0"
+    if fail:
+        step = {"step0": "gate0", "gate": "gate", "run": "run"}[fail]
+        assert (s / f"{step}.exit").read_text().strip() == want

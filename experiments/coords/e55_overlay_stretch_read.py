@@ -10,7 +10,9 @@ vec.shape_interp applied before the size rule), all three counted when the run s
   E55a fgw_shape0x_ov_sr       overlay_stretch       the arm
   E55b fgw_shape0x_ov_sr_anti  overlay_stretch_anti  its placebo (the target from log_interp_sds(..., anti=True))
   E55c fgw_shape0x_ov_sr_axes  overlay_stretch_axes  its placebo (the arm's own f along a random frame, AXES_STREAM)
-Control, rescored and not counted: O = fgw_shape0x_ov (E49c). The floor is run beside it, deciding nothing in the run.
+Control, rescored and not counted: O = fgw_shape0x_ov (E49c). The run step builds five files per task-seed (the
+floor, O, the arm and the two placebos) under both scorer builds; C0 is built in the reproduction gate only. P5 against
+the anti placebo tests the arm's target spectrum against the spectrum mirrored about the earlier bracket.
 
 Path. harness.run_task on each task of nine_tasks.all_tasks() (half, late, new1, new2, e75, e725, x1, x2, x3), seeds
 0-9, bake protocol, build seed BUILD_SEED_OFFSET + seed, once with build "main" (primary) and once with "prefix"
@@ -184,8 +186,9 @@ RULINGS = {  # the specification author's rulings on its open points (embryo_osr
           "weight; mean_s D_s > 0, no seeds-ahead count.",
     "refusal": "a refusal of the arm or of either placebo on any task-seed makes the arm unreadable: STOP (no "
                "file), not VOID; O's file stands in; the three tries stay counted.",
-    "count": "the gate's count reading on the twin-board tasks changes nothing in the read; P7's g on x1 to x3 was "
-             "measured at a count other than the one the read scores.",
+    "count": "The gate's count equals the harness's on eight of the nine tasks and differs on new1 alone; P7's set, "
+             "the small-g set and step 0's recompute are fixed from or by the gate record and its count rule, so "
+             "nothing in the read changes.",
 }
 
 
