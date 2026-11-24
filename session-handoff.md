@@ -2,7 +2,65 @@
 
 ## Current Objective
 
-- **State at 2026-11-24, 00:45 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-24, 01:50 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-24 (l); next label (m). Ruling rows through R30; next R31. Register through X020. Next embryo row E56. Tries
+  unchanged: T1 463, embryo 88, heart 97, T3 74 (row E55's three embryo tries, 89 to 91, count only when its run step
+  starts). RUNNING: one reviewer blind to test scores on the embryo candidate's code, and a target-free pre-check on
+  the DGX (below). Main is at a5d1823, pushed.
+  - **STANDING** 201.38 (T1 72.29 `T1_s2rcB2.h5ad`; T3 63.94 `T3_c2_s2.h5ad`; heart 60.4 D; embryo 69.9 O). No score
+    reported since log 2026-11-23 (gg).
+  - **ORDERS NOW** (`docs/UPLOAD_SHEET.md`, state 01:42 UTC: 19 built files in the orders, 3 skipped). T1:
+    `T1_s2rcB25.h5ad` (due), `T1_s2rcCm20.h5ad` (due); B30 only if B25 beats the 2.0 file's 72.29; Cm25 only if Cm20
+    beats C's 71.8; `T1_s2rcB2d15.h5ad` only if Cm20 beats 72.29; `T1_s2rcB2d20.h5ad` only if B2d15 beats the higher
+    of the 2.0 file's and Cm20's headline; then, kept last, `T1_s2rcMSB.h5ad`, `T1_s2rcA15.h5ad` (A20 only if A15
+    beats A's 70.8). T3: `T3_k23_s2.h5ad`; CK and the E = 4 file each only if K23 beats the barred s2's 62.30; then
+    `T3_c1_s2_g2.h5ad`. Embryo: `T2embryo_s2xs_ov.h5ad`, `T2embryo_s2.h5ad`, `T2embryo_s2x_ovhi.h5ad`. Heart:
+    `T2heart_core_ts10_half.h5ad` (due), `T2heart_organ_ts05_half.h5ad` (due), OTS10 only if OTS05 beats D's 60.4. The
+    main session's one recommendation on order: T1 'B25 next, then Cm20' (from ordinal facts; no heart or embryo
+    lean).
+  - **THE CAPTAIN'S WORDS SINCE 00:45 UTC.** (1) "keep MSB and A15 if they can improve our scores" = the three T1
+    files skipped an hour earlier are kept after all and stand LAST in T1's order (log (i); rules note re-pinned; rows
+    R26 and R22); 'MSB first' restores their old places. (2) "check on the general-purpose subagent that's been
+    waiting since saturday" = answered: that agent (the K24 review) completed on 21 Nov; nothing was pending.
+  - **T1 LINE 5 FILES ARE BUILT AND HANDED OVER (log (k), commit 131cef5).** `runs/manual_upload/T1_s2rcB2d15.h5ad`,
+    sha256 fe4e7403d6257cc265a02d0a13d40cdb60a97e9fdc0647d6b5c7e318aedaed6c; `runs/manual_upload/T1_s2rcB2d20.h5ad`,
+    sha256 bd12c66312ba32ab938b4ee71bd5c79e58a154d6fc56434012e6dad907e668dd. Build `experiments/builds/t1_b2d_line.sh
+    7e7d9a6... b1` on the DGX worktree `~/v/scratch/t1line-wt`: every exit record 0, the eleven identity commands
+    rebuilt the recorded bytes, each new file built twice with one sha256 (record
+    `experiments/builds/results/t1b2dline_7e7d9a6_b1.txt`). Recorded before any score of them. Data used: as R13's
+    file.
+  - **EMBRYO CANDIDATE OSR (rows and entries: log (j), (l); ledger row E55).** The target-free gate passed (run g1 at
+    d145d78; record committed under `experiments/coords/results/osr_gate_g1/`, gate.json sha256 7c0fc6b6...). Row E55
+    was written by a rule writer blind to test scores, checked cold (13 corrections), completed by two rounds of
+    rulings of the specification's author, and PLACED at a5d1823 after the J7 rerun of the gate (run g2) reproduced
+    every g exactly (largest change 0.0 over 100 pair-seeds). Nothing has been read against a practice target. The
+    code (form `overlay_stretch`, arm `fgw_shape0x_ov_sr`, placebos `_anti` and `_axes`, builder option
+    `--shape-interp overlay_stretch`, read script `experiments/coords/e55_overlay_stretch_read.py`, launcher
+    `experiments/coords/run_e55.sh`, tests `tests/test_e55_overlay_stretch.py`) is on branch `campaign/emb-osr` at
+    05d9a21 (base 1f0c9ad; it merges `campaign/emb-osr-gate`), NOT merged: an independent reviewer blind to test
+    scores, with the blocker standard in its brief, was started at 01:36 UTC through the Agent tool and writes
+    `lift8/round_1124_t2/e55review.json`.
+  - **DGX STATE FOR E55.** Worktree `~/v/scratch/e55-wt` (of `~/v/vec-campaign-c`) is detached at 05d9a21, clean. The
+    launcher's refusal paths were traced there under a throwaway home folder (exits 2, 90, 91, 93, 99, each with its
+    record); its tests step, run by hand, passes in `~/v/vec-campaign-c/.venv` (297 passed). A target-free pre-check
+    of step 0 runs since 01:43 UTC: the gate at the branch commit in that worktree (run g3, scratch
+    `~/v/scratch/osr_gate/g3`), to be compared with g1 (the read's step 0 voids the row if any g moves by more than
+    1e-9, so the cause of any difference must be found BEFORE the real launch).
+  - **NEXT FOR E55.** Reviewer READY (after any fixes by the engineer and a re-check): merge `campaign/emb-osr` into
+    main (no assistant trailer), push, deliver the merge commit to `~/v/vec-campaign-c` as a ref, `git checkout
+    --detach` it in `~/v/scratch/e55-wt`, then launch detached, with PATH and the uv variables set:
+    `E55_VENV=/home/prachh/v/vec-campaign-c/.venv E55_DATA=/home/prachh/v/vec-campaign-c/data/raw bash
+    experiments/coords/run_e55.sh <full commit> r1` (scratch `~/v/scratch/e55/r1`, final record `done.exit`; a
+    background waiter, never a foreground wait). The three tries count when the run step starts. The reading lands in
+    `experiments/coords/results/e55_overlay_stretch/` in the worktree: copy it to main, fill row E55's last cell with
+    the pre-set statement only. PASS = one priced naming question to the captain, labelled 'diagnostic, selected on
+    the nine tasks'; the file is built (twice, one clean commit) only if the captain names it. STOP or VOID = no file,
+    nothing further under this row. The challenger's odds, committed before data: about 0.02 overall.
+  - **UNANSWERED BY THE CAPTAIN (defaults stand).** Heart: 'yes to TS15 and TS20' and 'yes to OTS15' (default no; each
+    needs a practice read with a stop rule first); 'run CHIPQ-C' (default no; about two in a hundred); the T3 file
+    `T3_c1_s2_g2.h5ad` keeps its place after K23, CK and the E = 4 file unless the captain places it.
+
+- **State at 2026-11-24, 00:45 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-24 (h); next label (i). Ruling rows through R30; next R31. Register through X020. Tries unchanged: T1 463,
   embryo 88, heart 97, T3 74. RUNNING: the T1 line-5 build on the DGX (below) and one engineer blind to test scores
   writing the embryo candidate's target-free gate (branch `campaign/emb-osr-gate`).
