@@ -13064,3 +13064,93 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Recorded.** The upload sheet (three rows marked 'kept, last'; the skipped section holds three files again); a
     note in `docs/S2_RULES.md` that sets the note of entry (h) aside (re-pinned); the last cells of rows R26 and R22.
     No file is moved, deleted or rebuilt; no line's condition changes.
+- 2026-11-24 (j), the embryo's part of the design round the captain ordered: no search line; one candidate, OSR, whose
+  target-free gate has passed (state at 01:09 UTC, 2026-11-24). Written by the AI assistant, which is recused on the
+  embryo's occupancy term and shape forms, designed nothing here and states no preference.
+  - **No search line.** A designer given which uploaded embryo file stands above which, and then a cold challenger,
+    both blind to score values and started through the route that relays no message, agree: every option of the embryo
+    command is categorical, on or off, pinned, or sits on a closed lever, and every pair of uploaded files that
+    differs in one setting differs on such a setting. The nearest thing, the share of cells drawn from the later
+    bracket, is fixed in code, is no option of any file's command, and touches the closed depth mix.
+  - **New candidates.** A first designer, given no fact about any score, found none on expression, timing, composition
+    or outside data, with ledger rows for each, and set the shape and occupancy group aside: in the ledger's rule 9
+    clause J8 and in rows N53 and E47a it had met statements in words, with no value, that the first embryo upload met
+    a loss on the shape terms, and its brief had told it it was fully blind. Clause J8 lets such a statement 'name
+    which step of a built file a try examines' and nothing else, so a second designer was told what J8 allows and
+    asked the same question for every scored group. It offered one candidate, **OSR**: the overlay file O with one
+    linear stretch that sets its overall elongation to the log midpoint of the two brackets', before the unchanged
+    size rule.
+  - **OSR's cold challenger: run the gate, nothing more yet.** Its findings: the stretch touches no closed lever (the
+    size rule rescales the RMS radius after the form, and the scorer's scale term is RMS-based), so no named exception
+    is needed, only the captain's naming if it ever passes. Faults corrected: (1) The evidence that motivates OSR is
+    mostly the known-feature truth. In the committed E49 reading F1 (stretch_ratio on C0) gained per truth E8.0
+    +0.557, E8.25_late +0.880, E8.5 -0.588, E7.5 -0.151, E7.25 +3.565; the merged +0.853 falls to +0.175 without
+    E7.25, below the 0.3 bar. Rule 2 names E7.25 as a backtest whose known feature (target near E6.75) explains such
+    gains. The designer's P7 asks only that the e725-out gain be above 0. Correction: Make the four-truth merge
+    without e725 the primary clause: board gain above +0.3 with D_s above 0 in at least 8 of 10 seeds. Keep the
+    five-truth +0.3 as a second clause, both required. (2) The placebo overlay_rot then stretch (fgw_shape0x_ovrot_sr)
+    differs from the arm only in R, not in the stretch. It tests registration, which E49g already showed does not
+    matter for O's shape (ungated S +0.0069, 6 of 10). P5 against it is close to a coin flip by the record. The
+    designer's claim that it 'tests the stretch, not R' is wrong by the code: both arms are stretched. Correction:
+    Replace it with overlay_stretch_axes: the arm's own factors f applied along a uniformly random proper rotation of
+    the union's principal frame (Vt @ Q, with Q from a new stream not used by any build step, checked by grep in
+    review). It keeps the magnitude of the distortion and removes its direction, so it tests whether stretching along
+    the union's own axes toward the interpolated spectrum matters, as opposed to any anisotropic distortion. Keep
+    overlay_stretch_anti. Do not build ovrot_sr. (3) Selection: the composition F3 then F1 was chosen after the
+    per-truth and per-metric E49 readings of F1 and F3 on the same nine tasks. No unread embryo truth exists, so the
+    read is selected on its own tasks (rule 5: evidence 'none it was tuned or selected on'). The leave-one-out clause
+    and two placebos do not undo this. They only guard against the known feature and against any distortion.
+    Correction: This cannot be made fully clean. Label the read 'selected on the nine tasks (composition chosen after
+    E49)' in the row's first line and in any question to the captain. Make the clauses above the bar (e725 out at 0.3,
+    the direction placebo). Add a mechanism clause that selection cannot tune: the target-free stretch size |g| per
+    task is fixed by the gate before any score, and the arm's gain must be above 0 on the four-truth merge restricted
+    to tasks whose gate |g| is at least 0.05, reported beside tasks below it. A pass still goes to the captain as a
+    diagnostic, never as 'kept'. (4) P4 is likely to fail again by the same mechanism. F1 on C0 failed P4 on
+    neighborhood_mmd by -0.0006 with a seed-consistent sign, and a linear stretch of O's union reorders 15-NN sets the
+    same way. The designer's 0.25 for P(pass | gate) does not price this repeat. Correction: Keep P4 exactly as E49
+    defined it, with no tolerance (relaxing it would reopen E49a). Lower the odds instead (see your_odds_and_gain).
+    (5) Code plan: the plan appends 'overlay_stretch' to shape_interp.FORMS, but
+    experiments/coords/e49_shape_interp_read.py cmd_describe iterates si.FORMS. That changes a committed script's
+    behaviour and the builder's choice list beyond the one new name. Correction: Put the new names in a separate
+    tuple, for example COMPOSED_FORMS = ('overlay_stretch',) and COMPOSED_CONTROLS = ('overlay_stretch_anti',
+    'overlay_stretch_axes'). Dispatch them in apply_form before the FORMS branch. In build_test.py, accept only
+    overlay_stretch and only with its test-board guard. Leave FORMS, CONTROLS and ALL_FORMS untouched, with a byte
+    test on the E49 forms and the t2_build golden table. (6) The order puts code before the cheapest kill. The gate
+    needs no new code: overlay exists, and stretch_factors, log_interp_sds, bracket_blocks and principal are in
+    vec.shape_interp. The designer's 3 h of code and 2-3 h of review come before a gate that could stop the line in
+    under an hour. Correction: Run the gate first, from a short script that copies cmd_describe, with its stop rule
+    fixed in writing beforehand. Write the row, the code and the review only if it passes. (7) The gate's kill test
+    (|log f1/f23| < 0.05 in 8 of 10, sign unstable in more than 2 of 10) checks only that the test pair moves. It does
+    not check that practice hosts the same step: same blocks, same sign, comparable size on the test-like tasks.
+    Correction: Add S3 to S5 of the gate below: blocks at the test pair must be 1|2,3; the sign must agree with the
+    test-like tasks; and practice must have a test-like task with |g| at least 0.05. The size ratio to the practice
+    range is reported as a J6-style label. (8) Hours: 10 to 11 assumes one review round, a first launch that works and
+    a run of 3 h. The record has launchers dying at first launch (E49, E52) and multi-round reviews. Correction:
+    Honest total about 12 to 14 h, of which under 1 h is the gate (see hours_total). It still fits before 2026-11-25
+    12:00 UTC if the gate runs today and the code starts right after a pass. (9) Odds: 0.25 for P(practice pass |
+    gate) is too high given that F1's own evidence without e725 is +0.175, the increment of F1 on top of F3 overlaps
+    (F1's d2 +0.0865 and F3's d2 +0.0923 on the same RMS-normalised distance profile), and P4 repeats. Correction: Use
+    P(gate) 0.55, P(pass | gate) 0.10, P(carries to test | pass) 0.4: overall about 0.02. **Its odds, committed before
+    any data:** Committed before any data: gate passes 0.55; practice pass given gate 0.10 (four-truth bar: F1 alone
+    gave +0.175 without e725; F1's d2 effect overlaps F3's; P4 repeats F1's neighbourhood loss); carries to the test
+    given a pass 0.4 (one specimen, R from mirrored partners, heart-portion truths on 7 of 9 tasks, E7.75 collected
+    like E8.0 by the Data Protocol note in row E16). Overall about 0.02. Gain if it carries: +0.1 to +0.6 board points
+    over O (+0.05 to +0.3 Overall), shown as a range from zero. Expected value about 0.005 Overall: worth only the
+    under-1-hour gate, and the rest only if the gate passes and no Task 1 or Task 3 line competes for the same review
+    hours.
+  - **The gate.** An engineer blind to test scores coded the challenger's gate word for word (branch
+    `campaign/emb-osr-gate`, d145d78; new files only; 30 tests on synthetic clouds; not reviewed by a second agent).
+    It is target-free and counts nothing: it opens only each pair's two input stages, never a target. Its launcher's
+    failure path was traced under a throwaway home folder. Run on the DGX in `~/v/vec-campaign-c`, clean tree at that
+    commit, 00:51 to 01:08 UTC: every pair's exit 0. **Verdict: PASS**, no stop clause fired. At the test pair g, the
+    log ratio of the stretch along the first axis against the other two, is positive on all ten seeds (0.0154, 0.0582,
+    0.0135, 0.0174, 0.0522, 0.0426, 0.0339, 0.0562, 0.0208, 0.1121; median 0.0383); six of the ten are under 0.05,
+    where clause S1 stops at eight, so the pass is narrow; the blocks are 1|2,3 on every seed. Median g on the
+    test-like tasks: half 0.0313, late 0.0740, new1 0.0120, new2 0.0460; on the others: e75 0.0078, e725 0.0144, x1
+    0.0977, x2 0.1037, x3 0.1618. Reported only: the test pair's median lies inside the test-like range.
+  - **What follows, by the challenger's own order of steps.** A ledger row, placed before any read against a practice
+    target; the harness arm with its two placebos, the builder option, the read script and a review; the practice read
+    on the nine tasks with the challenger's pass rule, a pass labelled 'selected on'; and only after a pass a question
+    to the captain. The challenger wrote that the rest is worth doing only if no Task 1 or Task 3 line competes for
+    the same review hours; both lines are coded and reviewed, so the row is started now. No file, order or queue
+    changes by this entry.
