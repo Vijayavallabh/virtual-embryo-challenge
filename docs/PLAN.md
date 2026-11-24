@@ -13200,3 +13200,44 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Not yet:** the code is on branch `campaign/emb-osr` with an engineer blind to test scores and is merged only
     after an independent review; nothing has been read against a practice target; no try is counted. The embryo's
     running count stays 88 until the run step starts.
+- 2026-11-24 (m), the captain orders the heart's third and fourth search lines and CHIPQ-C (state at 02:08 UTC,
+  2026-11-24). Written by the AI assistant, which is recused on the heart's scope and size, designed none of the three
+  and states no preference; its readings are labelled.
+  - **The captain's message, in full.** Under a side note headed 'Extra outside data is not our limit', whose last
+    point listed three orders 'waiting on your exact words (default no)', the captain's own line reads: '"run
+    CHIPQ-C", an outside-data long shot (about 2% odds, 14–18 hours); and two further heart options: "yes to TS15 and
+    TS20", "yes to OTS15"'. **The AI assistant's reading:** a forwarded note orders nothing by itself; here the
+    captain's own line repeats the three phrases that entries (b) and (g) named as the orders, so all three are
+    ordered. The captain can say otherwise; nothing of any of the three is uploaded without the captain, and each has
+    its own stop before a file (a practice read for each heart line, a database gate and a practice read for CHIPQ-C).
+  - **The heart's third search line is in force (ruling row R31).** Files TS15 and TS20: the full trim C with the
+    trend step at strength 1.5 and 2.0, nothing else changed. The first line's cap is lifted for these two files only
+    and the exception on the heart's scope and size is named for them. The rule text is entry (g)'s, verbatim, now an
+    amendment in `docs/S2_RULES.md` (re-pinned). Order of work, as the text fixes it: this row and the text; a
+    practice row committed before its run (row H28's script with strengths 1.5 and 2.0 and a placebo of each; eight
+    counted heart tries) and its read; the builder option only for a strength the read does not stop; identity builds;
+    each file built twice with one sha256 by 2026-11-25 12:00 UTC. Upload rule: the line starts only if TS10's
+    headline is strictly above TS05's; TS20 only if TS15's is strictly above the line's best.
+  - **The heart's fourth search line is in force (ruling row R32).** One file, OTS15: the organ cut D with the trend
+    step at strength 1.5, nothing else changed. The second line's cap is lifted for this one file only and the
+    exception is named for it. Rule text as entry (g), now an amendment in `docs/S2_RULES.md`. Order of work: this row
+    and the text; a practice row committed before its run (a new script joining row H28's arms to row H29b's D_f form;
+    eight counted heart tries) and its read; the builder option only if the read does not stop; identity builds; the
+    file built twice with one sha256 by 2026-11-25 12:00 UTC. Upload rule: only if OTS10's headline is strictly above
+    OTS05's (and OTS10 goes only if OTS05's is strictly above D's).
+  - **The validity conditions of both texts, checked at this commit.** No heart headline beyond the six of entry
+    2026-11-23 (gg) (the first upload, K2, K1, C, TS05, D) has reached the main session; no code, practice read or
+    build of either line exists; rows R31 and R32 and both texts are in the log with this commit.
+  - **CHIPQ-C is started (T3; entry (b) holds the analyst's text and its committed odds: about 0.02 end to end, 14 to
+    18 hours).** What starts now: a cold challenger blind to test scores attacks the candidate and writes its
+    corrected specification, its database-only gate and its practice read; the database-only gate is run on the real
+    database before any downstream engineering; a new practice row is placed before any read of a fold. **One point
+    the order meets, which the AI assistant puts to the captain as one question:** row K27's outcome cell ends 'By
+    this row the candidate is not rerun under another row and no further size, weight, sign or query of this database
+    is read on this fold'. CHIPQ-C reads a further query of that database (the partners' bound set) on that fold, so
+    it cannot run without that sentence being lifted for it. The sentence is the team's own, not the organisers'. No
+    fold is read under CHIPQ-C before the captain has answered that question. As the analyst wrote, any file would
+    still need the captain's provenance and A15 rulings.
+  - **What does not change.** Every other line's rule and order; the files handed over; the heart's first and second
+    lines, which still end at TS10 and OTS10; the pathway tier, which stays out; the closed levers; the bulk approval
+    of outside data, which stands recorded and by two independent rounds buys nothing inside the organisers' rules.
