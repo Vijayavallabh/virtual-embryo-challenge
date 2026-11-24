@@ -2888,3 +2888,15 @@ everything else as before, and row K27 is not rerun. CHIPQ-C reads a fold only u
 placed before that read, after its database-only gate has passed on the real database; a pass leads only to a priced
 question for the captain, and any file needs the captain's provenance and A15 rulings. The AI assistant's reading of
 the condition is in row R33's last cell.
+
+## Note of 2026-11-24: the heart's full-trim files TS10, TS15 and TS20 are skipped by the captain's word (decision log 2026-11-24 (p))
+
+The captain's words, verbatim: "skip TS10, TS15 and TS20", written under a side note about the three files built or
+planned on the full trim. The AI assistant is recused on the heart's scope and size: it records the order and states
+no view on the note's reasons. **What changes:** `T2heart_core_ts10_half.h5ad` (TS10) is skipped for upload; it stays
+on disk as built. The first heart search line therefore ends with TS10 not uploaded. The third heart search line (TS15
+and TS20; the amendment of 2026-11-24 above; ruling row R31) ends with no upload by its own rule ("If TS10 is never
+uploaded ... the line ends with no upload"): its practice row is not placed, nothing of it is coded further, read or
+built, and no try is counted. **What does not change:** the second heart search line (OTS05, then OTS10 only if
+OTS05's headline is strictly above D's) and the fourth (OTS15, ruling row R32), with every condition and with their
+practice row; ruling rows R28 and R31 stay on record. The captain reverses a skip by naming the file.

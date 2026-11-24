@@ -13307,3 +13307,20 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     in the environment the gate used (297 passed); and the gate recomputed at the branch's code in the run's own
     worktree, environment and thread setting (run g3): every g equal to the recorded one (largest change 0.0 over 100
     pair-seeds), so step 0 holds at this code. Nothing has been read against a practice target; no try is counted.
+- 2026-11-24 (p), the captain skips the heart's three full-trim files, TS10, TS15 and TS20 (state at 03:06 UTC,
+  2026-11-24). Written by the AI assistant, which is recused on the heart's scope and size and states no view.
+  - **The captain's words, verbatim:** "skip TS10, TS15 and TS20", under a side note that argued the three files
+    cannot raise the board's mark. The AI assistant records the order; the note's reasons are the note's, and nothing
+    of them is recorded or used.
+  - **What it does.** `T2heart_core_ts10_half.h5ad` (TS10, built) moves to the upload sheet's skipped section; it
+    stays on disk. The first heart line ends with TS10 not uploaded. The third heart line (TS15, TS20; ruling row R31,
+    ordered about an hour earlier, entry (m)) ends with no upload by its own rule, 'If TS10 is never uploaded ... the
+    line ends with no upload': the work on it is stopped. Its practice row H33 was drafted by a rule writer and is NOT
+    placed (the draft stays in the round's scratch folder); the engineer and the cold checker working on it were
+    stopped; nothing was read against a practice target, nothing was built, and no try is counted (the heart's running
+    count stays 97). The row id H33 is not reused for another read.
+  - **What stays.** The second heart line (OTS05 due now; OTS10 only if OTS05's headline is strictly above D's) and
+    the fourth (OTS15; ruling row R32): its practice row H34 is with a cold checker and its script with an engineer.
+    Rows R28 and R31 keep their texts with one sentence added. The captain reverses a skip by naming the file.
+  - **Recorded.** The upload sheet (eight files due now; four skipped), a note in `docs/S2_RULES.md` (re-pinned), the
+    last cells of rows R28 and R31.
