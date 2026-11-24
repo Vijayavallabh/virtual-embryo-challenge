@@ -80,6 +80,14 @@ machine, and an official upload needs the captain's go-ahead.
           with --released-bet, on any other command or seed and on a dry run. The pair is tested before the
           multiplier's own routing; every other pair of the two values is taken or refused as before. Its record's
           t1_candidate field names row R22.
+          --g-mom-damping 1.5 or 2.0 --feng-fraction-mult 2.0 --captain-ruling R22 (row R22, the fifth T1 search line,
+          files T1_s2rcB2d15 and T1_s2rcB2d20): the 2.0 file's command with g_mom's within-type damping at 1.5 or 2.0,
+          nothing else changed; refused without that flag, with any other row, unless row R22's first cell is the
+          captain's order naming the combined option (`--g-mom-damping 1.5 --feng-fraction-mult 2.0` or `... 2.0
+          --feng-fraction-mult 2.0`; the bare options do not count), with --released-bet, on any other command or seed
+          and on a dry run. The pair is tested beside the third line's, before the multiplier's routing and the
+          damping's; every other pair of the two values is taken or refused as before. Its record's t1_candidate field
+          and g_mom's rule text name the fifth line.
           --direction-momentum all --captain-ruling R23 (row R23 of experiments/harness/TRIES.md, the captain's order
           of 2026-11-23, docs/PLAN.md decision log 2026-11-23 (c): candidate MS): R13's file with one change, the
           drawn cells whose label's group has a recomputed direction also get B0's per-category damped mean momentum
@@ -662,7 +670,8 @@ def _bet_refusals(a) -> None:
     if bet is None:
         ruling = getattr(a, "captain_ruling", None)
         if ruling is not None and (_ruled_fraction_ordered(a) or _ruled_damping_ordered(a)  # rows R20, R22, R23, R26:
-                                   or _ruled_line3_ordered(a) or _ms_ordered(a) or _msb_ordered(a)):
+                                   or _ruled_line3_ordered(a) or _ruled_line5_ordered(a) or _ms_ordered(a)
+                                   or _msb_ordered(a)):
             return  # _t1_candidate refused every other use
         if ruling is not None or getattr(a, "bet_strength", None) is not None:
             sys.exit("--captain-ruling and --bet-strength go with --released-bet only")
@@ -734,6 +743,19 @@ T1_R22_LINE3_OPTIONS = {2.0: "`--g-mom-damping 1.0 --feng-fraction-mult 2.0`",
 T1_LINE3_ORDER_R22 = ("experiments/harness/TRIES.md row {row}, the captain's order of 2026-11-22 (docs/PLAN.md "
                       "decision log 2026-11-22), the third T1 search line: on file C's command, g_mom's within-type "
                       "damping held at 1.0 and the direction at {v:.1f} x the calendar fraction, nothing else changed")
+# Row R22's fifth T1 search line (T1 line 5 of docs/PLAN.md's decision log): g_mom's within-type damping at 1.5 and at
+# 2.0 on the 2.0 file's command (the direction at 2.0 x the calendar fraction), nothing else changed (files
+# T1_s2rcB2d15 and T1_s2rcB2d20). Kept apart from FENG_FRACTION_MULTS_RULED, whose 2.0 (row R20's file) is taken at
+# damping 0.5 only, and from G_MOM_DAMPINGS_R22, whose 1.5 and 2.0 (the second line's) are taken at multiplier 1.0
+# only: each pair is taken only with --captain-ruling R22, and only while row R22's first cell names the combined
+# option exactly; the bare options of the second line and of row R20 never order the pair.
+FENG_FRACTION_MULT_LINE5 = FENG_FRACTION_MULT_R20
+G_MOM_DAMPINGS_LINE5 = G_MOM_DAMPINGS_R22
+T1_R22_LINE5_OPTIONS = {1.5: "`--g-mom-damping 1.5 --feng-fraction-mult 2.0`",
+                        2.0: "`--g-mom-damping 2.0 --feng-fraction-mult 2.0`"}
+T1_LINE5_ORDER_R22 = ("experiments/harness/TRIES.md row {row}, the captain's order (docs/PLAN.md decision log, T1 line "
+                      "5), the fifth T1 search line: on the 2.0 file's command (the direction at 2.0 x the calendar "
+                      "fraction), g_mom's within-type damping at {v:.1f}, nothing else changed")
 # Row R23 of experiments/harness/TRIES.md (the captain's order of 2026-11-23, docs/PLAN.md decision log 2026-11-23 (c)):
 # candidate MS, T1_CANDIDATE_COMMAND with one change. The drawn cells whose label's group has a recomputed direction
 # (build_submission's covered cells) also get B0's per-category damped mean momentum (vec.t1_scope.momentum_shift at
@@ -847,6 +869,47 @@ def _t1_ruled_line3(a, mult: float) -> dict:
             "order": T1_LINE3_ORDER_R22.format(row=row, v=float(mult))}
 
 
+def _is_line5(a) -> bool:
+    """Whether the command gives the fifth line's pair: --g-mom-damping 1.5 or 2.0 with --feng-fraction-mult 2.0."""
+    return (getattr(a, "g_mom_damping", None) in T1_R22_LINE5_OPTIONS
+            and getattr(a, "feng_fraction_mult", None) == FENG_FRACTION_MULT_LINE5)
+
+
+def _ruled_line5_ordered(a) -> bool:
+    """The commands row R22's fifth line orders, as _t1_candidate holds them: --g-mom-damping 1.5 or 2.0 with
+    --feng-fraction-mult 2.0 and --captain-ruling R22, no --released-bet or --bet-strength, and row R22 the captain's
+    order naming the combined option."""
+    return (_is_line5(a) and getattr(a, "captain_ruling", None) == T1_R22_ROW
+            and getattr(a, "released_bet", None) is None and getattr(a, "bet_strength", None) is None
+            and _captain_order_names(T1_R22_ROW, T1_R22_LINE5_OPTIONS[a.g_mom_damping]))
+
+
+def _t1_ruled_line5(a, damping: float) -> dict:
+    """--g-mom-damping 1.5 or 2.0 with --feng-fraction-mult 2.0 (row R22's fifth T1 search line): refused before
+    anything is read without --captain-ruling R22, with any other row, unless row R22 is the captain's order naming the
+    combined option, with --released-bet or --bet-strength, and on any command but T1_CANDIDATE_COMMAND at the default
+    seed on the test board. Returns the record's candidate values, naming the row."""
+    row, option = T1_R22_ROW, T1_R22_LINE5_OPTIONS[damping]
+    ruling = getattr(a, "captain_ruling", None)
+    pair = f"--g-mom-damping {damping:g} with --feng-fraction-mult {FENG_FRACTION_MULT_LINE5:g}"
+    if ruling is None:
+        sys.exit(f"{pair} is the captain's order of row {row} alone and needs --captain-ruling {row}")
+    if ruling != row:
+        sys.exit(f"{pair} is refused with --captain-ruling {ruling}: only row {row} orders it")
+    if not _captain_order_names(row, option):
+        sys.exit(f"{pair} is refused: experiments/harness/TRIES.md has no single row {row} whose first cell is the "
+                 f"captain's order (\"ruling, no run\") naming {option} and `--captain-ruling {row}`")
+    if getattr(a, "released_bet", None) is not None or getattr(a, "bet_strength", None) is not None:
+        sys.exit(f"{pair} is refused with --released-bet and --bet-strength: row {row}'s line is one file with one "
+                 "change")
+    if (getattr(a, "feng_groups", FENG_GROUPS_DEFAULT) != "recomputed" or a.seed != harness.BUILD_SEED_OFFSET + 1
+            or a.board is not None):
+        sys.exit(f"{pair} changes T1's recomputed last file only: it needs the command {T1_CANDIDATE_COMMAND} at the "
+                 f"default seed on the test board (row {row})")
+    return {"g_mom_damping": float(damping), "feng_fraction_mult": float(FENG_FRACTION_MULT_LINE5),
+            "captain_ruling": row, "order": T1_LINE5_ORDER_R22.format(row=row, v=float(damping))}
+
+
 def _t1_ruled_damping(a, damping: float) -> dict:
     """--g-mom-damping 1.5 or 2.0 (row R22's second T1 search line): refused before anything is read without
     --captain-ruling R22, with any other row, unless row R22 is the captain's order naming the option, with
@@ -916,13 +979,17 @@ def _t1_candidate(a) -> dict | None:
     file and record), else the two values as the record names them. --feng-fraction-mult 2.0 is row R20's file alone,
     2.5 and 3.0 row R22's line alone (_t1_ruled); --g-mom-damping 1.5 and 2.0 row R22's second T1 line alone
     (_t1_ruled_damping); --g-mom-damping 1.0 with --feng-fraction-mult 2.0 or 2.5 row R22's third T1 line alone
-    (_t1_ruled_line3, tested before the multiplier's own routing, which keeps every other pair as before); with the
-    flag --captain-ruling, any other value is refused here or by _bet_refusals."""
+    (_t1_ruled_line3, tested before the multiplier's own routing, which keeps every other pair as before);
+    --g-mom-damping 1.5 or 2.0 with --feng-fraction-mult 2.0 row R22's fifth T1 line alone (_t1_ruled_line5, tested
+    beside the third line's, before the multiplier's routing and the damping's); with the flag --captain-ruling, any
+    other value is refused here or by _bet_refusals."""
     damping, mult = getattr(a, "g_mom_damping", None), getattr(a, "feng_fraction_mult", None)
     if damping is None and mult is None:
         return None
     if _is_line3(a):
         return _t1_ruled_line3(a, mult)
+    if _is_line5(a):
+        return _t1_ruled_line5(a, damping)
     if mult in FENG_FRACTION_MULTS_RULED:
         return _t1_ruled(a, mult)
     if damping in T1_R22_DAMPING_OPTIONS:
@@ -1162,7 +1229,7 @@ def _t1_held(union: dict | None, direction_groups, build_genes) -> tuple[list[st
 
 
 def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str], feng_direction: bool = True,
-              with_direction=None, damping: float | None = None):
+              with_direction=None, damping: float | None = None, fraction_mult: float | None = None):
     """The test build's g_mom step (--g-mom, default off; T1 try T11 of experiments/harness/TRIES.md; only the captain's
     ruling puts it in an upload): E9.5 is loaded here and nowhere else, and the factors are fitted exactly as the
     candidate's (`vec.harness.g_mom_pair_factors`: start E9.5, reference E10.5, the chamber categories of E10.5's own
@@ -1190,7 +1257,9 @@ def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str], f
     groups and R1_FENG_GROUPS (fixed under the authors' labels) is not read; the record says so. damping (candidate A,
     --g-mom-damping; None: today's factors and record): the same raw fit finished by
     `vec.t1_state_transport.finish_momentum` at that damping, as practice arm gmom_s1 (experiments/t1_m1/bets_read.py
-    gmom_fits) finishes it; at B0_DAMPING that is the call g_mom_pair_factors makes itself."""
+    gmom_fits) finishes it; at B0_DAMPING that is the call g_mom_pair_factors makes itself. fraction_mult (the
+    candidate's direction multiplier; None: not given) enters the record's text only, never the step: with damping
+    1.5 or 2.0 it chooses the second line's text (multiplier 1.0) or the fifth line's (multiplier 2.0)."""
     from vec import t1_state_transport as ts
 
     start = load_stage(DATA / "T1/E9.5_RNA.h5ad", lineage=False)
@@ -1227,7 +1296,12 @@ def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str], f
                           f"fallback ({sorted(with_direction)}); R1_FENG_GROUPS is not read")
     if damping is not None:  # written only with --g-mom-damping, so every other file's record is as before
         record["damping"] = float(damping)
-        if damping in T1_R22_DAMPING_OPTIONS:  # row R22's second T1 search line; candidate A's text below as before
+        if damping in T1_R22_LINE5_OPTIONS and fraction_mult == FENG_FRACTION_MULT_LINE5:  # row R22's fifth line
+            record["rule"] = record["rule"].replace("damped by B0_DAMPING",
+                                                    f"damped by {float(damping):g} in place of B0_DAMPING (row "
+                                                    f"{T1_R22_ROW}'s fifth T1 search line, on the 2.0 file's command, "
+                                                    "docs/PLAN.md decision log, T1 line 5)")
+        elif damping in T1_R22_DAMPING_OPTIONS:  # row R22's second T1 search line; candidate A's text below as before
             record["rule"] = record["rule"].replace("damped by B0_DAMPING",
                                                     f"damped by {float(damping):g} in place of B0_DAMPING (row "
                                                     f"{T1_R22_ROW}'s second T1 search line, docs/PLAN.md decision log "
@@ -1415,7 +1489,8 @@ def build_t1(a) -> dict:
         covered = _g_mom_covered(groups, directions, feng_groups)  # the build's Feng-covered labels (none: self-check)
         if feng_groups == "recomputed":  # g_mom's mask follows the groups with a recomputed direction
             hook, g_mom_record = _t1_g_mom(ref, fit_categories, a.seed, covered, with_direction=sorted(directions),
-                                           damping=None if candidate is None else candidate["g_mom_damping"])
+                                           damping=None if candidate is None else candidate["g_mom_damping"],
+                                           fraction_mult=None if candidate is None else candidate["feng_fraction_mult"])
         else:
             hook, g_mom_record = _t1_g_mom(ref, fit_categories, a.seed, covered,
                                            feng_direction=feng_groups != "none")
@@ -2088,7 +2163,10 @@ def build_parser() -> argparse.ArgumentParser:
                                 f"{T1_CANDIDATE_COMMAND} at the default seed on the test board. "
                                 f"{G_MOM_DAMPINGS_R22[0]:g} and {G_MOM_DAMPINGS_R22[1]:g} are row {T1_R22_ROW}'s "
                                 "second T1 search line (the captain's order of 2026-11-22) and need --captain-ruling "
-                                f"{T1_R22_ROW}, with no other change")
+                                f"{T1_R22_ROW}, with no other change; with --feng-fraction-mult "
+                                f"{FENG_FRACTION_MULT_LINE5:g}, {G_MOM_DAMPINGS_LINE5[0]:g} and "
+                                f"{G_MOM_DAMPINGS_LINE5[1]:g} are row {T1_R22_ROW}'s fifth search line and need "
+                                f"--captain-ruling {T1_R22_ROW}")
             p.add_argument("--feng-fraction-mult", type=float, default=None,
                            help="candidate B of docs/PLAN.md decision log 2026-11-20 (i) (off by default, no ruling): "
                                 "the outside atlas's direction at this multiple of the calendar fraction (2/5). Takes "
@@ -2100,7 +2178,10 @@ def build_parser() -> argparse.ArgumentParser:
                                 f"{T1_R22_ROW}'s first search line (the captain's order of 2026-11-22) and need "
                                 f"--captain-ruling {T1_R22_ROW}, with no other change; with --g-mom-damping 1.0, "
                                 f"{FENG_FRACTION_MULTS_LINE3[0]:g} and {FENG_FRACTION_MULTS_LINE3[1]:g} are row "
-                                f"{T1_R22_ROW}'s third search line and need --captain-ruling {T1_R22_ROW}")
+                                f"{T1_R22_ROW}'s third search line and need --captain-ruling {T1_R22_ROW}; with "
+                                f"--g-mom-damping {G_MOM_DAMPINGS_LINE5[0]:g} or {G_MOM_DAMPINGS_LINE5[1]:g}, "
+                                f"{FENG_FRACTION_MULT_LINE5:g} is row {T1_R22_ROW}'s fifth search line and needs "
+                                f"--captain-ruling {T1_R22_ROW}")
             p.add_argument("--released-bet", choices=tuple(RELEASED_BETS), default=None,
                            help="try T61 of experiments/harness/TRIES.md (off by default): a variant of T1's last file "
                                 "(--feng-groups none only) that changes which cells are drawn: share_trend (the "
@@ -2130,7 +2211,10 @@ def build_parser() -> argparse.ArgumentParser:
                                 "order for the second T1 search line; with --g-mom-damping 1.0 and "
                                 f"--feng-fraction-mult {FENG_FRACTION_MULTS_LINE3[0]:g} or "
                                 f"{FENG_FRACTION_MULTS_LINE3[1]:g}: {T1_R22_ROW}, the captain's order for the third "
-                                f"T1 search line; with --direction-momentum all: {T1_R23_ROW}, the captain's order "
+                                f"T1 search line; with --g-mom-damping {G_MOM_DAMPINGS_LINE5[0]:g} or "
+                                f"{G_MOM_DAMPINGS_LINE5[1]:g} and --feng-fraction-mult {FENG_FRACTION_MULT_LINE5:g}: "
+                                f"{T1_R22_ROW}, the captain's order for the fifth T1 search line; with "
+                                f"--direction-momentum all: {T1_R23_ROW}, the captain's order "
                                 f"for candidate MS; with --feng-fraction-mult {T1_MSB_MULT:g} --direction-momentum "
                                 f"all: {T1_R26_ROW}, the captain's order for the combined MS file")
         if name == "heart":
