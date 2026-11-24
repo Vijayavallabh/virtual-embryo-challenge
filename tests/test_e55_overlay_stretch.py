@@ -388,7 +388,8 @@ def _ctx():
 def _stage(k: float):
     from vec.evaluate import Stage
 
-    return Stage(X=np.full((50, 2), k, np.float32), coords=np.full((50, 3), k), genes=["a", "b"])
+    rng = np.random.default_rng(int(k))
+    return Stage(X=rng.gamma(2.0, 1.0, size=(50, 4)).astype(np.float32), coords=rng.normal(size=(50, 3)))
 
 
 def test_a_refused_placebo_is_recorded_and_os_file_stands_in(e55):

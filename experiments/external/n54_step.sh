@@ -68,6 +68,7 @@ case "$STEP" in
       tests/test_t1_line5_build.py tests/test_t1_b2d_line_launcher.py \
       tests/test_heart_trend_line.py tests/test_heart_trend_line_launcher.py \
       tests/test_heart_trend_line_d.py tests/test_heart_trend_line_d_launcher.py \
+      tests/test_e55_overlay_stretch.py \
       tests/test_git_helpers.py experiments/external/test_filters.py
     finish $? ;;
   identity)
