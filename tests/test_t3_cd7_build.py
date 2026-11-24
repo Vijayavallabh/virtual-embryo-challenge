@@ -736,12 +736,17 @@ def test_the_build_cli(world, cw, tmp_path, monkeypatch):
     side = json.loads(ok.with_suffix(".json").read_text())
     assert side["combined_build"]["form"] == "c2-s2" and side["spec"]["composition"] == BLOCK
     assert side["combined_build"]["composition_line"]["captain_ruling"]["row"] == "R36"
-    # a block whose magnitude is not rule D7's m: refused at the command line too, nothing written
-    bad = write_decision(tmp_path / "bad.json", {**BLOCK, "log2_magnitude": 0.7})
-    monkeypatch.setattr(bk, "R36_DECISION_SHA256", t3d.sha256(bad))
-    res = runner.invoke(bk.app, [*base[:1], str(bad), *base[2:], "--form", "c2-s2", "--composition-from",
-                                 "allowed-s1", "--captain-ruling", "R36", "--out", str(tmp_path / "m.h5ad")])
-    assert res.exit_code == 2 and "is not rule D7's m" in res.output and nothing_written(tmp_path / "m.h5ad")
+    # a block whose states are not the scenario's, or whose magnitude is not rule D7's m: exit 2, nothing written
+    for name, block, d7_m, says in (("states", {**BLOCK, "depleted_states": STATES[::-1]}, L2,
+                                     "are not rules.yaml's scenario states"),
+                                    ("block_m", {**BLOCK, "log2_magnitude": 0.7}, L2, "is not rule D7's m"),
+                                    ("rule_m", BLOCK, 0.7, "is not rule D7's m")):
+        bad = write_decision(tmp_path / f"bad_{name}.json", block, d7_m)
+        monkeypatch.setattr(bk, "R36_DECISION_SHA256", t3d.sha256(bad))
+        out = tmp_path / f"{name}.h5ad"
+        res = runner.invoke(bk.app, [*base[:1], str(bad), *base[2:], "--form", "c2-s2", "--composition-from",
+                                     "allowed-s1", "--captain-ruling", "R36", "--out", str(out)])
+        assert res.exit_code == 2 and says in res.output and nothing_written(out), (name, res.output)
     monkeypatch.setattr(bk, "R36_DECISION_SHA256", cw.sha)
     # the ruling row gone: refused
     monkeypatch.setattr(bk, "TRIES_FILE", ledger(tmp_path, "", name="old.md"))

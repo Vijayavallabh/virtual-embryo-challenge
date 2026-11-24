@@ -17,6 +17,7 @@ import hashlib
 import os
 import re
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -157,10 +158,9 @@ def test_the_gate_lines():
     assert gate.index('echo "$head" > "$S/head"') > gate.index("finish 93")
 
 
-def test_the_builder_takes_the_options_the_launcher_names(tmp_path):
-    """The option strings the gate looks for are the builder's own (R36_NAMES, G2_OPTION)."""
+def _builder():
+    """experiments/t3_decomp/build_two_knockout.py as loaded in this session (loaded here if no test module has)."""
     import importlib.util
-    import sys
 
     mod = sys.modules.get("build_two_knockout")
     if mod is None:
@@ -169,6 +169,12 @@ def test_the_builder_takes_the_options_the_launcher_names(tmp_path):
         mod = importlib.util.module_from_spec(spec)
         sys.modules["build_two_knockout"] = mod
         spec.loader.exec_module(mod)
+    return mod
+
+
+def test_the_builder_takes_the_options_the_launcher_names(tmp_path):
+    """The option strings the gate looks for are the builder's own (R36_NAMES, G2_OPTION)."""
+    mod = _builder()
     assert list(mod.R36_NAMES) == OPT36 and mod.G2_OPTION == OPT22[0] and mod.R36_FILE == FILE
     assert CD7.split() == ["--form", mod.R36_FORM, "--composition-from", "allowed-s1", "--captain-ruling",
                            mod.R36_ROW]
@@ -192,7 +198,7 @@ ctl() { if [ -e "$F/$1" ]; then cat "$F/$1"; else echo 0; fi; }
 if [ "${1:-}" = vec ]; then exit "$(ctl check_exit)"; fi
 [ "${1:-}" = python ] && shift
 while [ "${1:-}" = -I ] || [ "${1:-}" = -B ]; do shift; done
-if [ "${1:-}" = -c ]; then exec /usr/bin/python3 -I -B "$@"; fi
+if [ "${1:-}" = -c ]; then exec "$FAKE_PY" -I -B "$@"; fi
 if [ "${1:-}" = -m ] && [ "${2:-}" = pytest ]; then exit "$(ctl tests_exit)"; fi
 shift
 case "${1:-}" in
@@ -242,8 +248,10 @@ def _with_stand_in_hashes(sh: str) -> str:
 
 
 def _env(tmp_path: Path) -> dict:
+    """The caller's environment with a temporary home, git kept inside tmp_path, and the python running these tests
+    for the stand-in's stamp reads (the launcher puts the home's ~/.local/bin, the stand-in uv, first on PATH)."""
     env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
-    env |= {"HOME": str(tmp_path / "home"), "GIT_CEILING_DIRECTORIES": str(tmp_path), "PATH": "/usr/bin:/bin",
+    env |= {"HOME": str(tmp_path / "home"), "GIT_CEILING_DIRECTORIES": str(tmp_path), "FAKE_PY": sys.executable,
             "GIT_CONFIG_GLOBAL": os.devnull, "GIT_CONFIG_NOSYSTEM": "1"}
     return env
 
@@ -380,16 +388,7 @@ def test_a_g2_failure_writes_the_fixed_line_after_the_two_builds(tmp_path, g2_ex
 
 
 def test_the_fixed_line_is_the_builder_s():
-    import importlib.util
-    import sys
-
-    mod = sys.modules.get("build_two_knockout")
-    if mod is None:
-        spec = importlib.util.spec_from_file_location("build_two_knockout", REPO / "experiments" / "t3_decomp" /
-                                                      "build_two_knockout.py")
-        mod = importlib.util.module_from_spec(spec)
-        sys.modules["build_two_knockout"] = mod
-        spec.loader.exec_module(mod)
+    mod = _builder()
     sh = _sh()
     assert mod.G2_FAILED_LINE == "G2 failed: no upload; C2 stays."
     assert f'echo "{mod.G2_FAILED_LINE}" > "$S/g2.verdict"' in sh and f'echo "{mod.G2_FAILED_LINE}" >&2' in sh
