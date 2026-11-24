@@ -13502,3 +13502,18 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     overlap with line 2's file, the rule for a one-file line, the guard's reference, the place, the yes-words) before
     anything is coded; the captain is asked for the named yes at the same time, and that yes counts only for the text
     as the challenger leaves it in substance. Builds close at 2026-11-25 12:00 UTC.
+- 2026-11-24 (x), the embryo's closed-lever candidate is struck by its cold challenger (state at 05:26 UTC,
+  2026-11-24). Written by the AI assistant, which is recused on the embryo's occupancy term and shape forms and states
+  no view.
+  - **The candidate** (entry (t)): the overlay file O without the earlier bracket's extraembryonic-ectoderm cells in
+    its E7.5 half. **The challenger's verdict, on another model, blind to test scores: strike.** Its governing
+    reading: by `docs/DATA_POLICY.md` 2026-11-17 (a), 'a change follows from released data alone, or is declined'; the
+    premise that the held-out stage's sections lack that tissue rests on the organisers' description of the held-out
+    sample, not on released data, so the rule declines it and only the captain's own exception could carry it,
+    disclosed as resting on that description and as chosen after the captain had seen the test boards' cell limits.
+    Its odds: about one in nine of a file above O; expected gain at most about +0.04 Overall. Its two main faults of
+    the design: the tissue was chosen, and the rule narrowed, after reading the practice truths' label lists, which
+    removed the read's one analogue of its failure branch; and the expected value left out the loss branch.
+  - **No question is put to the captain**, as for a struck candidate (the precedent of entry (g)); the challenger's
+    fallback text and words are in the round's scratch file `embryoc_attack.json`. The embryo's files stand as they
+    are; nothing was coded, read or counted.
