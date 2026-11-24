@@ -13324,3 +13324,37 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     Rows R28 and R31 keep their texts with one sentence added. The captain reverses a skip by naming the file.
   - **Recorded.** The upload sheet (eight files due now; four skipped), a note in `docs/S2_RULES.md` (re-pinned), the
     last cells of rows R28 and R31.
+- 2026-11-24 (q), the captain orders a blind round on the closed levers; row E55's code is merged and its read
+  launched (state at 03:17 UTC, 2026-11-24). Written by the AI assistant, which is recused on the heart's scope and
+  size and on the embryo's occupancy term and shape forms, designs nothing in the round and states no preference.
+  - **The captain's message.** Under a side note headed 'Closed-lever round needs your word today', the captain's own
+    line reads: '[**A yes only helps today.**] [**"run a blind round on the closed levers"**.]'. **The AI assistant's
+    reading:** the second bracket is the phrase the AI assistant had named as the order (its reply after entry (n)),
+    so the round is ordered. It is an order for a design round only: every file the round finds needs the captain's
+    own named yes, and nothing is coded, read or built on this order alone.
+  - **The round.** Four designers, one per board (T1, T3, the heart, the embryo), started through the route that
+    relays no message, each given no fact about any test score (not even which file stood above which) and no value of
+    any exposed fact. Each has the block's text from `docs/DATA_POLICY.md` (2026-11-04 (b) to (d) and (f), 2026-11-17
+    (a), and the full trim's exception as precedent), the files on record for its board and the limits. A candidate
+    must state: the lever; the rule by which its value follows from released data alone, every constant fixed before
+    any data is read for it; why the value would be the same had the exposure never happened (failing that, the
+    designer strikes it); the reason and the scored group; the ledger check for a rerun; the gate and the practice
+    read; the hours; and the one priced question for the captain with the default no. 'Nothing follows from released
+    data alone' is an allowed answer per lever. A cold challenger then attacks what a designer proposes before any
+    question goes to the captain.
+  - **What the AI assistant told the captain, stated here too.** On the heart and on the embryo, this morning's
+    designers of new candidates (entries (e), (g), (j)) were already free to propose files on closed levers and
+    proposed none on them; T1 and T3 had not been asked. The round is therefore new for T1 and T3 and a second,
+    focused look for the two T2 boards. **What does not change:** the block of 2026-11-04 and the rule for a request
+    on a closed lever ('a change follows from released data alone, or is declined'); the method report discloses every
+    named exception.
+  - **Row E55 (the embryo candidate), merged and launched.** The reviewer's second pass found the engineer's fixes
+    done as asked and one new fault, in a test only: the new stubbed test of the launcher's flow failed whenever the
+    temp path held the word 'pytest', which is the case in the launcher's own tests step; a dry run of that step on
+    the DGX had shown the same (4 failed), so the real run would have stopped at its first step. Fixed in the test
+    alone (dd20235); the reviewer then returned READY, and the tests step passed on the DGX as the launcher runs it
+    (309 passed). Merged into main at 4535f98. Launched at 03:12 UTC on the DGX: `experiments/coords/run_e55.sh
+    4535f98... r1` in the detached worktree `~/v/scratch/e55-wt` (of `~/v/vec-campaign-c`), clean at that commit, with
+    the environment and the data folder the recorded gate used; before the launch the gate had been recomputed there
+    at the fixed code (run g4) with every g equal to the record's. The three embryo tries (89 to 91) count when the
+    run step starts; the outcome cell of row E55 will quote the read's own statement.
