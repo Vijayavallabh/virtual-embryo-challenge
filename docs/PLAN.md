@@ -13606,3 +13606,16 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     challenger answers. Every file's sha256 goes into this log before its own score.
   - **No headline** of any board beyond those of entry 2026-11-23 (gg) had reached the main session at this entry's
     commit; the captain has reported none.
+- 2026-11-24 (cc), the C2 line's cold check: put the question to the captain again in corrected form (state at 05:43
+  UTC, 2026-11-24). Written by the AI assistant, which designed none of it.
+  - **The verdict** (a cold challenger blind to test scores, on another model): put the question to the captain; the
+    line is one file, `T3_c2_s2_g2.h5ad`. Two corrections change its substance as put to the captain in entry (w): (1)
+    the guard is measured from C2, so it limits only the step from C2; lines 1 and 2 limit the distance from phi_M,
+    and by that test the file stands about +7.9% off, beyond their 5%; the guard stays as fixed and the text and the
+    question now state the +7.9%; (2) the weight is not an existing setting of C2's command (the builder refuses the
+    option on every form but c1-s2 and C2's code holds no weight), so the line adds a narrow mechanism and stands only
+    as the captain's own named exception, as line 2 did; the yes of 2026-11-23 named C1's weight only.
+  - **Effect on ruling row R38.** Its yes counted only for the text as the challenger left it in substance; the
+    substance changed, and the corrected text's yes-words are "yes, T3_c2_s2_g2" (default place) or "yes, T3_c2_s2_g2
+    ahead of" a queued file's name; 'yes, C2 line' is not among them. So nothing of the line is coded or built on R38,
+    row R22's first cell is not amended for it, and the corrected question goes to the captain.
