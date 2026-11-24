@@ -13657,3 +13657,18 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     hid its failure: the step-script guard failed because the H34 merge (2b4989c) had added a test file that names the
     builder without listing it in `experiments/external/n54_step.sh`. The push went through; the list was fixed at
     2dca92c, where the guard passes. Nothing that ran used that list.
+- 2026-11-24 (gg), ledger row K29 is placed: the practice read the captain bound the cD7 file's upload to, before any
+  read (state at 06:12 UTC, 2026-11-24). Written by the AI assistant, which designed none of it.
+  - **The row.** A rule writer blind to test scores wrote it from the cold challenger's corrected read rule (entry
+    (aa)); the challenger, on another model, ruled on its eight open points (a guard failure counts oth_f as one try;
+    a missing seed file is INCOMPLETE until 2026-11-25 06:00 UTC, then VOID; the gate's tolerance a relative 1e-12,
+    the gate before the guard, a failure VOID with no try; all three of N4's gene sets within C2's bar plus 0.01
+    before upload, a failure meaning no upload; the labels L1 to L3 defined; cell 6 names the rows it is not a rerun
+    of; the challenger's own odds in cell 7: not struck about 0.2, struck about 0.75, void about 0.05). Eleven
+    replacement sentences applied by code.
+  - **What it fixes.** Five counted T3 tries when the run step starts (a guard failure counts one); the captain's yes
+    (ruling row R36) was given before the read and binds the upload to it: STRUCK or VOID, no file and C2 stays; NOT
+    STRUCK, the file is built twice with one sha256 and named here before its score. No later composition tier is
+    tried on any T3 file.
+  - **Next:** the read's code and the builder option are being written on two branches; each is merged after an
+    independent review; the read runs on the DGX.
