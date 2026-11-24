@@ -17,8 +17,25 @@ SH = REPO / "experiments" / "t3_decomp" / "run_k28.sh"
 GIT_VARS = ("GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE", "GIT_OBJECT_DIRECTORY", "GIT_COMMON_DIR", "GIT_NAMESPACE",
             "GIT_ALTERNATE_OBJECT_DIRECTORIES", "GIT_CEILING_DIRECTORIES")
 ROW = "| K28 (one row, one script) | T3 | `experiments/t3_decomp/k28_chip_partners.py` |\n"
-WORDS = "Reopened by the captain's order of 2026-11-24"
-REGISTER = f"| X018 | a generic database of public ChIP-seq | fetched 2026-11-23. {WORDS} for one practice row. |\n"
+WORDS = (  # the amendment's whole text
+    "Reopened by the captain's order of 2026-11-24 for the database-only gate of one practice row (K28, T3 candidate "
+    "CHIPQ-C); a fold is read only under the captain's ruling R33 lifting row K27's closing sentence for that row "
+    "alone. No new fetch, no new kind of file: the files pinned on 2026-11-23, verified. New use: for a query gene "
+    "named to code, code picks three other antigens whose binding within 5 kb of transcription start sites overlaps "
+    "the query's most specifically in one cell-type class, by a statistic computed from kept experiments only; panel "
+    "genes those antigens bind form the table, under row K27's one sign convention. Experiments are wild type and "
+    "untreated as far as the public metadata say: the K27 kept list for the two query genes; for other antigens the "
+    "committed keyword filter, two further classes in code (tumour-derived or transformed lines; cell-type classes "
+    "where pathway agents are common) and two screening readers on every row that can enter a table, antigen names "
+    "masked. No experiment perturbing either held-out gene and no expression measurement enters. Not checked: "
+    "genotypes and culture conditions the metadata do not state. No person or agent reads a partner name or a bound "
+    "gene. Practice read only. Licence unchanged (CC BY-SA 4.0): share-alike for a derived table in any distributed "
+    "file or report. No file without the captain's rulings on provenance (PLAN 4.4), A15 and the team's pathway-tier "
+    "bar."
+)
+OPENING = "Reopened by the captain's order of 2026-11-24"  # the amendment's opening words alone
+ONE_WORD = WORDS.replace(" bar.", " rule.")  # the whole text with one word, its last, changed
+REGISTER = f"| X018 | a generic database of public ChIP-seq | fetched 2026-11-23. {WORDS} |\n"
 FETCH_DIR = "chip" "atlas"  # the fetch folder the launcher checks (spelt apart: no file here reaches the database)
 OUT = "experiments/t3_decomp/results/k28_chip_partners"
 BLOCK = ("G0a: classes excluded by class (vi): 2\nG0a Ctnnb1: usable experiments in its class: 4; candidates: 9\n"
@@ -195,9 +212,14 @@ def test_each_gate(tmp_path):
 
     committed("experiments/harness/TRIES.md", "| K27 (one row) | T3 |\n| K280 | T3 |\n", 95, "no TRIES.md row K28")
     committed("EXTERNAL_DATA.md", "| X017 | other |\n", 96, "X018")
-    committed("EXTERNAL_DATA.md", REGISTER.replace(WORDS, "Opened on 2026-11-23"), 96, "opening words")
-    committed("EXTERNAL_DATA.md", REGISTER.replace("| X018 ", "| X019 "), 96, "opening words")
-    committed("EXTERNAL_DATA.md", REGISTER.replace("2026-11-24", "2026-11-25"), 96, "opening words")
+    committed("EXTERNAL_DATA.md", REGISTER.replace(WORDS, "Opened on 2026-11-23"), 96, "whole text")
+    # the amendment's opening words alone, and its whole text with one word changed
+    whole, changed = WORDS.split(" "), ONE_WORD.split(" ")
+    assert WORDS.startswith(OPENING) and sum(x != y for x, y in zip(whole, changed, strict=True)) == 1
+    committed("EXTERNAL_DATA.md", REGISTER.replace(WORDS, OPENING), 96, "whole text")
+    committed("EXTERNAL_DATA.md", REGISTER.replace(WORDS, ONE_WORD), 96, "whole text")
+    committed("EXTERNAL_DATA.md", REGISTER.replace("| X018 ", "| X019 "), 96, "whole text")
+    committed("EXTERNAL_DATA.md", REGISTER.replace("2026-11-24", "2026-11-25"), 96, "whole text")
     for rel in ("experiments/t3_ext/chipq_kept.yaml", "experiments/t3_ext/CHIPQ_KEPT.sha256"):
         h = _commit(L, rel, None)
         r = _run(L, "g0a", h)

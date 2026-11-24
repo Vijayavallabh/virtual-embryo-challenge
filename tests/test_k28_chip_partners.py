@@ -48,9 +48,25 @@ KA, LA = P.KA, P.LA
 HEAD = "c" * 40
 ROW_LINE = ("| K28 (one row, one script; the database-only gate G0, uncounted) | T3 | "
             "`experiments/t3_decomp/k28_chip_partners.py` | wt_identity |\n")
-WORDS = "Reopened by the captain's order of 2026-11-24"
-REGISTER_LINE = (f"| X018 | a generic database of public ChIP-seq | fetched 2026-11-23. {WORDS} for the database-only "
-                 "gate of one practice row (K28, T3 candidate CHIPQ-C); no new fetch, no new kind of file. |\n")
+WORDS = (  # the amendment's whole text
+    "Reopened by the captain's order of 2026-11-24 for the database-only gate of one practice row (K28, T3 candidate "
+    "CHIPQ-C); a fold is read only under the captain's ruling R33 lifting row K27's closing sentence for that row "
+    "alone. No new fetch, no new kind of file: the files pinned on 2026-11-23, verified. New use: for a query gene "
+    "named to code, code picks three other antigens whose binding within 5 kb of transcription start sites overlaps "
+    "the query's most specifically in one cell-type class, by a statistic computed from kept experiments only; panel "
+    "genes those antigens bind form the table, under row K27's one sign convention. Experiments are wild type and "
+    "untreated as far as the public metadata say: the K27 kept list for the two query genes; for other antigens the "
+    "committed keyword filter, two further classes in code (tumour-derived or transformed lines; cell-type classes "
+    "where pathway agents are common) and two screening readers on every row that can enter a table, antigen names "
+    "masked. No experiment perturbing either held-out gene and no expression measurement enters. Not checked: "
+    "genotypes and culture conditions the metadata do not state. No person or agent reads a partner name or a bound "
+    "gene. Practice read only. Licence unchanged (CC BY-SA 4.0): share-alike for a derived table in any distributed "
+    "file or report. No file without the captain's rulings on provenance (PLAN 4.4), A15 and the team's pathway-tier "
+    "bar."
+)
+OPENING = "Reopened by the captain's order of 2026-11-24"  # the amendment's opening words alone
+ONE_WORD = WORDS.replace(" bar.", " rule.")  # the whole text with one word, its last, changed
+REGISTER_LINE = f"| X018 | a generic database of public ChIP-seq | fetched 2026-11-23. {WORDS} |\n"
 LEDGER = "| id | task | code |\n|---|---|---|\n| K27 (one row, one script) | T3 | `k27_chip_query.py` |\n"
 REGISTER = "| id | source | use |\n|---|---|---|\n| X017 | another source | other |\n"
 BLOCK = re.compile(r"G0a: classes excluded by class \(vi\): (\d+)\n"
@@ -339,13 +355,18 @@ def test_the_step_refuses_before_any_database_file_without_its_row_register_tree
     E.ledger.unlink()
     refused(E, capsys, match="TRIES.md is missing")
     E.ledger.write_text(LEDGER + ROW_LINE)
-    # the register's wording
+    # the register's wording: the amendment's whole text, so neither its opening words alone nor the whole text with
+    # one word changed
     plain = REGISTER_LINE.replace(WORDS, "Opened on 2026-11-23")
-    for text, msg in ((REGISTER + plain, "opening words"),
-                      (REGISTER + plain + f"| X019 | another | {WORDS} |\n", "opening words"),
-                      (REGISTER + plain + f"\n{WORDS} for row X018.\n", "opening words"),
-                      (REGISTER + REGISTER_LINE.replace("2026-11-24", "2026-11-23"), "opening words"),
-                      (REGISTER + REGISTER_LINE.replace("captain's", "captains"), "opening words"),
+    whole, changed = WORDS.split(" "), ONE_WORD.split(" ")
+    assert WORDS.startswith(OPENING) and sum(x != y for x, y in zip(whole, changed, strict=True)) == 1
+    for text, msg in ((REGISTER + plain, "whole text"),
+                      (REGISTER + REGISTER_LINE.replace(WORDS, OPENING), "whole text"),
+                      (REGISTER + REGISTER_LINE.replace(WORDS, ONE_WORD), "whole text"),
+                      (REGISTER + plain + f"| X019 | another | {WORDS} |\n", "whole text"),
+                      (REGISTER + plain + f"\n{WORDS} for row X018.\n", "whole text"),
+                      (REGISTER + REGISTER_LINE.replace("2026-11-24", "2026-11-23"), "whole text"),
+                      (REGISTER + REGISTER_LINE.replace("captain's", "captains"), "whole text"),
                       (REGISTER, "no row X018"), (REGISTER + REGISTER_LINE + REGISTER_LINE, "more than one row X018")):
         E.register.write_text(text)
         refused(E, capsys, match=msg)
@@ -497,8 +518,21 @@ def test_row_present_and_register_reopened(tmp_path):
     with pytest.raises(k28.Refused, match="missing or a symlink"):
         k28.row_present(tmp_path / "nothing.md")
     reg.write_text(REGISTER + "| X018 | a generic database | fetched 2026-11-23 |\n")
-    with pytest.raises(k28.Refused, match="opening words"):
+    with pytest.raises(k28.Refused, match="whole text"):
         k28.register_reopened(reg)
+
+
+def test_the_step_and_the_launcher_check_row_x018_for_the_same_text():
+    """The launcher's WORDS, as bash assigns it, is the step's REGISTER_WORDS, byte for byte. Set in double quotes, it
+    holds nothing bash changes there (no double quote, dollar sign, backquote, backslash or exclamation mark), and no
+    bar, which would split a cell of the register's table."""
+    lines = [ln for ln in (T3 / "run_k28.sh").read_text().splitlines() if ln.startswith("WORDS=")]
+    assert len(lines) == 1
+    m = re.fullmatch(r'WORDS="([^"]*)"  # .*', lines[0])
+    assert m and m.group(1) == k28.REGISTER_WORDS == WORDS
+    assert not set(WORDS) & set('"$`\\!|\n')
+    r = subprocess.run(["bash", "-c", f'{lines[0]}\nprintf %s "$WORDS"'], capture_output=True, text=True, check=True)
+    assert r.stdout == k28.REGISTER_WORDS and r.stderr == ""
 
 
 # ---------------------------------------------------------------------------------------------------------------------
