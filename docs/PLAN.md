@@ -13463,3 +13463,21 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     file's; T1_s2rcB2d20 only if T1_s2rcB2d15's is strictly above the line's best. Line 3's sentence still binds every
     other line. Lines 6 and 7 of entry (r) still wait on their own words, before T1_s2rcCm25 is uploaded.
   - **Recorded:** row R35; a note in `docs/S2_RULES.md` (re-pinned); the upload sheet's question removed.
+- 2026-11-24 (v), the captain's blanket approval (state at 05:07 UTC, 2026-11-24). Written by the AI assistant; its
+  reading is labelled.
+  - **The captain's words, verbatim:** "You have my full approval over anything that would possibly improve our
+    scores". Earlier the same hour: "resume all the failed agents with opus instead of fable"; seven agents that a
+    service limit had stopped were restarted on another model, each from its saved work (a stopped agent cannot change
+    model; resumed, they failed again at once).
+  - **The AI assistant's reading.** The approval covers effort, compute, agents and every step that needs no named
+    order: all of it goes ahead without further asking. It does not lift the organisers' rules (the data windows,
+    'scores choose, never compute', the held-out genotypes), the never-open list, the AI assistant's recusals, or the
+    team's rules that a general go-ahead cannot meet by their own words: a file on a closed lever needs the captain's
+    named exception file by file, and a new option, a lifted cap or one line's use of another line's headline needs
+    the captain's own words naming the files (the cold challenger's ruling of entry (r), which the AI assistant
+    accepted for every new line). Uploads stay the captain's own acts. So the two T1 lines of entry (r) are put to the
+    captain once more as one sentence to copy, and each closed-lever file will be put as one priced question after its
+    cold challenge.
+  - **What the captain can do that most helps the score now, said to the captain:** upload the eight files due now and
+    paste the headlines; seven more files and three builds (the two T1 lines and anything a practice read passes) wait
+    on those headlines, and builds close at 2026-11-25 12:00 UTC.
