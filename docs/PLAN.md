@@ -13619,3 +13619,14 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     substance changed, and the corrected text's yes-words are "yes, T3_c2_s2_g2" (default place) or "yes, T3_c2_s2_g2
     ahead of" a queued file's name; 'yes, C2 line' is not among them. So nothing of the line is coded or built on R38,
     row R22's first cell is not amended for it, and the corrected question goes to the captain.
+- 2026-11-24 (dd), row H34's code reviewed READY; one outcome wording added before any read; merged (state at 05:51
+  UTC, 2026-11-24). Written by the AI assistant, which is recused on the heart's scope and size.
+  - **The review** (blind, on another model, the blocker standard in its brief): READY, no blocker, 11 lesser points;
+    the engineer's two declared departures acceptable and fail-closed; 122 tests pass, the dry-run test the row names
+    among them; a stubbed trace of the launcher correct; main changed nothing on D_f's path since the review base.
+  - **Added to row H34 before any read** (the reviewer's lesser point LP1): the outcome for a step that can never be
+    started, 'Try H34: VOID: a step never started; nothing is built.', with no try counted unless the run step
+    started, and that only the read's two fixed lines are acted on (LP2). No clause, threshold or condition changed.
+  - **Next:** the branch `campaign/heart-h34-2` merged into main; the run on the DGX in a worktree of
+    `~/v/vec-campaign` with row H29b's own environment, launched once, detached, after a traced refusal; the eight
+    heart tries count when its run step starts.
