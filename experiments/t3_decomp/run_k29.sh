@@ -16,7 +16,10 @@
 # Steps, in order; the call stops at the first that does not exit 0. Each writes S/<step>.exit (first the word running,
 # then its code) and S/<step>.head (COMMIT), and runs only when the step before it wrote 0 at COMMIT (else 96).
 # S/done.exit holds running, then the call's code. A failed gate or guard makes the VOID reading once (run_k24.sh's
-# rule; its code in S/void_read.exit) and ends the call under its own code, no later step started.
+# rule; its code in S/void_read.exit) and ends the call under its own code, no later step started. At or after the
+# cutoff, 2026-11-25 06:00 UTC, the script refuses the gate, every part and the guard check (its exit 7): the call then
+# makes the reading once (the VOID reading 'INCOMPLETE past its cutoff' for a folder still missing a file) and finishes
+# 27. Once a reading is in experiments/t3_decomp/results/k29_cd7_read/, no part is started (44), whatever RUN.
 #   preflight  HEAD is COMMIT (97), the tracked tree is clean (98), row K29 naming the script is in TRIES.md (95),
 #              K18's three committed task files are tracked and the gata4 run folder is a directory (96)
 #   tests      the targeted tests, synthetic data only, 8 BLAS threads (10)
@@ -25,13 +28,15 @@
 #              finishes 25; 1 a crash: INCOMPLETE, no reading (23); 2 refused (22); other 20. A gate.json already there
 #              is read again: passing at COMMIT goes on; failing finishes 25 (the VOID reading only when none is
 #              there); of another commit 21; unreadable 20
-#   guard      the guard part: oth_f only, both worlds, ten seeds, five parallel parts as in the run step, into
-#              R/guard/ (30 if a part did not exit 0); then the guard check, R/guard.json: 0 the guard holds; 6 it
+#   guard      the guard part (44 first when a reading is there): oth_f only, both worlds, ten seeds, five parallel
+#              parts as in the run step, into R/guard/ (30 if a part did not exit 0); then the guard check,
+#              R/guard.json: 0 the guard holds; 6 it
 #              fails: the VOID reading is made once (it counts one try, oth_f) and the call finishes 26, no scoring
 #              part started; 2 refused (22: K18's files off their pins, files of another commit or machine); 3 a guard
 #              file missing (30); other 20. A guard.json already there is read again: passing at COMMIT goes on;
 #              failing finishes 26 (the VOID reading only when none is there); of another commit 21; unreadable 20
-#   run        THE FIVE TRIES COUNT FROM THE START OF THIS STEP (the script writes R/run_started.json). Five parallel
+#   run        44 first when a reading is there (no arm is scored again). THE FIVE TRIES COUNT FROM THE START OF THIS
+#              STEP (the script writes R/run_started.json). Five parallel
 #              scoring parts, the six arms each: plain g1 and g2, each as seeds 0-4 and 5-9 (8 BLAS threads a
 #              process), and the depth-matched world (8 workers by 2 threads, 16 BLAS threads in its set-up), as rows
 #              K18 and K21 to K24 ran them; the script refuses without a passing gate.json and guard.json of this
@@ -90,8 +95,22 @@ RUN_DIR=$HOME/v/virtual-embryo-challenge/runs/t3_decomp/gata4_20261028T122425Z  
 K18_TASKS=experiments/t3_decomp/results/k18_built_files/tasks
 PASSES_CHECK='import json, sys; g = json.load(open(sys.argv[1])); c = (g.get("provenance") or {}).get("commit"); print("foreign" if c != sys.argv[2] else "pass" if g.get("passes") is True else "fail")'
 OK_LINE='^K29 (guard )?plain g[12] seed [0-9]+: (scored|present, skipped)$|^wrote [^ ]+\.json|^\[rep[12] seed [0-9]+\] K18 depth-matched: [0-9]+ arms and the check, [0-9]+s$|^self-check passed '
+PART_SET=("plain_g1_0-4" "plain_g2_0-4" "plain_g1_5-9" "plain_g2_5-9" "dm")
 
-# void_read CODE: a failed gate (25) or guard (26): the VOID reading once, then CODE; no later step starts
+# reading_there: a reading is in OUT already, so no part may score an arm again
+reading_there() { [ -e "$OUT/reading.json" ] || [ -e "$OUT/reading.txt" ]; }
+
+# late PREFIX: true when a part was refused past the cutoff (its exit 7)
+late() {
+  local part
+  for part in "${PART_SET[@]}"; do
+    if [ "$(cat "$R/exit/$1$part" 2> /dev/null)" = 7 ]; then return 0; fi
+  done
+  return 1
+}
+
+# void_read CODE: a failed gate (25) or guard (26), or a refusal past the cutoff (27): the reading once (VOID, or for a
+# folder complete before the cutoff the reading it supports), then CODE; no later step starts
 void_read() {
   rc=0
   $PY "$SCRIPT" read --commit "$COMMIT" --runs "$R" --out "$OUT" > /dev/null 2>&1 || rc=$?
@@ -122,7 +141,7 @@ again() {
 parts() {
   local prefix="$1"
   shift
-  local set=("plain_g1_0-4" "plain_g2_0-4" "plain_g1_5-9" "plain_g2_5-9" "dm")
+  local set=("${PART_SET[@]}")
   local pids=() part task seeds n bad=0
   for part in "${set[@]}"; do
     (
@@ -174,6 +193,7 @@ if [ ! -e "$R/gate.json" ]; then
   rc=0
   $PY "$SCRIPT" gate --commit "$COMMIT" --out "$R" --threads 8 > "$S/gate.log" 2>&1 || rc=$?
   if [ $rc = 5 ]; then void_read 25; fi
+  if [ $rc = 7 ]; then void_read 27; fi
   if [ $rc = 1 ]; then finish 23; fi
   if [ $rc = 2 ]; then finish 22; fi
   if [ $rc != 0 ]; then finish 20; fi
@@ -183,12 +203,17 @@ passed
 
 begin guard gate
 if [ ! -e "$R/guard.json" ]; then
+  if reading_there; then echo "refused: a reading is there already; no arm is scored again" >&2; finish 44; fi
   rc=0
   parts guard_ --part guard || rc=$?
-  if [ $rc != 0 ]; then finish 30; fi
+  if [ $rc != 0 ]; then
+    if late guard_; then void_read 27; fi
+    finish 30
+  fi
   rc=0
   $PY "$SCRIPT" guard --commit "$COMMIT" --runs "$R" > "$S/guard.log" 2>&1 || rc=$?
   if [ $rc = 6 ]; then void_read 26; fi
+  if [ $rc = 7 ]; then void_read 27; fi
   if [ $rc = 2 ]; then finish 22; fi
   if [ $rc = 3 ]; then finish 30; fi
   if [ $rc != 0 ]; then finish 20; fi
@@ -197,11 +222,15 @@ again guard.json 26
 passed
 
 begin run guard
+if reading_there; then echo "refused: a reading is there already; no arm is scored again" >&2; finish 44; fi
 rc=0
 parts "" --part score || rc=$?
 cat "$R"/exit/*.other_lines | awk '{ if ($1 ~ /^[0-9]+$/) s += $1; else u = 1 } END { print (u ? "unreadable" : s) }' \
   > "$R/exit/other_lines"
-if [ $rc != 0 ]; then finish 30; fi
+if [ $rc != 0 ]; then
+  if late ""; then void_read 27; fi
+  finish 30
+fi
 passed
 
 begin read run

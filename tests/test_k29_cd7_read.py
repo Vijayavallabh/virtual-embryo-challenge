@@ -54,11 +54,13 @@ GENES = [f"g{i}" for i in range(G)]
 BASE = 56.0
 GOOD = {"own_f": 0.5, "own_d": 1.0}  # G +0.5 and Gd +1.0 in every cell, C 0: nothing strikes and nothing is labelled
 BEFORE = datetime(2026, 11, 24, 12, 0, tzinfo=UTC)
+RESULTS_AS_SHIPPED = k29.RESULTS  # before the autouse fixture points it at an empty folder
 
 
 @pytest.fixture(autouse=True)
-def clean_state(monkeypatch):
+def clean_state(monkeypatch, tmp_path):
     monkeypatch.setattr(k29, "_now", lambda: BEFORE)  # no test reads the machine's clock
+    monkeypatch.setattr(k29, "RESULTS", tmp_path / "k29_results_none")  # nor meets a reading on disk
     yield
     k29._K29.clear()
     k18._FOLD.clear()
@@ -113,7 +115,8 @@ def test_arms_constants_outcome_lines_and_the_pins():
     assert (k29.MIN_GAIN, k29.MIN_AHEAD, k29.MAX_BEHIND, k29.MIN_CELLS, k29.MAX_EXTRA_GATED) == (0.3, 8, -0.3, 2, 1)
     assert (k29.GUARD_MEAN, k29.GUARD_SEED) == (0.1, 0.5)
     assert k29.CUTOFF == datetime(2026, 11, 25, 6, 0, tzinfo=UTC) and k29.CUTOFF_TEXT == "2026-11-25 06:00 UTC"
-    assert (k29.EXIT_REFUSED, k29.EXIT_INCOMPLETE, k29.EXIT_EXISTS, k29.EXIT_GATE, k29.EXIT_GUARD) == (2, 3, 4, 5, 6)
+    assert (k29.EXIT_REFUSED, k29.EXIT_INCOMPLETE, k29.EXIT_EXISTS, k29.EXIT_GATE, k29.EXIT_GUARD, k29.EXIT_LATE) == (
+        2, 3, 4, 5, 6, 7)
     assert k29.STREAM == k18.STREAM == "t3_s2_form" and k29.TASKS == k18.TASKS and k29.WORLDS == k18.WORLDS
     assert k29.CELLS == ("plain g1", "plain g2", "dm g1", "dm g2") and list(SEEDS) == list(range(10))
     assert k29.VOID_LINE.format("x") == "Try K29: VOID: x; no file."
@@ -126,7 +129,8 @@ def test_arms_constants_outcome_lines_and_the_pins():
     for f, pre in (("plain_g1.json", "5ec09ef58386"), ("plain_g2.json", "cfc5ede7e718"), ("dm.json", "1ef3e26347c6")):
         assert k29.K18_SHA256[f].startswith(pre) and re.fullmatch(r"[0-9a-f]{64}", k29.K18_SHA256[f])
     assert k29.K18_TASKS == T3 / "results" / "k18_built_files" / "tasks"
-    assert k29.RESULTS == T3 / "results" / "k29_cd7_read" and k29.SCRIPT == "experiments/t3_decomp/k29_cd7_read.py"
+    assert RESULTS_AS_SHIPPED == T3 / "results" / "k29_cd7_read"
+    assert k29.SCRIPT == "experiments/t3_decomp/k29_cd7_read.py"
 
 
 def test_the_lists_are_the_frozen_rules_and_the_magnitudes_are_checked_against_the_files():
@@ -718,7 +722,8 @@ def test_each_void_condition(tmp_path, monkeypatch, kw, why):
     res = _read(_write_run(tmp_path / "v", **kw), monkeypatch)
     assert res["void"] and any(why in x for x in res["why"]), res["why"]
     assert res["outcome"].startswith("Try K29: VOID: ") and res["outcome"].endswith("; no file.")
-    assert why in res["outcome"] and "decision" not in res and res["tries_counted"] in (5, 6)
+    assert why in res["outcome"] and "decision" not in res
+    assert res["tries_counted"] == 5 and res["counted_arms"] == list(k29.COUNTED)  # a full run counts five, exactly
     assert "VOID (checked first; no strike clause is applied)" in k29.text(res)
 
 
@@ -743,10 +748,15 @@ def test_k18s_committed_files_off_their_pins_void(tmp_path, monkeypatch):
     assert any("plain_g1.json is missing" in x for x in _read(w2, monkeypatch)["why"])
 
 
-def test_the_count_of_a_void_run(tmp_path, monkeypatch):
-    res = _read(_write_run(tmp_path / "a", cells={"plain g1": {**GOOD, "oth_f": 0.2}}, gcells={}), monkeypatch)
-    assert res["void"] and res["tries_counted"] == 6 and res["counted_arms"] == [*k29.COUNTED, "oth_f"]
-    res = _read(_write_run(tmp_path / "b", bad={"dm/g1_seed_0.json": _set_prov(machine="m9")}), monkeypatch)
+@pytest.mark.parametrize("kw", [
+    {"cells": {"plain g1": {**GOOD, "oth_f": 0.2}}, "gcells": {}},  # the run step's oth_f off the guard step's
+    {"gcells": {"dm g1": {**GOOD, "oth_f": 0.3}}},  # the guard step's, read again, off K18's rows
+    {"bad": {"dm/g1_seed_0.json": _drop("own_d")}},  # a malformed file drops a seed of oth_f's match as well
+    {"bad": {"guard/plain_g2/seed_4.json": _drop("oth_f")}},
+    {"bad": {"dm/g1_seed_0.json": _set_prov(machine="m9")}},
+])
+def test_a_full_run_counts_five_whatever_its_files_hold(tmp_path, monkeypatch, kw):
+    res = _read(_write_run(tmp_path / "a", **kw), monkeypatch)
     assert res["void"] and res["tries_counted"] == 5 and res["counted_arms"] == list(k29.COUNTED)
 
 
@@ -757,6 +767,8 @@ def test_a_guard_that_failed_in_the_guard_step_is_void_with_one_counted_try(tmp_
     assert res["outcome"] == ("Try K29: VOID: the guard failed in the guard step: oth_f is off K18's committed "
                               "barred_form; no file.")
     assert k29.text(res).splitlines()[0] == res["outcome"]
+    res = _read(_write_run(tmp_path / "h", guard_passes=False), monkeypatch)  # scoring files there all the same
+    assert res["void"] and res["tries_counted"] == 1 and res["counted_arms"] == ["oth_f"]
 
 
 @pytest.mark.parametrize("kw", [{"clean": False}, {"bad": {"dm/g1_seed_2.json": _drop("own_h")}},
@@ -906,6 +918,53 @@ def test_row_k29_and_every_step_refuses_without_it(tmp_path, monkeypatch, capsys
             k29.main(argv)
         assert e.value.code == 2, argv
     assert seen == [] and not (tmp_path / "o").exists() and not (tmp_path / "reading").exists()
+
+
+def _writing_steps(tmp_path) -> list[list[str]]:
+    o = str(tmp_path / "o")
+    return [["gate", "--commit", "abc", "--out", o],
+            ["run", "--commit", "abc", "--part", "guard", "--world", "plain", "--task", "g1", "--out", o],
+            ["run", "--commit", "abc", "--part", "guard", "--world", "dm", "--out", o],
+            ["run", "--commit", "abc", "--world", "plain", "--task", "g2", "--seeds", "7", "--out", o],
+            ["run", "--commit", "abc", "--world", "dm", "--out", o],
+            ["guard", "--commit", "abc", "--runs", o]]
+
+
+def test_gate_run_and_guard_refuse_at_and_after_the_cutoff_and_write_nothing(tmp_path, monkeypatch, capsys):
+    tries = tmp_path / "TRIES.md"
+    tries.write_text(ROW)
+    monkeypatch.setattr(k29, "TRIES_MD", tries)
+    monkeypatch.setattr(k18, "stamp", lambda: _prov())
+    seen = []
+    monkeypatch.setattr(k29.k22, "frozen_ok", lambda: seen.append("frozen"))
+    monkeypatch.setattr(k18, "barred_spec", lambda *a: seen.append("spec"))
+    for now in (k29.CUTOFF, datetime(2026, 11, 26, 0, 0, tzinfo=UTC)):
+        monkeypatch.setattr(k29, "_now", lambda now=now: now)
+        for argv in _writing_steps(tmp_path):
+            with pytest.raises(SystemExit) as e:
+                k29.main(argv)
+            assert e.value.code == 7 and "past the cutoff (2026-11-25 06:00 UTC)" in capsys.readouterr().err, argv
+    assert seen == [] and not (tmp_path / "o").exists()
+    monkeypatch.setattr(k29, "_now", lambda: datetime(2026, 11, 25, 5, 59, 59, tzinfo=UTC))  # a second before it
+    with pytest.raises(SystemExit) as e:
+        k29.main(_writing_steps(tmp_path)[0])
+    assert e.value.code != 7 and seen == ["frozen", "spec"]  # the clock let it on to the next checks
+
+
+def test_a_folder_left_incomplete_at_the_cutoff_stays_so_and_reads_void(tmp_path, ready, monkeypatch):
+    for f in ("seed_7.json", "seed_7.json.prov.json"):
+        (ready.root / "plain_g2" / f).unlink()
+    monkeypatch.setattr(k29, "_now", lambda: k29.CUTOFF)
+    with pytest.raises(SystemExit) as e:  # a rerun of the missing seed, at the cutoff
+        k29.main(["run", "--commit", "abc", "--world", "plain", "--task", "g2", "--seeds", "7", "--out",
+                  str(ready.root)])
+    assert e.value.code == 7 and not (ready.root / "plain_g2" / "seed_7.json").exists()
+    out = tmp_path / "reading"
+    k29.main(["read", "--commit", "abc", "--runs", str(ready.root), "--out", str(out)])
+    body = json.loads((out / "reading.json").read_text())
+    assert body["outcome"] == ("Try K29: VOID: INCOMPLETE past its cutoff (2026-11-25 06:00 UTC): 1 file(s) missing, "
+                               "e.g. plain_g2/seed_7.json; no file.")
+    assert body["tries_counted"] == 5
 
 
 @pytest.mark.parametrize("stamp,why", [({"tree_clean": False}, "the tree is not clean"),
@@ -1090,6 +1149,28 @@ def test_a_scoring_part_refuses_without_a_passing_guard_and_marks_the_run_steps_
     assert json.loads((out / "run_started.json").read_text()) == mark
 
 
+def test_a_run_refuses_once_a_reading_is_there_whatever_the_folder(fake_run, monkeypatch, capsys, tmp_path):
+    results = tmp_path / "results"
+    results.mkdir()
+    monkeypatch.setattr(k29, "RESULTS", results)
+    (fake_run.out / "guard.json").write_text(json.dumps({"passes": True, "provenance": fake_run.st}))
+    argvs = [["run", "--commit", "abc", "--part", "guard", "--world", "plain", "--task", "g1", "--seeds", "0", "--out",
+              str(fake_run.out)],
+             ["run", "--commit", "abc", "--world", "plain", "--task", "g2", "--seeds", "0", "--out", str(fake_run.out)],
+             ["run", "--commit", "abc", "--world", "dm", "--out", str(tmp_path / "another_run")]]
+    for name in ("reading.json", "reading.txt"):
+        (results / name).write_text("{}")
+        for argv in argvs:
+            with pytest.raises(SystemExit) as e:
+                k29.main(argv)
+            assert e.value.code == 4 and "no arm is scored again" in capsys.readouterr().err, argv
+        (results / name).unlink()
+    assert fake_run.calls["seeds"] == [] and not (fake_run.out / "run_started.json").exists()
+    assert not (fake_run.out / "guard").exists() and not (tmp_path / "another_run").exists()
+    k29.main(argvs[1])  # no reading there: the part runs
+    assert fake_run.calls["seeds"] == [0]
+
+
 def test_a_run_refuses_a_decision_file_off_the_row_and_k18s_files_off_their_pins(fake_run, monkeypatch, capsys):
     argv = ["run", "--commit", "abc", "--part", "guard", "--world", "plain", "--task", "g1", "--seeds", "0", "--out",
             str(fake_run.out)]
@@ -1150,6 +1231,12 @@ def test_the_launcher_text():
     assert order == sorted(order)
     assert "tests/test_k29_cd7_read.py" in sh and "tests/test_k18_built_files.py" in sh
     assert "NUMPY_MADVISE_HUGEPAGE=0" in sh and 'TMPDIR="$S/tmp"' in sh and "set -u" in sh
+    # past the cutoff: a step's exit 7 makes the reading once and finishes 27; a reading there: no part starts (44)
+    assert sh.count("if [ $rc = 7 ]; then void_read 27; fi") == 2 and "if late guard_; then void_read 27; fi" in sh
+    assert 'if late ""; then void_read 27; fi' in sh
+    guard_step, run_step = sh.split("begin guard gate", 1)[1], sh.split("begin run guard", 1)[1]
+    assert guard_step.index("if reading_there; then") < guard_step.index("parts guard_")
+    assert run_step.index("if reading_there; then") < run_step.index('parts ""')
 
 
 def _git_env() -> dict:
@@ -1166,9 +1253,9 @@ def _git(repo: Path, *args: str) -> str:
 
 UV_STUB = """#!{py} -I
 # uv run --frozen --no-sync python -I -B ARGS: the tests exit $HOME/tests_rc; a -c one-liner runs in python -I -B; every
-# call of the script is logged in $HOME/script_calls; `gate` exits $HOME/gate_rc when it is there (writing nothing),
-# else writes gate.json (failing, exit 5, when $HOME/gate_fails is there); `guard` writes guard.json (failing, exit 6,
-# when $HOME/guard_fails is there); `run` exits $HOME/run_rc and `read` $HOME/read_rc (0 when absent)
+# call of the script is logged in $HOME/script_calls; `gate` and `guard` exit $HOME/gate_rc or guard_rc when it is
+# there (writing nothing), else write gate.json or guard.json (failing, exit 5 or 6, when $HOME/gate_fails or
+# guard_fails is there); `run` exits $HOME/run_rc and `read` $HOME/read_rc (0 when absent)
 import json, os, sys
 from pathlib import Path
 a = sys.argv[1:]
@@ -1186,8 +1273,8 @@ if a[0] == "-c":
 with open(home / "script_calls", "a") as fh:
     fh.write(" ".join(a) + "\\n")
 opt = dict(zip(a[2::2], a[3::2]))
-if a[1] == "gate" and code("gate_rc"):
-    sys.exit(code("gate_rc"))
+if a[1] in ("gate", "guard") and code(a[1] + "_rc"):
+    sys.exit(code(a[1] + "_rc"))
 if a[1] in ("gate", "guard"):
     ok = not (home / f"{a[1]}_fails").exists()
     where = opt["--out"] if a[1] == "gate" else opt["--runs"]
@@ -1368,3 +1455,40 @@ def test_the_read_steps_codes(tmp_path, rc, want):
     L = _launcher_repo(tmp_path)
     (L.home / "read_rc").write_text(str(rc))
     assert _launch(L, L.head, "r")[0] == want and _exit(L, "r", "read") == str(want) and _exit(L, "r", "run") == "0"
+
+
+def _passing(L, run: str) -> None:
+    R = L.repo / "runs" / f"k29_{run}"
+    R.mkdir(parents=True)
+    for f in ("gate.json", "guard.json"):
+        (R / f).write_text(json.dumps({"passes": True, "provenance": {"commit": L.head}}))
+
+
+@pytest.mark.parametrize("stub,passing,kinds,step", [
+    ({"gate_rc": "7"}, False, ["gate", "read"], "gate"),
+    ({"run_rc": "7"}, False, ["gate"] + ["run"] * 5 + ["read"], "guard"),  # the guard parts
+    ({"guard_rc": "7"}, False, ["gate"] + ["run"] * 5 + ["guard", "read"], "guard"),  # the guard check
+    ({"run_rc": "7"}, True, ["run"] * 5 + ["read"], "run"),  # the scoring parts
+])
+def test_a_refusal_past_the_cutoff_makes_the_reading_once_and_finishes_27(tmp_path, stub, passing, kinds, step):
+    L = _launcher_repo(tmp_path)
+    for name, value in stub.items():
+        (L.home / name).write_text(value)
+    if passing:
+        _passing(L, "late")
+    code, err = _launch(L, L.head, "late")
+    assert code == 27 and _exit(L, "late", step) == "27" and _exit(L, "late", "void_read") == "0", err
+    assert _kinds(L) == kinds
+    assert _calls(L)[-1] == f"{SCRIPT_REL} read --commit {L.head} --runs runs/k29_late --out {OUT_REL}"
+
+
+def test_a_second_run_after_a_reading_scores_no_arm(tmp_path):
+    L = _launcher_repo(tmp_path)
+    (L.repo / OUT_REL).mkdir(parents=True)
+    (L.repo / OUT_REL / "reading.json").write_text("{}")
+    code, err = _launch(L, L.head, "second")  # a fresh RUN: the gate (target-free) runs, no guard part starts
+    assert code == 44 and _exit(L, "second", "guard") == "44" and _kinds(L) == ["gate"], err
+    (L.home / "script_calls").unlink()
+    _passing(L, "third")  # a RUN whose gate and guard passed: no scoring part starts
+    code, err = _launch(L, L.head, "third")
+    assert code == 44 and _exit(L, "third", "run") == "44" and _calls(L) == [], err

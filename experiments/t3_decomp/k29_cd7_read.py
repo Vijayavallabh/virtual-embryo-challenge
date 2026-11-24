@@ -45,10 +45,14 @@ Steps (each with --commit, the full hash of the run commit, which must be HEAD; 
                           fails (VOID with one counted try, oth_f; the run step never starts)
   run [--part score] --world plain|dm ... --out R   a scoring part: the six arms; refused without a passing gate.json
                           and guard.json of this commit and machine. THE FIVE TRIES COUNT FROM THE START OF THE RUN
-                          STEP: the first scoring part to pass its refusals writes R/run_started.json
+                          STEP: the first scoring part to pass its refusals writes R/run_started.json. Either part
+                          refuses (exit 4) once a reading is in experiments/t3_decomp/results/k29_cd7_read: no arm is
+                          scored again, whatever the run folder
   read --runs R [--out DIR]   the fixed reading: DIR/reading.json and DIR/reading.txt (DIR defaults to
                           experiments/t3_decomp/results/k29_cd7_read), never over an existing one; it prints the outcome
                           line, the per-cell table of G, Gd and C and the labels
+gate, run and guard refuse at or after the cutoff, 2026-11-25 06:00 UTC (exit 7): nothing is written then, so a folder
+left INCOMPLETE at the cutoff stays so, and read, which runs at any time, writes its VOID reading.
 
 Layout of R: gate.json, guard/plain_<task>/seed_<s>.json, guard/dm/<task>_seed_<s>.json, guard.json, run_started.json,
 plain_<task>/seed_<s>.json, dm/<task>_seed_<s>.json: one task file per seed and cell, each with its <file>.prov.json
@@ -66,8 +70,9 @@ The reading (fixed in row K29, cells 8a and 8b; `reading`, `decide`, `labels`):
               misses an arm (the plain ones the floor too) or is not its part's, task's or seed's; mixed commits or
               machines; a dirty tree; K18's committed task files off their pins; the guard step's oth_f, read again,
               off K18's rows; the run step's oth_f off the guard step's beyond K17's tolerance. Outcome "Try K29: VOID:
-              [reasons]; no file." Once the run step has started, the five tries count, and oth_f also when it fails
-              its guard in the run step.
+              [reasons]; no file." The count is the run's stage, never its files' content: five once the run step
+              has started (a full run, void or not), one (oth_f) for a guard that failed at the guard step, none
+              before.
   Per cell, paired by seed: G = own_f - own_h; Gd = own_d - own_h; C = oth_d - oth_h. AHEAD: mean above 0.3 with at
               least 8 of 10 seeds positive. BEHIND: mean below -0.3.
   STRIKE      S1 Gd is AHEAD in no plain cell, or in no dm cell. S2 G is BEHIND in two or more cells. S3 C's four-cell
@@ -91,7 +96,8 @@ Exit codes: 0 done; 1 a crash (masked traceback; seeds written so far stay; the 
 row K29, an unclean tree, another HEAD, the frozen T3 files off their pins, K18's committed files off their pins, a
 decision file or rules whose magnitudes, depletion factor or lists are not the row's, a part without the passing
 gate.json or guard.json it needs); 3 INCOMPLETE; 4 a reading, gate.json or guard.json is there already (never
-overwritten); 5 the gate failed; 6 the guard failed.
+overwritten; run: no arm is scored again); 5 the gate failed; 6 the guard failed; 7 gate, run or guard refused at or
+after the cutoff.
 """
 
 from __future__ import annotations
@@ -170,7 +176,7 @@ K18_SHA256 = {"plain_g1.json": "5ec09ef583862ab47ab078e72c7aed807c89b4d9c234c57e
               "dm.json": "1ef3e26347c65f915c1630130da02a655c155b912392180001cba315fe135b60"}
 RESULTS = HERE / "results" / "k29_cd7_read"
 GATE_FILE, GUARD_FILE, GUARD_DIR, RUN_MARK = "gate.json", "guard.json", "guard", "run_started.json"
-EXIT_REFUSED, EXIT_INCOMPLETE, EXIT_EXISTS, EXIT_GATE, EXIT_GUARD = 2, 3, 4, 5, 6
+EXIT_REFUSED, EXIT_INCOMPLETE, EXIT_EXISTS, EXIT_GATE, EXIT_GUARD, EXIT_LATE = 2, 3, 4, 5, 6, 7
 VOID_LINE = "Try K29: VOID: {}; no file."
 STRUCK_LINE = "Try K29: STRUCK ({}): no file; C2 stays."
 NOT_STRUCK_LINE = ("Try K29: NOT STRUCK: the file may be built and uploaded under the captain's bound yes (ruling row "
@@ -226,16 +232,29 @@ def head_ok(st: dict, commit: str) -> None:
         refuse(f"HEAD is {st['commit']}, not the run commit {commit}")
 
 
+LATE_REFUSAL = (f"past the cutoff ({CUTOFF_TEXT}): gate, run and guard write nothing now, so a folder left INCOMPLETE "
+                f"stays so; read writes the VOID reading '{LATE}'")
+
+
 def preconditions(commit: str) -> tuple[str, dict]:
-    """Before anything loads: row K29, a clean tracked tree, HEAD the commit given, the frozen T3 files at their
-    pins. Returns (row id, stamp)."""
+    """Before anything loads, for gate, run and guard (read has its own): row K29, a clean tracked tree, HEAD the commit
+    given, the clock before the cutoff (exit 7 at or after it), the frozen T3 files at their pins. Returns (row id,
+    stamp)."""
     rid = row_present()
     st = k18.stamp()
     if not st["tree_clean"]:
         refuse(DIRTY)
     head_ok(st, commit)
+    if past_cutoff():
+        print(f"refused: {LATE_REFUSAL}", file=sys.stderr, flush=True)
+        sys.exit(EXIT_LATE)
     k22.frozen_ok()
     return rid, st
+
+
+def reading_exists() -> bool:
+    """A reading of row K29 is in its folder (RESULTS, looked up at call time)."""
+    return any((Path(RESULTS) / n).exists() for n in ("reading.json", "reading.txt"))
 
 
 def step_passed(out: Path, name: str, st: dict, what: str) -> None:
@@ -670,6 +689,9 @@ def cmd_run(a) -> None:
     if a.world != "plain" and a.task is not None:
         refuse("--task is for --world plain only")
     _, st = preconditions(a.commit)
+    if reading_exists():  # as read: once a reading is there, no arm is scored again, in this folder or another
+        print(f"refused: {RESULTS} holds a reading already; no arm is scored again", file=sys.stderr, flush=True)
+        sys.exit(EXIT_EXISTS)
     out = Path(a.out)
     step_passed(out, GATE_FILE, st, "the target-free gate")
     if a.part == "guard":
@@ -973,8 +995,8 @@ def reading(runs: Path, refs: Path = K18_TASKS) -> dict:
     if gsha != g.get("files_sha256"):
         why.append("guard.json: its files' sha256 are not the guard files'")
     sha |= gsha
-    if not guard_step:  # the run step never starts after a failed guard: oth_f counts one try
-        counted = [*five, GUARD_ARM]
+    if not guard_step:  # the run step never starts after a failed guard: one try, oth_f, whatever else is there
+        counted = [GUARD_ARM]
         why = ["the guard failed in the guard step: oth_f is off K18's committed barred_form", *why]
         return base | {"void": True, "why": why, "tries_counted": len(counted), "counted_arms": counted,
                        "run_step_started": started, "outcome": VOID_LINE.format("; ".join(why))}
@@ -1001,14 +1023,13 @@ def reading(runs: Path, refs: Path = K18_TASKS) -> dict:
             why.append(f"the run step's oth_f is off the guard step's in {c}" + (
                 f" by {dd['mean_diff']:+.3f} in the mean and {dd['max_abs_diff']:.3f} in one seed" if dd else
                 " (a seed is missing)") + f" (limits {GUARD_MEAN} and {GUARD_SEED})")
-    out_of_guard = (again is not None and not again["passes"]) or not match["passes"]
     per: dict = {}
     for c, rr in rows.items():
         if [q["seed"] for q in rr] != list(SEEDS):
             why.append(f"{c}: not the ten seeds")
             continue
         per[c] = summarise(rr, (harness.FLOOR, *ARMS) if c.startswith("plain") else ARMS)
-    counted = [*COUNTED, *((GUARD_ARM,) if out_of_guard else ())]
+    counted = list(COUNTED)  # a full run counts five, whatever its files hold (a run-step guard failure voids it)
     mark = runs / RUN_MARK
     base |= {"guard": again, "guard_match": match, "tries_counted": len(counted), "counted_arms": counted,
              "run_step_started": True, "run_started": json.loads(mark.read_text()) if mark.exists() else None,
