@@ -14068,3 +14068,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     captain's named exception is still needed and goes to the captain as one question. The ruling row naming the
     builder's exact option strings is written when those strings are final, before any build; the read's two worlds
     (knockout at its series' depth, or at the wild type's) go to the captain with the hand-over.
+- 2026-11-24 (qqq), the heart file OTS15 is built, before any score (state at 22:07 UTC, 2026-11-24). Written by the
+  AI assistant, which designed none of it and is recused on the heart's scope and size.
+  - **The build.** `experiments/builds/heart_trend_line_g.sh b2bbcf5... g1` in `~/v/scratch/h29b-wt`, clean, after a
+    traced refusal; the identity commands gave the recorded bytes; the file built twice with one sha256; the local
+    copy checked: **`T2heart_organ_ts15_half.h5ad`** f818931834d0... (full sha256 in the rules note and the record).
+  - **Its standing.** Due now (row R52; no condition). Data used: released Task 2 heart stages and the unlocked E10.5
+    validation file only; no outside data.

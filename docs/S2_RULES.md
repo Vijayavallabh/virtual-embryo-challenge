@@ -3401,3 +3401,13 @@ forced to 1 gave the 2.5 file's bytes, and each new file was built twice with on
 `experiments/builds/results/t1hm_20d5129_h1.txt`). Added before any score of any of them; no T1 headline beyond those
 of the decision log through 2026-11-24 (lll) had reached the main session at this note's commit. Data used: released
 challenge data and the outside heart atlas on recomputed groups (GEO GSE193346, register row X002).
+
+## Note of 2026-11-24: the heart file OTS15 is built (row R52; decision log 2026-11-24 (qqq))
+
+Merged at b2bbcf5 after an independent review that found no blocker; at that clean commit, on `~/v/vec-campaign`'s
+worktree `~/v/scratch/h29b-wt`, the identity commands rebuilt the recorded bytes and the file was built twice with one
+sha256 and passed the format check. **The file:** `runs/manual_upload/T2heart_organ_ts15_half.h5ad`, sha256
+f818931834d08a6906e010e8af9f077ba15be779aba8965cbaa880a9bdf1196c (build record
+`experiments/builds/results/heartg_b2bbcf5_g1.txt`). Added before any score of it; no heart headline beyond those of
+the decision log through 2026-11-24 (lll) had reached the main session at this note's commit. Data used: released Task
+2 heart stages and the unlocked E10.5 validation file only; no outside data.

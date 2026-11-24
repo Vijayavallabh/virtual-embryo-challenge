@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-24, 21:46 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-24, 22:07 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -16,13 +16,13 @@ decision log 2026-11-24 (pp)), every due file can go now and nothing waits for r
 file, by its rule. Between boards the captain decides; by the challenge's formula a point on T1 or T3 counts twice a
 point on the heart or the embryo board.
 
-**Due now (6), in the order of each board's table below:**
+**Due now (7), in the order of each board's table below:**
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcB25H05.h5ad`,
   `T1_s2rcB25MS.h5ad`
 - T3: none (`T3_c2_s2_g2.h5ad` is last of all by its rule)
 - Embryo: none (every built embryo file is uploaded)
-- Heart: none (OTS15, row R52, is in work)
+- Heart: `T2heart_organ_ts15_half.h5ad` (OTS15)
 
 **Waiting on a score (3):** `T1_s2rcB25H10.h5ad` (on H05's headline) and `T1_s2rcB25H20.h5ad` (on H10's), in T1's
 table; `T1_s2rcA20.h5ad`, in the last-on-T1 list below.
@@ -41,7 +41,7 @@ words "yes, T3_c2_s2_g2 ahead of" and a queued file's name (for example `T3_k23_
 file `T1_s2rcB25.h5ad` (row R46); both parts are built. Heart: The composition files of row R50 are not built: the
 line ended at its screening. T1 (row R51, decision log 2026-11-24 (iii)): seven files around the combined-momentum
 file, `T1_s2rcMS20`, `T1_s2rcMSBd10`, `T1_s2rcMSBH05`, `T1_s2rcMSBm10`, and, as gated, `T1_s2rcMS30`, `T1_s2rcMSBd15`,
-`T1_s2rcMSBH10`. Heart (row R52, decision log 2026-11-24 (kkk)): `T2heart_organ_ts15_half.h5ad` (trend strength 1.5).
+`T1_s2rcMSBH10`.
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)), and twenty-one on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy), (aaa), (bbb),
@@ -100,11 +100,12 @@ Every built embryo file is uploaded, W included, and O holds the board's best.
 Data used, for every heart file: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data.
 
 `T2heart_organ_ts125_half.h5ad` (OTS125) holds the board's best; the fourth line is spent.
-`T2heart_organ_ts15_half.h5ad` (row R52) is in work. The full-trim file `T2heart_core_ts10_half.h5ad` is skipped by
-the captain's word of 2026-11-24 and stands in the skipped section.
+`T2heart_organ_ts15_half.h5ad` (OTS15, row R52) is built and due. The full-trim file `T2heart_core_ts10_half.h5ad` is
+skipped by the captain's word of 2026-11-24 and stands in the skipped section.
 
 | Order | File | sha256 | Condition |
 |---|---|---|---|
+| 1 | `T2heart_organ_ts15_half.h5ad` (OTS15: D's command at trend strength 1.5, halved) | `f818931834d08a6906e010e8af9f077ba15be779aba8965cbaa880a9bdf1196c` | none (row R52) |
 
 ## Skipped by the captain's words: not uploaded unless the captain says otherwise
 
