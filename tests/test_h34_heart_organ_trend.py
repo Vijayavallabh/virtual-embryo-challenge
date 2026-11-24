@@ -1807,6 +1807,39 @@ def test_the_launcher_runs_the_four_steps_in_order(repo):
     assert all((repo.scratch / f"{s}.head").read_text() == f"{repo.head} r1\n" for s in ("gate", "run", "read"))
 
 
+def test_the_launchers_calls_are_calls_the_script_takes(repo, h34, monkeypatch):
+    """Every call the launcher makes of the script, word for word, parses under the script's own command line and
+    reaches the step it names; the gate is given no reading and no parts of its own choosing (the committed ones)."""
+    data = repo.tmp / "data"
+    (data / "T2").mkdir(parents=True)
+    assert _launch(repo, repo.head, "x1", H34_DATA=str(data)) == (0, "")
+    reached = []
+    for name in ("gate", "run", "read", "refusals"):
+        monkeypatch.setattr(h34, f"cmd_{name}", lambda a, name=name: reached.append((name, vars(a))))
+    script = "experiments/harness/h34_heart_organ_trend.py "
+    for call in _uv_calls(repo):
+        if script in call:
+            h34.main(call.split(script, 1)[1].split())
+    assert [name for name, _ in reached] == [k.split()[0].replace("ask", "refusals") for k in ONE_CALL[1:]]
+    by: dict = {}
+    for name, a in reached:
+        by.setdefault(name, []).append(a)
+    gate = f"{OUT_DIR}/gate"
+    assert by["gate"] == [{"cmd": "gate", "out": gate, "commit": repo.head, "data": str(data),
+                           "h29b": str(h34.H29B_READING), "h27": str(h34.H27_PARTS)}]
+    parts = ("0-1", "2-3", "4-5", "6-7", "8-9")
+    want = {(k, p, f"{OUT_DIR}/parts/{short}/{p}") for k, short in ((KEY1, "e95"), (KEY2, "e875")) for p in parts}
+    assert {(a["task"], a["seeds"], a["out"]) for a in by["run"]} == want and len(by["run"]) == 10
+    assert all(a["gate"] == gate and a["commit"] == repo.head and a["data"] == str(data) for a in by["run"])
+    assert {a["task"] for a in by["run"]} == set(h34.TASK_KEYS)
+    assert by["read"] == [{"cmd": "read", "runs": f"{OUT_DIR}/parts", "gate": gate, "out": OUT_DIR,
+                           "commit": repo.head}]
+    assert [(a["step"], a["out"], a["gate"], a["commit"]) for a in by["refusals"]] == [
+        ("gate", gate, None, repo.head), ("run", None, gate, repo.head), ("read", OUT_DIR, None, repo.head)]
+    # the results folder the launcher names is the script's own, and the parts are named as the script names them
+    assert h34.RESULTS == h34.HERE / OUT_DIR and h34.PART == "h34.json"
+
+
 def test_the_launchers_environment_overrides(repo):
     venv, data = repo.tmp / "shared env", repo.tmp / "data raw"
     # a named environment or data folder that is not there: refused before any step
