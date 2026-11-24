@@ -1,0 +1,11 @@
+The embryo file W (row R48): T2embryo_s2x_ovsb.h5ad
+==========================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-24 in the worktree ~/v/scratch/e52b-wt at commit 20b2381 (main; clean tree; it holds step 0's committed reading, "Step 0: PASS", row E56) with `experiments/builds/embryo_ovsb.sh 20b2381dcf1d2c0a618c2e86d1f17a0637086b63 w1`, after its refusal path was traced (exit 96).
+Every exit record is 0. The identity rebuilds gave the recorded bytes:
+  O/T2embryo_s2x_ov.h5ad  1cfc91be3a20bfdd1a4f7bcfebd7316e1143c6d4048e578c1f30bcfbe1e0e1ea
+  SO/T2embryo_s2xs_ov.h5ad  77062082d97555961901c811d8a1aaf9b5b2403417c19a6988c816ff553f1165
+  OH/T2embryo_s2x_ovhi.h5ad  7e4d1eaafc40080d9d9c461d4b9396f0cee6353686538e79fb92ca31d1d2deeb
+The file, built twice into separate folders with one sha256, format-checked, each stamp of this commit and clean:
+  T2embryo_s2x_ovsb.h5ad  f576b64b8b93d79b1269b580df31bd5c6e58246cd4f3eda12cba7d77387087ab
+The local copy runs/manual_upload/T2embryo_s2x_ovsb.h5ad is the same bytes. No log, size, shape or sidecar of these builds was read. No score of the file exists at this record.

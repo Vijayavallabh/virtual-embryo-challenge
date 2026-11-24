@@ -3330,3 +3330,13 @@ sha256 f744f5dc7d0ecc3026f5d09f80ace1e2d661ede454f03b832e1969edcde508d3; `runs/m
 sha256 808700e11c25065ce45a6bea2b50eb15c132e02d314e826c4e05fb37bb6331cd (build record
 `experiments/builds/results/t3gonly_466e94d_g1.txt`). Added before any score of any of them; no T3 headline beyond
 those of decision log 2026-11-24 (nn), (rr), (vv) and (yy) had reached the main session at this note's commit.
+
+## Note of 2026-11-24: the embryo file W is built (rows R48 and E56; decision log 2026-11-24 (ggg))
+
+Step 0 passed (row E56: "Step 0: PASS"); at 20b2381, which holds the committed reading, on the DGX worktree that built
+O, SO and O_hi, the identity rebuilds gave their recorded bytes and the file was built twice with one sha256. **The
+file:** `runs/manual_upload/T2embryo_s2x_ovsb.h5ad`, sha256
+f576b64b8b93d79b1269b580df31bd5c6e58246cd4f3eda12cba7d77387087ab (build record
+`experiments/builds/results/embovsb_20b2381_w1.txt`), an extra file beside O, never in its place. Added before any
+score of it. Data used: released challenge data only (the unlocked E7.5 validation file and the released E8.0); no
+outside data.

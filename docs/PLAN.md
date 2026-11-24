@@ -13966,3 +13966,11 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **The step's own words:** "Step 0: PASS". One embryo try counted (93). Reading committed under
     `experiments/coords/results/ovsb_step0/`. By row R48 the file is built next, twice at one clean commit, and handed
     over as an extra file beside O, never in its place.
+- 2026-11-24 (ggg), the embryo file W is built, before any score (state at 20:00 UTC, 2026-11-24). Written by the AI
+  assistant, which designed none of it.
+  - `experiments/builds/embryo_ovsb.sh 20b2381... w1` on `~/v/scratch/e52b-wt`, clean, after a traced refusal; the
+    identity rebuilds of O, SO and O_hi gave their recorded bytes; the file built twice with one sha256:
+    **`runs/manual_upload/T2embryo_s2x_ovsb.h5ad`, sha256
+    f576b64b8b93d79b1269b580df31bd5c6e58246cd4f3eda12cba7d77387087ab** (local copy checked). Due now as an extra file
+    beside O. Data used: released challenge data only (the unlocked E7.5 validation file and the released E8.0); no
+    outside data.

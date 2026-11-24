@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-24, 19:49 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-24, 20:00 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -16,11 +16,11 @@ dropped by row R43), and the T1 file kept last, A15, is reached as well. Only `T
 `T3_c2_s2_g2.h5ad` keeps its place after every queued file, by its rule. Between boards the captain decides; by the
 challenge's formula a point on T1 or T3 counts twice a point on the heart or the embryo board.
 
-**Due now (4), in the order of each board's table below:**
+**Due now (5), in the order of each board's table below:**
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`
 - T3: none (`T3_c2_s2_g2.h5ad` is last of all by its rule)
-- Embryo: none (every handed-over embryo file is uploaded)
+- Embryo: `T2embryo_s2x_ovsb.h5ad` (W, an extra file beside O)
 - Heart: none (the line ended at OTS10)
 
 **Waiting on a score (1):** only `T1_s2rcA20.h5ad`, in the last-on-T1 list below.
@@ -37,10 +37,9 @@ words "yes, T3_c2_s2_g2 ahead of" and a queued file's name (for example `T3_k23_
 **In work, not built (by the captain's yes of 2026-11-24; T1 rows R44 to R46, decision log 2026-11-24 (ss)):**
 `T1_s2rcB25H05` (Blood's own momentum at 0.5; then `T1_s2rcB25H10` only if H05 beats the line's best, and
 `T1_s2rcB25H20` only if H10 beats H05) and `T1_s2rcB25MS` (MS at 2.5); `T1_s2rcB25MSH05` is named and is coded only if
-H05 and MS each beat the banked file. Embryo (row R48): `T2embryo_s2x_ovsb.h5ad`, an extra file beside O, built only
-if its step 0 (row E56) passes. Heart (rows R49 and R50, decision log 2026-11-24 (uu)): `T2heart_organ_ts075.h5ad` and
-`T2heart_organ_ts125.h5ad` (up together); The composition files of row R50 are not built: the line ended at its
-screening.
+H05 and MS each beat the banked file. Heart (rows R49 and R50, decision log 2026-11-24 (uu)):
+`T2heart_organ_ts075.h5ad` and `T2heart_organ_ts125.h5ad` (up together); The composition files of row R50 are not
+built: the line ended at its screening.
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)), and nineteen on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy), (aaa), (bbb)
@@ -85,8 +84,12 @@ Never uploaded: `builds/T1_s2.h5ad`.
 
 Data used, for every embryo file: released challenge data only; no outside data.
 
-No built embryo file is waiting: the three handed-over files are uploaded, and O holds the board's best.
-`T2embryo_s2x_ovsb.h5ad` (row R48) is in work, an extra file beside O, built only if its step 0 (row E56) passes.
+The three handed-over embryo files are uploaded, and O holds the board's best. One extra file is built and due, beside
+O and never in its place (row R48; its step 0, row E56, passed):
+
+| Order | File | sha256 | Condition | Data used |
+|---|---|---|---|---|
+| 1 | `T2embryo_s2x_ovsb.h5ad` (W: O with its E8.0 rows taken into E7.5's run profile and depth) | `f576b64b8b93d79b1269b580df31bd5c6e58246cd4f3eda12cba7d77387087ab` | none; an extra file beside O (row R48) | released challenge data only (the unlocked E7.5 validation file and the released E8.0); no outside data |
 
 ## Task 2, heart
 
