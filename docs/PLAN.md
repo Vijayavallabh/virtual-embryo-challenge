@@ -12756,3 +12756,28 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     first where one exists, run before any engineer starts; a practice read with its pass rule fixed in the row; a
     reviewed builder option that leaves every existing output as it is; two builds with one sha256; for a closed lever
     the captain's named exception; the captain's naming for upload. All by 2026-11-25 12:00 UTC.
+- 2026-11-24 (f), the file of T3's second search line is built, before any score of it (state at 00:34 UTC,
+  2026-11-24). Written by the AI assistant, which designed neither the line nor its guard and states no preference.
+  - **The code.** An engineer blind to test scores wrote the option and the launcher's third argument on branch
+    `campaign/t3-gata4-weight-2`; a reviewer blind to test scores, with the blocker standard fixed in its brief,
+    returned READY with no blocker: it fetched the old builder, imported it beside the new one and found `combine()`
+    and the factor of every existing form equal on synthetic tables; the option is refused for any other value, form,
+    ruling or ledger state; the factor is phi_M * phi_G ** 2 with nothing clipped or rescaled; the figures of the
+    lifted guard are computed before the loader is patched and the build exits if the array applied is not the array
+    computed. Departures the engineer declared and the reviewer judged harmless: two tests' byte pins of the builder
+    and its launcher were removed, not updated; the launcher no longer deletes its temporary folder; the launcher does
+    not pre-check row R22 (the builder refuses after the gates). Merged at a3c511c.
+  - **The cheap checks first.** Before the code landed, a rehearsal of the existing launcher on the DGX build checkout
+    at main 015cd3e rebuilt identity-s1, identity-s2, c1-s2 and c2-s2 with their recorded sha256, and the new
+    launcher's refusal path was traced under a throwaway home folder (exit 97, its record written).
+  - **The build.** `build_two_knockout.sh a3c511c... s2 g2` in `~/v/vec-campaign-c`, clean tree: every exit record 0;
+    the four identity gates gave the recorded bytes; the file was built twice with one sha256, each stamp of that
+    commit and clean. **`runs/manual_upload/T3_c1_s2_g2.h5ad`, sha256
+    e01e24facb6841a18a503655bcc5e9816304a993fe9a0dcfeca458c42ead1e16** (the local copy checked against both builds;
+    record `experiments/builds/results/t3g2_a3c511c.txt`). No log, size or sidecar was read.
+  - **Its standing.** In force under rows R22 and R30; named with command and value in entry 2026-11-23 (ff) and with
+    its sha256 here, before any score. Its place by the line's text: the first T3 slot after row K23's file, CK on its
+    condition and the E = 4 file on its condition, unless the captain says otherwise. The upload sheet and the rules
+    note carry it. Facts for the captain, with no lean: by the early trial its overall expression total stands 38.2%
+    above the base factor's (C1's 10.4%); no practice read exists for it; C2, the variant held at the base's size,
+    stands above C1; a lower score costs only the slot.

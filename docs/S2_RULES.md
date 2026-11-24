@@ -2606,3 +2606,17 @@ place the line's text gives it, after row K23's file, CK on its condition and th
 the captain says otherwise. The AI assistant, which designed neither the line nor its guard, states no preference.
 Committed at 00:13 UTC on 2026-11-24, before any code of the option is merged and before any build; no score of the
 file exists.
+
+## Note of 2026-11-24: the file of T3's second search line is built (rows R22 and R30; decision log 2026-11-24 (f))
+
+The conditions of the amendment "T3's second search line" as row R30 amended it now hold. The builder takes
+`--gata4-exponent 2.0` on `--form c1-s2` only with `--captain-ruling R22` and only while row R22's first cell names it
+(merged at a3c511c after an independent review with no blocker; the reviewer compared the old and the new module on
+every existing form and found them equal). At that one clean commit, on the DGX campaign checkout, the four identity
+gates rebuilt the barred s1, the barred s2, C1 and C2 byte for byte, and the file was built twice with one sha256 and
+passed the format check. **The file:** `runs/manual_upload/T3_c1_s2_g2.h5ad`, sha256
+e01e24facb6841a18a503655bcc5e9816304a993fe9a0dcfeca458c42ead1e16 (build record
+`experiments/builds/results/t3g2_a3c511c.txt`). No score of it had been reported at this note's commit. Its place is
+the line's: after row K23's file, CK on its condition and the E = 4 file on its condition, unless the captain says
+otherwise. Data used: released challenge data only (wild-type E8.75 cells, the released Mab21l2 knockout and the
+released Gata4 validation knockout files); no outside data.

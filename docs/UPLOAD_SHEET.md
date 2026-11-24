@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-23, 23:45 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-24, 00:34 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 this sheet was written. No file here has a score. The order is the order on record in `docs/S2_RULES.md` and the
@@ -43,6 +43,7 @@ Never uploaded: `builds/T1_s2.h5ad`.
 | 1 | `T3_k23_s2.h5ad` (K23) | `77ff0b947f7f409c9ce171bdc59a44de3d3c2ef2f3e5a7332011a459ce9ee9c3` | none | released challenge data (the wild-type E8.75 cells and the released Mab21l2 knockout) and two public single-cell knockout studies of other genes, GEO GSE204906 (Dnmt3a and Dnmt3b nulls, E8.5) and GEO GSE277839 (a Usb1 knockout, E9.5), each as knockout-over-its-own-control changes on the panel genes. No data on a perturbation of beta-catenin or Gata4 from outside the release |
 | 2 | `T3_ck_s2.h5ad` (CK) | `e470aaeeab28918e157fb57cdc771122af35e46f0916cd1c6d63650c31faae26` | only if K23 scores strictly above the barred s2 (`barred_s2.h5ad`), the base all three are built on; C2 has been uploaded and has scored above it, so K23's score alone now decides | released challenge data (the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files the team unlocked) and the two studies named for K23, in the same form. No data on a perturbation of beta-catenin or Gata4 from outside the release |
 | then | `T3_k23_s2_e4.h5ad` | `9934f1b104fafed0514cff7bb1dec3f5e362e6a5068ae32711cbfc67f62b90f1` | only if K23 scores strictly above the barred s2 (`barred_s2.h5ad`) | as K23 |
+| then | `T3_c1_s2_g2.h5ad` (the second search's file: C1 with the Gata4 table at double strength) | `e01e24facb6841a18a503655bcc5e9816304a993fe9a0dcfeca458c42ead1e16` | none; by its rule it takes the first slot after the files above (after CK and the E = 4 file when their condition is met), unless the captain places it earlier | released challenge data only: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files the team unlocked; no outside data |
 
 ## Task 2, embryo
 

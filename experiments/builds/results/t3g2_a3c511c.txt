@@ -1,0 +1,33 @@
+T3's second search line, the Gata4-table weight on C1: the one file T3_c1_s2_g2.h5ad
+=====================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-24 in the campaign checkout ~/v/vec-campaign-c at commit a3c511c
+(main; clean tree) with `experiments/t3_decomp/build_two_knockout.sh a3c511cd4ccb6f3b4308c544d19db4d47324e49a s2 g2`.
+Rule text: docs/S2_RULES.md, the amendment of 2026-11-23 "T3's second search line" as amended on 2026-11-24 by the
+captain's order (ruling row R30: the 5% limit on the den-weighted total gates nothing; its figures are recorded in the
+build's own record, which nobody opens). The option: `--form c1-s2 --gata4-exponent 2.0 --captain-ruling R22`.
+
+Steps and exit records (the launcher stops at the first failure; every record is 0):
+  T3_c1_s2_g2.h5ad.a.exit = 0
+  T3_c1_s2_g2.h5ad.b.exit = 0
+  all.exit = 0
+  c1-s2.exit = 0
+  c2-s2.exit = 0
+  identity-s1.exit = 0
+  identity-s2.exit = 0
+  tests.exit = 0
+
+The four identity gates rebuilt the recorded bytes at this commit:
+  gate/c1-s2.h5ad  8718330866429dc089eaffd2f96f66936fe54134eba2d50f8126266e6a3e54b8
+  gate/c2-s2.h5ad  47111ac1d07e73c0c26e990a474dff0de94ae22d6a4474a569bcb674ae2b85a7
+  gate/identity-s1.h5ad  3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2
+  gate/identity-s2.h5ad  1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f
+
+The new file, built twice into separate folders, each format-checked, each stamp of this commit and clean:
+  a/T3_c1_s2_g2.h5ad  e01e24facb6841a18a503655bcc5e9816304a993fe9a0dcfeca458c42ead1e16
+  b/T3_c1_s2_g2.h5ad  e01e24facb6841a18a503655bcc5e9816304a993fe9a0dcfeca458c42ead1e16
+
+The upload file is runs/manual_upload/T3_c1_s2_g2.h5ad on the local machine, the same bytes (e01e24facb68).
+A rehearsal of the launcher without the new argument, at main 015cd3e in the same checkout and just before the
+option was merged, had rebuilt identity-s1, identity-s2, c1-s2 and c2-s2 with their recorded sha256.
+No log, size, shape or sidecar of any of these builds was read. No score of the file exists at this record.
