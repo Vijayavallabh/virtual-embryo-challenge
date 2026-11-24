@@ -680,8 +680,9 @@ PINNED = {
     "experiments/t3_decomp/t3_decompose.py": "3e671c3bb5ff57bba5ceec80ea36fcc739b1f111399a1e2854400b5c9f5133d2",
     "experiments/t3_decomp/build_submission.py": "1194a63993a27dde4dedfdb9180de035c5f8f2a57aaa7d97b38e7a15ea9e0c74",
     "experiments/t3_decomp/outside_forms.py": "4837687d47f134ff690177ecaaec7c712952c238d0e7c806c5c8ef2cecb3ceb5",
-    "experiments/t3_decomp/build_two_knockout.py": "e6bff930c32d3377bd1b5dc8174c2d60814fa0867d160ab64f1d577f94a50c9b",
-    "experiments/t3_decomp/build_two_knockout.sh": "dc1f8cff8fc2eb9cfa8c6bf9b85f3414e5639f8dbf1ca4984fd56ed6ffd69add",
+    # build_two_knockout.py and .sh: no longer pinned here; they gained row R22's second T3 line (--gata4-exponent 2.0
+    # --captain-ruling R22 and the launcher's g2, off by default), and their unchanged paths are held by
+    # tests/test_t3_two_knockout_build.py and tests/test_t3_gata4_weight.py on the synthetic fixture
     # build_outside_form.py and .sh: no longer pinned here; they gained row R22's T3 line (--captain-ruling R22, off by
     # default), and their unchanged paths are held by tests/test_t3_outside_forms.py and
     # tests/test_t3_exponent_line_build.py on the synthetic fixture

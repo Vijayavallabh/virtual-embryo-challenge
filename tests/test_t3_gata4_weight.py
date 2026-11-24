@@ -46,7 +46,8 @@ PHI_M, PHI_G = th.PHI_M, th.PHI_G
 OPTION_PART = ("by T3's second search line the T3 two-knockout builder is also to take `--gata4-exponent 2.0` on "
                "`--form c1-s2`, only with `--captain-ruling R22`")
 T1_PART = "the builder is to take `--feng-fraction-mult 2.5` only with `--captain-ruling R22`"
-ROW = f"| R22 (the captain's order of a day: a search; ruling, no run, not a try; {T1_PART}; {OPTION_PART}) | T3 | x |\n"
+ROW = (f"| R22 (the captain's order of a day: a search; ruling, no run, not a try; {T1_PART}; {OPTION_PART}) "
+       "| T3 | x |\n")
 
 
 def ledger(tmp_path: Path, rows: str = ROW, name: str = "TRIES.md") -> Path:
@@ -109,7 +110,8 @@ def test_the_ruling_row_check(tmp_path, rows, ok):
 
 
 def test_the_row_check_is_build_outside_form_s(tmp_path, monkeypatch):
-    """The check is build_outside_form.captain_order_names itself, called with the line's option (reused, not copied)."""
+    """The check is build_outside_form.captain_order_names itself, called with the line's option (reused, not
+    copied)."""
     bo = bk._outside_form()
     seen = []
     monkeypatch.setattr(bo, "captain_order_names", lambda row, option, path=None: seen.append((row, option, path))

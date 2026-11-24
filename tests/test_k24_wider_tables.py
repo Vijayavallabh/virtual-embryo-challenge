@@ -74,8 +74,8 @@ BYTE_IDENTICAL = {
     "k23_outside_exponents.py": "98bdac5b9f2413bc6d11e470fdbd2202df5ab3dc22548c8940812ac1f455eb98",
     # build_outside_form.py and .sh: no longer pinned here (row R22's T3 line, off by default; see
     # tests/test_t3_exponent_line_build.py)
-    "build_two_knockout.py": "e6bff930c32d3377bd1b5dc8174c2d60814fa0867d160ab64f1d577f94a50c9b",
-    "build_two_knockout.sh": "dc1f8cff8fc2eb9cfa8c6bf9b85f3414e5639f8dbf1ca4984fd56ed6ffd69add",
+    # build_two_knockout.py and .sh: no longer pinned here (row R22's second T3 line, --gata4-exponent 2.0 and the
+    # launcher's g2, off by default; see tests/test_t3_gata4_weight.py)
     "build_combination.py": "ef94fb068845ea3b23db69dc1d6b1d936fa8219f51b7cec07916b5f891ada915",
     "build_combination.sh": "496f371db726407106a776dc5dfac26f2c8b41badc02576147b317063d97c45e",
     "run_k22.sh": "fdadb4b4c07dc30c4823a97d6662d8f2fb17d0f537c96e778f53986fdae44001",
