@@ -149,6 +149,47 @@ The factor the build applies must be the very array the checks describe (its sha
 5, nothing written. The sidecar's combined_build then also holds `c2_gonly_line` (the ruling row, the file, g, s, c and
 the powers applied, both checks' figures, the lifting row if any and the factor's sha256).
 
+--depth-from allowed-s1 on --form c2-s2, only with --captain-ruling R53 (the T3 ERROR design of the design round of
+2026-11-25, section 3, proposal P1, dD, as its cold challenge fixes it; row R53, the captain's order of 2026-11-24: his
+named exception on T3's depth for the three files, bound to row K30's read; off by default: a command with none of
+--depth-from, --depth-exponent and --depth-form goes on exactly as above, every byte of C2 included, and nothing below
+is read or computed): three files on C2's command (`--form c2-s2`), each C2 with one change, the frozen allowed
+branch's per-label depth step (of the decision file's tables only submissions.allowed.s1 carries `depth: true`,
+switched on by rule D4), each with its option string,
+
+  dd   T3_c2_s2_dd.h5ad    `--depth-from allowed-s1`                        r_t, the frozen ratios
+  ddh  T3_c2_s2_ddh.h5ad   `--depth-from allowed-s1 --depth-exponent 0.5`   r_t ** 0.5 (a new form)
+  dg   T3_c2_s2_dg.h5ad    `--depth-from allowed-s1 --depth-form global`    one ratio for every label (a new form)
+
+The step is added where the frozen builder resolves the barred s2's spec (bs.resolve_spec, for this process only, as
+row R36's file replaces a composition block): C2's spec, its factor alone and a composition, gains `depth: true`, so
+the frozen validation, bs.inputs_for (bs.run_parameters: the decision file's submissions.parameters) and
+bs.prediction_inputs take it as the allowed s1 takes it. r_t is label t's ratio as the frozen bs.depth_ratios(ref.V,
+params) reads it (depth_ratio_pooled; 1.0 for a label the frozen rule left unchanged); bs.depth_ratios, for this
+process only, refuses ratios other than the pinned decision file's and returns the file's form; dg's one ratio is
+exp(sum_t n_t ln r_t / sum_t n_t) over all of WT E8.75's labels (1.0 where none), n_t WT E8.75's cells in label t as
+the build's reference holds them (duplicates dropped), computed here. The ratios enter as construct's `ratio`:
+t3_decompose.build applies them after the factor (rescale_depth: binomial thinning below 1, Poisson top-up from the
+kNN-smoothed profile above 1) on the same generator, so C2's draws (rows, factor) are untouched and only the last step
+differs. Only the ratios are read: never the allowed entry's factor (gata4), composition, stage or coverage. Factor,
+rows, composition, seed, count, streams, board and coordinates rule stay C2's. Refused (exit 2, nothing built):
+--depth-exponent or --depth-form without --depth-from; any value of --depth-from but allowed-s1, of --depth-exponent
+but 0.5 (1.0 included: dd takes no exponent), of --depth-form but global; --depth-exponent and --depth-form together;
+any form but c2-s2; --composition-from, --gata4-exponent, --size-scale or --den-ruling beside it; no --captain-ruling,
+or any but R53; a ledger without exactly one row R53 whose first cell passes build_outside_form.captain_order_names for
+the file's option string (the captain's order, "ruling, no run", `--captain-ruling R53`) and holds that string and
+`--form c2-s2` each as one whole backtick-delimited string (dd's sits inside ddh's and dg's); a decision file whose
+sha256 is not the pinned one (9440ae67...), whose submissions.allowed.s1 lacks depth: true or whose ratios are not
+finite and positive; a spec that is not C2's. Inside the build, before anything is written (exit 7, nothing written):
+C2's cells are drawn again on a copy of the generator in the same state with no depth step, and the counts the depth
+step receives must be C2's final counts row by row (the same rows, labels and sources: the same factor draws), and each
+cell's ratio its label's. A cell whose thinning draw would be empty keeps its counts (t3_decompose.thin, the frozen
+step's own rule): it stays unthinned, so no cell reaches lognorm empty through the step (lognorm's where=n > 0 guard
+would write an empty row as zeros); those cells are counted on the very draw (a recording stand-in passes every call to
+the real generator unchanged) and the number is recorded. The sidecar's combined_build then also holds `depth_line`
+(the ruling row, the file, the exponent or form, the spec replaced, the ratios read and applied with their sha256, the
+checks, the number of cells that stay unthinned) and its depth_step names it.
+
 The two target-free gates of row R36's file (they build and write nothing):
 
   g1 DECISIONS.json --wt WT --composition-from allowed-s1
@@ -342,6 +383,11 @@ class GuardFailed(Refused):
 class GonlyGuardFailed(GuardFailed):
     """The options on C2's command (F1, F2, F3): the range guard or the 5% den check (not lifted for the file) fails
     (exit status 6, nothing written)."""
+
+
+class DepthCheckFailed(Refused):
+    """The depth line (dd, ddh, dg): inside the build, the counts the depth step receives are not C2's (rows, labels,
+    sources or counts), or a cell's ratio is not its label's (exit status 7, nothing written)."""
 
 
 app = typer.Typer(no_args_is_help=True, add_completion=False)
@@ -1278,10 +1324,341 @@ def gonly_loader(g: float, s: float, out: dict, guards: dict):
         bs.load_factor = original
 
 
+# --------------------------------------------- the depth step on C2's command: dd, ddh and dg (off by default)
+
+# The T3 ERROR design of the design round of 2026-11-25 (proposal P1, dD), as its cold challenge fixes it: C2's command
+# with one change, the frozen allowed branch's per-label depth step (only submissions.allowed.s1 carries `depth: true`,
+# switched on by rule D4), added to the barred s2's spec where the frozen builder resolves it (as r36_composition
+# replaces a composition block), its ratios read from the pinned decision file, dd's as they are and ddh's and dg's in
+# two new forms, each file only with --captain-ruling R53 while row R53's first cell is the captain's order naming the
+# file's whole option string (row R53: the captain's order of 2026-11-24, his named exception on T3's depth for the
+# three files, bound to row K30's read). Off by default; its own code below, beside the other lines, which it leaves
+# unchanged.
+DEPTH_FORM, DEPTH_BASE = "c2-s2", "s2"
+DEPTH_ROW = "R53"  # the one ruling row that orders the line's files
+DEPTH_SOURCES = {"allowed-s1": ("allowed", "s1")}  # --depth-from -> the decision file's entry that carries the step
+DEPTH_EXPONENTS = (0.5,)  # --depth-exponent: the single value 0.5 (ddh)
+DEPTH_FORMS = ("global",)  # --depth-form: the single value global (dg)
+# file -> its option string, which row R53's first cell holds as one whole backtick-delimited string (dd's string sits
+# inside ddh's and dg's, so containment would let either entry open dd; the whole-string match does not); the row names
+# the form, `--form c2-s2`, as a string of its own
+DEPTH_OPTIONS = {"dd": "--depth-from allowed-s1",
+                 "ddh": "--depth-from allowed-s1 --depth-exponent 0.5",
+                 "dg": "--depth-from allowed-s1 --depth-form global"}
+DEPTH_FORM_OPTION = "--form c2-s2"
+DEPTH_FILES = {"dd": "T3_c2_s2_dd.h5ad", "ddh": "T3_c2_s2_ddh.h5ad", "dg": "T3_c2_s2_dg.h5ad"}
+# experiments/t3_decomp/results/gata4/gata4_decisions.json, the frozen run of 2026-10-28 (the file row R36 pins too)
+DEPTH_DECISION_SHA256 = "9440ae67625608112666d5235e6ceaa5dd9f47a4b0bbd30e16943f32f35c5a8c"
+DEPTH_PARAMS_SOURCE = "decision file submissions.parameters"  # bs.run_parameters' name for the decision file's own
+EXIT_DEPTH_CHECK = 7
+DEPTH_LINE = ("T3 depth line (the T3 ERROR design of 2026-11-25, proposal P1, dD, as its cold challenge fixes it): C2 "
+              "on the barred s2 (--form c2-s2) with one change, the frozen allowed branch's per-label depth step "
+              "(decision file submissions.allowed.s1, depth: true; its ratios "
+              "submissions.parameters.depth_ratio_pooled) added to the barred s2's spec and applied as construct's "
+              "ratio after C2's factor on the same generator; dd T3_c2_s2_dd.h5ad (the frozen ratios as they are), "
+              "ddh T3_c2_s2_ddh.h5ad (the ratios ** 0.5, a new form) and dg T3_c2_s2_dg.h5ad (one ratio for every "
+              "label, a new form); row R53")
+DEPTH_SOURCE = ("the depth step of decision file submissions.allowed.s1 (depth: true; ratios "
+                "submissions.parameters.depth_ratio_pooled), added to the barred s2's spec by --depth-from allowed-s1")
+DEPTH_GLOBAL_RULE = ("one ratio for every label, exp(sum_t n_t ln r_t / sum_t n_t): r_t label t's ratio as "
+                     "build_submission.depth_ratios gives it (1.0 for a label the frozen rule left unchanged), n_t WT "
+                     "E8.75's cells in label t as the build's reference holds them (Vocab.count, duplicates dropped)")
+DEPTH_EMPTY_RULE = ("as the frozen step: t3_decompose.rescale_depth, unchanged, thins through t3_decompose.thin, in "
+                    "which a cell whose binomial draw would be empty keeps its counts (it stays unthinned), so no cell "
+                    "reaches lognorm empty through the step (a cell empty before it, none expected, stays empty and "
+                    "lognorm's where=n > 0 guard writes it as zeros); the cells that stay unthinned are counted on the "
+                    "very draw (a recording stand-in passes every call to the real generator unchanged)")
+DEPTH_WHERE = ("bs.resolve_spec (for this process only) adds depth: true to the barred s2's spec, so the frozen "
+               "inputs_for, run_parameters and prediction_inputs read the decision file's parameters and call "
+               "bs.depth_ratios (for this process only: the frozen reading, then the file's form); t3_decompose.build "
+               "applies the ratios after the factor, on the same generator (rescale_depth: binomial thinning below 1, "
+               "Poisson top-up from the kNN-smoothed profile above 1), so C2's draws (rows, factor) are untouched; "
+               "inside the build, before anything is written, C2's cells are drawn again on a copy of the generator in "
+               "the same state with no depth step, and the counts the depth step receives must be C2's final counts "
+               "row by row (same rows, labels and sources) and each cell's ratio its label's")
+DEPTH_LIST_ENTRY = ("experiments/harness/TRIES.md row R53 (the captain's order of 2026-11-24: his named exception on "
+                    "T3's depth for T3_c2_s2_dd, T3_c2_s2_ddh and T3_c2_s2_dg, bound to row K30's read; decision log "
+                    "2026-11-24 (rrr)); the T3 ERROR design of the design round of 2026-11-25, section 3 (proposal P1, "
+                    "dD), and its cold challenge")
+
+
+def is_depth_command(depth_from=None, depth_exponent=None, depth_form=None) -> bool:
+    """Whether a command is the depth line's: any of --depth-from, --depth-exponent and --depth-form. Every other
+    command never reaches the line's code and goes on as before."""
+    return depth_from is not None or depth_exponent is not None or depth_form is not None
+
+
+def check_depth_line(form, depth_from=None, depth_exponent=None, depth_form=None, captain_ruling=None,
+                     tries: Path | None = None, composition_from=None, gata4_exponent=None, size_scale=None,
+                     den_ruling=None) -> dict | None:
+    """--depth-from allowed-s1 on --form c2-s2, with --depth-exponent 0.5 or --depth-form global as the variants:
+    None unless is_depth_command (nothing is read); else the line's record (the file, its option string, the ruling
+    row), or Refused: --depth-exponent or --depth-form without --depth-from; any value of --depth-from but allowed-s1,
+    of --depth-exponent but 0.5, of --depth-form but global; any form but c2-s2; --depth-exponent and --depth-form
+    together; --composition-from, --gata4-exponent, --size-scale or --den-ruling beside it; no --captain-ruling, or one
+    other than R53; a ledger whose row R53 does not pass build_outside_form.captain_order_names for the file's option
+    string (the captain's order, "ruling, no run", `--captain-ruling R53`) or does not hold that string and
+    `--form c2-s2` each as one whole backtick-delimited string."""
+    if not is_depth_command(depth_from, depth_exponent, depth_form):
+        return None
+    if depth_from is None:
+        raise Refused("--depth-exponent and --depth-form are taken only with --depth-from allowed-s1")
+    if not isinstance(depth_from, str) or depth_from not in DEPTH_SOURCES:
+        raise Refused(f"--depth-from {depth_from!r} is refused: only allowed-s1")
+    if form != DEPTH_FORM:
+        raise Refused(f"--depth-from allowed-s1 is taken on --form {DEPTH_FORM} only, not {form!r}")
+    e = None
+    if depth_exponent is not None:
+        try:
+            e = float(depth_exponent)
+        except (TypeError, ValueError, OverflowError):
+            raise Refused(f"--depth-exponent {depth_exponent!r} is refused: only 0.5") from None
+        if isinstance(depth_exponent, bool) or e not in DEPTH_EXPONENTS:
+            raise Refused(f"--depth-exponent {depth_exponent!r} is refused: only 0.5")
+    if depth_form is not None and (not isinstance(depth_form, str) or depth_form not in DEPTH_FORMS):
+        raise Refused(f"--depth-form {depth_form!r} is refused: only global")
+    if e is not None and depth_form is not None:
+        raise Refused("--depth-exponent and --depth-form are not taken together (one variant per file)")
+    for flag, value in (("--composition-from", composition_from), ("--gata4-exponent", gata4_exponent),
+                        ("--size-scale", size_scale), ("--den-ruling", den_ruling)):
+        if value is not None:
+            raise Refused(f"--depth-from allowed-s1 takes no {flag} (the file is C2's command with one change)")
+    if captain_ruling is None:
+        raise Refused(f"--depth-from allowed-s1 is taken only with --captain-ruling {DEPTH_ROW}")
+    if captain_ruling != DEPTH_ROW:
+        raise Refused(f"--captain-ruling {captain_ruling!r} is refused on the depth line: only row {DEPTH_ROW} orders "
+                      "its files")
+    arm = "dg" if depth_form is not None else "ddh" if e is not None else "dd"
+    opt = DEPTH_OPTIONS[arm]
+    p = TRIES_FILE if tries is None else Path(tries)
+    first = ledger_first_cell(DEPTH_ROW, p)
+    if not (_outside_form().captain_order_names(DEPTH_ROW, f"`{opt}`", p) and names_whole(first, opt)
+            and names_whole(first, DEPTH_FORM_OPTION)):
+        raise Refused(f"--form {DEPTH_FORM} {opt} --captain-ruling {DEPTH_ROW} is refused: experiments/harness/"
+                      f"TRIES.md has no single row {DEPTH_ROW} whose first cell is the captain's order (\"ruling, no "
+                      f"run\") naming `{opt}` and `{DEPTH_FORM_OPTION}` each as one whole string and `--captain-ruling "
+                      f"{DEPTH_ROW}`")
+    return {"row": DEPTH_ROW, "arm": arm, "file": DEPTH_FILES[arm], "option": f"`{opt}`",
+            "form_option": f"`{DEPTH_FORM_OPTION}`", "depth_from": depth_from, "exponent": e,
+            "form": "global" if depth_form is not None else "per label", "ledger": "experiments/harness/TRIES.md",
+            "ledger_sha256": bs.sha256(p)}
+
+
+def depth_parameters(dec: dict, decision: Path, depth_from: str = "allowed-s1") -> tuple[dict, dict]:
+    """The frozen depth ratios, and nothing else of the decision file's parameters: submissions.parameters.
+    depth_ratio_pooled as bs.run_parameters reads it from the decision file itself (no run folder is read). Refused
+    unless the decision file is the pinned one (DEPTH_DECISION_SHA256), the entry --depth-from names
+    (submissions.allowed.s1) carries the depth step (depth: true) and every ratio is a finite positive number. The
+    entry's factor (gata4), composition, stage and coverage are never read. Returns ({"depth_ratio_pooled": ratios},
+    its record)."""
+    if not isinstance(depth_from, str) or depth_from not in DEPTH_SOURCES:
+        raise Refused(f"--depth-from {depth_from!r} is refused: only allowed-s1")
+    branch, slot = DEPTH_SOURCES[depth_from]
+    got = bs.sha256(Path(decision))
+    if got != DEPTH_DECISION_SHA256:
+        raise Refused(f"the decision file's sha256 {got[:16]} is not the pinned one ({DEPTH_DECISION_SHA256[:16]}): "
+                      "not built")
+    entry = ((dec.get("submissions") or {}).get(branch) or {}).get(slot) if isinstance(dec.get("submissions"),
+                                                                                         dict) else None
+    if not isinstance(entry, dict) or entry.get("depth") is not True:
+        raise Refused(f"submissions.{branch}.{slot} of the decision file does not carry the depth step (depth: true): "
+                      "not built")
+    params, src = bs.run_parameters(dec, None)
+    pooled = params.get("depth_ratio_pooled") if src == DEPTH_PARAMS_SOURCE else None
+    if not isinstance(pooled, dict) or not pooled:
+        raise Refused("the decision file has no submissions.parameters.depth_ratio_pooled: not built")
+    for lab, v in pooled.items():
+        if isinstance(v, bool) or not isinstance(v, int | float) or not math.isfinite(v) or not v > 0:
+            raise Refused(f"the depth ratio {v!r} of {lab!r} is not a finite positive number: not built")
+    pooled = {str(k): float(v) for k, v in pooled.items()}
+    text = "\n".join(f"{k}\t{v!r}" for k, v in pooled.items())
+    return {"depth_ratio_pooled": pooled}, {
+        "source": f"decision file submissions.parameters.depth_ratio_pooled (the step submissions.{branch}.{slot} "
+                  "carries, depth: true)", "entry": f"submissions.{branch}.{slot}", "decision": str(decision),
+        "decision_sha256": got, "pinned_sha256": DEPTH_DECISION_SHA256, "n_labels": len(pooled), "pooled": pooled,
+        "pooled_sha256": hashlib.sha256(text.encode()).hexdigest(),
+        "pooled_sha256_rule": "label, tab, repr(ratio), one line per label in the decision file's order"}
+
+
+def depth_ratios_applied(V, params: dict, exponent=None, form=None, reader=None) -> tuple[np.ndarray, dict]:
+    """The ratios the line passes as construct's `ratio`, one per label of the reference vocabulary V, from the frozen
+    ratios as the frozen builder reads them (`reader`, default bs.depth_ratios(V, params): 1.0 for a label without a
+    pooled ratio): as they are (dd), to the power 0.5 (ddh), or one ratio for every label (dg), DEPTH_GLOBAL_RULE
+    (all of WT E8.75's labels, 1.0 where none; weights V.count, WT E8.75's cells per label in the reference the build
+    draws from). Returns (ratios, record); nothing in the record is a count of the file's cells."""
+    r = np.asarray((bs.depth_ratios if reader is None else reader)(V, params), dtype=np.float64)
+    if r.shape != (V.L,) or not np.all(np.isfinite(r) & (r > 0)):
+        raise Refused("the frozen depth ratios are not finite and positive on the reference's labels: not built")
+    with_ratio = np.zeros(V.L, dtype=bool)
+    with_ratio[V.index(list(params["depth_ratio_pooled"]))] = True
+    rec = {"labels": list(V.labels), "labels_sha256": hashlib.sha256("\n".join(V.labels).encode()).hexdigest(),
+           "n_labels": int(V.L), "n_labels_with_a_pooled_ratio": int(with_ratio.sum()),
+           "wt_share_of_labels_left_at_1": float(np.asarray(V.p, dtype=np.float64)[~with_ratio].sum()),
+           "frozen": [float(x) for x in r], "frozen_sha256": factor_sha256(r),
+           "sha256_rule": "sha256 of the float64 bytes, one value per label in the reference vocabulary's order"}
+    if form == "global":
+        n = np.asarray(V.count, dtype=np.float64)
+        if n.shape != r.shape or not np.all(np.isfinite(n) & (n >= 0)) or not n.sum() > 0:
+            raise Refused("WT E8.75's cells per label do not give weights for the global ratio: not built")
+        g = float(np.exp(n @ np.log(r) / n.sum()))
+        applied = np.full(V.L, g)
+        rec |= {"form": "global", "exponent": None, "global_ratio": g, "rule": DEPTH_GLOBAL_RULE}
+    elif exponent is not None:
+        e = float(exponent)
+        if e not in DEPTH_EXPONENTS:
+            raise Refused(f"the depth exponent {exponent!r} is not this line's (0.5)")
+        applied = r ** e
+        rec |= {"form": "per label", "exponent": e, "global_ratio": None, "rule": "r_t ** 0.5, label by label"}
+    elif form is None:
+        applied = r
+        rec |= {"form": "per label", "exponent": 1.0, "global_ratio": None,
+                "rule": "r_t, the frozen ratios as they are"}
+    else:
+        raise Refused(f"the depth form {form!r} is not this line's (global)")
+    if not np.all(np.isfinite(applied) & (applied > 0)):
+        raise Refused("the depth ratios applied are not finite and positive: not built")
+    rec |= {"applied": [float(x) for x in applied], "applied_sha256": factor_sha256(applied)}
+    return applied, rec
+
+
+class _DrawRecorder:
+    """The generator as t3_decompose.rescale_depth sees it on the depth line: every call goes to the real generator
+    unchanged (the same method, arguments and order, so the stream is the frozen step's own); the row sums of each
+    binomial draw are kept, from which the cells the frozen thinning would empty are counted."""
+
+    def __init__(self, rng):
+        self._rng = rng
+        self.binomial_row_sums: list = []
+
+    def binomial(self, *args, **kwargs):
+        out = self._rng.binomial(*args, **kwargs)
+        self.binomial_row_sums.append(np.asarray(out).sum(axis=-1))
+        return out
+
+    def __getattr__(self, name):
+        return getattr(self._rng, name)
+
+
+def _twin_generator(rng):
+    """A copy of the generator in the same state: C2's draws are made again on it, the real one is left to the file."""
+    return copy.deepcopy(rng)
+
+
+@contextmanager
+def _observe(name: str, seen: list, wrap):
+    """t3_decompose.<name>, for this process only, replaced by wrap(original, seen)."""
+    original = getattr(bs.t3d, name)
+    setattr(bs.t3d, name, wrap(original, seen))
+    try:
+        yield
+    finally:
+        setattr(bs.t3d, name, original)
+
+
+def _lognorm_spy(original, seen: list):
+    def spy(C):
+        seen.append(C)
+        return original(C)
+
+    return spy
+
+
+def _rescale_spy(original, seen: list):
+    def spy(C, ratio, P, rng):
+        rec = _DrawRecorder(rng)
+        res = original(C, ratio, P, rec)
+        seen.append({"pre": C, "ratio": np.asarray(ratio, dtype=np.float64), "post": res,
+                     "draws": rec.binomial_row_sums})
+        return res
+
+    return spy
+
+
+def depth_checks(c2, c2_counts, built, call: dict, ratios) -> dict:
+    """The line's checks of one build, a pure function of C2's cells (drawn again with no depth step: Built and the
+    counts its lognorm received) and the file's (Built and what rescale_depth received and returned): whether the
+    counts the depth step receives are C2's final counts row by row, whether the rows, labels and sources are C2's,
+    and whether each cell's ratio is its label's; and the counts of cells the thinning would empty, which keep their
+    counts (t3_decompose.thin: they stay unthinned), of cells empty before the step and after it."""
+    pre, post = np.asarray(call["pre"]), np.asarray(call["post"])
+    c2_counts = np.asarray(c2_counts)
+    draws = call["draws"]
+    out = {"pre_depth_counts_are_c2s": bool(pre.shape == c2_counts.shape and np.array_equal(pre, c2_counts)),
+           "rows_are_c2s": bool(np.array_equal(built.row, c2.row)),
+           "labels_are_c2s": bool(np.array_equal(built.lab, c2.lab)),
+           "sources_are_c2s": bool(np.array_equal(built.source, c2.source)),
+           "ratio_is_the_label_s": bool(call["ratio"].shape == built.lab.shape
+                                        and np.array_equal(call["ratio"], np.asarray(ratios)[built.lab])),
+           "one_thinning_draw": len(draws) == 1}
+    kept = ((draws[0] == 0) & (pre.sum(1) > 0)) if len(draws) == 1 else np.zeros(pre.shape[0], dtype=bool)
+    out["counts"] = {"stay_unthinned": int(kept.sum()), "empty_before": int((pre.sum(1) == 0).sum()),
+                     "empty_after": int((post.sum(1) == 0).sum())}
+    out["passed"] = all(out[k] for k in ("pre_depth_counts_are_c2s", "rows_are_c2s", "labels_are_c2s",
+                                         "sources_are_c2s", "ratio_is_the_label_s", "one_thinning_draw"))
+    return out
+
+
+@contextmanager
+def depth_step(params: dict, exponent, form, out: dict):
+    """bs.resolve_spec, bs.depth_ratios and bs.construct, for this process only, on the depth line. resolve_spec: the
+    frozen one, then the barred s2's spec with depth: true added (any other slot refused, and a spec that is not C2's:
+    its factor alone and a composition, no depth, stage or coverage step), as r36_composition replaces a composition
+    block; the frozen validation, bs.inputs_for (bs.run_parameters: the decision file's submissions.parameters) and
+    bs.prediction_inputs then take the step as the allowed s1 takes it. depth_ratios: refused unless the ratios the
+    build reads are the pinned decision file's (`params`); then the frozen reading in the file's form
+    (depth_ratios_applied). construct: C2's cells first, on a copy of the generator in the same state and with no depth
+    step (the counts lognorm receives captured), then the file's on the real generator with
+    t3_decompose.rescale_depth observed (_DrawRecorder); DepthCheckFailed (exit 7) before anything is written unless
+    depth_checks passes. `out` receives the spec replaced, the ratios' record, the checks and the call counts."""
+    orig_resolve, orig_ratios, orig_construct = bs.resolve_spec, bs.depth_ratios, bs.construct
+
+    def resolve(dec, rules, branch, submission, hashes):
+        if (branch, submission) != (BRANCH, DEPTH_BASE):
+            raise Refused(f"--depth-from adds the depth step to the barred s2 only, not {branch} {submission}")
+        spec, info = orig_resolve(dec, rules, branch, submission, hashes)
+        if set(spec) != {"factor", "composition"} or spec["factor"] != FROZEN_FACTOR:
+            raise Refused("the barred s2's spec is not C2's (its factor alone and a composition, no depth, stage or "
+                          "coverage step): not built")
+        out.update(replaced=copy.deepcopy(spec), n_resolves=out.get("n_resolves", 0) + 1)
+        return {**spec, "depth": True}, {**info, "depth_source": DEPTH_SOURCE}
+
+    def ratios(V, p):
+        read = p.get("depth_ratio_pooled") if isinstance(p, dict) else None
+        if not isinstance(read, dict) or read != params["depth_ratio_pooled"]:
+            raise Refused("the depth ratios the build reads are not the pinned decision file's: not built")
+        ratio, rec = depth_ratios_applied(V, p, exponent, form, reader=orig_ratios)
+        out.update(ratio=ratio, record=rec, n_ratios=out.get("n_ratios", 0) + 1)
+        return ratio
+
+    def construct(ref, n, rng, f, phi=None, w=1.0, ratio=None, alphas=None):
+        if ratio is None or ratio is not out.get("ratio") or alphas is not None:
+            raise DepthCheckFailed("construct did not receive the line's ratios alone: nothing written")
+        lognormed: list = []
+        with _observe("lognorm", lognormed, _lognorm_spy):
+            c2 = orig_construct(ref, n, _twin_generator(rng), f, phi=phi, w=w, ratio=None, alphas=None)
+        calls: list = []
+        with _observe("rescale_depth", calls, _rescale_spy):
+            built = orig_construct(ref, n, rng, f, phi=phi, w=w, ratio=ratio, alphas=None)
+        if len(lognormed) != 1 or len(calls) != 1:
+            raise DepthCheckFailed("C2's cells or the depth step were not observed exactly once: nothing written")
+        checks = depth_checks(c2, lognormed[0], built, calls[0], ratio)
+        out.update(checks=checks, n_constructs=out.get("n_constructs", 0) + 1)
+        if not checks["passed"]:
+            bad = [k for k, v in checks.items() if v is False]
+            raise DepthCheckFailed(f"the depth step's checks failed ({', '.join(bad)}): nothing written")
+        return built
+
+    bs.resolve_spec, bs.depth_ratios, bs.construct = resolve, ratios, construct
+    try:
+        yield
+    finally:
+        bs.resolve_spec, bs.depth_ratios, bs.construct = orig_resolve, orig_ratios, orig_construct
+
+
 def build_form(decision: Path, form, wt: Path, board, n_cells: int, out: Path, run_dir: Path | None = None,
                seed: int = 1_000_001, overwrite: bool = False, threads: int = 16, gata4_exponent=None,
                captain_ruling=None, tries: Path | None = None, composition_from=None, size_scale=None,
-               den_ruling=None) -> dict:
+               den_ruling=None, depth_from=None, depth_exponent=None, depth_form=None) -> dict:
     """The named form through bs.build_submission; returns the sidecar (written next to the file, the frozen
     builder's plus `combined_build`). gata4_exponent 2.0 with captain_ruling 'R22' (default None, today's paths
     unchanged) builds row R22's second T3 line's file, c1-s2 at Gata4 weight 2.0, under the ruling row of TRIES.md
@@ -1291,15 +1668,19 @@ def build_form(decision: Path, form, wt: Path, board, n_cells: int, out: Path, r
     weight g = 2.0, after its guard, under the ruling row of TRIES.md. On c2-s2 with captain_ruling 'R22',
     gata4_exponent inf and/or size_scale 0.67 (default None) build F1, F2 or F3 after the range guard and the 5% den
     check, under the ruling row of TRIES.md; den_ruling (default None) names the row that lifts the 5% check for the
-    file. A command with none of the three goes on exactly as before."""
+    file. On c2-s2, depth_from 'allowed-s1' (default None) with captain_ruling ROW builds the depth line's dd, with
+    depth_exponent 0.5 ddh and with depth_form 'global' dg (each default None), under the ruling row ROW of TRIES.md.
+    A command with none of these goes on exactly as before."""
     kind, base = parse_form(form)
-    gonly = check_c2_gonly(f"{kind}-{base}", gata4_exponent, size_scale, captain_ruling, tries, composition_from,
-                           den_ruling)
-    cd7 = None if gonly is not None else check_composition_from(f"{kind}-{base}", composition_from, captain_ruling,
-                                                                gata4_exponent, tries)
-    c2g = None if cd7 is not None or gonly is not None else check_c2_gata4(f"{kind}-{base}", gata4_exponent,
-                                                                            captain_ruling, tries)
-    ruled = None if cd7 is not None or c2g is not None or gonly is not None else check_gata4(
+    depth = check_depth_line(f"{kind}-{base}", depth_from, depth_exponent, depth_form, captain_ruling, tries,
+                             composition_from, gata4_exponent, size_scale, den_ruling)
+    gonly = None if depth is not None else check_c2_gonly(f"{kind}-{base}", gata4_exponent, size_scale,
+                                                          captain_ruling, tries, composition_from, den_ruling)
+    cd7 = None if gonly is not None or depth is not None else check_composition_from(
+        f"{kind}-{base}", composition_from, captain_ruling, gata4_exponent, tries)
+    c2g = None if cd7 is not None or gonly is not None or depth is not None else check_c2_gata4(
+        f"{kind}-{base}", gata4_exponent, captain_ruling, tries)
+    ruled = None if cd7 is not None or c2g is not None or gonly is not None or depth is not None else check_gata4(
         f"{kind}-{base}", gata4_exponent, captain_ruling, tries)
     slot, x, base_sha = BASES[base]
     frozen = check_frozen()
@@ -1311,7 +1692,25 @@ def build_form(decision: Path, form, wt: Path, board, n_cells: int, out: Path, r
     if spec["factor"] != FROZEN_FACTOR:
         raise Refused(f"the frozen barred {slot} factor is {spec['factor']}, not {FROZEN_FACTOR}: not built")
     got: dict = {}
-    if cd7 is not None:
+    if depth is not None:
+        out_p = Path(out)
+        if not overwrite and (out_p.exists() or out_p.with_suffix(".json").exists()):
+            raise Refused(f"{out_p} or its sidecar exists; pass --overwrite")
+        params, prec = depth_parameters(dec, Path(decision), depth["depth_from"])
+        dhook: dict = {}
+        with combined_loader(kind, x, got), depth_step(params, depth["exponent"],
+                                                        "global" if depth["form"] == "global" else None, dhook):
+            side = bs.build_submission(Path(decision), BRANCH, slot, Path(wt), board, n_cells, Path(out),
+                                       run_dir=run_dir, seed=seed, overwrite=overwrite, threads=threads)
+        drec = dhook.get("record") or {}
+        want = {t: v for t, v in zip(drec.get("labels", []), drec.get("applied", []), strict=True) if v != 1.0}
+        if (dhook.get("n_resolves") != 1 or dhook.get("n_ratios") != 1 or dhook.get("n_constructs") != 1
+                or not dhook["checks"]["passed"] or side["construction"]["depth_ratios"] != want):
+            raise RuntimeError("the build did not take the depth line's step, checked, exactly once")
+        if (side["spec"] != {**dhook["replaced"], "depth": True} or side["construction"]["stage_alphas"] is not None
+                or side["inputs"]["parameters_source"] != DEPTH_PARAMS_SOURCE):
+            raise RuntimeError("the build took more than the depth step")
+    elif cd7 is not None:
         block, brec = composition_block(dec, rules, Path(decision), composition_from)
         hook: dict = {}
         with combined_loader(kind, x, got), r36_composition(block, hook):
@@ -1374,8 +1773,29 @@ def build_form(decision: Path, form, wt: Path, board, n_cells: int, out: Path, r
         "combination": got["combination"], "where": WHERE, "list_entry": LIST_ENTRY,
         "frozen_files_sha256": frozen, "tree_at_start": tree,
         "identity": f"the {base} base file byte for byte ({base_sha[:12]})" if kind == "identity" else None,
-        "depth_step": None,
+        "depth_step": None if depth is None else "combined_build.depth_line",
     }
+    if depth is not None:
+        drec, checks = dhook["record"], dhook["checks"]
+        side["combined_build"]["depth_line"] = {
+            "captain_ruling": depth, "line": DEPTH_LINE, "file": depth["file"], "arm": depth["arm"],
+            "depth_from": depth["depth_from"], "exponent": drec["exponent"], "form": drec["form"],
+            "global_ratio": drec["global_ratio"], "rule": drec["rule"], "decision_file": prec,
+            "labels": drec["labels"], "labels_sha256": drec["labels_sha256"],
+            "n_labels": drec["n_labels"], "n_labels_with_a_pooled_ratio": drec["n_labels_with_a_pooled_ratio"],
+            "wt_share_of_labels_left_at_1": drec["wt_share_of_labels_left_at_1"],
+            "ratios_frozen": drec["frozen"], "ratios_frozen_sha256": drec["frozen_sha256"],
+            "ratios_applied": drec["applied"], "ratios_applied_sha256": drec["applied_sha256"],
+            "sha256_rule": drec["sha256_rule"], "where": DEPTH_WHERE,
+            "spec": {"replaced": dhook["replaced"], "added": {"depth": True}, "source": DEPTH_SOURCE},
+            "checks": {k: v for k, v in checks.items() if k != "counts"},
+            "emptied_by_thinning": {**checks["counts"], "handling": DEPTH_EMPTY_RULE},
+            "c2_reference_sha256": C2_S2_SHA256,
+            "unchanged": "C2's factor (combined_build.combination), rows and factor draws, composition, row number "
+                         "(max_cells, read by code), seed, streams and coordinates rule",
+            "taken": "the depth ratios only (never the allowed entry's factor, composition, stage or coverage)",
+            "list_entry": DEPTH_LIST_ENTRY,
+        }
     if ruled is not None:
         side["combined_build"]["gata4_line"] = {
             "captain_ruling": ruled, "line": G2_LINE, "file": G2_FILE, "gata4_weight": ruled["gata4_exponent"],
@@ -1453,7 +1873,8 @@ def build(
                                          "phi_G alone at C2's held size, while row R22 names the file's whole option "
                                          "string"),
     captain_ruling: str = typer.Option(None, help="R22, with --gata4-exponent 2.0 --form c1-s2 or c2-s2; or R36, "
-                                       "with --composition-from allowed-s1 --form c2-s2; nothing else"),
+                                       "with --composition-from allowed-s1 --form c2-s2; or R53, with --depth-from "
+                                       "allowed-s1 --form c2-s2; nothing else"),
     composition_from: str = typer.Option(None, help="allowed-s1 only, with --form c2-s2 --captain-ruling R36: row "
                                          "R36's file cD7 (C2 with the decision file's submissions.allowed.s1."
                                          "composition), while row R36 of TRIES.md is the captain's ruling naming it"),
@@ -1463,13 +1884,30 @@ def build(
     den_ruling: str = typer.Option(None, help="a ruling row's id (R and digits), with the options of F1, F2 or F3 "
                                    "only: the 5% den check gates nothing for the file while that row of TRIES.md names "
                                    "the file's whole option string and says \"the 5% check gates nothing for it\""),
+    depth_from: str = typer.Option(None, help="allowed-s1 only, with --form c2-s2 --captain-ruling R53: the depth "
+                                   "line, C2 with the frozen allowed branch's per-label depth step (T3_c2_s2_dd.h5ad), "
+                                   "while row R53 of TRIES.md is the captain's order naming the file's whole option "
+                                   "string"),
+    depth_exponent: float = typer.Option(None, help="0.5 only, with --depth-from allowed-s1: the depth ratios to the "
+                                         "power 0.5 (T3_c2_s2_ddh.h5ad)"),
+    depth_form: str = typer.Option(None, help="global only, with --depth-from allowed-s1: one depth ratio for every "
+                                   "label, the frozen ratios' geometric mean weighted by WT E8.75's cells per label "
+                                   "(T3_c2_s2_dg.h5ad)"),
 ):
     """Build one fixed form."""
     try:
         if seed != LIST_SEED or n_cells != LIST_N_CELLS:
             raise Refused(LIST_INPUTS_REFUSAL)
         parse_form(form)
-        if is_gonly_command(form, gata4_exponent, size_scale) or den_ruling is not None:
+        if is_depth_command(depth_from, depth_exponent, depth_form):
+            check_depth_line(form, depth_from, depth_exponent, depth_form, captain_ruling,
+                             composition_from=composition_from, gata4_exponent=gata4_exponent, size_scale=size_scale,
+                             den_ruling=den_ruling)
+            b = bs.board_spec(board, boards_dir)
+            s = build_form(decision, form, wt, b, bs.resolve_n_cells(n_cells, b), out, run_dir=run_dir, seed=seed,
+                           overwrite=overwrite, threads=threads, captain_ruling=captain_ruling,
+                           depth_from=depth_from, depth_exponent=depth_exponent, depth_form=depth_form)
+        elif is_gonly_command(form, gata4_exponent, size_scale) or den_ruling is not None:
             check_c2_gonly(form, gata4_exponent, size_scale, captain_ruling, composition_from=composition_from,
                            den_ruling=den_ruling)
             b = bs.board_spec(board, boards_dir)
@@ -1499,6 +1937,9 @@ def build(
             s = build_form(decision, form, wt, b, bs.resolve_n_cells(n_cells, b), out, run_dir=run_dir, seed=seed,
                            overwrite=overwrite, threads=threads, gata4_exponent=gata4_exponent,
                            captain_ruling=captain_ruling)
+    except DepthCheckFailed as e:
+        bs.say(f"refused (the depth line's checks inside the build, before anything is written): {e}", "red")
+        raise typer.Exit(EXIT_DEPTH_CHECK) from None
     except GonlyGuardFailed as e:
         bs.say(f"refused (the range guard or the 5% den check, before any cell is drawn): {e}", "red")
         raise typer.Exit(EXIT_GUARD_FAILED) from None
@@ -1527,6 +1968,12 @@ def build(
     if cb.get("composition_line"):
         bs.say(f"composition from {cb['composition_line']['composition_from']} (row {R36_ROW}): the "
                f"{R36_N_STATES} scenario states at {R36_RATIO:.4f} of their wild-type share before renormalising")
+    if cb.get("depth_line"):
+        dl = cb["depth_line"]
+        how = (f"one ratio {dl['global_ratio']:.6g} for every label" if dl["form"] == "global" else
+               f"the frozen per-label ratios to the power {dl['exponent']:g}")
+        bs.say(f"the depth line (row {dl['captain_ruling']['row']}): {dl['file']}, {how}; the depth step received "
+               "C2's counts row by row")
     for w in s["warnings"]:
         bs.say(f"  warning: {w}", "yellow")
     for e in chk["errors"]:
