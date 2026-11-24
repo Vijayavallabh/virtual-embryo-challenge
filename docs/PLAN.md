@@ -12466,3 +12466,56 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     guard the analysts set before any build. The round of analysts blind to test scores that is asked whether the
     framework admits a further T3 line on today's order is told this fact and may check any guard it sets on released
     data before it hands a line back. No file, order or queue changes.
+- 2026-11-24 (b), the outside-data completeness check the captain's words of entry 2026-11-23 (hh) started; T3's
+  design round of today wrote no line (state at 00:04 UTC, 2026-11-24). Written by the AI assistant, which designed
+  nothing here; its own handling is labelled.
+  - **The check.** One analyst blind to test scores (it reports that it met none), started through the route that
+    relays no message, read the whole record of the outside-data round of 2026-11-23 (entry (d)), the organisers' rule
+    block, the data policy's windows and rulings, and the register, and was asked to attack the round's conclusion: is
+    there a class of outside source the round did not consider, or struck for a reason that does not hold, that the
+    organisers' words allow, that a gate can kill within an hour, that fits before 2026-11-25 12:00 UTC and that could
+    move a board by more than a few tenths? It was told to leave out the pathway tier, the closed levers and reruns of
+    stopped candidates.
+  - **Its verdict, verbatim:** "The honest overall reading stays the round's: bulk outside data, 500 datasets or 1 TB,
+    buys nothing on these boards, because the limit is the identity of the knocked-out gene and each test sample's own
+    technical signature, not the volume of data." It agrees with the round on T1 and on both T2 boards. It checked
+    seventeen further classes and gave the reason each fails: for T3 a wider window on the gene's own binding (it
+    would change a closed row's constants), binding under stimulation (a perturbation of the gene), curated
+    interaction databases (edges often come from overexpressed baits), signed regulatory and perturbation-signature
+    databases (built from perturbations), pathway membership as a which-genes score (no sign, no response on the
+    panel), more knockouts of unrelated genes (a generic signal the ledger prices in hundredths; genome-wide screens
+    contain the gene itself), a driver-only dataset, sequence-property axes (row K21's outcome), sequence and text
+    embeddings, and pretrained foundation models (corpora not shown free of held-out data); for T1 more atlases for
+    the direction (the round's expected test gain of about 0.05; MX2s stopped at screening), technical or sparsity
+    profiles (row T60), and anchors for composition or the advance draw (closed); for the T2 heart the late chord,
+    sequencing-based spatial atlases and births (the practice geometry leaks or cannot copy the test; gates N56 and
+    H32; closed levers); for the T2 embryo outside atlases (only the bracket stages remain once the window is removed,
+    and author annotations were learned with window cells); and other species (a back door into the windows).
+  - **Its one candidate, which it calls a long shot: CHIPQ-C, on T3.** In place of the queried gene's own binding set,
+    which stopped row K27 at its first gate, the bound set of the gene's co-binding partners, chosen by code from the
+    pinned database's own co-localisation of the wild-type, untreated experiments row K27 kept; no person reads a
+    partner name or a bound gene. Its reason the round's strike does not hold: the round dropped partners as 'more
+    tries for the same idea', a cost reason, and K27's stopping cause (one bound panel gene) is specific to the direct
+    route. Its rule risks: the partner antigens' experiments need the same two-reader genotype screen; interaction
+    databases are only a fallback and would go to the captain; any file still needs the captain's provenance and A15
+    rulings. **Its committed odds, before any data:** My committed estimates, before any data: G0 passes about 0.4.
+    The practice read is AHEAD under K27's pass rule and placebo bars, given G0, about 0.15. A practice pass carries
+    to the test about 0.3. End to end about 0.02. If it works: +0.5 to +1.5 T3 board points on practice, about the
+    same Overall at the test. Expected about +0.02 Overall, with a tail near +1. The partner route is a weaker carrier
+    of gene identity than the gene's own binding, which already died, and the uniform sign convention becomes even
+    more of a guess when the term is carried by partners. **Its hours:** About 14 to 18 h. Each step reuses K27's
+    chipq.py, k27_chip_query.py and run_k27.sh. Steps: co-localisation fetch plus pins, about 1 h; partner selection
+    plus the TF catalogue, about 3 h; a two-reader screen of the partner antigens' rows, about 2 h, run in parallel
+    with code; tests, about 2 h; one review round with the blocker standard stated up front, 4 h; read, about 2 h; two
+    builds, 1 h. It fits before 2026-11-25 12:00 UTC only if the captain says yes to a new practice row at once, and
+    any file still needs his provenance and A15 rulings.
+  - **The AI assistant's handling, its own and labelled.** Not started. About two in a hundred end to end, for 14 to
+    18 hours of many agents inside the last 36, on a family whose rule texts a safety classifier stopped twice on
+    2026-11-23 and once more today, which the AI assistant does not press. The captain is told the odds and the words
+    that order it ('run CHIPQ-C'); the default is no. The bulk approval of outside data stands recorded, and by two
+    independent rounds no source inside the rules is left that volume would help.
+  - **T3's design round of today wrote no line.** A designer blind to test scores (it met none) was asked whether the
+    framework admits a further line now that C2 holds the board's best. It started one line on C2's command; a safety
+    classifier stopped its output in the middle of the rule text, and it handed back that the answer is incomplete.
+    The AI assistant does not ask for the same content again. The unfinished draft in the scratch folder is not a rule
+    text and is used for nothing. T3's order is unchanged: row K23's file next; CK and the E = 4 file on its headline.
