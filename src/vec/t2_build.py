@@ -2570,6 +2570,97 @@ def series_rendered_expression(before: ad.AnnData, after: ad.AnnData, interp: In
     return out, rec
 
 
+# The mirror of the series rendering (2026-11-25; the file T2embryo_s2x_ovsb.h5ad of row R48 of
+# experiments/harness/TRIES.md, the captain's order of 2026-11-24; its step 0 is row E56). series_rendered_expression
+# moves the shallower bracket's cells (E7.5) into the deeper bracket's run profile and depth (E8.0); series_back moves
+# the deeper bracket's cells into the shallower one's: the E8.0 rows get SERIES_RULE's factor computed from E8.0 to E7.5
+# and are thinned to E7.5's median depth, while the E7.5 rows stay as released. The rows, order and positions are the
+# interpolation's, so a build changes nothing but the later bracket's expression.
+SERIES_BACK_RULE = ("series_back: the mirror of SERIES_RULE with the brackets swapped. The deeper bracket's drawn "
+                    "cells are moved by a per-gene factor into the shallower bracket's run profile and then thinned to "
+                    "the shallower bracket's depth (RENDER_RULE, lo). The factor is SERIES_RULE's gene_factor over the "
+                    "same matched extraembryonic labels as the series rendering takes (series_labels, the shallower "
+                    "bracket's lineage groups), computed from the deeper bracket to the shallower one, weights the "
+                    "deeper bracket's label shares, eps 1e-5, rescaled so the weighted total proportion is unchanged, "
+                    "clipped to 0.25-4. It is applied in count space as the series rendering applies its factor "
+                    "(binomial thinning below 1, Poisson top-up from the cell's kNN-smoothed proportions above 1); "
+                    "then every such cell is binomially thinned by the ratio of the shallower bracket's median counts "
+                    "per cell to the deeper bracket's (both over all their cells; panel genes and the rest of the "
+                    "library alike; a cell left without panel counts is thinned again). The shallower bracket's cells "
+                    "stay as released. Defined only when the earlier bracket is the shallower: the later bracket's "
+                    "cells are the ones moved")
+
+
+def _series_back_parts(before: ad.AnnData, after: ad.AnnData, genes) -> tuple[list, list[float], list[str], np.ndarray]:
+    """The brackets' counts (_stage_counts), their median counts per cell, the matched extraembryonic labels and
+    series_back's factor (SERIES_BACK_RULE). Refused when the earlier bracket is the deeper one."""
+    stages = (before, after)
+    parts = [_stage_counts(a, genes) for a in stages]
+    d = [float(np.median(p[2])) for p in parts]
+    lo, hi = (0, 1) if d[0] <= d[1] else (1, 0)  # the series rendering's roles, with its tie rule
+    if (lo, hi) != (0, 1):
+        raise ValueError("series_back moves the later bracket's cells into the earlier bracket's run profile and "
+                         "depth: it is defined only when the earlier bracket is the shallower, and here it is the "
+                         "deeper")
+    names = [np.asarray(a.obs["celltype"]).astype(str) for a in stages]
+    labels = series_labels(names[lo], np.asarray(stages[lo].obs["group"]).astype(str), names[hi])
+    phi = series_factor(parts[hi][1], names[hi], parts[lo][1], names[lo], labels)
+    return parts, d, labels, phi
+
+
+def series_back_factor(before: ad.AnnData, after: ad.AnnData, genes) -> tuple[np.ndarray, list[str]]:
+    """series_back's per-gene factor (from the later bracket to the earlier one, weights the later bracket's label
+    shares) and the matched extraembryonic labels it is computed on, exactly as series_back_expression takes them."""
+    _, _, labels, phi = _series_back_parts(before, after, genes)
+    return phi, labels
+
+
+def series_back_expression(before: ad.AnnData, after: ad.AnnData, interp: Interpolation, genes, t: float, seed,
+                           k: int = RENDER_K) -> tuple[np.ndarray, dict]:
+    """The interpolation's cells with the deeper (later) bracket's cells moved into the shallower (earlier) bracket's
+    run profile and depth (SERIES_BACK_RULE): expression (cells x genes, float32, log(1 + 1e4 c / N)) and a record.
+    Needs obs["celltype"] on both brackets and obs["group"] on the earlier one. The record holds no cell number outside
+    its dicts (a builder keeps only its flat values). k: the neighbours behind each cell's smoothed profile, as in
+    series_rendered_expression."""
+    from vec.core import apply_gene_factor
+
+    rng = np.random.default_rng(seed)
+    parts, d, labels, phi = _series_back_parts(before, after, genes)
+    lo, hi = 0, 1
+    ratio = d[lo] / d[hi]  # RENDER_RULE's lo: target / d, the target the shallower bracket's median (<= 1 here)
+    out = np.empty((len(interp.rows), len(genes)), dtype=np.float32)
+    m_lo, m_hi = interp.stage == lo, interp.stage == hi
+    out[m_lo] = parts[lo][0][interp.rows[m_lo]]  # the shallower bracket's rows as released
+    rec = {"rule": SERIES_BACK_RULE, "t": float(t), "median_depth": {"before": d[0], "after": d[1]},
+           "moved": "after", "labels": labels, "ratio": ratio,
+           "sd_log_factor": float(np.log(phi).std()), "genes_above_2x": int((np.abs(np.log(phi)) > np.log(2.0)).sum()),
+           "thinned": {"before": 0, "after": 0}, "retried": {"before": 0, "after": 0}}
+    if k != RENDER_K:
+        rec["k"] = int(k)
+    if m_hi.any():
+        E, C, lib, other = parts[hi]
+        rows = interp.rows[m_hi]
+        S = _smoothed_props(E, C, lib, rows, k)  # expected panel counts per unit of library
+        P = S / np.maximum(S.sum(1, keepdims=True), 1e-12)  # the cell's smoothed proportions over the panel
+        C0 = np.asarray(C[rows].toarray(), dtype=np.int32)
+        C1 = sparse.csr_matrix(apply_gene_factor(C0, phi, P, rng).astype(np.int64))  # as the series rendering does
+        oth = other[rows]
+        if ratio < 1.0:
+            w = np.full(len(rows), ratio)
+
+            def make(idx, g, C1=C1, oth=oth, w=w):
+                Cn, on = _binomial_rows(C1[idx], oth[idx], w[idx], g)
+                return Cn, np.asarray(Cn.sum(1)).ravel() + on
+
+            Cn, ln, retried = _keep_some_counts(make, len(rows), rng)
+            rec["thinned"]["after"], rec["retried"]["after"] = int(m_hi.sum()), retried
+        else:  # equal medians: nothing to thin
+            Cn, ln = C1, np.asarray(C1.sum(1)).ravel() + oth
+        out[m_hi] = _log_normalise(Cn, ln)
+        rec["rendered_median"] = float(np.median(ln))
+    return out, rec
+
+
 # Detection depth of an extrapolated stage (2026-11-03; heart try H3, experiments/harness/TRIES.md, registered before
 # its run). Counts per cell fall steadily through heart development in the released series (median counts per cell:
 # E8.25_late 233, E8.5 166, E8.75 130, E9.5 75, E10.5 56).

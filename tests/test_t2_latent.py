@@ -320,8 +320,8 @@ def test_the_expression_option_is_only_added_for_the_new_try():
     src = (REPO / "experiments" / "builds" / "build_test.py").read_text()
     assert '"latent"' in src and 'with_partners=a.expression in ("blend", "latent")' in src
     # the entry's default stays the released cells ("series" joined the choices with tries E24 and E25, "render_hi"
-    # with request R-A's second option; neither is an entry)
-    assert 'choices=("mixture", "depth", "blend", "latent", "series", "render_hi"),' in src
+    # with request R-A's second option, "series_back" with row R48's file; none is an entry)
+    assert 'choices=("mixture", "depth", "blend", "latent", "series", "render_hi", "series_back"),' in src
     assert src.count('default="mixture"') == 1
     sys.path.insert(0, str(REPO / "experiments" / "builds"))
     import build_test

@@ -235,6 +235,20 @@ machine, and an official upload needs the captain's go-ahead.
           and the file read back equal to the float32 coordinates bit for bit (else the file and its stamp are
           removed). On a test board it needs --copy-rows-size-test-ok as well as --copy-rows-test-ok, before anything
           loads
+          --expression series_back --captain-ruling R48 (off by default; row R48 of experiments/harness/TRIES.md, the
+          captain's order of 2026-11-24, "Build T2embryo_s2x_ovsb.h5ad as named": the embryo's depth line reopened
+          for this one file, an extra file beside O and never in its place): O's command (embryo --method fgw_shape0
+          --positions floor_exact --shape-interp overlay --shape-interp-test-ok) with the E8.0 rows moved into E7.5's
+          run profile and depth (vec.t2_build.series_back_expression, the mirror of the series rendering: SERIES_RULE's
+          factor computed from E8.0 to E7.5 on the same matched extraembryonic labels, weights E8.0's label shares,
+          applied in count space, then RENDER_RULE's lo thinning to E7.5's median depth) and the E7.5 rows as
+          released; O's rows, order, positions, count, scope and size rule unchanged. Refused before anything is read
+          on any other command (the test board, the default seed, nothing else changed), without --captain-ruling R48
+          or with another row, and unless TRIES.md holds exactly one row R48 whose first cell is the captain's order
+          ("ruling, no run") naming `--expression series_back` and `--captain-ruling R48`; embryo --captain-ruling
+          without it is refused. Its record gains a series_back block (the option, the file, R48, the order text, the
+          command, the rule) and the flat series_back_* fields, no cell number. Its step 0 is row E56
+          (experiments/coords/ovsb_step0.py); its test builds, experiments/builds/embryo_ovsb.sh
 
 The board is the test board from boards/ (after the intake, `vec boards update --from-file`); before that, --board
 may name a validation board of the same task for a dry run, and the script refuses a dry run whose output file name
@@ -408,6 +422,24 @@ COPY_ROWS_SIZE_RULE = "applied: rescale_to_rms about the copy centroid to prereg
 COPY_ROWS_SIZE_RMS_TOL = 1e-6  # the RMS self-check, relative
 COPY_ROWS_PARITY_FROM = 4  # the prefix parity self-check's smallest count (three rows have rank two: arbitrary)
 COPY_ROWS_PARITY_SEED = 0  # its metric seed
+# --expression series_back (row R48 of experiments/harness/TRIES.md, the captain's order of 2026-11-24, "Build
+# T2embryo_s2x_ovsb.h5ad as named": the embryo's depth line reopened for this one file, an extra file beside O and never
+# in its place): O's command with the E8.0 rows moved into E7.5's run profile and depth (vec.t2_build.SERIES_BACK_RULE,
+# the mirror of the series rendering); O's rows, order, positions, count, scope and size rule are unchanged. Off by
+# default; taken only on O's command with --captain-ruling R48 (the test board, the default seed, nothing else changed),
+# and only while TRIES.md holds exactly one row R48 whose first cell is the captain's order ("ruling, no run") naming
+# `--expression series_back` and `--captain-ruling R48`. Its step 0 is row E56 (experiments/coords/ovsb_step0.py).
+EMBRYO_OVSB_ROW = "R48"
+EMBRYO_OVSB_OPTION = "`--expression series_back`"
+EMBRYO_OVSB_FILE = "T2embryo_s2x_ovsb.h5ad"
+EMBRYO_O_COMMAND = "embryo --method fgw_shape0 --positions floor_exact --shape-interp overlay --shape-interp-test-ok"
+EMBRYO_OVSB_COMMAND = ("embryo --method fgw_shape0 --positions floor_exact --expression series_back --shape-interp "
+                       f"overlay --shape-interp-test-ok --captain-ruling {EMBRYO_OVSB_ROW}")
+EMBRYO_OVSB_ORDER = ("experiments/harness/TRIES.md row R48, the captain's order of 2026-11-24 (\"Build "
+                     "T2embryo_s2x_ovsb.h5ad as named\"; decision log 2026-11-24 (tt)): the embryo's depth line "
+                     "reopened for this one file, an extra file beside O and never in its place; O's command with "
+                     "--expression series_back, taken only with --captain-ruling R48")
+EMBRYO_OVSB_STEP0 = "row E56 of experiments/harness/TRIES.md (experiments/coords/ovsb_step0.py)"
 HEART_HALVING = ("experiments/builds/halve.py <file> <half>: a uniform random half of the rows (halve.DEFAULT_SEED, "
                  "order kept), as for the ruled heart2 file; the halving is a separate step, not this build")
 
@@ -2063,6 +2095,43 @@ def floor_copy_coords(stage_file: str) -> np.ndarray:
                      t2_build.COPY_PARITY_COPY_SEED).coords
 
 
+def _series_back_ordered() -> bool:
+    """Whether experiments/harness/TRIES.md holds exactly one row R48 whose first cell is the captain's order ("ruling,
+    no run") naming `--expression series_back` and `--captain-ruling R48` (_captain_order_names)."""
+    return _captain_order_names(EMBRYO_OVSB_ROW, EMBRYO_OVSB_OPTION)
+
+
+def _series_back_refusals(a) -> bool:
+    """--expression series_back's refusals (row R48), before any board or stage is read. Returns whether the option is
+    given; without it every command is what it was (embryo --captain-ruling alone is refused)."""
+    ruling = getattr(a, "captain_ruling", None)
+    if a.expression != "series_back":
+        if ruling is not None:
+            sys.exit(f"embryo --captain-ruling goes with --expression series_back only ({EMBRYO_OVSB_COMMAND})")
+        return False
+    o_command = (a.method == "fgw_shape0" and a.positions == t2_build.POSITIONS[1] and a.shape_interp == "overlay"
+                 and a.shape_interp_test_ok and not a.herd and a.draw == t2_build.DRAWS[0]
+                 and a.move_coupling == t2_build.MOVE_COUPLINGS[0] and a.row_order == t2_build.ROW_ORDERS[0]
+                 and not a.row_order_test_ok and not getattr(a, "copy_rows", False)
+                 and not getattr(a, "copy_rows_test_ok", False) and not getattr(a, "copy_rows_size", False)
+                 and not getattr(a, "copy_rows_size_test_ok", False) and a.seed == harness.BUILD_SEED_OFFSET + 1
+                 and a.board in (None, TEST_BOARDS["embryo"]))
+    if not o_command:
+        sys.exit(f"--expression series_back is refused except on O's command with it, {EMBRYO_OVSB_COMMAND}: the "
+                 "test board, the default seed and nothing else changed (row R48)")
+    if ruling is None:
+        sys.exit(f"--expression series_back is the captain's order of row {EMBRYO_OVSB_ROW} alone and needs "
+                 f"--captain-ruling {EMBRYO_OVSB_ROW}")
+    if ruling != EMBRYO_OVSB_ROW:
+        sys.exit(f"--expression series_back is refused with --captain-ruling {ruling}: only row {EMBRYO_OVSB_ROW} "
+                 "orders it")
+    if not _series_back_ordered():
+        sys.exit(f"--expression series_back is refused: experiments/harness/TRIES.md must hold exactly one row "
+                 f"{EMBRYO_OVSB_ROW} whose first cell is the captain's order (\"ruling, no run\") naming "
+                 f"{EMBRYO_OVSB_OPTION} and `--captain-ruling {EMBRYO_OVSB_ROW}`")
+    return True
+
+
 def _copy_rows_refusals(a) -> None:
     """--copy-rows' refusals, before any board or stage is read (off by default: nothing here acts without it)."""
     copy_rows, ok = getattr(a, "copy_rows", False), getattr(a, "copy_rows_test_ok", False)
@@ -2211,6 +2280,7 @@ def _build_copy_rows(a, board, dry: bool, genes, files: dict, inputs: dict, coun
 
 
 def build_embryo(a) -> dict:
+    series_back = _series_back_refusals(a)  # row R48's option (off by default): before anything is read
     _copy_rows_refusals(a)
     if a.positions != t2_build.POSITIONS[0] and (a.method != "fgw_shape0" or a.herd
                                                  or a.draw != t2_build.DRAWS[0]):
@@ -2290,6 +2360,8 @@ def build_embryo(a) -> dict:
             X, expr_rec = t2_build.series_rendered_expression(before, after, res, genes, 0.5, [a.seed, 7])
         elif a.expression == "render_hi":  # the harness's depth top-up to the deeper bracket (tries E19c and E24b)
             X, expr_rec = t2_build.depth_rendered_expression(before, after, res, genes, 0.5, [a.seed, 7], mode="hi")
+        elif a.expression == "series_back":  # row R48's file: the E8.0 rows in E7.5's run profile and depth
+            X, expr_rec = t2_build.series_back_expression(before, after, res, genes, 0.5, [a.seed, 7])
         else:  # the harness's fgw_blend (try E8)
             X, expr_rec = t2_build.blend_expression(before, after, res, genes, 0.5, [a.seed, 7])
         guard = t2_build.cloud_guard(res.coords, res.pool_coords, seed=a.seed, source_weights=res.pool_weights)
@@ -2297,7 +2369,7 @@ def build_embryo(a) -> dict:
             raise SystemExit(f"cloud guard flags {guard.flags}")
         coords, rec = res.coords, res.record
         if expr_rec is not None:
-            prefix = a.expression if a.expression in ("latent", "series", "render_hi") else "depth"
+            prefix = a.expression if a.expression in ("latent", "series", "render_hi", "series_back") else "depth"
             rec = {**rec, "expression": a.expression,
                    **{f"{prefix}_{k}": v for k, v in expr_rec.items() if not isinstance(v, (dict, list))
                       and (prefix, k) != ("latent", "retried")}}  # a test build's record holds no cell number
@@ -2325,6 +2397,11 @@ def build_embryo(a) -> dict:
                                "order": SHAPE_INTERP_ORDER,
                                **{k.removeprefix("shape_interp_"): v for k, v in rec.items()
                                   if k.startswith("shape_interp_") and not isinstance(v, (dict, list))}}
+    if series_back:  # row R48's file only: what it is and who ordered it, flat values, no cell number
+        out["series_back"] = {"option": "--expression series_back", "file": EMBRYO_OVSB_FILE,
+                              "captain_ruling": EMBRYO_OVSB_ROW, "order": EMBRYO_OVSB_ORDER,
+                              "command": EMBRYO_OVSB_COMMAND, "o_command": EMBRYO_O_COMMAND,
+                              "rule": t2_build.SERIES_BACK_RULE, "step0": EMBRYO_OVSB_STEP0}
     return out
 
 
@@ -2526,13 +2603,17 @@ def build_parser() -> argparse.ArgumentParser:
                            help="fgw = s1; fgw_shape0 = the s2 of docs/S2_RULES.md (E7.5's geometry)")
             p.add_argument("--herd", action="store_true",
                            help="herd each bracket's draw towards its mean expression (try E9; off: the entry so far)")
-            p.add_argument("--expression", choices=("mixture", "depth", "blend", "latent", "series", "render_hi"),
+            p.add_argument("--expression",
+                           choices=("mixture", "depth", "blend", "latent", "series", "render_hi", "series_back"),
                            default="mixture",
                            help="fgw methods: the cells as released (the entry), or tries E7, E8, E14, E24 and E19c "
                                 "of experiments/harness/TRIES.md: thinned to the predicted depth; blends; a count "
                                 "model's latent interpolation (needs the gpu dependency group); the shallower "
                                 "bracket's cells in the deeper bracket's run profile; every cell topped up to the "
-                                "deeper bracket's depth. Neither of the last two is an entry until the captain rules")
+                                "deeper bracket's depth. Neither of the last two is an entry until the captain rules. "
+                                "series_back (row R48, the captain's order of 2026-11-24; off by default): the mirror "
+                                "of series, the E8.0 rows in E7.5's run profile and depth and the E7.5 rows as "
+                                f"released, only as {EMBRYO_OVSB_COMMAND} (O's command with it)")
             p.add_argument("--move-coupling", choices=t2_build.MOVE_COUPLINGS, default=t2_build.MOVE_COUPLINGS[0],
                            help="fgw methods: which coupling sets the moves: fgw (the entry) or aligned (try E10 of "
                                 "experiments/harness/TRIES.md: an exact transport in the rotated common frame)")
@@ -2591,6 +2672,8 @@ def build_parser() -> argparse.ArgumentParser:
                            help="--row-order copy_parity on the test board: the captain's yes (off by default; "
                                 "without it the option refuses on a test board before anything loads, because a "
                                 "refusal or a success there shows one bit of the test count)")
+            p.add_argument("--captain-ruling", default=None,
+                           help=f"with --expression series_back only: {EMBRYO_OVSB_ROW}, the row that orders it")
     return ap
 
 
