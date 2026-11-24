@@ -2,6 +2,15 @@
 
 ## Current State
 
+- **2026-11-24, 00:10 UTC.** The captain reported the day's second scores: T1's 2.0 file (72.29) and T3's C2 (63.94)
+  took their board's best; the heart's first trend file (56.51) and the embryo's sized copy-rows file (66.42) did not.
+  Standing 201.38. The captain then said yes to the two new-file questions and renewed the bulk approval of outside
+  data. T3's new line was put in force and ended at its own guard on released data, with no file. For T1 a fresh round
+  blind to scores wrote a line that steps from the file now holding the best (two files, the first uploaded only if
+  `T1_s2rcCm20.h5ad` scores above the 2.0 file); it is in force and an engineer is coding it. A cold completeness
+  check of outside data agreed with the round of 23 Nov that volume does not help inside the rules; its one long shot
+  (about two in a hundred) is not started. Decision log 2026-11-23 (gg), (hh) and 2026-11-24 (a) to (c).
+
 - **2026-11-23, 23:30 UTC.** The checked reading was redone against the new bests: the record now puts one more
   waiting file below its board's best (the heart's first trend file on the full trim), and an independent reader
   confirmed the rule application in the upload sheet. A design round for T1 and T3 was started, found not blind (the

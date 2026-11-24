@@ -2,7 +2,54 @@
 
 ## Current Objective
 
-- **State at 2026-11-23, 23:30 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-24, 00:10 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-24 (c); next label (d). Ruling rows through R29; next R30 (row R22's first cell was amended twice,
+  add-only). Register through X020; next X021. T1's next row is T73. Tries unchanged: T1 463, embryo 88, heart 97, T3
+  74. RUNNING: one engineer, blind to test scores, on T1 line 5's builder pair and launcher (its own worktree, branch
+  `campaign/t1-line5`). Nothing runs on the DGX. Main at the commit of this note.
+  - **EIGHT HEADLINES WERE REPORTED ON 2026-11-23** (log (cc) and (gg); headline only). Best per board: T1
+    `T1_s2rcB2.h5ad` 72.29; T3 `T3_c2_s2.h5ad` 63.94; heart `T2heart_organ_half.h5ad` 60.4; embryo
+    `T2embryo_s2x_ov.h5ad` 69.9. Standing 201.38. An independent reader confirmed the rule application and every
+    sha256 of the sheet after each set.
+  - **ORDERS NOW** (`docs/UPLOAD_SHEET.md`: 16 built files in the orders, 3 skipped). T1: `T1_s2rcMSB.h5ad`, then at
+    each slot line 1's due file (`T1_s2rcB25.h5ad`, due; B30 only if B25 is strictly above the 2.0 file's 72.29), line
+    2's (`T1_s2rcA15.h5ad`, due; A20 only if A15 above A's 70.8), line 3's (`T1_s2rcCm20.h5ad`, due; Cm25 only if Cm20
+    above C's 71.8), then line 5's (below; not built yet). T3: `T3_k23_s2.h5ad`; CK and the E = 4 file each only if
+    K23 is strictly above the barred s2's 62.30. Embryo, no conditions: `T2embryo_s2xs_ov.h5ad`, `T2embryo_s2.h5ad`,
+    `T2embryo_s2x_ovhi.h5ad`. Heart: `T2heart_core_ts10_half.h5ad` (due; the first line ends at it), then
+    `T2heart_organ_ts05_half.h5ad` (due); OTS10 only if OTS05 above D's 60.4.
+  - **TOLD TO THE CAPTAIN, NOT ANSWERED.** T1 order: the AI assistant's recommendation, from ordinal facts only, is
+    `T1_s2rcB25.h5ad` next and then `T1_s2rcCm20.h5ad` (each one step from the file holding the best), ahead of MSB
+    and A15. Heart order: no recommendation; the captain may put OTS05 before TS10. Without the captain's words the
+    order on record stands.
+  - **THE CAPTAIN'S WORDS OF LOG 2026-11-23 (hh)** ('yes for both if it would improve our scores'; '500 external
+    datasets ... 1 TB ... at all drastic costs') AND WHAT CAME OF THEM. (1) T3's second line (the Gata4 table's weight
+    at 2 on C1) was put in force and ENDED AT ITS OWN GUARD in an early trial on released data (38.2% against the 5%
+    limit; log 2026-11-24 (a)); no file; the option stays named in R22's first cell and no builder takes it. (2) 'T1
+    line 4' was not built and lapses. (3) T1 LINE 5 IS IN FORCE (log 2026-11-24 (c); rules amendment re-pinned; R22's
+    first cell names `--g-mom-damping 1.5 --feng-fraction-mult 2.0` and `--g-mom-damping 2.0 --feng-fraction-mult
+    2.0`): files `T1_s2rcB2d15.h5ad` then `T1_s2rcB2d20.h5ad`; its member is line 3's `T1_s2rcCm20.h5ad`; B2d15 goes
+    only if Cm20's headline is strictly above the 2.0 file's 72.29, B2d20 only if B2d15 is above the line's best. The
+    amendment rests on the AI assistant's reading of the captain's yes; the challenger's question was put to the
+    captain unchanged (default: amend, line 5 last). (4) Outside data: a cold completeness check (log 2026-11-24 (b))
+    agrees with the round of 23 Nov: nothing inside the rules that volume helps; one long shot, CHIPQ-C on T3, about
+    two in a hundred, NOT STARTED; the captain orders it with 'run CHIPQ-C'. The T3 pathway tier stays out. (5) T3's
+    design round of today wrote no line (a safety classifier stopped the designer's text; not pressed).
+  - **T1 LINE 5, WHAT REMAINS** (all by 2026-11-25 12:00 UTC): the engineer's hand-back; a reviewer blind to test
+    scores, started with the agent tool, blocker standard stated up front; merge; deliver the commit to the DGX
+    (`~/v/vec-campaign-d`, detached worktree `~/v/scratch/t1line-wt`); trace the launcher's refusal path under a
+    throwaway home; `experiments/builds/t1_b2d_line.sh <COMMIT> <RUN>` detached with a background waiter (eleven
+    identity builds, then each new file twice); copy the two files to `runs/manual_upload/`; their sha256 into log
+    entry (c) BEFORE any score; the upload sheet.
+  - **STANDING RULES RESTATED.** Analysts, engineers and reviewers who must be blind to test scores are started ONLY
+    with the agent tool (a workflow relays the captain's message, and the captain's latest messages hold scores), with
+    the EXPOSED tripwire, the ledger only through `lift8/ledger_blind.py`, no git log, show or diff. A line's own
+    guard or gate is run BEFORE its engineer (the T3 line's guard failed after its engineer had started). A text a
+    safety classifier stops is not asked for again.
+  - **WHEN THE CAPTAIN PASTES SCORES:** the headline per board only into `results/manual_uploads.csv`; a log entry
+    (next label 2026-11-24 (d)); each rule by its letter; line 5's gate (Cm20 against the 2.0 file's headline); the
+    sheet; the reply with the next file per board; then an independent rule check with the agent tool.
+- **State at 2026-11-23, 23:30 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-23 (ff); next label (gg). Ruling rows through R29; next R30. Register through X020; next X021. T1's next row
   is T73. Tries unchanged: T1 463, embryo 88, heart 97, T3 74. NOTHING RUNS, here or on the DGX; no workflow and no
   agent is open. Main at the commit of this note.
