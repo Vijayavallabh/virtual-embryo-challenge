@@ -766,7 +766,9 @@ def test_the_reader_refuses_a_changed_file(db, kept):
 
 # The read script (and its tests) may CALL chipq's functions (open_target, build, placebo_pool, ...), but nothing
 # outside chipq.py opens a target-gene file itself: no target file name or path, no target_rel, no checked_bytes.
-READ_CALLERS = ("experiments/t3_decomp/k27_chip_query.py", "tests/test_k27_chip_query.py")
+READ_CALLERS = ("experiments/t3_decomp/k27_chip_query.py", "tests/test_k27_chip_query.py",
+                # row K28 (CHIPQ-C): the partners' module calls the reader's every-row mode; its tests call both
+                "experiments/t3_ext/chipq_partners.py", "tests/test_chipq_partners.py")
 OPENS_A_TARGET = re.compile(r"\.5\.tsv|target_rel|checked_bytes|[\"']targets/|/\s*[\"']targets[\"']")
 NAMES_THE_READER = re.compile(r"chipatlas|open_target")
 
