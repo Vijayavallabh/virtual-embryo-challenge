@@ -2,6 +2,13 @@
 
 ## Current State
 
+- **2026-11-24, 00:45 UTC.** The stronger T3 file was coded, reviewed, built twice with one sha256 and handed to the
+  captain (`T3_c1_s2_g2.h5ad`). T1's fifth search line was coded, reviewed and merged, and its build runs on the DGX.
+  On the captain's order a design round ran for the heart and the embryo: the heart gave two search-line texts that
+  need the captain's own yes and one struck candidate; the embryo gave no search line and one long-shot candidate
+  whose target-free gate is being coded. The captain skipped two more T1 files on a condition (the combined momentum
+  file and A15). Decision log 2026-11-24 (d) to (h).
+
 - **2026-11-24, 00:16 UTC.** The captain lifted the 5% guard that had ended T3's new line ("[loosen it all the way]";
   ruling row R30), so its one file, the Gata4 table at double strength on C1's command, is to be built after all. An
   engineer is coding the option; a rehearsal of the existing T3 launcher runs on the DGX first, to see that the build

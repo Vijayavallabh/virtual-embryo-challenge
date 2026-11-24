@@ -2,7 +2,50 @@
 
 ## Current Objective
 
-- **State at 2026-11-24, 00:16 UTC (newest; it supersedes the bullets below where they differ; everything not named
+- **State at 2026-11-24, 00:45 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-24 (h); next label (i). Ruling rows through R30; next R31. Register through X020. Tries unchanged: T1 463,
+  embryo 88, heart 97, T3 74. RUNNING: the T1 line-5 build on the DGX (below) and one engineer blind to test scores
+  writing the embryo candidate's target-free gate (branch `campaign/emb-osr-gate`).
+  - **STANDING** 201.38 (T1 72.29 `T1_s2rcB2.h5ad`; T3 63.94 `T3_c2_s2.h5ad`; heart 60.4 D; embryo 69.9 O). No score
+    reported since log 2026-11-23 (gg).
+  - **ORDERS NOW** (`docs/UPLOAD_SHEET.md`: 14 built files in the orders, 6 skipped). T1: `T1_s2rcB25.h5ad` (due),
+    `T1_s2rcCm20.h5ad` (due); B30 only if B25 beats the 2.0 file's 72.29; Cm25 only if Cm20 beats C's 71.8; then line
+    5's files once built (`T1_s2rcB2d15.h5ad` only if Cm20 beats 72.29; `T1_s2rcB2d20.h5ad` only if B2d15 beats that
+    line's best). T3: `T3_k23_s2.h5ad`; CK and the E = 4 file each only if K23 beats the barred s2's 62.30; then
+    `T3_c1_s2_g2.h5ad` (BUILT, sha256 e01e24facb68..., handed to the captain). Embryo: `T2embryo_s2xs_ov.h5ad`,
+    `T2embryo_s2.h5ad`, `T2embryo_s2x_ovhi.h5ad`. Heart: `T2heart_core_ts10_half.h5ad` (due),
+    `T2heart_organ_ts05_half.h5ad` (due), OTS10 only if OTS05 beats D's 60.4.
+  - **THE CAPTAIN'S WORDS SINCE 00:10 UTC.** (1) "[loosen it all the way]" = ruling row R30: the T3 line's 5% guard
+    gates nothing; the file was coded (review READY), built twice (a3c511c; gates rebuilt the recorded bytes) and
+    recorded (log (d), (f); rules notes re-pinned). (2) "[I want it to boost our scores as drastic as possible ...]" =
+    a design round for the heart and the embryo (log (e)); it is NOT a named exception for any file. (3) "skip them if
+    they don't improve" = `T1_s2rcMSB.h5ad`, `T1_s2rcA15.h5ad` and with it `T1_s2rcA20.h5ad` are skipped (log (h);
+    rules note re-pinned; rows R26 and R22); the captain reverses with 'keep MSB' or 'keep A15'.
+  - **T1 LINE 5 BUILD.** Code reviewed READY and merged at 7e7d9a6; delivered to the DGX worktree
+    `~/v/scratch/t1line-wt` (clean at that commit); refusal path traced (exit 96, record written); the real run
+    `experiments/builds/t1_b2d_line.sh 7e7d9a64a87aaf7f766ac79f9907e230bf6dacf6 b1` was launched at 00:35 UTC (scratch
+    `~/v/scratch/t1b2dline/b1`, output `runs/t1b2dline_7e7d9a6_b1`; final record `done.exit`; waiter
+    `lift8/wait_dgx_run.sh v/scratch/t1b2dline/b1 done.exit`). WHEN DONE: copy both files to `runs/manual_upload/`,
+    check their sha256 against both DGX builds, write the build record, the rules note with the sha256 (re-pin), the
+    sheet rows and a log entry, all BEFORE any score of them; hand over with the T1 Data-used text.
+  - **THE HEART AND EMBRYO ROUND (log (e), (g)).** Heart: two line texts beyond the lines' caps are on record and NOT
+    in force (TS15 and TS20 on the full trim; OTS15 on the organ cut); each needs the captain's own named yes ('yes to
+    TS15 and TS20', 'yes to OTS15'), default no, and a practice read with a stop rule before any build; the new heart
+    candidate was struck. Embryo: no search line (designer and cold challenger agree); new candidates: one designer
+    found none; a second found one, OSR (the overlay file with one stretch to the brackets' log-midpoint elongation),
+    which its cold challenger put at about 0.02 and sent to its target-free gate only
+    (`lift8/round_1124_t2/embryo_osr_attack.json`). The test pair's blocks are 1|2,3 by the committed E49 reading, so
+    stop clause S3 does not fire. WHEN THE GATE SCRIPT COMES BACK: deliver the branch commit to a clean DGX checkout
+    with the embryo data (`~/v/vec-campaign-c` has data and an environment), run `experiments/coords/osr_gate.sh
+    <COMMIT> <RUN>` detached, read `gate.txt`: STOP ends the candidate; PASS means a ledger row (rule writer and
+    challenger, blind), then code, review, the practice read with the challenger's pass rule, and only after a pass
+    the captain's naming. Not yet in the decision log: the embryo part of the round (write it with the gate's
+    outcome).
+  - **BLIND AGENTS:** agent tool only, tripwire in the brief, ledger only through `lift8/ledger_blind.py` (it now also
+    withholds cells that speak of a test upload's per-metric result). The ledger's rule J8 and rows N53, E47a and E49a
+    say in words that the first embryo upload met a shape loss; a designer told it was fully blind recused itself from
+    the shape group on meeting them, so embryo designers are now told what J8 allows.
+- **State at 2026-11-24, 00:16 UTC (superseded by the bullet above where they differ; everything not named
   here is as the bullet of 00:10 UTC).** Decision log through 2026-11-24 (d); next label (e). Ruling rows through R30;
   next R31. RUNNING: two engineers blind to test scores, each in its own worktree (T1 line 5 on `campaign/t1-line5`;
   T3's second line on `campaign/t3-gata4-weight-2`), and one rehearsal build on the DGX.
