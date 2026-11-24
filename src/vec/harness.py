@@ -2152,6 +2152,21 @@ CANDIDATES.update({
 })
 
 
+# Row E55 (the cold challenger's specification, round_1124_t2; branch campaign/emb-osr): fgw_shape0x_ov's union
+# stretched along its own principal axes to the brackets' interpolated profile (vec.shape_interp overlay_stretch),
+# and its two placebos (harness only). Three new names; no existing candidate, option or default changes.
+OSR_CANDIDATES = {"fgw_shape0x_ov_sr": "overlay_stretch", "fgw_shape0x_ov_sr_anti": "overlay_stretch_anti",
+                  "fgw_shape0x_ov_sr_axes": "overlay_stretch_axes"}
+
+CANDIDATES.update({
+    name: Candidate(name, frozenset({"T2"}), (), _fgw_shape0x_form(form),
+                    {"what": "fgw_shape0x_ov (the overlay form on the earlier bracket's own positions) with its union "
+                             f"stretched by vec.shape_interp {form} before the size rule",
+                     "positions": t2_build.POSITIONS[1], "stream": t2_build.FLOOR_EXACT_STREAM, "shape_form": form,
+                     "scope": "whole"}, requires=_interp)
+    for name, form in OSR_CANDIDATES.items()})
+
+
 # ------------------------------------------------------------------------------------------------ read guard
 _GUARD: dict | None = None  # the active guard's rules and log, if a candidate is building
 _HOOKED = False
