@@ -13954,3 +13954,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Each rule by its letter.** Both scored below their boards' best, which stays (T1 the combined-momentum file, T3
     C2). No condition turns on either. T3's fourth line is spent: its three files all scored below C2. Standing
     unchanged: overall 203.255.
+- 2026-11-24 (eee), the embryo file W's code is merged and its step 0 named before it runs (state at 19:52 UTC,
+  2026-11-24). Written by the AI assistant.
+  - An engineer blind to test scores wrote `--expression series_back`, step 0 (`experiments/coords/ovsb_step0.py`) and
+    the launcher `experiments/builds/embryo_ovsb.sh`; an independent review found no blocker (both of the engineer's
+    readings of the text, the carry check in expectation and the depth check over all E8.0 cells, judged faithful);
+    merged at 5fa318a. Row E56's last cell now names the script and its sha256 (a111f8396420...) before it runs; its
+    check (ii) is one counted embryo try (93) when it runs.
