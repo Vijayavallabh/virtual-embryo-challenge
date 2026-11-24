@@ -12729,3 +12729,30 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     launcher on the DGX campaign checkout, to see that the four identity forms still rebuild their recorded bytes
     there. Then the file built twice with one sha256, its sha256 into this log before any score, and the hand-over.
     All by 2026-11-25 12:00 UTC.
+- 2026-11-24 (e), the captain orders a design round for the heart and the embryo (state at 00:24 UTC, 2026-11-24).
+  Written by the AI assistant, which is recused on the heart's scope and size and on the embryo's occupancy term and
+  shape forms and gives no lean on either board.
+  - **What the captain sent.** A side agent's note (today's design rounds covered T1 and T3 only; for the heart and
+    the embryo the team's own rules ask for the captain's named order, and the main agent may not suggest one; both
+    boards have three built files for up to six slots; the heart's organ cut, which the captain ordered, gave the
+    day's largest step; a new round may find nothing, as an earlier embryo round did; 'If you want one, say so in the
+    main session soon'), and under it the captain's own words, verbatim: "[I want it to boost our scores as drastic as
+    possible [500 external datasets and 1TB of space in the dgx if required]]".
+  - **The AI assistant's reading (its own).** The words order a new design round for both boards. For the embryo they
+    are the 'further named order' that clause (5) of its order rule asks for; for the heart they reopen the list its
+    order rule ended after D. They renew the bulk approval of outside data and of disk on the DGX, which lifts cost
+    only. They are NOT a named exception for any file: a file on a closed lever (sizes, scope and cell numbers on
+    every board; the embryo's depth) still needs the captain's own yes to one priced question, file by file, and the
+    upload of any new file stays the captain's naming.
+  - **Started.** Four designers blind to test scores, through the route that relays no message and with the tripwire:
+    per board one for search lines under row R22's framework, given which uploaded file stands above which and no
+    value, and one for new candidates, given no fact about any score at all (the form of the round of 2026-11-21). A
+    cold challenger follows each. The inputs are the main session's, from the record only: the framework and the two
+    heart lines verbatim, the embryo's order rule verbatim, the files' commands, the limits, and for the new-candidate
+    designers the T2 findings of the outside-data round of 2026-11-23 and of today's completeness check. The ledger
+    reader the blind analysts use now also withholds every cell that speaks of a test upload's per-metric result (row
+    H28's eighth cell and row N53's fifth beside the cells already left out).
+  - **What a candidate must still pass.** A ledger row before any read against a practice target; a target-free gate
+    first where one exists, run before any engineer starts; a practice read with its pass rule fixed in the row; a
+    reviewed builder option that leaves every existing output as it is; two builds with one sha256; for a closed lever
+    the captain's named exception; the captain's naming for upload. All by 2026-11-25 12:00 UTC.
