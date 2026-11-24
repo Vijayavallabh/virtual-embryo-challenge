@@ -1145,3 +1145,843 @@ def test_the_gate_record_decides_whether_the_run_may_follow(h34, tmp_path):
     assert failed[-4:] == [h34.GATE_LINES["FAIL"], "WHY: G1 (M): a; G2: b",
                            "Try H34: VOID: v3: the gate fails (G1 (M): a; G2: b); nothing is built.", NOTHING_BUILT]
     assert "the run step refuses, no try is counted and the outcome is VOID" in h34.GATE_LINES["FAIL"]
+
+
+# ------------------------------------------------------------------------------------------------ the steps, end to end
+def _stub_scores(h34, offsets):
+    def score_arms(tr, s, preds):
+        sc, sk, gr = {}, {}, {}
+        for q in h34.TRUTHS:
+            base = _control(h34, tr.key, s, q)
+            sc[q] = {"floor": 50.0, **{a: base + _off(offsets.get(a, 0.0), q, s) for a in preds}}
+            sk[q] = {a: {m: 0.5 for m in METRICS} for a in ("floor", *preds)}
+            gr[q] = {a: {g: 0.5 for g in GROUPS} for a in ("floor", *preds)}
+        return sc, sk, gr
+    return score_arms
+
+
+def _write_parts(root, parts):
+    for k, ps in parts.items():
+        for i, p in enumerate(ps):
+            d = root / re.sub(r"[^A-Za-z0-9.]+", "_", k) / str(i)
+            d.mkdir(parents=True)
+            (d / "h34.json").write_text(json.dumps(p, default=float))
+
+
+def test_gate_run_and_read_end_to_end_on_stand_in_stages(h34, fake_io, monkeypatch, tmp_path, capsys):
+    """The three steps through the command line on stand-in stages, two seeds in place of ten (the scores come from a
+    stand-in scorer; the builds, the factors, the records and every check are the script's own)."""
+    seeds = (0, 1)
+    monkeypatch.setattr(h34, "SEEDS", seeds)
+    monkeypatch.setattr(h34, "score_arms", _stub_scores(h34, GOOD))
+    monkeypatch.setattr(h34, "git_state", lambda: {"commit": COMMIT, "tree_clean": True, "utc": "x"})
+    # row H27's parts and row H29b's reading as these stand-in stages make them: the stand-in control scores,
+    # hand-made scores of the three controls, the loader's records
+    h27 = tmp_path / "h27"
+    for k, rows in _h27_rows(h34, seeds).items():
+        (h27 / h34.h26.safe(k)).mkdir(parents=True)
+        (h27 / h34.h26.safe(k) / "h27.json").write_text(json.dumps({"axis": h34.h27.AXIS, "task": k, "rows": rows}))
+    committed = _committed(h34, seeds)
+    for key in h34.TASK_KEYS:
+        tr = h34.load_transition(key, tmp_path)
+        d = h34.build_control(h34.context(tr, 0), tr.target)[2]
+        committed["pool_info"][key], committed["organ_records"][key] = tr.facts["pred_info"], tr.facts["organ_record"]
+        committed["ratios"][key], committed["d_targets"][key] = tr.facts["ratios"], tr.facts["d_targets"]
+        committed["pools_short"][key] = {"organ": {"pool_cells": d["pool_cells"], "drawn": [d["drawn"]],
+                                                   "short_in_seeds": len(seeds) * d["short"],
+                                                   "repeated_rows_at_least": d["repeated_rows_at_least"]}}
+    reading = tmp_path / "h29b_reading.json"
+
+    def commit_reading():
+        """Write the stand-in reading and name it as the file row H29b's row records."""
+        reading.write_text(json.dumps(committed, default=float))
+        monkeypatch.setattr(h34, "H29B_READING_SHA256", hashlib.sha256(reading.read_bytes()).hexdigest())
+    commit_reading()
+    out = tmp_path / "results"
+    gate_dir, parts_dir = out / "gate", out / "parts"
+    common = ["--commit", COMMIT, "--data", str(tmp_path)]
+
+    def gate(folder, h29b=reading, parts=h27):
+        with pytest.raises(SystemExit) as e:
+            h34.main(["gate", "--out", str(folder), "--h29b", str(h29b), "--h27", str(parts), *common])
+        return e.value.code, capsys.readouterr().out.splitlines()
+    run = ["run", "--task", KEY1, "--seeds", "0-1", "--out", str(parts_dir / "e95" / "0-1"), "--gate", str(gate_dir),
+           *common]
+    # the run refuses before any gate record exists
+    with pytest.raises(SystemExit, match="has not said PASS"):
+        h34.main(run)
+    # the gate
+    code, printed = gate(gate_dir)
+    assert code == 0 and printed[-1] == "GATE PASS" and len(printed) == 5
+    assert all(re.fullmatch(r"T2h/[^ ]+ seed [01] \([0-9.]+ s\) done", ln) for ln in printed[:-1])
+    g = json.loads((gate_dir / "gate.json").read_text())
+    assert g["verdict"] == "PASS" and g["why"] == [] and g["commit"] == COMMIT and g["axis"] == h34.GATE_AXIS
+    assert g["found"] == {"R": {KEY1: [], KEY2: []}, "D": {KEY1: True, KEY2: True},
+                          "M": {"means": 18, "unequal": [], "largest_abs_diff": 0.0},
+                          "P": {"numbers": 270, "unequal": []},
+                          "G2": {"contexts": 4, "failed": 0, "lineages": ["CM", "Endothelial"]}}
+    assert g["h29b_reading_sha256"] == h34.H29B_READING_SHA256 and g["provenance"]["commit"] == COMMIT
+    assert set(g["rows"]) == set(h34.TASK_KEYS) and [r["seed"] for r in g["rows"][KEY1]] == [0, 1]
+    assert set(g["rows"][KEY1][0]["scores"]["own"]) == {"floor", "control"}  # only the control is built and scored
+    assert g["rows"][KEY2][1]["factors"] == FACTORS
+    assert h34.GATE_LINES["PASS"] in (gate_dir / "gate.txt").read_text() and h34.gate_passed(gate_dir, COMMIT)
+    with pytest.raises(SystemExit, match="already holds a gate record"):
+        h34.main(["gate", "--out", str(gate_dir), "--h29b", str(reading), "--h27", str(h27), *common])
+    # the run: two parts, one per transition; the four arms, the control once more, the floor's scores kept
+    h34.main(run)
+    h34.main(["run", "--task", KEY2, "--seeds", "0-1", "--out", str(parts_dir / "e875" / "0-1"), "--gate",
+              str(gate_dir), *common])
+    printed = capsys.readouterr().out.splitlines()
+    assert [bool(re.fullmatch(r"T2h/[^ ]+ seed [01] \([0-9.]+ s\) done", ln)) for ln in printed] == \
+        [True, True, False] * 2
+    assert printed[2] == f"wrote {parts_dir / 'e95' / '0-1' / 'h34.json'}"
+    with pytest.raises(SystemExit, match="exists"):
+        h34.main(run)
+    parts, unreadable = h34.load_parts(parts_dir)
+    assert unreadable == [] and set(parts) == set(h34.TASK_KEYS) and all(len(ps) == 1 for ps in parts.values())
+    assert set(parts[KEY1][0]["rows"][0]["scores"]["own"]) == set(h34.ALL)
+    # the read
+    read = ["read", "--runs", str(parts_dir), "--gate", str(gate_dir), "--out", str(out), "--commit", COMMIT]
+    h34.main(read)
+    res = json.loads((out / "reading.json").read_text())
+    assert res["void"] is False and res["why"] == [] and res["control_scores"] == "the gate's, the ones G1 checked"
+    # two seeds cannot reach the bar's eight: clause (b) holds here whatever the scores, and the read says so
+    assert res["outcome"] == "STOPPED" and res["clauses"] == ["b"]
+    assert capsys.readouterr().out == "Try H34: STOPPED (b): OTS15 is not built.\n" + NOTHING_BUILT + "\n"
+    assert (out / "reading.txt").read_text().startswith("Try H34: STOPPED (b): OTS15 is not built.\n")
+    assert res["trend_record"][KEY1]["ref_cells"] == committed["pool_info"][KEY1]["organ"]["pool_cells"]
+    assert all(v > 0 for v in res["changed_counts"][KEY2].values())
+
+    def read_into(name, runs=parts_dir, gate_folder=gate_dir):
+        h34.main(["read", "--runs", str(runs), "--gate", str(gate_folder), "--out", str(tmp_path / name),
+                  "--commit", COMMIT])
+        return capsys.readouterr().out.splitlines()
+    # v5: a run-part control score that is not the gate's; v4: a file named as a part that cannot be read
+    moved = json.loads(json.dumps(parts))
+    moved[KEY1][0]["rows"][1]["scores"]["radial_0"]["control"] += 1e-9
+    _write_parts(tmp_path / "moved", moved)
+    assert read_into("out_moved", runs=tmp_path / "moved")[0] == (
+        f"Try H34: VOID: v5: {KEY1} seed 1 radial_0: the run step's control score is not the gate's; nothing is "
+        "built.")
+    _write_parts(tmp_path / "torn", parts)
+    (tmp_path / "torn" / "x").mkdir()
+    (tmp_path / "torn" / "x" / "h34.json").write_text("{not json")
+    (tmp_path / "torn" / "y").mkdir()
+    (tmp_path / "torn" / "y" / "h34.json").write_text(json.dumps({"axis": "h29b-heart-organ", "task": KEY1}))
+    assert read_into("out_torn", runs=tmp_path / "torn")[0] == (
+        f"Try H34: VOID: v4: a part cannot be read: {tmp_path / 'torn' / 'x' / 'h34.json'}; v4: a part cannot be "
+        f"read: {tmp_path / 'torn' / 'y' / 'h34.json'}; nothing is built.")
+    # a committed mean a part in 1e12 off: the gate fails, exits 3 and states the VOID outcome itself
+    committed["tables"]["CLEAN"]["fold E10.5"]["mean"]["organ:f"] *= 1 + 1e-12
+    commit_reading()
+    code, printed = gate(tmp_path / "gate2")
+    assert code == 3 and printed[-3] == "GATE FAIL" and printed[-1] == NOTHING_BUILT
+    assert printed[-2].startswith("Try H34: VOID: v3: the gate fails (G1 (M): 1 of 18 means are not row H29b's "
+                                  "committed D_f means (first: CLEAN fold E10.5, ")
+    assert printed[-2].endswith(")); nothing is built.")
+    g2 = json.loads((tmp_path / "gate2" / "gate.json").read_text())
+    assert g2["verdict"] == "FAIL" and len(g2["why"]) == 1 and not h34.gate_passed(tmp_path / "gate2", COMMIT)
+    with pytest.raises(SystemExit, match="has not said PASS"):
+        h34.main([*run[:6], str(parts_dir / "e95" / "again"), "--gate", str(tmp_path / "gate2"), *common])
+    assert read_into("out_gate2", gate_folder=tmp_path / "gate2")[0] == (
+        "Try H34: VOID: v3: the gate said 'FAIL', not PASS; nothing is built.")
+    # a reading that is not the file row H29b's row records, or a missing one; row H27's parts not at hand
+    other = reading.with_name("other.json")
+    other.write_text(reading.read_text() + "\n")
+    for i, path in enumerate((other, tmp_path / "none.json")):
+        code, printed = gate(tmp_path / f"gate{3 + i}", h29b=path)
+        assert code == 3 and json.loads((tmp_path / f"gate{3 + i}" / "gate.json").read_text())["why"] == [
+            "G1: row H29b's reading.json is not at hand as the file its row records (missing, another sha256, or "
+            "void)"]
+    committed["tables"]["CLEAN"]["fold E10.5"]["mean"]["organ:f"] /= 1 + 1e-12
+    committed["tables"]["own"][KEY1]["stated"]["organ:f - full_iso_half:f"]["se"] *= 1 + 1e-12
+    commit_reading()
+    code, printed = gate(tmp_path / "gate5")
+    assert code == 3 and printed[-2] == (
+        "Try H34: VOID: v3: the gate fails (G1 (P): 1 of 270 paired statistics are not row H29b's committed (first: "
+        f"own {KEY1} organ:f - full_iso_half:f se)); nothing is built.")
+    code, printed = gate(tmp_path / "gate6", parts=tmp_path / "no_h27")
+    assert code == 3 and "G1 (P): row H27's committed parts are not at hand" in printed[-2]
+    # tracked files or HEAD changing while the gate runs: no gate record at all
+    monkeypatch.setattr(h34, "git_state", lambda: {"commit": COMMIT, "tree_clean": False, "utc": "x"})
+    with pytest.raises(SystemExit, match="changed while the gate ran; no gate record is written"):
+        h34.main(["gate", "--out", str(tmp_path / "gate7"), "--h29b", str(reading), "--h27", str(h27), *common])
+    assert not (tmp_path / "gate7").exists()
+
+
+def test_the_read_step_writes_one_reading_and_never_overwrites_it(h34, monkeypatch, tmp_path, capsys):
+    monkeypatch.setattr(h34, "refuse_state", lambda commit, what="run": None)
+    runs = tmp_path / "results" / "parts"
+    _write_parts(runs, _parts(h34, score=GOOD))
+    (runs / "other.json").write_text("{}")
+    gate_dir = tmp_path / "results" / "gate"
+    gate_dir.mkdir()
+    (gate_dir / "gate.json").write_text(json.dumps(_gate(h34)))
+    out = tmp_path / "results"
+    args = ["read", "--runs", str(runs), "--gate", str(gate_dir), "--out", str(out), "--commit", COMMIT]
+    h34.main(args)
+    assert capsys.readouterr().out == "\n".join(NOT_STOPPED_LINES) + "\n"  # the two lines, and nothing else
+    res = json.loads((out / "reading.json").read_text())
+    assert res["outcome"] == "NOT STOPPED" and res["void"] is False
+    assert (out / "reading.txt").read_text().splitlines()[:2] == list(NOT_STOPPED_LINES)
+    before = {f: (out / f).read_bytes() for f in ("reading.json", "reading.txt")}
+    with pytest.raises(SystemExit, match="already holds a reading: there is one read under row H34"):
+        h34.main(args)
+    for f in before:  # either file alone is a reading
+        other = out / ("reading.txt" if f == "reading.json" else "reading.json")
+        other.rename(tmp_path / "aside")
+        with pytest.raises(SystemExit, match="already holds a reading"):
+            h34.main(args)
+        (tmp_path / "aside").rename(other)
+    assert before == {f: (out / f).read_bytes() for f in before}
+    with pytest.raises(FileExistsError):
+        h34._write_new(out / "reading.txt", "another")
+    assert before["reading.txt"] == (out / "reading.txt").read_bytes()
+    assert 'd.add_argument("--out", default=str(RESULTS))' in SCRIPT.read_text()
+
+
+# ------------------------------------------------------------------------------------------------ refusals and prints
+def _ledger(tmp_path, rows):
+    p = tmp_path / "TRIES.md"
+    p.write_text("# Tries\n\n| ID | Board | What |\n|---|---|---|\n" + "".join(f"| {r} | heart | x |\n" for r in rows))
+    return p
+
+
+def _nothing_loads(h34, monkeypatch):
+    def boom(*a, **k):
+        raise AssertionError("something loaded")
+    for name in ("load_transition", "load_parts", "load_h29b_reading", "load_h27_rows"):
+        monkeypatch.setattr(h34, name, boom)
+
+
+def _calls(h34, tmp_path, commit=COMMIT):
+    g = tmp_path / "gate"
+    g.mkdir(exist_ok=True)
+    (g / "gate.json").write_text(json.dumps(_gate(h34)))
+    return {"gate": ["gate", "--out", str(tmp_path / "go"), "--commit", commit],
+            "run": ["run", "--task", KEY1, "--seeds", "0-1", "--out", str(tmp_path / "o"), "--gate", str(g),
+                    "--commit", commit],
+            "read": ["read", "--runs", str(tmp_path / "runs"), "--gate", str(g), "--out", str(tmp_path / "r"),
+                     "--commit", commit]}
+
+
+def _asks(tmp_path, commit=COMMIT):
+    """The launcher's question before it marks a step as started: the step's refusals and nothing else."""
+    return {"gate": ["refusals", "--step", "gate", "--commit", commit, "--out", str(tmp_path / "go")],
+            "run": ["refusals", "--step", "run", "--commit", commit, "--gate", str(tmp_path / "gate")],
+            "read": ["refusals", "--step", "read", "--commit", commit, "--out", str(tmp_path / "r")]}
+
+
+def test_every_step_refuses_without_the_row_before_anything_loads(h34, monkeypatch, tmp_path, capsys):
+    _nothing_loads(h34, monkeypatch)
+    monkeypatch.setattr(h34, "git_state", lambda: {"commit": COMMIT, "tree_clean": True, "utc": "x"})
+    calls, asks = _calls(h34, tmp_path), _asks(tmp_path)
+    # a ledger without the row: other rows, and rows that only mention it, are not row H34
+    monkeypatch.setattr(h34, "TRIES", _ledger(tmp_path, ["H28 (one row)", "H29b (the form; see H34)", "H3", "H340",
+                                                         "R32 (the captain's order; ruling, no run; H34)"]))
+    assert h34.tries_rows() == {"H28", "H29b", "H3", "H340", "R32"}
+    for step in calls:
+        for args in (calls[step], asks[step]):
+            with pytest.raises(SystemExit, match="H34 is refused: it has no row in experiments/harness/TRIES.md") as e:
+                h34.main(args)
+            assert f"a row comes before its {step}" in str(e.value)
+    assert not any((tmp_path / d).exists() for d in ("go", "o", "r"))
+    # with the row, the same calls pass every refusal and reach their first load; the question alone loads nothing,
+    # prints nothing and writes nothing
+    monkeypatch.setattr(h34, "TRIES", _ledger(tmp_path, ["H28 (one row)", "H34 (one row, one script; eight tries)"]))
+    assert "H34" in h34.tries_rows()
+    for step in calls:
+        assert h34.main(asks[step]) is None
+        with pytest.raises(AssertionError, match="something loaded"):
+            h34.main(calls[step])
+    assert capsys.readouterr().out == "" and not any((tmp_path / d).exists() for d in ("go", "o", "r"))
+
+
+def test_the_other_refusals_of_every_step(h34, monkeypatch, tmp_path):
+    _nothing_loads(h34, monkeypatch)
+    monkeypatch.setattr(h34, "tries_rows", lambda path=None: {"H34"})
+    state = {"commit": COMMIT, "tree_clean": True, "utc": "x"}
+    monkeypatch.setattr(h34, "git_state", lambda: dict(state))
+    calls, asks = _calls(h34, tmp_path), _asks(tmp_path)
+    both = [*calls.values(), *asks.values()]
+    # tracked files that differ from the commit
+    for dirty in (False, None):
+        state["tree_clean"] = dirty
+        for args in both:
+            with pytest.raises(SystemExit, match="H34 is refused: tracked files differ from the commit"):
+                h34.main(args)
+    state["tree_clean"] = True
+    # a HEAD other than the commit given
+    state["commit"] = "d" * 40
+    for args in both:
+        with pytest.raises(SystemExit, match="H34 is refused: HEAD is not the run commit"):
+            h34.main(args)
+    state["commit"] = COMMIT
+    for other in (COMMIT[:12], ""):
+        for args in (*_calls(h34, tmp_path, other).values(), *_asks(tmp_path, other).values()):
+            with pytest.raises(SystemExit, match="HEAD is not the run commit"):
+                h34.main(args)
+    # vec from another checkout
+    monkeypatch.setattr(h34, "vec_home", lambda: tmp_path)
+    for args in both:
+        with pytest.raises(SystemExit, match="H34 is refused: vec is imported from .*, not from this checkout"):
+            h34.main(args)
+    monkeypatch.setattr(h34, "vec_home", lambda: h34.HERE)
+    # the run: the gate record of this commit must say PASS
+    g = tmp_path / "gate" / "gate.json"
+    for rec in (_gate(h34, "FAIL"), _gate(h34, commit="d" * 40), _gate(h34, clean=False),
+                {"verdict": "PASS", "commit": COMMIT}):
+        g.write_text(json.dumps(rec))
+        for args in (calls["run"], asks["run"]):
+            with pytest.raises(SystemExit, match="H34 is refused: the gate of .* has not said PASS"):
+                h34.main(args)
+    g.unlink()
+    with pytest.raises(SystemExit, match="has not said PASS"):
+        h34.main(calls["run"])
+    g.write_text(json.dumps(_gate(h34)))
+    # the run: an existing output, another transition
+    (tmp_path / "o").mkdir()
+    (tmp_path / "o" / h34.PART).write_text("{}")
+    with pytest.raises(SystemExit, match="H34 is refused: .*h34.json exists"):
+        h34.main(calls["run"])
+    for other in ("T2h/E8.25_late->E8.5", "T2h/other"):
+        with pytest.raises(SystemExit, match="--task must be one of"):
+            h34.main(["run", "--task", other, "--seeds", "0-1", "--out", str(tmp_path / "o2"), "--gate",
+                      str(tmp_path / "gate"), "--commit", COMMIT])
+    with pytest.raises(SystemExit, match="not a transition of row H34"):
+        h34.run_transition("T2h/E8.25_late->E8.5", (0,), tmp_path / "o3", tmp_path, COMMIT, tmp_path / "gate")
+    # the gate and the read: an existing record
+    for f in ("gate.json", "gate.txt"):
+        (tmp_path / "go").mkdir(exist_ok=True)
+        (tmp_path / "go" / f).write_text("x")
+        for args in (calls["gate"], asks["gate"]):
+            with pytest.raises(SystemExit, match="already holds a gate record"):
+                h34.main(args)
+        (tmp_path / "go" / f).unlink()
+    for f in ("reading.json", "reading.txt"):
+        (tmp_path / "r").mkdir(exist_ok=True)
+        (tmp_path / "r" / f).write_text("x")
+        for args in (calls["read"], asks["read"]):
+            with pytest.raises(SystemExit, match="already holds a reading"):
+                h34.main(args)
+        (tmp_path / "r" / f).unlink()
+    for args in (calls["gate"], calls["read"]):
+        with pytest.raises(AssertionError, match="something loaded"):
+            h34.main(args)
+    # the question names its step's folder
+    with pytest.raises(SystemExit, match="refusals --step gate needs --out"):
+        h34.main(["refusals", "--step", "gate", "--commit", COMMIT])
+    with pytest.raises(SystemExit, match="refusals --step read needs --out"):
+        h34.main(["refusals", "--step", "read", "--commit", COMMIT, "--gate", str(tmp_path / "gate")])
+    with pytest.raises(SystemExit, match="refusals --step run needs --gate"):
+        h34.main(["refusals", "--step", "run", "--commit", COMMIT, "--out", str(tmp_path / "o")])
+
+
+def test_the_state_of_the_checkout_is_read_from_the_scripts_own_location(h34, monkeypatch):
+    seen = []
+
+    def run(cmd, **kw):
+        seen.append(cmd)
+        return SimpleNamespace(stdout="" if "status" in cmd else COMMIT + "\n")
+    monkeypatch.setattr(h34.h29b.subprocess, "run", run)
+    state = h34.git_state()
+    assert state["commit"] == COMMIT and state["tree_clean"] is True
+    assert all(c[:3] == ["git", "-C", str(REPO_ROOT)] for c in seen)
+    assert ["git", "-C", str(REPO_ROOT), "status", "--porcelain", "--untracked-files=no"] in seen
+
+
+def _prints(fn):
+    tree = ast.parse(inspect.getsource(fn).lstrip())
+    return [ast.unparse(n) for n in ast.walk(tree) if isinstance(n, ast.Call) and getattr(n.func, "id", "") == "print"]
+
+
+def test_each_step_prints_only_its_lines(h34):
+    run = sorted(_prints(h34.run_transition))
+    assert len(run) == 2 and "s) done" in run[0] and run[1] == "print(f'wrote {path}', flush=True)"
+    gate = sorted(_prints(h34.run_gate))
+    assert len(gate) == 4 and "s) done" in gate[1] and gate[0] == "print(f\"GATE {g['verdict']}\", flush=True)"
+    assert gate[2:] == ["print(follows_line(VOID), flush=True)",
+                        "print(outcome_line(VOID, gate_void(why)), flush=True)"]
+    assert sorted(_prints(h34.cmd_read)) == ["print(res['follows'])", "print(res['line'])"]
+    own = [fn for name, fn in inspect.getmembers(h34, inspect.isfunction) if fn.__module__ == h34.__name__]
+    assert len(own) > 30
+    for fn in own:
+        if fn not in (h34.run_transition, h34.run_gate, h34.cmd_read):
+            assert _prints(fn) == [], fn.__name__
+    # the fixed words hold names (rows, steps, the file, the two strengths) and no figure
+    names = r"H29b|H34|R32|G1|G2|OTS15|step \(3\)|step 4|step 5|strength-1\.5|1\.5 times|strength-1 "
+    for words in (*h34.FOLLOWS.values(), h34.SCREEN, h34.NO_PRIOR, *h34.GATE_LINES.values()):
+        assert not re.search(r"\d", re.sub(names, "", words)), words
+
+
+# ================================================================================================ the launcher
+# A stand-in for uv: it records each call with the environment the launcher gave it and, at that moment, the call's
+# exit file for the step, the call's done.exit and the step's once-only exit file; it imitates each kind of call the
+# launcher makes.
+STUB_UV = r"""#!/usr/bin/env bash
+BASE="$HOME/v/scratch/h34"
+S="$BASE/$STUB_RUN"
+threads="$OMP_NUM_THREADS|$OPENBLAS_NUM_THREADS|$MKL_NUM_THREADS"
+echo "$UV_PROJECT_ENVIRONMENT|$threads|$NUMPY_MADVISE_HUGEPAGE|$TMPDIR|$*" >> "$HOME/uvcalls"
+args=("$@")
+[ "${args[0]}" = run ] || exit 90
+args=("${args[@]:1}")
+while [ "${args[0]}" = --frozen ] || [ "${args[0]}" = --no-sync ]; do args=("${args[@]:1}"); done
+[ "${args[0]}" = python ] || exit 91
+args=("${args[@]:1}")
+while [ "${args[0]}" = -I ] || [ "${args[0]}" = -B ]; do args=("${args[@]:1}"); done
+out=""; seeds=""; step=""; prev=""
+for a in "${args[@]}"; do
+  [ "$prev" = "--out" ] && out="$a"
+  [ "$prev" = "--seeds" ] && seeds="$a"
+  [ "$prev" = "--step" ] && step="$a"
+  prev="$a"
+done
+state() {
+  once=$(cat "$BASE/$2.exit" 2>/dev/null || echo none)
+  echo "$1 $2 $(cat "$S/$2.exit" 2>/dev/null) $(cat "$S/done.exit" 2>/dev/null) $once" >> "$HOME/states"
+}
+case "${args[0]}" in
+  -m) state call tests; echo "some test output"; exit "${STUB_TESTS_EXIT:-0}" ;;
+  experiments/harness/h34_heart_organ_trend.py)
+    case "${args[1]}" in
+      refusals)
+        state ask "$step"
+        if [ "${STUB_REFUSE:-}" = "$step" ]; then echo "H34 is refused: a reason"; exit 1; fi
+        if [ "${STUB_RACE:-}" = "$step" ]; then echo running > "$BASE/$step.exit"; fi
+        exit 0 ;;
+      gate)
+        state call gate
+        if [ "${STUB_GATE_EXIT:-0}" = kill ]; then kill -9 "$PPID"; exit 137; fi
+        if [ "${STUB_GATE_EXIT:-0}" = 1 ]; then echo "Traceback"; exit 1; fi
+        mkdir -p "$out"; echo '{"stub": "gate"}' > "$out/gate.json"
+        echo "T2h/<=E9.5->E10.5 seed 0 (1.0 s) done"; echo "a library warning"
+        if [ "${STUB_GATE_EXIT:-0}" = 3 ]; then
+          echo "GATE FAIL"; echo "Try H34: VOID: v3: the gate fails (G1 (M): x); nothing is built."
+          echo "A screen, not evidence of development. What follows: nothing is built."
+        else
+          echo "GATE PASS"
+        fi
+        exit "${STUB_GATE_EXIT:-0}" ;;
+      run)
+        state call run
+        if [ "${STUB_RUN_BAD:-}" = "$seeds" ]; then echo "boom"; exit 7; fi
+        mkdir -p "$out"
+        [ "${STUB_RUN_NOFILE:-}" = "$seeds" ] || echo '{"stub": "run"}' > "$out/h34.json"
+        echo "T2h/x seed 0 (1.0 s) done"; echo "a library warning"; echo "wrote $out/h34.json"; exit 0 ;;
+      read)
+        state call read
+        if [ "${STUB_READ_EXIT:-0}" = kill ]; then kill -9 "$PPID"; exit 137; fi
+        [ "${STUB_READ_EXIT:-0}" = 0 ] || exit "$STUB_READ_EXIT"
+        mkdir -p "$out"; echo "the reading" > "$out/reading.txt"; echo "{}" > "$out/reading.json"
+        echo "Try H34: NOT STOPPED."; echo "A screen, not evidence of development. What follows: x"; exit 0 ;;
+    esac ;;
+esac
+exit 92
+"""
+OUT_DIR = "experiments/harness/results/h34_heart_organ_trend"
+STEPS = ("check", "tests", "gate", "run", "read")
+ONE_CALL = ["tests", "ask gate", "gate", "ask run", *["run"] * 10, "ask read", "read"]  # the stand-in's calls
+
+
+def _env(tmp_path, extra=None):
+    env = {k: v for k, v in os.environ.items() if not k.startswith(("GIT_", "H34_", "STUB_"))}
+    env.update(HOME=str(tmp_path / "home"), GIT_CEILING_DIRECTORIES=str(tmp_path),
+               PATH=f"{tmp_path / 'bin'}{os.pathsep}{os.environ['PATH']}")
+    env.update(extra or {})
+    return env
+
+
+def _stand_in_env(path):
+    """A folder that looks like a virtual environment to the launcher's check (an executable bin/python)."""
+    (path / "bin").mkdir(parents=True)
+    (path / "bin" / "python").write_text("#!/bin/sh\nexit 0\n")
+    (path / "bin" / "python").chmod(0o755)
+    return path
+
+
+@pytest.fixture()
+def repo(tmp_path):
+    """A throwaway git repository with a ledger that holds a row H34, a stand-in for the script, for the virtual
+    environment and for the data folder, a temporary home and the stand-in uv."""
+    root = tmp_path / "repo"
+    (root / "experiments" / "harness").mkdir(parents=True)
+    (tmp_path / "home").mkdir()
+    (tmp_path / "bin").mkdir()
+    (tmp_path / "bin" / "uv").write_text(STUB_UV)
+    (tmp_path / "bin" / "uv").chmod(0o755)
+    (root / "experiments" / "harness" / "TRIES.md").write_text("| H29b (a row) | heart | x |\n"
+                                                              "| H34 (the row) | heart | x |\n")
+    (root / "experiments" / "harness" / "h34_heart_organ_trend.py").write_text("# a stand-in\n")
+    (root / ".gitignore").write_text("runs/\n.venv/\ndata/\n")
+    _stand_in_env(root / ".venv")
+    (root / "data" / "raw" / "T2").mkdir(parents=True)
+
+    def git(*a):
+        return subprocess.run(["git", "-c", "user.name=t", "-c", "user.email=t@t", "-c", "init.defaultBranch=x", *a],
+                              cwd=root, env=_env(tmp_path), capture_output=True, text=True, check=True).stdout.strip()
+    git("init", "-q")
+    git("add", ".")
+    git("commit", "-q", "-m", "one")
+    return SimpleNamespace(root=root, git=git, head=git("rev-parse", "HEAD"), tmp=tmp_path,
+                           scratch=tmp_path / "home" / "v" / "scratch" / "h34")
+
+
+def _launch(repo, *args, cwd=None, **extra):
+    run = args[1] if len(args) > 1 else ""
+    r = subprocess.run(["bash", str(LAUNCHER), *args], cwd=cwd or repo.root,
+                       env=_env(repo.tmp, {"STUB_RUN": run, **extra}), capture_output=True, text=True, timeout=120)
+    return r.returncode, r.stderr
+
+
+def _uv_calls(repo):
+    f = repo.tmp / "home" / "uvcalls"
+    return f.read_text().splitlines() if f.exists() else []
+
+
+def _kinds(repo):
+    """The stand-in's calls in order, by kind: tests, ask <step> (the script's refusals for a step), gate, run, read."""
+    out = []
+    for c in _uv_calls(repo):
+        words = c.split("python -I -B ", 1)[1].split()
+        out.append("tests" if words[0] == "-m" else f"ask {words[3]}" if words[1] == "refusals" else words[1])
+    return out
+
+
+def _exits(repo, run):
+    """One call's exit files, in its own scratch folder."""
+    return {p.name.removesuffix(".exit"): p.read_text().strip() for p in sorted((repo.scratch / run).glob("*.exit"))}
+
+
+def _once(repo):
+    """The once-only exit files: one for each gate, run or read ever started, whatever the call and the commit."""
+    return {p.name.removesuffix(".exit"): p.read_text().strip() for p in sorted(repo.scratch.glob("*.exit"))}
+
+
+def _next_commit(repo):
+    (repo.root / "note.txt").write_text("x\n")
+    repo.git("add", "note.txt")
+    repo.git("commit", "-q", "-m", "two")
+    return repo.git("rev-parse", "HEAD")
+
+
+def test_the_launcher_text():
+    sh = LAUNCHER.read_text()
+    assert subprocess.run(["bash", "-n", str(LAUNCHER)], capture_output=True).returncode == 0
+    assert os.access(LAUNCHER, os.X_OK)
+    code = "\n".join(ln for ln in sh.splitlines() if not ln.lstrip().startswith("#"))
+    assert not re.search(r"\brm\b|\brmdir\b|\bunlink\b|\bmv\b|-delete\b|\bshred\b", sh)  # it deletes nothing
+    assert not re.search(r"\bscp\b|\brsync\b|\bcurl\b|\bwget\b|\bssh\b|vec submit|\bupload", sh)  # and sends nothing
+    for m in re.finditer(r"\$\{[A-Za-z0-9_]+:\?([^}]*)\}", sh):
+        assert "'" not in m.group(1) and '"' not in m.group(1), m.group(0)
+    assert len(re.findall(r"\$\{[A-Za-z0-9_]+:\?", sh)) == 2
+    assert 'PY="uv run --frozen --no-sync python -I -B"' in code
+    assert "VENV=${H34_VENV:-$PWD/.venv}\n" in code and 'export UV_PROJECT_ENVIRONMENT="$VENV"\n' in code
+    assert "DATA=${H34_DATA:-data/raw}\n" in code
+    assert max(len(ln) for ln in sh.splitlines()) <= 120
+    assert "export OMP_NUM_THREADS=8 OPENBLAS_NUM_THREADS=8 MKL_NUM_THREADS=8 NUMPY_MADVISE_HUGEPAGE=0 " \
+           'TMPDIR="$S/tmp"' in code
+    assert 'if [ -n "${H34_DATA:-}" ]; then DATA_ARGS=(--data "$H34_DATA"); fi' in code
+    at = {s: code.index(f"STEP={s}\n") for s in STEPS}
+    assert list(at.values()) == sorted(at.values()) and code.count("STEP=") == 5
+    assert code.count("--untracked-files=no") == 1 and "git status --porcelain --untracked-files=no" in code
+    assert f"OUT={OUT_DIR}\n" in code  # the gate's record, the parts and the reading go to the results folder
+    # every output of a step goes to a file; nothing is printed but the launcher's own refusals
+    assert code.count('> "$S/tests.log" 2>&1') == 1 and code.count('> "$S/gate.out" 2>&1') == 1
+    assert code.count('> "$S/logs/$short-$seeds.log" 2>&1') == 1 and code.count('> "$S/read.out" 2>&1') == 1
+    assert code.count('> "$S/$STEP.refusals" 2>&1') == 1
+    assert all(">&2" in ln for ln in code.splitlines() if re.search(r"\becho \"(refused|usage)", ln))
+    for test in ("tests/test_h34_heart_organ_trend.py", "tests/test_h29b_heart_organ.py",
+                 "tests/test_h27_heart_forecast_size.py"):
+        assert test in code, test
+    # the gate, the run and the read are each started through start_once, before the step's own call; the tests step,
+    # which may be repeated, is not. The once-only file is made by a write that cannot replace a file
+    assert re.findall(r"^if start_once (--[a-z]+ \S+); then$", code, flags=re.M) == [
+        '--out "$OUT/gate"', '--gate "$OUT/gate"', '--out "$OUT"']
+    assert code.count("start_once") == 4 and code.count("set -o noclobber; echo running > \"$BASE/$STEP.exit\"") == 1
+    for step in ("gate", "run", "read"):
+        assert at[step] < code.index("if start_once ", at[step]) < code.index(f'$PY "$SCRIPT" {step} ', at[step])
+    assert code.index("STEP=tests\n") < code.index("-m pytest ") < code.index("if start_once ")
+    # within start_once: the step's file, this launcher's refusal, the script's refusals, and only then the start
+    body = code[code.index("start_once() {"):code.index("STEP=tests\n")]
+    order = [body.index(s) for s in ('if [ -e "$BASE/$STEP.exit" ]; then', "finish 92", '"$SCRIPT" refusals --step ',
+                                     "finish 89", "set -o noclobber", "OWNED=$STEP", '> "$BASE/$STEP.head"')]
+    assert order == sorted(order)
+
+
+def test_the_launcher_runs_the_four_steps_in_order(repo):
+    code, err = _launch(repo, repo.head, "r1")
+    assert (code, err) == (0, "")
+    S = repo.scratch / "r1"
+    assert _exits(repo, "r1") == {s: "0" for s in (*STEPS, "done")}
+    assert (S / "head").read_text().strip() == repo.head
+    # the once-only files: one for each of the gate, the run and the read, none for the tests
+    assert _once(repo) == {"gate": "0", "run": "0", "read": "0"}
+    assert all((repo.scratch / f"{s}.head").read_text() == f"{repo.head} r1\n" for s in ("gate", "run", "read"))
+    # while a step runs, its exit file and done.exit hold the word running; the script's refusals are asked before
+    # the step's once-only file exists, and the step is called only once that file is there
+    states = (repo.tmp / "home" / "states").read_text().splitlines()
+    assert states == ["call tests running running none", "ask gate running running none",
+                      "call gate running running running", "ask run running running none",
+                      *["call run running running running"] * 10, "ask read running running none",
+                      "call read running running running"]
+    calls = _uv_calls(repo)
+    env = f"{repo.root}/.venv|8|8|8|0|{S}/tmp|run --frozen --no-sync python -I -B "
+    assert len(calls) == 16 and all(c.startswith(env) for c in calls) and _kinds(repo) == ONE_CALL
+    script = "experiments/harness/h34_heart_organ_trend.py"
+    gate = f"{OUT_DIR}/gate"
+    assert calls[0] == (env + f"-m pytest -q -p no:cacheprovider -o pythonpath=src --basetemp={S}/tmp/pytest "
+                        "tests/test_h34_heart_organ_trend.py tests/test_h29b_heart_organ.py "
+                        "tests/test_h27_heart_forecast_size.py")
+    assert calls[1] == env + f"{script} refusals --step gate --commit {repo.head} --out {gate}"
+    assert calls[2] == env + f"{script} gate --out {gate} --commit {repo.head}"
+    assert calls[3] == env + f"{script} refusals --step run --commit {repo.head} --gate {gate}"
+    parts = ("0-1", "2-3", "4-5", "6-7", "8-9")
+    for block, (key, short) in zip((calls[4:9], calls[9:14]), ((KEY1, "e95"), (KEY2, "e875")), strict=True):
+        assert sorted(block) == sorted(env + f"{script} run --task {key} --seeds {p} --gate {gate} --commit "
+                                       f"{repo.head} --out {OUT_DIR}/parts/{short}/{p}" for p in parts)
+    assert calls[14] == env + f"{script} refusals --step read --commit {repo.head} --out {OUT_DIR}"
+    assert calls[15] == (env + f"{script} read --runs {OUT_DIR}/parts --gate {gate} --commit {repo.head} --out "
+                         f"{OUT_DIR}")
+    # the gate's record, the parts and the reading are in the results folder; the logs, the exit files and the
+    # counted lines (one line of each log is neither of the expected kinds) in the call's scratch folder
+    assert (repo.root / gate / "gate.json").exists()
+    assert len(sorted((repo.root / OUT_DIR / "parts").rglob("h34.json"))) == 10
+    for short in ("e95", "e875"):
+        for p in parts:
+            assert (repo.root / OUT_DIR / "parts" / short / p / "h34.json").exists()
+            assert (S / "exit" / f"{short}-{p}").read_text().strip() == "0"
+            assert (S / "exit" / f"{short}-{p}.other_lines").read_text().strip() == "1"
+            assert len((S / "logs" / f"{short}-{p}.log").read_text().splitlines()) == 3
+    assert (S / "exit" / "other_lines").read_text().strip() == "10"
+    assert (S / "gate.other_lines").read_text().strip() == "1"
+    assert (S / "gate.out").read_text().splitlines()[-1] == "GATE PASS"
+    assert (S / "read.out").read_text().splitlines() == [
+        "Try H34: NOT STOPPED.", "A screen, not evidence of development. What follows: x"]
+    assert (S / "tests.log").read_text() == "some test output\n"
+    assert all((S / f"{s}.refusals").read_text() == "" for s in ("gate", "run", "read"))
+    assert (repo.root / OUT_DIR / "reading.txt").read_text() == "the reading\n"
+    assert repo.git("status", "--porcelain", "--untracked-files=no") == ""
+    # the run folder is never reused, and a later call at the same commit finds the reading: nothing is touched
+    before = {p: p.read_bytes() for p in repo.scratch.rglob("*") if p.is_file()}
+    code, err = _launch(repo, repo.head, "r1")
+    assert code == 91 and "the run folder" in err and "exists" in err
+    assert before == {p: p.read_bytes() for p in repo.scratch.rglob("*") if p.is_file()} and len(_uv_calls(repo)) == 16
+    code, err = _launch(repo, repo.head, "r2")
+    assert code == 95 and "already holds a reading" in err
+    assert _exits(repo, "r2") == {"check": "95", "done": "95"} and len(_uv_calls(repo)) == 16
+    assert (repo.root / OUT_DIR / "reading.txt").read_text() == "the reading\n"
+    assert _once(repo) == {"gate": "0", "run": "0", "read": "0"}
+    # with the reading out of the way, at this commit nothing is left to start and nothing is started; at another
+    # commit the gate, started once already, is refused
+    (repo.root / OUT_DIR / "reading.txt").rename(repo.tmp / "aside.txt")
+    (repo.root / OUT_DIR / "reading.json").rename(repo.tmp / "aside.json")
+    assert _launch(repo, repo.head, "r3") == (0, "")
+    assert _exits(repo, "r3") == {"check": "0", "tests": "0", "gate": "before", "run": "before", "read": "before",
+                                  "done": "0"}
+    assert _kinds(repo) == [*ONE_CALL, "tests"] and not (repo.root / OUT_DIR / "reading.txt").exists()
+    code, err = _launch(repo, _next_commit(repo), "r4")
+    assert code == 88 and "the gate step was started before" in err and "it is not started twice" in err
+    assert _exits(repo, "r4") == {"check": "0", "tests": "0", "gate": "88", "done": "88"}
+    assert _kinds(repo) == [*ONE_CALL, "tests", "tests"] and _once(repo) == {"gate": "0", "run": "0", "read": "0"}
+
+
+def test_the_launchers_environment_overrides(repo):
+    venv, data = repo.tmp / "shared env", repo.tmp / "data raw"
+    # a named environment or data folder that is not there: refused before any step
+    got, err = _launch(repo, repo.head, "v0", H34_VENV=str(venv))
+    assert got == 99 and "no virtual environment at" in err and _exits(repo, "v0") == {"check": "99", "done": "99"}
+    got, err = _launch(repo, repo.head, "d0", H34_DATA=str(data))
+    assert got == 97 and "no T2 stages under" in err and _exits(repo, "d0") == {"check": "97", "done": "97"}
+    assert _uv_calls(repo) == [] and _once(repo) == {} and not (repo.root / OUT_DIR).exists()
+    _stand_in_env(venv)
+    (data / "T2").mkdir(parents=True)
+    code, err = _launch(repo, repo.head, "e1", H34_VENV=str(venv), H34_DATA=str(data))
+    assert (code, err) == (0, "")
+    calls = _uv_calls(repo)
+    assert len(calls) == 16 and all(c.startswith(f"{venv}|8|8|8|0|") for c in calls)
+    told = [k for k, c in zip(_kinds(repo), calls, strict=True) if c.endswith(f" --data {data}")]
+    assert told == ["gate", *["run"] * 10]  # the gate and the parts load stages; nothing else is told the folder
+    assert sum("--data" in c for c in calls) == 11
+
+
+@pytest.mark.parametrize("extra, step, code, n_calls, once", [
+    ({"STUB_TESTS_EXIT": "1"}, "tests", 1, 1, {}),
+    ({"STUB_TESTS_EXIT": "5"}, "tests", 5, 1, {}),
+    ({"STUB_REFUSE": "gate"}, "gate", 89, 2, {}),
+    ({"STUB_GATE_EXIT": "3"}, "gate", 3, 3, {"gate": "3"}),
+    ({"STUB_GATE_EXIT": "1"}, "gate", 1, 3, {"gate": "1"}),
+    ({"STUB_REFUSE": "run"}, "run", 89, 4, {"gate": "0"}),
+    ({"STUB_RUN_BAD": "4-5"}, "run", 1, 9, {"gate": "0", "run": "1"}),
+    ({"STUB_RUN_NOFILE": "8-9"}, "run", 1, 9, {"gate": "0", "run": "1"}),
+    ({"STUB_REFUSE": "read"}, "read", 89, 15, {"gate": "0", "run": "0"}),
+    ({"STUB_READ_EXIT": "1"}, "read", 1, 16, {"gate": "0", "run": "0", "read": "1"}),
+])
+def test_the_launcher_stops_at_the_first_step_that_does_not_exit_0(repo, extra, step, code, n_calls, once):
+    got, err = _launch(repo, repo.head, "s1", **extra)
+    assert got == code
+    want = {s: "0" for s in STEPS[:STEPS.index(step)]} | {step: str(code), "done": str(code)}
+    assert _exits(repo, "s1") == want  # no later step wrote an exit file: none ran
+    assert _kinds(repo) == ONE_CALL[:n_calls]
+    # a step the script refuses is not started: it leaves no once-only file; a started step leaves its exit code
+    assert _once(repo) == once
+    S = repo.scratch / "s1"
+    if code == 89:
+        assert f"the script refuses the {step} step" in err and step not in _kinds(repo)
+        assert (S / f"{step}.refusals").read_text() == "H34 is refused: a reason\n"
+        assert not (repo.scratch / f"{step}.head").exists()
+    if step == "gate" and code == 3:  # a failed gate: its fixed lines are kept, and counted as expected ones
+        assert (S / "gate.out").read_text().splitlines()[-3:] == [
+            "GATE FAIL", "Try H34: VOID: v3: the gate fails (G1 (M): x); nothing is built.",
+            "A screen, not evidence of development. What follows: nothing is built."]
+        assert (S / "gate.other_lines").read_text().strip() == "1" and not (S / "logs").exists()
+    if step == "run" and code == 1:  # the failed transition's five parts ran together; the second never started
+        assert not (repo.root / OUT_DIR / "parts" / "e875").exists() and (S / "exit" / "other_lines").exists()
+    if step != "read" or code != 0:
+        assert not (repo.root / OUT_DIR / "reading.txt").exists()
+
+
+@pytest.mark.parametrize("extra, first, once, later", [
+    ({"STUB_GATE_EXIT": "3"}, 3, {"gate": "3"}, {"gate": "88"}),  # the gate said FAIL
+    ({"STUB_GATE_EXIT": "1"}, 1, {"gate": "1"}, {"gate": "88"}),  # the gate crashed: no verdict
+    ({"STUB_GATE_EXIT": "kill"}, -9, {"gate": "running"}, {"gate": "88"}),  # the call was killed in the gate
+    ({"STUB_RUN_BAD": "4-5"}, 1, {"gate": "0", "run": "1"}, {"gate": "before", "run": "88"}),
+    ({"STUB_RUN_NOFILE": "8-9"}, 1, {"gate": "0", "run": "1"}, {"gate": "before", "run": "88"}),
+    ({"STUB_READ_EXIT": "1"}, 1, {"gate": "0", "run": "0", "read": "1"},
+     {"gate": "before", "run": "before", "read": "88"}),
+    ({"STUB_READ_EXIT": "kill"}, -9, {"gate": "0", "run": "0", "read": "running"},
+     {"gate": "before", "run": "before", "read": "88"}),
+])
+def test_no_gate_run_or_read_is_started_a_second_time(repo, extra, first, once, later):
+    """Row H34, no step twice: a gate, run or read that was started and did not write exit 0 (a FAIL, a crash, a
+    killed call) is never started again, at this commit or another, under any run name; the tests step runs again
+    in every call."""
+    assert _launch(repo, repo.head, "a1", **extra)[0] == first
+    assert _once(repo) == once
+    if first == -9:  # a killed call: nothing was written after the step's start
+        assert _exits(repo, "a1")["done"] == "running" and "running" in once.values()
+    heads = {s: (repo.scratch / f"{s}.head").read_text() for s in once}
+    assert all(h == f"{repo.head} a1\n" for h in heads.values())
+    n = len(_uv_calls(repo))
+    # a later call at the same commit, with nothing else in its way: the steps done at this commit are not started
+    # again, and the one that did not write exit 0 is refused; the script is neither asked nor called
+    got, err = _launch(repo, repo.head, "a2")
+    assert got == 88 and "step was started before" in err and "it is not started twice" in err
+    assert _exits(repo, "a2") == {"check": "0", "tests": "0", **later, "done": "88"}
+    assert _kinds(repo)[n:] == ["tests"]
+    # at another commit even a step that wrote exit 0 is not started again
+    got, err = _launch(repo, _next_commit(repo), "a3")
+    assert got == 88 and "the gate step was started before" in err
+    assert _exits(repo, "a3") == {"check": "0", "tests": "0", "gate": "88", "done": "88"}
+    assert _kinds(repo)[n:] == ["tests", "tests"]
+    # the first call's record stands
+    assert _once(repo) == once and {s: (repo.scratch / f"{s}.head").read_text() for s in once} == heads
+
+
+@pytest.mark.parametrize("step", ["gate", "run", "read"])
+@pytest.mark.parametrize("holds", ["running", "0", "3", ""])
+def test_each_of_the_three_steps_has_its_own_once_only_file(repo, step, holds):
+    """A step whose exit file exists is refused whatever the file holds (0 alone does not make it done: the file of
+    its commit must name this commit), and the steps before it are started as usual."""
+    repo.scratch.mkdir(parents=True)
+    (repo.scratch / f"{step}.exit").write_text(holds + "\n")
+    got, err = _launch(repo, repo.head, "o1")
+    assert got == 88 and f"the {step} step was started before" in err
+    assert _exits(repo, "o1") == {s: "0" for s in STEPS[:STEPS.index(step)]} | {step: "88", "done": "88"}
+    assert _kinds(repo) == ONE_CALL[:ONE_CALL.index(f"ask {step}")]  # the step is neither asked about nor called
+    assert (repo.scratch / f"{step}.exit").read_text() == holds + "\n" and not (repo.scratch / f"{step}.head").exists()
+    # exit 0 at another commit, or at a commit named in short, does not make it done either
+    n = len(_uv_calls(repo))
+    for i, head in enumerate(("d" * 40, repo.head[:12])):
+        (repo.scratch / f"{step}.exit").write_text("0\n")
+        (repo.scratch / f"{step}.head").write_text(f"{head} elsewhere\n")
+        got, err = _launch(repo, repo.head, f"o{2 + i}")
+        assert got == 88 and f"the {step} step was started before" in err
+        assert _exits(repo, f"o{2 + i}")[step] == "88"
+    assert _kinds(repo)[n:] == ["tests", "tests"]  # the steps before it, done at this commit, were not started again
+    assert (repo.scratch / f"{step}.exit").read_text() == "0\n"
+
+
+def test_a_refused_step_counts_nothing_and_a_later_call_goes_on_from_it(repo):
+    """A step is started once a call has passed the launcher's and the script's refusals: a refused call leaves no
+    once-only file, the tests step may repeat, and a later call at the same commit starts the step that was refused
+    without starting again the steps that wrote exit 0 at that commit."""
+    for run in ("t1", "t2"):  # the tests step may be repeated; a commit where it fails starts nothing
+        assert _launch(repo, repo.head, run, STUB_TESTS_EXIT="1")[0] == 1
+    assert _once(repo) == {} and _kinds(repo) == ["tests", "tests"]
+    # the script refuses the gate: no gate was started
+    got, err = _launch(repo, repo.head, "g1", STUB_REFUSE="gate")
+    assert got == 89 and "the script refuses the gate step" in err
+    assert _once(repo) == {} and _kinds(repo)[2:] == ["tests", "ask gate"]
+    # the gate passes; then the script refuses the run: the gate is done, no run was started
+    got, err = _launch(repo, repo.head, "g2", STUB_REFUSE="run")
+    assert got == 89 and _once(repo) == {"gate": "0"} and not (repo.scratch / "run.head").exists()
+    assert _exits(repo, "g2") == {"check": "0", "tests": "0", "gate": "0", "run": "89", "done": "89"}
+    assert _kinds(repo)[4:] == ["tests", "ask gate", "gate", "ask run"]
+    # parts this launcher did not make: its own refusal, before the script is asked; no run was started
+    parts = repo.root / OUT_DIR / "parts"
+    parts.mkdir()
+    got, err = _launch(repo, repo.head, "g3")
+    assert got == 92 and "made outside this launcher" in err and _once(repo) == {"gate": "0"}
+    assert _exits(repo, "g3") == {"check": "0", "tests": "0", "gate": "before", "run": "92", "done": "92"}
+    assert _kinds(repo)[8:] == ["tests"]
+    parts.rmdir()
+    # a later call at the same commit goes on from the run; the gate, done at this commit, is not started again
+    assert _launch(repo, repo.head, "g4") == (0, "")
+    assert _exits(repo, "g4") == {"check": "0", "tests": "0", "gate": "before", "run": "0", "read": "0", "done": "0"}
+    assert _kinds(repo)[9:] == ["tests", "ask run", *["run"] * 10, "ask read", "read"]
+    assert _once(repo) == {"gate": "0", "run": "0", "read": "0"}
+    assert (repo.scratch / "gate.head").read_text() == f"{repo.head} g2\n"
+    assert (repo.scratch / "run.head").read_text() == (repo.scratch / "read.head").read_text() == f"{repo.head} g4\n"
+    kinds = _kinds(repo)
+    assert (kinds.count("gate"), kinds.count("run"), kinds.count("read"), kinds.count("tests")) == (1, 10, 1, 6)
+
+
+def test_two_calls_cannot_both_start_a_step(repo):
+    """The once-only file is made by a write that cannot replace a file: if another call makes it between this
+    call's question to the script and its start, this call does not start the step and leaves that file alone."""
+    got, err = _launch(repo, repo.head, "c1", STUB_RACE="gate")
+    assert got == 88 and "the gate step was started before" in err
+    assert _once(repo) == {"gate": "running"} and not (repo.scratch / "gate.head").exists()
+    assert _exits(repo, "c1") == {"check": "0", "tests": "0", "gate": "88", "done": "88"}
+    assert _kinds(repo) == ["tests", "ask gate"]  # the gate itself was never called
+
+
+def test_the_launchers_own_refusals(repo):
+    def refused(run, code, words, *args, **kw):
+        got, err = _launch(repo, *(args or (repo.head, run)), **kw)
+        assert got == code and words in err, (run, got, err)
+        assert _exits(repo, run) == {"check": str(code), "done": str(code)}
+    # usage, and a RUN that is not a plain name: nothing is written
+    for args in ((), (repo.head,), (repo.head, ""), ("", "x")):
+        got, err = _launch(repo, *args)
+        assert got == 1 and "usage: run_h34.sh COMMIT RUN" in err
+    for odd in ("a/b", "..", "a b", "r.1", "x;y"):
+        got, err = _launch(repo, repo.head, odd)
+        assert got == 90 and "letters, digits" in err
+    assert not repo.scratch.exists() or not list(repo.scratch.iterdir())
+    refused("h1", 96, "HEAD is not", "d" * 40, "h1")
+    refused("h2", 96, "HEAD is not", repo.head[:12], "h2")
+    (repo.root / ".gitignore").write_text("runs/\n# edited\n")
+    refused("c1", 98, "tracked files differ from the commit")
+    repo.git("checkout", "-q", ".gitignore")
+    (repo.root / "untracked.txt").write_text("x\n")  # an untracked file is not a tracked change
+    refused("n1", 94, "run from the root of the checkout", cwd=repo.root / "experiments")
+    ledger = repo.root / "experiments" / "harness" / "TRIES.md"
+    ledger.write_text("| H29b (a row) | heart | x |\n| H340 | heart | x |\n| R32 (see H34) | x |\n")
+    repo.git("commit", "-q", "-am", "no row")
+    head = repo.git("rev-parse", "HEAD")
+    refused("t1", 93, "row H34 is not in experiments/harness/TRIES.md", head, "t1")
+    ledger.write_text("| H34 (the row) | heart | x |\n")
+    repo.git("commit", "-q", "-am", "the row")
+    head = repo.git("rev-parse", "HEAD")
+    assert _uv_calls(repo) == []  # no refusal reached a step
+    for f in ("reading.json", "reading.txt"):
+        (repo.root / OUT_DIR).mkdir(parents=True, exist_ok=True)
+        (repo.root / OUT_DIR / f).write_text("the one reading\n")
+        refused(f"k-{f[8:]}".replace(".", ""), 95, "already holds a reading", head, f"k-{f[8:]}".replace(".", ""))
+        assert (repo.root / OUT_DIR / f).read_text() == "the one reading\n"
+        (repo.root / OUT_DIR / f).rename(repo.tmp / f"aside-{f}")
+    assert _uv_calls(repo) == [] and _once(repo) == {}  # none of these refusals started anything
+    assert _launch(repo, head, "ok")[0] == 0  # and with nothing in the way it runs, the untracked file still there
+    assert (repo.root / "untracked.txt").exists() and _once(repo) == {"gate": "0", "run": "0", "read": "0"}

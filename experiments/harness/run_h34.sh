@@ -10,15 +10,18 @@
 # NO STEP TWICE. The gate, the run and the read are each started once, ever, at any commit and under any RUN: a step is
 # started when this launcher's refusals and the script's own (asked first: `refusals`) have passed, and from then on
 # its exit file ~/v/scratch/h34/<STEP>.exit exists (the word running, then the step's exit code; <STEP>.head names the
-# commit and the RUN). A call that finds that file refuses the step (88) and stops. A gate, run or read that ends
-# without a verdict of its own (a killed process, a full disk, a crash: its exit file keeps the word running, or holds
-# a code other than the gate's 0 or 3, the run's 0, the read's 0) is therefore never started again: by row H34 the
-# outcome is then VOID, which the main session states. The tests step reads no released data and decides nothing: it
-# runs in every call, and a commit at which it does not exit 0 is not the run commit.
-# In order, each step only after the one before it exited 0 in this call, each first writing the word running to
-# ~/v/scratch/h34/<RUN>/<STEP>.exit, then its exit code. The call stops at the first step that does not exit 0.
-# ~/v/scratch/h34/<RUN>/done.exit holds the word running from the start and the call's exit code at its end: 0 only
-# when every step exited 0, otherwise the failed step's code.
+# commit and the RUN). A later call never starts that step again: if the file holds 0 and the step was started at
+# COMMIT, the step is done and the call goes on to the next one (so a call that was refused, or cut short between two
+# steps, can be followed by another at the same commit); otherwise the call refuses the step (88) and stops. A gate,
+# run or read that ends without a verdict of its own (a killed process, a full disk, a crash: its exit file keeps the
+# word running, or holds a code other than 0 or the gate's 3) is therefore never started again: by row H34 the outcome
+# is then VOID, which the main session states. The tests step reads no released data and decides nothing: it runs in
+# every call, and a commit at which it does not exit 0 is not the run commit.
+# In order, each step only after the one before it exited 0 at COMMIT, each first writing the word running to
+# ~/v/scratch/h34/<RUN>/<STEP>.exit, then its exit code (or the word before: done at COMMIT in an earlier call). The
+# call stops at the first step that does not exit 0. ~/v/scratch/h34/<RUN>/done.exit holds the word running from the
+# start and the call's exit code at its end: 0 only when every step exited 0 here or before, otherwise the failed
+# step's code.
 #   check  HEAD is COMMIT, the tracked tree is clean, the script is here (the checkout's root), TRIES.md holds a row
 #          H34, no reading exists yet, the virtual environment and the T2 stages are where they are said to be; then
 #          it writes the head file
@@ -44,11 +47,11 @@
 # data folder (default: the harness's own, data/raw of this checkout).
 # 8 BLAS threads a process, NUMPY_MADVISE_HUGEPAGE=0, TMPDIR under the run's scratch folder. Nothing here deletes or
 # sends anything.
-# Exit codes of the launcher's own refusals: 88 the step was started before, 89 the script refuses the step, 90 odd
-# RUN, 91 the run folder exists, 93 no row H34 in TRIES.md, 94 not the checkout's root, 95 a reading exists, 96 HEAD
-# is not COMMIT, 97 no T2 stages in the data folder, 98 tracked tree not clean, 99 no virtual environment. Otherwise
-# the failed step's own code: tests (pytest's), gate (3 FAIL; anything else no verdict), run (1: a part failed or
-# wrote no file), read.
+# Exit codes of the launcher's own refusals: 88 the step was started before, 89 the script refuses the step (the step
+# is then not started and counts nothing), 90 odd RUN, 91 the run folder exists, 92 parts exist that this launcher did
+# not make, 93 no row H34 in TRIES.md, 94 not the checkout's root, 95 a reading exists, 96 HEAD is not COMMIT, 97 no
+# T2 stages in the data folder, 98 tracked tree not clean, 99 no virtual environment. Otherwise the failed step's own
+# code: tests (pytest's), gate (3 FAIL; anything else no verdict), run (1: a part failed or wrote no file), read.
 set -u
 COMMIT=${1:?usage: run_h34.sh COMMIT RUN}
 RUN=${2:?usage: run_h34.sh COMMIT RUN}
@@ -113,12 +116,24 @@ WROTE_LINE='^wrote [^ ]+/h34\.json$'
 GATE_LINE='^GATE (PASS|FAIL)$'
 VOID_LINE='^(Try H34: VOID: .*; nothing is built\.|A screen, not evidence of development\. .*)$'
 
-# The gate, the run and the read: started once, ever. The step's exit file under $BASE is made, and must be new, only
-# when the script's own refusals for the step have passed; "$@" are that step's arguments to `refusals`.
+# The gate, the run and the read: each started once, ever. start_once starts the step and returns 0, or returns 1
+# when the step wrote exit 0 at COMMIT in an earlier call (it is then not started again: the word before goes into
+# this call's exit file for it and the call goes on to the next step). A step that was started before and did not
+# write exit 0, or was started at another commit, is refused (88). The step's exit file under $BASE is made, and must
+# be new, only when this launcher's refusals and the script's own for the step have passed; "$@" are the step's
+# arguments to `refusals`.
 start_once() {
   if [ -e "$BASE/$STEP.exit" ]; then
+    if [ "$(cat "$BASE/$STEP.exit")" = 0 ] && [ "$(cut -d" " -f1 "$BASE/$STEP.head" 2> /dev/null)" = "$COMMIT" ]; then
+      echo before > "$S/$STEP.exit"
+      return 1
+    fi
     echo "refused: the $STEP step was started before ($BASE/$STEP.exit exists); it is not started twice" >&2
     finish 88
+  fi
+  if [ "$STEP" = run ] && [ -e "$OUT/parts" ]; then
+    echo "refused: $OUT/parts exists, made outside this launcher; the run step is not started" >&2
+    finish 92
   fi
   $PY "$SCRIPT" refusals --step "$STEP" --commit "$COMMIT" "$@" > "$S/$STEP.refusals" 2>&1 \
     || { echo "refused: the script refuses the $STEP step (its words are in $S/$STEP.refusals)" >&2; finish 89; }
@@ -127,6 +142,7 @@ start_once() {
          finish 88; }
   OWNED=$STEP
   echo "$COMMIT $RUN" > "$BASE/$STEP.head"
+  return 0
 }
 
 STEP=tests
@@ -138,54 +154,57 @@ step_ok
 
 STEP=gate
 begin
-start_once --out "$OUT/gate"
-$PY "$SCRIPT" gate --out "$OUT/gate" --commit "$COMMIT" ${DATA_ARGS[@]+"${DATA_ARGS[@]}"} > "$S/gate.out" 2>&1
-code=$?
-# imported code and Python warnings write to the same file: the lines other than the expected kinds are counted
-n=$(grep -cvE "$DONE_LINE|$GATE_LINE|$VOID_LINE" "$S/gate.out" 2>/dev/null)
-echo "${n:-unreadable}" > "$S/gate.other_lines"
-[ "$code" = 0 ] || finish "$code"
-step_ok
+if start_once --out "$OUT/gate"; then
+  $PY "$SCRIPT" gate --out "$OUT/gate" --commit "$COMMIT" ${DATA_ARGS[@]+"${DATA_ARGS[@]}"} > "$S/gate.out" 2>&1
+  code=$?
+  # imported code and Python warnings write to the same file: the lines other than the expected kinds are counted
+  n=$(grep -cvE "$DONE_LINE|$GATE_LINE|$VOID_LINE" "$S/gate.out" 2>/dev/null)
+  echo "${n:-unreadable}" > "$S/gate.other_lines"
+  [ "$code" = 0 ] || finish "$code"
+  step_ok
+fi
 
 STEP=run
 begin
-start_once --gate "$OUT/gate"
-mkdir -p "$S/logs" "$S/exit"
-bad=0
-for entry in "${TASKS[@]}"; do
-  key=${entry%:*}
-  short=${entry##*:}
-  pids=()
-  for seeds in $PARTS; do
-    (
-      $PY "$SCRIPT" run --task "$key" --seeds "$seeds" --gate "$OUT/gate" --commit "$COMMIT" \
-        --out "$OUT/parts/$short/$seeds" ${DATA_ARGS[@]+"${DATA_ARGS[@]}"} > "$S/logs/$short-$seeds.log" 2>&1
-      echo $? > "$S/exit/$short-$seeds"
-    ) &
-    pids+=($!)
+if start_once --gate "$OUT/gate"; then
+  mkdir -p "$S/logs" "$S/exit"
+  bad=0
+  for entry in "${TASKS[@]}"; do
+    key=${entry%:*}
+    short=${entry##*:}
+    pids=()
+    for seeds in $PARTS; do
+      (
+        $PY "$SCRIPT" run --task "$key" --seeds "$seeds" --gate "$OUT/gate" --commit "$COMMIT" \
+          --out "$OUT/parts/$short/$seeds" ${DATA_ARGS[@]+"${DATA_ARGS[@]}"} > "$S/logs/$short-$seeds.log" 2>&1
+        echo $? > "$S/exit/$short-$seeds"
+      ) &
+      pids+=($!)
+    done
+    for p in "${pids[@]}"; do wait "$p"; done
+    for seeds in $PARTS; do
+      [ "$(cat "$S/exit/$short-$seeds" 2>/dev/null)" = 0 ] || bad=1
+      [ -f "$OUT/parts/$short/$seeds/h34.json" ] || bad=1
+      # imported code and Python warnings write to the same log: count the lines other than the two expected kinds
+      # and keep only the count; the lines are never printed
+      n=$(grep -cvE "$DONE_LINE|$WROTE_LINE" "$S/logs/$short-$seeds.log" 2>/dev/null)
+      echo "${n:-unreadable}" > "$S/exit/$short-$seeds.other_lines"
+    done
+    [ "$bad" = 0 ] || break
   done
-  for p in "${pids[@]}"; do wait "$p"; done
-  for seeds in $PARTS; do
-    [ "$(cat "$S/exit/$short-$seeds" 2>/dev/null)" = 0 ] || bad=1
-    [ -f "$OUT/parts/$short/$seeds/h34.json" ] || bad=1
-    # imported code and Python warnings write to the same log: count the lines other than the two expected kinds and
-    # keep only the count; the lines are never printed
-    n=$(grep -cvE "$DONE_LINE|$WROTE_LINE" "$S/logs/$short-$seeds.log" 2>/dev/null)
-    echo "${n:-unreadable}" > "$S/exit/$short-$seeds.other_lines"
-  done
-  [ "$bad" = 0 ] || break
-done
-cat "$S"/exit/*.other_lines | awk '{ if ($1 ~ /^[0-9]+$/) s += $1; else u = 1 } END { print (u ? "unreadable" : s) }' \
-  > "$S/exit/other_lines"
-[ "$bad" = 0 ] || finish 1
-step_ok
+  cat "$S"/exit/*.other_lines \
+    | awk '{ if ($1 ~ /^[0-9]+$/) s += $1; else u = 1 } END { print (u ? "unreadable" : s) }' > "$S/exit/other_lines"
+  [ "$bad" = 0 ] || finish 1
+  step_ok
+fi
 
 STEP=read
 begin
-start_once --out "$OUT"
-$PY "$SCRIPT" read --runs "$OUT/parts" --gate "$OUT/gate" --commit "$COMMIT" --out "$OUT" > "$S/read.out" 2>&1 \
-  || finish $?
-step_ok
+if start_once --out "$OUT"; then
+  $PY "$SCRIPT" read --runs "$OUT/parts" --gate "$OUT/gate" --commit "$COMMIT" --out "$OUT" > "$S/read.out" 2>&1 \
+    || finish $?
+  step_ok
+fi
 
 echo 0 > "$S/done.exit"
 exit 0
