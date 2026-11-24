@@ -1,10 +1,10 @@
-"""experiments/builds/heart_trend_line_f.sh, the test-board builds of file D's three further strengths, files OTS025,
-OTS075 and OTS125 (the ruling row given as its third argument). Every call runs in a throwaway git repository under the
-test's own folder, with a temporary home and a stand-in uv (and, where named, a stand-in sha256sum) first on PATH: no
-launcher runs with a real commit, nothing reads a competition file and nothing is built. The uv stand-in is
-tests/test_heart_organ_launchers' own, so the launchers are held to the same calls; the sha256sum stand-in gives the
-three identity steps' committed hashes. The gate's ledger check is also held to the builder's own on the same
-ledgers."""
+"""experiments/builds/heart_trend_line_f.sh, the test-board builds of file D's two further strengths, files OTS075 and
+OTS125 (0.25 dropped by the round's challenge; the ruling row given as its third argument). Every call runs in a
+throwaway git repository under the test's own folder, with a temporary home and a stand-in uv (and, where named, a
+stand-in sha256sum) first on PATH: no launcher runs with a real commit, nothing reads a competition file and nothing is
+built. The uv stand-in is tests/test_heart_organ_launchers' own, so the launchers are held to the same calls; the
+sha256sum stand-in gives the three identity steps' committed hashes. The gate's ledger check is also held to the
+builder's own on the same ledgers."""
 
 from __future__ import annotations
 
@@ -32,13 +32,11 @@ OTS10_SHA = "efaaabe0b744d82dc40135ed9269a6baf8938c9cdd83f85fb3917c0b102e7a2b"
 OTS10_HALF_SHA = "ee9e0e68d62e8d1448f1dbbbce1146dc5fb4877e94d77fc289fa82744acb06a9"
 ROW = "R44"  # a synthetic stand-in for the ruling row
 F_ROW = ("| R44 (the captain's order, a synthetic stand-in: ruling, no run, not a try; the heart builder is to take "
-         "`--entry organ_scope` with `--trend-strength 0.25`, `--trend-strength 0.75` and `--trend-strength 1.25` only "
-         "with `--captain-ruling R44`) | heart | x |\n")
-F_STRINGS = ("`--entry organ_scope`", "`--trend-strength 0.25`", "`--trend-strength 0.75`", "`--trend-strength 1.25`",
-             "`--captain-ruling R44`")
-STEPS = ("gate", "tests", "D", "OTS05", "OTS10", "OTS025a", "OTS025b", "OTS075a", "OTS075b", "OTS125a", "OTS125b",
-         "done")
-TRIO = {"025": "0.25", "075": "0.75", "125": "1.25"}
+         "`--entry organ_scope` with `--trend-strength 0.75` and `--trend-strength 1.25` only with "
+         "`--captain-ruling R44`) | heart | x |\n")
+F_STRINGS = ("`--entry organ_scope`", "`--trend-strength 0.75`", "`--trend-strength 1.25`", "`--captain-ruling R44`")
+STEPS = ("gate", "tests", "D", "OTS05", "OTS10", "OTS075a", "OTS075b", "OTS125a", "OTS125b", "done")
+PAIR = {"075": "0.75", "125": "1.25"}
 
 # A stand-in sha256sum that gives the committed hashes for file D's, OTS05's and OTS10's files and halves (each one
 # replaceable through the environment) and the real hash otherwise.
@@ -83,7 +81,7 @@ def _bin(tmp_path, sha_stub=False):
 
 @pytest.fixture()
 def repo(tmp_path):
-    """A throwaway repository: the rules file and its pin, the ledger with row R44 as the captain's order for the three
+    """A throwaway repository: the rules file and its pin, the ledger with row R44 as the captain's order for the two
     strengths, a stand-in src/."""
     repo = tmp_path / "repo"
     for d in ("docs", "experiments/harness", "src"):
@@ -135,18 +133,18 @@ def test_the_launcher_end_to_end_with_stand_ins(tmp_path, repo):
     assert (S / "stamps").read_text().splitlines() == [
         f"D/T2heart_organ {head} True", f"OTS05/T2heart_organ_ts05 {head} True",
         f"OTS10/T2heart_organ_ts10 {head} True",
-        *(f"OTS{k}{x}/T2heart_organ_ts{k} {head} True" for k in TRIO for x in "ab")]
+        *(f"OTS{k}{x}/T2heart_organ_ts{k} {head} True" for k in PAIR for x in "ab")]
     sums = (S / "SHA256SUMS").read_text()
     assert sums == (repo / rel / "SHA256SUMS").read_text()
     assert [ln.split()[1] for ln in sums.splitlines()] == [
         "D/T2heart_organ.h5ad", "D/T2heart_organ_half.h5ad",
         "OTS05/T2heart_organ_ts05.h5ad", "OTS05/T2heart_organ_ts05_half.h5ad",
         "OTS10/T2heart_organ_ts10.h5ad", "OTS10/T2heart_organ_ts10_half.h5ad",
-        *(f"OTS{k}{x}/T2heart_organ_ts{k}{h}.h5ad" for k in TRIO for x in "ab" for h in ("", "_half"))]
+        *(f"OTS{k}{x}/T2heart_organ_ts{k}{h}.h5ad" for k in PAIR for x in "ab" for h in ("", "_half"))]
     digests = {ln.split()[1]: ln.split()[0] for ln in sums.splitlines()}
     assert (digests["D/T2heart_organ.h5ad"], digests["OTS05/T2heart_organ_ts05.h5ad"],
             digests["OTS10/T2heart_organ_ts10_half.h5ad"]) == (D_SHA, OTS05_SHA, OTS10_HALF_SHA)
-    for k in TRIO:
+    for k in PAIR:
         assert digests[f"OTS{k}a/T2heart_organ_ts{k}.h5ad"] == digests[f"OTS{k}b/T2heart_organ_ts{k}.h5ad"]
     calls = _calls(tmp_path)
     py = "run --frozen --no-sync python -I -B experiments/builds/build_test.py heart"
@@ -157,12 +155,13 @@ def test_the_launcher_end_to_end_with_stand_ins(tmp_path, repo):
         f"{py} --entry organ_scope --trend-strength 1.0 --z-mode raw --captain-ruling R29 "
         f"--out {rel}/OTS10/T2heart_organ_ts10.h5ad",
         *(f"{py} --entry organ_scope --trend-strength {v} --z-mode raw --captain-ruling {ROW} "
-          f"--out {rel}/OTS{k}{x}/T2heart_organ_ts{k}.h5ad" for k, v in TRIO.items() for x in "ab")]
+          f"--out {rel}/OTS{k}{x}/T2heart_organ_ts{k}.h5ad" for k, v in PAIR.items() for x in "ab")]
+    assert not any("0.25" in c or "ts025" in c for c in calls)  # 0.25 is never built
     halves = [c for c in calls if "experiments/builds/halve.py" in c]
-    assert len(halves) == 9 and all("--seed" not in c for c in halves)  # halve.py's default seed, 1000001
-    assert halves[3].endswith(f"{rel}/OTS025a/T2heart_organ_ts025.h5ad {rel}/OTS025a/T2heart_organ_ts025_half.h5ad")
+    assert len(halves) == 7 and all("--seed" not in c for c in halves)  # halve.py's default seed, 1000001
+    assert halves[3].endswith(f"{rel}/OTS075a/T2heart_organ_ts075.h5ad {rel}/OTS075a/T2heart_organ_ts075_half.h5ad")
     checks = [c for c in calls if " vec check " in c]
-    assert len(checks) == 18 and all(c.endswith("--board T2:heart:test_extrap") for c in checks)
+    assert len(checks) == 14 and all(c.endswith("--board T2:heart:test_extrap") for c in checks)
     tests = [c for c in calls if " -m pytest " in c]
     assert len(tests) == 1
     for f in ("test_heart_trend_line_f.py", "test_heart_trend_line_f_launcher.py", "test_heart_trend_line_d.py",
@@ -184,7 +183,7 @@ def test_the_launcher_stops_unless_d_ots05_and_ots10_give_their_committed_bytes(
     assert _exit(tmp_path, "s", step) == str(code)
     later = STEPS[STEPS.index(step) + 1:]
     assert all(_exit(tmp_path, "s", s) is None for s in later)
-    assert not any(f"--captain-ruling {ROW}" in c for c in _calls(tmp_path))  # none of the three is built
+    assert not any(f"--captain-ruling {ROW}" in c for c in _calls(tmp_path))  # neither of the two is built
 
 
 def test_the_launcher_stops_at_file_d_on_its_real_hash(tmp_path, repo):
@@ -202,7 +201,7 @@ def test_the_launcher_fails_on_a_build_a_check_a_stamp_the_tests_or_two_differen
     assert _launch(tmp_path, head, "b3", ROW, extra={"STUB_DIRTY": "1"})[0] == 15
     assert _launch(tmp_path, head, "b4", ROW, extra={"STUB_PYTEST_EXIT": "1"})[0] == 10
     assert _exit(tmp_path, "b4", "tests") == "10" and _exit(tmp_path, "b4", "D") is None
-    for run, on, code in (("b5", "", 31), ("b6", "--trend-strength 0.75 ", 32), ("b7", "--trend-strength 1.25 ", 33)):
+    for run, on, code in (("b5", "", 31), ("b6", "--trend-strength 1.25 ", 32)):
         assert _launch(tmp_path, head, run, ROW, extra={"STUB_NONDET": "1", "STUB_NONDET_ON": on})[0] == code, run
         assert _exit(tmp_path, run, "done") == str(code)
         assert all(_exit(tmp_path, run, s) == "0" for s in STEPS[:-1])
@@ -240,7 +239,8 @@ def test_the_launcher_gate_refusals(tmp_path, repo):
                                                                        "the captain's order"))},
            "later_cell": good.replace("`--trend-strength 0.75` and ", "").replace(
                "| heart | x |\n| H28", "| `--trend-strength 0.75` | x |\n| H28"),
-           "wider": good.replace("`--trend-strength 1.25`", "`--trend-strength 1.250`")}
+           "wider": good.replace("`--trend-strength 1.25`", "`--trend-strength 1.250`"),
+           "rounded": good.replace("`--trend-strength 0.75`", "`--trend-strength 0.8`")}
     for name, text in bad.items():
         assert text != good, name
         t.write_text(text)
@@ -257,7 +257,7 @@ def test_the_launcher_gate_refusals(tmp_path, repo):
 
 
 def test_the_gates_row_check_is_the_builders(tmp_path, monkeypatch):
-    """The gate's inline check and the builder's _heart_ftrio_ordered take and refuse the same ledgers."""
+    """The gate's inline check and the builder's _heart_further_ordered take and refuse the same ledgers."""
     sys.path.insert(0, str(REPO_ROOT / "experiments" / "builds"))
     import build_test as bt
 
@@ -268,7 +268,10 @@ def test_the_gates_row_check_is_the_builders(tmp_path, monkeypatch):
     ledgers = {"ok": base, "none": "| R27 (x) | T1 | x |\n", "two": base + F_ROW,
                "other": base.replace("| R44 (", "| R45 ("), "longer": base.replace("| R44 (", "| R440 ("),
                "ruled": base.replace("`--captain-ruling R44`", "`--captain-ruling R45`"),
-               "wider": base.replace("`--trend-strength 0.25`", "`--trend-strength 0.250`"),
+               "wider": base.replace("`--trend-strength 0.75`", "`--trend-strength 0.750`"),
+               "rounded": base.replace("`--trend-strength 1.25`", "`--trend-strength 1.2`"),
+               "with025": base.replace("with `--trend-strength 0.75`", "with `--trend-strength 0.25`, "
+                                                                       "`--trend-strength 0.75`"),
                **{f"drop{i}": base.replace(s, "x") for i, s in enumerate((*F_STRINGS, "ruling, no run",
                                                                            "the captain's order"))}}
     seen = set()
@@ -278,7 +281,7 @@ def test_the_gates_row_check_is_the_builders(tmp_path, monkeypatch):
         monkeypatch.setattr(bt, "TRIES_FILE", path)
         for row in (ROW, "R45", "R440"):
             gate = subprocess.run(["python3", "-I", "-B", "-c", code, str(path), row]).returncode == 0
-            assert gate == bt._heart_ftrio_ordered(row), (name, row)
+            assert gate == bt._heart_further_ordered(row), (name, row)
             seen.add(gate)
     assert seen == {True, False}
 
@@ -300,6 +303,7 @@ def test_the_launcher_deletes_nothing_parses_and_keeps_the_d_launchers_conventio
     assert "OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16" in sh
     assert "/mnt/" not in sh and "vec-campaign/" not in body
     assert "S=$HOME/v/scratch/heartf/$RUN" in sh and "O=runs/heartf_${head:0:7}_$RUN" in sh
+    assert "0.25" not in body and "025" not in body  # the two files only
     # PATH is set before the first uv call, and ROW is checked before it is used
     assert body.index("export PATH=$HOME/.local/bin:$PATH") < body.index("uv run")
     assert body.index('[[ "$ROW" =~ ^R[0-9]+[a-z]?$ ]]') < body.index('mkdir -p "$HOME')
@@ -337,7 +341,7 @@ def test_the_launcher_reads_only_exit_sha_and_stamp():
     assert 'D_ARGS="--entry organ_scope --expression copy --z-mode raw"' in sh
     assert 'OTS05_ARGS="--entry organ_scope --trend-strength 0.5 --z-mode raw --captain-ruling R29"' in sh
     assert 'OTS10_ARGS="--entry organ_scope --trend-strength 1.0 --z-mode raw --captain-ruling R29"' in sh
-    for k, v in TRIO.items():
+    for k, v in PAIR.items():
         assert f'OTS{k}_ARGS="--entry organ_scope --trend-strength {v} --z-mode raw --captain-ruling $ROW"' in sh
     assert "BOARD=T2:heart:test_extrap" in sh
 
@@ -368,7 +372,7 @@ def test_the_identity_hashes_are_the_committed_lists():
 
 def test_the_launchers_commands_are_the_builders():
     """The commands the launcher builds are the builder's own: HEART_ORGAN_SCOPE, row R29's HEART_OTS_COMMANDS and the
-    three further strengths' HEART_FTRIO_COMMANDS with the row given."""
+    two further strengths' HEART_FURTHER_COMMANDS with the row given."""
     sys.path.insert(0, str(REPO_ROOT / "experiments" / "builds"))
     import build_test as bt
 
@@ -376,6 +380,7 @@ def test_the_launchers_commands_are_the_builders():
     assert f'D_ARGS="{bt.HEART_ORGAN_SCOPE[len("heart "):]}"' in sh
     for s, var in ((0.5, "OTS05_ARGS"), (1.0, "OTS10_ARGS")):
         assert f'{var}="{bt.HEART_OTS_COMMANDS[s][len("heart "):]}"' in sh
-    for s, var in ((0.25, "OTS025_ARGS"), (0.75, "OTS075_ARGS"), (1.25, "OTS125_ARGS")):
-        assert f'{var}="{bt.HEART_FTRIO_COMMANDS[s].format(row="$ROW")[len("heart "):]}"' in sh
-    assert bt.HEART_FTRIO_ROW_FORM.pattern == "R[0-9]+[a-z]?" and "^R[0-9]+[a-z]?$" in sh
+    assert sorted(bt.HEART_FURTHER_COMMANDS) == [0.75, 1.25]
+    for s, var in ((0.75, "OTS075_ARGS"), (1.25, "OTS125_ARGS")):
+        assert f'{var}="{bt.HEART_FURTHER_COMMANDS[s].format(row="$ROW")[len("heart "):]}"' in sh
+    assert bt.HEART_FURTHER_ROW_FORM.pattern == "R[0-9]+[a-z]?" and "^R[0-9]+[a-z]?$" in sh

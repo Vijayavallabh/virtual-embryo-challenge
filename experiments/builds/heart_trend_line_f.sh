@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# File D's three further strengths, files OTS025, OTS075 and OTS125 (the design round of 2026-11-24, its FAST proposal
-# for the heart; its ruling row, "R-F" there, is the ROW given here): the organ cut D's command with --expression copy
-# replaced by row H28's trend step at strength 0.25, 0.75 and 1.25, nothing else changed (OTS05's draw, organ-cut pool,
-# count rule, size procedure, seed and half). Test-board builds on a DGX campaign checkout (~/v/vec-campaign, never the
-# reference checkout). Run from the root of the checkout or detached worktree it is called in, detached, and wait on
-# the exit files with a background poller; never a foreground sleep:
+# File D's two further strengths, files OTS075 and OTS125 (the design round of 2026-11-24, its FAST proposal for the
+# heart with 0.25 dropped by the round's challenge; its ruling row, "R-F" there, is the ROW given here): the organ cut
+# D's command with --expression copy replaced by row H28's trend step at strength 0.75 and 1.25, nothing else changed
+# (OTS05's draw, organ-cut pool, count rule, size procedure, seed and half). Test-board builds on a DGX campaign checkout
+# (~/v/vec-campaign, never the reference checkout). Run from the root of the checkout or detached worktree it is called
+# in, detached, and wait on the exit files with a background poller; never a foreground sleep:
 #   bash experiments/builds/heart_trend_line_f.sh <COMMIT> <RUN> <ROW>
 # ROW is the ruling row's id in experiments/harness/TRIES.md (R and its number, e.g. R44). RUN names this run's own
 # scratch folder ~/v/scratch/heartf/<RUN> and its output folder runs/heartf_<commit7>_<RUN>. Neither may exist: a run
@@ -12,9 +12,9 @@
 # writing ~/v/scratch/heartf/<RUN>/<STEP>.exit (the word running first, once its checks pass, then its exit code):
 #   gate   HEAD is COMMIT (the full hash), the tracked tree is clean, docs/S2_RULES.sha256 checks, and TRIES.md holds
 #          exactly one row ROW whose first cell is the captain's order ("ruling, no run") naming
-#          `--entry organ_scope`, `--trend-strength 0.25`, `--trend-strength 0.75`, `--trend-strength 1.25` and
-#          `--captain-ruling ROW` (the builder's own check)
-#   tests  file D's three further strengths', the two heart search lines' and the heart builder's targeted tests
+#          `--entry organ_scope`, `--trend-strength 0.75`, `--trend-strength 1.25` and `--captain-ruling ROW` (the
+#          builder's own check)
+#   tests  file D's two further strengths', the two heart search lines' and the heart builder's targeted tests
 #          (synthetic stages only), 8 BLAS threads
 #   D      the first identity step: file D by its committed default command, then its half; the file must give D_SHA
 #          and its half D_HALF_SHA (experiments/builds/results/heartorgan_72b9662_d1.SHA256SUMS and
@@ -23,12 +23,11 @@
 #          OTS05_SHA and its half OTS05_HALF_SHA (experiments/builds/results/heartlined_0d47a67_od1.SHA256SUMS, the
 #          DGX's builds), or everything stops
 #   OTS10  the third identity step: row R29's OTS10 likewise, OTS10_SHA and OTS10_HALF_SHA (the same list)
-#   OTS025a OTS025b  OTS025 (strength 0.25 on D), twice, into separate folders, each then halved by
+#   OTS075a OTS075b  OTS075 (strength 0.75 on D), twice, into separate folders, each then halved by
 #                    experiments/builds/halve.py (seed 1000001)
-#   OTS075a OTS075b  OTS075 (strength 0.75 on D), likewise
 #   OTS125a OTS125b  OTS125 (strength 1.25 on D), likewise
-#   done   one sha256 list over every built file; OTS025a and OTS025b, OTS075a and OTS075b, and OTS125a and OTS125b,
-#          compared byte for byte, file and half
+#   done   one sha256 list over every built file; OTS075a and OTS075b, and OTS125a and OTS125b, compared byte for
+#          byte, file and half
 # A build step also fails (15) unless its stamp says this commit and clean True. Builds run at 16 BLAS threads, as the
 # reference builds. Every builder, halve.py and `vec check` output goes to /dev/null: a test build is read by its exit
 # code, its sha256 and its stamp's commit and clean fields only (AGENTS.md), never its log, size, cell count or
@@ -65,7 +64,6 @@ OTS10_HALF_SHA=ee9e0e68d62e8d1448f1dbbbce1146dc5fb4877e94d77fc289fa82744acb06a9 
 D_ARGS="--entry organ_scope --expression copy --z-mode raw"
 OTS05_ARGS="--entry organ_scope --trend-strength 0.5 --z-mode raw --captain-ruling R29"
 OTS10_ARGS="--entry organ_scope --trend-strength 1.0 --z-mode raw --captain-ruling R29"
-OTS025_ARGS="--entry organ_scope --trend-strength 0.25 --z-mode raw --captain-ruling $ROW"
 OTS075_ARGS="--entry organ_scope --trend-strength 0.75 --z-mode raw --captain-ruling $ROW"
 OTS125_ARGS="--entry organ_scope --trend-strength 1.25 --z-mode raw --captain-ruling $ROW"
 STEP=gate
@@ -83,8 +81,8 @@ python3 -I -B -c 'import sys
 row = sys.argv[2]
 rows = [ln for ln in open(sys.argv[1], encoding="utf-8").read().splitlines() if ln.startswith("| " + row + " ")]
 first = rows[0][2:].split("|", 1)[0] if len(rows) == 1 else ""
-need = ("`--entry organ_scope`", "`--trend-strength 0.25`", "`--trend-strength 0.75`", "`--trend-strength 1.25`",
-        "`--captain-ruling " + row + "`", "ruling, no run")
+need = ("`--entry organ_scope`", "`--trend-strength 0.75`", "`--trend-strength 1.25`", "`--captain-ruling " + row + "`",
+        "ruling, no run")
 sys.exit(0 if first.startswith(row + " (the captain\x27s order") and all(s in first for s in need) else 1)' \
   experiments/harness/TRIES.md "$ROW" \
   || { echo "refused: TRIES.md does not hold exactly one row $ROW that is the captain's order naming the line" >&2; finish 95; }
@@ -153,11 +151,6 @@ got=$(sha256sum "$O/OTS10/T2heart_organ_ts10_half.h5ad" | cut -d' ' -f1)
 [ "$got" = "$OTS10_HALF_SHA" ] || { echo "stopped: row R29's OTS10 half does not give its recorded half" >&2; finish 25; }
 step_ok
 
-for STEP in OTS025a OTS025b; do
-  echo running > "$S/$STEP.exit"
-  build "$STEP" T2heart_organ_ts025 $OTS025_ARGS || finish $?
-  step_ok
-done
 for STEP in OTS075a OTS075b; do
   echo running > "$S/$STEP.exit"
   build "$STEP" T2heart_organ_ts075 $OTS075_ARGS || finish $?
@@ -171,10 +164,9 @@ done
 
 STEP=done
 echo running > "$S/$STEP.exit"
-(cd "$O" && sha256sum D/*.h5ad OTS05/*.h5ad OTS10/*.h5ad OTS025a/*.h5ad OTS025b/*.h5ad OTS075a/*.h5ad \
-  OTS075b/*.h5ad OTS125a/*.h5ad OTS125b/*.h5ad) > "$S/SHA256SUMS" || finish 30
+(cd "$O" && sha256sum D/*.h5ad OTS05/*.h5ad OTS10/*.h5ad OTS075a/*.h5ad OTS075b/*.h5ad OTS125a/*.h5ad \
+  OTS125b/*.h5ad) > "$S/SHA256SUMS" || finish 30
 cp "$S/SHA256SUMS" "$O/SHA256SUMS" || finish 30
-for f in T2heart_organ_ts025 T2heart_organ_ts025_half; do cmp -s "$O/OTS025a/$f.h5ad" "$O/OTS025b/$f.h5ad" || finish 31; done
-for f in T2heart_organ_ts075 T2heart_organ_ts075_half; do cmp -s "$O/OTS075a/$f.h5ad" "$O/OTS075b/$f.h5ad" || finish 32; done
-for f in T2heart_organ_ts125 T2heart_organ_ts125_half; do cmp -s "$O/OTS125a/$f.h5ad" "$O/OTS125b/$f.h5ad" || finish 33; done
+for f in T2heart_organ_ts075 T2heart_organ_ts075_half; do cmp -s "$O/OTS075a/$f.h5ad" "$O/OTS075b/$f.h5ad" || finish 31; done
+for f in T2heart_organ_ts125 T2heart_organ_ts125_half; do cmp -s "$O/OTS125a/$f.h5ad" "$O/OTS125b/$f.h5ad" || finish 32; done
 step_ok
