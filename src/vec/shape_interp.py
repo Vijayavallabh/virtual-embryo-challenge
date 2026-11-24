@@ -361,19 +361,20 @@ GEODESIC_FORMS = ("geodesic_overlay", "geodesic_overlay_rot")  # row E53: harnes
 
 # Row E55 (as specified by the cold challenger, round_1124_t2; branch campaign/emb-osr): F3 then F1's stretch, on the
 # overlay's union. In their own tuples, outside FORMS, CONTROLS and ALL_FORMS: the builder offers overlay_stretch only,
-# never a control. AXES_STREAM = 56, a stream no build step uses (47 the floor-exact draw, 48 the row order, 49 the
-# identifiability draws, 50 ROT_STREAM, 51 to 52 vec.lddmm, 53 to 55 vec.t2_mmflow).
+# never a control. NEW_STREAM = 56 (alias AXES_STREAM), a stream no build step uses (47 the floor-exact draw, 48 the
+# row order, 49 the identifiability draws, 50 ROT_STREAM, 51 to 52 vec.lddmm, 53 to 55 vec.t2_mmflow).
 COMPOSED_FORMS = ("overlay_stretch",)
 COMPOSED_CONTROLS = ("overlay_stretch_anti", "overlay_stretch_axes")
 COMPOSED_CONTROL_OF = {"overlay_stretch": COMPOSED_CONTROLS}
-AXES_STREAM = 56
+NEW_STREAM = 56
+AXES_STREAM = NEW_STREAM  # the same constant, by the name the code first used
 
 
 def axes_rotation(seed: int) -> np.ndarray:
-    """overlay_stretch_axes' uniform proper rotation Q: scipy Rotation.random from default_rng([seed, AXES_STREAM])."""
+    """overlay_stretch_axes' uniform proper rotation Q: scipy Rotation.random from default_rng([seed, NEW_STREAM])."""
     from scipy.spatial.transform import Rotation
 
-    return check_rotation(Rotation.random(random_state=np.random.default_rng([int(seed), AXES_STREAM])).as_matrix(),
+    return check_rotation(Rotation.random(random_state=np.random.default_rng([int(seed), NEW_STREAM])).as_matrix(),
                           "Q")
 
 
@@ -431,7 +432,7 @@ def apply_form(form: str, *, Z, Zb, Za, t: float, R, seed: int, rows_b, rows_a, 
                               Q=axes_rotation(seed) if variant == "axes" else None)
         out.record = {"form": form, **out.record, "ident_stream": IDENT_STREAM}
         if variant == "axes":
-            out.record["axes_stream"] = AXES_STREAM
+            out.record["axes_stream"] = NEW_STREAM
         return out
     if form == "stretch_ratio":
         out = stretch_ratio(Z, Zb, Za, t)

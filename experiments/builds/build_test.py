@@ -363,6 +363,7 @@ HEART_OTS_STEP = ("row H28's strength-scaled b0_trend step: the vec.harness.b0_t
                   "the size step, on D's draw, organ-cut pool, count rule, size procedure and seed")
 # --shape-interp (row E49 as drafted; no ruling): off by default; the fixed order of the steps when it is given
 SHAPE_INTERP_OFF = "none"
+OSR_TEST_BLOCKS = "1|2,3"  # row E55: overlay_stretch on a test board only with these bracket blocks (seed-free)
 SHAPE_INTERP_ORDER = ("floor_exact positions, the shape form, the size rule's RMS rescale, the duplicate jitter, the "
                       "cloud guard, then --row-order copy_parity if given (on the final coordinates)")
 # --copy-rows (off by default; the investigator's Option A, the captain's order of 2026-11-21, docs/PLAN.md decision log
@@ -2045,6 +2046,10 @@ def build_embryo(a) -> dict:
                                                            t2_build.log_panel_counts(after, genes))),
                                           with_coupling=a.expression == "latent",
                                           **({} if shape is None else {"shape_form": shape}), positions=a.positions)
+        if (shape in shape_interp.COMPOSED_FORMS and (not dry or str(board.split).startswith("test"))
+                and res.record.get("shape_interp_blocks") != OSR_TEST_BLOCKS):  # row E55, cell 3: "must be"
+            raise SystemExit(f"--shape-interp {shape} on a test board needs the brackets' blocks {OSR_TEST_BLOCKS}; "
+                             f"they are {res.record.get('shape_interp_blocks')}: refused, nothing written")
         expr_rec = None
         if a.expression == "mixture":
             X = np.empty((len(res.rows), len(genes)), dtype=np.float32)

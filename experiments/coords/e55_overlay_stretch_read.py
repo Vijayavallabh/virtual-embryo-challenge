@@ -37,8 +37,10 @@ Steps (each refuses unless TRIES.md holds a row starting "| E55 ", the tree is c
   read --commit SHA              the reading into experiments/coords/results/e55_overlay_stretch/ (reading.json,
   --gate-record DIR              reading.txt), never overwriting
   --gate-sha256 HEX
-The script prints only "<task> seed <s> done", "wrote <path>" and "gate <task> pass|fail". It reads no test board,
-test file or test anchor, and prints no count.
+  step0 --commit SHA             step 0 alone: the run step's checks of the gate record and its recompute, into
+                                 <runs>/gate0/step0.json; exit 0 pass, 3 fail (the launcher stops there)
+The script prints only "<task> seed <s> done", "wrote <path>", "gate <task> pass|fail" and "step0 pass|fail". It
+reads no test board, test file or test anchor, and prints no count.
 
 Refusals (ruling 6): a refusal of the arm or of either placebo on any task-seed makes the arm unreadable; the outcome
 is STOP (no file), not VOID; O's file stands in; the three tries stay counted. P7 (ruling 5): the J4 merge over the
@@ -778,6 +780,11 @@ def reading(recs: dict[str, list[dict]], why_in: list[str], commit: str, gate: d
                               "dice_mirror": float(np.mean([r["facts"]["hands"][n]["dice_mirror"] for r in rs]))}
         per_task[t]["run_median_g"] = _median([r["facts"]["records"].get(ARM, {}).get("shape_interp_g") for r in rs])
         per_task[t]["gate_median_g"] = median_g.get(t)
+        per_task[t]["board_minus_floor"] = {
+            n: float(np.mean(series(rs, n, "board") - series(rs, harness.FLOOR, "board"))) for n in RUN_NAMES}
+        per_task[t]["thin_sd"] = {
+            n: {k: _median([r["facts"]["records"].get(n, {}).get(f"shape_interp_{k}") for r in rs]) for k in THIN_KEYS}
+            for n in RUN_NAMES}
     price = _per_truth(recs, m["five"], ARM, O)
     small = [n for n in TEST_LIKE if median_g.get(n) is not None and abs(float(median_g[n])) < G_MIN]
     statement = tp_statement(gate["median_g"], gate.get("test_pair_g", []))
@@ -801,6 +808,9 @@ def reading(recs: dict[str, list[dict]], why_in: list[str], commit: str, gate: d
                "prefix_board4": _stat(merged_D(recs, m["four"], ARM, O, "board", build="prefix")),
                "placebos_vs_O_board4": {c: _stat(merged_D(recs, m["four"], c, O, "board")) for c in PLACEBOS},
                "test_pair_median_g": gate["median_g"].get(og.TEST),
+               "against_floor": {n: {k: _stat(merged_D(recs, m[k], n, harness.FLOOR, "board"))
+                                     for k in ("five", "four", "test_like")} for n in RUN_NAMES},
+               "g_quantities": G_QUANTITIES,
                "deep_other": {k: float(np.mean([per_task[t][ARM]["board"]["mean"] for t in ks]))
                               for k, ks in (("DEEP", nt.DEEP), ("OTHER", nt.OTHER))}},
            "tasks": per_task, "price": price,
@@ -813,6 +823,16 @@ def reading(recs: dict[str, list[dict]], why_in: list[str], commit: str, gate: d
     else:
         res["question"] = None
     return res
+
+
+THIN_KEYS = ("thin_sd", "thin_sd_union")  # the form's recorded thin SDs (O's overlay records thin_sd only)
+G_QUANTITIES = {
+    "run_median_g": "the form's recorded g = log(f1/f2) on the arm's built cloud (the union before the size rule), "
+                    "median over the run's build seeds 1,000,000 to 1,000,009",
+    "gate_median_g": "the gate's own g (log f1/f2 with blocks 1|2,3, else the signed largest log ratio) on the "
+                     "overlay's cloud after the size rule and jitter, median over the gate's build seeds 1,000,001 to "
+                     "1,000,010, from the d145d78 record; P7 reads this one",
+}
 
 
 def small_g_range(recs, small_groups: dict[str, list[str]]) -> dict:
@@ -870,6 +890,19 @@ def text(res: dict) -> str:
              + ("" if not tp.get("small_g_per_task") else " Per task, deciding nothing: "
                 + ", ".join(f"{k} {v:+.3f}" for k, v in tp["small_g_per_task"].items()) + "."))
     rep = res["reported_deciding_nothing"]
+    L.append("Reported, deciding nothing, board mean minus the floor's under main (five-truth / four-truth / "
+             "test-like; rule 5): " + "; ".join(
+                 f"{n} {v['five']['mean']:+.3f} / {v['four']['mean']:+.3f} / {v['test_like']['mean']:+.3f}"
+                 for n, v in rep["against_floor"].items()))
+    for t, v in res["tasks"].items():
+        L.append(f"  {t}: minus the floor " + ", ".join(f"{n} {x:+.3f}" for n, x in v["board_minus_floor"].items())
+                 + "; thin SD (median over seeds, thin_sd/thin_sd_union) " + ", ".join(
+                     f"{n} " + "/".join("none" if x is None else f"{x:.4f}" for x in v["thin_sd"][n].values())
+                     for n in v["thin_sd"])
+                 + "; run_median_g (the form's record on the built cloud, run seeds) "
+                 + ("none" if v["run_median_g"] is None else f"{v['run_median_g']:+.4f}")
+                 + ", gate_median_g (the gate's own figure, its seeds; P7 reads it) "
+                 + ("none" if v["gate_median_g"] is None else f"{v['gate_median_g']:+.4f}"))
     L.append(f"Reported, deciding nothing: prefix board five-truth {rep['prefix_board5']['mean']:+.3f}, four-truth "
              f"{rep['prefix_board4']['mean']:+.3f}; per truth "
              + ", ".join(f"{k} {v:+.3f}" for k, v in res["price"]["per_truth"].items())
@@ -885,7 +918,7 @@ def text(res: dict) -> str:
         L.append("  at the test only as a range from zero (the test pair's median g is below P7's "
                  f"{G_MIN}).")
     else:
-        L.append("STOP: no pass, no file.")
+        L.append("STOP: no pass, no file. The handed-over embryo files stand.")
     L.append("Nothing here shows E7.75's shape, the live gate, build, metric seed or LAPACK signs.")
     return "\n".join(L) + "\n"
 
@@ -904,6 +937,25 @@ def provenance() -> dict:
     return {"head": s.commit, "clean": s.unclean == (), "script_sha256": _sha_file(Path(__file__)),
             "harness_sha256": _sha_file(Path(harness.__file__)), "t2_build_sha256": _sha_file(Path(tb.__file__)),
             "shape_interp_sha256": _sha_file(Path(si.__file__))}
+
+
+def step0_path(runs: Path) -> Path:
+    return _recompute_dir(runs) / "step0.json"
+
+
+def cmd_step0(a) -> None:
+    """Step 0 as its own call: exactly the run step's checks of the gate record and its recompute (gate0_problems:
+    the record's commit and sha256, the stop clauses S1 to S5 in the record and the recompute, every g within G_TOL).
+    Writes <runs>/gate0/step0.json; exit 0 on pass, 3 on failure (the launcher then starts neither the reproduction
+    gate nor the run)."""
+    runs = Path(a.runs)
+    why, _ = gate0_problems(a.gate_record, a.gate_sha256, _recompute_dir(runs), a.commit)
+    out = step0_path(runs)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps({"pass": not why, "why": why, "commit": a.commit, "gate_commit": GATE_COMMIT,
+                               "gate_json_sha256": a.gate_sha256, "g_tolerance": G_TOL}, indent=1))
+    print(f"step0 {'pass' if not why else 'fail'}", flush=True)
+    sys.exit(0 if not why else 3)
 
 
 def cmd_read(a) -> None:
@@ -939,13 +991,17 @@ def main(argv=None) -> None:
         p.add_argument("--data", default=str(harness.DATA_DIR))
         if name == "run":
             _gate_args(p)
+    z = sub.add_parser("step0")
+    z.add_argument("--commit", required=True)
+    z.add_argument("--runs", default=str(RUNS))
+    _gate_args(z)
     r = sub.add_parser("read")
     r.add_argument("--commit", required=True)
     r.add_argument("--runs", default=str(RUNS))
     r.add_argument("--out", default=str(RESULTS))
     _gate_args(r)
     a = ap.parse_args(argv)
-    {"gate": cmd_gate, "run": cmd_run, "read": cmd_read}[a.cmd](a)
+    {"gate": cmd_gate, "run": cmd_run, "step0": cmd_step0, "read": cmd_read}[a.cmd](a)
 
 
 def _gate_args(p) -> None:
