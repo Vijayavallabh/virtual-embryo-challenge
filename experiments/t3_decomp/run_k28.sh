@@ -7,8 +7,9 @@
 #   bash experiments/t3_decomp/run_k28.sh g0a COMMIT      G0a, the first step of the database-only gate G0
 #
 # COMMIT: the full hash of the commit the step runs at, the row's registration commit (row K28 in TRIES.md, the
-# amendment of register row X018 in EXTERNAL_DATA.md, G0a's code and tests). The steps after it (G0b, G0c, the read) are
-# added here with their code, which by the specification is written only after G0a has passed on the real database.
+# amendment of register row X018 in EXTERNAL_DATA.md, G0a's code and tests). G0b's and G0c's calls are added here with
+# their code, written only after G0a has passed on the real database; the counted part only at the row's second commit,
+# written only after G0 has passed.
 #
 # Fixed folders (no override): the fetch ~/v/vec-ext/t3/chipatlas (chipq_fetch.DATA_ROOT, pinned on 2026-11-23); the
 # scratch folder S = ~/v/scratch/k28/<first 7 of COMMIT>/g0a (TMPDIR under it). G0 reads database files only: no data
@@ -17,7 +18,7 @@
 # g0a, stopping at the first failure:
 #   1. HEAD is COMMIT (exit 97), the tracked tree is clean (98), row K28 is in TRIES.md (95); chipq_kept.yaml and
 #      CHIPQ_KEPT.sha256 are tracked, the fetch folder is a real directory (no symlink), and EXTERNAL_DATA.md's row
-#      X018 carries the amendment's opening words (96);
+#      X018 carries the amendment's whole text (96);
 #   2. a reading is in the row's results folder already (the candidate is closed): made at this HEAD, 28 again;
 #      made at another commit, naming none, or unreadable, 44. Nothing runs;
 #   3. the targeted tests, hand-made files only, 8 BLAS threads (10);
@@ -53,7 +54,7 @@ PY="uv run --frozen --no-sync python -I -B"
 threads() { export OMP_NUM_THREADS=$1 OPENBLAS_NUM_THREADS=$1 MKL_NUM_THREADS=$1; }
 SCRIPT=experiments/t3_decomp/k28_chip_partners.py
 OUT=experiments/t3_decomp/results/k28_chip_partners
-WORDS="Reopened by the captain's order of 2026-11-24"  # the opening words of row X018's amendment
+WORDS="Reopened by the captain's order of 2026-11-24 for the database-only gate of one practice row (K28, T3 candidate CHIPQ-C); a fold is read only under the captain's ruling R33 lifting row K27's closing sentence for that row alone. No new fetch, no new kind of file: the files pinned on 2026-11-23, verified. New use: for a query gene named to code, code picks three other antigens whose binding within 5 kb of transcription start sites overlaps the query's most specifically in one cell-type class, by a statistic computed from kept experiments only; panel genes those antigens bind form the table, under row K27's one sign convention. Experiments are wild type and untreated as far as the public metadata say: the K27 kept list for the two query genes; for other antigens the committed keyword filter, two further classes in code (tumour-derived or transformed lines; cell-type classes where pathway agents are common) and two screening readers on every row that can enter a table, antigen names masked. No experiment perturbing either held-out gene and no expression measurement enters. Not checked: genotypes and culture conditions the metadata do not state. No person or agent reads a partner name or a bound gene. Practice read only. Licence unchanged (CC BY-SA 4.0): share-alike for a derived table in any distributed file or report. No file without the captain's rulings on provenance (PLAN 4.4), A15 and the team's pathway-tier bar."  # the whole text of row X018's amendment
 HEAD_NOW=$(git rev-parse HEAD 2> /dev/null) || HEAD_NOW=""
 
 # ------------------------------------------------------------------------------------------------------ the gates
@@ -68,7 +69,7 @@ done
 { [ -d "$CHIPATLAS" ] && [ ! -L "$CHIPATLAS" ]; } \
   || { echo "refused: $CHIPATLAS is not a real directory" >&2; finish 96; }
 grep '^| X018 ' EXTERNAL_DATA.md 2> /dev/null | grep -qF "$WORDS" \
-  || { echo "refused: row X018 of EXTERNAL_DATA.md does not carry the opening words of its amendment" >&2; finish 96; }
+  || { echo "refused: row X018 of EXTERNAL_DATA.md does not carry the whole text of its amendment" >&2; finish 96; }
 git rev-parse HEAD > "$S/head"
 
 # a reading is there already: the candidate is closed, and nothing runs again

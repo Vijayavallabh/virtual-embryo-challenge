@@ -11,12 +11,13 @@ row's steps live. For now it holds one: the first step of the database-only gate
                     It prints the number of classes that class (vi) excludes and, per query, its usable experiments in
                     its class and its candidates: three lines of counts, nothing else.
 
-G0 reads the pinned database files only: no fold, no barred factor, no panel, no score. It is uncounted. By the
-specification the code of G0b, G0c and the read is written only after G0a has passed on the real database; those steps
-are added here as further subcommands and change nothing that G0a computes.
+G0 reads the pinned database files only: no fold, no barred factor, no panel, no score. It is uncounted. The code of
+G0b and G0c is written only after G0a has passed on the real database, and the read's only after G0 (G0a, G0b and G0c)
+has passed (row K28's commit cell); those steps are added here as further subcommands and change nothing that G0a
+computes.
 
 A step refuses (exit 2, before any database file is opened) unless: the row's results folder holds no reading; row K28
-is in TRIES.md; register row X018 in EXTERNAL_DATA.md carries the amendment's opening words (REGISTER_WORDS); the
+is in TRIES.md; register row X018 in EXTERNAL_DATA.md carries the amendment's whole text (REGISTER_WORDS); the
 tracked tree is clean; and HEAD is the commit given. Then every file of the fetch manifest is hashed again (a file off
 its sha256 refuses, exit 2) and the committed kept list is loaded, before anything is counted.
 
@@ -58,7 +59,22 @@ CANDIDATE = "CHIPQ-C"
 TRIES_MD = REPO / "experiments" / "harness" / "TRIES.md"  # looked up at call time
 REGISTER = REPO / "EXTERNAL_DATA.md"  # the disclosure register, looked up at call time
 REGISTER_ROW = "X018"
-REGISTER_WORDS = "Reopened by the captain's order of 2026-11-24"  # the amendment's opening words
+REGISTER_WORDS = (  # the amendment's whole text
+    "Reopened by the captain's order of 2026-11-24 for the database-only gate of one practice row (K28, T3 candidate "
+    "CHIPQ-C); a fold is read only under the captain's ruling R33 lifting row K27's closing sentence for that row "
+    "alone. No new fetch, no new kind of file: the files pinned on 2026-11-23, verified. New use: for a query gene "
+    "named to code, code picks three other antigens whose binding within 5 kb of transcription start sites overlaps "
+    "the query's most specifically in one cell-type class, by a statistic computed from kept experiments only; panel "
+    "genes those antigens bind form the table, under row K27's one sign convention. Experiments are wild type and "
+    "untreated as far as the public metadata say: the K27 kept list for the two query genes; for other antigens the "
+    "committed keyword filter, two further classes in code (tumour-derived or transformed lines; cell-type classes "
+    "where pathway agents are common) and two screening readers on every row that can enter a table, antigen names "
+    "masked. No experiment perturbing either held-out gene and no expression measurement enters. Not checked: "
+    "genotypes and culture conditions the metadata do not state. No person or agent reads a partner name or a bound "
+    "gene. Practice read only. Licence unchanged (CC BY-SA 4.0): share-alike for a derived table in any distributed "
+    "file or report. No file without the captain's rulings on provenance (PLAN 4.4), A15 and the team's pathway-tier "
+    "bar."
+)
 RESULTS = HERE / "results" / "k28_chip_partners"  # the row's results folder, named as row K27's
 READING_FILES = ("reading.json", "reading.txt")
 QUERIES = cp.QUERIES  # ("Ctnnb1", "Gata4"): the test query, then the practice query
@@ -99,14 +115,14 @@ def row_present(path: Path | None = None) -> str:
 
 
 def register_reopened(path: Path | None = None) -> None:
-    """Register row X018 carries the amendment's opening words: exactly one line of EXTERNAL_DATA.md begins `| X018 `
+    """Register row X018 carries the amendment's whole text: exactly one line of EXTERNAL_DATA.md begins `| X018 `
     and it holds REGISTER_WORDS. Else Refused: no step opens a database file before the amendment is committed."""
     path = REGISTER if path is None else Path(path)
     rows = [ln for ln in _lines(path) if ln.startswith(f"| {REGISTER_ROW} ")]
     if len(rows) != 1:
         raise Refused(f"{'no' if not rows else 'more than one'} row {REGISTER_ROW} in {path.name}: refused")
     if REGISTER_WORDS not in rows[0]:
-        raise Refused(f"row {REGISTER_ROW} of {path.name} does not carry the amendment's opening words "
+        raise Refused(f"row {REGISTER_ROW} of {path.name} does not carry the amendment's whole text "
                       f"({REGISTER_WORDS!r}): refused")
 
 
