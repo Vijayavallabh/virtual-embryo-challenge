@@ -14030,3 +14030,14 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     before any gate reads, and the captain's yes before any build.
   - **Running beside it:** the T1 build of rows R44 and R45 (on the DGX), the review of row R51's code, and the heart
     engineer for row R52.
+- 2026-11-24 (nnn), an exposure in the step-change round, from the main session's brief (state at 21:42 UTC,
+  2026-11-24). Written by the AI assistant.
+  - **What happened.** The round's rules (`RULES_gap.md`, written by the main session) let the blind designers read
+    the last round's eight design and challenge files. One of them, `round_1124_ds/HEART_challenge.md`, states as a
+    branch premise which of two uploaded heart files had the higher headline. The heart MODEL designer met it, flagged
+    it under the round's tripwire ("EXPOSED"), used it for nothing and did not repeat it. No value was shown. The
+    order it states is older than the banked heart file the brief names, which already implies it.
+  - **What was done.** The file was withdrawn from the round's reading at 21:41 UTC (the rules file now says so);
+    every designer still at work was told, with the instruction to flag the file if already read and use nothing from
+    it. The challengers of the heart's designs read the corrected rules. The fault is the main session's: it allowed a
+    file without checking it for orderings (the T1 second-pass files had been excluded for the same reason).
