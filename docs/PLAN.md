@@ -12781,3 +12781,235 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     note carry it. Facts for the captain, with no lean: by the early trial its overall expression total stands 38.2%
     above the base factor's (C1's 10.4%); no practice read exists for it; C2, the variant held at the base's size,
     stands above C1; a lower score costs only the slot.
+- 2026-11-24 (g), the heart's part of the design round the captain ordered: two search-line texts that stand only on
+  the captain's own named yes, and one new candidate struck (state at 00:37 UTC, 2026-11-24). Written by the AI
+  assistant, which is recused on the heart's scope and size, designed nothing here and states no preference.
+  - **The round** (entry (e)): a designer of search lines, given which uploaded heart file stands above which and no
+    value; a designer of new candidates, given no fact about any score; a cold challenger for each. All four were
+    started through the route that relays no message and report that they met no test score. No heart headline beyond
+    the six of entry 2026-11-23 (gg) had reached the main session when this entry was committed.
+  - **The search lines: neither is in force.** The challenger's finding: each carries the trend's strength past a cap
+    that the line in force fixed before any score ('ends at TS10' and 'ends at OTS10'; 'no value beyond is tried'), so
+    neither is a new line the framework admits by itself; only the captain's own named order can lift a cap, and every
+    file also needs the captain's named exception on scope and size. Nothing of either is coded, read or built without
+    that yes; the default is no.
+  - **Third heart line, the cold challenger's final text, verbatim.** FINAL TEXT (cold challenger, score-blind; no
+    test score, rank or per-metric value was read in writing it). Label, said plainly: this line was written AFTER the
+    ordinal fact "TS05 strictly above C" was known, and it lifts a cap that the first heart search line fixed before
+    any score of its files. It is not a new line the framework admits on its own; it stands only on the captain's own
+    named order, asked for in the one question at the end. Default if there is no answer: no, and the first line ends
+    at TS10 as written. Third heart search line under R22: the trend step's strength on the full trim C above the
+    first line's cap, files TS15 and TS20. Valid only once the captain, by his own named order recorded in ruling row
+    R31 (the next free ruling row when this was read; if R31 is taken, the next free row, its number written here
+    before any code), (i) names the exception on the heart's scope and size for these two files and (ii) lifts, for
+    these two files only, the first line's sentences "The line ends at TS10 in any case (cap s = 1.0)" and "No value
+    between or beyond these is tried". Row R31's first cell begins "R31 (the captain's order", says "ruling, no run",
+    and names `--trend-strength 1.5`, `--trend-strength 2.0` and `--captain-ruling R31`. This text and row R31 are in
+    the team's decision log before any heart headline beyond the six now reported (the first upload, K2, K1, C, TS05,
+    D) reaches the main session, and before any code, practice read or build of either file; otherwise the line is
+    void and nothing of it is coded, read, built or uploaded. Setting: the strength s of b0_trend's expression step,
+    as row H28 defines it (the H11 trend factor and the momentum_shift fallback damping both multiplied by s, test
+    budget 0.5 x s day, applied before the size step), on C's command with nothing else changed; the scale is the
+    first line's, steps of 0.5. On record: C (`build_test.py heart --entry core_trim --expression copy --z-mode raw`,
+    then `experiments/builds/halve.py` at seed 1000001) is s = 0; TS05 is s = 0.5 and TS10 is s = 1.0 (first line, row
+    R28). No factor is clipped; at s = 2.0 the fallback damping is 0.5 x 2 = 1.0 and every trend log factor is
+    doubled, outside every practice read on record. Files: - TS15: `build_test.py heart --entry core_trim
+    --trend-strength 1.5 --z-mode raw --captain-ruling R31 --out <O>/T2heart_core_ts15.h5ad`, then
+    `experiments/builds/halve.py <O>/T2heart_core_ts15.h5ad <O>/T2heart_core_ts15_half.h5ad` at seed 1000001. - TS20:
+    the same with `--trend-strength 2.0` (`T2heart_core_ts20.h5ad`, `T2heart_core_ts20_half.h5ad`). Order of work,
+    each step only after the one before: (1) row R31 and this text in the decision log; (2) a practice row (rule 1:
+    written and committed before its run, scratch reads included) and its read; (3) only if the read does not STOP a
+    strength, the builder option; (4) identity builds; (5) the files. Practice read (a screen, not evidence of
+    development). Row H28's script and design, unchanged but for its strengths: arms trend_s1.5 and trend_s2.0 and a
+    placebo of each (row H28's fixed gene derangement, seed 20261120), with trend_s1 rebuilt as the reference; form C
+    (row H27's core_iso_half:f), the two heart backtests on E10.5 (`T2h/<=E9.5->E10.5`, `T2h/<=E8.75->E10.5`) merged
+    seed by seed into fold E10.5, ten seeds (0 to 9), worlds own and CLEAN. Counted under rule 4: eight tries (two
+    strengths and two placebos on two transitions); the control and trend_s1 are references, not counted. Target-free
+    gate first: the control reproduces row H27's committed core_iso_half:f within row H28's void bounds, and the
+    strength-s factors equal s times the strength-1 factors; then, as a validity check, trend_s1 reproduces row H28's
+    committed trend_s1 differences to 1e-6, else VOID. Pass rule, fixed in the row before its run, per strength s in
+    1.5 then 2.0: STOP if (a) s minus strength 1 has a paired mean below 0 with at least 8 of 10 seeds below 0 in
+    EITHER world, or (b) s is not ahead of the copy by row H28's S1 bar (paired mean above +0.3 with at least 8 of 10
+    seeds above 0) in both worlds; for 2.0 also (c) 2.0 minus 1.5 meets (a). A stopped strength is not built; if 1.5
+    stops, 2.0 is not built either. VOID: nothing is built. Arm minus placebo and the DE terms are printed as labelled
+    diagnostics and gate nothing; the row says in its first line that row H28 read strength 1 as matched by its
+    placebo (count noise or depth) and that this read cannot change that reading. No test score enters the row, the
+    rule or any value. Build: the heart builder takes `--trend-strength 1.5` and `--trend-strength 2.0` with `--entry
+    core_trim --z-mode raw` only under `--captain-ruling R31`, and only while TRIES.md holds exactly one row R31 whose
+    first cell is the captain's order naming both values and `--captain-ruling R31`; R31 opens no other entry or
+    value, R28 does not open 1.5 or 2.0, R31 does not open 0.5 or 1.0, and R29 and organ_scope are untouched. The
+    change is reviewed, its launcher traced once with `bash -x` on a harmless path, and it leaves every existing heart
+    output byte for byte as before: at the build commit, C's default command and the TS05 and TS10 commands each
+    reproduce their recorded sha256 before any new file is built. Each new file's rows, coordinates, cell number and
+    half rows equal C's, with X the only difference. Each file is built twice at one clean commit with one sha256, by
+    2026-11-25 12:00 UTC; a file not built with one sha256 by then is not built later and is not uploaded. No file is
+    rebuilt, re-seeded, resized or changed after any score. Rule: the line starts only if the first line ends with
+    TS10's headline strictly above TS05's, both as the captain reports them; then the line's best is TS10's headline
+    and TS15 is next. If TS10 is never uploaded, its headline is never reported, or it ties or falls below TS05's, the
+    line ends with no upload. If TS15's headline is strictly above the line's best, it becomes the best and TS20 is
+    next; otherwise (a tie, a lower headline, or no headline reported) the line ends and TS20 is not uploaded. If
+    TS20's headline is strictly above the line's best, TS20 becomes the best. The line ends at TS20 in any case (cap s
+    = 2.0); no value between or beyond these is tried, and this cap is not lifted by any later line. Only the
+    headlines of the team's own official heart uploads of TS05, TS10, TS15 and TS20, as the captain reports them, are
+    compared; C's, D's and the second line's headlines never enter. Nothing is computed from the sizes of headlines or
+    of their differences, and no per-metric value is read, recorded, compared or quoted. Beside the lines in force:
+    the first and second lines' files and rules are unchanged except that the first line's cap sentences no longer bar
+    TS15 and TS20; the first line still ends at TS10. This line shares the setting, the base and the headlines of TS05
+    and TS10 with the first line, and nothing but slot order with the second. Precedence: a file is due when its
+    line's rule names it next and every headline that rule needs has been reported; at each heart slot the due file
+    goes in this order: any queued file, the first line's, the second line's, this line's, then any later line's. At
+    most two official uploads a board a day until 2026-11-26 11:59 UTC; a file that finds no slot by then is not
+    uploaded. Every upload goes in on the captain's word at the time. Earliest uploads: TS15 on 25 Nov (after OTS10 if
+    that is due), TS20 on 26 Nov; each only if the headline before it is reported before that day's slot. Void: row
+    R31 or this text not in the decision log before any seventh heart headline reaches the main session, or before any
+    code, read or build; the practice row not committed before its read, or its gate or validity check failing; the
+    builder change moving any existing output by a byte; two builds that differ; C's, TS05's or TS10's recorded sha256
+    not reproduced; a build after 2026-11-25 12:00 UTC; any score entering the practice row, its rule or a value. What
+    stays: C remains the ruled file, the amendment of 2026-11-18 is not reversed, D keeps its standing under R21. The
+    line adds uploads, and the board keeps its best headline. H-T1, H-T1B and any other base, value or variant are
+    outside this line. Data used: released challenge data only (E10.5 and the earlier stages the heart builder loads);
+    no outside data. Method report: "On the full trim, strengths 0.5 and 1.0 of the trend step were tried; then, by
+    the captain's later order lifting that line's cap after the first scores, 1.5 and 2.0 under the same stepping
+    rule; the best headline was kept." QUESTION FOR THE CAPTAIN (one, priced; default if no answer: no). Do you lift
+    the first heart line's cap (it was fixed before any score at "ends at TS10; no value beyond is tried") and name
+    the exception on the heart's scope and size for two more files, TS15 and TS20: the full trim C with the trend step
+    at strength 1.5 and 2.0 (test budget 0.75 and 1.0 day), nothing else changed, uploaded only if TS10's headline is
+    strictly above TS05's and then each only while the last one improved? Each file changes only the expression of C's
+    own cells; rows, coordinates, cell number and half are C's, and the code keeps every cell's expected depth, but
+    row H28 read the step's practice gain as count noise or depth, and larger strengths move more of it. A yes costs
+    about 10 to 14 agent hours before 2026-11-25 12:00 UTC (a practice row and read at 1.5 and 2.0 with placebos,
+    about 4 with review and run; the builder option with tests and review, about 4 to 8; identity and twin builds on
+    the DGX, about 2), and up to two heart slots (25 and 26 Nov), only after TS10, OTS05 and OTS10 have theirs; none
+    if TS10 does not beat TS05, and none for a strength the read stops. What practice shows: on the full trim the gain
+    over the copy rose with strength up to 1 (own about +0.2, +0.3, +0.6; CLEAN about +0.2, +0.3, +0.4 at 0.25, 0.5,
+    1) but never beat its gene-shuffled placebo by the bar (row H28: count noise or depth); on the whole pool a longer
+    step than strength 1 was worse on both backtests (row H13h, about -0.6 each) and a larger one mixed (row H11s,
+    about -0.2 and +0.5). What it does not show: any strength above 1 on the trimmed pool. Default if no answer: no.
+  - **The practice read it requires before any build:** Ledger row committed before the run. H28's script with
+    strengths 1.5 and 2.0 plus a placebo each (derangement seed 20261120), trend_s1 as reference; form C (H27
+    core_iso_half:f); backtests T2h/<=E9.5->E10.5 and T2h/<=E8.75->E10.5 merged into fold E10.5; 10 seeds; own and
+    CLEAN. Target-free gate first (control reproduces H27's core_iso_half:f within H28's void bounds; s-factors = s x
+    strength-1 factors), then trend_s1 reproduces H28's committed values. STOP per strength: behind strength 1 (and
+    2.0 behind 1.5) with mean below 0 and >=8/10 seeds below 0 in EITHER world, or not ahead of the copy by H28's S1
+    bar in both worlds; a stopped 1.5 stops 2.0. Eight counted tries. About 4 hours with code, review and run.
+  - **Its question for the captain, put unchanged:** "Do you lift the first heart line's cap (fixed before any score
+    at 'ends at TS10; no value beyond is tried') and name the exception on the heart's scope and size for TS15 and
+    TS20, C with the trend at 1.5 and 2.0 (test budget 0.75 and 1.0 day), nothing else changed, uploaded only if TS10
+    strictly beats TS05 and each only while the last improved? Only X of C's own cells changes; expected depth is kept
+    by code but H28 read the gain as count noise or depth. Cost about 10 to 14 agent hours before 2026-11-25 12:00 UTC
+    and up to two slots (25, 26 Nov) after TS10, OTS05, OTS10. Practice: on the trim the gain rose to strength 1 but
+    never beat its placebo; whole pool beyond 1 worse (H13h) or mixed (H11s); nothing above 1 on the trim. Default:
+    no. (Full text in the final file.)"
+  - **Fourth heart line, the cold challenger's final text, verbatim.** FINAL TEXT (cold challenger, score-blind; no
+    test score, rank or per-metric value was read in writing it). Label, said plainly: this line was written AFTER the
+    ordinal facts on the six reported heart headlines were known, and it lifts a cap that the second heart search line
+    fixed before any score of its files. It is not a new line the framework admits on its own; it stands only on the
+    captain's own named order, asked for in the one question at the end. Default if there is no answer: no, and the
+    second line ends at OTS10 as written. Fourth heart search line under R22: the trend step's strength on the organ
+    cut D above the second line's cap, one file, OTS15. Valid only once the captain, by his own named order recorded
+    in ruling row R32 (the next free ruling row after the third line's when this was read; if taken, the next free
+    row, its number written here before any code), (i) names the exception on the heart's scope and size for this one
+    file and (ii) lifts, for this one file only, the second line's sentences "The line ends at OTS10 in any case (cap
+    s = 1.0)" and "No value between or beyond these is tried". Row R32's first cell begins "R32 (the captain's order",
+    says "ruling, no run", and names `--entry organ_scope`, `--trend-strength 1.5` and `--captain-ruling R32`. This
+    text and row R32 are in the team's decision log before any heart headline beyond the six now reported (the first
+    upload, K2, K1, C, TS05, D) reaches the main session, and before any code, practice read or build; otherwise the
+    line is void and nothing of it is coded, read, built or uploaded. Setting: the strength s of b0_trend's expression
+    step, as row H28 defines it (the H11 trend factor and the momentum_shift fallback damping both multiplied by s,
+    test budget 0.5 x s day, applied before the size step), on D's command with nothing else changed; the step's
+    reference is D's pool as D's command loads it, with earlier stages as the builder loads them; scale steps of 0.5.
+    On record: D (`build_test.py heart --entry organ_scope --expression copy --z-mode raw`, then
+    `experiments/builds/halve.py` at seed 1000001; row R21) is s = 0; OTS05 is s = 0.5 and OTS10 is s = 1.0 (second
+    line, row R29). File: - OTS15: `build_test.py heart --entry organ_scope --trend-strength 1.5 --z-mode raw
+    --captain-ruling R32 --out <O>/T2heart_organ_ts15.h5ad`, then `experiments/builds/halve.py
+    <O>/T2heart_organ_ts15.h5ad <O>/T2heart_organ_ts15_half.h5ad` at seed 1000001. Order of work, each step only after
+    the one before: (1) row R32 and this text in the decision log; (2) a practice row (rule 1: written and committed
+    before its run, scratch reads included) and its read; (3) only if the read does not STOP, the builder option; (4)
+    identity builds; (5) the file. Practice read (a screen, not evidence of development; no row on record has read the
+    trend step on D's pool at any strength). Row H28's arms on row H29b's D_f form (D's pool at its practice forecast
+    size, the half): the copy D_f as control; trend_s1.0 and trend_s1.5 and a placebo of each (row H28's fixed gene
+    derangement, seed 20261120); the two heart backtests on E10.5 merged seed by seed into fold E10.5, ten seeds (0 to
+    9), worlds own and CLEAN. Counted under rule 4: eight tries (two strengths and two placebos on two transitions);
+    the control is a reference. Target-free gate first: D_f reproduces row H29b's committed D_f bit for bit, and the
+    strength-1.5 factors equal 1.5 times the strength-1 factors; else VOID. Pass rule, fixed in the row before its
+    run: STOP if (a) 1.5 minus 1.0 has a paired mean below 0 with at least 8 of 10 seeds below 0 in EITHER world, or
+    (b) 1.5 is not ahead of the copy D_f by row H28's S1 bar (paired mean above +0.3 with at least 8 of 10 seeds above
+    0) in both worlds. A stopped file is not built; VOID builds nothing. Arm minus placebo and the DE terms are
+    printed as labelled diagnostics and gate nothing. Nothing in the read touches the second line's files, rule or
+    slot order, and no test score enters the row, the rule or any value. Build: the heart builder takes `--entry
+    organ_scope --trend-strength 1.5 --z-mode raw` only under `--captain-ruling R32`, and only while TRIES.md holds
+    exactly one row R32 whose first cell is the captain's order naming `--entry organ_scope`, `--trend-strength 1.5`
+    and `--captain-ruling R32`; R32 opens no other entry or value; R28, R29 and R31 are untouched. The change is
+    reviewed, its launcher traced once with `bash -x` on a harmless path, and it leaves every existing heart output
+    byte for byte as before: at the build commit, D's default command (row R21) and the OTS05 and OTS10 commands each
+    reproduce their recorded sha256 before the new file is built (and C's, TS05's and TS10's if the third line's
+    option shares the commit). The file's rows, coordinates, cell number and half rows equal D's, with X the only
+    difference. It is built twice at one clean commit with one sha256, by 2026-11-25 12:00 UTC; a file not built with
+    one sha256 by then is not built later and is not uploaded. If D has no reference bytes under R21, nothing of this
+    line is built. No file is rebuilt, re-seeded, resized or changed after any score. Rule: the line starts only if
+    the second line ends with OTS10's headline strictly above OTS05's (the second line uploads OTS10 only if OTS05's
+    is strictly above D's), as the captain reports them; then the line's best is OTS10's headline and OTS15 is next.
+    If OTS10 is never uploaded, its headline is never reported, or it ties or falls below OTS05's, the line ends with
+    no upload. If OTS15's headline is strictly above the line's best, OTS15 becomes the best. The line ends at OTS15
+    in any case (cap s = 1.5); no value between or beyond is tried, and this cap is not lifted by any later line. Only
+    the headlines of the team's own official heart uploads of D, OTS05, OTS10 and OTS15, as the captain reports them,
+    are compared; C's and the first and third lines' headlines never enter. Nothing is computed from the sizes of
+    headlines or of their differences, and no per-metric value is read, recorded, compared or quoted. Beside the lines
+    in force: the first and second lines' files and rules are unchanged except that the second line's cap sentences no
+    longer bar OTS15; the second line still ends at OTS10. This line shares the setting, base and the headlines of D,
+    OTS05 and OTS10 with the second line, and nothing but slot order with the first and third. Precedence: a file is
+    due when its line's rule names it next and every headline that rule needs has been reported; at each heart slot
+    the due file goes in this order: any queued file, the first line's, the second line's, the third line's, this
+    line's. At most two official uploads a board a day until 2026-11-26 11:59 UTC; a file that finds no slot by then
+    is not uploaded. Every upload goes in on the captain's word at the time. Earliest upload: 26 Nov, and only if
+    OTS05 (24 Nov) and OTS10 (25 Nov) each had their headline reported before the next day's slot; if TS20 is also due
+    on 26 Nov, OTS15 takes the second slot; if anything else is due before it, it is not uploaded. Void: row R32 or
+    this text not in the decision log before any seventh heart headline reaches the main session, or before any code,
+    read or build; the practice row not committed before its read, or its gate failing; the builder change moving any
+    existing output by a byte; two builds that differ; D's, OTS05's or OTS10's recorded sha256 not reproduced; a build
+    after 2026-11-25 12:00 UTC; any score entering the practice row, its rule or a value. What stays: C remains the
+    ruled file, the amendment of 2026-11-18 is not reversed, D keeps its standing under R21. The line adds one upload
+    at most, and the board keeps its best headline. Data used: released challenge data only (E10.5 with its released
+    labels, configs/t2_chamber_classes.yaml (T1's chamber categories ported to the MERFISH labels) as D uses it, and
+    the earlier stages the heart builder loads); no outside data. Method report: "On the organ cut, strengths 0.5 and
+    1.0 of the trend step were tried, as on the full trim; then, by the captain's later order lifting that line's cap
+    after the first scores, 1.5 under the same stepping rule; the best headline was kept." QUESTION FOR THE CAPTAIN
+    (one, priced; default if no answer: no). Do you lift the second heart line's cap (fixed before any score at "ends
+    at OTS10; no value beyond is tried") and name the exception on the heart's scope and size for one more file,
+    OTS15: the organ cut D with the trend step at strength 1.5 (test budget 0.75 day), nothing else changed, uploaded
+    only if OTS05 beats D and then OTS10 beats OTS05, each strictly? The file changes only the expression of D's own
+    cells; rows, coordinates, cell number and half are D's, and the code keeps every cell's expected depth, but row
+    H28 read the step's practice gain on the full trim as count noise or depth. A yes costs about 8 to 12 agent hours
+    before 2026-11-25 12:00 UTC (a new practice script joining row H28's arms to row H29b's D form, with its row,
+    review and run, about 5 to 7; the builder option, about 2 to 4, less if coded with the third line's; identity and
+    twin builds, about 1 to 2), on top of the third line's hours if both are named, and at most one heart slot, the
+    second on 26 Nov; it reaches it only through three strict improvements reported in time and is the most likely of
+    all waiting files to find no slot. What practice shows: nothing for the trend on D's pool at any strength (rows
+    H28, H29a, H29b); on the full trim the gain rose with strength up to 1 but never beat its placebo (H28); on the
+    whole pool steps beyond strength 1 were worse or mixed (H13h, H11s). Default if no answer: no.
+  - **The practice read it requires before any build:** Ledger row committed before the run. New script: H28's arms
+    (strengths 1.0 and 1.5, a placebo each) on H29b's D_f form with the copy D_f as control; same two backtests, fold
+    E10.5, 10 seeds, own and CLEAN. Target-free gate: D_f reproduces H29b's committed D_f bit for bit; 1.5 factors =
+    1.5 x strength-1 factors. STOP: 1.5 minus 1.0 mean below 0 with >=8/10 seeds below 0 in EITHER world, or 1.5 not
+    ahead of D_f by H28's S1 bar in both worlds. Eight counted tries. About 5 to 7 hours with code, review and run.
+  - **Its question for the captain, put unchanged:** "Do you lift the second heart line's cap (fixed before any score
+    at 'ends at OTS10; no value beyond is tried') and name the exception on the heart's scope and size for OTS15, D
+    with the trend at 1.5 (test budget 0.75 day), nothing else changed, uploaded only if OTS05 beats D and OTS10 beats
+    OTS05, each strictly? Only X of D's own cells changes; H28 read the step's gain on the trim as count noise or
+    depth. Cost about 8 to 12 agent hours before 2026-11-25 12:00 UTC on top of the third line's, at most the second
+    26 Nov slot, likely none. Practice: nothing for the trend on D's pool at any strength. Default: no. (Full text in
+    the final file.)"
+  - **The new candidate, struck.** The fully blind designer offered one long shot, a contrast-only trend on the full
+    trim. Its cold challenger struck it: (1) It reruns H12, a counted try that found the contrast-only trend tied with
+    the whole trend on both backtests and was not kept. Rule 8's revival of the 2026-11-06 prune was spent there, and
+    the spec's reason for calling it new rests on not having read H12. (2) On the ordinal facts the mark is D's. A
+    C-based file must beat D, the strongest C-based file on record (TS05) does not, and CT's practice equal TS10 is
+    already built and due. (3) No rule in force lets this round move the step to D or any other base. R29 excludes
+    other variants of D, and each new base would need its own row, read and named exception for what is still H12 on
+    another pool. It cannot be corrected into a file worth one of the six slots. No question goes to the captain on
+    it.
+  - **What the challengers said of the brief and the inputs, which were the AI assistant's.** The brief's point on the
+    caps leaned toward 'a change of a line in force' (the challenger checked the texts and agrees on their words); the
+    inputs repeat the framework's list of closed levers, which names T1's depth and not the heart's, while row H28
+    calls depth the heart's closed lever (the questions above state H28's reading); several row ids the brief named
+    exist only inside combined rows.
