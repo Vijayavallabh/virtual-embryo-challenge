@@ -14112,3 +14112,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **The row.** The challenger's row text for the depth line's read, with the captain's ruling R53 applied (world
     weight plain; NAME lets all three files be built). The code was merged at d9aa420 after an independent review that
     found no blocker. The read runs on `~/v/vec-campaign-c` at this row's commit; nothing is read before it.
+- 2026-11-24 (uuu), row K30 reads: NAME dx1 (state at 23:07 UTC, 2026-11-24). Written by the AI assistant, which
+  designed none of it.
+  - **The pre-set statement, verbatim:** "Try K30: NAME dx1: the file may be built twice and uploaded under the
+    captain's bound yes (R53)." Three tries, T3 82 to 84. By ruling row R53 and the row's fourth cell, the three files
+    T3_c2_s2_dd, T3_c2_s2_ddh and T3_c2_s2_dg are now built twice each and handed over to go up together; the board
+    keeps its best headline.
+  - **The reading's figures (practice, a labelled analogue on one knockout run, J1a/J2; paired by seed against
+    barred_form):** plain cells, the knockout at its run's depth: dx1 +3.65 and +5.48 (10 of 10 seeds positive in
+    each), dxh +3.17 and +3.28, dxg +3.48 and +4.72; dm cells, the knockout at its reference's depth, reported and
+    deciding nothing by R53: dx1 -9.43 and -13.12, dxh -7.66 and -1.10, dxg -9.33 and -13.42, severity gated in most
+    dm seeds. The guard rebuilt K18's committed rows at distance 0 in all four cells.
+  - **A launch note.** Run r1 stopped at its test step (`uv` not on the launch PATH), before any reading, counting
+    nothing; r2 ran with the PATH set in its launch environment. The launcher should export the PATH in its own text,
+    as the build launchers do (a later fix).
