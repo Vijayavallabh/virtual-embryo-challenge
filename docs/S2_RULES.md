@@ -3387,3 +3387,17 @@ The file: `T2heart_organ_ts15_half.h5ad` (`build_test.py heart --entry organ_sco
 this file only; nothing above 1.5, no finer step, no seed variant.
 
 Data used: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data.
+
+## Note of 2026-11-24: the files of T1's lines 8 and 9 are built (rows R44, R45; decision log 2026-11-24 (ooo))
+
+Merged at 20d5129 after an independent review that found no blocker; at that clean commit, on `~/v/vec-campaign-d`'s
+worktree, the fifteen identity commands rebuilt the recorded bytes, each new command with its momentum's factors
+forced to 1 gave the 2.5 file's bytes, and each new file was built twice with one sha256 and passed the format check.
+**The files:** `runs/manual_upload/T1_s2rcB25H05.h5ad`, sha256
+10edc768d5fe44eb3a28d54a3395b61b04fc5ddc5e6b82d7c604e11b8cf49826; `runs/manual_upload/T1_s2rcB25H10.h5ad`, sha256
+890d2096fc0093c1a3bfca1c017f576579d2bdd9d8f0807955b3d046b1fa138a; `runs/manual_upload/T1_s2rcB25H20.h5ad`, sha256
+8286f1b1707a423493de755feacd7a3d7743593ce2939f15c8323a27557b873f; `runs/manual_upload/T1_s2rcB25MS.h5ad`, sha256
+3127a2d9c92aa064e3f0fdf400447a074b7964ceacf2274da8a14ada7425f411 (build record
+`experiments/builds/results/t1hm_20d5129_h1.txt`). Added before any score of any of them; no T1 headline beyond those
+of the decision log through 2026-11-24 (lll) had reached the main session at this note's commit. Data used: released
+challenge data and the outside heart atlas on recomputed groups (GEO GSE193346, register row X002).

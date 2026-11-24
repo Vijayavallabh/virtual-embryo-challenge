@@ -14041,3 +14041,15 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     every designer still at work was told, with the instruction to flag the file if already read and use nothing from
     it. The challengers of the heart's designs read the corrected rules. The fault is the main session's: it allowed a
     file without checking it for orderings (the T1 second-pass files had been excluded for the same reason).
+- 2026-11-24 (ooo), the files of T1's lines 8 and 9 are built, before any score (state at 21:46 UTC, 2026-11-24).
+  Written by the AI assistant, which designed none of it.
+  - **The build.** `experiments/builds/t1_hm_line.sh 20d5129... h1 R44 R45` in the worktree `~/v/scratch/t1line-wt` of
+    `~/v/vec-campaign-d`, clean, after a traced refusal; the fifteen identity commands gave the recorded bytes; each
+    new file built twice with one sha256; local copies checked: **`T1_s2rcB25H05.h5ad`** 10edc768d5fe...;
+    **`T1_s2rcB25H10.h5ad`** 890d2096fc00...; **`T1_s2rcB25H20.h5ad`** 8286f1b1707a...; **`T1_s2rcB25MS.h5ad`**
+    3127a2d9c92a... (full sha256 in the rules note and the record).
+  - **Their standing.** Due now: `T1_s2rcB25H05.h5ad` (row R44) and `T1_s2rcB25MS.h5ad` (row R45). Waiting:
+    `T1_s2rcB25H10.h5ad` only if H05's headline is strictly above the line's best (the 2.5 file's until a file of the
+    line beats it), then `T1_s2rcB25H20.h5ad` only if H10's is strictly above H05's. `T1_s2rcB25MSH05` (row R46) is
+    coded only if H05 and MS each score strictly above the 2.5 file. Data used, for all: released challenge data and
+    the outside heart atlas on recomputed groups (GEO GSE193346, register row X002).
