@@ -277,9 +277,23 @@ def test_the_gate_reads_the_steps_arguments_and_builds_no_arm(h34, dform, monkey
         np.testing.assert_array_equal(m_lo[k], logf[k])
         np.testing.assert_array_equal(m_hi[k], 1.5 * logf[k])
         assert m_lo[k].shape == (len(dform.mod.GENES),) and np.abs(m_lo[k]).max() > 0.01
+        assert m_lo[k].dtype == m_hi[k].dtype == logf[k].dtype == np.float64
     assert h34.factor_identity(lo, hi) == {"ratio": 1.5, "lineages": ["CM", "Endothelial"], "damping": [0.5, 0.75],
                                            "ok": True, "why": None}
     assert h34.factor_identity(lo, lo)["ok"] is False  # strength 1 against itself is not the identity of 1.5
+    # the arguments are taken at the call, as they are handed over: a copy of each vector in its own dtype
+    handed = {"CM": np.float32([0.1, 0.2, 0.3])}
+
+    def hands(ctx, s, placebo_arm=False):
+        t1_scope.momentum_shift(None, None, None, 0.5 * s, (), key="b0_type", seed=[0, 3], logf_by_type=handed)
+    monkeypatch.setattr(h34.h28, "trend_expression", hands)
+    d, m = h34.step_arguments(dform.ctx(), 1.5)
+    assert d == 0.75 and m["CM"].dtype == np.float32 and m["CM"] is not handed["CM"]
+    np.testing.assert_array_equal(m["CM"], handed["CM"])
+    monkeypatch.setattr(h34.h28, "trend_expression", lambda ctx, s, placebo_arm=False: None)
+    with pytest.raises(RuntimeError, match="did not reach momentum_shift exactly once"):
+        h34.step_arguments(dform.ctx(), 1.0)
+    assert t1_scope.momentum_shift is own
 
 
 def test_reading_the_arguments_leaves_the_module_as_it_was_when_the_step_fails(h34, dform):
@@ -327,6 +341,12 @@ def test_the_factor_identity_by_hand_exactly_and_with_no_tolerance(h34):
     # another ratio
     assert h34.factor_identity(at(1.0), at(2.0), 2.0)["ok"] is True
     assert h34.factor_identity(at(1.0), at(2.0))["ok"] is False
+    # the identity is held in the vectors' own arithmetic: single-precision vectors scaled by the step's one product
+    # pass, though that product is not the double-precision one
+    m32 = {k: v.astype(np.float32) for k, v in m.items()}
+    lo32, hi32 = (0.5, {k: 1.0 * v for k, v in m32.items()}), (0.75, {k: 1.5 * v for k, v in m32.items()})
+    assert all(v.dtype == np.float32 for v in hi32[1].values()) and h34.factor_identity(lo32, hi32)["ok"] is True
+    assert not np.array_equal(hi32[1]["CM"].astype(np.float64), 1.5 * m32["CM"].astype(np.float64))
 
 
 # ------------------------------------------------------------------------------------------------ the loader
@@ -1696,17 +1716,19 @@ def test_the_launcher_text():
         assert test in code, test
     # the gate, the run and the read are each started through start_once, before the step's own call; the tests step,
     # which may be repeated, is not. The once-only file is made by a write that cannot replace a file
-    assert re.findall(r"^if start_once (--[a-z]+ \S+); then$", code, flags=re.M) == [
+    assert re.findall(r"^start_once (--[a-z]+ \S+)$", code, flags=re.M) == [
         '--out "$OUT/gate"', '--gate "$OUT/gate"', '--out "$OUT"']
     assert code.count("start_once") == 4 and code.count("set -o noclobber; echo running > \"$BASE/$STEP.exit\"") == 1
     for step in ("gate", "run", "read"):
-        assert at[step] < code.index("if start_once ", at[step]) < code.index(f'$PY "$SCRIPT" {step} ', at[step])
-    assert code.index("STEP=tests\n") < code.index("-m pytest ") < code.index("if start_once ")
-    # within start_once: the step's file, this launcher's refusal, the script's refusals, and only then the start
+        assert at[step] < code.index("\nstart_once --", at[step]) < code.index(f'$PY "$SCRIPT" {step} ', at[step])
+    assert code.index("STEP=tests\n") < code.index("-m pytest ") < code.index("\nstart_once --")
+    # within start_once: the step's file (any content, any commit: nothing of it is read), this launcher's refusal,
+    # the script's refusals, and only then the start
     body = code[code.index("start_once() {"):code.index("STEP=tests\n")]
-    order = [body.index(s) for s in ('if [ -e "$BASE/$STEP.exit" ]; then', "finish 92", '"$SCRIPT" refusals --step ',
-                                     "finish 89", "set -o noclobber", "OWNED=$STEP", '> "$BASE/$STEP.head"')]
-    assert order == sorted(order)
+    order = [body.index(s) for s in ('if [ -e "$BASE/$STEP.exit" ]; then', "finish 88", "finish 92",
+                                     '"$SCRIPT" refusals --step ', "finish 89", "set -o noclobber", "OWNED=$STEP",
+                                     '> "$BASE/$STEP.head"')]
+    assert order == sorted(order) and "cat " not in body and "return" not in body
 
 
 def test_the_launcher_runs_the_four_steps_in_order(repo):
@@ -1772,18 +1794,17 @@ def test_the_launcher_runs_the_four_steps_in_order(repo):
     assert _exits(repo, "r2") == {"check": "95", "done": "95"} and len(_uv_calls(repo)) == 16
     assert (repo.root / OUT_DIR / "reading.txt").read_text() == "the reading\n"
     assert _once(repo) == {"gate": "0", "run": "0", "read": "0"}
-    # with the reading out of the way, at this commit nothing is left to start and nothing is started; at another
-    # commit the gate, started once already, is refused
+    # with the reading out of the way a later call gets as far as the gate, which was started once already: at this
+    # commit and at another one it is refused, and the script is neither asked nor called
     (repo.root / OUT_DIR / "reading.txt").rename(repo.tmp / "aside.txt")
     (repo.root / OUT_DIR / "reading.json").rename(repo.tmp / "aside.json")
-    assert _launch(repo, repo.head, "r3") == (0, "")
-    assert _exits(repo, "r3") == {"check": "0", "tests": "0", "gate": "before", "run": "before", "read": "before",
-                                  "done": "0"}
-    assert _kinds(repo) == [*ONE_CALL, "tests"] and not (repo.root / OUT_DIR / "reading.txt").exists()
-    code, err = _launch(repo, _next_commit(repo), "r4")
-    assert code == 88 and "the gate step was started before" in err and "it is not started twice" in err
-    assert _exits(repo, "r4") == {"check": "0", "tests": "0", "gate": "88", "done": "88"}
-    assert _kinds(repo) == [*ONE_CALL, "tests", "tests"] and _once(repo) == {"gate": "0", "run": "0", "read": "0"}
+    for i in range(2):
+        code, err = _launch(repo, _next_commit(repo) if i else repo.head, f"r{3 + i}")
+        assert code == 88 and "the gate step was started before" in err and "it is not started twice" in err
+        assert _exits(repo, f"r{3 + i}") == {"check": "0", "tests": "0", "gate": "88", "done": "88"}
+        assert _kinds(repo) == [*ONE_CALL, *["tests"] * (1 + i)]
+    assert _once(repo) == {"gate": "0", "run": "0", "read": "0"} and not (repo.root / OUT_DIR / "reading.txt").exists()
+    assert all((repo.scratch / f"{s}.head").read_text() == f"{repo.head} r1\n" for s in ("gate", "run", "read"))
 
 
 def test_the_launchers_environment_overrides(repo):
@@ -1841,39 +1862,31 @@ def test_the_launcher_stops_at_the_first_step_that_does_not_exit_0(repo, extra, 
         assert not (repo.root / OUT_DIR / "reading.txt").exists()
 
 
-@pytest.mark.parametrize("extra, first, once, later", [
-    ({"STUB_GATE_EXIT": "3"}, 3, {"gate": "3"}, {"gate": "88"}),  # the gate said FAIL
-    ({"STUB_GATE_EXIT": "1"}, 1, {"gate": "1"}, {"gate": "88"}),  # the gate crashed: no verdict
-    ({"STUB_GATE_EXIT": "kill"}, -9, {"gate": "running"}, {"gate": "88"}),  # the call was killed in the gate
-    ({"STUB_RUN_BAD": "4-5"}, 1, {"gate": "0", "run": "1"}, {"gate": "before", "run": "88"}),
-    ({"STUB_RUN_NOFILE": "8-9"}, 1, {"gate": "0", "run": "1"}, {"gate": "before", "run": "88"}),
-    ({"STUB_READ_EXIT": "1"}, 1, {"gate": "0", "run": "0", "read": "1"},
-     {"gate": "before", "run": "before", "read": "88"}),
-    ({"STUB_READ_EXIT": "kill"}, -9, {"gate": "0", "run": "0", "read": "running"},
-     {"gate": "before", "run": "before", "read": "88"}),
+@pytest.mark.parametrize("extra, first, once", [
+    ({"STUB_GATE_EXIT": "3"}, 3, {"gate": "3"}),  # the gate said FAIL
+    ({"STUB_GATE_EXIT": "1"}, 1, {"gate": "1"}),  # the gate crashed: no verdict
+    ({"STUB_GATE_EXIT": "kill"}, -9, {"gate": "running"}),  # the call was killed in the gate: no verdict
+    ({"STUB_RUN_BAD": "4-5"}, 1, {"gate": "0", "run": "1"}),  # a part failed
+    ({"STUB_RUN_NOFILE": "8-9"}, 1, {"gate": "0", "run": "1"}),  # a part wrote no file
+    ({"STUB_READ_EXIT": "1"}, 1, {"gate": "0", "run": "0", "read": "1"}),  # the read crashed
+    ({"STUB_READ_EXIT": "kill"}, -9, {"gate": "0", "run": "0", "read": "running"}),  # the call was killed in the read
 ])
-def test_no_gate_run_or_read_is_started_a_second_time(repo, extra, first, once, later):
-    """Row H34, no step twice: a gate, run or read that was started and did not write exit 0 (a FAIL, a crash, a
-    killed call) is never started again, at this commit or another, under any run name; the tests step runs again
-    in every call."""
+def test_no_gate_run_or_read_is_started_a_second_time(repo, extra, first, once):
+    """Row H34, no step twice: once a gate, run or read was started, however it ended (a FAIL, a crash, a killed
+    call that left no verdict), no later call starts it again, at this commit or another, under any run name; the
+    tests step, which may be repeated, runs again in every call."""
     assert _launch(repo, repo.head, "a1", **extra)[0] == first
     assert _once(repo) == once
     if first == -9:  # a killed call: nothing was written after the step's start
-        assert _exits(repo, "a1")["done"] == "running" and "running" in once.values()
+        assert _exits(repo, "a1")["done"] == "running" and list(once.values())[-1] == "running"
     heads = {s: (repo.scratch / f"{s}.head").read_text() for s in once}
     assert all(h == f"{repo.head} a1\n" for h in heads.values())
     n = len(_uv_calls(repo))
-    # a later call at the same commit, with nothing else in its way: the steps done at this commit are not started
-    # again, and the one that did not write exit 0 is refused; the script is neither asked nor called
-    got, err = _launch(repo, repo.head, "a2")
-    assert got == 88 and "step was started before" in err and "it is not started twice" in err
-    assert _exits(repo, "a2") == {"check": "0", "tests": "0", **later, "done": "88"}
-    assert _kinds(repo)[n:] == ["tests"]
-    # at another commit even a step that wrote exit 0 is not started again
-    got, err = _launch(repo, _next_commit(repo), "a3")
-    assert got == 88 and "the gate step was started before" in err
-    assert _exits(repo, "a3") == {"check": "0", "tests": "0", "gate": "88", "done": "88"}
-    assert _kinds(repo)[n:] == ["tests", "tests"]
+    for i in range(2):  # a later call at the same commit, then at another
+        got, err = _launch(repo, _next_commit(repo) if i else repo.head, f"a{2 + i}")
+        assert got == 88 and "the gate step was started before" in err and "it is not started twice" in err
+        assert _exits(repo, f"a{2 + i}") == {"check": "0", "tests": "0", "gate": "88", "done": "88"}
+        assert _kinds(repo)[n:] == ["tests"] * (1 + i)  # the script is neither asked about the step nor called
     # the first call's record stands
     assert _once(repo) == once and {s: (repo.scratch / f"{s}.head").read_text() for s in once} == heads
 
@@ -1881,31 +1894,23 @@ def test_no_gate_run_or_read_is_started_a_second_time(repo, extra, first, once, 
 @pytest.mark.parametrize("step", ["gate", "run", "read"])
 @pytest.mark.parametrize("holds", ["running", "0", "3", ""])
 def test_each_of_the_three_steps_has_its_own_once_only_file(repo, step, holds):
-    """A step whose exit file exists is refused whatever the file holds (0 alone does not make it done: the file of
-    its commit must name this commit), and the steps before it are started as usual."""
+    """A step whose exit file exists is refused whatever the file holds, exit 0 at this very commit included; the
+    steps before it are started as usual, the ones after it never."""
     repo.scratch.mkdir(parents=True)
     (repo.scratch / f"{step}.exit").write_text(holds + "\n")
+    (repo.scratch / f"{step}.head").write_text(f"{repo.head} elsewhere\n")
     got, err = _launch(repo, repo.head, "o1")
     assert got == 88 and f"the {step} step was started before" in err
     assert _exits(repo, "o1") == {s: "0" for s in STEPS[:STEPS.index(step)]} | {step: "88", "done": "88"}
     assert _kinds(repo) == ONE_CALL[:ONE_CALL.index(f"ask {step}")]  # the step is neither asked about nor called
-    assert (repo.scratch / f"{step}.exit").read_text() == holds + "\n" and not (repo.scratch / f"{step}.head").exists()
-    # exit 0 at another commit, or at a commit named in short, does not make it done either
-    n = len(_uv_calls(repo))
-    for i, head in enumerate(("d" * 40, repo.head[:12])):
-        (repo.scratch / f"{step}.exit").write_text("0\n")
-        (repo.scratch / f"{step}.head").write_text(f"{head} elsewhere\n")
-        got, err = _launch(repo, repo.head, f"o{2 + i}")
-        assert got == 88 and f"the {step} step was started before" in err
-        assert _exits(repo, f"o{2 + i}")[step] == "88"
-    assert _kinds(repo)[n:] == ["tests", "tests"]  # the steps before it, done at this commit, were not started again
-    assert (repo.scratch / f"{step}.exit").read_text() == "0\n"
+    assert (repo.scratch / f"{step}.exit").read_text() == holds + "\n"
+    assert (repo.scratch / f"{step}.head").read_text() == f"{repo.head} elsewhere\n"
+    assert _once(repo) == {s: "0" for s in STEPS[2:STEPS.index(step)]} | {step: holds}
 
 
-def test_a_refused_step_counts_nothing_and_a_later_call_goes_on_from_it(repo):
+def test_a_refused_step_is_not_started_and_counts_nothing(repo):
     """A step is started once a call has passed the launcher's and the script's refusals: a refused call leaves no
-    once-only file, the tests step may repeat, and a later call at the same commit starts the step that was refused
-    without starting again the steps that wrote exit 0 at that commit."""
+    once-only file, so the step can still be started, once; the tests step may be repeated."""
     for run in ("t1", "t2"):  # the tests step may be repeated; a commit where it fails starts nothing
         assert _launch(repo, repo.head, run, STUB_TESTS_EXIT="1")[0] == 1
     assert _once(repo) == {} and _kinds(repo) == ["tests", "tests"]
@@ -1913,28 +1918,37 @@ def test_a_refused_step_counts_nothing_and_a_later_call_goes_on_from_it(repo):
     got, err = _launch(repo, repo.head, "g1", STUB_REFUSE="gate")
     assert got == 89 and "the script refuses the gate step" in err
     assert _once(repo) == {} and _kinds(repo)[2:] == ["tests", "ask gate"]
-    # the gate passes; then the script refuses the run: the gate is done, no run was started
-    got, err = _launch(repo, repo.head, "g2", STUB_REFUSE="run")
-    assert got == 89 and _once(repo) == {"gate": "0"} and not (repo.scratch / "run.head").exists()
-    assert _exits(repo, "g2") == {"check": "0", "tests": "0", "gate": "0", "run": "89", "done": "89"}
-    assert _kinds(repo)[4:] == ["tests", "ask gate", "gate", "ask run"]
-    # parts this launcher did not make: its own refusal, before the script is asked; no run was started
-    parts = repo.root / OUT_DIR / "parts"
-    parts.mkdir()
-    got, err = _launch(repo, repo.head, "g3")
-    assert got == 92 and "made outside this launcher" in err and _once(repo) == {"gate": "0"}
-    assert _exits(repo, "g3") == {"check": "0", "tests": "0", "gate": "before", "run": "92", "done": "92"}
-    assert _kinds(repo)[8:] == ["tests"]
-    parts.rmdir()
-    # a later call at the same commit goes on from the run; the gate, done at this commit, is not started again
-    assert _launch(repo, repo.head, "g4") == (0, "")
-    assert _exits(repo, "g4") == {"check": "0", "tests": "0", "gate": "before", "run": "0", "read": "0", "done": "0"}
-    assert _kinds(repo)[9:] == ["tests", "ask run", *["run"] * 10, "ask read", "read"]
-    assert _once(repo) == {"gate": "0", "run": "0", "read": "0"}
-    assert (repo.scratch / "gate.head").read_text() == f"{repo.head} g2\n"
-    assert (repo.scratch / "run.head").read_text() == (repo.scratch / "read.head").read_text() == f"{repo.head} g4\n"
+    # so a later call starts it, once, and every step after it
+    assert _launch(repo, repo.head, "g2") == (0, "")
+    assert _kinds(repo)[4:] == ONE_CALL and _once(repo) == {"gate": "0", "run": "0", "read": "0"}
+    assert all((repo.scratch / f"{s}.head").read_text() == f"{repo.head} g2\n" for s in ("gate", "run", "read"))
     kinds = _kinds(repo)
-    assert (kinds.count("gate"), kinds.count("run"), kinds.count("read"), kinds.count("tests")) == (1, 10, 1, 6)
+    assert (kinds.count("tests"), kinds.count("gate"), kinds.count("run"), kinds.count("read")) == (4, 1, 10, 1)
+
+
+@pytest.mark.parametrize("how", ["parts", "script"])
+def test_a_run_that_is_refused_after_the_gate_is_not_started(repo, how):
+    """The run's refusals come before its start: parts this launcher did not make (the launcher's own refusal, before
+    the script is asked) or the script's refusal leave no once-only file for the run, and no try is counted. The
+    gate before it was started, so a later call stops there: stricter than the row, under which the refused run
+    could still be started."""
+    parts = repo.root / OUT_DIR / "parts"
+    if how == "parts":
+        parts.mkdir(parents=True)
+        got, err = _launch(repo, repo.head, "p1")
+        assert got == 92 and "made outside this launcher" in err
+        assert _kinds(repo) == ["tests", "ask gate", "gate"]  # the script is not asked about the run
+        parts.rmdir()
+    else:
+        got, err = _launch(repo, repo.head, "p1", STUB_REFUSE="run")
+        assert got == 89 and "the script refuses the run step" in err
+        assert _kinds(repo) == ["tests", "ask gate", "gate", "ask run"]
+    assert _exits(repo, "p1") == {"check": "0", "tests": "0", "gate": "0", "run": str(got), "done": str(got)}
+    assert _once(repo) == {"gate": "0"} and not (repo.scratch / "run.head").exists() and not parts.exists()
+    n = len(_uv_calls(repo))
+    got, err = _launch(repo, repo.head, "p2")
+    assert got == 88 and "the gate step was started before" in err
+    assert _once(repo) == {"gate": "0"} and _kinds(repo)[n:] == ["tests"]
 
 
 def test_two_calls_cannot_both_start_a_step(repo):

@@ -383,15 +383,16 @@ class _StepRead(Exception):
 def step_arguments(ctx: harness.BuildContext, strength: float) -> tuple[float, dict[str, np.ndarray]]:
     """The damping and the log-factor mapping (lineage -> vector, `logf_by_type`) that h28.trend_expression forms for
     vec.t1_scope.momentum_shift at `strength` on this context, taken at the call: the step is run through
-    h28.trend_expression itself and stopped there. Both come from the input stages and the draw only. No count is
-    touched and no arm is built; vec.t1_scope is as it was afterwards. The stand-in keeps momentum_shift's signature,
-    whose defaults (eps, min_cells) b0_trend_factors reads before the call."""
+    h28.trend_expression itself and stopped there. Both come from the input stages and the draw only; each vector is
+    kept as it is handed over (a copy, in its own dtype), so that the identity is held in the arithmetic the step
+    itself used. No count is touched and no arm is built; vec.t1_scope is as it was afterwards. The stand-in keeps
+    momentum_shift's signature, whose defaults (eps, min_cells) b0_trend_factors reads before the call."""
     seen: list[tuple[float, dict[str, np.ndarray]]] = []
     own = t1_scope.momentum_shift
 
     @functools.wraps(own)
     def stop(start, ref, target_like, damping, *a, logf_by_type=None, **k):
-        seen.append((float(damping), {t: np.array(v, dtype=np.float64) for t, v in (logf_by_type or {}).items()}))
+        seen.append((float(damping), {t: np.array(v) for t, v in (logf_by_type or {}).items()}))
         raise _StepRead
 
     t1_scope.momentum_shift = stop
