@@ -2917,3 +2917,11 @@ stands." Default: no; a general go-ahead is not a yes. The fault is the AI assis
 was put in force without this sentence being weighed. The two files' bytes are not void and stay on disk; nothing else
 in any line changes. No T1 headline beyond the six of decision log 2026-11-23 (gg) had reached the main session at
 this note's commit.
+
+## Note of 2026-11-24: T1's line 5 stands by the captain's order (row R35; decision log 2026-11-24 (u))
+
+The captain's words, verbatim: "Yes: T1_s2rcCm20's headline may serve line 5; line 5 stands." They answer the note
+above ("T1's line 5 reads a headline that line 3 keeps to itself") with the words it named. Line 3's sentence is
+lifted for T1_s2rcCm20's headline and for line 5 alone; line 5 runs as written: T1_s2rcB2d15 only if T1_s2rcCm20's
+headline is strictly above the 2.0 file's, then T1_s2rcB2d20 only if T1_s2rcB2d15's is strictly above the line's best.
+Recorded before T1_s2rcCm20's headline reached the main session. Nothing else changes.

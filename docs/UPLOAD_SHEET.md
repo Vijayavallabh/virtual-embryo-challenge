@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-24, 03:44 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-24, 04:57 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's word of 2026-11-24: 20 uploads over 24
@@ -17,8 +17,6 @@ formula a point on T1 or T3 counts twice a point on the heart or the embryo boar
 **Due now (8), in the order of each board's table below:**
 
 - T1: `T1_s2rcB25.h5ad`, `T1_s2rcCm20.h5ad`
-  (before `T1_s2rcCm20.h5ad` is uploaded, see the question in the Task 1 section: it decides whether the fifth
-  search's two files can ever go)
 - T3: `T3_k23_s2.h5ad`, `T3_c1_s2_g2.h5ad`
 - Embryo: `T2embryo_s2xs_ov.h5ad`, `T2embryo_s2.h5ad`, `T2embryo_s2x_ovhi.h5ad`
 - Heart: `T2heart_organ_ts05_half.h5ad`
@@ -61,12 +59,8 @@ first goes only if `T1_s2rcCm20.h5ad` scores strictly above the 2.0 file. The th
 skipped and then kept by the captain's words of 2026-11-24: by the main session's reading of those words they come
 after every search file; the captain may place them anywhere.
 
-**Before `T1_s2rcCm20.h5ad` is uploaded, one question for the captain (default no).** The third search's text says its
-new files' headlines 'enter no other line'; the fifth search, in force and built, opens on `T1_s2rcCm20.h5ad`'s
-headline. A cold challenger found the conflict on 2026-11-24 and ruled that the earlier sentence holds unless the
-captain says otherwise before that headline is returned. With the captain's words "Yes: T1_s2rcCm20's headline may
-serve line 5; line 5 stands." the fifth search runs as written. Without them, said before the upload,
-`T1_s2rcB2d15.h5ad` and `T1_s2rcB2d20.h5ad` never fall due and stay on disk.
+**The fifth search stands by the captain's words of 2026-11-24** ("Yes: T1_s2rcCm20's headline may serve line 5; line
+5 stands."; ruling row R35): `T1_s2rcCm20.h5ad`'s headline serves the fifth search as well as the third.
 
 | Order | File | sha256 | Condition |
 |---|---|---|---|
@@ -74,8 +68,8 @@ serve line 5; line 5 stands." the fifth search runs as written. Without them, sa
 | first search | `T1_s2rcB30.h5ad` | `b639de29bd13d7005450ca53e7cd3dacb2e362a55beca8545937858e6582a024` | only if the 2.5 file scores strictly above the 2.0 file (`T1_s2rcB2.h5ad`) |
 | third search | `T1_s2rcCm20.h5ad` | `acce5f5f7097269bffebbfd583833e4c9c1c5ae77f1d5294dde6d13e197f863e` | none (its condition is met: C scored strictly above A) |
 | third search | `T1_s2rcCm25.h5ad` | `c5fb96a64075b6fbfb2f3066604d622ea8b89ac3a5e4f8a99d0fea7d93011dfd` | only if Cm20 scores strictly above C |
-| fifth search | `T1_s2rcB2d15.h5ad` | `fe4e7403d6257cc265a02d0a13d40cdb60a97e9fdc0647d6b5c7e318aedaed6c` | only if Cm20 scores strictly above the 2.0 file (`T1_s2rcB2.h5ad`); and only if the captain has said, before `T1_s2rcCm20.h5ad` is uploaded, that its headline may serve the fifth search |
-| fifth search | `T1_s2rcB2d20.h5ad` | `bd12c66312ba32ab938b4ee71bd5c79e58a154d6fc56434012e6dad907e668dd` | only if B2d15 scores strictly above the higher of the 2.0 file and Cm20; and only if the captain has said, before `T1_s2rcCm20.h5ad` is uploaded, that its headline may serve the fifth search |
+| fifth search | `T1_s2rcB2d15.h5ad` | `fe4e7403d6257cc265a02d0a13d40cdb60a97e9fdc0647d6b5c7e318aedaed6c` | only if Cm20 scores strictly above the 2.0 file (`T1_s2rcB2.h5ad`) |
+| fifth search | `T1_s2rcB2d20.h5ad` | `bd12c66312ba32ab938b4ee71bd5c79e58a154d6fc56434012e6dad907e668dd` | only if B2d15 scores strictly above the higher of the 2.0 file and Cm20 |
 | kept, last | `T1_s2rcMSB.h5ad` (combined momentum) | `78bb17eea5721e590cfd2c9f707e9cd6f2f496e081acede4f697dc4035871da2` | none; last on T1, after every search file |
 | kept, last | `T1_s2rcA15.h5ad` (the second search's file) | `e2334137b54d98b04e9dece90213987e61fe9aa15a3fb8d85e6c262d8fb5ba75` | none (its condition is met); last on T1, after every search file |
 | kept, last | `T1_s2rcA20.h5ad` | `372713686782be273a52427140eab652517e35b679f54fc2a969484dee730218` | only if A15 scores strictly above A |

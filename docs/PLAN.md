@@ -13453,3 +13453,13 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     a like cell of row K21, and the cells of rows K21 to K24 and K27 that speak of the held-out gene's biology. (2)
     The T1 inputs listed the settings of the search files, from which the direction of a score-guided climb can be
     read; the T1 designer said so and its candidate does not touch those settings.
+- 2026-11-24 (u), the captain lets T1_s2rcCm20's headline serve line 5 (state at 04:57 UTC, 2026-11-24). Written by
+  the AI assistant.
+  - **The captain's words, verbatim:** "Yes: T1_s2rcCm20's headline may serve line 5; line 5 stands." under a side
+    note headed 'Answer before uploading the Cm20 file'. They are the words entry (r) named. Recorded as ruling row
+    R35 before T1_s2rcCm20's headline reached the main session: no T1 headline beyond the six of entry 2026-11-23 (gg)
+    had reached it at this entry's commit.
+  - **Effect.** Line 5 runs as written: T1_s2rcB2d15 goes only if T1_s2rcCm20's headline is strictly above the 2.0
+    file's; T1_s2rcB2d20 only if T1_s2rcB2d15's is strictly above the line's best. Line 3's sentence still binds every
+    other line. Lines 6 and 7 of entry (r) still wait on their own words, before T1_s2rcCm25 is uploaded.
+  - **Recorded:** row R35; a note in `docs/S2_RULES.md` (re-pinned); the upload sheet's question removed.
