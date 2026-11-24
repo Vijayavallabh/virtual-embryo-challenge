@@ -13538,3 +13538,24 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     then OTS10's headlines each come back strictly above the one before.
   - **Not yet:** the code on `campaign/heart-h34-2` (b6d43cf) is merged only after an independent review; the run goes
     in a worktree with row H29b's own environment.
+- 2026-11-24 (z), the T1 closed-lever candidate goes to the captain in its challenger's corrected form (state at 05:29
+  UTC, 2026-11-24). Written by the AI assistant, which designed none of it and gives no lean on it.
+  - **The candidate** (entry (t)): R13's command with `--base pooled`, the base every T1 file used until ruling row R6
+    moved them to library 3 on 2026-11-13. **The cold challenger's verdict (blind to test scores, on another model):
+    put it only in corrected form.** Its reading: by the block's words a base change is composition, and in effect it
+    is T1's depth; ruling row R6 was the AI assistant's own choice after the exposure; under the policy's notes of
+    2026-11-13 (d) and 2026-11-17 (a) the rule declines going back, since the only new fact is the upload allowance,
+    not released data, and released data do not show the held-out stage's depth; so only the captain's own named
+    exception on T1's depth can carry it. The value is independent of the exposure (the pooled rule stood in the
+    builder before 2026-11-04, with no constant); the choice is not and cannot be shown to be, because the captain who
+    must say yes saw the exposed figures that bear on depth and has seen the T1 scores. Its odds: about one in three
+    that the file beats R13's file, lower for the board's best.
+  - **The question, in the challenger's words, put to the captain unchanged:** "T1: R13's command on all three E10.5
+    libraries at their own mix, the base until 13 November, not library 3: a bet that E12.5 is shallower. Zero-gap
+    practice, no R13 steps, upper bounds: +7 if E12.5 is 0.35-0.68 as deep, -8 to -13 if as deep or deeper; ledger's
+    central test gain: zero; odds it beats R13's file one in three, your best file less. The policy declines it
+    (released data do not show E12.5's depth); only your named exception on T1 depth carries it. The method report
+    will say you saw the exposed size, count and T1 scores: answer from none. Cost: 6 hours, one upload; its score
+    sets nothing. Yes: 'Yes, T1 pooled base, my exception'. Otherwise no."
+  - **With a yes, before any score of the file:** its sha256 and command in this log, a ruling row naming the option,
+    and the line that its score sets no later T1 file's base, depth, mix or step. Default: no.
