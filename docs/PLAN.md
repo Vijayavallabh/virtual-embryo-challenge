@@ -13398,3 +13398,21 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Recorded.** A note in `docs/S2_RULES.md` on line 5 (re-pinned); the upload sheet says what the captain's
     sentence decides, beside T1_s2rcCm20 and the fifth search's two rows. Nothing is put in force and nothing is built
     by this entry.
+- 2026-11-24 (s), the captain orders a follow-up on the T3 file that holds the board's best (state at 04:04 UTC,
+  2026-11-24). Written by the AI assistant, which designs no line and states no preference.
+  - **The captain's words:** "C2 follow-up", under a side note which said that no built or planned T3 file steps from
+    C2, that a designer's text for such a line was cut off by an automatic safety filter on 2026-11-24 (entry (b)) and
+    that the AI assistant had chosen not to ask again. **The AI assistant's reading:** an order to have the line
+    designed. It is not yet the named yes that a new option needs: by the cold challenger's ruling of entry (r) a new
+    option enters ruling row R22's first cell only on the captain's own words naming it, so the designed line comes
+    back to the captain as one priced question.
+  - **How it is done.** One fresh designer blind to test scores, started through the route that relays no message,
+    with the morning's inputs brought up to date (the allowance, the second line's file built under row R30, what
+    waits) and asked for the line's text in three short files about commands, options, file names and comparisons of
+    headlines, with no statement about the biology of any gene. The AI assistant's own limit, kept: this is one retry
+    in a tighter form; if the filter cuts it off again, the line is not asked for a third time and the captain is
+    told. The unfinished draft of the morning is not opened, not passed on and used for nothing.
+  - **What the line still needs if the designer writes one:** a cold challenger; if it carries a guard on a file's
+    overall expression total, the guard tried on the real tables before any engineering (the lesson of entry (a)); the
+    captain's named words for its option; the builder option and its review; two builds with one sha256 by 2026-11-25
+    12:00 UTC; its sha256 in this log before its own score.
