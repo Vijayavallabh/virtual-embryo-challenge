@@ -13940,3 +13940,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     due by row R47.
   - **Standing:** T1 73.47, T3 63.94, heart 61.79, embryo 69.9; overall 203.255 by the challenge's formula (it was
     202.445).
+- 2026-11-24 (ccc), the captain unskips the plain-momentum T1 file (state at 19:42 UTC, 2026-11-24). Written by the AI
+  assistant.
+  - **The captain's words, verbatim:** "unskip T1_s2rc_MS", the words the main session gave after the
+    combined-momentum file took T1's best (entry (bbb)). `T1_s2rc_MS.h5ad` (row R23's MS step at 1.0; sha256
+    6103d10535665634ee0cad3390590a5df132d1805682fb1d309bb19581fdaa5e, checked on disk) leaves the skipped section and
+    is due now; row R23's last cell says so; nothing is rebuilt.

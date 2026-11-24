@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-24, 19:40 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-24, 19:42 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -17,9 +17,9 @@ Only `T1_s2rcA20.h5ad` waits on a score. `T3_c2_s2_g2.h5ad` keeps its place afte
 Between boards the captain decides; by the challenge's formula a point on T1 or T3 counts twice a point on the heart
 or the embryo board.
 
-**Due now (5), in the order of each board's table below:**
+**Due now (6), in the order of each board's table below:**
 
-- T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`
+- T1: `T1_s2rc_MS.h5ad` (unskipped), `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`
 - T3: `T3_c2_s2_s067.h5ad`
 - Embryo: none (every handed-over embryo file is uploaded)
 - Heart: none (the line ended at OTS10)
@@ -48,7 +48,7 @@ Eight files were uploaded and their scores reported on 2026-11-23, two per board
 (bbb)). The boards' best headlines stand with `T1_s2rcMSB.h5ad` (the combined-momentum file), `T3_c2_s2.h5ad` (C2),
 `T2heart_organ_ts10_half.h5ad` (OTS10) and `T2embryo_s2x_ov.h5ad` (O).
 
-Five files are skipped by the captain's words of 2026-11-23 and 2026-11-24: they hold no place in any order below and
+Four files are skipped by the captain's words of 2026-11-23 and 2026-11-24: they hold no place in any order below and
 stand in a section of their own at the end.
 
 ## Task 1
@@ -106,7 +106,6 @@ built). The files stay in `runs/manual_upload/` as built; nothing was deleted or
 
 | Board | File | sha256 | Why it is skipped, in the record's terms | Data used |
 |---|---|---|---|---|
-| Task 1 | `T1_s2rc_MS.h5ad` (plain momentum) | `6103d10535665634ee0cad3390590a5df132d1805682fb1d309bb19581fdaa5e` | the record's own range for its gain ends under the board's best headline | as the Task 1 files above |
 | Task 1 | `T1_s2none.h5ad` (F) | `55eaee547ff18d7477da5b730c34e7de9ab74f85cc12fd01a9eff6450367611c` | on practice it never stands above the atlas file it was cut from, whose headline is under the board's best | released challenge data only; no outside data |
 | Task 3 | `T3_refused_s1.h5ad` | `0394575a11fcd4f915e0daf4972e5a783b6b89efa065ed4f85fe2445cbbb1545` | its expected board score on record is under the board's best headline | released challenge data only (released wild-type stage files; its composition at the released Mab21l2 knockout's magnitude; no Gata4 validation file and no Gata4-derived number); no outside data |
 | Task 2, heart | `T2heart_core_ts10_half.h5ad` (TS10, the full trim with the trend step at strength 1.0) | `cf53b0c0afe7d18b8f7c84d7595729e4fc46e15e6077e645b6dc0a2fbfed39af` | the captain's word of 2026-11-24, "skip TS10, TS15 and TS20" | released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data |
