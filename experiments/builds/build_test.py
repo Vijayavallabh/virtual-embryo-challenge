@@ -170,6 +170,26 @@ machine, and an official upload needs the captain's go-ahead.
           Without such a row the pair is refused as row R23's path refuses it, as before; R23's and R26's paths are
           unchanged. Its record's t1_candidate field names the row, the file, the banked file's two values, the
           momentum's record and the command.
+          Row R51 of experiments/harness/TRIES.md (the captain's order of 2026-11-24, decision log 2026-11-24 (iii);
+          T1's line 10): seven files, each one change to T1_s2rcMSB's command (row R26's), each taken only with
+          --captain-ruling R51 while TRIES.md holds exactly one row R51 whose first cell is the captain's ruling
+          ("ruling, no run") naming `--captain-ruling R51` and the file's exact option string, each as a whole
+          backticked string (no string passes on another that contains it): --feng-fraction-mult 2.0 or 3.0
+          --direction-momentum all (T1_s2rcMS20, T1_s2rcMS30: MS's step at that multiplier); --feng-fraction-mult 1.5
+          --direction-momentum all --g-mom-damping 1.0 or 1.5 (T1_s2rcMSBd10, T1_s2rcMSBd15: g_mom's within-type
+          damping); --feng-fraction-mult 1.5 --direction-momentum all --held-momentum 0.5 or 1.0 (T1_s2rcMSBH05,
+          T1_s2rcMSBH10: row R44's step, Blood-labelled cells only, fitted on Blood-labelled cells at both ends from
+          libraries 1 and 2, library 3 never in the fit, its own stream [seed, 6], after MS's step and before g_mom);
+          --feng-fraction-mult 1.5 --direction-momentum all --direction-momentum-damping 1.0 (T1_s2rcMSBm10: MS's own
+          damping passed to _t1_ms_step in place of harness.B0_DAMPING; the option takes the literal 1.0 only and is
+          refused with every other command), all on t1 --g-mom --base lib3 --feng-groups recomputed at the default seed
+          on the test board; nothing else changed. Tested before every other route: a command that is not exactly one of
+          the seven under such a row (the struck pair --feng-fraction-mult 2.0 --g-mom-damping 1.0 with MS included) is
+          taken or refused exactly as before. One of the seven is refused with --released-bet, --bet-strength or
+          --no-hold-unbracketed, on any other command or seed and on a dry run. Its record's t1_candidate field names
+          the row, the file, its option string, the base file, the multiplier, g_mom's damping, Blood's damping (or
+          null), MS's damping, the order text, the command, MS's step's record and, in the H files, Blood's step's
+          record (held_momentum_step); g_mom's rule text names row R51 at damping 1.0 and 1.5.
   heart B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
           procedure: --entry s1 = scope hypothesis H1; s2_trim = the s2 of docs/S2_RULES.md (H2 as a trim to half
           E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`). --trend
@@ -817,8 +837,9 @@ def _bet_refusals(a) -> None:
                                    or _ruled_line3_ordered(a) or _ruled_line5_ordered(a) or _ms_ordered(a)
                                    or _msb_ordered(a) or _ruled_line6_ordered(a) or _ruled_line7_ordered(a)
                                    or _pooled_ordered(a)  # and R37; then the rows named on the command line for
-                                   or _hm_ordered(a) or _ms25_ordered(a)):  # Blood's momentum and MS at 2.5
-            return  # _t1_candidate, _t1_pooled, _t1_hm and _t1_ms refused every other use
+                                   or _hm_ordered(a) or _ms25_ordered(a)  # Blood's momentum and MS at 2.5; and
+                                   or _r51_ordered(a)):  # row R51's seven files
+            return  # _t1_candidate, _t1_pooled, _t1_hm, _t1_ms and _t1_r51 refused every other use
         if ruling is not None or getattr(a, "bet_strength", None) is not None:
             sys.exit("--captain-ruling and --bet-strength go with --released-bet only")
         return
@@ -1031,6 +1052,58 @@ T1_MS25_ORDER = ("experiments/harness/TRIES.md row {row}, the captain's ruling n
 # The options a held-momentum file never takes beside its own and the banked file's: flag -> attribute
 HM_STACKED = (("--g-mom-damping", "g_mom_damping"), ("--released-bet", "released_bet"),
               ("--bet-strength", "bet_strength"))
+# Row R51 of experiments/harness/TRIES.md (the captain's order of 2026-11-24, "ruling, no run"; decision log 2026-11-24
+# (iii); T1's line 10, the second design pass of the round of 2026-11-24/25 as its cold challenge fixes it, P1 struck):
+# seven files, each one change to T1_s2rcMSB's command (row R26's: candidate MS's step exactly as row R23 fixes it on
+# candidate B's command, the atlas step at 1.5 x the calendar fraction, g_mom's within-type damping 0.5, MS's damping
+# harness.B0_DAMPING), each taken only with --captain-ruling R51 while TRIES.md holds exactly one row R51 whose first
+# cell is the captain's ruling ("R51 (the captain's ...", "ruling, no run") naming the file's option string and
+# `--captain-ruling R51`, each as a whole backticked string (_r51_row_names: a backticked string that holds the option
+# inside a longer one, or one the option holds, does not name it). The option strings, after T1_CANDIDATE_COMMAND:
+#   T1_s2rcMS20, T1_s2rcMS30      MS's step at the atlas multiplier 2.0 or 3.0 in place of 1.5
+#   T1_s2rcMSBd10, T1_s2rcMSBd15  g_mom's within-type damping 1.0 or 1.5 in place of 0.5 (the same fit finished at it)
+#   T1_s2rcMSBH05, T1_s2rcMSBH10  Blood's own released change at damping 0.5 or 1.0: row R44's step (_t1_hm_step: the
+#                                 drawn Blood cells only, fitted on Blood-labelled cells at both ends from E9.5 to
+#                                 E10.5's libraries 1 and 2, library 3 never in the fit, its own stream [seed, 6]),
+#                                 after MS's step and before g_mom; R1 reversed for Blood in these two files
+#   T1_s2rcMSBm10                 MS's own damping 1.0 (--direction-momentum-damping, a new option) passed to
+#                                 _t1_ms_step in place of harness.B0_DAMPING
+# Nothing else changes in any of them. No other combination is taken: every other command is routed as before.
+T1_R51_ROW = "R51"
+T1_R51_BASE_FILE = "T1_s2rcMSB"
+# file -> (its option string as row R51 names it, then the values its command gives for --feng-fraction-mult,
+# --g-mom-damping, --held-momentum and --direction-momentum-damping, None where the option is not given)
+T1_R51_FILES = {
+    "T1_s2rcMS20": ("--feng-fraction-mult 2.0 --direction-momentum all", 2.0, None, None, None),
+    "T1_s2rcMS30": ("--feng-fraction-mult 3.0 --direction-momentum all", 3.0, None, None, None),
+    "T1_s2rcMSBd10": ("--feng-fraction-mult 1.5 --direction-momentum all --g-mom-damping 1.0", 1.5, 1.0, None, None),
+    "T1_s2rcMSBd15": ("--feng-fraction-mult 1.5 --direction-momentum all --g-mom-damping 1.5", 1.5, 1.5, None, None),
+    "T1_s2rcMSBH05": ("--feng-fraction-mult 1.5 --direction-momentum all --held-momentum 0.5", 1.5, None, "0.5", None),
+    "T1_s2rcMSBH10": ("--feng-fraction-mult 1.5 --direction-momentum all --held-momentum 1.0", 1.5, None, "1.0", None),
+    "T1_s2rcMSBm10": ("--feng-fraction-mult 1.5 --direction-momentum all --direction-momentum-damping 1.0", 1.5, None,
+                      None, "1.0"),
+}
+T1_R51_M10_FILE = "T1_s2rcMSBm10"  # the one file that takes --direction-momentum-damping
+T1_R51_DMD_CHOICES = ("1.0",)  # --direction-momentum-damping's one literal value, as row R51 names it
+T1_R51_COMMAND = T1_CANDIDATE_COMMAND + " {option} --captain-ruling " + T1_R51_ROW
+T1_R51_CHANGES = {  # file -> its one change, in the record's order text
+    "T1_s2rcMS20": "the atlas step at 2.0 x the calendar fraction",
+    "T1_s2rcMS30": "the atlas step at 3.0 x the calendar fraction",
+    "T1_s2rcMSBd10": "g_mom's within-type damping 1.0",
+    "T1_s2rcMSBd15": "g_mom's within-type damping 1.5",
+    "T1_s2rcMSBH05": ("Blood's own released E9.5 -> E10.5 change at damping 0.5 on the drawn Blood cells, after MS's "
+                      "step and before g_mom (R1 reversed for Blood in this one file, Macrophage and Early VIC held)"),
+    "T1_s2rcMSBH10": ("Blood's own released E9.5 -> E10.5 change at damping 1.0 on the drawn Blood cells, after MS's "
+                      "step and before g_mom (R1 reversed for Blood in this one file, Macrophage and Early VIC held)"),
+    "T1_s2rcMSBm10": "MS's own damping 1.0 in place of harness.B0_DAMPING",
+}
+T1_R51_ORDER = ("experiments/harness/TRIES.md row R51, the captain's order of 2026-11-24 (\"ruling, no run\"; decision "
+                "log 2026-11-24 (iii), T1's line 10) naming `{option}` and `--captain-ruling R51`: file {file}, "
+                "T1_s2rcMSB's command (candidate MS's step exactly as row R23 fixes it on candidate B's command: the "
+                "atlas step at 1.5 x the calendar fraction, g_mom's within-type damping 0.5, MS's damping "
+                "harness.B0_DAMPING) with one change, {change}; nothing else changed")
+# The options a row R51 file never takes beside its own option set: flag -> attribute
+R51_STACKED = (("--released-bet", "released_bet"), ("--bet-strength", "bet_strength"))
 
 
 def _captain_order_names(row: str, option: str, path: Path | None = None, kind: str = "order") -> bool:
@@ -1602,7 +1675,91 @@ def _t1_ms25(a) -> dict:
             "order": T1_MS25_ORDER.format(row=row), "command": command}
 
 
-def _t1_ms_step(ref, library: np.ndarray, directions, fraction: float, groups, held, seed: int):
+def _r51_row_names(option: str, path: Path | None = None) -> bool:
+    """Whether experiments/harness/TRIES.md (TRIES_FILE) holds exactly one row R51 whose first cell is the captain's
+    ruling (it starts "R51 (the captain's " and says "ruling, no run") naming `option` and `--captain-ruling R51`, each
+    as a whole backticked string: a backticked string holding the option inside a longer one, or one the option holds,
+    does not name it, and neither does a name outside the first cell."""
+    lines = [ln for ln in (path or TRIES_FILE).read_text(encoding="utf-8").splitlines()
+             if ln.startswith(f"| {T1_R51_ROW} ")]
+    if len(lines) != 1:
+        return False
+    first = lines[0][2:].split("|", 1)[0]
+    named = set(re.findall(r"`([^`]*)`", first))
+    return (first.startswith(f"{T1_R51_ROW} (the captain's ") and "ruling, no run" in first and option in named
+            and f"--captain-ruling {T1_R51_ROW}" in named)
+
+
+def _r51_file(a) -> str | None:
+    """The row R51 file whose option set the command gives exactly (--direction-momentum all, and --feng-fraction-mult,
+    --g-mom-damping, --held-momentum and --direction-momentum-damping each given at the file's value or not given, as
+    the file's option string has them) with --captain-ruling R51, while row R51 names that option string
+    (_r51_row_names); else None, and nothing is read unless the option set is one of the seven with R51."""
+    if (getattr(a, "captain_ruling", None) != T1_R51_ROW
+            or getattr(a, "direction_momentum", None) not in DIRECTION_MOMENTUM_ARMS):
+        return None
+    given = (getattr(a, "feng_fraction_mult", None), getattr(a, "g_mom_damping", None),
+             getattr(a, "held_momentum", None), getattr(a, "direction_momentum_damping", None))
+    for name, (option, *values) in T1_R51_FILES.items():
+        if given == tuple(values):
+            return name if _r51_row_names(option) else None
+    return None
+
+
+def _r51_ordered(a) -> bool:
+    """The commands row R51 orders, as _t1_r51 holds them: one of its seven option sets exactly with --captain-ruling
+    R51 while its row names that set, and no released bet's option."""
+    return (_r51_file(a) is not None and getattr(a, "released_bet", None) is None
+            and getattr(a, "bet_strength", None) is None)
+
+
+def _t1_r51(a) -> dict | None:
+    """Row R51's seven files (T1's line 10), each one change to T1_s2rcMSB's command, tested before every other route.
+    Returns None when the command is not exactly one of them under its row (_r51_file; every such command is then
+    routed as before), after refusing --direction-momentum-damping, which no other command takes. One of them is
+    refused before anything but the ledger is read with --released-bet or --bet-strength, with --no-hold-unbracketed,
+    and on any command but T1_CANDIDATE_COMMAND (whose own refusals then hold the rest) at the default seed on the test
+    board (never a dry run). Returns the record's values: the file, the row, its option string, the base file, the four
+    settings the build takes from here (the multiplier, g_mom's damping, Blood's damping or None, MS's damping), the
+    order text and the command."""
+    name = _r51_file(a)
+    if name is None:
+        raw = getattr(a, "direction_momentum_damping", None)
+        if raw is not None:
+            m10 = T1_R51_FILES[T1_R51_M10_FILE][0]
+            sys.exit(f"--direction-momentum-damping {raw} is refused: it takes {', '.join(T1_R51_DMD_CHOICES)} only, "
+                     f"and only in row {T1_R51_ROW}'s file {T1_R51_M10_FILE}, the command "
+                     f"{T1_R51_COMMAND.format(option=m10)} at the default seed on the test board, while "
+                     f"experiments/harness/TRIES.md holds exactly one row {T1_R51_ROW} whose first cell is the "
+                     f"captain's ruling (\"ruling, no run\") naming `{m10}` and `--captain-ruling {T1_R51_ROW}`")
+        return None
+    option, mult, damping, held, ms_damping = T1_R51_FILES[name]
+    command = T1_R51_COMMAND.format(option=option)
+    what = f"row {T1_R51_ROW}'s file {name}"
+    stacked = [flag for flag, attr in R51_STACKED if getattr(a, attr, None) is not None]
+    if stacked:
+        sys.exit(f"{what} is refused with {', '.join(stacked)}: it is {T1_R51_BASE_FILE}'s command with one change")
+    if not getattr(a, "hold_unbracketed", True):
+        sys.exit(f"{what} is refused with --no-hold-unbracketed: the cells without a group keep R1's hold")
+    if (getattr(a, "feng_groups", FENG_GROUPS_DEFAULT) != "recomputed" or a.seed != harness.BUILD_SEED_OFFSET + 1
+            or a.board is not None):
+        sys.exit(f"{what} changes {T1_R51_BASE_FILE} only: it needs the command {command} at the default seed on the "
+                 "test board")
+    return {"direction_momentum": a.direction_momentum, "captain_ruling": T1_R51_ROW, "file": name,
+            "base_file": T1_R51_BASE_FILE, "option": f"`{option}`", "feng_fraction_mult": float(mult),
+            "g_mom_damping": G_MOM_DAMPINGS[0] if damping is None else float(damping),
+            "held_momentum": None if held is None else float(held),
+            "direction_momentum_damping": float(harness.B0_DAMPING) if ms_damping is None else float(ms_damping),
+            "order": T1_R51_ORDER.format(option=option, file=name, change=T1_R51_CHANGES[name]), "command": command}
+
+
+def _r51_line(r51: dict) -> str:
+    """g_mom's record text for row R51's damping files: the row, the file and the base command."""
+    return f"row {T1_R51_ROW}'s file {r51['file']}, T1's line 10, on {T1_R51_BASE_FILE}'s command"
+
+
+def _t1_ms_step(ref, library: np.ndarray, directions, fraction: float, groups, held, seed: int,
+                damping: float | None = None):
     """Candidate MS's step on the drawn population, before g_mom: on the cells whose label's group has a direction
     (build_submission's covered test, `groups.get(label) in directions`), B0's per-category damped mean momentum
     (`t1_scope.momentum_shift` at harness.B0_DAMPING with its defaults: eps 0.5, min_cells 20, keep_depth; the held
@@ -1613,11 +1770,16 @@ def _t1_ms_step(ref, library: np.ndarray, directions, fraction: float, groups, h
     `t1_scope._stack_rows`, covered cells first, as build_submission stacks them. The same calls in the same order as
     experiments/t1_m1/ms_read.py's `ms_population` (the practice arm m1rc_gmom_mom), whose fit runs on the practice
     task's own stages. Refused unless the reference's libraries other than the dissected one are exactly
-    T1_MS_FIT_LIBRARIES. E9.5 is loaded here. Returns the step and its record (constants and stages; no cell number)."""
+    T1_MS_FIT_LIBRARIES. E9.5 is loaded here. Returns the step and its record (constants and stages; no cell number).
+    damping (row R51's files only; None: harness.B0_DAMPING, the step and record exactly as before): the momentum's
+    damping, passed to momentum_shift in place of harness.B0_DAMPING (file T1_s2rcMSBm10's 1.0; every other R51 file
+    passes B0's value), nothing else changed; the record's damping field names it and, when it is not B0's, a
+    damping_option field says so."""
     portions = sorted(set(library.tolist()) - {T1_DISSECTED_LIBRARY})
     if portions != list(T1_MS_FIT_LIBRARIES):
         sys.exit(f"--direction-momentum is refused: E10.5's libraries other than {T1_DISSECTED_LIBRARY} are "
                  f"{portions}, not the fit's {list(T1_MS_FIT_LIBRARIES)} (row {T1_R23_ROW})")
+    ms_damping = harness.B0_DAMPING if damping is None else float(damping)
     spec = t1_scope.load_spec()
     start = harness._shallow(load_stage(DATA / "T1/E9.5_RNA.h5ad", lineage=False))
     later = ref[np.flatnonzero(np.isin(library, T1_MS_FIT_LIBRARIES))].copy()
@@ -1632,7 +1794,7 @@ def _t1_ms_step(ref, library: np.ndarray, directions, fraction: float, groups, h
         parts = []
         if cov.any():
             idx = np.flatnonzero(cov)
-            mom, _ = t1_scope.momentum_shift(start, later, pop[idx].copy(), harness.B0_DAMPING, held,
+            mom, _ = t1_scope.momentum_shift(start, later, pop[idx].copy(), ms_damping, held,
                                              label_key=t1_scope.LABEL_KEY, seed=[seed, T1_MS_STREAM], **kw)
             moved, _ = t1_scope.external_shift(mom, directions, fraction, groups, held, label_key=t1_scope.LABEL_KEY,
                                                seed=[seed, T1_MS_DIRECTION_STREAM])
@@ -1647,7 +1809,7 @@ def _t1_ms_step(ref, library: np.ndarray, directions, fraction: float, groups, h
                       "and for a category with fewer than min_cells own cells or drawn from stand-ins at either stage) "
                       "on the drawn cells whose label's group has a recomputed direction, then the atlas step on the "
                       "same cells, then g_mom; every other cell as drawn (R1's hold)",
-              "damping": float(harness.B0_DAMPING), "eps": 0.5, "min_cells": 20, "keep_depth": True,
+              "damping": float(ms_damping), "eps": 0.5, "min_cells": 20, "keep_depth": True,
               "stream": [int(seed), T1_MS_STREAM], "direction_stream": [int(seed), T1_MS_DIRECTION_STREAM],
               "fit": {"start": "E9.5_RNA", "later": "E10.5_RNA", "later_libraries": list(T1_MS_FIT_LIBRARIES),
                       "library_3_in_fit": False},
@@ -1656,10 +1818,14 @@ def _t1_ms_step(ref, library: np.ndarray, directions, fraction: float, groups, h
                          f"({sorted(directions)})",
               "practice_arm": "experiments/t1_m1/ms_read.py m1rc_gmom_mom (row T65), whose fit runs on the practice "
                               "task's own stages"}
+    if damping is not None and ms_damping != harness.B0_DAMPING:  # row R51's T1_s2rcMSBm10 only
+        record["damping_option"] = (f"--direction-momentum-damping {ms_damping:.1f} (row {T1_R51_ROW}'s file "
+                                    f"{T1_R51_M10_FILE}): MS's own damping in place of harness.B0_DAMPING "
+                                    f"({float(harness.B0_DAMPING):g}); nothing else changed")
     return step, record
 
 
-def _t1_hm_step(ref, library: np.ndarray, damping: float, held, seed: int):
+def _t1_hm_step(ref, library: np.ndarray, damping: float, held, seed: int, base_file: str | None = None):
     """Blood's released momentum (--held-momentum; files T1_s2rcB25H05, H10 and H20), applied to the drawn population
     after the atlas step and before g_mom: on the drawn cells labelled T1_HM_LABEL only, B0's per-category damped mean
     momentum (`t1_scope.momentum_shift` with _t1_ms_step's constants: eps 0.5, min_cells 20, keep_depth; the held genes
@@ -1671,7 +1837,10 @@ def _t1_hm_step(ref, library: np.ndarray, damping: float, held, seed: int):
     before the draw (released stages only), unless the reference's libraries other than the dissected one are exactly
     T1_MS_FIT_LIBRARIES and Blood's own cells reach min_cells at both ends of the fit, so that the step is never idle.
     E9.5 is loaded here. Returns the step and its record (constants, stages, label and the fit's status; no cell
-    number), which the step completes when it runs; the step stops the build unless it shifted the Blood cells."""
+    number), which the step completes when it runs; the step stops the build unless it shifted the Blood cells.
+    base_file (row R51's files T1_s2rcMSBH05 and H10; None: the record exactly as before): the same step on that file's
+    command, after MS's step (whose momentum and atlas step move the cells with a direction, never Blood) and before
+    g_mom; only the record's rule text names that file and MS's step in place of the banked file and the atlas step."""
     portions = sorted(set(library.tolist()) - {T1_DISSECTED_LIBRARY})
     if portions != list(T1_MS_FIT_LIBRARIES):
         sys.exit(f"--held-momentum is refused: E10.5's libraries other than {T1_DISSECTED_LIBRARY} are {portions}, not "
@@ -1705,6 +1874,12 @@ def _t1_hm_step(ref, library: np.ndarray, damping: float, held, seed: int):
               "held": "the build's held list: R2's union joined with the pre-registered list",
               "practice_arm": "experiments/t1_m1/heldmom_read.py m1rc_gmom_heldmom (row T64, candidate D) narrowed to "
                               "Blood, its fit on Blood-labelled cells at both ends; the fit's stages the test's"}
+    if base_file is not None:  # row R51's H files: written only then, so every other file's record is as before
+        record["rule"] = (record["rule"]
+                          .replace("after the atlas step and before g_mom",
+                                   "after MS's step (its momentum, then the atlas step, on the cells whose group has a "
+                                   "direction, never Blood) and before g_mom")
+                          .replace("as the banked file has it", f"as {base_file} has it"))
 
     def step(pop):
         labels = pop.obs[t1_scope.LABEL_KEY].astype(str).to_numpy()
@@ -1795,7 +1970,8 @@ def _t1_held(union: dict | None, direction_groups, build_genes) -> tuple[list[st
 
 
 def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str], feng_direction: bool = True,
-              with_direction=None, damping: float | None = None, fraction_mult: float | None = None):
+              with_direction=None, damping: float | None = None, fraction_mult: float | None = None,
+              line: str | None = None):
     """The test build's g_mom step (--g-mom, default off; T1 try T11 of experiments/harness/TRIES.md; only the captain's
     ruling puts it in an upload): E9.5 is loaded here and nowhere else, and the factors are fitted exactly as the
     candidate's (`vec.harness.g_mom_pair_factors`: start E9.5, reference E10.5, the chamber categories of E10.5's own
@@ -1827,7 +2003,9 @@ def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str], f
     candidate's direction multiplier; None: not given) enters the record's text only, never the step: with damping
     1.5 or 2.0 it chooses the second line's text (multiplier 1.0), the fifth line's (multiplier 2.0) or the sixth
     line's (multiplier 2.5); at damping 1.0 the text is candidate A's whatever the multiplier (the third and seventh
-    lines keep it)."""
+    lines keep it). line (row R51's files only; None: as above): at a damping other than B0_DAMPING the text names that
+    line (_r51_line) in place of every other's, so T1_s2rcMSBd10 and T1_s2rcMSBd15 name row R51, never candidate A or
+    row R22's second line; the step is the same."""
     from vec import t1_state_transport as ts
 
     start = load_stage(DATA / "T1/E9.5_RNA.h5ad", lineage=False)
@@ -1864,7 +2042,10 @@ def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str], f
                           f"fallback ({sorted(with_direction)}); R1_FENG_GROUPS is not read")
     if damping is not None:  # written only with --g-mom-damping, so every other file's record is as before
         record["damping"] = float(damping)
-        if damping in T1_R22_LINE5_OPTIONS and fraction_mult == FENG_FRACTION_MULT_LINE5:  # row R22's fifth line
+        if line is not None and damping != harness.B0_DAMPING:  # row R51's two g_mom files (T1's line 10)
+            record["rule"] = record["rule"].replace("damped by B0_DAMPING",
+                                                    f"damped by {float(damping):g} in place of B0_DAMPING ({line})")
+        elif damping in T1_R22_LINE5_OPTIONS and fraction_mult == FENG_FRACTION_MULT_LINE5:  # row R22's fifth line
             record["rule"] = record["rule"].replace("damped by B0_DAMPING",
                                                     f"damped by {float(damping):g} in place of B0_DAMPING (row "
                                                     f"{T1_R22_ROW}'s fifth T1 search line, on the 2.0 file's command, "
@@ -1987,9 +2168,15 @@ def _bet_median_library(pool, base_shares: dict, bet_pop, n: int, seed: int) -> 
 
 def build_t1(a) -> dict:
     feng_groups = getattr(a, "feng_groups", FENG_GROUPS_DEFAULT)
-    hm = _t1_hm(a)  # None unless --held-momentum is given (Blood's momentum); its refusals read nothing but the ledger
-    ms = _t1_ms(a)  # None unless --direction-momentum is given (candidate MS, row R23); its refusals read nothing
-    candidate = _t1_candidate(a)  # None unless --g-mom-damping or --feng-fraction-mult is given; refusals read nothing
+    # None unless the command is one of row R51's seven files (T1's line 10), tested before every route below, none of
+    # which then sees it: its values stand in for theirs; its refusals read nothing but the ledger
+    r51 = _t1_r51(a)
+    if r51 is None:
+        hm = _t1_hm(a)  # None unless --held-momentum is given (Blood's momentum); its refusals read only the ledger
+        ms = _t1_ms(a)  # None unless --direction-momentum is given (candidate MS, row R23); its refusals read nothing
+        candidate = _t1_candidate(a)  # None unless --g-mom-damping or --feng-fraction-mult is given; reads nothing
+    else:  # MS's step always; Blood's in the two H files; the multiplier and g_mom's damping from row R51's values
+        hm, ms, candidate = (None if r51["held_momentum"] is None else r51), r51, r51
     pooled = _t1_pooled(a)  # None unless --base pooled --feng-groups recomputed --captain-ruling R37; likewise
     _bet_refusals(a)  # nothing at all unless --released-bet (or one of its two companions) is given
     if feng_groups == "none":
@@ -2065,7 +2252,8 @@ def build_t1(a) -> dict:
         if feng_groups == "recomputed":  # g_mom's mask follows the groups with a recomputed direction
             hook, g_mom_record = _t1_g_mom(ref, fit_categories, a.seed, covered, with_direction=sorted(directions),
                                            damping=None if candidate is None else candidate["g_mom_damping"],
-                                           fraction_mult=None if candidate is None else candidate["feng_fraction_mult"])
+                                           fraction_mult=None if candidate is None else candidate["feng_fraction_mult"],
+                                           **({} if r51 is None else {"line": _r51_line(r51)}))
         else:
             hook, g_mom_record = _t1_g_mom(ref, fit_categories, a.seed, covered,
                                            feng_direction=feng_groups != "none")
@@ -2077,15 +2265,19 @@ def build_t1(a) -> dict:
         shares, bet_record = _t1_trend(ref, library != T1_DISSECTED_LIBRARY, shares, a.bet_strength)
     hm_record = None
     if hm is not None:  # Blood's momentum (refused above unless the banked file's command, so --g-mom and library 3):
-        # the banked file's draw and atlas step in build_submission, then Blood's step and g_mom's hook in post_cells
-        hm_step, hm_record = _t1_hm_step(ref, library, hm["held_momentum"], held, a.seed)
+        # the banked file's draw and atlas step in build_submission, then Blood's step and g_mom's hook in post_cells.
+        # Row R51's H files: the same step after MS's step below (it wraps this hook), on T1_s2rcMSB's command
+        hm_step, hm_record = _t1_hm_step(ref, library, hm["held_momentum"], held, a.seed,
+                                         **({} if r51 is None else {"base_file": r51["base_file"]}))
         hm_hook = within_type["post_cells"]
         within_type = {"post_cells": lambda pop: hm_hook(hm_step(pop))}
     ms_record = None
     if ms is not None:  # candidate MS (refused above unless the recomputed command with --g-mom): the same draw, then
         # the momentum and the atlas step on the covered cells, then g_mom's hook, all inside post_cells. Under row
-        # R26 (the pair) the same calls, with `fraction` and g_mom's damping candidate B's from _t1_candidate above
-        ms_step, ms_record = _t1_ms_step(ref, library, directions, fraction, groups, held, a.seed)
+        # R26 (the pair) the same calls, with `fraction` and g_mom's damping candidate B's from _t1_candidate above;
+        # under row R51 the same calls with its values, and MS's own damping passed to the step
+        ms_step, ms_record = _t1_ms_step(ref, library, directions, fraction, groups, held, a.seed,
+                                         **({} if r51 is None else {"damping": r51["direction_momentum_damping"]}))
         g_mom_hook = within_type["post_cells"]
         sub, rep = t1_scope.build_submission(pool, board, shares, n, a.seed, held_flat=held, ref_source="E10.5_RNA",
                                              herd=a.herd, post_cells=lambda pop: g_mom_hook(ms_step(pop)))
@@ -2144,6 +2336,11 @@ def build_t1(a) -> dict:
                                T1_MSB_COMMAND if ms["captain_ruling"] == T1_R26_ROW else T1_MS_COMMAND}
     if hm is not None:  # written only with --held-momentum, so every other file's record is as before
         rec["t1_candidate"] = {**hm, "momentum": hm_record, "calendar_fraction": calendar, "applied_fraction": fraction}
+    if r51 is not None:  # row R51's files, in place of the fields above: MS's record as in every MS file, Blood's too
+        rec["t1_candidate"] = {**r51, "momentum": ms_record, "calendar_fraction": calendar,
+                               "applied_fraction": fraction}
+        if hm_record is not None:
+            rec["t1_candidate"]["held_momentum_step"] = hm_record
     if pooled is not None:  # written only for row R37's file, so every other file's record is as before
         rec["base_exception"] = pooled
     if mid_record is not None:  # likewise: shares only, no cell number
@@ -2913,7 +3110,8 @@ def build_parser() -> argparse.ArgumentParser:
                                 f"--feng-fraction-mult {T1_BANKED_MULT:g} and --captain-ruling <ROW> only, ROW a row "
                                 "whose first cell is the captain's ruling naming "
                                 f"{T1_MS25_OPTION} and `--captain-ruling <ROW>`: file {T1_MS25_FILE}, the same step on "
-                                f"the banked file {T1_BANKED_FILE}'s command")
+                                f"the banked file {T1_BANKED_FILE}'s command. With --captain-ruling {T1_R51_ROW}: row "
+                                f"{T1_R51_ROW}'s seven files on {T1_R51_BASE_FILE}'s command (see --captain-ruling)")
             p.add_argument("--held-momentum", default=None, metavar="{0.5,1.0,2.0}",
                            help="Blood's released momentum on the banked file (off by default; files "
                                 f"{', '.join(T1_HM_FILES.values())}): on the command {T1_CANDIDATE_COMMAND} "
@@ -2926,7 +3124,18 @@ def build_parser() -> argparse.ArgumentParser:
                                 "whose first cell is the captain's ruling naming the value's option string (e.g. "
                                 f"{T1_HM_OPTIONS[0.5]}) and `--captain-ruling <ROW>`; refused with "
                                 "--direction-momentum, --g-mom-damping, --released-bet, --bet-strength or "
-                                "--no-hold-unbracketed and with another multiplier")
+                                "--no-hold-unbracketed and with another multiplier. With --feng-fraction-mult "
+                                f"{T1_MSB_MULT:g} --direction-momentum all and --captain-ruling {T1_R51_ROW}, 0.5 and "
+                                f"1.0 are row {T1_R51_ROW}'s files T1_s2rcMSBH05 and T1_s2rcMSBH10 (see "
+                                "--captain-ruling)")
+            p.add_argument("--direction-momentum-damping", default=None, metavar="{1.0}",
+                           help=f"row {T1_R51_ROW}'s file {T1_R51_M10_FILE} (off by default): MS's own damping (the "
+                                "per-category momentum of --direction-momentum, harness.B0_DAMPING in every other MS "
+                                "file) at 1.0, on the command "
+                                + T1_R51_COMMAND.format(option=T1_R51_FILES[T1_R51_M10_FILE][0])
+                                + f" at the default seed on the test board only, while row {T1_R51_ROW}'s first cell "
+                                "is the captain's ruling naming that option string; takes the literal value 1.0 only, "
+                                "and is refused with every other command")
             p.add_argument("--bet-strength", type=float, default=None,
                            help="with --released-bet: lambda (share_trend) or tau (advance), one of row T61's values")
             p.add_argument("--captain-ruling", default=None,
@@ -2953,7 +3162,12 @@ def build_parser() -> argparse.ArgumentParser:
                                 f"pooled --feng-groups recomputed: {T1_R37_ROW}, the captain's named exception for "
                                 "R13's command on the pooled base; with --held-momentum, or with --feng-fraction-mult "
                                 f"{T1_BANKED_MULT:g} --direction-momentum all: the ID of the row whose first cell is "
-                                "the captain's ruling naming that file's option string and this flag with that ID")
+                                "the captain's ruling naming that file's option string and this flag with that ID; "
+                                f"{T1_R51_ROW} with exactly one of row {T1_R51_ROW}'s seven option sets on "
+                                f"{T1_CANDIDATE_COMMAND} (T1's line 10, each one change to {T1_R51_BASE_FILE}: "
+                                + "; ".join(f"{f} `{v[0]}`" for f, v in T1_R51_FILES.items())
+                                + f"), while that row's first cell is the captain's ruling naming the set's option "
+                                f"string and `--captain-ruling {T1_R51_ROW}` as whole backticked strings")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim", "core_trim", "organ_scope"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "
