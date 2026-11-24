@@ -776,9 +776,10 @@ def test_missing_files_are_not_a_reading_and_no_seed_file_is_opened(tmp_path, mo
     assert _read(w, monkeypatch) == {"incomplete": True, "void": False, "missing": ["plain_g2/seed_7.json"],
                                      "outcome": k29.INCOMPLETE}
     w2 = _write_run(tmp_path / "j", bad={"guard/dm/g1_seed_2.json": lambda b: None})
+    (w2.root / "guard.json").write_text("{ not JSON: not opened while a guard file is missing")
     assert _read(w2, monkeypatch)["missing"] == ["guard/dm/g1_seed_2.json"]
     (w2.root / "guard.json").unlink()
-    assert _read(w2, monkeypatch)["missing"] == ["guard.json"]
+    assert _read(w2, monkeypatch)["missing"] == ["guard.json", "guard/dm/g1_seed_2.json"]
     (w2.root / "gate.json").unlink()
     assert _read(w2, monkeypatch)["missing"] == ["gate.json"]
     assert k29.text(_read(w2, monkeypatch)).startswith("Try K29: INCOMPLETE: not a reading")

@@ -957,16 +957,16 @@ def reading(runs: Path, refs: Path = K18_TASKS) -> dict:
         why = [GATE_VOID.format("; ".join(gate.get("failed") or ["unrecorded"]))]
         return base | {"void": True, "why": why, "tries_counted": len(five), "counted_arms": five,
                        "run_step_started": started, "outcome": VOID_LINE.format(why[0])}
-    if not (runs / GUARD_FILE).exists():
-        return _missing([GUARD_FILE], five, started, base)
+    missing = [f for f in (GUARD_FILE, *guard_files()) if not (runs / f).exists()]
+    if missing:  # guard.json is opened only once every guard file is there
+        return _missing(missing, five, started, base)
     g, sha[GUARD_FILE] = k21._read_json(runs / GUARD_FILE)
     prov[GUARD_FILE] = g.get("provenance") or {}
     base["guard_part"] = {k: g.get(k) for k in ("cells", "failed", "passes")}
     guard_step = g.get("passes") is True
-    need = guard_files() + (score_files() if guard_step else [])
-    missing = [f for f in need if not (runs / f).exists()]
+    missing = [f for f in score_files() if not (runs / f).exists()] if guard_step else []
     if missing:
-        return _missing(missing, five + ([] if guard_step else [GUARD_ARM]), started, base)
+        return _missing(missing, five, started, base)
     why: list[str] = []
     gsha: dict = {}
     grows = rows_of(runs, guard_files(), f"{GUARD_DIR}/", "guard", (GUARD_ARM,), why, gsha, prov)
