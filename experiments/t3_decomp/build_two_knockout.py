@@ -116,6 +116,37 @@ phi_M's total are recorded and gate nothing. The factor the build applies must b
 (its sha256, over WT E8.75's genes); else exit 5, nothing written. The sidecar's combined_build then also holds
 `c2_gata4_line` (the ruling row, the line, g, c and the powers applied, the guard's figures and the factor's sha256).
 
+--gata4-exponent inf and --size-scale 0.67 on --form c2-s2, each only with --captain-ruling R22 (the T3 design of the
+design round of 2026-11-24, section 2; off by default: a command with neither --size-scale nor --gata4-exponent inf on
+c2-s2 goes on exactly as above, combine() and c2_gata4_weighted() included, and nothing below is read or computed):
+three files on C2's command, points of the family ln phi(g, s) = s c_g (ln phi_M + g ln phi_G), c_g = SD(ln phi_M) /
+SD(ln phi_M + g ln phi_G), population SD over the genes of the two pinned tables as loaded,
+
+  F1  T3_c2_s2_gonly.h5ad        --gata4-exponent inf                     g = inf, s = 1
+  F2  T3_c2_s2_s067.h5ad         --size-scale 0.67                        g = 1 (C2's factor), s = 0.67
+  F3  T3_c2_s2_gonly_s067.h5ad   --gata4-exponent inf --size-scale 0.67   g = inf, s = 0.67
+
+g = inf is phi_G alone at C2's held size, ln phi = (SD(ln phi_M) / SD(ln phi_G)) ln phi_G (phi_M dropped: its power is
+0); s multiplies ln phi after the size-held combination (phi ** s; s = 1 when the option is absent, and no power is then
+taken); nothing rescaled or clipped after. Cells, streams, composition, seed, count and board stay C2's (the barred
+s2's). Refused (exit 2, nothing built): --size-scale on another form or with any value but 0.67; --size-scale beside a
+--gata4-exponent other than inf; either option without --captain-ruling R22, with another ruling or beside
+--composition-from; a ledger without exactly one row R22 whose first cell passes build_outside_form.captain_order_names
+for "`--gata4-exponent inf`" (F1), for "`--form c2-s2 --size-scale 0.67`" (F2), or for both (F3). The strings carry
+their backticks because that check matches by containment: neither contains or is contained in line 2's
+"`--gata4-exponent 2.0`" or line 3's "`--form c2-s2 --gata4-exponent 2.0`", so no line's entry opens another line's
+file. --gata4-exponent inf on any other form is refused as before (only 2.0). Two guards, target-free (the two pinned
+tables only), before any cell is drawn and before anything is written (exit 6, nothing written):
+  range          the applied factor's max at most twice C2's factor's max and its min at least half C2's min
+  distinctness   on a direction step only (F1: g = inf at s = 1): the cosine of its ln factor to the ln factors of
+                 g = 0 (phi_M, B's), g = 1 (C2's) and g = 2 (C2g2's, c2_gata4_weighted at 2.0) each below 0.95; a
+                 --size-scale file keeps its g's direction: its cosines are recorded and gate nothing
+The den-weighted totals of phi_M, C2's factor and the file's (den from released WT E8.75 as build_outside_form.wt_den
+makes it) are recorded and gate nothing, as row R30 ruled for line 2. The factor the build applies must be the very
+array the guards describe (its sha256, over WT E8.75's genes); else exit 5, nothing written. The sidecar's
+combined_build then also holds `c2_gonly_line` (the ruling row, the file, g, s, c and the powers applied, both guards'
+figures, the den totals and the factor's sha256).
+
 The two target-free gates of row R36's file (they build and write nothing):
 
   g1 DECISIONS.json --wt WT --composition-from allowed-s1
@@ -136,6 +167,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import io
+import math
 import sys
 from contextlib import contextmanager, nullcontext, redirect_stdout
 from pathlib import Path
@@ -260,6 +292,34 @@ C2G_GUARD_RULE = ("the den-weighted total of the file's factor lies within 5% of
                   "shift from phi_M's total are recorded and gate nothing")
 EXIT_GUARD_FAILED = 6
 
+# Two options on C2's command (the T3 design of the design round of 2026-11-24, section 2: files F1, F2 and F3), each
+# only with --captain-ruling R22 and only while row R22's first cell names its option string: on --form c2-s2,
+# --gata4-exponent also takes inf (g = inf: the gata4_pooled table alone at C2's held size, phi_M dropped) and
+# --size-scale takes 0.67 (ln phi multiplied by s after the size-held combination). Off by default; its own code below,
+# beside combine() and c2_gata4_weighted(), which it leaves unchanged.
+GONLY_FORM = "c2-s2"
+GONLY_SCALES = (0.67,)  # --size-scale: the single value 0.67
+GONLY_OPTION_G = "`--gata4-exponent inf`"  # what row R22's first cell must name for F1 (and, with the next, F3)
+GONLY_OPTION_S = "`--form c2-s2 --size-scale 0.67`"  # what row R22's first cell must name for F2 (and F3)
+GONLY_POINTS = {"F1": (math.inf, 1.0), "F2": (1.0, 0.67), "F3": (math.inf, 0.67)}  # file -> (g, s)
+GONLY_NAMES = {"F1": (GONLY_OPTION_G,), "F2": (GONLY_OPTION_S,), "F3": (GONLY_OPTION_G, GONLY_OPTION_S)}
+GONLY_FILES = {"F1": "T3_c2_s2_gonly.h5ad", "F2": "T3_c2_s2_s067.h5ad", "F3": "T3_c2_s2_gonly_s067.h5ad"}
+GONLY_RANGE_FACTOR = 2.0  # the range guard: max at most twice C2's max, min at least C2's min over this
+GONLY_MAX_COSINE = 0.95  # the distinctness guard: the cosine to each of g = 0, 1 and 2 below this
+GONLY_REFERENCES = ("g=0", "g=1", "g=2")  # B's factor (phi_M), C2's, C2g2's (c2_gata4_weighted at 2.0)
+GONLY_LINE = ("T3 options on C2's command (row R22): the family ln phi(g, s) = s c_g (ln phi_M + g ln phi_G), c_g = "
+              "SD(ln phi_M) / SD(ln phi_M + g ln phi_G), on the barred s2; F1 T3_c2_s2_gonly.h5ad (g = inf: ln phi = "
+              "(SD(ln phi_M) / SD(ln phi_G)) ln phi_G, phi_M dropped), F2 T3_c2_s2_s067.h5ad (g = 1, s = 0.67), F3 "
+              "T3_c2_s2_gonly_s067.h5ad (g = inf, s = 0.67)")
+GONLY_LIST_ENTRY = ("experiments/harness/TRIES.md row R22 (the captain's order naming `--gata4-exponent inf` and "
+                    "`--form c2-s2 --size-scale 0.67`); the T3 design of the design round of 2026-11-24, section 2")
+GONLY_RANGE_RULE = ("the applied factor's max at most twice C2's factor's max and its min at least half C2's min (C2's "
+                    "factor combine('c2', 1.0) from the same two pinned tables); target-free")
+GONLY_DISTINCT_RULE = ("a direction step (g = inf at s = 1) only: the cosine of the applied ln factor to each of g = 0 "
+                       "(phi_M), g = 1 (C2's factor) and g = 2 (c2_gata4_weighted at 2.0) below 0.95; target-free")
+GONLY_NOT_CHECKED = ("not checked: a --size-scale file keeps its g's direction; the cosines are recorded and gate "
+                     "nothing")
+
 Refused = bs.Refused
 
 
@@ -269,6 +329,11 @@ class FactorMismatch(Refused):
 
 class GuardFailed(Refused):
     """Row R22's third line: the file's den-weighted total is not within 5% of C2's (exit status 6, nothing written)."""
+
+
+class GonlyGuardFailed(GuardFailed):
+    """The options on C2's command (F1, F2, F3): the range or the distinctness guard fails (exit status 6, nothing
+    written)."""
 
 
 app = typer.Typer(no_args_is_help=True, add_completion=False)
@@ -946,21 +1011,254 @@ def c2g_loader(g: float, out: dict, guard: dict):
         bs.load_factor = original
 
 
+# ------------------------------------------------- the options on C2's command: F1, F2 and F3 (off by default)
+
+
+def _is_pos_inf(v) -> bool:
+    """Whether a --gata4-exponent value is +inf, read as the option reads every value (float(); never a bool)."""
+    if v is None or isinstance(v, bool):
+        return False
+    try:
+        return float(v) == math.inf
+    except (TypeError, ValueError, OverflowError):
+        return False
+
+
+def is_gonly_command(form, gata4_exponent=None, size_scale=None) -> bool:
+    """Whether a command is this line's: any --size-scale, or --gata4-exponent inf on --form c2-s2. Every other command,
+    --gata4-exponent inf on another form included, never reaches the line's code and goes on as before."""
+    return size_scale is not None or (form == GONLY_FORM and _is_pos_inf(gata4_exponent))
+
+
+def check_c2_gonly(form, gata4_exponent=None, size_scale=None, captain_ruling=None, tries: Path | None = None,
+                   composition_from=None) -> dict | None:
+    """--gata4-exponent inf and --size-scale on --form c2-s2: None unless is_gonly_command (nothing is read); else the
+    line's record, or Refused: a ruling other than R22; --size-scale on another form or with a value other than 0.67;
+    --size-scale beside a --gata4-exponent other than inf; either option without --captain-ruling R22 or beside
+    --composition-from; a ledger whose row R22 does not pass build_outside_form.captain_order_names for each string the
+    file needs (F1 GONLY_OPTION_G, F2 GONLY_OPTION_S, F3 both)."""
+    if not is_gonly_command(form, gata4_exponent, size_scale):
+        return None
+    if captain_ruling is not None and captain_ruling != G2_ROW:
+        raise Refused(f"--captain-ruling {captain_ruling!r} is refused: only row {G2_ROW} orders a file of this "
+                      "builder")
+    if form != GONLY_FORM:
+        raise Refused(f"--size-scale is taken on --form {GONLY_FORM} only, not {form!r}")
+    s = 1.0
+    if size_scale is not None:
+        try:
+            s = float(size_scale)
+        except (TypeError, ValueError):
+            raise Refused(f"--size-scale {size_scale!r} is refused: only 0.67") from None
+        if isinstance(size_scale, bool) or s not in GONLY_SCALES:
+            raise Refused(f"--size-scale {size_scale!r} is refused: only 0.67")
+    if gata4_exponent is not None and not _is_pos_inf(gata4_exponent):
+        raise Refused(f"--size-scale 0.67 is taken alone (C2's g = 1) or with --gata4-exponent inf, not with "
+                      f"--gata4-exponent {gata4_exponent!r}")
+    g = math.inf if gata4_exponent is not None else 1.0
+    name = next(k for k, v in GONLY_POINTS.items() if v == (g, s))
+    flags = {"F1": "--gata4-exponent inf", "F2": "--size-scale 0.67", "F3": "--gata4-exponent inf --size-scale 0.67"}
+    if composition_from is not None:
+        raise Refused(f"{flags[name]} takes no --composition-from (the file is C2's command with its own options)")
+    if captain_ruling is None:
+        raise Refused(f"{flags[name]} on --form {GONLY_FORM} is taken only with --captain-ruling {G2_ROW}")
+    p = TRIES_FILE if tries is None else Path(tries)
+    needs = GONLY_NAMES[name]
+    if not all(_outside_form().captain_order_names(G2_ROW, o, p) for o in needs):
+        raise Refused(f"--form {GONLY_FORM} {flags[name]} --captain-ruling {G2_ROW} is refused: "
+                      f"experiments/harness/TRIES.md has no single row {G2_ROW} whose first cell is the captain's "
+                      f"order (\"ruling, no run\") naming {' and '.join(needs)} and `--captain-ruling {G2_ROW}`")
+    return {"row": G2_ROW, "file": GONLY_FILES[name], "name": name, "options": list(needs),
+            "g": "inf" if g == math.inf else g, "size_scale": s, "ledger": "experiments/harness/TRIES.md",
+            "ledger_sha256": bs.sha256(p)}
+
+
+def gonly_point(rec: dict) -> tuple[float, float]:
+    """(g, s) of a record of check_c2_gonly (g = math.inf for "inf")."""
+    return GONLY_POINTS[rec["name"]]
+
+
+def c2_gonly_factor(phi_m, phi_g, g: float, s: float = 1.0) -> tuple[np.ndarray, dict]:
+    """The family ln phi(g, s) = s c_g (ln phi_M + g ln phi_G) on C2's base at this line's points, from the two tables
+    as loaded, gene by gene: g = inf is phi_G alone at C2's held size, phi_G ** c_inf with c_inf = SD(ln phi_M) /
+    SD(ln phi_G) (phi_M dropped), and g = 1 is C2's factor (combine('c2', 1.0), value for value); then, unless s is
+    1, ln phi multiplied by s after that size-held combination (** s). Population SD over the genes; nothing rescaled
+    or clipped after. Returns (phi, record)."""
+    phi_m = np.asarray(phi_m, dtype=np.float64)
+    phi_g = np.asarray(phi_g, dtype=np.float64)
+    if phi_m.shape != phi_g.shape or phi_m.ndim != 1:
+        raise Refused("the two factor tables do not cover the same genes")
+    for nm, p in ((TABLE_M, phi_m), (TABLE_G, phi_g)):
+        if not np.all(np.isfinite(p) & (p > 0)):
+            raise Refused(f"{nm}: factor values must be finite and positive")
+    g, s = float(g), float(s)
+    if not (np.isfinite(s) and s > 0):
+        raise Refused(f"the size scale {s!r} is not finite and positive")
+    lm, lg = np.log(phi_m), np.log(phi_g)
+    sd_m, sd_g = _sd(lm), _sd(lg)
+    if g == math.inf:
+        if not sd_g > 0:
+            raise Refused("SD(ln phi_G) is 0: c_inf is undefined")
+        c = sd_m / sd_g
+        held = phi_g ** c
+        powers = (0.0, c)
+        rule = "g = inf: c_inf = SD(ln phi_M) / SD(ln phi_G); ln phi = c_inf ln phi_G (phi_M dropped)"
+    elif g == 1.0:
+        held, crec = combine("c2", 1.0, phi_m, phi_g)
+        c = crec["c"]
+        powers = (c, c)
+        rule = "g = 1: C2's factor, c = SD(ln phi_M) / SD(ln phi_M + ln phi_G)"
+    else:
+        raise Refused(f"the gata4_pooled weight {g!r} is not this line's (inf, or 1 under a size scale)")
+    phi = held if s == 1.0 else held ** s
+    if not np.all(np.isfinite(phi) & (phi > 0)):
+        raise Refused("the combined factor is not finite and positive")
+    rec = {"kind": "c2", "x": 1.0, "g": "inf" if g == math.inf else g, "size_scale": s,
+           "gata4_weight": s * powers[1], "mab21l2_exponent": s * powers[0], "c": float(c),
+           "c_rule": f"{rule}; population SD over the genes; then ln phi multiplied by the size scale s (** s, none "
+                     "at s = 1)",
+           "sd_ln_phi_m": sd_m, "sd_ln_phi_g": sd_g, "sd_ln_size_held": _sd(np.log(held)),
+           "corr_ln_m_ln_g": float(np.corrcoef(lm, lg)[0, 1]) if sd_m > 0 and sd_g > 0 else None,
+           "base_factor": _shift(phi_m), "size_held_factor": _shift(held), "factor": _shift(phi),
+           "den_weighted_mean": "recorded in combined_build.c2_gonly_line.guards",
+           "min": float(phi.min()), "max": float(phi.max()), "n_up": int((phi > 1).sum()),
+           "n_down": int((phi < 1).sum())}
+    return phi, rec
+
+
+def _cosine(a, b) -> float:
+    """The cosine of two vectors (uncentred); nan when either is 0."""
+    a = np.asarray(a, dtype=np.float64)
+    b = np.asarray(b, dtype=np.float64)
+    na, nb = float(np.sqrt(a @ a)), float(np.sqrt(b @ b))
+    return float(a @ b / (na * nb)) if na > 0 and nb > 0 else float("nan")
+
+
+def gonly_guards(phi_m, phi_g, g: float, s: float, den) -> dict:
+    """The line's two guards, a pure function of the two tables (target-free: no cell, fold or score), and the
+    den-weighted totals, which gate nothing. Range: the applied factor (c2_gonly_factor) has its max at most
+    GONLY_RANGE_FACTOR times C2's factor's max and its min at least C2's min over GONLY_RANGE_FACTOR. Distinctness, on a
+    direction step only (g = inf at s = 1): the cosine of its ln factor to the ln factors of g = 0 (phi_M), g = 1 (C2's,
+    combine('c2', 1.0)) and g = 2 (c2_gata4_weighted at 2.0) each below GONLY_MAX_COSINE; a --size-scale file keeps
+    its g's direction, so its cosines are recorded and gate nothing. Also the sha256 of the factor described."""
+    phi, rec = c2_gonly_factor(phi_m, phi_g, g, s)
+    c2, _ = combine("c2", 1.0, phi_m, phi_g)
+    phi_m = np.asarray(phi_m, dtype=np.float64)
+    refs = dict(zip(GONLY_REFERENCES, (phi_m, c2, c2_gata4_weighted(phi_m, phi_g, 2.0)[0]), strict=True))
+    den = np.asarray(den, dtype=np.float64)
+    if den.shape != phi_m.shape or not np.all(np.isfinite(den) & (den >= 0)) or not den.sum() > 0:
+        raise Refused("den does not cover the tables' genes with finite, non-negative weights and a positive sum")
+    lo, hi = float(c2.min()) / GONLY_RANGE_FACTOR, float(c2.max()) * GONLY_RANGE_FACTOR
+    fmin, fmax = float(phi.min()), float(phi.max())
+    range_ok = bool(fmin >= lo and fmax <= hi)
+    lp = np.log(phi)
+    cos = {k: _cosine(lp, np.log(v)) for k, v in refs.items()}
+    checked = bool(float(g) == math.inf and float(s) == 1.0)
+    distinct_ok = bool(all(np.isfinite(v) and v < GONLY_MAX_COSINE for v in cos.values()))
+    tot = float(den.sum())
+    t_m, t_c2, t_f = (float(den @ f / tot) for f in (phi_m, c2, phi))
+    return {"g": rec["g"], "size_scale": rec["size_scale"], "c": rec["c"],
+            "powers_applied": {TABLE_M: rec["mab21l2_exponent"], TABLE_G: rec["gata4_weight"]},
+            "range": {"factor_min": fmin, "factor_max": fmax, "c2_min": float(c2.min()), "c2_max": float(c2.max()),
+                      "bound_min": lo, "bound_max": hi, "factor": GONLY_RANGE_FACTOR, "passed": range_ok,
+                      "rule": GONLY_RANGE_RULE},
+            "distinctness": {"cosines": cos, "max_cosine": GONLY_MAX_COSINE, "checked": checked,
+                             "passed": distinct_ok if checked else None,
+                             "rule": GONLY_DISTINCT_RULE if checked else GONLY_NOT_CHECKED},
+            "passed": bool(range_ok and (distinct_ok or not checked)),
+            "den_total_phi_m": t_m, "den_total_c2": t_c2, "den_total_factor": t_f, "den_shift_vs_c2": t_f / t_c2 - 1.0,
+            "den_shift_c2_vs_phi_m": t_c2 / t_m - 1.0, "den_shift_factor_vs_phi_m": t_f / t_m - 1.0,
+            "den_totals": "recorded; gate nothing (as row R30 ruled for line 2)", "factor_sha256": factor_sha256(phi)}
+
+
+def gonly_failure(guards: dict) -> str:
+    """What a failed guard says (the guard's own figures; no cell, fold or score)."""
+    says = []
+    r = guards["range"]
+    if not r["passed"]:
+        says.append(f"the range guard: the factor spans [{r['factor_min']:.4g}, {r['factor_max']:.4g}], not within "
+                    f"[{r['bound_min']:.4g}, {r['bound_max']:.4g}] (half C2's min, twice C2's max)")
+    d = guards["distinctness"]
+    if d["checked"] and not d["passed"]:
+        cos = ", ".join(f"{k} {v:.3f}" for k, v in d["cosines"].items())
+        says.append(f"the distinctness guard: the ln factor's cosines ({cos}) are not all below {GONLY_MAX_COSINE}")
+    return "; ".join(says) + ": not built"
+
+
+def run_gonly_guards(dec: dict, wt: Path, run_dir: Path | None, g: float, s: float) -> dict:
+    """The guards from the two pinned tables (and released WT E8.75's den for the totals that gate nothing), before any
+    build: den and genes by build_outside_form.wt_den, both tables through the frozen loader in that gene order (checked
+    against TABLE_SHA256). Returns the record whatever it says; the caller refuses on it."""
+    genes, den = _outside_form().wt_den(Path(wt))
+    phi_m, rec_m = bs.load_factor(run_dir, TABLE_M, genes, dec)
+    phi_g, rec_g = bs.load_factor(run_dir, TABLE_G, genes, dec)
+    for nm, rec in ((TABLE_M, rec_m), (TABLE_G, rec_g)):
+        if rec["sha256"] != TABLE_SHA256[nm]:
+            raise Refused(f"{rec['file']}: sha256 {rec['sha256'][:16]} differs from the pinned table "
+                          f"({TABLE_SHA256[nm][:16]}): not built")
+    den = np.asarray(den, dtype=np.float64)
+    out = gonly_guards(phi_m, phi_g, g, s, den)
+    out |= {"wt": str(wt), "wt_sha256": bs.sha256(Path(wt)), "den_rule": G2_DEN_RULE, "den": den.tolist(),
+            "den_sha256": factor_sha256(den), "n_genes": len(genes),
+            "genes_sha256": hashlib.sha256("\n".join(genes).encode()).hexdigest(),
+            "tables_sha256": {TABLE_M: rec_m["sha256"], TABLE_G: rec_g["sha256"]}, "genes": list(genes)}
+    return out
+
+
+@contextmanager
+def gonly_loader(g: float, s: float, out: dict, guards: dict):
+    """bs.load_factor, for this process only, on this line: the frozen loader for phi_M and phi_G (checked against
+    TABLE_SHA256 too), then c2_gonly_factor at (g, s), the hook C2's factor goes through. FactorMismatch (exit 5) unless
+    the build's genes are the guards' and the factor's sha256 is the one the guards describe."""
+    original = bs.load_factor
+
+    def load(run_dir, name, genes, dec):
+        if name != TABLE_M:
+            raise Refused(f"the barred spec asked for the factor {name!r}, not {TABLE_M!r}: not built")
+        if list(genes) != guards["genes"]:
+            raise FactorMismatch("the build's genes are not those the guards were computed over: not built")
+        phi_m, rec_m = original(run_dir, TABLE_M, genes, dec)
+        phi_g, rec_g = original(run_dir, TABLE_G, genes, dec)
+        for nm, rec in ((TABLE_M, rec_m), (TABLE_G, rec_g)):
+            if rec["sha256"] != TABLE_SHA256[nm]:
+                raise Refused(f"{rec['file']}: sha256 {rec['sha256'][:16]} differs from the pinned table "
+                              f"({TABLE_SHA256[nm][:16]}): not built")
+        phi, crec = c2_gonly_factor(phi_m, phi_g, g, s)
+        sha = factor_sha256(phi)
+        if sha != guards["factor_sha256"]:
+            raise FactorMismatch(f"the factor the build would apply ({sha[:16]}) is not the one the guards describe "
+                                 f"({guards['factor_sha256'][:16]}): not built")
+        out.update(tables={TABLE_M: rec_m, TABLE_G: rec_g}, combination=crec, factor_sha256=sha,
+                   n_loads=out.get("n_loads", 0) + 1)
+        return phi, rec_m
+
+    bs.load_factor = load
+    try:
+        yield
+    finally:
+        bs.load_factor = original
+
+
 def build_form(decision: Path, form, wt: Path, board, n_cells: int, out: Path, run_dir: Path | None = None,
                seed: int = 1_000_001, overwrite: bool = False, threads: int = 16, gata4_exponent=None,
-               captain_ruling=None, tries: Path | None = None, composition_from=None) -> dict:
+               captain_ruling=None, tries: Path | None = None, composition_from=None, size_scale=None) -> dict:
     """The named form through bs.build_submission; returns the sidecar (written next to the file, the frozen
     builder's plus `combined_build`). gata4_exponent 2.0 with captain_ruling 'R22' (default None, today's paths
     unchanged) builds row R22's second T3 line's file, c1-s2 at Gata4 weight 2.0, under the ruling row of TRIES.md
     (tries, default TRIES_FILE). composition_from 'allowed-s1' with captain_ruling 'R36' (default None) builds row
     R36's file cD7, c2-s2 with the decision file's allowed s1 composition block, under the ruling row of TRIES.md.
     gata4_exponent 2.0 with captain_ruling 'R22' on c2-s2 builds row R22's third T3 line's file, C2 at gata4_pooled
-    weight g = 2.0, after its guard, under the ruling row of TRIES.md."""
+    weight g = 2.0, after its guard, under the ruling row of TRIES.md. On c2-s2 with captain_ruling 'R22',
+    gata4_exponent inf and/or size_scale 0.67 (default None) build F1, F2 or F3 after their guards, under the ruling
+    row of TRIES.md; a command without either goes on exactly as before."""
     kind, base = parse_form(form)
-    cd7 = check_composition_from(f"{kind}-{base}", composition_from, captain_ruling, gata4_exponent, tries)
-    c2g = None if cd7 is not None else check_c2_gata4(f"{kind}-{base}", gata4_exponent, captain_ruling, tries)
-    ruled = None if cd7 is not None or c2g is not None else check_gata4(f"{kind}-{base}", gata4_exponent,
-                                                                         captain_ruling, tries)
+    gonly = check_c2_gonly(f"{kind}-{base}", gata4_exponent, size_scale, captain_ruling, tries, composition_from)
+    cd7 = None if gonly is not None else check_composition_from(f"{kind}-{base}", composition_from, captain_ruling,
+                                                                gata4_exponent, tries)
+    c2g = None if cd7 is not None or gonly is not None else check_c2_gata4(f"{kind}-{base}", gata4_exponent,
+                                                                            captain_ruling, tries)
+    ruled = None if cd7 is not None or c2g is not None or gonly is not None else check_gata4(
+        f"{kind}-{base}", gata4_exponent, captain_ruling, tries)
     slot, x, base_sha = BASES[base]
     frozen = check_frozen()
     tree = check_clean()
@@ -994,6 +1292,19 @@ def build_form(decision: Path, form, wt: Path, board, n_cells: int, out: Path, r
                                        run_dir=run_dir, seed=seed, overwrite=overwrite, threads=threads)
         if got.get("factor_sha256") != guard["factor_sha256"]:
             raise RuntimeError("the factor applied is not the one the guard describes")
+    elif gonly is not None:
+        out_p = Path(out)
+        if not overwrite and (out_p.exists() or out_p.with_suffix(".json").exists()):
+            raise Refused(f"{out_p} or its sidecar exists; pass --overwrite")
+        g_s = gonly_point(gonly)
+        guards = run_gonly_guards(dec, Path(wt), run_dir, *g_s)
+        if not guards["passed"]:
+            raise GonlyGuardFailed(gonly_failure(guards))
+        with gonly_loader(*g_s, got, guards):
+            side = bs.build_submission(Path(decision), BRANCH, slot, Path(wt), board, n_cells, Path(out),
+                                       run_dir=run_dir, seed=seed, overwrite=overwrite, threads=threads)
+        if got.get("factor_sha256") != guards["factor_sha256"]:
+            raise RuntimeError("the factor applied is not the one the guards describe")
     elif ruled is None:
         with combined_loader(kind, x, got):
             side = bs.build_submission(Path(decision), BRANCH, slot, Path(wt), board, n_cells, Path(out),
@@ -1052,6 +1363,22 @@ def build_form(decision: Path, form, wt: Path, board, n_cells: int, out: Path, r
             "factor_sha256_applied": got["factor_sha256"], "c2_reference_sha256": C2_S2_SHA256,
             "list_entry": C2G_LIST_ENTRY,
         }
+    if gonly is not None:
+        crec = got["combination"]
+        side["combined_build"]["c2_gonly_line"] = {
+            "captain_ruling": gonly, "line": GONLY_LINE, "file": gonly["file"], "g": crec["g"],
+            "size_scale": crec["size_scale"], "c": crec["c"],
+            "powers_applied": {TABLE_M: crec["mab21l2_exponent"], TABLE_G: crec["gata4_weight"]},
+            "option_value": "on --form c2-s2 the value of --gata4-exponent is the gata4_pooled weight g, not a power; "
+                            "g = inf keeps phi_G alone at C2's held size; --size-scale s multiplies ln phi after the "
+                            "size-held combination (s = 1 when absent)",
+            "factor_rule": "ln phi = s c_g (ln phi_M + g ln phi_G), c_g = SD(ln phi_M) / SD(ln phi_M + g ln phi_G); at "
+                           "g = inf ln phi = s (SD(ln phi_M) / SD(ln phi_G)) ln phi_G; population SD over the genes; "
+                           "nothing rescaled or clipped after",
+            "guards": {k: v for k, v in guards.items() if k != "genes"},
+            "factor_sha256_applied": got["factor_sha256"], "c2_reference_sha256": C2_S2_SHA256,
+            "list_entry": GONLY_LIST_ENTRY,
+        }
     bs.dump_json(side, Path(out).with_suffix(".json"))
     return side
 
@@ -1080,19 +1407,29 @@ def build(
                                          "second T3 line's file (phi_M * phi_G ** 2); on --form c2-s2 its third "
                                          "line's file, the gata4_pooled weight g = 2 in C2's size-held product (a "
                                          "weight, not a power); each while row R22 of TRIES.md is the captain's order "
-                                         "naming it"),
+                                         "naming it. On --form c2-s2 also inf (F1; with --size-scale 0.67, F3): "
+                                         "phi_G alone at C2's held size"),
     captain_ruling: str = typer.Option(None, help="R22, with --gata4-exponent 2.0 --form c1-s2 or c2-s2; or R36, "
                                        "with --composition-from allowed-s1 --form c2-s2; nothing else"),
     composition_from: str = typer.Option(None, help="allowed-s1 only, with --form c2-s2 --captain-ruling R36: row "
                                          "R36's file cD7 (C2 with the decision file's submissions.allowed.s1."
                                          "composition), while row R36 of TRIES.md is the captain's ruling naming it"),
+    size_scale: float = typer.Option(None, help="0.67 only, with --form c2-s2 --captain-ruling R22, alone (F2, C2's "
+                                     "ln factor times 0.67) or with --gata4-exponent inf (F3), while row R22 of "
+                                     "TRIES.md is the captain's order naming `--form c2-s2 --size-scale 0.67`"),
 ):
     """Build one fixed form."""
     try:
         if seed != LIST_SEED or n_cells != LIST_N_CELLS:
             raise Refused(LIST_INPUTS_REFUSAL)
         parse_form(form)
-        if composition_from is not None or captain_ruling == R36_ROW:
+        if is_gonly_command(form, gata4_exponent, size_scale):
+            check_c2_gonly(form, gata4_exponent, size_scale, captain_ruling, composition_from=composition_from)
+            b = bs.board_spec(board, boards_dir)
+            s = build_form(decision, form, wt, b, bs.resolve_n_cells(n_cells, b), out, run_dir=run_dir, seed=seed,
+                           overwrite=overwrite, threads=threads, gata4_exponent=gata4_exponent,
+                           captain_ruling=captain_ruling, composition_from=composition_from, size_scale=size_scale)
+        elif composition_from is not None or captain_ruling == R36_ROW:
             check_composition_from(form, composition_from, captain_ruling, gata4_exponent)
             b = bs.board_spec(board, boards_dir)
             s = build_form(decision, form, wt, b, bs.resolve_n_cells(n_cells, b), out, run_dir=run_dir, seed=seed,
@@ -1114,6 +1451,9 @@ def build(
             s = build_form(decision, form, wt, b, bs.resolve_n_cells(n_cells, b), out, run_dir=run_dir, seed=seed,
                            overwrite=overwrite, threads=threads, gata4_exponent=gata4_exponent,
                            captain_ruling=captain_ruling)
+    except GonlyGuardFailed as e:
+        bs.say(f"refused (the range or distinctness guard, from the two pinned tables): {e}", "red")
+        raise typer.Exit(EXIT_GUARD_FAILED) from None
     except GuardFailed as e:
         bs.say(f"refused (the guard: the file's den-weighted total against C2's): {e}", "red")
         raise typer.Exit(EXIT_GUARD_FAILED) from None
@@ -1130,6 +1470,11 @@ def build(
     if cb.get("c2_gata4_line"):
         bs.say(f"row {G2_ROW}'s third T3 line: gata4_pooled weight g = {cb['c2_gata4_line']['gata4_weight_g']:g} in "
                f"C2's size-held product (a weight, not a power); the guard passed")
+    if cb.get("c2_gonly_line"):
+        gl = cb["c2_gonly_line"]
+        dist = "passed" if gl["guards"]["distinctness"]["checked"] else "not checked (a --size-scale file)"
+        bs.say(f"row {G2_ROW}'s options on C2's command: {gl['file']} (g = {gl['g']}, s = {gl['size_scale']:g}); the "
+               f"range guard passed; the distinctness guard {dist}")
     if cb.get("composition_line"):
         bs.say(f"composition from {cb['composition_line']['composition_from']} (row {R36_ROW}): the "
                f"{R36_N_STATES} scenario states at {R36_RATIO:.4f} of their wild-type share before renormalising")
