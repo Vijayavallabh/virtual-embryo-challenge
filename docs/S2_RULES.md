@@ -3350,3 +3350,28 @@ sha256 and halved as OTS05 and OTS10 are. **The files:** `runs/manual_upload/T2h
 sha256 adc3243665949f9802056216d86443e2ea0d45d07534013f99e26afb7e57ade0 (build record
 `experiments/builds/results/heartf_ee53e77_f1.txt`). Added before any score of either. Data used: released Task 2
 heart stages and the unlocked E10.5 validation file only; no outside data.
+
+## Amendment of 2026-11-24: T1's line 10, seven files around the combined-momentum file (row R51; decision log 2026-11-24 (iii))
+
+In force since this amendment's commit at 20:29 UTC on 2026-11-24, on the captain's answer "Yes to all seven
+(Recommended)", recorded as: "Yes, T1_s2rcMS20, T1_s2rcMS30, T1_s2rcMSBd10, T1_s2rcMSBd15, T1_s2rcMSBH05,
+T1_s2rcMSBH10 and T1_s2rcMSBm10 under R22 as gated; lift T64's close and reverse R1 for Blood in MSBH05 and MSBH10;
+B25MS, B25H05, B25 and candidates B and C may serve as gates." A designer blind to test scores proposed the files and
+a cold challenger corrected them (P1 struck).
+
+Files, each `build_test.py t1 --g-mom --base lib3 --feng-groups recomputed` with the options named and
+`--captain-ruling R51`: `T1_s2rcMS20.h5ad` (`--feng-fraction-mult 2.0 --direction-momentum all`); `T1_s2rcMS30.h5ad`
+(`--feng-fraction-mult 3.0 --direction-momentum all`); `T1_s2rcMSBd10.h5ad` (`--feng-fraction-mult 1.5
+--direction-momentum all --g-mom-damping 1.0`); `T1_s2rcMSBd15.h5ad` (`--feng-fraction-mult 1.5 --direction-momentum
+all --g-mom-damping 1.5`); `T1_s2rcMSBH05.h5ad` (`--feng-fraction-mult 1.5 --direction-momentum all --held-momentum
+0.5`); `T1_s2rcMSBH10.h5ad` (`--feng-fraction-mult 1.5 --direction-momentum all --held-momentum 1.0`);
+`T1_s2rcMSBm10.h5ad` (`--feng-fraction-mult 1.5 --direction-momentum all --direction-momentum-damping 1.0`).
+
+Gates, fixed now: MS30 goes up only if MS20 beat MSB and B25MS beat MS20; MSBd15 only if MSBd10 beat MSB; MSBH10 only
+if MSBH05 beat MSB; MSBd10 not if candidate C's file did not beat candidate B's; MSBH05 not if B25H05 did not beat B25
+(its Blood cells are B25H05's own); MS20 and MSBm10 have no gate; every comparison is by headline only. The line's
+best is MSB's headline until a file of this line beats it.
+
+Data used, for every file: released challenge data and the outside heart atlas on recomputed groups (GEO GSE193346,
+register row X002). Unchanged: R1 for Macrophage and Early VIC, R2's genes, the groups, base, cells, shares, depth and
+seed; the R23, R26, R44, R45 and R46 files.

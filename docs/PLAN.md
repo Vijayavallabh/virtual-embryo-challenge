@@ -13980,3 +13980,12 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     refusal; the identity rebuilds gave the recorded bytes; each file built twice with one sha256:
     **`T2heart_organ_ts075_half.h5ad`** 1a66b5a5a9d5...; **`T2heart_organ_ts125_half.h5ad`** adc324366594.... Due now,
     together. Data used: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data.
+- 2026-11-24 (iii), the captain says yes to seven T1 files around the combined-momentum file (state at 20:29 UTC,
+  2026-11-24). Written by the AI assistant.
+  - **The answer** to a one-question dialog: "Yes to all seven (Recommended)", the option recording: "Yes,
+    T1_s2rcMS20, T1_s2rcMS30, T1_s2rcMSBd10, T1_s2rcMSBd15, T1_s2rcMSBH05, T1_s2rcMSBH10 and T1_s2rcMSBm10 under R22
+    as gated; lift T64's close and reverse R1 for Blood in MSBH05 and MSBH10; B25MS, B25H05, B25 and candidates B and
+    C may serve as gates." Recorded as row R51 and the amendment of T1's line 10 in `docs/S2_RULES.md` (re-pinned). A
+    designer blind to test scores named eight files around the new T1 best; a cold challenger fixed seven and struck
+    the pair P1. One gate is already decided by headlines on record: candidate C's file scored above candidate B's, so
+    MSBd10 is not held back.
