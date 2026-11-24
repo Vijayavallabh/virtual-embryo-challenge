@@ -117,35 +117,37 @@ phi_M's total are recorded and gate nothing. The factor the build applies must b
 `c2_gata4_line` (the ruling row, the line, g, c and the powers applied, the guard's figures and the factor's sha256).
 
 --gata4-exponent inf and --size-scale 0.67 on --form c2-s2, each only with --captain-ruling R22 (the T3 design of the
-design round of 2026-11-24, section 2; off by default: a command with neither --size-scale nor --gata4-exponent inf on
-c2-s2 goes on exactly as above, combine() and c2_gata4_weighted() included, and nothing below is read or computed):
-three files on C2's command, points of the family ln phi(g, s) = s c_g (ln phi_M + g ln phi_G), c_g = SD(ln phi_M) /
-SD(ln phi_M + g ln phi_G), population SD over the genes of the two pinned tables as loaded,
+design round of 2026-11-24, section 2, as its cold challenge fixes it; off by default: a command with none of
+--size-scale, --den-ruling and --gata4-exponent inf on c2-s2 goes on exactly as above, combine() and c2_gata4_weighted()
+included, and nothing below is read or computed): three files on C2's command, points of the family ln phi(g, s) =
+s c_g (ln phi_M + g ln phi_G), c_g = SD(ln phi_M) / SD(ln phi_M + g ln phi_G), population SD over the genes of the two
+pinned tables as loaded, each with its option string,
 
-  F1  T3_c2_s2_gonly.h5ad        --gata4-exponent inf                     g = inf, s = 1
-  F2  T3_c2_s2_s067.h5ad         --size-scale 0.67                        g = 1 (C2's factor), s = 0.67
-  F3  T3_c2_s2_gonly_s067.h5ad   --gata4-exponent inf --size-scale 0.67   g = inf, s = 0.67
+  F1  T3_c2_s2_gonly.h5ad        `--form c2-s2 --gata4-exponent inf`                     g = inf, s = 1
+  F2  T3_c2_s2_s067.h5ad         `--form c2-s2 --size-scale 0.67`                        g = 1 (C2's factor), s = 0.67
+  F3  T3_c2_s2_gonly_s067.h5ad   `--form c2-s2 --gata4-exponent inf --size-scale 0.67`   g = inf, s = 0.67
 
 g = inf is phi_G alone at C2's held size, ln phi = (SD(ln phi_M) / SD(ln phi_G)) ln phi_G (phi_M dropped: its power is
 0); s multiplies ln phi after the size-held combination (phi ** s; s = 1 when the option is absent, and no power is then
 taken); nothing rescaled or clipped after. Cells, streams, composition, seed, count and board stay C2's (the barred
 s2's). Refused (exit 2, nothing built): --size-scale on another form or with any value but 0.67; --size-scale beside a
 --gata4-exponent other than inf; either option without --captain-ruling R22, with another ruling or beside
---composition-from; a ledger without exactly one row R22 whose first cell passes build_outside_form.captain_order_names
-for "`--gata4-exponent inf`" (F1), for "`--form c2-s2 --size-scale 0.67`" (F2), or for both (F3). The strings carry
-their backticks because that check matches by containment: neither contains or is contained in line 2's
-"`--gata4-exponent 2.0`" or line 3's "`--form c2-s2 --gata4-exponent 2.0`", so no line's entry opens another line's
-file. --gata4-exponent inf on any other form is refused as before (only 2.0). Two guards, target-free (the two pinned
-tables only), before any cell is drawn and before anything is written (exit 6, nothing written):
-  range          the applied factor's max at most twice C2's factor's max and its min at least half C2's min
-  distinctness   on a direction step only (F1: g = inf at s = 1): the cosine of its ln factor to the ln factors of
-                 g = 0 (phi_M, B's), g = 1 (C2's) and g = 2 (C2g2's, c2_gata4_weighted at 2.0) each below 0.95; a
-                 --size-scale file keeps its g's direction: its cosines are recorded and gate nothing
-The den-weighted totals of phi_M, C2's factor and the file's (den from released WT E8.75 as build_outside_form.wt_den
-makes it) are recorded and gate nothing, as row R30 ruled for line 2. The factor the build applies must be the very
-array the guards describe (its sha256, over WT E8.75's genes); else exit 5, nothing written. The sidecar's
-combined_build then also holds `c2_gonly_line` (the ruling row, the file, g, s, c and the powers applied, both guards'
-figures, the den totals and the factor's sha256).
+--composition-from; --den-ruling on any other command; a ledger without exactly one row R22 whose first cell passes
+build_outside_form.captain_order_names for the file's option string and holds it as one whole backtick-delimited
+string. The whole-string match is needed because that check matches by containment and F1's string sits inside F3's;
+no new string is or contains line 2's "`--gata4-exponent 2.0`" or line 3's "`--form c2-s2 --gata4-exponent 2.0`", and
+those lines' own checks are unchanged. --gata4-exponent inf on any other form is refused as before (only 2.0). Two
+checks, each a property of the file's own factor against C2's (the two pinned tables and released WT E8.75's den),
+before any cell is drawn and before anything is written (exit 6, nothing written):
+  range   the applied factor's max at most twice C2's factor's max and its min at least half C2's min
+  5% den  line 3's check: the file's den-weighted total (den as build_outside_form.wt_den makes it) within 5% of C2's
+          factor's. It gates unless --den-ruling ROW names a ruling row ("ruling, no run") whose first cell holds the
+          file's option string as one whole backtick-delimited string and says "the 5% check gates nothing for it";
+          then its figures are recorded and gate nothing (the lifting row R30 gave line 2's one file, keyed here to the
+          row named on the command line and to the file by name). A --den-ruling row that does not is refused (exit 2).
+The factor the build applies must be the very array the checks describe (its sha256, over WT E8.75's genes); else exit
+5, nothing written. The sidecar's combined_build then also holds `c2_gonly_line` (the ruling row, the file, g, s, c and
+the powers applied, both checks' figures, the lifting row if any and the factor's sha256).
 
 The two target-free gates of row R36's file (they build and write nothing):
 
@@ -168,6 +170,7 @@ import copy
 import hashlib
 import io
 import math
+import re
 import sys
 from contextlib import contextmanager, nullcontext, redirect_stdout
 from pathlib import Path
@@ -292,33 +295,38 @@ C2G_GUARD_RULE = ("the den-weighted total of the file's factor lies within 5% of
                   "shift from phi_M's total are recorded and gate nothing")
 EXIT_GUARD_FAILED = 6
 
-# Two options on C2's command (the T3 design of the design round of 2026-11-24, section 2: files F1, F2 and F3), each
-# only with --captain-ruling R22 and only while row R22's first cell names its option string: on --form c2-s2,
-# --gata4-exponent also takes inf (g = inf: the gata4_pooled table alone at C2's held size, phi_M dropped) and
-# --size-scale takes 0.67 (ln phi multiplied by s after the size-held combination). Off by default; its own code below,
-# beside combine() and c2_gata4_weighted(), which it leaves unchanged.
+# Two options on C2's command (the T3 design of the design round of 2026-11-24, section 2, as its cold challenge fixes
+# it: files F1, F2 and F3), each only with --captain-ruling R22 and only while row R22's first cell names the file's
+# whole option string: on --form c2-s2, --gata4-exponent also takes inf (g = inf: the gata4_pooled table alone at C2's
+# held size, phi_M dropped) and --size-scale takes 0.67 (ln phi multiplied by s after the size-held combination). The
+# range guard and line 3's 5% den check gate each file; a ruling row named by --den-ruling lifts the 5% check for the
+# files whose option strings it names. Off by default; its own code below, beside combine() and c2_gata4_weighted(),
+# which it leaves unchanged.
 GONLY_FORM = "c2-s2"
 GONLY_SCALES = (0.67,)  # --size-scale: the single value 0.67
-GONLY_OPTION_G = "`--gata4-exponent inf`"  # what row R22's first cell must name for F1 (and, with the next, F3)
-GONLY_OPTION_S = "`--form c2-s2 --size-scale 0.67`"  # what row R22's first cell must name for F2 (and F3)
 GONLY_POINTS = {"F1": (math.inf, 1.0), "F2": (1.0, 0.67), "F3": (math.inf, 0.67)}  # file -> (g, s)
-GONLY_NAMES = {"F1": (GONLY_OPTION_G,), "F2": (GONLY_OPTION_S,), "F3": (GONLY_OPTION_G, GONLY_OPTION_S)}
+# file -> its option string, which a ruling row's first cell must hold as one whole backtick-delimited string (F1's
+# string sits inside F3's, so containment would let F3's entry open F1; the whole-string match does not)
+GONLY_OPTIONS = {"F1": "--form c2-s2 --gata4-exponent inf", "F2": "--form c2-s2 --size-scale 0.67",
+                 "F3": "--form c2-s2 --gata4-exponent inf --size-scale 0.67"}
 GONLY_FILES = {"F1": "T3_c2_s2_gonly.h5ad", "F2": "T3_c2_s2_s067.h5ad", "F3": "T3_c2_s2_gonly_s067.h5ad"}
 GONLY_RANGE_FACTOR = 2.0  # the range guard: max at most twice C2's max, min at least C2's min over this
-GONLY_MAX_COSINE = 0.95  # the distinctness guard: the cosine to each of g = 0, 1 and 2 below this
-GONLY_REFERENCES = ("g=0", "g=1", "g=2")  # B's factor (phi_M), C2's, C2g2's (c2_gata4_weighted at 2.0)
+GONLY_LIFT_WORDS = "the 5% check gates nothing for it"  # what a lifting row's first cell must say, with the string
+GONLY_LIFT_ROW = re.compile(r"R[0-9]+")  # --den-ruling: a ruling row's id
 GONLY_LINE = ("T3 options on C2's command (row R22): the family ln phi(g, s) = s c_g (ln phi_M + g ln phi_G), c_g = "
               "SD(ln phi_M) / SD(ln phi_M + g ln phi_G), on the barred s2; F1 T3_c2_s2_gonly.h5ad (g = inf: ln phi = "
               "(SD(ln phi_M) / SD(ln phi_G)) ln phi_G, phi_M dropped), F2 T3_c2_s2_s067.h5ad (g = 1, s = 0.67), F3 "
               "T3_c2_s2_gonly_s067.h5ad (g = inf, s = 0.67)")
-GONLY_LIST_ENTRY = ("experiments/harness/TRIES.md row R22 (the captain's order naming `--gata4-exponent inf` and "
-                    "`--form c2-s2 --size-scale 0.67`); the T3 design of the design round of 2026-11-24, section 2")
-GONLY_RANGE_RULE = ("the applied factor's max at most twice C2's factor's max and its min at least half C2's min (C2's "
-                    "factor combine('c2', 1.0) from the same two pinned tables); target-free")
-GONLY_DISTINCT_RULE = ("a direction step (g = inf at s = 1) only: the cosine of the applied ln factor to each of g = 0 "
-                       "(phi_M), g = 1 (C2's factor) and g = 2 (c2_gata4_weighted at 2.0) below 0.95; target-free")
-GONLY_NOT_CHECKED = ("not checked: a --size-scale file keeps its g's direction; the cosines are recorded and gate "
-                     "nothing")
+GONLY_LIST_ENTRY = ("experiments/harness/TRIES.md row R22 (the captain's order naming `--form c2-s2 --gata4-exponent "
+                    "inf`, `--form c2-s2 --size-scale 0.67` and `--form c2-s2 --gata4-exponent inf --size-scale "
+                    "0.67`) and any row named by --den-ruling; the T3 design of the design round of 2026-11-24, "
+                    "section 2, and its cold challenge")
+GONLY_RANGE_RULE = ("the applied factor's max at most twice C2's factor's max and its min at least half C2's min "
+                    "(C2's factor combine('c2', 1.0) from the same two pinned tables)")
+GONLY_DEN_RULE = ("line 3's check: the den-weighted total of the file's factor lies within 5% of C2's factor's (den "
+                  "from released WT E8.75 as build_outside_form.wt_den makes it, the two pinned tables only); it "
+                  "gates the file unless the row named by --den-ruling names the file's option string and says \"the "
+                  "5% check gates nothing for it\"; the shifts from phi_M's total are recorded and gate nothing")
 
 Refused = bs.Refused
 
@@ -332,8 +340,8 @@ class GuardFailed(Refused):
 
 
 class GonlyGuardFailed(GuardFailed):
-    """The options on C2's command (F1, F2, F3): the range or the distinctness guard fails (exit status 6, nothing
-    written)."""
+    """The options on C2's command (F1, F2, F3): the range guard or the 5% den check (not lifted for the file) fails
+    (exit status 6, nothing written)."""
 
 
 app = typer.Typer(no_args_is_help=True, add_completion=False)
@@ -1030,15 +1038,54 @@ def is_gonly_command(form, gata4_exponent=None, size_scale=None) -> bool:
     return size_scale is not None or (form == GONLY_FORM and _is_pos_inf(gata4_exponent))
 
 
-def check_c2_gonly(form, gata4_exponent=None, size_scale=None, captain_ruling=None, tries: Path | None = None,
-                   composition_from=None) -> dict | None:
-    """--gata4-exponent inf and --size-scale on --form c2-s2: None unless is_gonly_command (nothing is read); else the
-    line's record, or Refused: a ruling other than R22; --size-scale on another form or with a value other than 0.67;
-    --size-scale beside a --gata4-exponent other than inf; either option without --captain-ruling R22 or beside
-    --composition-from; a ledger whose row R22 does not pass build_outside_form.captain_order_names for each string the
-    file needs (F1 GONLY_OPTION_G, F2 GONLY_OPTION_S, F3 both)."""
-    if not is_gonly_command(form, gata4_exponent, size_scale):
+def ledger_first_cell(row: str, path: Path) -> str | None:
+    """The first cell of the ledger's single row `row`, read as build_outside_form.captain_order_names reads it (the
+    lines that start "| <row> "); None when the ledger holds no such row or more than one."""
+    p = Path(path)
+    if not p.is_file():
         return None
+    lines = [ln for ln in p.read_text(encoding="utf-8").splitlines() if ln.startswith(f"| {row} ")]
+    return lines[0][2:].split("|", 1)[0] if len(lines) == 1 else None
+
+
+def names_whole(first: str | None, option: str) -> bool:
+    """Whether a first cell holds `option` (given without its backticks) as one whole backtick-delimited string. A
+    string that only contains it (F3's contains F1's) or that it contains does not count."""
+    return first is not None and option in re.findall(r"`([^`]*)`", first)
+
+
+def check_den_lift(name: str, den_ruling, tries: Path | None = None) -> dict:
+    """--den-ruling ROW for the file `name` (F1, F2 or F3): the lifting's record, or Refused unless ROW is a ruling
+    row's id (R and digits) and the ledger holds exactly one row ROW whose first cell says "ruling, no run" and "the 5%
+    check gates nothing for it" and holds the file's option string as one whole backtick-delimited string. Row R30
+    lifted line 2's check for its one file by name; here the row is named on the command line and must name the file."""
+    if not isinstance(den_ruling, str) or not GONLY_LIFT_ROW.fullmatch(den_ruling):
+        raise Refused(f"--den-ruling {den_ruling!r} is refused: it takes a ruling row's id (R and digits)")
+    p = TRIES_FILE if tries is None else Path(tries)
+    first = ledger_first_cell(den_ruling, p)
+    opt = GONLY_OPTIONS[name]
+    if first is None or "ruling, no run" not in first or GONLY_LIFT_WORDS not in first or not names_whole(first, opt):
+        raise Refused(f"--den-ruling {den_ruling} is refused: experiments/harness/TRIES.md has no single row "
+                      f"{den_ruling} whose first cell is a ruling (\"ruling, no run\") naming `{opt}` as one whole "
+                      f"string and saying \"{GONLY_LIFT_WORDS}\"")
+    return {"row": den_ruling, "option": f"`{opt}`", "words": GONLY_LIFT_WORDS,
+            "ledger": "experiments/harness/TRIES.md", "ledger_sha256": bs.sha256(p)}
+
+
+def check_c2_gonly(form, gata4_exponent=None, size_scale=None, captain_ruling=None, tries: Path | None = None,
+                   composition_from=None, den_ruling=None) -> dict | None:
+    """--gata4-exponent inf and --size-scale on --form c2-s2 (and --den-ruling): None unless is_gonly_command or
+    --den-ruling is given (nothing is read); else the line's record, or Refused: --den-ruling on any other command; a
+    ruling other than R22; --size-scale on another form or with a value other than 0.67; --size-scale beside a
+    --gata4-exponent other than inf; either option without --captain-ruling R22 or beside --composition-from; a ledger
+    whose row R22 does not pass build_outside_form.captain_order_names for the file's option string or does not hold
+    that string as one whole backtick-delimited string; a --den-ruling that check_den_lift refuses."""
+    line = is_gonly_command(form, gata4_exponent, size_scale)
+    if not line and den_ruling is None:
+        return None
+    if not line:
+        raise Refused("--den-ruling is taken only with the options of F1, F2 or F3 (--gata4-exponent inf and/or "
+                      f"--size-scale 0.67 on --form {GONLY_FORM})")
     if captain_ruling is not None and captain_ruling != G2_ROW:
         raise Refused(f"--captain-ruling {captain_ruling!r} is refused: only row {G2_ROW} orders a file of this "
                       "builder")
@@ -1063,14 +1110,16 @@ def check_c2_gonly(form, gata4_exponent=None, size_scale=None, captain_ruling=No
     if captain_ruling is None:
         raise Refused(f"{flags[name]} on --form {GONLY_FORM} is taken only with --captain-ruling {G2_ROW}")
     p = TRIES_FILE if tries is None else Path(tries)
-    needs = GONLY_NAMES[name]
-    if not all(_outside_form().captain_order_names(G2_ROW, o, p) for o in needs):
-        raise Refused(f"--form {GONLY_FORM} {flags[name]} --captain-ruling {G2_ROW} is refused: "
-                      f"experiments/harness/TRIES.md has no single row {G2_ROW} whose first cell is the captain's "
-                      f"order (\"ruling, no run\") naming {' and '.join(needs)} and `--captain-ruling {G2_ROW}`")
-    return {"row": G2_ROW, "file": GONLY_FILES[name], "name": name, "options": list(needs),
-            "g": "inf" if g == math.inf else g, "size_scale": s, "ledger": "experiments/harness/TRIES.md",
-            "ledger_sha256": bs.sha256(p)}
+    opt = GONLY_OPTIONS[name]
+    if not (_outside_form().captain_order_names(G2_ROW, f"`{opt}`", p) and names_whole(ledger_first_cell(G2_ROW, p),
+                                                                                         opt)):
+        raise Refused(f"{opt} --captain-ruling {G2_ROW} is refused: experiments/harness/TRIES.md has no single row "
+                      f"{G2_ROW} whose first cell is the captain's order (\"ruling, no run\") naming `{opt}` as one "
+                      f"whole string and `--captain-ruling {G2_ROW}`")
+    lift = None if den_ruling is None else check_den_lift(name, den_ruling, p)
+    return {"row": G2_ROW, "file": GONLY_FILES[name], "name": name, "option": f"`{opt}`",
+            "g": "inf" if g == math.inf else g, "size_scale": s, "den_ruling": lift,
+            "ledger": "experiments/harness/TRIES.md", "ledger_sha256": bs.sha256(p)}
 
 
 def gonly_point(rec: dict) -> tuple[float, float]:
@@ -1118,7 +1167,6 @@ def c2_gonly_factor(phi_m, phi_g, g: float, s: float = 1.0) -> tuple[np.ndarray,
            "c_rule": f"{rule}; population SD over the genes; then ln phi multiplied by the size scale s (** s, none "
                      "at s = 1)",
            "sd_ln_phi_m": sd_m, "sd_ln_phi_g": sd_g, "sd_ln_size_held": _sd(np.log(held)),
-           "corr_ln_m_ln_g": float(np.corrcoef(lm, lg)[0, 1]) if sd_m > 0 and sd_g > 0 else None,
            "base_factor": _shift(phi_m), "size_held_factor": _shift(held), "factor": _shift(phi),
            "den_weighted_mean": "recorded in combined_build.c2_gonly_line.guards",
            "min": float(phi.min()), "max": float(phi.max()), "n_up": int((phi > 1).sum()),
@@ -1126,69 +1174,60 @@ def c2_gonly_factor(phi_m, phi_g, g: float, s: float = 1.0) -> tuple[np.ndarray,
     return phi, rec
 
 
-def _cosine(a, b) -> float:
-    """The cosine of two vectors (uncentred); nan when either is 0."""
-    a = np.asarray(a, dtype=np.float64)
-    b = np.asarray(b, dtype=np.float64)
-    na, nb = float(np.sqrt(a @ a)), float(np.sqrt(b @ b))
-    return float(a @ b / (na * nb)) if na > 0 and nb > 0 else float("nan")
-
-
-def gonly_guards(phi_m, phi_g, g: float, s: float, den) -> dict:
-    """The line's two guards, a pure function of the two tables (target-free: no cell, fold or score), and the
-    den-weighted totals, which gate nothing. Range: the applied factor (c2_gonly_factor) has its max at most
-    GONLY_RANGE_FACTOR times C2's factor's max and its min at least C2's min over GONLY_RANGE_FACTOR. Distinctness, on a
-    direction step only (g = inf at s = 1): the cosine of its ln factor to the ln factors of g = 0 (phi_M), g = 1 (C2's,
-    combine('c2', 1.0)) and g = 2 (c2_gata4_weighted at 2.0) each below GONLY_MAX_COSINE; a --size-scale file keeps
-    its g's direction, so its cosines are recorded and gate nothing. Also the sha256 of the factor described."""
+def gonly_guards(phi_m, phi_g, g: float, s: float, den, lift: dict | None = None) -> dict:
+    """The line's two checks, a pure function of the two tables and den: each is a property of the file's own factor
+    (c2_gonly_factor) against C2's (combine('c2', 1.0), as C2's build applies it); no cell is drawn. Range: the file's
+    max at most GONLY_RANGE_FACTOR times C2's max and its min at least C2's min over GONLY_RANGE_FACTOR. Den, line 3's
+    check (c2g_guard's): the file's den-weighted total (den . phi / sum den) within C2G_MAX_DEN_SHIFT of C2's; it gates
+    unless `lift` (check_den_lift's record of the row that names the file) is given, when it is recorded and gates
+    nothing. The shifts from phi_M's total are recorded and gate nothing. Also the sha256 of the factor described."""
     phi, rec = c2_gonly_factor(phi_m, phi_g, g, s)
     c2, _ = combine("c2", 1.0, phi_m, phi_g)
     phi_m = np.asarray(phi_m, dtype=np.float64)
-    refs = dict(zip(GONLY_REFERENCES, (phi_m, c2, c2_gata4_weighted(phi_m, phi_g, 2.0)[0]), strict=True))
     den = np.asarray(den, dtype=np.float64)
     if den.shape != phi_m.shape or not np.all(np.isfinite(den) & (den >= 0)) or not den.sum() > 0:
         raise Refused("den does not cover the tables' genes with finite, non-negative weights and a positive sum")
     lo, hi = float(c2.min()) / GONLY_RANGE_FACTOR, float(c2.max()) * GONLY_RANGE_FACTOR
     fmin, fmax = float(phi.min()), float(phi.max())
     range_ok = bool(fmin >= lo and fmax <= hi)
-    lp = np.log(phi)
-    cos = {k: _cosine(lp, np.log(v)) for k, v in refs.items()}
-    checked = bool(float(g) == math.inf and float(s) == 1.0)
-    distinct_ok = bool(all(np.isfinite(v) and v < GONLY_MAX_COSINE for v in cos.values()))
     tot = float(den.sum())
     t_m, t_c2, t_f = (float(den @ f / tot) for f in (phi_m, c2, phi))
+    shift = t_f / t_c2 - 1.0
+    within = bool(abs(shift) <= C2G_MAX_DEN_SHIFT)
+    den_ok = bool(within or lift is not None)
+    status = "gates" if lift is None else f"lifted by row {lift['row']}: {GONLY_LIFT_WORDS}"
     return {"g": rec["g"], "size_scale": rec["size_scale"], "c": rec["c"],
             "powers_applied": {TABLE_M: rec["mab21l2_exponent"], TABLE_G: rec["gata4_weight"]},
             "range": {"factor_min": fmin, "factor_max": fmax, "c2_min": float(c2.min()), "c2_max": float(c2.max()),
                       "bound_min": lo, "bound_max": hi, "factor": GONLY_RANGE_FACTOR, "passed": range_ok,
                       "rule": GONLY_RANGE_RULE},
-            "distinctness": {"cosines": cos, "max_cosine": GONLY_MAX_COSINE, "checked": checked,
-                             "passed": distinct_ok if checked else None,
-                             "rule": GONLY_DISTINCT_RULE if checked else GONLY_NOT_CHECKED},
-            "passed": bool(range_ok and (distinct_ok or not checked)),
-            "den_total_phi_m": t_m, "den_total_c2": t_c2, "den_total_factor": t_f, "den_shift_vs_c2": t_f / t_c2 - 1.0,
-            "den_shift_c2_vs_phi_m": t_c2 / t_m - 1.0, "den_shift_factor_vs_phi_m": t_f / t_m - 1.0,
-            "den_totals": "recorded; gate nothing (as row R30 ruled for line 2)", "factor_sha256": factor_sha256(phi)}
+            "den_check": {"den_total_phi_m": t_m, "den_total_c2": t_c2, "den_total_factor": t_f,
+                          "den_shift_vs_c2": shift, "max_den_shift": C2G_MAX_DEN_SHIFT, "within": within,
+                          "limit": {"max_abs_den_shift": C2G_MAX_DEN_SHIFT, "status": status}, "lifted_by": lift,
+                          "passed": den_ok, "den_shift_c2_vs_phi_m": t_c2 / t_m - 1.0,
+                          "den_shift_factor_vs_phi_m": t_f / t_m - 1.0, "vs_phi_m": "recorded; gates nothing",
+                          "rule": GONLY_DEN_RULE},
+            "passed": bool(range_ok and den_ok), "factor_sha256": factor_sha256(phi)}
 
 
 def gonly_failure(guards: dict) -> str:
-    """What a failed guard says (the guard's own figures; no cell, fold or score)."""
+    """What a failed check says (its own figures; no cell is drawn)."""
     says = []
     r = guards["range"]
     if not r["passed"]:
         says.append(f"the range guard: the factor spans [{r['factor_min']:.4g}, {r['factor_max']:.4g}], not within "
                     f"[{r['bound_min']:.4g}, {r['bound_max']:.4g}] (half C2's min, twice C2's max)")
-    d = guards["distinctness"]
-    if d["checked"] and not d["passed"]:
-        cos = ", ".join(f"{k} {v:.3f}" for k, v in d["cosines"].items())
-        says.append(f"the distinctness guard: the ln factor's cosines ({cos}) are not all below {GONLY_MAX_COSINE}")
+    d = guards["den_check"]
+    if not d["passed"]:
+        says.append(f"the 5% den check: the file's den-weighted total is {d['den_shift_vs_c2']:+.2%} against C2's "
+                    f"factor's, beyond {C2G_MAX_DEN_SHIFT:.0%}, and no --den-ruling row lifts it for this file")
     return "; ".join(says) + ": not built"
 
 
-def run_gonly_guards(dec: dict, wt: Path, run_dir: Path | None, g: float, s: float) -> dict:
-    """The guards from the two pinned tables (and released WT E8.75's den for the totals that gate nothing), before any
-    build: den and genes by build_outside_form.wt_den, both tables through the frozen loader in that gene order (checked
-    against TABLE_SHA256). Returns the record whatever it says; the caller refuses on it."""
+def run_gonly_guards(dec: dict, wt: Path, run_dir: Path | None, g: float, s: float, lift: dict | None = None) -> dict:
+    """The checks from released WT E8.75's den and the two pinned tables only, before any build: den and genes by
+    build_outside_form.wt_den, both tables through the frozen loader in that gene order (checked against TABLE_SHA256).
+    Returns the record whatever it says; the caller refuses on it."""
     genes, den = _outside_form().wt_den(Path(wt))
     phi_m, rec_m = bs.load_factor(run_dir, TABLE_M, genes, dec)
     phi_g, rec_g = bs.load_factor(run_dir, TABLE_G, genes, dec)
@@ -1197,7 +1236,7 @@ def run_gonly_guards(dec: dict, wt: Path, run_dir: Path | None, g: float, s: flo
             raise Refused(f"{rec['file']}: sha256 {rec['sha256'][:16]} differs from the pinned table "
                           f"({TABLE_SHA256[nm][:16]}): not built")
     den = np.asarray(den, dtype=np.float64)
-    out = gonly_guards(phi_m, phi_g, g, s, den)
+    out = gonly_guards(phi_m, phi_g, g, s, den, lift)
     out |= {"wt": str(wt), "wt_sha256": bs.sha256(Path(wt)), "den_rule": G2_DEN_RULE, "den": den.tolist(),
             "den_sha256": factor_sha256(den), "n_genes": len(genes),
             "genes_sha256": hashlib.sha256("\n".join(genes).encode()).hexdigest(),
@@ -1241,7 +1280,8 @@ def gonly_loader(g: float, s: float, out: dict, guards: dict):
 
 def build_form(decision: Path, form, wt: Path, board, n_cells: int, out: Path, run_dir: Path | None = None,
                seed: int = 1_000_001, overwrite: bool = False, threads: int = 16, gata4_exponent=None,
-               captain_ruling=None, tries: Path | None = None, composition_from=None, size_scale=None) -> dict:
+               captain_ruling=None, tries: Path | None = None, composition_from=None, size_scale=None,
+               den_ruling=None) -> dict:
     """The named form through bs.build_submission; returns the sidecar (written next to the file, the frozen
     builder's plus `combined_build`). gata4_exponent 2.0 with captain_ruling 'R22' (default None, today's paths
     unchanged) builds row R22's second T3 line's file, c1-s2 at Gata4 weight 2.0, under the ruling row of TRIES.md
@@ -1249,10 +1289,12 @@ def build_form(decision: Path, form, wt: Path, board, n_cells: int, out: Path, r
     R36's file cD7, c2-s2 with the decision file's allowed s1 composition block, under the ruling row of TRIES.md.
     gata4_exponent 2.0 with captain_ruling 'R22' on c2-s2 builds row R22's third T3 line's file, C2 at gata4_pooled
     weight g = 2.0, after its guard, under the ruling row of TRIES.md. On c2-s2 with captain_ruling 'R22',
-    gata4_exponent inf and/or size_scale 0.67 (default None) build F1, F2 or F3 after their guards, under the ruling
-    row of TRIES.md; a command without either goes on exactly as before."""
+    gata4_exponent inf and/or size_scale 0.67 (default None) build F1, F2 or F3 after the range guard and the 5% den
+    check, under the ruling row of TRIES.md; den_ruling (default None) names the row that lifts the 5% check for the
+    file. A command with none of the three goes on exactly as before."""
     kind, base = parse_form(form)
-    gonly = check_c2_gonly(f"{kind}-{base}", gata4_exponent, size_scale, captain_ruling, tries, composition_from)
+    gonly = check_c2_gonly(f"{kind}-{base}", gata4_exponent, size_scale, captain_ruling, tries, composition_from,
+                           den_ruling)
     cd7 = None if gonly is not None else check_composition_from(f"{kind}-{base}", composition_from, captain_ruling,
                                                                 gata4_exponent, tries)
     c2g = None if cd7 is not None or gonly is not None else check_c2_gata4(f"{kind}-{base}", gata4_exponent,
@@ -1297,7 +1339,7 @@ def build_form(decision: Path, form, wt: Path, board, n_cells: int, out: Path, r
         if not overwrite and (out_p.exists() or out_p.with_suffix(".json").exists()):
             raise Refused(f"{out_p} or its sidecar exists; pass --overwrite")
         g_s = gonly_point(gonly)
-        guards = run_gonly_guards(dec, Path(wt), run_dir, *g_s)
+        guards = run_gonly_guards(dec, Path(wt), run_dir, *g_s, gonly["den_ruling"])
         if not guards["passed"]:
             raise GonlyGuardFailed(gonly_failure(guards))
         with gonly_loader(*g_s, got, guards):
@@ -1375,7 +1417,7 @@ def build_form(decision: Path, form, wt: Path, board, n_cells: int, out: Path, r
             "factor_rule": "ln phi = s c_g (ln phi_M + g ln phi_G), c_g = SD(ln phi_M) / SD(ln phi_M + g ln phi_G); at "
                            "g = inf ln phi = s (SD(ln phi_M) / SD(ln phi_G)) ln phi_G; population SD over the genes; "
                            "nothing rescaled or clipped after",
-            "guards": {k: v for k, v in guards.items() if k != "genes"},
+            "guards": {k: v for k, v in guards.items() if k != "genes"}, "den_ruling": gonly["den_ruling"],
             "factor_sha256_applied": got["factor_sha256"], "c2_reference_sha256": C2_S2_SHA256,
             "list_entry": GONLY_LIST_ENTRY,
         }
@@ -1408,7 +1450,8 @@ def build(
                                          "line's file, the gata4_pooled weight g = 2 in C2's size-held product (a "
                                          "weight, not a power); each while row R22 of TRIES.md is the captain's order "
                                          "naming it. On --form c2-s2 also inf (F1; with --size-scale 0.67, F3): "
-                                         "phi_G alone at C2's held size"),
+                                         "phi_G alone at C2's held size, while row R22 names the file's whole option "
+                                         "string"),
     captain_ruling: str = typer.Option(None, help="R22, with --gata4-exponent 2.0 --form c1-s2 or c2-s2; or R36, "
                                        "with --composition-from allowed-s1 --form c2-s2; nothing else"),
     composition_from: str = typer.Option(None, help="allowed-s1 only, with --form c2-s2 --captain-ruling R36: row "
@@ -1416,19 +1459,24 @@ def build(
                                          "composition), while row R36 of TRIES.md is the captain's ruling naming it"),
     size_scale: float = typer.Option(None, help="0.67 only, with --form c2-s2 --captain-ruling R22, alone (F2, C2's "
                                      "ln factor times 0.67) or with --gata4-exponent inf (F3), while row R22 of "
-                                     "TRIES.md is the captain's order naming `--form c2-s2 --size-scale 0.67`"),
+                                     "TRIES.md is the captain's order naming the file's whole option string"),
+    den_ruling: str = typer.Option(None, help="a ruling row's id (R and digits), with the options of F1, F2 or F3 "
+                                   "only: the 5% den check gates nothing for the file while that row of TRIES.md names "
+                                   "the file's whole option string and says \"the 5% check gates nothing for it\""),
 ):
     """Build one fixed form."""
     try:
         if seed != LIST_SEED or n_cells != LIST_N_CELLS:
             raise Refused(LIST_INPUTS_REFUSAL)
         parse_form(form)
-        if is_gonly_command(form, gata4_exponent, size_scale):
-            check_c2_gonly(form, gata4_exponent, size_scale, captain_ruling, composition_from=composition_from)
+        if is_gonly_command(form, gata4_exponent, size_scale) or den_ruling is not None:
+            check_c2_gonly(form, gata4_exponent, size_scale, captain_ruling, composition_from=composition_from,
+                           den_ruling=den_ruling)
             b = bs.board_spec(board, boards_dir)
             s = build_form(decision, form, wt, b, bs.resolve_n_cells(n_cells, b), out, run_dir=run_dir, seed=seed,
                            overwrite=overwrite, threads=threads, gata4_exponent=gata4_exponent,
-                           captain_ruling=captain_ruling, composition_from=composition_from, size_scale=size_scale)
+                           captain_ruling=captain_ruling, composition_from=composition_from, size_scale=size_scale,
+                           den_ruling=den_ruling)
         elif composition_from is not None or captain_ruling == R36_ROW:
             check_composition_from(form, composition_from, captain_ruling, gata4_exponent)
             b = bs.board_spec(board, boards_dir)
@@ -1452,7 +1500,7 @@ def build(
                            overwrite=overwrite, threads=threads, gata4_exponent=gata4_exponent,
                            captain_ruling=captain_ruling)
     except GonlyGuardFailed as e:
-        bs.say(f"refused (the range or distinctness guard, from the two pinned tables): {e}", "red")
+        bs.say(f"refused (the range guard or the 5% den check, before any cell is drawn): {e}", "red")
         raise typer.Exit(EXIT_GUARD_FAILED) from None
     except GuardFailed as e:
         bs.say(f"refused (the guard: the file's den-weighted total against C2's): {e}", "red")
@@ -1472,9 +1520,10 @@ def build(
                f"C2's size-held product (a weight, not a power); the guard passed")
     if cb.get("c2_gonly_line"):
         gl = cb["c2_gonly_line"]
-        dist = "passed" if gl["guards"]["distinctness"]["checked"] else "not checked (a --size-scale file)"
+        lift = gl["den_ruling"]
+        den = "passed" if lift is None else f"gates nothing for it (row {lift['row']})"
         bs.say(f"row {G2_ROW}'s options on C2's command: {gl['file']} (g = {gl['g']}, s = {gl['size_scale']:g}); the "
-               f"range guard passed; the distinctness guard {dist}")
+               f"range guard passed; the 5% den check {den}")
     if cb.get("composition_line"):
         bs.say(f"composition from {cb['composition_line']['composition_from']} (row {R36_ROW}): the "
                f"{R36_N_STATES} scenario states at {R36_RATIO:.4f} of their wild-type share before renormalising")

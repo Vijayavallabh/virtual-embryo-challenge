@@ -1,14 +1,17 @@
 """The options on C2's command in experiments/t3_decomp/build_two_knockout.py (the T3 design of the design round of
-2026-11-24, section 2): on `--form c2-s2`, `--gata4-exponent inf` (F1, T3_c2_s2_gonly.h5ad: the gata4_pooled table alone
-at C2's held size, phi_M dropped), `--size-scale 0.67` (F2, T3_c2_s2_s067.h5ad: C2's ln factor times 0.67) and both
-(F3, T3_c2_s2_gonly_s067.h5ad), each only with `--captain-ruling R22` and only while row R22's first cell names
-`--gata4-exponent inf` (F1), `--form c2-s2 --size-scale 0.67` (F2) or both (F3). The factor against its formula, the
-two target-free guards (range on every file; distinctness on the direction step F1 only), exit 6 and exit 5, every
-refusal, and every other command untouched.
+2026-11-24, section 2, as its cold challenge fixes it): on `--form c2-s2`, `--gata4-exponent inf` (F1,
+T3_c2_s2_gonly.h5ad: the gata4_pooled table alone at C2's held size, phi_M dropped), `--size-scale 0.67` (F2,
+T3_c2_s2_s067.h5ad: C2's ln factor times 0.67) and both (F3, T3_c2_s2_gonly_s067.h5ad), each only with
+`--captain-ruling R22` and only while row R22's first cell holds the file's option string as one whole
+backtick-delimited string: `--form c2-s2 --gata4-exponent inf`, `--form c2-s2 --size-scale 0.67`,
+`--form c2-s2 --gata4-exponent inf --size-scale 0.67`. The factor against its formula; the range guard and line 3's 5%
+den check (exit 6, nothing written), the latter lifted only by a row named with `--den-ruling` that names the file's
+string and says "the 5% check gates nothing for it"; exit 5; every refusal; and every other command untouched. No
+cosine or correlation of the two tables is computed here.
 
 Offline, synthetic and fast: the throwaway world of tests/test_t3_two_knockout_build.py (a small synthetic WT file,
 synthetic `transfer_mab21l2_all` and `gata4_pooled` tables, a decision file with the frozen hashes), runs whose two
-tables are built here so that each guard passes or fails by construction, and small ledger files written under
+tables are built here so that each check passes or fails by construction, and small ledger files written under
 tmp_path. Nothing here reads the repository's own TRIES.md, builds from released data or pins bytes built on one
 machine.
 """
@@ -54,39 +57,55 @@ def alternating(hi: float, lo: float, start: int, stop: int) -> np.ndarray:
     return v
 
 
-# Tables whose guard verdicts follow by hand. ORTH: phi_M moves genes 0-9 and phi_G genes 10-19 by x2 / x0.5, so
-# SD(ln phi_M) = SD(ln phi_G), c_inf = 1 (F1 is phi_G itself) and C2 = exp((ln phi_M + ln phi_G) / sqrt 2): F1 spans
-# [0.5, 2] against C2's [2 ** -0.707, 2 ** 0.707]; the cosines of F1 to g = 0, 1, 2 are 0, 1/sqrt 2, 2/sqrt 5.
+# Tables whose verdicts follow by hand. MILD: every file's factor and C2's lie within [0.98, 1.02], so both checks pass
+# for every file at any den. ORTH: phi_M moves genes 0-9 and phi_G genes 10-19 by x2 / x0.5, so c_inf = 1 (F1 is phi_G)
+# and C2 = exp((ln phi_M + ln phi_G) / sqrt 2): F1 spans [0.5, 2] against C2's [2 ** -0.707, 2 ** 0.707]. WIDE: the same
+# at x16, where F1's [1/16, 16] passes twice C2's 16 ** 0.707. SPIKE: phi_G moves one gene, c_inf ~ 3.2, so F1 and F3
+# are too wide. SHIFT: phi_G is 4 on all genes but one, c_inf ~ 1.6: each file's factor sits far from C2's gene by gene
+# (F1 and F3 above it, F2 below it), so each file's den-weighted total is far from C2's at any den; the range passes.
+MILD = (alternating(1.02, 1 / 1.02, 0, 10), alternating(1.02, 1 / 1.02, 10, 20))
 ORTH = (alternating(2.0, 0.5, 0, 10), alternating(2.0, 0.5, 10, 20))
-WIDE = (alternating(16.0, 0.0625, 0, 10), alternating(16.0, 0.0625, 10, 20))  # F1 spans [1/16, 16] > 2 x 16 ** 0.707
-TWIN = (ORTH[0], ORTH[0].copy())  # phi_G = phi_M: F1 is phi_M, cosine 1 to each of g = 0, 1, 2
-SPIKE = (alternating(4.0, 0.25, 0, 10), np.where(np.arange(G) == 10, 4.0, 1.0))  # c_inf ~ 3.2: F1 and F3 too wide
-VERDICTS = {  # table set -> file -> (range passes, distinctness passes or None when not checked)
-    "orth": {"F1": (True, True), "F2": (True, None), "F3": (True, None)},
-    "wide": {"F1": (False, True), "F2": (True, None), "F3": (True, None)},
-    "twin": {"F1": (True, False), "F2": (True, None), "F3": (True, None)},
-    "spike": {"F1": (False, True), "F2": (True, None), "F3": (False, None)},
-}
-TABLES = {"orth": ORTH, "wide": WIDE, "twin": TWIN, "spike": SPIKE}
+WIDE = (alternating(16.0, 0.0625, 0, 10), alternating(16.0, 0.0625, 10, 20))
+SPIKE = (alternating(4.0, 0.25, 0, 10), np.where(np.arange(G) == 10, 4.0, 1.0))
+SHIFT = (alternating(2.0, 0.5, 0, 10), np.where(np.arange(G) == 39, 1.0, 4.0))
+TABLES = {"mild": MILD, "orth": ORTH, "wide": WIDE, "spike": SPIKE, "shift": SHIFT}
+RANGE_OK = {"mild": {"F1": True, "F2": True, "F3": True}, "orth": {"F1": True, "F2": True, "F3": True},
+            "wide": {"F1": False, "F2": True, "F3": True}, "spike": {"F1": False, "F2": True, "F3": False},
+            "shift": {"F1": True, "F2": True, "F3": True}}
 
+OPT = {"F1": "--form c2-s2 --gata4-exponent inf", "F2": "--form c2-s2 --size-scale 0.67",
+       "F3": "--form c2-s2 --gata4-exponent inf --size-scale 0.67"}
 LINE2 = ("by T3's second search line the T3 two-knockout builder is also to take `--gata4-exponent 2.0` on "
          "`--form c1-s2`, only with `--captain-ruling R22`")
 LINE3 = ("by T3's third search line the T3 two-knockout builder is also to take `--form c2-s2 --gata4-exponent 2.0`, "
          "only with `--captain-ruling R22`")
-NEW_F1 = "the T3 two-knockout builder is also to take `--gata4-exponent inf` (F1), only with `--captain-ruling R22`"
-NEW_F2 = ("the T3 two-knockout builder is also to take `--form c2-s2 --size-scale 0.67` (F2), only with "
-          "`--captain-ruling R22`")
-NEW = f"{NEW_F1}; {NEW_F2}; and both for F3"
+
+
+def new_entry(*names: str) -> str:
+    return ("the T3 two-knockout builder is also to take " + ", ".join(f"`{OPT[n]}` ({n})" for n in names)
+            + ", each only with `--captain-ruling R22`")
+
+
 OPENER = "| R22 (the captain's order of a day: a search; ruling, no run, not a try"
-ROW = f"{OPENER}; {LINE2}; {LINE3}; {NEW}) | T3 | x |\n"
+ROW = f"{OPENER}; {LINE2}; {LINE3}; {new_entry('F1', 'F2', 'F3')}) | T3 | x |\n"
 ROW_OLD = f"{OPENER}; {LINE2}; {LINE3}) | T3 | x |\n"  # the old lines only
-ROW_NEW = f"{OPENER}; {NEW}) | T3 | x |\n"  # the new strings only
-ROW_F1 = f"{OPENER}; {NEW_F1}) | T3 | x |\n"
-ROW_F2 = f"{OPENER}; {NEW_F2}) | T3 | x |\n"
+ROW_NEW = f"{OPENER}; {new_entry('F1', 'F2', 'F3')}) | T3 | x |\n"  # the new strings only
+
+
+def row_only(*names: str) -> str:
+    return f"{OPENER}; {new_entry(*names)}) | T3 | x |\n"
+
+
+def lift_row(*names: str, row: str = "R44", words: str = "the 5% check gates nothing for it",
+             ruling: str = "ruling, no run, not a try") -> str:
+    files = " and ".join(f"`{OPT[n]}`" for n in names)
+    return f"| {row} (the captain's yes of a day; {ruling}; for {files}: {words}) | T3 | y |\n"
+
+
 OPTS = {"F1": {"gata4_exponent": INF}, "F2": {"size_scale": 0.67}, "F3": {"gata4_exponent": INF, "size_scale": 0.67}}
 FILES = {"F1": "T3_c2_s2_gonly.h5ad", "F2": "T3_c2_s2_s067.h5ad", "F3": "T3_c2_s2_gonly_s067.h5ad"}
 POINTS = {"F1": (INF, 1.0), "F2": (1.0, 0.67), "F3": (INF, 0.67)}
-LINE_FUNCS = ("c2_gonly_factor", "gonly_guards", "run_gonly_guards", "gonly_loader", "gonly_failure")
+LINE_FUNCS = ("c2_gonly_factor", "gonly_guards", "run_gonly_guards", "gonly_loader", "gonly_failure", "check_den_lift")
 
 
 def ledger(tmp_path: Path, rows: str = ROW, name: str = "TRIES.md") -> Path:
@@ -162,22 +181,23 @@ def ln_factor_by_hand(m, g_tab, g: float, s: float = 1.0) -> np.ndarray:
     return s * (sd(lm) / sd(lm + g * lg)) * (lm + g * lg)
 
 
-def cos(a, b) -> float:
-    return float(np.dot(a, b) / math.sqrt(np.dot(a, a) * np.dot(b, b)))
-
-
 # ------------------------------------------------------------------------------------------------------ constants
 
 
 def test_the_line_s_constants():
-    assert (bk.GONLY_FORM, bk.GONLY_SCALES, bk.GONLY_OPTION_G, bk.GONLY_OPTION_S) == (
-        "c2-s2", (0.67,), "`--gata4-exponent inf`", "`--form c2-s2 --size-scale 0.67`")
-    assert bk.GONLY_FILES == FILES and bk.GONLY_POINTS == POINTS
-    assert bk.GONLY_NAMES == {"F1": ("`--gata4-exponent inf`",), "F2": ("`--form c2-s2 --size-scale 0.67`",),
-                              "F3": ("`--gata4-exponent inf`", "`--form c2-s2 --size-scale 0.67`")}
-    assert (bk.GONLY_RANGE_FACTOR, bk.GONLY_MAX_COSINE, bk.GONLY_REFERENCES) == (2.0, 0.95, ("g=0", "g=1", "g=2"))
+    assert (bk.GONLY_FORM, bk.GONLY_SCALES, bk.GONLY_OPTIONS, bk.GONLY_FILES, bk.GONLY_POINTS) == (
+        "c2-s2", (0.67,), OPT, FILES, POINTS)
+    assert bk.GONLY_RANGE_FACTOR == 2.0 and bk.GONLY_LIFT_WORDS == "the 5% check gates nothing for it"
+    assert bk.C2G_MAX_DEN_SHIFT == 0.05  # line 3's 5% check, the one these files get
     assert bk.EXIT_GUARD_FAILED == 6 and bk.EXIT_FACTOR_MISMATCH == 5 and bk.EXIT_REFUSED == 2
     assert issubclass(bk.GonlyGuardFailed, bk.GuardFailed) and not issubclass(bk.GonlyGuardFailed, bk.FactorMismatch)
+    # no distinctness guard: nothing in the builder computes a cosine of one factor with another
+    for gone in ("GONLY_MAX_COSINE", "GONLY_REFERENCES", "GONLY_DISTINCT_RULE", "GONLY_NOT_CHECKED", "_cosine",
+                 "GONLY_OPTION_G", "GONLY_OPTION_S", "GONLY_NAMES"):
+        assert not hasattr(bk, gone), gone
+    src = (ROOT / "experiments" / "t3_decomp" / "build_two_knockout.py").read_text()
+    line_src = src[src.index("def _is_pos_inf"):src.index("def build_form")]
+    assert "cos" not in line_src.lower().replace("cost", "") and "corrcoef" not in line_src
     # the earlier lines' constants, the forms and combine's kinds are as they were: the line adds no form
     assert (bk.G2_OPTION, bk.C2G_OPTION, bk.C2G_WEIGHTS, bk.G2_EXPONENTS) == (
         "`--gata4-exponent 2.0`", "`--form c2-s2 --gata4-exponent 2.0`", (2.0,), (2.0,))
@@ -187,16 +207,22 @@ def test_the_line_s_constants():
     assert not hasattr(bk, "captain_order_names") and not hasattr(bk, "wt_den")
 
 
-def test_no_option_string_contains_another_the_containment_hazard():
-    """captain_order_names matches by containment: no new string inside an old one, no old one inside a new one, and
-    neither new string inside the other (each with its backticks), also against row R36's names and the outside-form
-    builder's string of row R22."""
-    new = [bk.GONLY_OPTION_G, bk.GONLY_OPTION_S]
-    old = [bk.G2_OPTION, bk.C2G_OPTION, bk._outside_form().R22_OPTION, *bk.R36_NAMES]
-    for a in new:
-        for b in [*old, *(n for n in new if n != a)]:
-            assert a not in b and b not in a, (a, b)
-    assert all(o.startswith("`") and o.endswith("`") and o.count("`") == 2 for o in new)
+def test_the_whole_string_match_and_the_containment_hazard():
+    """F1's string sits inside F3's: containment alone could open F1 on F3's entry; the whole-string match does not.
+    No new string is or contains line 2's or line 3's, and none of those is inside a new one."""
+    assert OPT["F1"] in OPT["F3"]
+    cell_f3 = f"R22 (...; ruling, no run; `{OPT['F3']}` and `--captain-ruling R22`)"
+    assert bk.names_whole(cell_f3, OPT["F3"]) and not bk.names_whole(cell_f3, OPT["F1"])
+    cell_f1 = f"R22 (...; `{OPT['F1']}`)"
+    assert bk.names_whole(cell_f1, OPT["F1"]) and not bk.names_whole(cell_f1, OPT["F3"])
+    odd = f"R22 (`x`{OPT['F1']}`)"  # the backticked string is in the text, but not as one whole delimited string
+    assert f"`{OPT['F1']}`" in odd and not bk.names_whole(odd, OPT["F1"])
+    assert not bk.names_whole(None, OPT["F1"]) and not bk.names_whole(f"`{OPT['F1']} `", OPT["F1"])
+    old = [bk.G2_OPTION.strip("`"), bk.C2G_OPTION.strip("`"), bk._outside_form().R22_OPTION.strip("`"),
+           *(n.strip("`") for n in bk.R36_NAMES)]
+    for a in OPT.values():
+        for b in old:
+            assert a != b and f"`{a}`" not in f"`{b}`" and f"`{b}`" not in f"`{a}`", (a, b)
 
 
 # ------------------------------------------------------------------------------------------------------ the factor
@@ -220,6 +246,7 @@ def test_the_factor_at_g_inf_is_the_formula(seed):
     # the family's limit: the size-held product at a large finite g approaches it
     far, _ = bk.c2_gata4_weighted(m, g, 1e7)
     assert np.allclose(np.log(far), np.log(phi), rtol=1e-5, atol=1e-6)
+    assert "corr_ln_m_ln_g" not in rec
 
 
 def test_the_factor_at_g_inf_by_hand():
@@ -235,7 +262,7 @@ def test_the_factor_at_g_inf_by_hand():
 @pytest.mark.parametrize("g", [INF, 1.0])
 def test_the_size_scale_multiplies_the_ln_factor_after_the_size_held_combination(g):
     rng = np.random.default_rng(11)
-    for m, t in [(PHI_M, PHI_G), ORTH, (np.exp(rng.normal(0, 0.6, 200)), np.exp(rng.normal(0, 0.4, 200)))]:
+    for m, t in [(PHI_M, PHI_G), ORTH, SHIFT, (np.exp(rng.normal(0, 0.6, 200)), np.exp(rng.normal(0, 0.4, 200)))]:
         held, rec1 = bk.c2_gonly_factor(m, t, g)
         phi, rec = bk.c2_gonly_factor(m, t, g, 0.67)
         assert np.allclose(np.log(phi), 0.67 * np.log(held), rtol=1e-12, atol=1e-15)
@@ -248,7 +275,7 @@ def test_the_size_scale_multiplies_the_ln_factor_after_the_size_held_combination
 
 
 def test_g_one_without_a_size_scale_is_c2_s_factor_value_for_value():
-    for m, t in [(PHI_M, PHI_G), ORTH, WIDE, SPIKE]:
+    for m, t in [(PHI_M, PHI_G), ORTH, WIDE, SPIKE, SHIFT]:
         phi, rec = bk.c2_gonly_factor(m, t, 1.0)
         c2, rc2 = bk.combine("c2", 1.0, m, t)
         assert phi.tobytes() == c2.tobytes() and rec["c"] == rc2["c"]
@@ -284,75 +311,28 @@ def test_combine_and_the_c2_gata4_weight_are_unchanged():
         bk.c2_gata4_weighted(PHI_M, PHI_G, INF)  # line 3's own function still takes no infinite weight
 
 
-# ------------------------------------------------------------------------------------------------------- the guards
-
-
-def guards_by_hand(m, t, g: float, s: float) -> dict:
-    lp = ln_factor_by_hand(m, t, g, s)
-    c2 = np.exp(ln_factor_by_hand(m, t, 1.0))
-    refs = [np.log(m), ln_factor_by_hand(m, t, 1.0), ln_factor_by_hand(m, t, 2.0)]
-    return {"min": float(np.exp(lp).min()), "max": float(np.exp(lp).max()), "c2_min": float(c2.min()),
-            "c2_max": float(c2.max()), "cos": [cos(lp, r) for r in refs]}
+# ------------------------------------------------------------------------------------------------------- the checks
 
 
 @pytest.mark.parametrize("key", list(TABLES))
 @pytest.mark.parametrize("name", list(POINTS))
-def test_both_guards_by_hand_on_synthetic_tables(key, name):
+def test_the_range_guard_by_hand(key, name):
     m, t = TABLES[key]
     g, s = POINTS[name]
-    den = np.linspace(1.0, 2.0, G)
-    r = bk.gonly_guards(m, t, g, s, den)
-    want = guards_by_hand(m, t, g, s)
-    rg, ds = r["range"], r["distinctness"]
-    assert rg["factor_min"] == pytest.approx(want["min"], rel=1e-12)
-    assert rg["factor_max"] == pytest.approx(want["max"], rel=1e-12)
-    assert rg["c2_min"] == pytest.approx(want["c2_min"], rel=1e-12)
-    assert rg["c2_max"] == pytest.approx(want["c2_max"], rel=1e-12)
+    r = bk.gonly_guards(m, t, g, s, np.ones(G), lift={"row": "R44"})  # the den check lifted: the range alone gates
+    lp = ln_factor_by_hand(m, t, g, s)
+    c2 = np.exp(ln_factor_by_hand(m, t, 1.0))
+    rg = r["range"]
+    assert rg["factor_min"] == pytest.approx(float(np.exp(lp).min()), rel=1e-12)
+    assert rg["factor_max"] == pytest.approx(float(np.exp(lp).max()), rel=1e-12)
+    assert rg["c2_min"] == pytest.approx(float(c2.min()), rel=1e-12)
+    assert rg["c2_max"] == pytest.approx(float(c2.max()), rel=1e-12)
     assert rg["bound_min"] == rg["c2_min"] / 2.0 and rg["bound_max"] == rg["c2_max"] * 2.0
     assert rg["passed"] is (rg["factor_min"] >= rg["bound_min"] and rg["factor_max"] <= rg["bound_max"])
-    assert list(ds["cosines"]) == ["g=0", "g=1", "g=2"] and ds["max_cosine"] == 0.95
-    for k, w in zip(ds["cosines"], want["cos"], strict=True):
-        assert ds["cosines"][k] == pytest.approx(w, rel=1e-9, abs=1e-12)
-    assert ds["checked"] is (name == "F1")  # a direction step only; a --size-scale file keeps its g's direction
-    rng_ok, dist_ok = VERDICTS[key][name]
-    assert rg["passed"] is rng_ok and ds["passed"] is dist_ok
-    assert r["passed"] is (rng_ok and dist_ok is not False)
-    assert ds["rule"] == (bk.GONLY_DISTINCT_RULE if name == "F1" else bk.GONLY_NOT_CHECKED)
+    assert rg["passed"] is RANGE_OK[key][name] and r["passed"] is RANGE_OK[key][name]
+    assert set(r) == {"g", "size_scale", "c", "powers_applied", "range", "den_check", "passed", "factor_sha256"}
     phi, _ = bk.c2_gonly_factor(m, t, g, s)
     assert r["factor_sha256"] == hashlib.sha256(np.ascontiguousarray(phi).tobytes()).hexdigest()
-
-
-def test_the_orth_figures_by_hand():
-    r = bk.gonly_guards(*ORTH, INF, 1.0, np.ones(G))
-    k = 2.0 ** -0.5
-    assert r["c"] == pytest.approx(1.0, rel=1e-14)
-    assert r["range"]["factor_max"] == pytest.approx(2.0, rel=1e-14)
-    assert r["range"]["c2_max"] == pytest.approx(2.0 ** k, rel=1e-13)
-    assert r["distinctness"]["cosines"]["g=0"] == pytest.approx(0.0, abs=1e-15)
-    assert r["distinctness"]["cosines"]["g=1"] == pytest.approx(k, rel=1e-13)
-    assert r["distinctness"]["cosines"]["g=2"] == pytest.approx(2.0 / math.sqrt(5.0), rel=1e-13)
-    # the same direction under the shrink: F3's cosines are F1's, recorded, and gate nothing
-    r3 = bk.gonly_guards(*ORTH, INF, 0.67, np.ones(G))
-    for key in ("g=0", "g=1", "g=2"):
-        assert r3["distinctness"]["cosines"][key] == pytest.approx(r["distinctness"]["cosines"][key], abs=1e-12)
-    # F2 keeps C2's direction: its cosine to g = 1 is 1, which would fail, and it is not checked
-    r2 = bk.gonly_guards(*ORTH, 1.0, 0.67, np.ones(G))
-    assert r2["distinctness"]["cosines"]["g=1"] == pytest.approx(1.0, rel=1e-12) and r2["passed"]
-
-
-@pytest.mark.parametrize("cosine,ok", [(0.9499, True), (0.95, False), (0.9501, False), (-0.99, True)])
-def test_the_distinctness_bound_is_strictly_below_0_95(cosine, ok, monkeypatch):
-    monkeypatch.setattr(bk, "_cosine", lambda a, b: cosine)
-    r = bk.gonly_guards(*ORTH, INF, 1.0, np.ones(G))
-    assert r["distinctness"]["passed"] is ok and r["passed"] is ok and r["range"]["passed"]
-    assert bk.gonly_guards(*ORTH, INF, 0.67, np.ones(G))["passed"]  # not checked on a --size-scale file
-
-
-def test_a_cosine_that_cannot_be_computed_fails_the_distinctness_guard(monkeypatch):
-    monkeypatch.setattr(bk, "_cosine", lambda a, b: float("nan"))
-    r = bk.gonly_guards(*ORTH, INF, 1.0, np.ones(G))
-    assert r["distinctness"]["passed"] is False and r["passed"] is False
-    assert math.isnan(bk._cosine(np.zeros(3), np.ones(3)))
 
 
 @pytest.mark.parametrize("edge,ok", [("max_at_bound", True), ("max_beyond", False), ("min_at_bound", True),
@@ -366,49 +346,93 @@ def test_the_range_bound_is_inclusive_at_twice_and_half(edge, ok, monkeypatch):
         f[0] = 2.0 * c2.max() if edge == "max_at_bound" else np.nextafter(2.0 * c2.max(), INF)
     else:
         f[0] = c2.min() / 2.0 if edge == "min_at_bound" else np.nextafter(c2.min() / 2.0, 0.0)
-    f[1] = 1.5  # a direction for the cosines
     monkeypatch.setattr(bk, "c2_gonly_factor", lambda *a, **k: (f, {"g": "inf", "size_scale": 0.67, "c": 1.0,
                                                                      "mab21l2_exponent": 0.0, "gata4_weight": 0.67}))
-    r = bk.gonly_guards(*ORTH, INF, 0.67, np.ones(G))
+    r = bk.gonly_guards(*ORTH, INF, 0.67, np.ones(G), lift={"row": "R44"})
     assert r["range"]["passed"] is ok and r["passed"] is ok
 
 
-def test_the_den_totals_are_recorded_and_gate_nothing():
-    m, t = WIDE
-    den = np.array([1.0, 2.0, 0.5, 4.0] * (G // 4))
-    s = den.sum()
-    for name, (g, sc) in POINTS.items():
-        r = bk.gonly_guards(m, t, g, sc, den)
-        phi, _ = bk.c2_gonly_factor(m, t, g, sc)
+@pytest.mark.parametrize("name", list(POINTS))
+def test_the_den_check_by_hand_is_line_3_s(name):
+    """Line 3's check (c2g_guard's figures): the file's den-weighted total against C2's factor's, within 5%; here by
+    hand on one-hot and spread dens over tables where it passes (MILD) and fails (SHIFT)."""
+    g, s = POINTS[name]
+    for key, dens in (("mild", [np.ones(G), np.linspace(0.1, 3.0, G)]), ("shift", [np.ones(G),
+                                                                                  np.linspace(3.0, 0.1, G)])):
+        m, t = TABLES[key]
+        phi, _ = bk.c2_gonly_factor(m, t, g, s)
         c2, _ = bk.combine("c2", 1.0, m, t)
-        assert r["den_total_phi_m"] == pytest.approx(den @ m / s, rel=1e-14)
-        assert r["den_total_c2"] == pytest.approx(den @ c2 / s, rel=1e-14)
-        assert r["den_total_factor"] == pytest.approx(den @ phi / s, rel=1e-14)
-        assert r["den_shift_vs_c2"] == pytest.approx((den @ phi) / (den @ c2) - 1.0, rel=1e-12, abs=1e-15)
-        assert r["den_totals"].startswith("recorded; gate nothing")
-        assert r["passed"] is (VERDICTS["wide"][name][0] and VERDICTS["wide"][name][1] is not False), name
+        for den in dens:
+            r = bk.gonly_guards(m, t, g, s, den)
+            d = r["den_check"]
+            tot = den.sum()
+            assert d["den_total_phi_m"] == pytest.approx(den @ m / tot, rel=1e-14)
+            assert d["den_total_c2"] == pytest.approx(den @ c2 / tot, rel=1e-14)
+            assert d["den_total_factor"] == pytest.approx(den @ phi / tot, rel=1e-14)
+            assert d["den_shift_vs_c2"] == pytest.approx((den @ phi) / (den @ c2) - 1.0, rel=1e-12, abs=1e-15)
+            assert d["den_shift_c2_vs_phi_m"] == pytest.approx((den @ c2) / (den @ m) - 1.0, rel=1e-12, abs=1e-15)
+            assert d["den_shift_factor_vs_phi_m"] == pytest.approx((den @ phi) / (den @ m) - 1.0, rel=1e-12,
+                                                                    abs=1e-15)
+            assert d["max_den_shift"] == 0.05 and d["vs_phi_m"] == "recorded; gates nothing"
+            assert d["within"] is (abs(d["den_shift_vs_c2"]) <= 0.05) is (key == "mild")
+            assert d["passed"] is d["within"] and d["lifted_by"] is None and d["limit"]["status"] == "gates"
+            assert r["passed"] is (key == "mild") and r["range"]["passed"]
+            assert d["rule"] == bk.GONLY_DEN_RULE
     with pytest.raises(bk.Refused, match="den"):
-        bk.gonly_guards(m, t, INF, 1.0, den[:-1])
+        bk.gonly_guards(*MILD, g, s, np.ones(G - 1))
     with pytest.raises(bk.Refused, match="den"):
-        bk.gonly_guards(m, t, INF, 1.0, -den)
+        bk.gonly_guards(*MILD, g, s, -np.ones(G))
 
 
-def test_a_failed_guard_says_which():
-    r = bk.gonly_guards(*WIDE, INF, 1.0, np.ones(G))
-    assert bk.gonly_failure(r).startswith("the range guard: the factor spans [0.0625, 16]")
-    d = bk.gonly_guards(*TWIN, INF, 1.0, np.ones(G))
-    assert bk.gonly_failure(d).startswith("the distinctness guard: the ln factor's cosines (g=0 1.000, g=1 1.000, "
-                                          "g=2 1.000) are not all below 0.95")
+@pytest.mark.parametrize("shift,ok", [(0.0499, True), (-0.0499, True), (0.0, True), (0.0501, False),
+                                      (-0.0501, False), (0.5, False)])
+def test_the_den_bound_is_5_percent_either_way_and_a_lift_makes_it_gate_nothing(shift, ok, monkeypatch):
+    """The bound on the shift against C2's total, both signs, at the edges (C2's factor stubbed as the file's over
+    1 + shift); with a lifting record the check records the same figures and passes."""
+    real_factor = bk.c2_gonly_factor
+
+    def scaled(kind, x, pm, pg):
+        file_phi, _ = real_factor(pm, pg, INF, 1.0)
+        return file_phi / (1.0 + shift), {"c": 1.0}
+
+    monkeypatch.setattr(bk, "combine", scaled)
+    r = bk.gonly_guards(*ORTH, INF, 1.0, np.ones(G))
+    d = r["den_check"]
+    assert d["den_shift_vs_c2"] == pytest.approx(shift, abs=1e-12) and d["within"] is ok and d["passed"] is ok
+    assert r["passed"] is ok and r["range"]["passed"]
+    lift = {"row": "R44", "option": f"`{OPT['F1']}`"}
+    lr = bk.gonly_guards(*ORTH, INF, 1.0, np.ones(G), lift=lift)["den_check"]
+    assert lr["passed"] is True and lr["within"] is ok and lr["lifted_by"] == lift
+    assert lr["den_shift_vs_c2"] == d["den_shift_vs_c2"]
+    assert lr["limit"] == {"max_abs_den_shift": 0.05, "status": "lifted by row R44: the 5% check gates nothing for it"}
 
 
-# ------------------------------------------------------------------------------------------------- the ruling row
+def test_a_failed_check_says_which():
+    r = bk.gonly_guards(*WIDE, INF, 1.0, np.ones(G), lift={"row": "R44"})
+    rg = r["range"]
+    assert bk.gonly_failure(r) == (f"the range guard: the factor spans [0.0625, 16], not within "
+                                   f"[{rg['bound_min']:.4g}, {rg['bound_max']:.4g}] (half C2's min, twice C2's max): "
+                                   "not built")
+    assert rg["bound_max"] == pytest.approx(2.0 * 16.0 ** 2.0 ** -0.5, rel=1e-12)
+    d = bk.gonly_guards(*SHIFT, INF, 1.0, np.ones(G))
+    says = bk.gonly_failure(d)
+    assert says.startswith("the 5% den check: the file's den-weighted total is +") and says.endswith(
+        "against C2's factor's, beyond 5%, and no --den-ruling row lifts it for this file: not built")
+    both = bk.gonly_guards(*SPIKE, INF, 1.0, np.ones(G))
+    if not both["den_check"]["passed"]:
+        assert "the range guard" in bk.gonly_failure(both) and "; the 5% den check" in bk.gonly_failure(both)
+
+
+# ------------------------------------------------------------------------------------------------- the ruling rows
 
 
 @pytest.mark.parametrize("rows,ok", [
     (ROW, {"F1", "F2", "F3"}),
     (ROW_NEW, {"F1", "F2", "F3"}),
-    (ROW_F1, {"F1"}),
-    (ROW_F2, {"F2"}),
+    (row_only("F1"), {"F1"}),
+    (row_only("F2"), {"F2"}),
+    (row_only("F3"), {"F3"}),  # F3's entry opens F3 only, not F1, whose string it contains
+    (row_only("F1", "F2"), {"F1", "F2"}),
     (ROW_OLD, set()),  # the old lines' entries open none of the new files
     (ROW + ROW, set()),  # two rows R22
     ("", set()),  # no row R22
@@ -416,25 +440,23 @@ def test_a_failed_guard_says_which():
     (ROW.replace("ruling, no run", "a run"), set()),
     (ROW.replace("| R22 (", "| R22b ("), set()),
     (ROW.replace("`--captain-ruling R22`", "R22"), set()),
-    (ROW.replace("`--gata4-exponent inf`", "--gata4-exponent inf"), {"F2"}),  # no backticks
-    (ROW.replace("`--gata4-exponent inf`", "`--form c2-s2 --gata4-exponent inf`"), {"F2"}),
-    (ROW.replace("`--gata4-exponent inf`", "`--gata4-exponent infinity`"), {"F2"}),
-    (ROW.replace("`--gata4-exponent inf`", "`--gata4-exponent Inf`"), {"F2"}),
-    (ROW.replace("`--form c2-s2 --size-scale 0.67`", "`--size-scale 0.67`"), {"F1"}),
-    (ROW.replace("`--form c2-s2 --size-scale 0.67`", "`--form c2-s2 --size-scale 0.670`"), {"F1"}),
-    (ROW.replace("`--form c2-s2 --size-scale 0.67`", "--form c2-s2 --size-scale 0.67"), {"F1"}),
-    (ROW_OLD.replace(") | T3 | x |", ") | T3 | `--gata4-exponent inf` `--form c2-s2 --size-scale 0.67` |"), set()),
-    (f"{OPENER}; the builder is to take `--gata4-exponent inf --size-scale 0.67`, only with "
-     "`--captain-ruling R22`) | T3 | x |\n", set()),  # a joined string opens neither F3 nor F1
+    (ROW.replace(f"`{OPT['F1']}`", OPT["F1"]), {"F2", "F3"}),  # F1's without its backticks
+    (ROW.replace(f"`{OPT['F1']}`", "`--gata4-exponent inf`"), {"F2", "F3"}),  # without its form
+    (ROW.replace(f"`{OPT['F1']}`", f"`a`{OPT['F1']}`b`"), {"F2", "F3"}),  # in the text, not as one whole string
+    (ROW.replace(f"`{OPT['F3']}`", "`--gata4-exponent inf --size-scale 0.67`"), {"F1", "F2"}),
+    (ROW.replace(f"`{OPT['F2']}`", "`--size-scale 0.67`"), {"F1", "F3"}),
+    (ROW.replace(f"`{OPT['F2']}`", "`--form c2-s2 --size-scale 0.670`"), {"F1", "F3"}),
+    (ROW_OLD.replace(") | T3 | x |", ") | T3 | " + " ".join(f"`{o}`" for o in OPT.values()) + " |"), set()),
 ])
 def test_the_ruling_row_check(tmp_path, rows, ok):
     p = ledger(tmp_path, rows)
     for name in POINTS:
         if name in ok:
             rec = bk.check_c2_gonly("c2-s2", captain_ruling="R22", tries=p, **OPTS[name])
-            assert rec == {"row": "R22", "file": FILES[name], "name": name, "options": list(bk.GONLY_NAMES[name]),
+            assert rec == {"row": "R22", "file": FILES[name], "name": name, "option": f"`{OPT[name]}`",
                            "g": "inf" if POINTS[name][0] == INF else 1.0, "size_scale": POINTS[name][1],
-                           "ledger": "experiments/harness/TRIES.md", "ledger_sha256": t3d.sha256(p)}
+                           "den_ruling": None, "ledger": "experiments/harness/TRIES.md",
+                           "ledger_sha256": t3d.sha256(p)}
             assert bk.gonly_point(rec) == POINTS[name]
         else:
             with pytest.raises(bk.Refused, match="no single row R22"):
@@ -452,17 +474,67 @@ def test_the_new_entries_do_not_open_the_old_lines_and_the_old_entries_open_them
     assert bk.check_c2_gata4("c2-s2", 2.0, "R22", both)["option"] == "`--form c2-s2 --gata4-exponent 2.0`"
 
 
-def test_the_row_check_is_build_outside_form_s_for_each_string_the_file_needs(tmp_path, monkeypatch):
+def test_the_row_check_is_build_outside_form_s_plus_the_whole_string(tmp_path, monkeypatch):
     bo = bk._outside_form()
     seen = []
+    real = bo.captain_order_names
     monkeypatch.setattr(bo, "captain_order_names", lambda row, option, path=None: seen.append((row, option, path))
-                        or True)
-    p = tmp_path / "absent.md"
-    monkeypatch.setattr(bs, "sha256", lambda path: "x")
+                        or real(row, option, path))
+    p = ledger(tmp_path)
     for name in POINTS:
         seen.clear()
         assert bk.check_c2_gonly("c2-s2", captain_ruling="R22", tries=p, **OPTS[name])["name"] == name
-        assert seen == [("R22", o, p) for o in bk.GONLY_NAMES[name]]
+        assert seen == [("R22", f"`{OPT[name]}`", p)]
+    # captain_order_names alone would pass the odd cell; the whole-string match refuses it
+    odd = ledger(tmp_path, ROW.replace(f"`{OPT['F1']}`", f"`a`{OPT['F1']}`b`"), name="odd.md")
+    assert real("R22", f"`{OPT['F1']}`", odd)
+    with pytest.raises(bk.Refused, match="no single row R22"):
+        bk.check_c2_gonly("c2-s2", INF, None, "R22", odd)
+    assert bk.check_c2_gonly("c2-s2", INF, 0.67, "R22", odd)["name"] == "F3"  # the later strings are unaffected
+
+
+@pytest.mark.parametrize("name", list(POINTS))
+def test_a_lifting_row_that_names_the_file_lifts_it(tmp_path, name):
+    p = ledger(tmp_path, ROW + lift_row(name))
+    rec = bk.check_c2_gonly("c2-s2", captain_ruling="R22", tries=p, den_ruling="R44", **OPTS[name])
+    assert rec["den_ruling"] == {"row": "R44", "option": f"`{OPT[name]}`", "words": "the 5% check gates nothing for it",
+                                 "ledger": "experiments/harness/TRIES.md", "ledger_sha256": t3d.sha256(p)}
+    assert bk.check_den_lift(name, "R44", p) == rec["den_ruling"]
+
+
+@pytest.mark.parametrize("lift,lifted", [
+    (lift_row("F1", "F3"), {"F1", "F3"}),
+    (lift_row("F2"), {"F2"}),
+    (lift_row("F3"), {"F3"}),  # F3's string does not lift F1, whose string it contains
+    (lift_row("F1", "F2", "F3"), {"F1", "F2", "F3"}),
+    (lift_row("F1", "F2", "F3", words="the 5% check gates nothing for them"), set()),
+    (lift_row("F1", "F2", "F3", words="the 5% check gates nothing"), set()),
+    (lift_row("F1", "F2", "F3", ruling="a note"), set()),  # not a ruling
+    (lift_row("F1", "F2", "F3") * 2, set()),  # two rows R44
+    (lift_row("F1", "F2", "F3", row="R45"), set()),  # no row R44
+    (lift_row("F1", "F2", "F3").replace("`", ""), set()),  # the strings without their backticks
+    ("| R44 (the captain's yes of a day; ruling, no run; for " + " and ".join(f"`{o}`" for o in OPT.values())
+     + ") | T3 | the 5% check gates nothing for it |\n", set()),  # the words outside the first cell
+    ("| R44 (the captain's yes of a day; ruling, no run; the 5% check gates nothing for it) | T3 | "
+     + " ".join(f"`{o}`" for o in OPT.values()) + " |\n", set()),  # the strings outside the first cell
+])
+def test_the_lifting_row_check(tmp_path, lift, lifted):
+    p = ledger(tmp_path, ROW + lift)
+    for name in POINTS:
+        if name in lifted:
+            assert bk.check_den_lift(name, "R44", p)["row"] == "R44"
+        else:
+            with pytest.raises(bk.Refused, match="--den-ruling R44 is refused: .*no single row R44"):
+                bk.check_den_lift(name, "R44", p)
+            with pytest.raises(bk.Refused, match="no single row R44"):
+                bk.check_c2_gonly("c2-s2", captain_ruling="R22", tries=p, den_ruling="R44", **OPTS[name])
+
+
+@pytest.mark.parametrize("value", ["r44", "R", "R44a", "44", "", " R44", "R44 ", "R-1", "R4 4", None, 44, True])
+def test_a_lifting_row_id_other_than_r_and_digits_is_refused(tmp_path, value):
+    p = ledger(tmp_path, ROW + lift_row("F1", "F2", "F3"))
+    with pytest.raises(bk.Refused, match="takes a ruling row's id"):
+        bk.check_den_lift("F1", value, p)
 
 
 # ------------------------------------------------------------------------------------------------------ refusals
@@ -479,6 +551,16 @@ def test_without_the_options_nothing_of_the_line_is_read(monkeypatch):
         assert bk.check_c2_gonly(form, INF, None, "R22") is None  # inf elsewhere: refused as before (only 2.0)
     assert bk.is_gonly_command("c2-s2", INF) and bk.is_gonly_command("c2-s2", "inf")
     assert bk.is_gonly_command("c1-s2", None, 0.67) and not bk.is_gonly_command("c2-s2", True)
+
+
+@pytest.mark.parametrize("form,kw", [("c2-s2", {}), ("c2-s2", {"captain_ruling": "R22"}),
+                                     ("c2-s2", {"gata4_exponent": 2.0, "captain_ruling": "R22"}),
+                                     ("c1-s2", {"gata4_exponent": 2.0, "captain_ruling": "R22"}),
+                                     ("c2-s2", {"composition_from": "allowed-s1", "captain_ruling": "R36"}),
+                                     ("identity-s2", {}), ("c1-s2", {"gata4_exponent": INF, "captain_ruling": "R22"})])
+def test_the_lifting_option_on_any_other_command_is_refused(tmp_path, form, kw):
+    with pytest.raises(bk.Refused, match="--den-ruling is taken only with the options of F1, F2 or F3"):
+        bk.check_c2_gonly(form, den_ruling="R44", tries=ledger(tmp_path, ROW + lift_row("F1", "F2", "F3")), **kw)
 
 
 @pytest.mark.parametrize("value", [0.5, 1.0, 1.5, 2.0, 0.66, 0.68, 0.6700001, 0.0, -0.67, float("nan"), INF, "x", "",
@@ -525,12 +607,18 @@ def test_either_option_without_the_ruling_or_beside_the_composition_option_is_re
     ("c2-s2", {"size_scale": 0.67}, "only with --captain-ruling R22"),
     ("c2-s2", {"gata4_exponent": INF, "captain_ruling": "R30"}, "only row R22"),
     ("c2-s2", {"gata4_exponent": INF, "captain_ruling": "R36"}, "only row R22"),
+    ("c2-s2", {"gata4_exponent": INF, "captain_ruling": "R36", "composition_from": "allowed-s1"}, "only row R22"),
     ("c2-s2", {"size_scale": 0.67, "captain_ruling": "R36", "composition_from": "allowed-s1"}, "only row R22"),
     ("c2-s2", {"size_scale": 0.67, "captain_ruling": "R22", "composition_from": "allowed-s1"}, "no --composition"),
     ("c2-s2", {"gata4_exponent": INF, "captain_ruling": "R22", "rows": ROW_OLD}, "no single row R22"),
-    ("c2-s2", {"size_scale": 0.67, "captain_ruling": "R22", "rows": ROW_F1}, "no single row R22"),
-    ("c2-s2", {"gata4_exponent": INF, "size_scale": 0.67, "captain_ruling": "R22", "rows": ROW_F2},
+    ("c2-s2", {"size_scale": 0.67, "captain_ruling": "R22", "rows": row_only("F1")}, "no single row R22"),
+    ("c2-s2", {"gata4_exponent": INF, "captain_ruling": "R22", "rows": row_only("F3")}, "no single row R22"),
+    ("c2-s2", {"gata4_exponent": INF, "size_scale": 0.67, "captain_ruling": "R22", "rows": row_only("F1", "F2")},
      "no single row R22"),
+    ("c2-s2", {"gata4_exponent": INF, "captain_ruling": "R22", "den_ruling": "R44", "rows": ROW + lift_row("F3")},
+     "no single row R44"),
+    ("c2-s2", {"gata4_exponent": INF, "captain_ruling": "R22", "den_ruling": "R4x"}, "takes a ruling row's id"),
+    ("c2-s2", {"captain_ruling": "R22", "den_ruling": "R44"}, "--den-ruling is taken only"),
     ("c1-s2", {"size_scale": 0.67, "captain_ruling": "R22"}, "on --form c2-s2 only"),
     ("identity-s2", {"size_scale": 0.67, "captain_ruling": "R22"}, "on --form c2-s2 only"),
     ("c1-s2", {"gata4_exponent": INF, "captain_ruling": "R22"}, "only 2.0"),  # inf elsewhere: as before
@@ -538,7 +626,7 @@ def test_either_option_without_the_ruling_or_beside_the_composition_option_is_re
     ("c2-s2", {"gata4_exponent": -INF, "captain_ruling": "R22"}, "only 2.0"),  # -inf: line 3's refusal, as before
 ])
 def test_the_builder_refuses_and_builds_nothing(world, tmp_path, monkeypatch, form, kw, says):
-    for name in (*LINE_FUNCS, "run_c2g_guard", "c2g_loader", "run_gata4_figures"):
+    for name in (*LINE_FUNCS[:-1], "run_c2g_guard", "c2g_loader", "run_gata4_figures"):
         monkeypatch.setattr(bk, name, lambda *a, _n=name, **k: pytest.fail(f"{_n} reached on a refusal"))
     kw = dict(kw)
     t = ledger(tmp_path, kw.pop("rows", ROW))
@@ -552,8 +640,8 @@ def test_the_builder_refuses_and_builds_nothing(world, tmp_path, monkeypatch, fo
 
 
 @pytest.mark.parametrize("name", list(POINTS))
-def test_each_file_is_c2_s_command_with_its_factor_and_records_both_guards(world, runs, tmp_path, monkeypatch, name):
-    r = use(runs, monkeypatch, "orth")
+def test_each_file_is_c2_s_command_with_its_factor_and_records_both_checks(world, runs, tmp_path, monkeypatch, name):
+    r = use(runs, monkeypatch, "mild")
     spy = Spy(monkeypatch)
     c2 = build(world, tmp_path / "c2.h5ad", run_dir=r.run)
     out = tmp_path / FILES[name]
@@ -571,15 +659,17 @@ def test_each_file_is_c2_s_command_with_its_factor_and_records_both_guards(world
         k: v for k, v in cb2.items() if k != "combination"}
     assert cb["form"] == "c2-s2" and cb["combination"]["c"] == rec["c"]
     line = cb["c2_gonly_line"]
-    assert line["captain_ruling"]["row"] == "R22" and line["captain_ruling"]["options"] == list(bk.GONLY_NAMES[name])
+    assert line["captain_ruling"]["row"] == "R22" and line["captain_ruling"]["option"] == f"`{OPT[name]}`"
     assert line["file"] == FILES[name] and line["g"] == ("inf" if POINTS[name][0] == INF else 1.0)
     assert line["size_scale"] == POINTS[name][1] and line["c"] == rec["c"] and line["line"] == bk.GONLY_LINE
     assert line["powers_applied"] == {bk.TABLE_M: rec["mab21l2_exponent"], bk.TABLE_G: rec["gata4_weight"]}
+    assert line["den_ruling"] is None and line["captain_ruling"]["den_ruling"] is None
     sha = hashlib.sha256(np.ascontiguousarray(want).tobytes()).hexdigest()
     assert line["factor_sha256_applied"] == line["guards"]["factor_sha256"] == sha
     gd = line["guards"]
     assert "genes" not in gd and gd["n_genes"] == G and gd["tables_sha256"] == r.pins
-    assert gd["passed"] and gd["range"]["passed"] and gd["distinctness"]["checked"] is (name == "F1")
+    assert gd["passed"] and gd["range"]["passed"] and gd["den_check"]["passed"] and gd["den_check"]["within"]
+    assert gd["den_check"]["limit"]["status"] == "gates" and "distinctness" not in gd
     want_g = bk.gonly_guards(r.m, r.g, *POINTS[name], den_of(world))
 
     def as_json(o):
@@ -591,6 +681,7 @@ def test_each_file_is_c2_s_command_with_its_factor_and_records_both_guards(world
     assert on_disk["file"] == FILES[name] and on_disk["guards"]["range"] == gd["range"]
     assert json.loads(Path(f"{out}.stamp.json").read_text())["clean"] is True
     assert not any("cell" in k.lower() for k in line) and loader_restored()
+    assert "cos" not in json.dumps(on_disk).lower().replace("cost", "")
 
 
 @pytest.mark.parametrize("name", list(POINTS))
@@ -598,7 +689,7 @@ def test_each_file_draws_c2_s_cells_differs_in_expression_and_builds_one_sha256(
                                                                                  name):
     import anndata as ad
 
-    r = use(runs, monkeypatch, "orth")
+    r = use(runs, monkeypatch, "mild")
     build(world, tmp_path / "c2.h5ad", run_dir=r.run)
     (tmp_path / "a").mkdir()
     (tmp_path / "b").mkdir()
@@ -612,32 +703,52 @@ def test_each_file_draws_c2_s_cells_differs_in_expression_and_builds_one_sha256(
     assert not np.array_equal(np.asarray(a.X), np.asarray(c.X))
 
 
-@pytest.mark.parametrize("key,name", [("wide", "F1"), ("twin", "F1"), ("spike", "F1"), ("spike", "F3")])
-def test_a_failed_guard_stops_the_file_before_any_cell_and_writes_nothing(world, runs, tmp_path, monkeypatch, key,
-                                                                          name):
+@pytest.mark.parametrize("key,name,says", [("wide", "F1", "the range guard"), ("spike", "F1", "the range guard"),
+                                           ("spike", "F3", "the range guard"), ("shift", "F1", "the 5% den check"),
+                                           ("shift", "F2", "the 5% den check"), ("shift", "F3", "the 5% den check")])
+def test_a_failed_check_stops_the_file_before_any_cell_and_writes_nothing(world, runs, tmp_path, monkeypatch, key,
+                                                                          name, says):
     r = use(runs, monkeypatch, key)
-    for fn in ("gonly_loader",):
-        monkeypatch.setattr(bk, fn, lambda *a, **k: pytest.fail("the build was reached past a failed guard"))
-    monkeypatch.setattr(bk.bs, "construct", lambda *a, **k: pytest.fail("a cell was drawn past a failed guard"))
+    monkeypatch.setattr(bk, "gonly_loader", lambda *a, **k: pytest.fail("the build was reached past a failed check"))
+    monkeypatch.setattr(bk.bs, "construct", lambda *a, **k: pytest.fail("a cell was drawn past a failed check"))
     out = tmp_path / FILES[name]
-    with pytest.raises(bk.GonlyGuardFailed, match="range guard" if VERDICTS[key][name][0] is False else
-                       "distinctness guard"):
+    with pytest.raises(bk.GonlyGuardFailed, match=says):
         build_f(world, tmp_path, name, out, run_dir=r.run)
     assert nothing_written(out) and loader_restored()
 
 
-@pytest.mark.parametrize("key", ["wide", "twin"])
-def test_the_shrunk_files_build_where_only_f1_s_guard_fails(world, runs, tmp_path, monkeypatch, key):
-    """WIDE fails F1's range and TWIN F1's distinctness; F2 and F3 (a --size-scale file: range only) build."""
-    r = use(runs, monkeypatch, key)
-    for name in ("F2", "F3"):
-        side = build_f(world, tmp_path, name, tmp_path / f"{key}_{FILES[name]}", run_dir=r.run)
-        gd = side["combined_build"]["c2_gonly_line"]["guards"]
-        assert gd["passed"] and gd["distinctness"]["checked"] is False and gd["distinctness"]["passed"] is None
+@pytest.mark.parametrize("name", list(POINTS))
+def test_the_lifting_row_lets_a_file_the_5_percent_check_stops_build(world, runs, tmp_path, monkeypatch, name):
+    """SHIFT: each file's den total is far from C2's, so the check stops it; with --den-ruling naming a row that names
+    the file and says the words, it builds and records the figures, which gate nothing."""
+    r = use(runs, monkeypatch, "shift")
+    out = tmp_path / FILES[name]
+    side = build_f(world, tmp_path, name, out, rows=ROW + lift_row(name), run_dir=r.run, den_ruling="R44")
+    line = side["combined_build"]["c2_gonly_line"]
+    d = line["guards"]["den_check"]
+    assert d["passed"] and not d["within"] and abs(d["den_shift_vs_c2"]) > 0.05
+    assert d["limit"]["status"] == "lifted by row R44: the 5% check gates nothing for it"
+    assert d["lifted_by"]["row"] == "R44" and d["lifted_by"]["option"] == f"`{OPT[name]}`"
+    assert line["den_ruling"] == d["lifted_by"] == line["captain_ruling"]["den_ruling"]
+    assert line["guards"]["range"]["passed"] and side["output"]["check"]["ok"]
+    # a row that lifts another file only is refused for this one: exit 2, nothing written
+    other = {"F1": "F2", "F2": "F3", "F3": "F1"}[name]
+    out2 = tmp_path / f"other_{FILES[name]}"
+    with pytest.raises(bk.Refused, match="no single row R44"):
+        build_f(world, tmp_path, name, out2, rows=ROW + lift_row(other), run_dir=r.run, den_ruling="R44")
+    assert nothing_written(out2)
 
 
-def test_a_factor_other_than_the_guards_exits_5_and_writes_nothing(world, runs, tmp_path, monkeypatch):
-    r = use(runs, monkeypatch, "orth")
+def test_the_lifting_row_does_not_lift_the_range_guard(world, runs, tmp_path, monkeypatch):
+    r = use(runs, monkeypatch, "wide")
+    out = tmp_path / FILES["F1"]
+    with pytest.raises(bk.GonlyGuardFailed, match="the range guard"):
+        build_f(world, tmp_path, "F1", out, rows=ROW + lift_row("F1"), run_dir=r.run, den_ruling="R44")
+    assert nothing_written(out)
+
+
+def test_a_factor_other_than_the_checks_exits_5_and_writes_nothing(world, runs, tmp_path, monkeypatch):
+    r = use(runs, monkeypatch, "mild")
     real = bk.run_gonly_guards
     monkeypatch.setattr(bk, "run_gonly_guards", lambda *a, **k: real(*a, **k) | {"factor_sha256": "0" * 64})
     out = tmp_path / "x.h5ad"
@@ -650,8 +761,8 @@ def test_a_factor_other_than_the_guards_exits_5_and_writes_nothing(world, runs, 
     assert nothing_written(out) and loader_restored()
 
 
-def test_the_guards_read_the_pinned_tables_only(world, runs, tmp_path, monkeypatch):
-    r = use(runs, monkeypatch, "orth")
+def test_the_checks_read_the_pinned_tables_only(world, runs, tmp_path, monkeypatch):
+    r = use(runs, monkeypatch, "mild")
     monkeypatch.setattr(bk, "TABLE_SHA256", {**r.pins, bk.TABLE_G: "0" * 64})
     out = tmp_path / "x.h5ad"
     with pytest.raises(bk.Refused, match="pinned table"):
@@ -659,11 +770,11 @@ def test_the_guards_read_the_pinned_tables_only(world, runs, tmp_path, monkeypat
     assert nothing_written(out)
 
 
-def test_an_existing_output_is_refused_before_the_guards(world, runs, tmp_path, monkeypatch):
-    r = use(runs, monkeypatch, "orth")
+def test_an_existing_output_is_refused_before_the_checks(world, runs, tmp_path, monkeypatch):
+    r = use(runs, monkeypatch, "mild")
     out = tmp_path / FILES["F1"]
     out.write_bytes(b"x")
-    monkeypatch.setattr(bk, "run_gonly_guards", lambda *a, **k: pytest.fail("the guards ran past an existing file"))
+    monkeypatch.setattr(bk, "run_gonly_guards", lambda *a, **k: pytest.fail("the checks ran past an existing file"))
     with pytest.raises(bk.Refused, match="exists; pass --overwrite"):
         build_f(world, tmp_path, "F1", out, run_dir=r.run)
     assert out.read_bytes() == b"x"
@@ -682,12 +793,12 @@ def test_every_existing_command_never_touches_the_line(world, tmp_path, monkeypa
     plain = build(world, tmp_path / "plain.h5ad", form, **extra)
     for name in LINE_FUNCS:
         monkeypatch.setattr(bk, name, lambda *a, _n=name, **k: pytest.fail(f"{_n} reached on {form}"))
-    trapped = build(world, tmp_path / "trapped.h5ad", form, size_scale=None, **extra)
+    trapped = build(world, tmp_path / "trapped.h5ad", form, size_scale=None, den_ruling=None, **extra)
     assert (tmp_path / "plain.h5ad").read_bytes() == (tmp_path / "trapped.h5ad").read_bytes()
     assert plain["combined_build"] == trapped["combined_build"] and "c2_gonly_line" not in plain["combined_build"]
 
 
-def test_line_3_s_file_never_touches_the_line(world, runs, tmp_path, monkeypatch):
+def test_line_3_s_file_never_touches_the_line(world, tmp_path, monkeypatch):
     """`--form c2-s2 --gata4-exponent 2.0` on a run that passes line 3's own 5% guard (the quarter table)."""
     run = world.d / "run_quarter_gonly"
     if not run.exists():
@@ -710,9 +821,9 @@ def test_line_3_s_file_never_touches_the_line(world, runs, tmp_path, monkeypatch
 def test_the_cli(world, runs, tmp_path, monkeypatch):
     from typer.testing import CliRunner
 
-    monkeypatch.setattr(bk, "TRIES_FILE", ledger(tmp_path))
+    monkeypatch.setattr(bk, "TRIES_FILE", ledger(tmp_path, ROW + lift_row("F1", "F2", "F3")))
     boards = th.cli_boards(tmp_path)
-    r = use(runs, monkeypatch, "orth")
+    r = use(runs, monkeypatch, "mild")
 
     def args(run, *extra, out):
         return ["build", str(world.dec), "--wt", str(world.wt), "--board", "T3:synthetic", "--boards-dir",
@@ -726,11 +837,15 @@ def test_the_cli(world, runs, tmp_path, monkeypatch):
                   ["--form", "c2-s2", "--gata4-exponent", "2.0", "--size-scale", "0.67", "--captain-ruling", "R22"],
                   ["--form", "c1-s2", "--size-scale", "0.67", "--captain-ruling", "R22"],
                   ["--form", "c1-s2", "--gata4-exponent", "inf", "--captain-ruling", "R22"],
-                  ["--form", "c2-s2", "--gata4-exponent", "-inf", "--captain-ruling", "R22"],
+                  ["--form", "c2-s2", "--gata4-exponent=-inf", "--captain-ruling", "R22"],
                   ["--form", "c2-s2", "--size-scale", "0.67", "--captain-ruling", "R36", "--composition-from",
                    "allowed-s1"],
                   ["--form", "c2-s2", "--size-scale", "0.67", "--captain-ruling", "R22", "--composition-from",
-                   "allowed-s1"]):
+                   "allowed-s1"],
+                  ["--form", "c2-s2", "--den-ruling", "R44"],
+                  ["--form", "c2-s2", "--gata4-exponent", "2.0", "--captain-ruling", "R22", "--den-ruling", "R44"],
+                  ["--form", "c2-s2", "--gata4-exponent", "inf", "--captain-ruling", "R22", "--den-ruling", "R4a"],
+                  ["--form", "c2-s2", "--gata4-exponent", "inf", "--captain-ruling", "R22", "--den-ruling", "R45"]):
         out = tmp_path / "r.h5ad"
         res = runner.invoke(bk.app, args(r.run, *extra, out=out))
         assert res.exit_code == 2 and "refused" in res.output, (extra, res.output)
@@ -741,18 +856,26 @@ def test_the_cli(world, runs, tmp_path, monkeypatch):
         ok = tmp_path / FILES[name]
         res = runner.invoke(bk.app, args(r.run, "--form", "c2-s2", *opts, "--captain-ruling", "R22", out=ok))
         assert res.exit_code == 0, res.output
-        assert f"row R22's options on C2's command: {FILES[name]}" in res.output
+        assert (f"row R22's options on C2's command: {FILES[name]}" in res.output
+                and "the range guard passed; the 5% den check passed" in res.output)
         line = json.loads(ok.with_suffix(".json").read_text())["combined_build"]["c2_gonly_line"]
         assert line["file"] == FILES[name] and line["captain_ruling"]["name"] == name
-    # a guard fails: exit 6, nothing written (WIDE: F1's range; TWIN: F1's distinctness)
-    for key in ("wide", "twin"):
+    # a check fails: exit 6, nothing written (WIDE: F1's range; SHIFT: the 5% den check)
+    for key, says in (("wide", "the range guard"), ("shift", "the 5% den check")):
         use(runs, monkeypatch, key)
-        bad = tmp_path / f"guard_{key}.h5ad"
+        bad = tmp_path / f"stop_{key}.h5ad"
         res = runner.invoke(bk.app, args(runs[key].run, "--form", "c2-s2", *lines["F1"], "--captain-ruling", "R22",
                                          out=bad))
-        assert res.exit_code == 6 and "refused (the range or distinctness guard" in res.output and nothing_written(bad)
-    # the factor is not the guards': exit 5, nothing written
-    use(runs, monkeypatch, "orth")
+        assert res.exit_code == 6 and "refused (the range guard or the 5% den check" in res.output, res.output
+        assert says in res.output and nothing_written(bad)
+    # the lifting row: SHIFT's F2 builds with --den-ruling R44
+    use(runs, monkeypatch, "shift")
+    lifted = tmp_path / f"lifted_{FILES['F2']}"
+    res = runner.invoke(bk.app, args(runs["shift"].run, "--form", "c2-s2", *lines["F2"], "--captain-ruling", "R22",
+                                     "--den-ruling", "R44", out=lifted))
+    assert res.exit_code == 0 and "the 5% den check gates nothing for it (row R44)" in res.output, res.output
+    # the factor is not the checks': exit 5, nothing written
+    use(runs, monkeypatch, "mild")
     real = bk.run_gonly_guards
     monkeypatch.setattr(bk, "run_gonly_guards", lambda *a, **k: real(*a, **k) | {"factor_sha256": "0" * 64})
     mis = tmp_path / "mismatch.h5ad"

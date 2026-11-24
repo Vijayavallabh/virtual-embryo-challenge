@@ -1,16 +1,19 @@
-"""The test-board build launcher of the options on C2's command: experiments/t3_decomp/t3_gonly_build.sh <COMMIT> <RUN>.
+"""The test-board build launcher of the options on C2's command:
+experiments/t3_decomp/t3_gonly_build.sh <COMMIT> <RUN> [LIFT_ROW].
 
-It gates on a clean tree at COMMIT and on row R22 of the ledger (the two new option strings, the two old lines' strings
-its last identity gates need, and `--captain-ruling R22`), runs the targeted tests, rebuilds six known files
-(identity-s1, identity-s2, c1-s2, c2-s2, line 2's T3_c1_s2_g2.h5ad and line 3's T3_c2_s2_g2.h5ad) and stops unless each
-gives its recorded bytes, then builds F1 T3_c2_s2_gonly.h5ad, F2 T3_c2_s2_s067.h5ad and F3 T3_c2_s2_gonly_s067.h5ad
-each twice into separate folders (the builder's guards and factor check run inside each build), compares each pair and
-writes one SHA256SUMS. These tests hold its strings, hashes and step order to that, check the hashes against the
-committed SHA256SUMS records, check that it deletes, fetches and uploads nothing and reads no output of a test build,
-and run it for real in throwaway repositories under a temporary home with a stand-in `uv` (it logs each call and fakes
-the tests, the builder and `vec check`): every gate refusal, every stop, and a whole run through a copy of the launcher
-whose six recorded hashes are replaced by the stand-in's. Nothing here reads the repository's own ledger or builds
-anything from released data.
+It gates on a clean tree at COMMIT and on row R22 of the ledger (each file's option string, the two old lines' strings
+its last identity gates need and `--captain-ruling R22`, each as one whole backtick-delimited string), and, given
+LIFT_ROW, on that row (a ruling saying "the 5% check gates nothing for it" and naming at least one file's string; the
+files it names are built with `--den-ruling LIFT_ROW`). It runs the targeted tests, rebuilds six known files
+(identity-s1, identity-s2, c1-s2, c2-s2, line 2's T3_c1_s2_g2.h5ad and line 3's T3_c2_s2_g2.h5ad) and stops unless
+each gives its recorded bytes, then builds F1 T3_c2_s2_gonly.h5ad, F3 T3_c2_s2_gonly_s067.h5ad and F2
+T3_c2_s2_s067.h5ad each twice into separate folders (the builder's range guard, 5% den check and factor check run
+inside each build), compares each pair and writes one SHA256SUMS. These tests hold its strings, hashes and step order
+to that, check the hashes against the committed SHA256SUMS records, check that it deletes, fetches and uploads nothing
+and reads no output of a test build, and run it for real in throwaway repositories under a temporary home with a
+stand-in `uv` (it logs each call and fakes the tests, the builder and `vec check`): every gate refusal, every stop, and
+whole runs through a copy of the launcher whose six recorded hashes are replaced by the stand-in's. Nothing here reads
+the repository's own ledger or builds anything from released data.
 """
 
 from __future__ import annotations
@@ -32,27 +35,35 @@ RESULTS = REPO / "experiments" / "builds" / "results"
 REL = "experiments/t3_decomp/t3_gonly_build.sh"
 DEC = "experiments/t3_decomp/results/gata4/gata4_decisions.json"
 WT = "data/raw/T2/E8.75.h5ad"
+USAGE = "usage: t3_gonly_build.sh COMMIT RUN [LIFT_ROW]"
 FILES = {"F1": "T3_c2_s2_gonly.h5ad", "F2": "T3_c2_s2_s067.h5ad", "F3": "T3_c2_s2_gonly_s067.h5ad"}
-ARGS = {"F1": "--form c2-s2 --gata4-exponent inf --captain-ruling R22",
-        "F2": "--form c2-s2 --size-scale 0.67 --captain-ruling R22",
-        "F3": "--form c2-s2 --gata4-exponent inf --size-scale 0.67 --captain-ruling R22"}
+OPT = {"F1": "--form c2-s2 --gata4-exponent inf", "F2": "--form c2-s2 --size-scale 0.67",
+       "F3": "--form c2-s2 --gata4-exponent inf --size-scale 0.67"}
+ARGS = {f: f"{OPT[f]} --captain-ruling R22" for f in OPT}
 IDENTITY = [("ids1", "identity-s1.h5ad", "IDS1_SHA", 20, "--form identity-s1"),
             ("ids2", "identity-s2.h5ad", "IDS2_SHA", 21, "--form identity-s2"),
             ("c1s2", "c1-s2.h5ad", "C1S2_SHA", 22, "--form c1-s2"),
             ("c2s2", "c2-s2.h5ad", "C2S2_SHA", 23, "--form c2-s2"),
             ("c1g2", "T3_c1_s2_g2.h5ad", "C1G2_SHA", 24, "--form c1-s2 --gata4-exponent 2.0 --captain-ruling R22"),
             ("c2g2", "T3_c2_s2_g2.h5ad", "C2G2_SHA", 25, "--form c2-s2 --gata4-exponent 2.0 --captain-ruling R22")]
-BUILDS = [("f1a", "a", "F1"), ("f1b", "b", "F1"), ("f2a", "a", "F2"), ("f2b", "b", "F2"), ("f3a", "a", "F3"),
-          ("f3b", "b", "F3")]
+BUILDS = [("f1a", "a", "F1"), ("f1b", "b", "F1"), ("f3a", "a", "F3"), ("f3b", "b", "F3"), ("f2a", "a", "F2"),
+          ("f2b", "b", "F2")]
 STEPS = ["gate", "tests", *[i[0] for i in IDENTITY], *[b[0] for b in BUILDS], "pair", "done"]
-OPT22 = ["`--gata4-exponent inf`", "`--form c2-s2 --size-scale 0.67`", "`--form c2-s2 --gata4-exponent 2.0`",
-         "`--gata4-exponent 2.0`", "`--captain-ruling R22`"]
+GATE22 = [OPT["F1"], OPT["F3"], OPT["F2"], "--form c2-s2 --gata4-exponent 2.0", "--gata4-exponent 2.0",
+          "--captain-ruling R22"]
 ROW_R22 = ("| R22 (the captain's order of a day; ruling, no run, not a try; by T3's second search line the builder is "
            "also to take `--gata4-exponent 2.0` on `--form c1-s2`, only with `--captain-ruling R22`; by T3's third "
            "search line also `--form c2-s2 --gata4-exponent 2.0`, only with `--captain-ruling R22`; by the options on "
-           "C2's command also `--gata4-exponent inf` and `--form c2-s2 --size-scale 0.67`, each only with "
-           "`--captain-ruling R22`) | T3 | x |\n")
+           f"C2's command also `{OPT['F1']}`, `{OPT['F3']}` and `{OPT['F2']}`, each only with `--captain-ruling R22`) "
+           "| T3 | x |\n")
 ROW_R41 = "| R41 (the captain's yes of a day; ruling, no run, not a try) | T3 | y |\n"
+
+
+def lift_row(*names: str, row: str = "R44", words: str = "the 5% check gates nothing for it",
+             ruling: str = "ruling, no run, not a try") -> str:
+    files = " and ".join(f"`{OPT[n]}`" for n in names)
+    return f"| {row} (the captain's yes of a day; {ruling}; for {files}: {words}) | T3 | y |\n"
+
 
 # a stand-in for uv: it logs each call and fakes pytest, the builder (its exit set per output folder) and vec check
 FAKE_UV = r"""#!/bin/bash
@@ -126,10 +137,10 @@ def test_the_launcher_parses_and_deletes_fetches_and_uploads_nothing():
                    for line in code)
     assert not any(re.search(r"(^|[\s;&|(])(curl|wget|scp|rsync|ssh|sftp|ftp)(\s|$)", line) for line in code)
     assert not any(re.search(r"upload|submit|format_only|token", line, re.I) for line in code)
-    assert re.findall(r"\$\{\d+:\?([^}]*)\}", _sh()) == ["usage: t3_gonly_build.sh COMMIT RUN"] * 2
+    assert re.findall(r"\$\{\d+:\?([^}]*)\}", _sh()) == [USAGE] * 2
     for msg in re.findall(r"\$\{[A-Za-z0-9_]+:\?([^}]*)\}", _sh()):  # an apostrophe there opens a quote
         assert "'" not in msg and '"' not in msg, msg
-    assert _sh().startswith("#!/usr/bin/env bash\n") and "\nset -u\n" in _sh()
+    assert _sh().startswith("#!/usr/bin/env bash\n") and "\nset -u\n" in _sh() and "LIFT=${3:-}" in _sh()
 
 
 def test_the_recorded_hashes_are_the_committed_build_records():
@@ -145,7 +156,7 @@ def test_the_recorded_hashes_are_the_committed_build_records():
     assert want["C2G2_SHA"] == "014d2bf9d8ba7fdc56dcfba2a3b8aa77f0ea20bb806ebc2c1193e483d62712ac"
     for sha in want.values():
         assert sh.count(sha) == 1
-    # the first five as t3_c2g_build.sh's, whose own identity gates c2g_fc57ca9_g1 records
+    # the first five as t3_c2g_build.sh's, whose own identity gates t3c2g_fc57ca9_g1 records
     c2g_sh = (REPO / "experiments" / "t3_decomp" / "t3_c2g_build.sh").read_text()
     five = dict(re.findall(r"^([A-Z0-9]+_SHA)=([0-9a-f]{64})  #", c2g_sh, flags=re.M))
     assert five == {k: v for k, v in want.items() if k != "C2G2_SHA"}
@@ -155,7 +166,8 @@ def test_the_recorded_hashes_are_the_committed_build_records():
 def test_the_commands_and_the_step_order():
     sh = _sh()
     for name in FILES:
-        assert f'{name}_ARGS="{ARGS[name]}"' in sh and f"{name}={FILES[name]}" in sh
+        assert f'{name}_OPT="{OPT[name]}"' in sh and f'{name}_ARGS="${name}_OPT --captain-ruling R22"' in sh
+        assert f"{name}={FILES[name]}" in sh
     assert f"DEC={DEC}" in sh and f"WT={WT}" in sh and "BOARD=T3:bcatenin" in sh
     assert "RUN_DIR=$HOME/v/virtual-embryo-challenge/runs/t3_decomp/gata4_20261028T122425Z  # read only" in sh
     assert ('$PY experiments/t3_decomp/build_two_knockout.py build "$DEC" --wt "$WT" --run-dir "$RUN_DIR" --board '
@@ -165,15 +177,15 @@ def test_the_commands_and_the_step_order():
     assert 'uv run --frozen --no-sync vec check "$d/$name" --board "$BOARD" > /dev/null 2>&1 || return 13' in sh
     for step, name, var, code, args in IDENTITY:
         assert f'STEP={step}\nbegin\nidentity {name} "${var}" {code} {args}\nstep_ok\n' in sh
-    for n in ("1", "2", "3"):
+    for n in ("1", "3", "2"):
         assert (f'for STEP in f{n}a f{n}b; do begin; build "${{STEP:2}}" "$F{n}" $F{n}_ARGS || finish $?; step_ok; '
                 'done') in sh
-    for n, code in (("1", 31), ("2", 32), ("3", 33)):
+    for n, code in (("1", 31), ("3", 33), ("2", 32)):
         assert (f'cmp -s "$O/a/$F{n}" "$O/b/$F{n}" || {{ echo "stopped: the two builds of $F{n} differ" >&2; '
                 f'finish {code}; }}') in sh
     assert '(cd "$O" && sha256sum gate/*.h5ad a/*.h5ad b/*.h5ad) > "$S/SHA256SUMS" || finish 39' in sh
     marks = ["STEP=gate", "STEP=tests", *[f"STEP={i[0]}\n" for i in IDENTITY], "for STEP in f1a f1b",
-             "for STEP in f2a f2b", "for STEP in f3a f3b", "STEP=pair", "STEP=done"]
+             "for STEP in f3a f3b", "for STEP in f2a f2b", "STEP=pair", "STEP=done"]
     order = [sh.index(m) for m in marks]
     assert order == sorted(order)
     assert '[ "$st" = "$COMMIT True" ] || return 15' in sh
@@ -206,35 +218,37 @@ def test_the_gate_lines_and_the_builder_s_strings():
     gate = sh[sh.index("STEP=gate"):sh.index("STEP=tests")]
     assert '[ -z "$(git status --porcelain 2> /dev/null)" ]' in gate
     assert "[ \"$(grep -c '^| R22 ' experiments/harness/TRIES.md)\" = 1 ]" in gate
-    assert ("for opt in " + " ".join(f"'{o}'" for o in OPT22[:3]) + " \\\n    " + " ".join(f"'{o}'" for o in OPT22[3:])
-            + "; do") in gate
-    assert [int(c) for c in re.findall(r"finish (\d+)", gate)] == [96, 98, 95, 95, 93]
+    assert ("for opt in \"$F1_OPT\" \"$F3_OPT\" \"$F2_OPT\" '--form c2-s2 --gata4-exponent 2.0' '--gata4-exponent "
+            "2.0' \\\n    '--captain-ruling R22'; do\n  if ! names \"$first\" \"$opt\"; then") in gate
+    assert "printf '%s\\n' \"$1\" | grep -o '`[^`]*`' | grep -qxF -- \"\\`$2\\`\"" in sh  # one whole string
+    assert "for words in 'ruling, no run' 'the 5% check gates nothing for it'; do" in gate
+    for n in ("1", "3", "2"):
+        assert (f'if names "$lift" "$F{n}_OPT"; then F{n}_ARGS="$F{n}_ARGS --den-ruling $LIFT"; '
+                f'LIFTED="$LIFTED F{n}"; fi') in gate
+    assert [int(c) for c in re.findall(r"finish (\d+)", gate)] == [96, 98, 95, 95, 94, 94, 94, 93]
     assert gate.index('echo "$head" > "$S/head"') > gate.index("finish 93")
     bk = _builder()
-    assert OPT22 == [bk.GONLY_OPTION_G, bk.GONLY_OPTION_S, bk.C2G_OPTION, bk.G2_OPTION,
-                     f"`--captain-ruling {bk.G2_ROW}`"]
-    assert FILES == bk.GONLY_FILES
+    assert OPT == bk.GONLY_OPTIONS and FILES == bk.GONLY_FILES
+    assert GATE22[3:] == [bk.C2G_OPTION.strip("`"), bk.G2_OPTION.strip("`"), f"--captain-ruling {bk.G2_ROW}"]
+    assert bk.GONLY_LIFT_WORDS == "the 5% check gates nothing for it"
     assert (bk.EXIT_GUARD_FAILED, bk.EXIT_FACTOR_MISMATCH, bk.EXIT_REFUSED) == (6, 5, 2)
-    # each file's arguments are its option strings (without their backticks) and the ruling, after --form c2-s2
-    assert ARGS["F1"].split() == ["--form", bk.GONLY_FORM, *bk.GONLY_OPTION_G.strip("`").split(), "--captain-ruling",
-                                  bk.G2_ROW]
-    assert ARGS["F2"].split() == [*bk.GONLY_OPTION_S.strip("`").split(), "--captain-ruling", bk.G2_ROW]
-    assert ARGS["F3"] == "--form c2-s2 --gata4-exponent inf --size-scale 0.67 --captain-ruling R22"
 
 
 def test_the_builder_takes_the_commands_the_launcher_runs(tmp_path):
     bk = _builder()
     p = tmp_path / "TRIES.md"
-    p.write_text(f"# ledger\n{ROW_R22}{ROW_R41}")
+    p.write_text(f"# ledger\n{ROW_R22}{ROW_R41}{lift_row('F1', 'F2', 'F3')}")
     for name, args in ARGS.items():
         a = args.split()
         g = math.inf if "--gata4-exponent" in a else None
         s = float(a[a.index("--size-scale") + 1]) if "--size-scale" in a else None
         assert bk.is_gonly_command(a[1], g, s)
         rec = bk.check_c2_gonly(a[1], g, s, a[a.index("--captain-ruling") + 1], p)
-        assert rec["name"] == name and rec["file"] == FILES[name]
-    assert bk.check_c2_gata4("c2-s2", 2.0, "R22", p)["option"] == OPT22[2]  # the last identity gate's line
-    assert bk.check_gata4("c1-s2", 2.0, "R22", p)["option"] == OPT22[3]  # the one before
+        assert rec["name"] == name and rec["file"] == FILES[name] and rec["den_ruling"] is None
+        lifted = bk.check_c2_gonly(a[1], g, s, "R22", p, den_ruling="R44")
+        assert lifted["den_ruling"]["row"] == "R44" and lifted["den_ruling"]["option"] == f"`{OPT[name]}`"
+    assert bk.check_c2_gata4("c2-s2", 2.0, "R22", p)["option"] == f"`{GATE22[3]}`"  # the last identity gate's line
+    assert bk.check_gata4("c1-s2", 2.0, "R22", p)["option"] == f"`{GATE22[4]}`"  # the one before
 
 
 # ------------------------------------------------------------------ the launcher, run for real
@@ -310,19 +324,25 @@ def _calls(tmp_path: Path) -> list[str]:
     return log.read_text().splitlines() if log.exists() else []
 
 
-def test_a_whole_run_with_the_stand_in_hashes(tmp_path):
-    repo, env, head = _repo(tmp_path, sh=_with_stand_in_hashes(_sh()))
-    res = _run(repo, env, head, "r1")
+@pytest.mark.parametrize("lift,lifted", [(None, set()), ("F1 F3", {"F1", "F3"}), ("F2", {"F2"}),
+                                         ("F1 F2 F3", {"F1", "F2", "F3"})])
+def test_a_whole_run_with_the_stand_in_hashes(tmp_path, lift, lifted):
+    tries = ROW_R22 + ROW_R41 + (lift_row(*lift.split()) if lift else "")
+    repo, env, head = _repo(tmp_path, tries=tries, sh=_with_stand_in_hashes(_sh()))
+    res = _run(repo, env, head, "r1", *(["R44"] if lift else []))
     assert res.returncode == 0, res.stderr
     s = _scratch(tmp_path)
     assert _exits(s) == {**dict.fromkeys(STEPS, "0"), "all": "0"}
     assert (s / "head").read_text().strip() == head
+    assert (s / "lift").read_text().strip() == ("R44 " + " ".join(f for f in ("F1", "F3", "F2") if f in lifted)
+                                                if lift else "none")
+    args = {f: ARGS[f] + (" --den-ruling R44" if f in lifted else "") for f in FILES}
     o = repo / "runs" / f"t3gonly_{head[:7]}_r1"
     sums = (s / "SHA256SUMS").read_text()
     assert (o / "SHA256SUMS").read_text() == sums
     words = sums.split()
-    want = {f"gate/{name}": _sha(_content(args)) for _, name, _, _, args in IDENTITY}
-    want |= {f"{side}/{FILES[f]}": _sha(_content(ARGS[f])) for _, side, f in BUILDS}
+    want = {f"gate/{name}": _sha(_content(a)) for _, name, _, _, a in IDENTITY}
+    want |= {f"{side}/{FILES[f]}": _sha(_content(args[f])) for _, side, f in BUILDS}
     assert dict(zip(words[1::2], words[0::2], strict=True)) == want and len(words) == 2 * 12
     assert len({want[f"a/{FILES[f]}"] for f in FILES}) == 3  # three different files, each pair one sha256
     assert (s / "stamps").read_text().splitlines() == [f"gate/{name} {head} True" for _, name, _, _, _ in IDENTITY] + [
@@ -333,10 +353,11 @@ def test_a_whole_run_with_the_stand_in_hashes(tmp_path):
     fixed = f"--wt {WT} --run-dir {run_dir} --board T3:bcatenin --seed 1000001"
     tool = [c for c in calls if "build_two_knockout.py" in c]
     want_tool = [f"run --frozen --no-sync python -I -B experiments/t3_decomp/build_two_knockout.py build {DEC} {fixed} "
-                 f"{args} --out runs/t3gonly_{head[:7]}_r1/gate/{name}" for _, name, _, _, args in IDENTITY]
+                 f"{a} --out runs/t3gonly_{head[:7]}_r1/gate/{name}" for _, name, _, _, a in IDENTITY]
     want_tool += [f"run --frozen --no-sync python -I -B experiments/t3_decomp/build_two_knockout.py build {DEC} "
-                  f"{fixed} {ARGS[f]} --out runs/t3gonly_{head[:7]}_r1/{side}/{FILES[f]}" for _, side, f in BUILDS]
+                  f"{fixed} {args[f]} --out runs/t3gonly_{head[:7]}_r1/{side}/{FILES[f]}" for _, side, f in BUILDS]
     assert tool == want_tool
+    assert not any("--den-ruling" in c for c in tool[:6])  # the identity gates never take the lifting row
     assert len([c for c in calls if c.startswith("run --frozen --no-sync vec check")]) == 12
     assert sorted(p.name for p in o.iterdir()) == ["SHA256SUMS", "a", "b", "gate"]
     assert sorted(p.name for p in (o / "a").iterdir() if p.suffix == ".h5ad") == sorted(FILES.values())
@@ -347,21 +368,21 @@ def test_a_whole_run_with_the_stand_in_hashes(tmp_path):
     ({"fail": "*/gate/identity-s1.h5ad 1"}, "ids1", 11),
     ({"fail": "*/gate/identity-s1.h5ad 2"}, "ids1", 12),
     ({"fail": "*/gate/T3_c1_s2_g2.h5ad 5"}, "c1g2", 17),  # line 2's own factor check
-    ({"fail": "*/gate/T3_c2_s2_g2.h5ad 6"}, "c2g2", 16),  # line 3's own guard
+    ({"fail": "*/gate/T3_c2_s2_g2.h5ad 6"}, "c2g2", 16),  # line 3's own 5% guard
     ({"fail": "*/gate/T3_c2_s2_g2.h5ad 5"}, "c2g2", 17),
     ({"check_exit": 1}, "ids1", 13),
     ({"unclean": "*/gate/c2-s2.h5ad"}, "c2s2", 15),
     ({"unclean": "*/gate/T3_c2_s2_g2.h5ad"}, "c2g2", 15),
-    ({"fail": "*/a/T3_c2_s2_gonly.h5ad 6"}, "f1a", 16),  # a guard stops F1: nothing written
-    ({"fail": "*/a/T3_c2_s2_gonly.h5ad 5"}, "f1a", 17),  # the factor is not the guards'
+    ({"fail": "*/a/T3_c2_s2_gonly.h5ad 6"}, "f1a", 16),  # a check stops F1: a stop, nothing written
+    ({"fail": "*/a/T3_c2_s2_gonly.h5ad 5"}, "f1a", 17),  # the factor is not the checks'
     ({"fail": "*/b/T3_c2_s2_gonly.h5ad 2"}, "f1b", 12),
-    ({"fail": "*/a/T3_c2_s2_s067.h5ad 6"}, "f2a", 16),
-    ({"fail": "*/b/T3_c2_s2_s067.h5ad 1"}, "f2b", 11),
     ({"fail": "*/a/T3_c2_s2_gonly_s067.h5ad 6"}, "f3a", 16),
     ({"unclean": "*/b/T3_c2_s2_gonly_s067.h5ad"}, "f3b", 15),
+    ({"fail": "*/a/T3_c2_s2_s067.h5ad 6"}, "f2a", 16),
+    ({"fail": "*/b/T3_c2_s2_s067.h5ad 1"}, "f2b", 11),
     ({"differ": "*/b/T3_c2_s2_gonly.h5ad"}, "pair", 31),
-    ({"differ": "*/b/T3_c2_s2_s067.h5ad"}, "pair", 32),
     ({"differ": "*/b/T3_c2_s2_gonly_s067.h5ad"}, "pair", 33),
+    ({"differ": "*/b/T3_c2_s2_s067.h5ad"}, "pair", 32),
 ])
 def test_each_stop_after_the_gate(tmp_path, ctl, step, code):
     repo, env, head = _repo(tmp_path, sh=_with_stand_in_hashes(_sh()), ctl=ctl)
@@ -404,29 +425,62 @@ def _stopped_at_the_gate(tmp_path: Path, code: int, run: str = "r1") -> None:
     assert not list((s / "tmp").iterdir()) and not _calls(tmp_path)
 
 
-LEDGER_REFUSALS = [
+R22_REFUSALS = [
     (ROW_R41, "exactly one row R22"),
     (ROW_R22 + ROW_R22 + ROW_R41, "exactly one row R22"),
     (ROW_R22.replace("| R22 (", "| R22b (") + ROW_R41, "exactly one row R22"),
-    *[(ROW_R22.replace(o, o.strip("`")) + ROW_R41, f"does not name {o}") for o in OPT22],  # each without backticks
-    (ROW_R22.replace("`--gata4-exponent inf`", "`--form c2-s2 --gata4-exponent inf`") + ROW_R41,
-     "does not name `--gata4-exponent inf`"),
-    (ROW_R22.replace("`--form c2-s2 --size-scale 0.67`", "`--size-scale 0.67`") + ROW_R41,
-     "does not name `--form c2-s2 --size-scale 0.67`"),
-    (ROW_R22.replace("; by the options on C2's command also `--gata4-exponent inf` and `--form c2-s2 --size-scale "
-                     "0.67`, each only with `--captain-ruling R22`) | T3 | x |",
-                     ") | T3 | `--gata4-exponent inf` `--form c2-s2 --size-scale 0.67` |") + ROW_R41,
-     "does not name `--gata4-exponent inf`"),  # named outside the first cell only
+    *[(ROW_R22.replace(f"`{o}`", o) + ROW_R41, f"does not name `{o}` as one whole string") for o in GATE22],
+    (ROW_R22.replace(f"`{OPT['F1']}`", "`--gata4-exponent inf`") + ROW_R41,
+     f"does not name `{OPT['F1']}` as one whole string"),  # without its form
+    (ROW_R22.replace(f"`{OPT['F1']}`", f"`a`{OPT['F1']}`b`") + ROW_R41,
+     f"does not name `{OPT['F1']}` as one whole string"),  # in the text, not as one whole string
+    (ROW_R22.replace(f"`{OPT['F2']}`", "`--size-scale 0.67`") + ROW_R41,
+     f"does not name `{OPT['F2']}` as one whole string"),
+    (ROW_R22.replace(f"; by the options on C2's command also `{OPT['F1']}`, `{OPT['F3']}` and `{OPT['F2']}`, each "
+                     "only with `--captain-ruling R22`) | T3 | x |",
+                     f") | T3 | `{OPT['F1']}` `{OPT['F3']}` `{OPT['F2']}` |") + ROW_R41,
+     f"does not name `{OPT['F1']}` as one whole string"),  # named outside the first cell only
 ]
 
 
-@pytest.mark.parametrize("tries,says", LEDGER_REFUSALS, ids=[f"ledger-{i}" for i in range(len(LEDGER_REFUSALS))])
+@pytest.mark.parametrize("tries,says", R22_REFUSALS, ids=[f"r22-{i}" for i in range(len(R22_REFUSALS))])
 def test_each_ledger_refusal(tmp_path, tries, says):
     repo, env, head = _repo(tmp_path, tries=tries)
     res = _run(repo, env, head, "r1")
     assert res.returncode == 95 and says in res.stderr, res.stderr
     _stopped_at_the_gate(tmp_path, 95)
     assert not (repo / "runs").exists()
+
+
+LIFT_REFUSALS = [
+    ("", "exactly one row R44"),
+    (lift_row("F1") * 2, "exactly one row R44"),
+    (lift_row("F1", row="R45"), "exactly one row R44"),
+    (lift_row("F1", ruling="a note"), "does not say: ruling, no run"),
+    (lift_row("F1", words="the 5% check gates nothing for them"), "does not say: the 5% check gates nothing for it"),
+    (lift_row("F1", "F2", "F3").replace("`", ""), "names none of the three option strings"),
+    (lift_row("F1").replace(f"`{OPT['F1']}`", "`--gata4-exponent inf`"), "names none of the three option strings"),
+]
+
+
+@pytest.mark.parametrize("lift,says", LIFT_REFUSALS, ids=[f"lift-{i}" for i in range(len(LIFT_REFUSALS))])
+def test_each_lifting_row_refusal(tmp_path, lift, says):
+    repo, env, head = _repo(tmp_path, tries=ROW_R22 + ROW_R41 + lift)
+    res = _run(repo, env, head, "r1", "R44")
+    assert res.returncode == 94 and says in res.stderr, res.stderr
+    _stopped_at_the_gate(tmp_path, 94)
+    assert not (repo / "runs").exists()
+
+
+def test_an_odd_lifting_row_or_a_fourth_argument_is_refused_before_anything_is_made(tmp_path):
+    repo, env, head = _repo(tmp_path, tries=ROW_R22 + ROW_R41 + lift_row("F1"))
+    for i, bad in enumerate(["r44", "R", "R44a", "44", "R4-4", "R 44", "R44;x"]):
+        res = _run(repo, env, head, f"r{i}", bad)
+        assert res.returncode == 89 and "LIFT_ROW takes R and digits only" in res.stderr, (bad, res.stderr)
+        assert not _scratch(tmp_path, f"r{i}").exists()
+    res = _run(repo, env, head, "r9", "R44", "extra")
+    assert res.returncode == 89 and "at most three arguments" in res.stderr and not _scratch(tmp_path, "r9").exists()
+    assert not _calls(tmp_path) and not (repo / "runs").exists()
 
 
 def test_a_wrong_commit_a_prefix_and_an_unclean_tree_are_refused(tmp_path):
@@ -459,7 +513,7 @@ def test_a_run_name_is_never_reused_and_an_odd_one_is_refused(tmp_path):
     assert odd.returncode == 90 and not _scratch(tmp_path, "a").exists()
     for argv in ((head,), ()):
         res = _run(repo, env, *argv)
-        assert res.returncode != 0 and "usage: t3_gonly_build.sh COMMIT RUN" in res.stderr
+        assert res.returncode != 0 and USAGE in res.stderr
 
 
 def test_an_existing_output_folder_is_refused_and_left_as_it_was(tmp_path):
@@ -473,11 +527,13 @@ def test_an_existing_output_folder_is_refused_and_left_as_it_was(tmp_path):
     assert sorted(p.name for p in o.iterdir()) == ["keep"]
 
 
-def test_a_call_that_passes_the_gate_writes_the_head_and_its_folder(tmp_path):
+def test_a_call_that_passes_the_gate_writes_the_head_the_lift_and_its_folder(tmp_path):
     repo, env, head = _repo(tmp_path, ctl={"tests_exit": 1})
     assert _run(repo, env, head, "r1").returncode == 10
     s = _scratch(tmp_path)
     assert _exits(s) == {"gate": "0", "tests": "10", "all": "10"} and (s / "head").read_text().strip() == head
-    assert sorted(p.name for p in s.iterdir()) == ["all.exit", "gate.exit", "head", "tests.exit", "tests.out", "tmp"]
+    assert sorted(p.name for p in s.iterdir()) == ["all.exit", "gate.exit", "head", "lift", "tests.exit", "tests.out",
+                                                   "tmp"]
+    assert (s / "lift").read_text().strip() == "none"
     o = repo / "runs" / f"t3gonly_{head[:7]}_r1"
     assert o.is_dir() and not list(o.iterdir())

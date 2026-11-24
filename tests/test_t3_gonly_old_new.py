@@ -53,7 +53,8 @@ LEDGER = (
     "| R22 (the captain's order of a day; ruling, no run; the T3 two-knockout builder is to take "
     "`--gata4-exponent 2.0` on `--form c1-s2`, only with `--captain-ruling R22`; by T3's third search line it is also "
     "to take `--form c2-s2 --gata4-exponent 2.0`, only with `--captain-ruling R22`; it is also to take "
-    "`--gata4-exponent inf` and `--form c2-s2 --size-scale 0.67`, each only with `--captain-ruling R22`) | T3 | x |\n"
+    "`--form c2-s2 --gata4-exponent inf`, `--form c2-s2 --size-scale 0.67` and "
+    "`--form c2-s2 --gata4-exponent inf --size-scale 0.67`, each only with `--captain-ruling R22`) | T3 | x |\n"
     "| R36 (the captain's named exception of a day; ruling, no run, not a try; the T3 two-knockout builder is to take "
     "`--composition-from allowed-s1` with `--form c2-s2` only with `--captain-ruling R36`) | T3 | y |\n")
 OPTION_SETS = [(f, {}, "world") for f in FORMS] + [
@@ -313,7 +314,7 @@ def test_old_and_new_gates_print_and_exit_alike(world, old, cw, tmp_path, gate):
 def test_the_one_routed_value_is_inf_on_c2_s2(world, old, cw, tmp_path, kw):
     """--gata4-exponent inf on --form c2-s2: the old module refused it as a value other than 2.0; the new one routes
     it to the line, which refuses it here (a ledger without the line's string, or no ruling) and builds nothing."""
-    t = _ledger(tmp_path, LEDGER.replace("`--gata4-exponent inf`", "the weight inf"))
+    t = _ledger(tmp_path, LEDGER.replace("`--form c2-s2 --gata4-exponent inf`", "the weight inf"))
     for mod, says in ((old, "only 2.0"), (bk, "no single row R22" if kw.get("captain_ruling") else
                                           "only with --captain-ruling R22")):
         out = tmp_path / f"{mod.__name__}.h5ad"
@@ -343,3 +344,21 @@ def test_the_new_option_is_the_size_scale(world, old, cw, tmp_path):
     res_old, res_new = (CliRunner().invoke(m.app, args) for m in (old, bk))
     assert res_old.exit_code == 2 and res_old.stdout == "" and "--size-scale" in res_old.output
     assert res_new.exit_code == 2 and "refused" in res_new.stdout and not out.exists()
+
+
+@pytest.mark.parametrize("form,kw", [(f, {}) for f in FORMS] + [
+    ("c1-s2", {"gata4_exponent": 2.0, "captain_ruling": "R22"}), ("c2-s2", {"gata4_exponent": 2.0,
+                                                                             "captain_ruling": "R22"}),
+    ("c2-s2", {"composition_from": "allowed-s1", "captain_ruling": "R36"})])
+def test_the_other_new_option_is_the_den_ruling_and_no_old_command_takes_it(world, old, cw, tmp_path, form, kw):
+    """--den-ruling: the old module had no such parameter; the new one takes it with the options of F1, F2 or F3 only
+    and refuses it beside every old command, building nothing."""
+    t = _ledger(tmp_path)
+    out = tmp_path / "x.h5ad"
+    with pytest.raises(TypeError, match="den_ruling"):
+        old.build_form(cw.dec, form, world.wt, world.board, N, out, run_dir=world.run, seed=SEED, threads=2,
+                       tries=t, den_ruling="R44", **kw)
+    with pytest.raises(bs.Refused, match="--den-ruling is taken only with the options of F1, F2 or F3"):
+        bk.build_form(cw.dec, form, world.wt, world.board, N, out, run_dir=world.run, seed=SEED, threads=2,
+                      tries=t, den_ruling="R44", **kw)
+    assert not out.exists() and not out.with_suffix(".json").exists()
