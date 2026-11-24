@@ -13863,3 +13863,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     register rows; engineers blind to test scores write the reducers, the classifier, GA with its stability check,
     GB's script (its counted row first) and the builder option. Its clock: S2's licence by 2026-11-25 02:00 UTC, GA's
     pass by 08:00 UTC, or the line ends.
+- 2026-11-24 (vv), the captain reports three more headlines and each board's rule is applied by its letter (state at
+  18:58 UTC, 2026-11-24). Written by the AI assistant, which records the headlines only.
+  - **The paste (headlines, each with its file named for its board):** T3:bcatenin `T3_k23_s2_e4.h5ad` 62.17;
+    T2:embryo:test_interp `T2embryo_s2x_ovhi.h5ad` 65.46; T1:test `T1_s2rcCm20.h5ad` 72.33. Each file's sha256 on disk
+    matches its sheet row. The paste's per-metric lines, ranks and file sizes are not recorded or used. Rows added to
+    `results/manual_uploads.csv`.
+  - **Each rule by its letter.** Each of the three scored below its board's best, which stays (T1 the 2.5 file, T3 C2,
+    the embryo O). No condition turns on any of them: the T1 files that once waited on Cm20's headline are due by row
+    R43 whatever it reads, and by the embryo's order rule no score decides another embryo file. Standing unchanged:
+    overall 202.445.
+  - **Due now (7):** T1 `T1_s2rcCm25.h5ad`, `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`,
+    `T1_s2rcB25d20.h5ad`, `T1_s2rcCm30.h5ad`; T3 `T3_c1_s2_g2.h5ad`. Reached as well: `T1_s2rcMSB.h5ad`,
+    `T1_s2rcA15.h5ad`. Waiting: `T1_s2rcA20.h5ad`. Last of all: `T3_c2_s2_g2.h5ad`. In work: the files of rows R44 to
+    R50.

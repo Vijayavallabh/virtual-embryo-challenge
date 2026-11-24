@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-24, 18:47 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-24, 18:58 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -9,19 +9,20 @@ order. This sheet holds no score: where a file waits on a condition, the conditi
 
 ## The uploads: what is due now and what waits on a score
 
-Eight uploads were used on 2026-11-24: four before the limit was lifted (decision log 2026-11-24 (nn)) and four after
-(decision log 2026-11-24 (rr)). With no limit (row R42, decision log 2026-11-24 (pp)), every due file can go now and
-nothing waits for room: ten files are due, seven of them T1 search files (six had conditions the captain dropped: row
-R43, decision log 2026-11-24 (qq)), and the two T1 files kept last are reached as well. Only `T1_s2rcA20.h5ad` waits
-on a score. `T3_c2_s2_g2.h5ad` keeps its place after every queued file, by its rule. Between boards the captain
-decides; by the challenge's formula a point on T1 or T3 counts twice a point on the heart or the embryo board.
+Eleven uploads were used on 2026-11-24: four before the limit was lifted (decision log 2026-11-24 (nn)) and seven
+after (decision log 2026-11-24 (rr) and (vv)). With no limit (row R42, decision log 2026-11-24 (pp)), every due file
+can go now and nothing waits for room: seven files are due, six of them T1 search files whose conditions the captain
+dropped (row R43, decision log 2026-11-24 (qq)), and the two T1 files kept last are reached as well. Only
+`T1_s2rcA20.h5ad` waits on a score. `T3_c2_s2_g2.h5ad` keeps its place after every queued file, by its rule. Between
+boards the captain decides; by the challenge's formula a point on T1 or T3 counts twice a point on the heart or the
+embryo board.
 
-**Due now (10), in the order of each board's table below:**
+**Due now (7), in the order of each board's table below:**
 
-- T1: `T1_s2rcCm20.h5ad`, `T1_s2rcCm25.h5ad`, `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`,
-  `T1_s2rcB25d20.h5ad`, `T1_s2rcCm30.h5ad`
-- T3: `T3_k23_s2_e4.h5ad`, `T3_c1_s2_g2.h5ad`
-- Embryo: `T2embryo_s2x_ovhi.h5ad`
+- T1: `T1_s2rcCm25.h5ad`, `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`,
+  `T1_s2rcCm30.h5ad`
+- T3: `T3_c1_s2_g2.h5ad`
+- Embryo: none (every handed-over embryo file is uploaded)
 - Heart: none (the line ended at OTS10)
 
 **Waiting on a score (1):** only `T1_s2rcA20.h5ad`, in the last-on-T1 list below.
@@ -45,9 +46,9 @@ extra file beside O, built only if its step 0 (row E56) passes. Heart (rows R49 
 `T2heart_organ_ts10_ls.h5ad` (one, on the better base), only if its gates GA and GB pass and after a priced question.
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
-2026-11-23 (cc) and (gg)), and eight on 2026-11-24, two per board (decision log 2026-11-24 (nn) and (rr)). The boards'
-best headlines stand with `T1_s2rcB25.h5ad` (the 2.5 file), `T3_c2_s2.h5ad` (C2), `T2heart_organ_ts10_half.h5ad`
-(OTS10) and `T2embryo_s2x_ov.h5ad` (O).
+2026-11-23 (cc) and (gg)), and eleven on 2026-11-24 (decision log 2026-11-24 (nn), (rr) and (vv)). The boards' best
+headlines stand with `T1_s2rcB25.h5ad` (the 2.5 file), `T3_c2_s2.h5ad` (C2), `T2heart_organ_ts10_half.h5ad` (OTS10)
+and `T2embryo_s2x_ov.h5ad` (O).
 
 Five files are skipped by the captain's words of 2026-11-23 and 2026-11-24: they hold no place in any order below and
 stand in a section of their own at the end.
@@ -68,7 +69,6 @@ with no limit they go after T1's due search files (the main session's reading); 
 
 | Order | File | sha256 | Condition |
 |---|---|---|---|
-| third search | `T1_s2rcCm20.h5ad` | `acce5f5f7097269bffebbfd583833e4c9c1c5ae77f1d5294dde6d13e197f863e` | none (its condition is met: C scored strictly above A) |
 | third search | `T1_s2rcCm25.h5ad` | `c5fb96a64075b6fbfb2f3066604d622ea8b89ac3a5e4f8a99d0fea7d93011dfd` | none (the captain dropped its condition: row R43) |
 | fifth search | `T1_s2rcB2d15.h5ad` | `fe4e7403d6257cc265a02d0a13d40cdb60a97e9fdc0647d6b5c7e318aedaed6c` | none (the captain dropped its condition: row R43) |
 | fifth search | `T1_s2rcB2d20.h5ad` | `bd12c66312ba32ab938b4ee71bd5c79e58a154d6fc56434012e6dad907e668dd` | none (the captain dropped its condition: row R43) |
@@ -85,20 +85,15 @@ Never uploaded: `builds/T1_s2.h5ad`.
 
 | Order | File | sha256 | Condition | Data used |
 |---|---|---|---|---|
-| 1 | `T3_k23_s2_e4.h5ad` | `9934f1b104fafed0514cff7bb1dec3f5e362e6a5068ae32711cbfc67f62b90f1` | none (its condition is met: K23 scored strictly above the barred s2) | released challenge data (the wild-type E8.75 cells and the released Mab21l2 knockout) and two public single-cell knockout studies of other genes, GEO GSE204906 (Dnmt3a and Dnmt3b nulls, E8.5) and GEO GSE277839 (a Usb1 knockout, E9.5), each as knockout-over-its-own-control changes on the panel genes. No data on a perturbation of beta-catenin or Gata4 from outside the release |
-| then | `T3_c1_s2_g2.h5ad` (the second search's file: C1 with the Gata4 table at double strength) | `e01e24facb6841a18a503655bcc5e9816304a993fe9a0dcfeca458c42ead1e16` | none; by its rule it comes after the files above (after CK and the E = 4 file when their condition is met), unless the captain places it earlier; with no cap per board it need not wait for a day | released challenge data only: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files the team unlocked; no outside data |
+| 1 | `T3_c1_s2_g2.h5ad` (the second search's file: C1 with the Gata4 table at double strength) | `e01e24facb6841a18a503655bcc5e9816304a993fe9a0dcfeca458c42ead1e16` | none; by its rule it comes after the files above (after CK and the E = 4 file when their condition is met), unless the captain places it earlier; with no cap per board it need not wait for a day | released challenge data only: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files the team unlocked; no outside data |
 | then | `T3_c2_s2_g2.h5ad` (the third search's one file: C2 with the Gata4 table at weight 2) | `014d2bf9d8ba7fdc56dcfba2a3b8aa77f0ea20bb806ebc2c1193e483d62712ac` | none; by its rule (row R41) it goes after every other file in this sheet, across boards (see 'Last of all' above), unless the captain places it ahead of a named file | released challenge data only: wild-type E8.75 cells and the released knockout tables transfer_mab21l2_all and gata4_pooled, in C2's size-held product, gata4_pooled at weight 2 (applied powers 0.6159 and 1.2318; C2: c on both). No outside data, no gene set. |
 
 ## Task 2, embryo
 
 Data used, for every embryo file: released challenge data only; no outside data.
 
-By the embryo's order rule no score decides whether, when or in what order another embryo file goes; the captain may
-use fewer, none, or another order.
-
-| Order | File | sha256 |
-|---|---|---|
-| 1 | `T2embryo_s2x_ovhi.h5ad` (O_hi) | `7e4d1eaafc40080d9d9c461d4b9396f0cee6353686538e79fb92ca31d1d2deeb` |
+No built embryo file is waiting: the three handed-over files are uploaded, and O holds the board's best.
+`T2embryo_s2x_ovsb.h5ad` (row R48) is in work, an extra file beside O, built only if its step 0 (row E56) passes.
 
 ## Task 2, heart
 
