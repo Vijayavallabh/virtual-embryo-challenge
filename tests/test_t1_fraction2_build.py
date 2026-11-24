@@ -196,7 +196,8 @@ def _refused(bt, monkeypatch, tmp_path, argv: list[str], match: str) -> str:
     (["--g-mom-damping", "1.0", "--captain-ruling", "R20"], "with --released-bet only"),
     # damping 1.0 with 2.0 is the third line's pair (tests/test_t1_line3_build.py): refused with R20 all the same
     ([*R20, "--g-mom-damping", "1.0"], "refused with --captain-ruling R20: only row R22"),
-    ([*R20, "--g-mom-damping", "1.5"], "with --g-mom-damping other than 0.5"),
+    # damping 1.5 with 2.0 is the fifth line's pair (tests/test_t1_line5_build.py): refused with R20 all the same
+    ([*R20, "--g-mom-damping", "1.5"], "refused with --captain-ruling R20: only row R22"),
     ([*R20, "--g-mom-damping", "0.75"], "with --g-mom-damping other than 0.5"),
     ([*R20, "--bet-strength", "0.5"], "with --released-bet and --bet-strength"),
     ([*R20, "--released-bet", "share_trend", "--bet-strength", "0.5"], "with --released-bet and --bet-strength"),
