@@ -3197,3 +3197,32 @@ The captain's words: "drop their conditions, and name the files" if it improves 
 rules no longer decide whether these six go up; T1's best is still chosen by headline only. `T1_s2rcA20.h5ad` still
 waits on A15's headline. No T1 headline beyond those of decision log 2026-11-24 (nn) had reached the main session at
 this note's commit.
+
+## Amendment of 2026-11-24: T1's lines 8 and 9, Blood's own momentum and MS at 2.5 (rows R44, R45, R46; the captain's yes; decision log 2026-11-24 (ss))
+
+In force since this amendment's commit at 18:36 UTC on 2026-11-24, on the captain's answer in a dialog, verbatim: "Yes
+to all three (Recommended)"; the option recorded these words as the captain's. A designer blind to test scores
+proposed the files and a cold challenger corrected them (the round of 2026-11-24 on outside data at scale). At this
+commit no T1 headline beyond those of decision log 2026-11-24 (nn) and (rr) has reached the main session.
+
+**Line 8** (row R44; "Yes, T1_s2rcB25H05: lift T64's close and reverse R1 for Blood in it, under R22, with H10 and
+H20"): the banked command `t1 --g-mom --base lib3 --feng-groups recomputed --feng-fraction-mult 2.5` with
+`--held-momentum d --captain-ruling R44`. On the drawn cells labelled Blood only, Blood's own released change from
+E9.5 to E10.5, fitted on Blood-labelled cells at both ends from libraries 1 and 2 (library 3 never in the fit),
+through the MS step's calls (eps 0.5, min_cells 20, R2's genes held, depth kept), at damping d, on its own stream
+[seed, 6], before g_mom; Macrophage and Early VIC stay held. Files named now: T1_s2rcB25H05 (d = 0.5); T1_s2rcB25H10
+(d = 1.0), uploaded only if H05's headline is strictly above the line's best; T1_s2rcB25H20 (d = 2.0), only if H10's
+is strictly above H05's. The line's best is the banked file T1_s2rcB25.h5ad's headline until a file of this line beats
+it. The line ends at its first file that does not beat the line's best, and after H20 in any case. Row T64's close is
+lifted for these three files only, as R33 lifted K27's; R1 is reversed for Blood in them only.
+
+**Line 9** (row R45; "Yes, T1_s2rcB25MS, MS at 2.5, under R22"): one file, T1_s2rcB25MS: row R23's MS step on the
+banked command, `--feng-fraction-mult 2.5 --direction-momentum all --captain-ruling R45`. R23's and R26's files are
+unchanged.
+
+**The pair** (row R46; "Yes, T1_s2rcB25MSH05 if both beat"): T1_s2rcB25MSH05, both steps together, named now and coded
+and built only if T1_s2rcB25H05 and T1_s2rcB25MS each score strictly above the banked file.
+
+Data used, for every file above: released challenge data and the outside heart atlas on recomputed groups (GEO
+GSE193346, register row X002). Nothing else changes: base, cells, shares, depth, seed, the 2.5 step, g_mom at 0.5,
+R2's genes; every file is chosen by headline only, and the banked file stays until a file beats it.

@@ -13811,3 +13811,23 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcCm30.h5ad`; T3 `T3_k23_s2_e4.h5ad`, `T3_c1_s2_g2.h5ad`; embryo
     `T2embryo_s2x_ovhi.h5ad`. Reached as well: `T1_s2rcMSB.h5ad`, `T1_s2rcA15.h5ad`. Waiting: `T1_s2rcA20.h5ad`. Last
     of all: `T3_c2_s2_g2.h5ad`.
+- 2026-11-24 (ss), the design round's T1 files: the captain says yes to all three; the T3 designer's counted reading
+  is recorded (state at 18:36 UTC, 2026-11-24). Written by the AI assistant.
+  - **The round so far** (four designers blind to test scores, one per board, then a cold challenger each; their files
+    in the main session's working folder, round_1124_ds). T1: no large lever; the outside-data lines D1 to D3 struck
+    (D1 reopens row T71's closed line and its test embryos fail the strict window of 2026-11-23); the steps on the 3.0
+    file not built (their conditions on the 3.0 file fail); the Blood file, MS at 2.5 and their pair put. Heart, T3
+    and embryo: designs and challenges in; their questions follow.
+  - **The captain's answer** to a one-question dialog: "Yes to all three (Recommended)", the option recording the
+    words "Yes, T1_s2rcB25H05: lift T64's close and reverse R1 for Blood in it, under R22, with H10 and H20"; "Yes,
+    T1_s2rcB25MS, MS at 2.5, under R22"; "Yes, T1_s2rcB25MSH05 if both beat". Recorded as rows R44, R45 and R46, the
+    amendment of T1's lines 8 and 9 in `docs/S2_RULES.md` (re-pinned) and notes on rows R1 and T64. The builder
+    options are being coded by an engineer blind to test scores on branch `campaign/t1-hm` (started before the yes, as
+    campaign code may be; nothing is built for upload before review).
+  - **Row N61:** the T3 designer's cosine and correlation figures between the two released knockout tables set the
+    barred factor beside the g fold's target, a counted reading by the strict reading of rows N59 and N60 (one T3 try,
+    number 81; found by the T3 challenger); the T3 engineer's one-off guard run recomputed three of the same figures
+    and is counted with it; the distinctness guard is dropped. AGENTS.md rule 3's list of breach rows now names N61.
+  - **An exposure, disclosed by the T3 engineer:** before reading its rules it ran git log, and the subject of commit
+    0d52b4b names which heart file holds that board's best headline (no value). It used it for nothing. From this
+    entry on, commit subjects name no board's best file.

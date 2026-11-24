@@ -34,7 +34,7 @@ assistant under the captain's delegation of 2026-11-02, and he can overrule them
    beyond the baseline and the counting backtests or folds that would show it, none tuned or selected on (on T3 the
    cross-knockout folds). A test score is never that evidence. A reading that compares a predictor with a fold or
    backtest target is a try even when it runs from a scratch folder and never calls the scorer: its row comes first
-   (`TRIES.md` rows N25, N59 and N60 record the breaches, 2026-11-13 and 2026-11-24).
+   (`TRIES.md` rows N25, N59, N60 and N61 record the breaches, 2026-11-13 and 2026-11-24).
 4. **Weakest weighted component first.** Before choosing or changing work on an entry, read the headroom tables in
    `TRIES.md`. A board's next try targets its scored group with the most points left (as `headroom.py` prints it) and
    an open lever; a try elsewhere says why. Overall units, ties and closed levers: `TRIES.md` rule 6.
