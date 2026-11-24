@@ -14126,3 +14126,13 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **A launch note.** Run r1 stopped at its test step (`uv` not on the launch PATH), before any reading, counting
     nothing; r2 ran with the PATH set in its launch environment. The launcher should export the PATH in its own text,
     as the build launchers do (a later fix).
+- 2026-11-24 (vvv), the T3 depth line's three files are built, before any score (state at 23:13 UTC, 2026-11-24).
+  Written by the AI assistant, which designed none of it.
+  - **The build.** `experiments/t3_decomp/t3_depth_build.sh 7e13a67... d1 R53 all` on `~/v/vec-campaign-c`, clean,
+    after a traced refusal; the six identity gates gave the recorded bytes; each file built twice with one sha256:
+    **`T3_c2_s2_dd.h5ad`** 2bc0a3f428d9...; **`T3_c2_s2_ddh.h5ad`** b22eea0d8f6e...; **`T3_c2_s2_dg.h5ad`**
+    ecf54089f2da... (full sha256 in the rules note and the record).
+  - **Their standing.** Due now, the three together (row R53, read K30 NAME dx1). Data used: released challenge data
+    only: wild-type E8.75 cells, the released knockout tables transfer_mab21l2_all and gata4_pooled in C2's size-held
+    product, and the frozen per-label depth ratios of the two Gata4 validation files (the decision file of
+    2026-10-28); no outside data, no gene set.

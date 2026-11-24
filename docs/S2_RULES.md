@@ -3429,3 +3429,17 @@ stops or is void, nothing is built and C2 stays.
 Data used, if built: released challenge data only: wild-type E8.75 cells, the released knockout tables
 transfer_mab21l2_all and gata4_pooled in C2's size-held product, and the frozen per-label depth ratios of the two
 Gata4 validation files (the decision file of 2026-10-28); no outside data, no gene set.
+
+## Note of 2026-11-24: the files of T3's depth line are built (row R53; read K30; decision log 2026-11-24 (vvv))
+
+Merged at 7ee3cb6 (builder) and d9aa420 (read) after independent reviews that found no blocker; row K30 read NAME dx1
+at e7e1abb; at the clean commit 7e13a67, on `~/v/vec-campaign-c`, the six identity gates rebuilt the recorded bytes,
+and each file was built twice with one sha256. **The files:** `runs/manual_upload/T3_c2_s2_dd.h5ad`, sha256
+2bc0a3f428d998cc4da1c653e358f777c21406a2a45be47e9ae8123a3fdb05ee; `runs/manual_upload/T3_c2_s2_ddh.h5ad`, sha256
+b22eea0d8f6ec798007d042af9e4f2e70f429e4c6540834bdd19f8ee285b8915; `runs/manual_upload/T3_c2_s2_dg.h5ad`, sha256
+ecf54089f2daf3ec8b682c144af0d1d537755c272fdd4ed1c0a851bff1030d79 (build record
+`experiments/builds/results/t3depth_7e13a67_d1.txt`). They go up together (R53); the board keeps its best headline.
+Added before any score of any of them; no T3 headline beyond those of the decision log through 2026-11-24 (lll) had
+reached the main session at this note's commit. Data used: released challenge data only: wild-type E8.75 cells, the
+released knockout tables transfer_mab21l2_all and gata4_pooled in C2's size-held product, and the frozen per-label
+depth ratios of the two Gata4 validation files (the decision file of 2026-10-28); no outside data, no gene set.

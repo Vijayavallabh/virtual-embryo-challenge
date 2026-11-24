@@ -1,0 +1,16 @@
+The T3 depth line (row R53, read K30 NAME): T3_c2_s2_dd, T3_c2_s2_ddh, T3_c2_s2_dg
+==========================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-24 in ~/v/vec-campaign-c at commit 7e13a67 (main; clean tree) with `experiments/t3_decomp/t3_depth_build.sh 7e13a670215b6634ecdc6ddcc47eb5de630c032c d1 R53 all`, after its refusal path was traced (exit 96).
+Every exit record is 0. The six identity gates rebuilt the recorded bytes:
+  gate/identity-s1.h5ad  3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2
+  gate/identity-s2.h5ad  1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f
+  gate/c1-s2.h5ad  8718330866429dc089eaffd2f96f66936fe54134eba2d50f8126266e6a3e54b8
+  gate/c2-s2.h5ad  47111ac1d07e73c0c26e990a474dff0de94ae22d6a4474a569bcb674ae2b85a7
+  gate/T3_c1_s2_g2.h5ad  e01e24facb6841a18a503655bcc5e9816304a993fe9a0dcfeca458c42ead1e16
+  gate/T3_c2_s2_g2.h5ad  014d2bf9d8ba7fdc56dcfba2a3b8aa77f0ea20bb806ebc2c1193e483d62712ac
+The new files, each built twice into separate folders with one sha256, format-checked, each stamp of this commit and clean:
+  T3_c2_s2_dd.h5ad  2bc0a3f428d998cc4da1c653e358f777c21406a2a45be47e9ae8123a3fdb05ee
+  T3_c2_s2_ddh.h5ad  b22eea0d8f6ec798007d042af9e4f2e70f429e4c6540834bdd19f8ee285b8915
+  T3_c2_s2_dg.h5ad  ecf54089f2daf3ec8b682c144af0d1d537755c272fdd4ed1c0a851bff1030d79
+The local copies under runs/manual_upload/ are the same bytes. No log, size, shape or sidecar of these builds was read. No score of any of them exists at this record.
