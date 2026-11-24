@@ -2,6 +2,11 @@
 
 ## Current State
 
+- **2026-11-24, 00:16 UTC.** The captain lifted the 5% guard that had ended T3's new line ("[loosen it all the way]";
+  ruling row R30), so its one file, the Gata4 table at double strength on C1's command, is to be built after all. An
+  engineer is coding the option; a rehearsal of the existing T3 launcher runs on the DGX first, to see that the build
+  checkout still reproduces the recorded bytes. Decision log 2026-11-24 (d).
+
 - **2026-11-24, 00:10 UTC.** The captain reported the day's second scores: T1's 2.0 file (72.29) and T3's C2 (63.94)
   took their board's best; the heart's first trend file (56.51) and the embryo's sized copy-rows file (66.42) did not.
   Standing 201.38. The captain then said yes to the two new-file questions and renewed the bulk approval of outside

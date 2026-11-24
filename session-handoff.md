@@ -2,7 +2,29 @@
 
 ## Current Objective
 
-- **State at 2026-11-24, 00:10 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-24, 00:16 UTC (newest; it supersedes the bullets below where they differ; everything not named
+  here is as the bullet of 00:10 UTC).** Decision log through 2026-11-24 (d); next label (e). Ruling rows through R30;
+  next R31. RUNNING: two engineers blind to test scores, each in its own worktree (T1 line 5 on `campaign/t1-line5`;
+  T3's second line on `campaign/t3-gata4-weight-2`), and one rehearsal build on the DGX.
+  - **THE CAPTAIN LIFTED THE 5% GUARD OF T3's SECOND LINE** (own words "[loosen it all the way]" under a side note;
+    ruling row R30; log 2026-11-24 (d); rules amendment re-pinned). The line is alive again: its one file
+    `T3_c1_s2_g2.h5ad` (C1's command with `--gata4-exponent 2.0 --captain-ruling R22`, phi_M * phi_G ** 2, nothing
+    rescaled) is to be built; the guard's figures are recorded and stop nothing; the check that the factor applied is
+    the factor computed stays. Its place: after row K23's file, CK and the E = 4 file on their conditions, unless the
+    captain says otherwise.
+  - **THE CHEAP CHECK FIRST, THIS TIME:** a rehearsal of the existing launcher runs on the DGX in `~/v/vec-campaign-c`
+    at main 015cd3e (`build_two_knockout.sh <commit> s2`; scratch `~/v/scratch/t3two_015cd3e_s2`, output
+    `runs/t3_two_knockout_015cd3e_s2`), launched 00:14 UTC, with a local background waiter. It must rebuild:
+    identity-s1 3712c3f9988d, identity-s2 1b69521e3c28, c1-s2 8718330866429 (C1), c2-s2 47111ac1d07e (C2). If a hash
+    differs, the checkout's environment has drifted and must be put right before the real run. That checkout's
+    untracked K27 output was moved, not deleted, to `~/v/scratch/k27_results_from_campaign_c`.
+  - **T3 LINE 2, WHAT REMAINS:** the engineer's hand-back; a reviewer blind to test scores (agent tool; blocker
+    standard up front); merge; deliver the commit to `~/v/vec-campaign-c`, check it out detached and clean; trace a
+    refusal path of the new launcher argument; `build_two_knockout.sh <commit> s2 g2` detached with a background
+    waiter; copy the file to `runs/manual_upload/`; its sha256 into log entry 2026-11-23 (ff)'s line and the sheet
+    BEFORE any score; hand over with the Data-used text of the line (released challenge data only: wild-type E8.75
+    cells, the released Mab21l2 knockout and the released Gata4 validation knockout files; no outside data).
+- **State at 2026-11-24, 00:10 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-24 (c); next label (d). Ruling rows through R29; next R30 (row R22's first cell was amended twice,
   add-only). Register through X020; next X021. T1's next row is T73. Tries unchanged: T1 463, embryo 88, heart 97, T3
   74. RUNNING: one engineer, blind to test scores, on T1 line 5's builder pair and launcher (its own worktree, branch
