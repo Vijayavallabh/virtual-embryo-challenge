@@ -33,7 +33,7 @@ reading of the captain's words that kept them; the captain may place them anywhe
 **Last of all (1):** `T3_c2_s2_g2.h5ad`. By its rule (`docs/S2_RULES.md`, amendment of 2026-11-24 on T3's third search
 line, "Place and cost"; row R41) and the captain's default-place words "yes, T3_c2_s2_g2", it goes after every file
 queued at that yes, across boards. With no limit on uploads that place takes nothing from another file; the captain's
-words "yes, T3_c2_s2_g2 ahead of" and a queued file's name (for example `T3_ck_s2`) would send it with the due files.
+words "yes, T3_c2_s2_g2 ahead of" and a queued file's name (for example `T3_k23_s2_e4`) would send it with the due files.
 
 **In work, not built:** none.
 
