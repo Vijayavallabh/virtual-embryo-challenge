@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-24, 20:47 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-24, 20:48 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -39,6 +39,7 @@ words "yes, T3_c2_s2_g2 ahead of" and a queued file's name (for example `T3_k23_
 H05 and MS each beat the banked file. Heart: The composition files of row R50 are not built: the line ended at its
 screening. T1 (row R51, decision log 2026-11-24 (iii)): seven files around the combined-momentum file, `T1_s2rcMS20`,
 `T1_s2rcMSBd10`, `T1_s2rcMSBH05`, `T1_s2rcMSBm10`, and, as gated, `T1_s2rcMS30`, `T1_s2rcMSBd15`, `T1_s2rcMSBH10`.
+Heart (row R52, decision log 2026-11-24 (kkk)): `T2heart_organ_ts15_half.h5ad` (trend strength 1.5).
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)), and twenty-one on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy), (aaa), (bbb),

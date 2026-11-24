@@ -14000,3 +14000,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     1.5 or above). Embryo: W scored below O, which keeps the board's best; W was an extra file and replaces nothing.
   - **Standing:** T1 73.47, T3 63.94, heart 61.97, embryo 69.9; overall 203.345 by the challenge's formula (it was
     203.255).
+- 2026-11-24 (kkk), the captain says yes to the heart file OTS15 (state at 20:48 UTC, 2026-11-24). Written by the AI
+  assistant.
+  - **The captain's words, verbatim:** "Yes to OTS15: my named exception on the heart's scope and size for this file,
+    and H34's stop and the line's cap lifted for this file only.", the words the main session gave with both facts
+    (the line rose at each step on the board; row H34's practice read stopped 1.5) and no view. Recorded as row R52, a
+    note on row H34 and an amendment in `docs/S2_RULES.md` (re-pinned). An engineer blind to test scores adds the
+    value to the heart builder under R52.

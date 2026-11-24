@@ -3375,3 +3375,15 @@ best is MSB's headline until a file of this line beats it.
 Data used, for every file: released challenge data and the outside heart atlas on recomputed groups (GEO GSE193346,
 register row X002). Unchanged: R1 for Macrophage and Early VIC, R2's genes, the groups, base, cells, shares, depth and
 seed; the R23, R26, R44, R45 and R46 files.
+
+## Amendment of 2026-11-24: the heart file OTS15 (row R52; decision log 2026-11-24 (kkk))
+
+In force since this amendment's commit at 20:48 UTC on 2026-11-24, on the captain's words: "Yes to OTS15: my named
+exception on the heart's scope and size for this file, and H34's stop and the line's cap lifted for this file only."
+The AI assistant, recused on the heart's scope and size, gave no view.
+
+The file: `T2heart_organ_ts15_half.h5ad` (`build_test.py heart --entry organ_scope --trend-strength 1.5 --z-mode raw
+--captain-ruling R52`, halved as OTS05 and OTS10 are). Row H34's stop and the caps of rows R29 and R49 are lifted for
+this file only; nothing above 1.5, no finer step, no seed variant.
+
+Data used: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data.
