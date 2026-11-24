@@ -14053,3 +14053,18 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     line beats it), then `T1_s2rcB25H20.h5ad` only if H10's is strictly above H05's. `T1_s2rcB25MSH05` (row R46) is
     coded only if H05 and MS each score strictly above the 2.5 file. Data used, for all: released challenge data and
     the outside heart atlas on recomputed groups (GEO GSE193346, register row X002).
+- 2026-11-24 (ppp), the captain approves building all three versions of the T3 depth line if its practice check passes
+  (state at 21:49 UTC, 2026-11-24). Written by the AI assistant.
+  - **What the captain sent.** A side agent's note, forwarded: the step-change round's T3 ERROR design (`dD`: C2 with
+    each cell thinned to the released knockout run's per-label depth, the frozen allowed branch's step) has three
+    versions, full thinning `T3_c2_s2_dd`, half thinning `T3_c2_s2_ddh` and one flat ratio `T3_c2_s2_dg`; as designed,
+    the overnight practice read (row K30, to be written) names one and only that one is built; with unlimited uploads
+    all three could be built and the headlines choose; "If the check passes, name all three files in your yes." The
+    captain's own words, verbatim: "You have my full approval if it could improve our scores".
+  - **The main session's reading.** A yes, under row R22's headline-only choice, to build all three files of the depth
+    line and hand them over to go up together, if row K30's read names an arm; if it stops or is void, nothing is
+    built (the note's own condition and the design's stop rule). The board keeps its best headline, so a losing
+    version costs no points. It stands subject to the design's cold challenge; if any ruling closes T3's depth, the
+    captain's named exception is still needed and goes to the captain as one question. The ruling row naming the
+    builder's exact option strings is written when those strings are final, before any build; the read's two worlds
+    (knockout at its series' depth, or at the wild type's) go to the captain with the hand-over.
