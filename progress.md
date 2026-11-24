@@ -2,6 +2,13 @@
 
 ## Current State
 
+- **2026-11-24, 09:05 UTC.** Four long shots were read and ended by their pre-set rules (K28 stopped at its gate; H34
+  stopped; E55 stopped; K29 struck), so no file came from them. On the captain's words T3's third line was coded,
+  reviewed (no blocker) and its one file `T3_c2_s2_g2.h5ad` built; T1's lines 6 and 7 were coded, reviewed and built
+  (`T1_s2rcCm30.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`), with the pooled-base file the captain skipped.
+  Every new file was built twice with one sha256 after its identity gates and recorded before any score. Nothing runs;
+  eight files are due and wait on the captain's uploads. Decision log 2026-11-24 (m) to (mm).
+
 - **2026-11-24, 01:50 UTC.** The captain kept the combined momentum file and A15 after all; they stand last in T1's
   order. T1's fifth search line is built and handed over (`T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`; all eleven
   identity rebuilds matched, each new file built twice with one sha256), recorded before any score. The embryo's

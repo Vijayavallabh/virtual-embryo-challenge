@@ -2,7 +2,53 @@
 
 ## Current Objective
 
-- **State at 2026-11-24, 01:50 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+- **State at 2026-11-24, 09:05 UTC (newest; it supersedes the bullets below where they differ).** Decision log through
+  2026-11-24 (mm); next label (nn). Ruling rows through R41; next R42. Register through X020. Next ledger rows: E56,
+  H35 (H33 is never used), K30, N61, T72. Tries: T1 463, embryo 92, heart 105, T3 80. NOTHING RUNS: no agent, no DGX
+  run of ours. Main is at the commit of this bullet, pushed.
+  - **STANDING** 201.38 (T1 72.29 `T1_s2rcB2.h5ad`; T3 63.94 `T3_c2_s2.h5ad`; heart 60.4 D; embryo 69.9 O). No score
+    reported since log 2026-11-23 (gg).
+  - **UPLOADS (row R34):** 20 over 24 and 25 Nov, no cap per board, on the captain's word; none reported used yet.
+    `docs/UPLOAD_SHEET.md` (state 08:50 UTC) holds every built file and its condition. DUE NOW (8): T1
+    `T1_s2rcB25.h5ad`, `T1_s2rcCm20.h5ad`; T3 `T3_k23_s2.h5ad`, `T3_c1_s2_g2.h5ad`; embryo `T2embryo_s2xs_ov.h5ad`,
+    `T2embryo_s2.h5ad`, `T2embryo_s2x_ovhi.h5ad`; heart `T2heart_organ_ts05_half.h5ad`. WAITING ON A SCORE: B30 (B25 >
+    72.29), Cm25 (Cm20 > C's 71.8), B2d15 (Cm20 > 72.29; row R35), B2d20 (B2d15 > the higher of the 2.0 file and
+    Cm20), CK and the E = 4 file (each K23 > the barred s2's 62.30), OTS10 (OTS05 > D's 60.4), and the new T1 files
+    below. T3 `T3_c2_s2_g2.h5ad`: no condition, after the T3 files queued now. LAST ON T1: MSB, A15, then A20 (A15 >
+    A's 70.8).
+  - **BUILT SINCE 01:50 UTC, each twice with one sha256 at a clean commit after the identity gates, recorded before
+    any score:** `runs/manual_upload/T3_c2_s2_g2.h5ad` sha256
+    014d2bf9d8ba7fdc56dcfba2a3b8aa77f0ea20bb806ebc2c1193e483d62712ac (log (ll); record
+    `experiments/builds/results/t3c2g_fc57ca9_g1.txt`); `T1_s2rcCm30.h5ad`
+    807fe097c88ee779430896002a34635aeffbc99b433c68ebdb7bd41d8af2cbbe (line 7: only if Cm25 > Cm20);
+    `T1_s2rcB25d15.h5ad` 5bc2b32e4688439f29c54c1b1203325595d996c37df30ba2b9ff26f27a60f4c6 (line 6: only if Cm25 > both
+    the 2.5 and the 2.0 file); `T1_s2rcB25d20.h5ad` e6520dbee0fdc3f1336bc3f9de1e99e8a501de2d440b3f9085c88b5c7ecfb3f6
+    (only if B25d15 > Cm25); `T1_s2rc_pooled.h5ad` 91341a5f8c71dcc103a47f9c19a5d7794b1358c1c642c5c9251624eb6feb8bdc
+    (SKIPPED by the captain's word, never uploaded) (log (mm); record
+    `experiments/builds/results/t1l67pb_ce1fb91_l1.txt`). Data used: T1 files as R13's (released data and GEO
+    GSE193346, row X002); the T3 file released data only (the table gata4_pooled at weight 2 inside C2's size-held
+    product).
+  - **READS SINCE 01:50 UTC (the pre-set statements only):** K28 "Try K28: STOP at G0: the database bars are not met;
+    no fold read, no try, no file."; H34 "Try H34: STOPPED (a in CLEAN): OTS15 is not built."; E55 "STOP: no pass, no
+    file. The handed-over embryo files stand."; K29 "Try K29: STRUCK (S3, S4): no file; C2 stays." Lapses recorded as
+    rows N59 (embryo try 92) and N60 (T3 try 75).
+  - **THE CAPTAIN'S WORDS SINCE 01:50 UTC (rows R31 to R41, log (m) to (kk)):** run CHIPQ-C and lift K27's stop for it
+    (R31, R33; it stopped at G0); 20 uploads (R34); "skip TS10, TS15 and TS20" (third heart line ended); a blind round
+    on the closed levers (heart nothing; embryo struck; T1 pooled base yes then skipped; T3 cD7 yes, bound to its
+    read, struck); "Yes: T1_s2rcCm20's headline may serve line 5; line 5 stands." (R35); full approval for anything
+    that could improve the scores (log (v): effort, compute and agents; not the organisers' rules, closed levers or
+    named words); two extra T1 steps (R39, R40); "yes, T3_c2_s2_g2" (R41).
+  - **WHEN HEADLINES COME:** record the headline per board only in `results/manual_uploads.csv` (stop reading at the
+    headline), one log entry, apply each condition above by its letter, update the sheet, name the next file per
+    board, then an independent rule check through the Agent tool (score-blind agents never through Workflow).
+  - **SESSION NOTE.** The session restarted at about 08:00 UTC: the main session's working scripts and round files
+    moved from the retired scratchpad to `/mnt/md0/IITM/BackUp/Home/vijayavallabh/.cache/vec-work/lift8` (owner only);
+    agents of the earlier session cannot be resumed. All new agents run on Opus (the earlier model is rate limited
+    until after the deadline). DGX: `~/v/vec-campaign-c` is detached at fc57ca9 (K29's untracked results copy moved,
+    not deleted, to `~/v/scratch/k29_results_from_campaign_c`); `~/v/scratch/t1line-wt` at ce1fb91. The DGX's root
+    disk has about 1 GB free: tests and temp go under `~/v/scratch`.
+
+- **State at 2026-11-24, 01:50 UTC (superseded by the bullet above where they differ).** Decision log through
   2026-11-24 (l); next label (m). Ruling rows through R30; next R31. Register through X020. Next embryo row E56. Tries
   unchanged: T1 463, embryo 88, heart 97, T3 74 (row E55's three embryo tries, 89 to 91, count only when its run step
   starts). RUNNING: one reviewer blind to test scores on the embryo candidate's code, and a target-free pre-check on
