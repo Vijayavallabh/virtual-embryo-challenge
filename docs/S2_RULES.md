@@ -3226,3 +3226,43 @@ and built only if T1_s2rcB25H05 and T1_s2rcB25MS each score strictly above the b
 Data used, for every file above: released challenge data and the outside heart atlas on recomputed groups (GEO
 GSE193346, register row X002). Nothing else changes: base, cells, shares, depth, seed, the 2.5 step, g_mom at 0.5,
 R2's genes; every file is chosen by headline only, and the banked file stays until a file beats it.
+
+## Amendment of 2026-11-24: T3's fourth search line, the Gata4 table alone and two smaller steps (rows R47 and R22; the captain's yes; decision log 2026-11-24 (tt))
+
+In force since this amendment's commit at 18:41 UTC on 2026-11-24, on the captain's answer in a dialog, verbatim: "Yes
+to all three (Recommended)"; the option recorded these words as the captain's: "yes, T3_c2_s2_gonly and
+T3_c2_s2_gonly_s067, my named exception, and the 5% check gates nothing for them"; "yes, T3_c2_s2_s067, and the 5%
+check gates nothing for it". A designer blind to test scores proposed the files and a cold challenger corrected them.
+At this commit no T3 headline beyond those of decision log 2026-11-24 (nn) and (rr) has reached the main session.
+
+Files, each on C2's command and cells: `T3_c2_s2_gonly.h5ad` (`--form c2-s2 --gata4-exponent inf`: ln phi = (SD(ln
+phi_M) / SD(ln phi_G)) ln phi_G, the Gata4 table alone at C2's held size), `T3_c2_s2_gonly_s067.h5ad` (`--form c2-s2
+--gata4-exponent inf --size-scale 0.67`) and `T3_c2_s2_s067.h5ad` (`--form c2-s2 --size-scale 0.67`: C2's log-factor
+times 0.67). The gonly pair goes up together; s067 goes up whatever the pair reads. "Best" is the highest headline
+among all the team's T3 uploads at that time; a lower headline replaces nothing.
+
+The team's 5% check on the den-weighted total gates nothing for these three files only (their totals over C2's,
+computed target-free before any build: +0.1726, +0.0506, -0.0532). The range guard stays (each file's factor within
+twice C2's maximum and half its minimum). The distinctness guard of the design is dropped: its comparison is the
+counted reading of row N61.
+
+Data used, for all three: released challenge data only: wild-type E8.75 cells and the released knockout tables
+transfer_mab21l2_all and gata4_pooled (the gonly files use gata4_pooled alone), in C2's size-held form. No outside
+data, no gene set.
+
+## Amendment of 2026-11-24: the embryo's file W, `T2embryo_s2x_ovsb.h5ad` (rows R48 and E56; the captain's yes; decision log 2026-11-24 (tt))
+
+In force since this amendment's commit, on the captain's answer "Yes, build it", recorded as "Build
+T2embryo_s2x_ovsb.h5ad as named". The embryo design round's cold challenger proposed it; the captain's yes reopens the
+embryo's depth line for this one file. It is an extra file beside O and never replaces O.
+
+The file: `build_test.py embryo --method fgw_shape0 --positions floor_exact --expression series_back --shape-interp
+overlay --shape-interp-test-ok --captain-ruling R48`: O's rows, order, positions, count, scope and size; the E8.0 rows
+get the series factor computed from E8.0 to E7.5 on the matched extraembryonic labels, weighted by E8.0's label shares
+and applied in count space, then are thinned to E7.5's median depth; the E7.5 rows stay as released.
+
+It is built only if its step 0 (row E56, written and counted before it runs) passes: STOP if the carry check raises
+the cell-weighted SD over genes of log(E8.0 mean proportions / E7.5's), or if the rendered E8.0 cells' median depth
+lies more than 10% from E7.5's. Any STOP: no file, and the handed-over files stand.
+
+Data used: released challenge data only (the unlocked E7.5 validation file and the released E8.0); no outside data.

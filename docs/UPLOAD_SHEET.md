@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-24, 18:36 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-24, 18:41 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -35,10 +35,12 @@ line, "Place and cost"; row R41) and the captain's default-place words "yes, T3_
 queued at that yes, across boards. With no limit on uploads that place takes nothing from another file; the captain's
 words "yes, T3_c2_s2_g2 ahead of" and a queued file's name (for example `T3_k23_s2_e4`) would send it with the due files.
 
-**In work, not built (T1, by the captain's yes of 2026-11-24, rows R44 to R46, decision log 2026-11-24 (ss)):**
+**In work, not built (by the captain's yes of 2026-11-24; T1 rows R44 to R46, decision log 2026-11-24 (ss)):**
 `T1_s2rcB25H05` (Blood's own momentum at 0.5; then `T1_s2rcB25H10` only if H05 beats the line's best, and
 `T1_s2rcB25H20` only if H10 beats H05) and `T1_s2rcB25MS` (MS at 2.5); `T1_s2rcB25MSH05` is named and is coded only if
-H05 and MS each beat the banked file.
+H05 and MS each beat the banked file. T3 (row R47, decision log 2026-11-24 (tt)): `T3_c2_s2_gonly.h5ad` and
+`T3_c2_s2_gonly_s067.h5ad` (up together) and `T3_c2_s2_s067.h5ad`. Embryo (row R48): `T2embryo_s2x_ovsb.h5ad`, an
+extra file beside O, built only if its step 0 (row E56) passes.
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)), and eight on 2026-11-24, two per board (decision log 2026-11-24 (nn) and (rr)). The boards'

@@ -13831,3 +13831,21 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **An exposure, disclosed by the T3 engineer:** before reading its rules it ran git log, and the subject of commit
     0d52b4b names which heart file holds that board's best headline (no value). It used it for nothing. From this
     entry on, commit subjects name no board's best file.
+- 2026-11-24 (tt), the captain says yes to T3's three files and to the embryo's file W; the heart waits for the
+  captain's own words (state at 18:41 UTC, 2026-11-24). Written by the AI assistant.
+  - **T3** (a one-question dialog): "Yes to all three (Recommended)", the option recording "yes, T3_c2_s2_gonly and
+    T3_c2_s2_gonly_s067, my named exception, and the 5% check gates nothing for them" and "yes, T3_c2_s2_s067, and the
+    5% check gates nothing for it". Recorded as row R47 and as R22's first cell naming the three option strings; the
+    amendment of T3's fourth search line in `docs/S2_RULES.md` (re-pinned). The 5% check's figures were computed by
+    the main session before the question, from released wild-type E8.75 and the two pinned tables only (no fold, no
+    score): +0.1726, +0.0506, -0.0532 over C2's, so the question carried the lifting clause for all three. The code is
+    on branch `campaign/t3-gonly` (an engineer blind to test scores; the challenger's fixes sent to it).
+  - **Heart** (a second dialog, two questions): to the heart question the captain answered "whatever option that
+    improves our scores". Both heart options need the captain's own named exception (the trend pair on the heart's
+    scope and size and the second line's cap; the composition files on the closed composition and A15), and the AI
+    assistant is recused on the heart's scope and size, so a general answer does not count: the exact words go back to
+    the captain. Nothing is built for the heart meanwhile; the trend pair's code continues on `campaign/heart-ftrio`.
+  - **Embryo** (the same dialog): "Yes, build it", the option recording "Build T2embryo_s2x_ovsb.h5ad as named".
+    Recorded as row R48 and the amendment of the embryo's file W; its step 0 has its counted row E56 (embryo try 93
+    when its check (ii) runs), written before any of its code exists. An engineer blind to test scores is started on
+    the option.
