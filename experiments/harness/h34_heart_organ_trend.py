@@ -515,9 +515,9 @@ def gate_reasons(rows: dict[str, list[dict]], facts: dict[str, dict], committed:
                if mine[w][u] != committed["tables"][w][u]["mean"][D_F]]
         n = len(G1_WORLDS) * len(G1_UNITS)
         found["M"] = {"means": n, "unequal": off, "largest_abs_diff": max((abs(d) for _, _, d in off), default=0.0)}
-        if off:
+        if off:  # the differences stay in the record (found): a reason enters the outcome statement, a figure never
             why.append(f"G1 (M): {len(off)} of {n} means are not row H29b's committed D_f means (first: {off[0][0]} "
-                       f"{off[0][1]}, {off[0][2]:+.3e})")
+                       f"{off[0][1]})")
         if h27_rows is None:
             why.append("G1 (P): row H27's committed parts are not at hand")
         else:
@@ -1002,8 +1002,9 @@ def text(res: dict) -> str:
                  + "; ".join(f"strength {s}: " + ", ".join(f"{k} {v:.4g} day" for k, v in b.items())
                              for s, b in res["budgets"].items()) + ".")
     lines += rule_lines(res)
-    lines.append("TABLES, practice diagnostics that gate nothing (paired by seed: mean [min, max] seeds above and "
-                 "below 0 of 10 (se); per-term mean skill differences):")
+    lines.append("TABLES (paired by seed: mean [min, max] seeds above and below 0 of 10 (se); per-term mean skill "
+                 "differences): beyond the rule's two pairs on fold E10.5, read above, every entry is a practice "
+                 "diagnostic and gates nothing:")
     for w, _ in WORLDS:
         for u in UNITS:
             for p, c in res["tables"][w][u].items():

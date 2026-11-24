@@ -118,7 +118,8 @@ def test_the_fixed_constants_and_names(h34):
     assert h34.PERM_SEED == 20261120 and h34.BAR == 0.3 and h34.MIN_SEEDS == 8
     assert h34.PRACTICE_BUDGET == {KEY1: 0.375, KEY2: 0.125} and h34.FILE == "OTS15" and h34.RULING_ROW == "R32"
     assert h34.GATE_EXIT == {"PASS": 0, "FAIL": 3} and h34.TOL == 1e-9 and h34.FACTOR_RTOL == 1e-12
-    assert re.fullmatch(r"[0-9a-f]{64}", h34.H29B_READING_SHA256)
+    # the sha256 row H34's eighth cell gives for row H29b's reading.json, as row H29b's outcome cell records it
+    assert h34.H29B_READING_SHA256 == "e86754f7b4ca012886aee9d7fcadf969eda26d57f27eeaf928e469d8788a3784"
     assert h34.H29B_READING == REPO_ROOT / "experiments" / "harness" / "results" / "h29b_heart_organ" / "reading.json"
     assert h34.RULE_PAIRS == (("trend_s1.5", "trend_s1.0"), ("trend_s1.5", "control"))
     assert h34.FLOOR_PAIRS == tuple((a, "floor") for a in h34.BUILT) and len(h34.PAIRS) == 12
@@ -742,7 +743,8 @@ def test_the_reading_and_its_text(h34):
                  "DIAGNOSTIC, gates nothing: trend_s1.5 minus placebo_s1.5, fold E10.5",
                  "DIAGNOSTIC, gates nothing: the DE terms of trend_s1.0 minus control, fold E10.5",
                  "DIAGNOSTIC, gates nothing: the DE terms of trend_s1.5 minus control, fold E10.5",
-                 "TABLES, practice diagnostics that gate nothing", "eight tries"):
+                 "beyond the rule's two pairs on fold E10.5, read above, every entry is a practice diagnostic and "
+                 "gates nothing", "eight tries"):
         assert need in txt, need
     for name in h34.BUILT:  # the control and each arm minus the floor, the published baseline
         assert f"DIAGNOSTIC, gates nothing: {name} minus the floor (the published baseline), fold E10.5: own " in txt
@@ -1019,6 +1021,29 @@ def test_g1_d_the_committed_draw_of_d_f(h34):
                                          "repeated_rows_at_least": 509}
 
 
+def test_g1_d_is_pools_short_as_row_h29bs_own_read_forms_it(h34):
+    """(D) against row H29b's own code: hand-made parts of row H29b (its tests' own builders) whose draw from D's pool
+    changes from seed to seed, read by h29b.reading (pools_short is formed in h29b.void_reasons); pool_draw on the same
+    ten draws gives the same pools_short.organ, exactly."""
+    spec = importlib.util.spec_from_file_location("h29b_tests_for_h34",
+                                                  REPO_ROOT / "tests" / "test_h29b_heart_organ.py")
+    t29 = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(t29)
+    draws = {s: {"pool_cells": 300, "drawn": 800 + s % 3, "short": s % 4 == 1, "repeated_rows_at_least": 500 + 7 * s}
+             for s in range(10)}
+    parts = t29._parts(h34.h29b)
+    for ps in parts.values():
+        for part in ps:
+            for r in part["rows"]:
+                r["draws"]["organ"] = dict(draws[r["seed"]])
+    res = t29._read(h34.h29b, parts=parts)
+    assert res["outcome"] == "READ" and set(res["pools_short"]) == set(h34.h29b.TASK_KEYS)
+    mine = h34.pool_draw([{"seed": s, "draw": dict(draws[s])} for s in range(10)])
+    assert mine == {"pool_cells": 300, "drawn": [800, 801, 802], "short_in_seeds": 3, "repeated_rows_at_least": 563}
+    for key in h34.TASK_KEYS:
+        assert res["pools_short"][key]["organ"] == mine
+
+
 def test_g1_m_and_p_the_committed_means_and_paired_statistics(h34):
     """(M) the eighteen means and (P) the 270 paired statistics, each by exact equality with no tolerance."""
     # one seed's control score a part in 1e12 off: the means and the paired statistics of its worlds and units
@@ -1028,11 +1053,11 @@ def test_g1_m_and_p_the_committed_means_and_paired_statistics(h34):
     assert [(w, u) for w, u, _ in found["M"]["unequal"]] == [("CLEAN", KEY2), ("CLEAN", "fold E10.5"),
                                                              ("truth thin_0.5", KEY2),
                                                              ("truth thin_0.5", "fold E10.5")]
-    assert 0 < found["M"]["largest_abs_diff"] < 1e-10
-    assert why[0].startswith(f"G1 (M): 4 of 18 means are not row H29b's committed D_f means (first: CLEAN {KEY2}, ")
-    assert len(why) == 2 and why[1].startswith(f"G1 (P): {len(found['P']['unequal'])} of 270 paired statistics are "
-                                               f"not row H29b's committed (first: CLEAN {KEY2} organ:f - "
-                                               "core_iso_half:f mean)")
+    assert 0 < found["M"]["largest_abs_diff"] < 1e-10  # the differences are in the record, not in the reasons
+    assert why[0] == f"G1 (M): 4 of 18 means are not row H29b's committed D_f means (first: CLEAN {KEY2})"
+    assert len(why) == 2 and why[1] == (f"G1 (P): {len(found['P']['unequal'])} of 270 paired statistics are not row "
+                                        f"H29b's committed (first: CLEAN {KEY2} organ:f - core_iso_half:f mean)")
+    assert not any(re.search(r"[+-]\d|e-\d", w) for w in why)  # no figure enters the statement a failing gate makes
     assert {(w, u) for w, u, _, _ in found["P"]["unequal"]} == {(w, u) for w, u, _ in found["M"]["unequal"]}
     assert {p for _, _, p, _ in found["P"]["unequal"]} == {f"organ:f - {a}" for a in h34.G1_ARMS}
     # each of the eighteen committed means, one unit in the last place off
@@ -1041,8 +1066,8 @@ def test_g1_m_and_p_the_committed_means_and_paired_statistics(h34):
             c = _committed(h34)
             c["tables"][w][u]["mean"]["organ:f"] = float(np.nextafter(c["tables"][w][u]["mean"]["organ:f"], 100.0))
             why, found = _gate_reasons(h34, committed=c)
-            assert len(why) == 1 and why[0].startswith(f"G1 (M): 1 of 18 means are not row H29b's committed D_f "
-                                                       f"means (first: {w} {u}, -")
+            assert why == [f"G1 (M): 1 of 18 means are not row H29b's committed D_f means (first: {w} {u})"]
+            assert found["M"]["unequal"][0][:2] == [w, u] and found["M"]["unequal"][0][2] < 0
             assert found["P"]["unequal"] == []
     # each of the 270 committed paired statistics, one unit in the last place (or one seed) off
     n = 0
@@ -1121,6 +1146,24 @@ def test_g1_dry_runs_on_committed_results(h34):
     swapped = json.loads(json.dumps(rows))
     swapped[KEY1][2]["scores"], swapped[KEY1][7]["scores"] = swapped[KEY1][7]["scores"], swapped[KEY1][2]["scores"]
     assert p_off(swapped) and len(m_off(swapped)) < len(m_off(shifted))
+
+
+def test_the_dry_run_runs_the_functions_the_gates_g1_calls(h34, monkeypatch):
+    """The dry run above goes through `means` and `paired`: they are what gate_reasons calls for (M) and (P), on the
+    control's rows of the gate and on row H27's rows, once and for each of the three controls."""
+    seen = []
+
+    def recorded(name):
+        own = getattr(h34, name)
+
+        def call(*a):
+            seen.append((name, a[1], *a[3:]))
+            return own(*a)
+        return call
+    for name in ("means", "paired"):
+        monkeypatch.setattr(h34, name, recorded(name))
+    assert _gate_reasons(h34)[0] == []
+    assert seen == [("means", "control"), *(("paired", "control", other) for other in h34.G1_ARMS)]
 
 
 def test_row_h29bs_reading_is_the_file_its_row_records_and_no_other(h34, monkeypatch, tmp_path):
@@ -1296,11 +1339,11 @@ def test_gate_run_and_read_end_to_end_on_stand_in_stages(h34, fake_io, monkeypat
     commit_reading()
     code, printed = gate(tmp_path / "gate2")
     assert code == 3 and printed[-3] == "GATE FAIL" and printed[-1] == NOTHING_BUILT
-    assert printed[-2].startswith("Try H34: VOID: v3: the gate fails (G1 (M): 1 of 18 means are not row H29b's "
-                                  "committed D_f means (first: CLEAN fold E10.5, ")
-    assert printed[-2].endswith(")); nothing is built.")
+    assert printed[-2] == ("Try H34: VOID: v3: the gate fails (G1 (M): 1 of 18 means are not row H29b's committed D_f "
+                           "means (first: CLEAN fold E10.5)); nothing is built.")
     g2 = json.loads((tmp_path / "gate2" / "gate.json").read_text())
     assert g2["verdict"] == "FAIL" and len(g2["why"]) == 1 and not h34.gate_passed(tmp_path / "gate2", COMMIT)
+    assert g2["found"]["M"]["unequal"][0][:2] == ["CLEAN", "fold E10.5"] and g2["found"]["M"]["largest_abs_diff"] > 0
     with pytest.raises(SystemExit, match="has not said PASS"):
         h34.main([*run[:6], str(parts_dir / "e95" / "again"), "--gate", str(tmp_path / "gate2"), *common])
     assert read_into("out_gate2", gate_folder=tmp_path / "gate2")[0] == (
