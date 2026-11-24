@@ -13559,3 +13559,29 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     sets nothing. Yes: 'Yes, T1 pooled base, my exception'. Otherwise no."
   - **With a yes, before any score of the file:** its sha256 and command in this log, a ruling row naming the option,
     and the line that its score sets no later T1 file's base, depth, mix or step. Default: no.
+- 2026-11-24 (aa), the T3 closed-lever candidate goes to the captain in its challenger's corrected form; a disclosed
+  sight comparison is recorded as row N60 (state at 05:32 UTC, 2026-11-24). Written by the AI assistant, which
+  designed none of it and gives no lean on it.
+  - **The candidate** (entry (t)): the T3 file in force with its five frozen scenario states at 0.38 of their
+    wild-type share, the value the frozen rules of 2026-10-28 give every file holding Gata4 numbers, instead of 0.78.
+    **The cold challenger's verdict (blind to test scores, on another model): put it only in corrected form, and only
+    if the file in force carries the validation knockout's factor; otherwise strike.** Its reading: the policy's rule
+    declines it, because released data do not choose 0.38 over 0.78; only the captain's own named exception can carry
+    it. Its odds: about 0.6 that the file stands above the file in force; about 0.35 of a step of +0.3 or more. Its
+    main corrections: the yes binds the upload to a read fixed before it, and no later composition tier is allowed;
+    readings are quoted as ranges. The file in force is C2 (`T3_c2_s2.h5ad`, sha256
+    47111ac1d07e73c0c26e990a474dff0de94ae22d6a4474a569bcb674ae2b85a7), the file that holds the board's best by the
+    ordinal facts; it carries that factor, so the condition holds.
+  - **The question, in the challenger's words with C2 written in for its placeholder, put to the captain:** "T3,
+    closed lever, your own named exception: released data do not choose it. C2 (`T3_c2_s2.h5ad`) rebuilt with five
+    pre-registered cell states at 0.38 of their wild-type share, not the 0.78 of the file in force; 0.38 is what our
+    frozen rules of 28 October give every file holding Gata4 numbers, as C2 (`T3_c2_s2.h5ad`) does. Practice cannot
+    price this step or say whether the states are beta-catenin's: deeper cuts of a knockout's own states read +0.1 to
+    +1.8 (oracle factors), these states on the wrong knockout -0.4 to +0.2. My odds it beats C2 (`T3_c2_s2.h5ad`):
+    about 0.6. Cost: about 14 agent-hours, 5 counted tries, 1 of the 20 uploads, a method-report line 'chosen after
+    the exposure and the first scores'. Yes binds the upload to the pre-set read." Yes-words: "Yes, cD7 on C2, my
+    named exception, bound to the read". Default: no file; C2 stays.
+  - **Row N60.** The challenger disclosed that, printing the decision file's D7 block, it noticed where one scenario
+    state sits among the validation knockout's counted states: a sight comparison of a predictor's input with a fold
+    target's composition. By the strict reading of rule 3, as for row N59, it is recorded as one counted T3 try (75).
+    Nothing is chosen on it.
