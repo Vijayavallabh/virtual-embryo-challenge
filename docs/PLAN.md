@@ -13680,3 +13680,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Recorded:** the outcome cell of row H34 and the read's files under
     `experiments/harness/results/h34_heart_organ_trend/` (checked file by file against the DGX); the upload sheet no
     longer lists OTS15 in work.
+- 2026-11-24 (ii), row E55 is read: STOP, no file (state at 06:21 UTC, 2026-11-24). Written by the AI assistant, which
+  is recused on the embryo's occupancy term and shape forms and quotes the read's statement only.
+  - **The read's own words:** "STOP: no pass, no file. The handed-over embryo files stand." Three embryo tries were
+    counted when its run step started (89 to 91). The candidate OSR ends; the embryo's three files due now stand as
+    handed over.
+  - **Recorded:** the outcome cell of row E55 and the reading under `experiments/coords/results/e55_overlay_stretch/`
+    (checked file by file against the DGX); the upload sheet no longer lists an embryo file in work.
