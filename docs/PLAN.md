@@ -13894,3 +13894,15 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     gene panel; S2 at E9.5 and E14.5 refused on the windows and at E15.5 and E16.5 refused (no stated licence, a
     portal policy limiting the purpose, the joint-step order of its files unknown). Both readers refuse every early
     end, so the line's end stands (decision log 2026-11-24 (xx)).
+- 2026-11-24 (yy), the captain reports two more headlines and each board's rule is applied by its letter (state at
+  19:07 UTC, 2026-11-24). Written by the AI assistant, which records the headlines only.
+  - **The paste (headlines, each with its file named for its board):** T3:bcatenin `T3_c1_s2_g2.h5ad` 62.99; T1:test
+    `T1_s2rcCm25.h5ad` 72.56; both shown as submitted 2026-11-24 19:03. Each file's sha256 on disk matches its sheet
+    row. The paste's per-metric lines, ranks and file sizes are not recorded or used. Rows added to
+    `results/manual_uploads.csv`.
+  - **Each rule by its letter.** Both scored below their boards' best, which stays (T1 the 2.5 file, T3 C2). No
+    condition turns on either: the T1 files that once waited on Cm25's headline are due by row R43 whatever it reads,
+    and line 2 of T3 ends with its one file. Standing unchanged: overall 202.445.
+  - **Due now (5):** T1 `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`,
+    `T1_s2rcCm30.h5ad`. Reached as well: `T1_s2rcMSB.h5ad`, `T1_s2rcA15.h5ad`. Waiting: `T1_s2rcA20.h5ad`. Last of
+    all: `T3_c2_s2_g2.h5ad`. In work: the files of rows R44 to R49.
