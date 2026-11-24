@@ -60,9 +60,10 @@ CANDIDATE_EXCLUDE = ("Ctnnb1", "Gata4", "Gata6", "Mab21l2")  # step 3: never a c
 CLASS_V_WORDS = ("carcinoma", "sarcoma", "lymphoma", "leukemia", "leukaemia", "myeloma", "melanoma", "glioma",
                  "blastoma", "adenoma", "tumor", "tumour", "cancer", "neoplas", "malignan", "metasta", "transform",
                  "immortal")  # class (v): a row drops when a screened field holds one of these, in any case
-CLASS_VI_ENTRIES = (15, 17, 18, 19, 20)  # class (vi): these entries, counted from 0, of chipq_fetch.DROP_PATTERNS,
-CLASS_VI_OTHER_WORDS = ("stabilised", "activated", "exon-3-deleted", "constitutively active", "stimulated")  # that
-#                        is its class (ii) entries other than these five words (class_vi_patterns checks both)
+# class (vi): entries 15, 17, 18, 19 and 20, counted from 0, of chipq_fetch.DROP_PATTERNS. The specification names them
+# a second way, as that filter's class (ii) entries other than five words; class_vi_patterns refuses unless both agree
+CLASS_VI_ENTRIES = (15, 17, 18, 19, 20)
+CLASS_VI_OTHER_WORDS = ("stabilised", "activated", "exon-3-deleted", "constitutively active", "stimulated")
 CLASS_VI_SHARE = (5, 100)  # class (vi): a class is excluded when 5% or more of its mm10 rows match
 CLASS_VI_NAMED = ("Unclassified", "No description", "Others")  # class (vi): excluded too, if the list has them
 CLASS_FIELD = "Cell type class"  # step 1: an experiment's class is this field of its experiment-list row
