@@ -445,6 +445,56 @@ def test_each_gate_refusal(tmp_path, kw, code, says):
     assert not (repo / "runs" / f"t1l67pb_{head[:7]}_r1").exists()
 
 
+# A stand-in `uv` that lets a call run past the tests step: the tests pass, the depth record prints a stand-in record
+# (or fails, with DEPTH_FAILS set), a build writes a stand-in file whose stamp names HEAD and clean, `vec check` passes
+# and the stamp reader is python itself. No stand-in file can have a known file's bytes, so the run stops at step D.
+PASSING_UV = """#!/bin/sh
+shift 3
+case "$1" in
+  vec) exit 0 ;;
+  python)
+    shift 3
+    case "$1" in
+      -m) exit 0 ;;
+      -c) shift; exec python3 -I -B -c "$@" ;;
+      experiments/builds/t1_pool_depth_record.py)
+        [ -n "${DEPTH_FAILS:-}" ] && exit 1
+        echo '{"pools": "stand-in"}'; exit 0 ;;
+      experiments/builds/build_test.py)
+        out=""; prev=""
+        for a in "$@"; do [ "$prev" = "--out" ] && out=$a; prev=$a; done
+        echo "stand-in $*" > "$out"
+        printf '{"commit": "%s", "clean": true}' "$(git rev-parse HEAD)" > "$out.stamp.json"
+        exit 0 ;;
+    esac ;;
+esac
+exit 1
+"""
+
+
+@pytest.mark.parametrize("depth_fails", [False, True])
+def test_a_call_past_the_tests_step_writes_the_depth_record_and_stops_at_the_first_unknown_bytes(tmp_path,
+                                                                                               depth_fails):
+    repo, env, head = _repo(tmp_path)
+    (tmp_path / "home" / ".local" / "bin" / "uv").write_text(PASSING_UV)
+    if depth_fails:
+        env["DEPTH_FAILS"] = "1"
+    out = _run(repo, env, head, "r1")
+    assert out.returncode == 20, out.stderr
+    assert "stopped: step D does not give the known bytes of T1_s2rc" in out.stderr
+    s = _scratch(tmp_path, "r1")
+    codes = {p.name: p.read_text().strip() for p in s.glob("*.exit")}
+    assert codes == {"gate.exit": "0", "tests.exit": "0", "depth.exit": "1" if depth_fails else "0", "D.exit": "20"}
+    assert (s / "stamps").read_text() == f"D/T1_s2rc {head} True\n"
+    o = repo / "runs" / f"t1l67pb_{head[:7]}_r1"
+    assert sorted(p.name for p in o.iterdir()) == (["D"] if depth_fails else ["D", "pool_depth.json"])
+    assert sorted(p.name for p in (o / "D").iterdir()) == ["T1_s2rc.h5ad", "T1_s2rc.h5ad.stamp.json"]
+    assert (o / "D" / "T1_s2rc.h5ad").read_text() == (f"stand-in experiments/builds/build_test.py t1 {BASE} --out "
+                                                      f"runs/t1l67pb_{head[:7]}_r1/D/T1_s2rc.h5ad\n")
+    if not depth_fails:
+        assert (o / "pool_depth.json").read_text() == (s / "pool_depth.json").read_text() == '{"pools": "stand-in"}\n'
+
+
 def test_an_existing_output_folder_is_refused_and_left_as_it_was(tmp_path):
     repo, env, head = _repo(tmp_path)
     o = repo / "runs" / f"t1l67pb_{head[:7]}_r1"
