@@ -1076,14 +1076,18 @@ def test_the_launchers_whole_flow_stubbed(tmp_path, fail, want, ran):
     calls = (tmp_path / "calls").read_text().splitlines()
     order = []
     for c in calls:
-        key = next(k for k in ("pytest", "pair", "osr_gate.py read", "step0", "read.py gate ", "read.py run ",
-                               "read.py read") if k in c)
+        # specific keys first; the pytest call by its own arguments (the temp path may hold the word pytest)
+        key = next(("pytest" if k == " -m pytest " else k) for k in (
+            "osr_gate.py pair ", "osr_gate.py read ", "read.py step0 ", "read.py gate ", "read.py run ",
+            "read.py read ", " -m pytest ") if k in c)
+        key = {"osr_gate.py pair ": "pair", "osr_gate.py read ": "osr_gate.py read", "read.py step0 ": "step0",
+               "read.py read ": "read.py read"}.get(key, key)
         if not order or order[-1] != key:
             order.append(key)
     assert tuple(order) == ran
-    assert sum("stretch_read.py read" in c for c in calls) == 1  # the read is called once, failure or not
-    assert sum(" pair " in c for c in calls) == 10
-    assert all(c.startswith("3 ") for c in calls if " pair " in c or "osr_gate.py read" in c)
+    assert sum("stretch_read.py read " in c for c in calls) == 1  # the read is called once, failure or not
+    assert sum("osr_gate.py pair " in c for c in calls) == 10
+    assert all(c.startswith("3 ") for c in calls if "osr_gate.py pair " in c or "osr_gate.py read " in c)
     assert all(c.startswith("8 ") for c in calls if any(k in c for k in ("read.py gate ", "read.py run ",
                                                                          "read.py read")))
     assert (s / "read.exit").read_text().strip() == "0"
