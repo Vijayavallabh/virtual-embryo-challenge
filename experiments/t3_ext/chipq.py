@@ -25,7 +25,8 @@ ONE function opens a target-gene file: open_target. It checks the file's bytes a
 takes the experiments from the pinned kept list (a query antigen: chipq_kept.yaml; a placebo antigen: the keyword
 filter's placebo_kept.json, itself checked against the manifest) and refuses any other experiment, parses the header,
 and then reads only the kept experiments' columns: never the Average or the STRING column. No message carries a gene
-symbol, a score or the column of a dropped experiment.
+symbol, a score or the column of a dropped experiment. Row K28 (candidate CHIPQ-C) adds one mode to it, every_row:
+every row of the file for kept columns, for experiments/t3_ext/chipq_partners.py; no other call changes.
 
 Steps (python -I -B experiments/t3_ext/chipq.py <step>):
   p1      prints exactly two integers for Ctnnb1: the number of kept experiments and |B|. Exit 0 when both bars hold
@@ -165,15 +166,54 @@ def load_kept(yaml_path: Path | None = None, sha_path: Path | None = None, check
 _EXP_COL = re.compile(r"([SDE]RX\d+)\|.*")
 
 
-def open_target(antigen: str, genes: list[str], root=None, kept: Kept | None = None, ids: list[str] | None = None,
-                man: dict | None = None) -> tuple[np.ndarray, list[str]]:
+def _every_row(lines: list[str], n_fields: int, cols: list[int], ids: list[str]) -> tuple[np.ndarray, list[str],
+                                                                                         list[str]]:
+    """open_target's every-row mode, on the lines open_target has read (nothing is opened here): (E, ids, symbols),
+    one row of E per row of the file, in file order, for the columns `cols` only."""
+    from array import array
+
+    symbols: list[str] = []
+    seen: set[str] = set()
+    flat = array("d")
+    for line in lines[1:]:
+        line = line.rstrip("\r")
+        if not line:
+            continue
+        f = line.split("\t")
+        if len(f) != n_fields:
+            raise Refused("a target-file row has another number of fields than the header: refused")
+        if not f[0] or f[0] in seen:
+            raise Refused("a target-file row has no gene symbol, or a gene has two rows in the target file: refused")
+        seen.add(f[0])
+        symbols.append(f[0])
+        try:
+            flat.extend([float(f[c]) for c in cols])
+        except ValueError:
+            raise Refused("a kept experiment's value is not a number: refused") from None
+    E = np.array(flat, dtype=np.float64).reshape(len(symbols), len(cols))
+    if not (np.isfinite(E).all() and (E >= 0).all()):
+        raise Refused("a kept experiment's value is not finite and non-negative: refused")
+    return E, ids, symbols
+
+
+def open_target(antigen: str, genes: list[str] | None, root=None, kept: Kept | None = None,
+                ids: list[str] | None = None, man: dict | None = None, *, every_row: bool = False) -> tuple:
     """(E, ids): E[g, j] the score of panel gene g (in `genes`' order) in kept experiment ids[j]; 0 where the file has
     no row for the gene. `ids` (default: every pinned kept id) must lie in the pinned kept list.
 
     A query antigen's pinned ids (the readers' list) must each have a column, or the call is refused. For a placebo
     antigen with the default `ids`, the experiments used are the filter-kept ids that have a column in its target file
     (the specification's step 3: "E_q = the kept SRX columns of q's +/-5 kb file"), in the pinned order; that set may
-    be smaller than the kept list, or empty (E then has no column). Ids asked for by name must each have a column."""
+    be smaller than the kept list, or empty (E then has no column). Ids asked for by name must each have a column.
+
+    every_row=True is row K28's one new mode (candidate CHIPQ-C, "every row, kept columns only"); `genes` is then
+    None. It returns (E, ids, symbols): every row of the file in file order, symbols[r] its gene symbol and E[r, j] its
+    score in experiment ids[j]. Of `ids` (each in the pinned kept list, as above) the experiments read are those with
+    a column in the file, for a query antigen and for ids asked for by name too: CHIPQ-C's step 1 takes "a column in
+    its antigen's file" as a condition of a usable experiment, so an id without one is left out, not refused. A row
+    without a gene symbol, or a symbol on two rows, is refused. Without every_row nothing here changes."""
+    if every_row and genes is not None:
+        raise Refused("every row is read with no gene list: refused")
     root = cf.root_of(root)
     man = cf.load_manifest(root) if man is None else man
     if antigen in QUERY_ANTIGENS:
@@ -190,7 +230,7 @@ def open_target(antigen: str, genes: list[str], root=None, kept: Kept | None = N
         if antigen not in pk:
             raise Refused("the antigen has no entry in placebo_kept.json: refused")
         pinned = list(pk[antigen])
-    columned_only = antigen not in QUERY_ANTIGENS and ids is None
+    columned_only = every_row or (antigen not in QUERY_ANTIGENS and ids is None)
     ids = list(pinned) if ids is None else list(ids)
     if any(i not in pinned for i in ids):
         raise Refused("an experiment not in the pinned kept list was asked for: refused")
@@ -220,6 +260,8 @@ def open_target(antigen: str, genes: list[str], root=None, kept: Kept | None = N
     if missing:
         raise Refused(f"{missing} kept experiment(s) have no column in the target file: refused")
     cols = [col[i] for i in ids]
+    if every_row:
+        return _every_row(lines, len(head), cols, ids)
     pos = {g: k for k, g in enumerate(genes)}
     if len(pos) != len(genes):
         raise Refused("the panel gene list holds a gene twice: refused")
