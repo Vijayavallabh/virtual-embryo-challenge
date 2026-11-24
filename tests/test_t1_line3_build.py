@@ -336,15 +336,17 @@ def test_a_line_pair_is_refused_when_row_r22_does_not_name_the_combined_option(b
     # 2.5 and 3.0 at damping 0.5 under R20 or without a ruling, as before
     (["--feng-fraction-mult", "2.5", "--captain-ruling", "R20"], "refused with --captain-ruling R20: only row R22"),
     (["--g-mom-damping", "0.5", "--feng-fraction-mult", "3.0"], "--feng-fraction-mult takes 1 .* R22"),
-    # 3.0 with damping 1.0: no line takes it
+    # 3.0 with damping 1.0 is the seventh line's pair (tests/test_t1_l67pb_build.py): refused here for want of its
+    # order in this ledger, and without the ruling
     (["--g-mom-damping", "1.0", "--feng-fraction-mult", "3.0", "--captain-ruling", "R22"],
-     "with --g-mom-damping other than 0.5"),
+     "no single row R22 .* `--g-mom-damping 1.0 --feng-fraction-mult 3.0`"),
     (["--g-mom-damping", "1.0", "--feng-fraction-mult", "3.0"], "needs --captain-ruling R22"),
     # A, B and C with a ruling: refused as before
     (["--g-mom-damping", "1.0", "--feng-fraction-mult", "1.5", "--captain-ruling", "R22"], "with --released-bet only"),
     (["--feng-fraction-mult", "1.5", "--captain-ruling", "R22"], "with --released-bet only"),
     (["--g-mom-damping", "1.0", "--captain-ruling", "R22"], "with --released-bet only"),
-    # no value between the half steps and none above 2.5 on C's command (R22: --captain-ruling R22)
+    # no value between the half steps and none above 2.5 on C's command but the seventh line's 3.0 (R22:
+    # --captain-ruling R22)
     (["--g-mom-damping", "1.0", "--feng-fraction-mult", "2.25", *R22], "--feng-fraction-mult takes"),
     (["--g-mom-damping", "1.0", "--feng-fraction-mult", "1.75", *R22], "--feng-fraction-mult takes"),
     (["--g-mom-damping", "1.0", "--feng-fraction-mult", "2.75", *R22], "--feng-fraction-mult takes"),

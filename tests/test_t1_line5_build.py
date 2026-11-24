@@ -326,9 +326,10 @@ def test_the_pair_is_taken_under_r22_with_a_ledger_naming_the_combined_option(bt
     (["--g-mom-damping", "0.5", "--feng-fraction-mult", "2.0", "--captain-ruling", "R22"],
      "refused with --captain-ruling R22: only row R20"),
     (["--feng-fraction-mult", "2.0"], "--feng-fraction-mult takes 1 .* needs --captain-ruling R20"),
-    # the fifth line's dampings with any other multiplier above 1.5: refused as before
+    # the fifth line's dampings with 3.0: refused as before; with 2.5 they are the sixth line's pairs
+    # (tests/test_t1_l67pb_build.py), refused here for want of their order in this ledger
     (["--g-mom-damping", "1.5", "--feng-fraction-mult", "2.5", "--captain-ruling", "R22"],
-     "with --g-mom-damping other than 0.5"),
+     "no single row R22 .* `--g-mom-damping 1.5 --feng-fraction-mult 2.5`"),
     (["--g-mom-damping", "2.0", "--feng-fraction-mult", "3.0", "--captain-ruling", "R22"],
      "with --g-mom-damping other than 0.5"),
     # the second line's dampings with the multiplier 1.5: refused as before

@@ -216,9 +216,9 @@ def test_the_two_values_give_two_files_and_3_is_3_0(bt, rc4, ledger, tmp_path):
     (["--captain-ruling", "R2"], "refused with --captain-ruling R2: only row R22"),
     (["--captain-ruling", "r22"], "refused with --captain-ruling r22: only row R22"),
     (["--captain-ruling", "T63"], "refused with --captain-ruling T63: only row R22"),
-    # damping 1.0 with 2.5 is the third line's pair, refused here only for want of its order in this ledger, and
-    # 3.0 with damping 1.0 is refused as before (both in tests/test_t1_line3_build.py)
-    (["--captain-ruling", "R22", "--g-mom-damping", "1.5"], "with --g-mom-damping other than 0.5"),
+    # damping 1.0 with 2.5 is the third line's pair, refused here only for want of its order in this ledger (in
+    # tests/test_t1_line3_build.py), and 3.0 with damping 1.0 is the seventh line's, 2.5 with 1.5 or 2.0 the sixth
+    # line's (tests/test_t1_l67pb_build.py; 1.5 below)
     (["--captain-ruling", "R22", "--g-mom-damping", "0.75"], "with --g-mom-damping other than 0.5"),
     (["--captain-ruling", "R22", "--bet-strength", "0.5"], "with --released-bet and --bet-strength"),
     (["--captain-ruling", "R22", "--released-bet", "share_trend", "--bet-strength", "0.5"],
@@ -228,6 +228,15 @@ def test_the_two_values_give_two_files_and_3_is_3_0(bt, rc4, ledger, tmp_path):
 ])
 def test_every_other_use_of_a_line_value_is_refused(bt, ledger, monkeypatch, tmp_path, v, extra, match):
     _refused(bt, monkeypatch, tmp_path, ["t1", *RC, "--feng-fraction-mult", v, *extra], match)
+
+
+def test_a_line_value_with_the_second_lines_damping_is_refused(bt, ledger, monkeypatch, tmp_path):
+    """Damping 1.5 with 3.0: refused as before; with 2.5 it is the sixth line's pair (tests/test_t1_l67pb_build.py),
+    refused here for want of its order in this ledger."""
+    _refused(bt, monkeypatch, tmp_path, ["t1", *RC, *R22[3.0], "--g-mom-damping", "1.5"],
+             "with --g-mom-damping other than 0.5")
+    _refused(bt, monkeypatch, tmp_path, ["t1", *RC, *R22[2.5], "--g-mom-damping", "1.5"],
+             "no single row R22 .* `--g-mom-damping 1.5 --feng-fraction-mult 2.5`")
 
 
 @pytest.mark.parametrize("extra, match", [
