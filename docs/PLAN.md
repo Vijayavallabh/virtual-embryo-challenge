@@ -13013,3 +13013,29 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     inputs repeat the framework's list of closed levers, which names T1's depth and not the heart's, while row H28
     calls depth the heart's closed lever (the questions above state H28's reading); several row ids the brief named
     exist only inside combined rows.
+- 2026-11-24 (h), the captain skips T1's combined momentum file and A15 on a condition; the upload sheet is updated
+  (state at 00:41 UTC, 2026-11-24). Written by the AI assistant.
+  - **What the captain sent.** A side agent's note (T1 has about six slots for nine files built or being built; the
+    combined momentum file adds one step to the file that scored 71.59 and the largest gain on record for that step is
+    +0.73, so it tops out level with the best; A15 sits on the 70.8 file and would need +1.5, where its kind of step
+    added about 0.2 both times it was tried; the checked reading lists both as 'no expectation' only because no formal
+    forecast exists; 'You can say "skip MSB and A15"'; A20 only follows A15), and under it the captain's own words,
+    verbatim: "skip them if they don't improve".
+  - **How the condition was applied (the AI assistant's own judgement, labelled).** No one can know a file's score
+    before its upload, so the condition is read as: if nothing on record expects the file to pass the board's best,
+    72.29. The combined momentum file: its base B returned 71.59, 0.70 under the best; the record's own range for the
+    momentum's gain is 0 to +0.73, read on another base at a shorter horizon (row R23), which tops out 0.03 above the
+    best with its centre at zero; rows R23 and R26 say the combination with the stronger atlas step is unmeasured in
+    sign. A15: its base A returned 70.8, 1.49 under the best; no row reads any damping above 1.0 and row R22 estimates
+    no gain for it. On these facts nothing on record expects either file to pass the best, and the skip is applied.
+    The AI assistant does not rest this on the note's argument from the sizes of differences between test headlines of
+    other files, which the team's rules do not read as evidence; and it corrects nothing in the checked readings of
+    entries 2026-11-23 (aa) and (dd), which class both files as 'no expectation' and not as 'below': the skip is the
+    captain's choice of how to spend scarce slots, on the captain's own condition.
+  - **What changes.** `T1_s2rcMSB.h5ad`, `T1_s2rcA15.h5ad` and `T1_s2rcA20.h5ad` are not uploaded unless the captain
+    says otherwise and hold no place in T1's order; line 2 ends by its own rule with no further upload. T1's order: at
+    each slot line 1's due file (`T1_s2rcB25.h5ad` now), then line 3's (`T1_s2rcCm20.h5ad` now), then line 5's. The
+    upload sheet lists the three with the earlier three in its skipped section; `docs/S2_RULES.md` carries a note
+    (re-pinned); the last cells of ledger rows R26 and R22 say so.
+  - **What does not change.** Lines 1, 3 and 5 and their conditions; every other board; the files on disk. A later
+    word of the captain's ('keep MSB', 'keep A15') puts a file back.

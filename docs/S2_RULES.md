@@ -2620,3 +2620,16 @@ e01e24facb6841a18a503655bcc5e9816304a993fe9a0dcfeca458c42ead1e16 (build record
 the line's: after row K23's file, CK on its condition and the E = 4 file on its condition, unless the captain says
 otherwise. Data used: released challenge data only (wild-type E8.75 cells, the released Mab21l2 knockout and the
 released Gata4 validation knockout files); no outside data.
+
+## Note of 2026-11-24: three more T1 files are skipped by the captain's word (decision log 2026-11-24 (h))
+
+The captain's words, verbatim: "skip them if they don't improve", written under a forwarded note that named
+`T1_s2rcMSB.h5ad` (the combined momentum file; row R26) and `T1_s2rcA15.h5ad` (line 2's next file) and said that
+`T1_s2rcA20.h5ad` only follows A15. The AI assistant read the condition as: if nothing on record expects the file to
+pass the board's best headline, found that so for both (decision log, the entry named above, gives the figures), and
+applied the skip. **What changes:** the three are not uploaded unless the captain says otherwise and hold no place in
+T1's order. With A15 never uploaded, line 2 ends by its own rule with no further upload. T1's order is: at each slot
+line 1's due file, then line 3's, then line 5's. **What does not change:** lines 1, 3 and 5 and every condition of
+theirs (none of their comparisons uses a headline of the three files); the three files stay on disk as built; the
+checked readings of 2026-11-23 class the combined file and A15 as files without an expectation, not as files below the
+best, and that stands. A later word of the captain's can put any of them back.
