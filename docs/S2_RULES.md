@@ -2925,3 +2925,145 @@ above ("T1's line 5 reads a headline that line 3 keeps to itself") with the word
 lifted for T1_s2rcCm20's headline and for line 5 alone; line 5 runs as written: T1_s2rcB2d15 only if T1_s2rcCm20's
 headline is strictly above the 2.0 file's, then T1_s2rcB2d20 only if T1_s2rcB2d15's is strictly above the line's best.
 Recorded before T1_s2rcCm20's headline reached the main session. Nothing else changes.
+
+## Amendment of 2026-11-24: T1's line 7, line 3's one further half step (T1_s2rcCm30) (row R39; the captain's order; decision log 2026-11-24 (bb))
+
+In force since this amendment's commit at 05:39 UTC on 2026-11-24, on the captain's words "yes for two extra Task 1
+steps", in answer to the one sentence put to the captain naming the files (row R39). The text is the cold challenger's
+final text, verbatim; a blind designer proposed the line and the challenger corrected it. At this commit no T1
+headline beyond the six of decision log 2026-11-23 (gg) has reached the main session and the captain has reported
+none. Where the text says 'his', read 'the captain's'.
+
+T1 line 7 (line 3's one further half step; under ruling row R22; designed on 2026-11-24 by a score-blind analyst and
+amended by a score-blind cold challenger, whose text this is; both knew only the order of the six reported T1
+headlines; valid only once the captain, by the captain's own named order recorded in a ruling row, lifts line 3's cap
+by this one half step and names the file T1_s2rcCm30; until then it binds nothing and nothing of it is built). File.
+Line 3's setting: the atlas step's multiple of the calendar fraction 2/5, on file C's command, g_mom's within-type
+damping held at 1.0, nothing else changed (default seed 1000001, board T1:test). One file, named here before its own
+score: `build_test.py t1 --g-mom --base lib3 --feng-groups recomputed --g-mom-damping 1.0 --feng-fraction-mult 3.0
+--captain-ruling R22 --out <O>/T1_s2rcCm30.h5ad` (damping 1.0, multiplier 3.0, the value line 1 uses for T1_s2rcB30).
+What the order lifts, and nothing else: line 3's "The line ends after T1_s2rcCm25 in any case." and "none above 2.5 is
+tried on this command", which then read T1_s2rcCm30 and 3.0. The order counts only if a ruling row records it before
+T1_s2rcCm25's headline is returned to anyone on the team, the captain included: in practice, before T1_s2rcCm25 is
+uploaded. A later lift is a different act and is not this entry. Rule (line 3's own, carried one step on; line 3's
+sentences on which headlines enter bind it). If T1_s2rcCm25 has been uploaded by line 3's rule and its headline is
+strictly above line 3's best (then T1_s2rcCm20's), the next file is T1_s2rcCm30; otherwise line 3 ends as it says, and
+in any case after T1_s2rcCm30. Ties, a file never uploaded and a headline not reported by 2026-11-26 11:59 UTC do not
+beat. Only the team's own T1 headlines of A, C, T1_s2rcCm20, T1_s2rcCm25 and T1_s2rcCm30 are compared, by higher,
+lower or equal; nothing else is read from a score (no size, per-metric, interpolated or fitted value, nothing about a
+hidden sample). Line 1's files do not enter, so the rule names T1_s2rcCm30 even where T1_s2rcCm25 stands below the 2.5
+file or the 2.0 file; the captain may decline the upload, and the report then says so. T1_s2rcCm30's headline enters
+no other line. No value above 3.0 and none between the half steps is tried on this command; the damping is not moved.
+Uploads. At most the allowance the captain states (20 uploads over 2026-11-24 and 2026-11-25, no cap per board). The
+file does not take line 3's place: it goes after every T1 file queued earlier, T1_s2rcMSB, T1_s2rcA15 and T1_s2rcA20
+included, and before line 6's files. Two comparisons no upload has shown must fall one way (T1_s2rcCm20 above C,
+T1_s2rcCm25 above T1_s2rcCm20) and five to nine T1 uploads come first, so it may get none. Another place needs the
+captain's own words naming the file it goes ahead of. No upload left, or none before 2026-11-26 11:59 UTC, ends the
+line. Each upload is the captain's own act. The file counts only after line 5's five conditions and by its cut-off,
+2026-11-25 12:00 UTC, read for this file, with these changes. First: on that order, row R22's first cell is amended,
+adding and removing nothing else, to name `--g-mom-damping 1.0 --feng-fraction-mult 3.0` in backticks with
+`--captain-ruling R22`, as the captain's own order with its date; the pair's test stands before the multiplier's
+routing, which keeps refusing 3.0 with any damping but 0.5; the file's order text names line 7 and the captain's order
+(g_mom's text stays candidate A's). Third: the eleven files of line 5's list and also T1_s2rcB30, T1_s2rcCm25,
+T1_s2rcB2d15, T1_s2rcB2d20 and any file of line 6 built earlier are rebuilt by the commands their entries name, each
+to the sha256 its committed hash list holds; one not committed, or a mismatch, stops the run. Void: unless the
+captain's order is in a ruling row and this entry in the decision log before T1_s2rcCm25's headline is returned, the
+entry saying which further T1 headlines the main session and the captain then knew; if anyone knowing such a headline
+changes this text; if the builder's code at the build commit writes for the file another damping, multiplier or line's
+order text (shown by tests on synthetic stages and the reviewer's reading; nobody opens a sidecar); or if any file is
+rebuilt, re-seeded, resized or changed after any score. Practice. Rows T44 and T46 read the atlas step at 1.5 to 4
+times the one-day practice fraction, each step ahead on every released truth; row T50 read 5, 6 and 8 times (1.0 to
+1.6 of the atlas's E9.5-to-E14.5 change): on the dissected-heart library the score peaked at 4 times, with 6 and 8
+behind; row T54, with the reference thinned, read 5 times behind 3. All are in-sample diagnostics on one truth and
+name no test setting. At the test 3.0 is 1.2 times the atlas's whole change. No row read for this line has a multiple
+above 1 with damping 1.0. By rule J6 (the test's gap is twice the practice task's) a practice gain counts zero at the
+centre. The sign is unmeasured. No closed lever is touched. The method report says that on file C's command the
+multipliers 1.0, 1.5 and each of 2.0, 2.5 and 3.0 that was uploaded were tried; that the captain lifted line 3's cap
+before the headline at the cap was known; which files were built and not uploaded; that the T1 lines together moved
+two settings in half steps, each next file chosen by comparing the team's own T1 headlines; how many T1 files were
+uploaded in all; and that the best headline was kept. Data used: as R13's file (released challenge data and the
+outside heart atlas, register row X002). Question for the captain. Line 3 stops at T1_s2rcCm25 by a cap fixed before
+any score. Shall it go one half step on: T1_s2rcCm30 (damping 1.0, multiplier 3.0), built now, uploaded only if
+T1_s2rcCm25 stands strictly above T1_s2rcCm20? Yes: 3 to 4 agent hours, one launcher run, one upload if reached (last
+on T1 unless you place it); the report says you lifted the cap before the headline at the cap was known. No: nothing
+now; if T1_s2rcCm25 then tops the board with the multiplier still rising, no further step exists at damping 1.0 and
+none can be built after 2026-11-25 12:00 UTC. Practice does not show the sign. Words that count as yes, given before
+T1_s2rcCm25 is uploaded: "Yes: lift line 3's cap by one half step and build T1_s2rcCm30 (damping 1.0, multiplier
+3.0)." Default: no; a general go-ahead is not a yes.
+
+## Amendment of 2026-11-24: T1's line 6, g_mom's damping on the 2.5 file's command (T1_s2rcB25d15, T1_s2rcB25d20) (row R40; the captain's order; decision log 2026-11-24 (bb))
+
+In force since this amendment's commit at 05:39 UTC on 2026-11-24, on the captain's words "yes for two extra Task 1
+steps", in answer to the one sentence put to the captain naming the files (row R40). The text is the cold challenger's
+final text, verbatim; a blind designer proposed the line and the challenger corrected it. At this commit no T1
+headline beyond the six of decision log 2026-11-23 (gg) has reached the main session and the captain has reported
+none. Where the text says 'his', read 'the captain's'.
+
+T1 line 6 (under ruling row R22; designed on 2026-11-24 by a score-blind analyst and amended by a score-blind cold
+challenger, whose text this is; both knew only the order of the six reported T1 headlines; valid only once the
+captain, by the captain's own named order recorded in a ruling row, lets T1_s2rcCm25's headline serve this line beside
+line 3 and names this line's two files; until then it binds nothing and nothing of it is built). Files. g_mom's
+within-type damping, stepped on the 2.5 file's command, `build_test.py t1 --g-mom --base lib3 --feng-groups recomputed
+--feng-fraction-mult 2.5 --captain-ruling R22`, nothing else changed (default seed 1000001, board T1:test), on the
+scale of lines 2 and 5 (0.5, 1.0, 1.5, 2.0). Built, not scored when this is written: the 2.5 file (damping 0.5,
+`T1_s2rcB25.h5ad`) and line 3's `T1_s2rcCm25.h5ad` (damping 1.0). New, named here before their own scores: that
+command with `--g-mom-damping 1.5` and `--out <O>/T1_s2rcB25d15.h5ad`, and with `--g-mom-damping 2.0` and
+`T1_s2rcB25d20.h5ad`. This entry is also the combination's own list (T1 order rule, clause (5)). The order is needed
+because line 3 says "this line's new files' headlines enter no other line" and this line's first step, damping 0.5 to
+1.0, is line 3's T1_s2rcCm25. It counts only if a ruling row records it before T1_s2rcCm25's headline is returned to
+anyone on the team, the captain included: in practice, before T1_s2rcCm25 is uploaded. No cap is lifted. Rule. If the
+2.5 file and T1_s2rcCm25 (by line 3's rule alone) have both been uploaded and T1_s2rcCm25's headline is strictly above
+the 2.5 file's and the 2.0 file's, the next file is T1_s2rcB25d15; otherwise the line ends with no upload. If
+T1_s2rcB25d15's headline is strictly above T1_s2rcCm25's, the next file is T1_s2rcB25d20; otherwise the line ends, and
+it ends after T1_s2rcB25d20 in any case. Ties and headlines not reported by 2026-11-26 11:59 UTC do not beat. Only the
+team's own T1 headlines of the 2.0 file, the 2.5 file, T1_s2rcCm25 and the two new files are compared, by higher,
+lower or equal; nothing else is read from a score (no size, no per-metric or fitted value, nothing about a hidden
+sample). T1_s2rcCm20's headline does not enter; the captain may decline an upload the rule names, which the report
+then says. The new files' headlines enter no other line. No damping above 2.0 and none between the half steps is tried
+on this command; the multiplier is not moved in this line. Uploads. At most the allowance the captain states (20
+uploads over 2026-11-24 and 2026-11-25, no cap per board). The new files go after every T1 file queued earlier,
+T1_s2rcMSB, T1_s2rcA15 and T1_s2rcA20 included, and after line 7's file. Three comparisons no upload has shown must
+fall one way (T1_s2rcCm20 above C; T1_s2rcCm25 above the 2.5 file and the 2.0 file) and five to nine T1 uploads come
+first, so either may get none. Another place needs the captain's own words naming the file it goes ahead of. No upload
+left, or none before 2026-11-26 11:59 UTC, ends the line. Each upload is the captain's own act. A new file counts only
+after line 5's five conditions and by its cut-off, 2026-11-25 12:00 UTC, read for this line, with these changes.
+First: on that order, row R22's first cell is amended, adding and removing nothing else, to name `--g-mom-damping 1.5
+--feng-fraction-mult 2.5` and `--g-mom-damping 2.0 --feng-fraction-mult 2.5` in backticks with `--captain-ruling R22`,
+as the captain's own order with its date; the pairs' test stands beside `_is_line5`, before the multiplier's routing,
+which keeps refusing 2.5 with any damping but 0.5; the order text and g_mom's rule text name line 6. Third: the eleven
+files of line 5's list and also T1_s2rcB30, T1_s2rcCm25, T1_s2rcB2d15, T1_s2rcB2d20 and any file of line 7 built
+earlier are rebuilt by the commands their entries name, each to the sha256 its committed hash list holds; one not
+committed, or a mismatch, stops the run. Void: unless the captain's order is in a ruling row and this entry in the
+decision log before T1_s2rcCm25's headline is returned, the entry saying which further T1 headlines the main session
+and the captain then knew; if anyone knowing such a headline changes this text; if the builder's code at the build
+commit writes for a new file another multiplier, damping or line's text (shown by tests on synthetic stages and the
+reviewer's reading; nobody opens a sidecar); or if any file is rebuilt, re-seeded, resized or changed after any score.
+Practice. Rows T49 and T59 read g_mom's damping at 0.75 and 1.0 ahead of 0.5 on the two one-day cuts: in-sample on one
+truth, a size chosen on the cuts that kept g_mom, the gain smaller as the reference was thinned. No row read for this
+line has a damping above 1.0, or any damping with a larger atlas step; above 1.0, entries zeroed at 0.5 come back and
+more reach the clip. By rule J6 (the test's gap is twice the practice task's) a practice gain counts zero at the
+centre. The sign is unmeasured. No closed lever is touched. The method report says which dampings were uploaded on the
+2.5 file's command (of 0.5, 1.0, 1.5, 2.0) and which files were built and not uploaded; that this line read line 3's
+file by the captain's order, given before that file's headline was known; that the T1 lines together moved two
+settings in half steps by comparing the team's own T1 headlines; how many T1 files were uploaded in all; and that the
+best headline was kept. Data used: as R13's file (released challenge data and the outside heart atlas, register row
+X002). Question for the captain. Shall two files be built on the 2.5 file's command, g_mom's damping at 1.5
+(T1_s2rcB25d15) and 2.0 (T1_s2rcB25d20), opened by T1_s2rcCm25's headline, which line 3 keeps to itself? T1_s2rcB25d15
+is uploaded only if T1_s2rcCm25 stands strictly above the 2.5 file and the 2.0 file. Yes: 3 to 5 agent hours, one
+launcher run, up to two uploads if reached (last on T1 unless you place them); the report says a line read another
+line's file by your order. No: nothing now; if T1_s2rcCm25 then tops the board, no file with a larger damping stands
+beside it and none can be built after 2026-11-25 12:00 UTC. Practice reads no damping above 1.0. Words that count as
+yes, given before T1_s2rcCm25 is uploaded: "Yes: build T1_s2rcB25d15 and T1_s2rcB25d20 (damping 1.5 and 2.0 at
+multiplier 2.5); T1_s2rcCm25's headline may serve line 6." Default: no; a general go-ahead is not a yes.
+
+## Note of 2026-11-24: three further orders of the captain (rows R36, R37 and R38; decision log 2026-11-24 (bb))
+
+(1) Row R36: the captain's named exception on T3's composition for one file, `T3_c2_s2_cD7.h5ad`, C2 with the five
+frozen scenario states at the frozen rules' allowed-branch magnitude, bound to a practice read fixed before it in its
+own ledger row; if the read stops the file, it is not uploaded. (2) Row R37: the captain's named exception on T1's
+depth for one file, `T1_s2rc_pooled.h5ad`, R13's command on the pooled base; its score sets no later T1 file's base,
+depth, mix or step. (3) Row R38: the captain's yes to T3's third search line, one file `T3_c2_s2_g2.h5ad` (the g = 3
+file dropped by the line's guard); its text enters this file when its cold challenger has answered. Each file is coded
+under review, built twice with one sha256 at one clean commit by 2026-11-25 12:00 UTC, and named with its sha256 in
+the decision log before its own score. The method report names each exception and says it was chosen after the
+exposure and after the first scores.

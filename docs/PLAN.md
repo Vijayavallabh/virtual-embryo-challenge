@@ -13585,3 +13585,24 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     state sits among the validation knockout's counted states: a sight comparison of a predictor's input with a fold
     target's composition. By the strict reading of rule 3, as for row N59, it is recorded as one counted T3 try (75).
     Nothing is chosen on it.
+- 2026-11-24 (bb), the captain answers the four open questions (state at 05:39 UTC, 2026-11-24). Written by the AI
+  assistant; its readings are labelled.
+  - **The captain's message, verbatim:** "I approve only of all the answers that improve our scores at all drastic
+    costs "Yes, cD7 on C2, my named exception, bound to the read", "Yes, T1 pooled base, my exception", "yes, C2 line"
+    or "yes, C2 line, inside the 20", yes for two extra Task 1 steps".
+  - **The AI assistant's reading, per question.** (1) "Yes, cD7 on C2, my named exception, bound to the read": the
+    exact words; ruling row R36. (2) "Yes, T1 pooled base, my exception": the exact words; ruling row R37. (3) The C2
+    line: both places are quoted, joined by 'or'; the yes is clear and is recorded with the default place (row R38);
+    the uploads stay the captain's acts, so the captain may upload the file earlier. The line's text is the one its
+    cold challenger leaves. (4) "yes for two extra Task 1 steps": the answer to the one sentence put to the captain,
+    which named the files with their damping and multiplier; recorded as rows R39 (line 7) and R40 (line 6) before
+    T1_s2rcCm25's headline, with the add-only amendment of row R22's first cell the lines ask for. The cold challenger
+    had asked for the captain's own words naming the files; the AI assistant reads a yes to a sentence that names them
+    as such words and says so here.
+  - **What follows, in this order, each file by 2026-11-25 12:00 UTC.** T1: one engineer codes the three option pairs
+    of lines 6 and 7 and the ruled exception for the pooled base in the builder, one review, identity builds, each
+    file built twice with one sha256. T3: a rule writer turns cD7's corrected read rule into its ledger row, placed
+    before the read; an engineer codes its read and its builder option; the C2 line's option is coded after its cold
+    challenger answers. Every file's sha256 goes into this log before its own score.
+  - **No headline** of any board beyond those of entry 2026-11-23 (gg) had reached the main session at this entry's
+    commit; the captain has reported none.
