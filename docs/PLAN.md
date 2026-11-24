@@ -13175,3 +13175,28 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     here, before any score and before any T1 headline beyond the six of entry 2026-11-23 (gg). B2d15 goes only if
     Cm20's headline is strictly above the 2.0 file's; B2d20 only if B2d15's is strictly above the line's best. The
     upload sheet and the rules note carry them.
+- 2026-11-24 (l), ledger row E55 is placed: the practice read of the embryo candidate OSR, before any read against a
+  practice target (state at 01:45 UTC, 2026-11-24). Written by the AI assistant, which is recused on the embryo's
+  occupancy term and shape forms, wrote none of the row and states no preference.
+  - **The row and who wrote it.** A rule writer blind to test scores turned the cold challenger's specification,
+    practice read and pass rule (entry (j)) into the row's eleven cells with no design choice; a second analyst
+    checked the draft cold against its sources and the ledger's rules and corrected seven cells (13 changes, among
+    them the order of the steps, the weighting of the test-like merge, P5 in E49's merged form, a restored void
+    condition and two pronouns for the captain); the specification's author then ruled, in two rounds, on the points
+    its texts had left open (the control's reproduction guard, the gate record and its rerun, P7's set and weighting,
+    refusals, void against STOP, a failure before the run step, what follows a void), choosing the reading stricter
+    for the candidate where no source settled it; the writer folded the rulings in word for word.
+  - **What the row fixes.** Three counted embryo tries when the run step starts (89 to 91): the arm
+    `fgw_shape0x_ov_sr` and its placebos `fgw_shape0x_ov_sr_anti` and `fgw_shape0x_ov_sr_axes`, against the control O
+    rescored and not counted, on the nine practice tasks, ten seeds. All eight clauses of the pass rule must hold (P1,
+    P1b and P2 to P7). The labels: diagnostic (J5), selected on the same nine tasks, no J8 use. A pass leads only to
+    one priced naming question to the captain; a stop or a void leaves the embryo's files as they are.
+  - **The J7 dry run the author asked for before placement.** The target-free gate was run a second time at commit
+    d145d78 in the same checkout (run g2): the largest absolute change of g between the two runs over all 100
+    pair-seeds is 0.0, within the 1e-9 the row fixes for the read's recompute.
+  - **Committed with the row:** the gate's record of run g1 under `experiments/coords/results/osr_gate_g1/`
+    (gate.json, sha256 7c0fc6b63980..., which the row quotes in full, the ten per-pair files and gate.txt):
+    target-free figures only.
+  - **Not yet:** the code is on branch `campaign/emb-osr` with an engineer blind to test scores and is merged only
+    after an independent review; nothing has been read against a practice target; no try is counted. The embryo's
+    running count stays 88 until the run step starts.
