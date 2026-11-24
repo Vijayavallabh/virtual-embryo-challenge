@@ -13630,3 +13630,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Next:** the branch `campaign/heart-h34-2` merged into main; the run on the DGX in a worktree of
     `~/v/vec-campaign` with row H29b's own environment, launched once, detached, after a traced refusal; the eight
     heart tries count when its run step starts.
+- 2026-11-24 (ee), the registration commit of ledger row K28 (CHIPQ-C): the row and register row X018's amendment,
+  before the database gate's first step (state at 05:54 UTC, 2026-11-24). Written by the AI assistant, which designed
+  none of it.
+  - **The row.** Written by a rule writer blind to test scores from the cold challenger's specification (entry (o));
+    its open points and the gate engineer's choices ruled on by a successor of that challenger on another model (the
+    stricter reading where the files did not settle a point); sixteen replacement sentences applied by code. Two
+    points stay with the captain, as the row states with their defaults: whether the team's bar on pathway-membership
+    gene sets covers this set (default: the practice read may run, as it enters no file) and whether a file follows a
+    practice pass (default: no file).
+  - **The register.** Row X018 now carries the amendment's whole text, as the gate's code checks it (sha256 of the
+    text 7643589db846...).
+  - **Next:** the gate's code (branch `campaign/t3-chipqc-2`) is merged only after its reviewer passes the change;
+    then the database-only gate G0a runs on the DGX. It reads no fold and counts no try; the challenger gave it about
+    0.85 to stop the candidate.
