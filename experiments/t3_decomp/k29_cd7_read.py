@@ -70,9 +70,11 @@ The reading (fixed in row K29, cells 8a and 8b; `reading`, `decide`, `labels`):
               misses an arm (the plain ones the floor too) or is not its part's, task's or seed's; mixed commits or
               machines; a dirty tree; K18's committed task files off their pins; the guard step's oth_f, read again,
               off K18's rows; the run step's oth_f off the guard step's beyond K17's tolerance. Outcome "Try K29: VOID:
-              [reasons]; no file." The count is the run's stage, never its files' content: five once the run step
-              has started (a full run, void or not), one (oth_f) for a guard that failed at the guard step, none
-              before.
+              [reasons]; no file." The count, as cell 1 words it: five once the run step has started (void or not);
+              oth_f, not counted while inside its guard, adds one whenever it is measured outside it in the run step
+              (the guard step's oth_f read again off K18's rows, or the run step's off the guard step's): six; one
+              (oth_f) for a guard that failed at the guard step, before the run; a malformed or missing file adds
+              none (it is VOID or INCOMPLETE); none before the run step.
   Per cell, paired by seed: G = own_f - own_h; Gd = own_d - own_h; C = oth_d - oth_h. AHEAD: mean above 0.3 with at
               least 8 of 10 seeds positive. BEHIND: mean below -0.3.
   STRIKE      S1 Gd is AHEAD in no plain cell, or in no dm cell. S2 G is BEHIND in two or more cells. S3 C's four-cell
@@ -1029,7 +1031,10 @@ def reading(runs: Path, refs: Path = K18_TASKS) -> dict:
             why.append(f"{c}: not the ten seeds")
             continue
         per[c] = summarise(rr, (harness.FLOOR, *ARMS) if c.startswith("plain") else ARMS)
-    counted = list(COUNTED)  # a full run counts five, whatever its files hold (a run-step guard failure voids it)
+    # cell 1: oth_f counts one try when it is measured outside its guard; a cell with no measured distance (a malformed
+    # file drops a seed) adds none
+    off = [v for m in (again, match) if m for v in m["cells"].values() if v["distance"] is not None and not v["passes"]]
+    counted = [*COUNTED, *((GUARD_ARM,) if off else ())]
     mark = runs / RUN_MARK
     base |= {"guard": again, "guard_match": match, "tries_counted": len(counted), "counted_arms": counted,
              "run_step_started": True, "run_started": json.loads(mark.read_text()) if mark.exists() else None,

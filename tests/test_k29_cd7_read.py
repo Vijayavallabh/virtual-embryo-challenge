@@ -703,27 +703,28 @@ def test_a_failed_gate_is_void_naming_the_check_and_counts_nothing(tmp_path, mon
     assert not res["run_step_started"] and k29.text(res).splitlines()[0] == want
 
 
-@pytest.mark.parametrize("kw,why", [
-    ({"bad": {"plain_g1/seed_3.json": _drop("own_d")}}, "plain_g1/seed_3.json: missing arms ['own_d']"),
-    ({"bad": {"dm/g2_seed_7.json": _drop("oth_h")}}, "dm/g2_seed_7.json: missing arms ['oth_h']"),
-    ({"bad": {"plain_g2/seed_0.json": _drop("floor")}}, "plain_g2/seed_0.json: missing arms ['floor']"),
-    ({"bad": {"guard/dm/g1_seed_5.json": _drop("oth_f")}}, "guard/dm/g1_seed_5.json: missing arms ['oth_f']"),
-    ({"bad": {"dm/g1_seed_4.json": _set_prov(commit="def")}}, "results from different commits"),
-    ({"bad": {"plain_g1/seed_9.json": _set_prov(machine="m2")}}, "results from different machines"),
-    ({"bad": {"dm/g2_seed_1.json": _set_prov(tree_clean=False)}}, "dm/g2_seed_1.json: a dirty tree"),
-    ({"clean": False}, "gate.json: a dirty tree"),
-    ({"gcells": {"dm g2": {**GOOD, "oth_f": 0.2}}}, "the guard step's oth_f, read again, is off"),
+@pytest.mark.parametrize("kw,why,tries", [
+    ({"bad": {"plain_g1/seed_3.json": _drop("own_d")}}, "plain_g1/seed_3.json: missing arms ['own_d']", 5),
+    ({"bad": {"dm/g2_seed_7.json": _drop("oth_h")}}, "dm/g2_seed_7.json: missing arms ['oth_h']", 5),
+    ({"bad": {"plain_g2/seed_0.json": _drop("floor")}}, "plain_g2/seed_0.json: missing arms ['floor']", 5),
+    ({"bad": {"guard/dm/g1_seed_5.json": _drop("oth_f")}}, "guard/dm/g1_seed_5.json: missing arms ['oth_f']", 5),
+    ({"bad": {"dm/g1_seed_4.json": _set_prov(commit="def")}}, "results from different commits", 5),
+    ({"bad": {"plain_g1/seed_9.json": _set_prov(machine="m2")}}, "results from different machines", 5),
+    ({"bad": {"dm/g2_seed_1.json": _set_prov(tree_clean=False)}}, "dm/g2_seed_1.json: a dirty tree", 5),
+    ({"clean": False}, "gate.json: a dirty tree", 5),
+    ({"gcells": {"dm g2": {**GOOD, "oth_f": 0.2}}}, "the guard step's oth_f, read again, is off", 6),
     ({"cells": {"plain g2": {**GOOD, "oth_f": 0.11}}, "gcells": {}}, "the run step's oth_f is off the guard step's in "
-                                                                     "plain g2"),
+                                                                     "plain g2", 6),
     ({"cells": {"dm g1": {**GOOD, "oth_f": [0.0] * 3 + [0.6] + [0.0] * 6}}, "gcells": {}},
-     "the run step's oth_f is off the guard step's in dm g1"),
+     "the run step's oth_f is off the guard step's in dm g1", 6),
 ])
-def test_each_void_condition(tmp_path, monkeypatch, kw, why):
+def test_each_void_condition(tmp_path, monkeypatch, kw, why, tries):
     res = _read(_write_run(tmp_path / "v", **kw), monkeypatch)
     assert res["void"] and any(why in x for x in res["why"]), res["why"]
     assert res["outcome"].startswith("Try K29: VOID: ") and res["outcome"].endswith("; no file.")
     assert why in res["outcome"] and "decision" not in res
-    assert res["tries_counted"] == 5 and res["counted_arms"] == list(k29.COUNTED)  # a full run counts five, exactly
+    assert res["tries_counted"] == tries  # five; six when oth_f is measured outside its guard in the run step
+    assert res["counted_arms"] == [*k29.COUNTED, *(["oth_f"] if tries == 6 else [])]
     assert "VOID (checked first; no strike clause is applied)" in k29.text(res)
 
 
@@ -748,16 +749,26 @@ def test_k18s_committed_files_off_their_pins_void(tmp_path, monkeypatch):
     assert any("plain_g1.json is missing" in x for x in _read(w2, monkeypatch)["why"])
 
 
-@pytest.mark.parametrize("kw", [
-    {"cells": {"plain g1": {**GOOD, "oth_f": 0.2}}, "gcells": {}},  # the run step's oth_f off the guard step's
-    {"gcells": {"dm g1": {**GOOD, "oth_f": 0.3}}},  # the guard step's, read again, off K18's rows
-    {"bad": {"dm/g1_seed_0.json": _drop("own_d")}},  # a malformed file drops a seed of oth_f's match as well
-    {"bad": {"guard/plain_g2/seed_4.json": _drop("oth_f")}},
-    {"bad": {"dm/g1_seed_0.json": _set_prov(machine="m9")}},
+@pytest.mark.parametrize("kw,void,counted", [
+    ({}, False, list(k29.COUNTED)),  # (1) a full run whose oth_f holds: five
+    ({"cells": {"plain g1": {**GOOD, "oth_f": 0.2}}, "gcells": {}}, True, [*k29.COUNTED, "oth_f"]),  # (3) the run
+    ({"gcells": {"dm g1": {**GOOD, "oth_f": 0.3}}}, True, [*k29.COUNTED, "oth_f"]),  # step measures oth_f out: six
+    ({"bad": {"dm/g1_seed_0.json": _drop("own_d")}}, True, list(k29.COUNTED)),  # (4) a malformed file adds none,
+    ({"bad": {"guard/plain_g2/seed_4.json": _drop("oth_f")}}, True, list(k29.COUNTED)),  # though it drops a seed of
+    ({"bad": {"dm/g1_seed_0.json": _set_prov(machine="m9")}}, True, list(k29.COUNTED)),  # oth_f's match too
 ])
-def test_a_full_run_counts_five_whatever_its_files_hold(tmp_path, monkeypatch, kw):
+def test_the_count_follows_row_k29s_cell_1(tmp_path, monkeypatch, kw, void, counted):
     res = _read(_write_run(tmp_path / "a", **kw), monkeypatch)
-    assert res["void"] and res["tries_counted"] == 5 and res["counted_arms"] == list(k29.COUNTED)
+    assert res["void"] is void and res["tries_counted"] == len(counted) and res["counted_arms"] == counted
+    # (2) a guard failure at the guard step, before the run: one try, oth_f
+    res = _read(_write_run(tmp_path / "g", guard_passes=False, score=False), monkeypatch)
+    assert res["void"] and res["tries_counted"] == 1 and res["counted_arms"] == ["oth_f"]
+    # (4) a missing scoring file: INCOMPLETE, no reading and no count; past the cutoff VOID, the five and no more
+    w = _write_run(tmp_path / "m", bad={"dm/g2_seed_3.json": lambda b: None})
+    assert _read(w, monkeypatch)["incomplete"] and "tries_counted" not in _read(w, monkeypatch)
+    monkeypatch.setattr(k29, "_now", lambda: k29.CUTOFF)
+    res = _read(w, monkeypatch)
+    assert res["void"] and res["late"] and res["tries_counted"] == 5 and res["counted_arms"] == list(k29.COUNTED)
 
 
 def test_a_guard_that_failed_in_the_guard_step_is_void_with_one_counted_try(tmp_path, monkeypatch):
