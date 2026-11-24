@@ -3310,3 +3310,12 @@ question to the captain before the file goes up.
 
 Data used, if built: released Task 2 heart stages, the unlocked E10.5 validation file, and two outside spatial sources
 (their register rows, written before they enter any model).
+
+## Note of 2026-11-24: the heart's fifth line ends at its screening (row R50; decision log 2026-11-24 (ww))
+
+Ended at its screening on 2026-11-24, before any fetch (decision log 2026-11-24 (ww)): reader B refused S1 at E9.5
+(the strict form's readings E8.5 and E10.0 fall inside the heart's windows) and at E15.5 (a doubt: its gene panel was
+chosen from single-cell clusters that include E12.5 cells), and S2 at E9.5 and E14.5 (window readings) and at E15.5
+and E16.5 (doubts on the licence and the methods); a doubt counts as no, so no source enters, nothing is fetched, no
+register row is written and no file is built; the composition ruling of 2026-11-01 and A15 stand as before; reader A's
+answer is added when it lands.

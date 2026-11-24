@@ -13877,3 +13877,13 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     `T1_s2rcB25d20.h5ad`, `T1_s2rcCm30.h5ad`; T3 `T3_c1_s2_g2.h5ad`. Reached as well: `T1_s2rcMSB.h5ad`,
     `T1_s2rcA15.h5ad`. Waiting: `T1_s2rcA20.h5ad`. Last of all: `T3_c2_s2_g2.h5ad`. In work: the files of rows R44 to
     R50.
+- 2026-11-24 (ww), the heart's fifth line (row R50) ends at its screening (state at 19:03 UTC, 2026-11-24). Written by
+  the AI assistant.
+  - **Reader B's answer** (`ols_reader_B.json` in the round folder; a reader blind to test scores, which fetched no
+    data file): Ended at its screening on 2026-11-24, before any fetch (decision log 2026-11-24 (ww)): reader B
+    refused S1 at E9.5 (the strict form's readings E8.5 and E10.0 fall inside the heart's windows) and at E15.5 (a
+    doubt: its gene panel was chosen from single-cell clusters that include E12.5 cells), and S2 at E9.5 and E14.5
+    (window readings) and at E15.5 and E16.5 (doubts on the licence and the methods); a doubt counts as no, so no
+    source enters, nothing is fetched, no register row is written and no file is built; the composition ruling of
+    2026-11-01 and A15 stand as before; reader A's answer is added when it lands. The trend pair of row R49 is
+    unaffected.
