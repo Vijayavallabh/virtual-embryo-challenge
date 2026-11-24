@@ -525,6 +525,68 @@ def test_the_screen_refuses_before_a_complete_targets_pass(tmp_path, monkeypatch
         cp.g0a(root, kept_for(tmp_path, exps))
 
 
+# Class (vi)'s two counts (reading R1, the ruling of 2026-11-24 on OPEN-4): over the rows of the antigens the analysis
+# list records with a target-gene file, and over the rows of the antigens whose target-gene file is in the manifest
+
+
+def two_counts(cls: str) -> list[X]:
+    """Rows of one class that class (vi)'s two counts read apart, beside an antigen the fetch holds no file for.
+    Mu: 1 matching row of 20 among antigens with a fetched file (Ant02), 1 of 23 once the 3 rows of Ant03 are added,
+    whose file the archive does not serve (build_db's `unserved`): only the manifest count excludes Mu. Nu: no
+    matching row among the 20 of Ant04, whose file is fetched, 2 of 23 once the rows of Ant05 are added, which keeps
+    one experiment (the fetch takes no file for it): only the analysis-list count excludes Nu."""
+    n = iter(range(40000 if cls == MU else 50000, 60000))
+
+    def x(antigen, count, **kw):
+        return [X(f"SRX{next(n)}", antigen, cls, **kw) for _ in range(count)]
+
+    if cls == MU:
+        return x("Ant02", 19) + x("Ant02", 1, text="CHIR99021 3uM") + x("Ant03", 3)
+    return x("Ant04", 20) + x("Ant05", 1) + x("Ant05", 2, text="LiCl 20mM")
+
+
+@pytest.mark.parametrize("cls,alone", [(MU, "manifest"), (NU, "analysis list")])
+def test_a_class_that_one_count_alone_excludes_is_excluded(tmp_path, monkeypatch, cls, alone):
+    exps = small_exps() + two_counts(cls)
+    root = build_db(tmp_path, monkeypatch, exps, unserved=("Ant03",) if cls == MU else ())
+    kept = kept_for(tmp_path, exps)
+    sc = cp.screen(root, kept)
+    # the archive is as the case says: the analysis list records a target-gene file for both antigens of the class;
+    # the manifest holds the first one's only
+    fetched, unfetched = ("Ant02", "Ant03") if cls == MU else ("Ant04", "Ant05")
+    man = cf.load_manifest(root)
+    urls = {rec.get("url") for rec in man["files"].values()}
+    assert H.turl(fetched) in urls and H.turl(unfetched) not in urls and sc.no_file == frozenset({unfetched})
+    assert {fetched, unfetched} <= set(cf._lists(root, man)[0])
+    # the two shares, by hand: one count alone reaches 5%
+    rows = [x for x in exps if x.cls == cls]
+    rows_m = [x for x in rows if x.antigen == fetched]
+    hits, hits_m = (sum(1 for x in r if cp.matches_vi([x.text])) for r in (rows, rows_m))
+    assert (len(rows), len(rows_m)) == (23, 20)
+    by_list, by_manifest = cp.share_excludes(hits, len(rows)), cp.share_excludes(hits_m, len(rows_m))
+    assert (by_list, by_manifest) == ((False, True) if alone == "manifest" else (True, False))
+    # the screen excludes the class whichever count excludes it, with every experiment in it
+    assert sc.excluded == frozenset({cls})
+    assert sc.eligible[fetched] == [] and sc.eligible[unfetched] == []
+    assert cp.g0a(root, kept)["classes_excluded"] == 1
+
+
+def test_the_number_of_classes_excluded_counts_a_class_either_count_excludes(tmp_path, monkeypatch):
+    exps = small_exps() + two_counts(MU) + two_counts(NU)
+    root = build_db(tmp_path, monkeypatch, exps, unserved=("Ant03",))
+    kept = kept_for(tmp_path, exps)
+    assert cp.screen(root, kept).excluded == frozenset({MU, NU})
+    assert cp.g0a(root, kept)["classes_excluded"] == 2  # the number G0a prints
+    # with the named classes too, where the list has them
+    exps += [X("SRX60000", "Ant06", "Others"), X("SRX60001", "Ant06", "Others")]
+    root = build_db(tmp_path, monkeypatch, exps, name="db2", unserved=("Ant03",))
+    kept = kept_for(tmp_path, exps, name="kept2")
+    assert cp.screen(root, kept).excluded == frozenset({MU, NU, "Others"})
+    assert cp.g0a(root, kept)["classes_excluded"] == 3
+    assert cp.readings()["CLASS_VI_ROWS"] == ["analysis list", "manifest"]
+    assert cp.readings()["CLASS_VI_EXCLUDED_BY"] == "either count"
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 # Step 1: usable experiments
 

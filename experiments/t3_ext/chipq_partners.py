@@ -16,8 +16,9 @@ archive's co-localisation files are not used (file 01).
           CANDIDATE_EXCLUDE. At least MIN_CANDIDATES (bar a2).
 Classes (v) and (vi) run in code for every antigen and both queries before any count (`screen`): (v) drops a row whose
 screened field holds one of CLASS_V_WORDS in any case; (vi) excludes a cell-type class when CLASS_VI_SHARE or more of
-its mm10 rows match one of the committed keyword filter's entries CLASS_VI_ENTRIES, and the classes named
-CLASS_VI_NAMED.
+its mm10 rows match one of the committed keyword filter's entries CLASS_VI_ENTRIES in either of two counts (reading
+R1: over the rows of the antigens the analysis list records with a target-gene file, and over the rows of the
+antigens whose target-gene file is in the manifest), and the classes named CLASS_VI_NAMED.
 
 Every constant of those steps is one named constant below, fixed before any count; none comes from a score and none
 changes after a count. The points the specification leaves to a reading are in the block "READINGS".
@@ -69,15 +70,20 @@ CLASS_VI_NAMED = ("Unclassified", "No description", "Others")  # class (vi): exc
 CLASS_FIELD = "Cell type class"  # step 1: an experiment's class is this field of its experiment-list row
 
 # READINGS. The literal reading of each point the specification leaves open, fixed here before any count.
-#   R1 "its mm10 rows (antigens with a target-gene file)", class (vi): the experiment list's rows of genome mm10 whose
-#      antigen the pinned analysis list records with a target-gene file for mm10 (chipq_fetch.analysis_rows, the
-#      antigens the fetch's rows step screened; the two queries are among them). Not only the antigens whose file was
-#      fetched: the share is "a fact of the database".
+#   R1 "its mm10 rows (antigens with a target-gene file)", class (vi): the words fit two sets of rows and do not say
+#      which, so the share is counted twice (the ruling of 2026-11-24 on OPEN-4): over the experiment list's rows of
+#      genome mm10 whose antigen the pinned analysis list records with a +/-5 kb target-gene file for mm10
+#      (chipq_fetch.analysis_rows, the antigens the fetch's rows step screened), and over those of them whose antigen's
+#      target-gene file is in the pinned manifest (the files the targets step fetched, each found by the URL the
+#      analysis list gives for it, under which the fetch records it; a file's path is named in chipq.py and
+#      chipq_fetch.py only). The two queries' rows are in both counts. A class at CLASS_VI_SHARE or more in either
+#      count is excluded: the stricter reading, as a doubt drops (file 03). Each share is "a fact of the database".
 #   R2 "match one of entries": as the keyword filter matches, the entry's pattern found in any screened field of the
 #      row (chipq_fetch.screened_fields).
 #   R3 "5% or more": exact, in integers: 100 * matching rows >= 5 * rows.
-#   R4 the number of classes excluded: counted over the classes that have an mm10 row of R1; a class named in
-#      CLASS_VI_NAMED counts when it is among them ("if the list has them").
+#   R4 the number of classes excluded: every class either count of R1 excludes, counted over the classes that have an
+#      mm10 row of R1's first set (which holds the second); a class named in CLASS_VI_NAMED counts when it is among them
+#      ("if the list has them").
 #   R5 "a score above 0 at 200 genes or more": rows of the antigen's file, one row a gene (the reader refuses a file
 #      with a gene symbol on two rows, or a row without one).
 #   R6 "with a column in its antigen's file": an antigen for which the fetch holds no file has no column, so no usable
@@ -162,6 +168,7 @@ def screen(root=None, kept=None, man: dict | None = None) -> Screen:
     patterns = class_vi_patterns()
     targets, exp_raw = cf._lists(root, man)
     placebo = cf.placebo_kept(root, man)
+    fetched = frozenset(rec.get("url") for rec in man["files"].values())  # the URL each file of the manifest came from
     ids_of: dict[str, list[str]] = {}
     for q in QUERIES:
         if q not in kept:
@@ -179,6 +186,8 @@ def screen(root=None, kept=None, man: dict | None = None) -> Screen:
             owner[i] = a
     rows: Counter = Counter()
     hits: Counter = Counter()
+    rows_m: Counter = Counter()
+    hits_m: Counter = Counter()
     found: dict[str, tuple[str, bool]] = {}
     seen: set[str] = set()
     for f in cf.experiment_rows(exp_raw):
@@ -189,10 +198,15 @@ def screen(root=None, kept=None, man: dict | None = None) -> Screen:
             raise Refused("an mm10 experiment id appears twice in the experiment list: refused")
         seen.add(i)
         a, cls, fields = f[cf.EXP_ANTIGEN_COL], f[_CLASS_COL], cf.screened_fields(f)
-        if a in targets:  # reading R1
+        if a in targets:  # reading R1, the first count: the antigens the analysis list records with a target-gene file
+            hit = matches_vi(fields, patterns)
             rows[cls] += 1
-            if matches_vi(fields, patterns):
+            if hit:
                 hits[cls] += 1
+            if targets[a] in fetched:  # the second count: the antigens whose target-gene file is in the manifest
+                rows_m[cls] += 1
+                if hit:
+                    hits_m[cls] += 1
         if i in owner:
             if owner[i] != a:
                 raise Refused("a kept experiment's row in the experiment list names another antigen: refused")
@@ -200,7 +214,8 @@ def screen(root=None, kept=None, man: dict | None = None) -> Screen:
     missing = len(owner) - len(found)
     if missing:
         raise Refused(f"{missing} kept experiment(s) have no mm10 row in the experiment list: refused")
-    excluded = frozenset(c for c in rows if c in CLASS_VI_NAMED or share_excludes(hits[c], rows[c]))
+    excluded = frozenset(c for c in rows if c in CLASS_VI_NAMED or share_excludes(hits[c], rows[c])
+                         or share_excludes(hits_m[c], rows_m[c]))
     eligible = {a: [(i, found[i][0]) for i in ids
                     if not found[i][1] and found[i][0] not in excluded and found[i][0] not in CLASS_VI_NAMED]
                 for a, ids in ids_of.items()}
@@ -293,9 +308,11 @@ def g0a(root=None, kept=None, man: dict | None = None) -> dict:
 
 
 def readings() -> dict:
-    """The constants of steps 1 to 3, for a record."""
+    """The constants of steps 1 to 3, and the two sets of rows class (vi)'s share is counted over (reading R1; either
+    count excludes a class), for a record."""
     return {"MIN_BOUND_GENES": MIN_BOUND_GENES, "QUERY_MIN_USABLE": QUERY_MIN_USABLE,
             "CANDIDATE_MIN_USABLE": CANDIDATE_MIN_USABLE, "MIN_CANDIDATES": MIN_CANDIDATES,
             "CANDIDATE_EXCLUDE": list(CANDIDATE_EXCLUDE), "CLASS_V_WORDS": list(CLASS_V_WORDS),
             "CLASS_VI_ENTRIES": list(CLASS_VI_ENTRIES), "CLASS_VI_SHARE": list(CLASS_VI_SHARE),
+            "CLASS_VI_ROWS": ["analysis list", "manifest"], "CLASS_VI_EXCLUDED_BY": "either count",
             "CLASS_VI_NAMED": list(CLASS_VI_NAMED), "CLASS_FIELD": CLASS_FIELD}
