@@ -14075,3 +14075,19 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     copy checked: **`T2heart_organ_ts15_half.h5ad`** f818931834d0... (full sha256 in the rules note and the record).
   - **Its standing.** Due now (row R52; no condition). Data used: released Task 2 heart stages and the unlocked E10.5
     validation file only; no outside data.
+- 2026-11-24 (rrr), the captain gives a named exception on T3's depth for the depth line's three files (state at 22:14
+  UTC, 2026-11-24). Written by the AI assistant.
+  - **The facts put to the captain.** The depth line's cold challenge found that T3's depth is a closed lever (the
+    frozen rules, the prune QC20, the builder) and that the exposure of 2026-11-04 (b) bears on it (the pasted Data
+    page listed the hidden beta-catenin replicates' file sizes); the policy's rule for such levers ("a change follows
+    from released data alone, or is declined") gives "declined", as it did for Task 1's depth. The challenger's price
+    if allowed: about 0.45 that a file beats C2 if built, best case about +8, and -4 to -14 if the held-out knockout
+    is not shallow (no board loss while the best upload is kept).
+  - **The captain's answers.** First, in free text: "Go ahead with the option that would lead to improvement in
+    score", not taken as the exception (a closed lever needs the captain's own words). Then, picked: "Yes: my named
+    exception on T3's depth for T3_c2_s2_dd, T3_c2_s2_ddh and T3_c2_s2_dg, bound to row K30's read; the board keeps
+    its best upload, so its stop rule weighs the plain cells only." Recorded as row R53 and an amendment in
+    `docs/S2_RULES.md` (re-pinned).
+  - **What follows.** Row K30 (the practice read, world weight `plain`) is written after its code and the builder
+    option pass an independent review; the read runs on `~/v/vec-campaign-c`; if it names an arm, all three files are
+    built twice and handed over.

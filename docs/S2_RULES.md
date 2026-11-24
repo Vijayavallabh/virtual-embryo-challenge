@@ -3411,3 +3411,21 @@ f818931834d08a6906e010e8af9f077ba15be779aba8965cbaa880a9bdf1196c (build record
 `experiments/builds/results/heartg_b2bbcf5_g1.txt`). Added before any score of it; no heart headline beyond those of
 the decision log through 2026-11-24 (lll) had reached the main session at this note's commit. Data used: released Task
 2 heart stages and the unlocked E10.5 validation file only; no outside data.
+
+## Amendment of 2026-11-24: T3's depth line, the captain's named exception (row R53; decision log 2026-11-24 (rrr))
+
+In force since this amendment's commit at 22:14 UTC on 2026-11-24, on the captain's words, picked in a dialog: "Yes:
+my named exception on T3's depth for T3_c2_s2_dd, T3_c2_s2_ddh and T3_c2_s2_dg, bound to row K30's read; the board
+keeps its best upload, so its stop rule weighs the plain cells only." T3's depth is a closed lever that the exposure
+of 2026-11-04 (b) bears on; the policy's rule for such levers gives "declined", and this file set stands only by the
+captain's named exception, bound before the read's row. The AI assistant gave that outcome and no lean.
+
+Files (all three, only if row K30's read names an arm; then each built twice with one sha256 and uploaded together;
+the board keeps its best headline): `T3_c2_s2_dd.h5ad`, `T3_c2_s2_ddh.h5ad`, `T3_c2_s2_dg.h5ad`, each C2's command
+(`build_two_knockout.py build ... --form c2-s2 --seed 1000001`) with `--depth-from allowed-s1`, `--depth-from
+allowed-s1 --depth-exponent 0.5` or `--depth-from allowed-s1 --depth-form global`, and `--captain-ruling R53`. If K30
+stops or is void, nothing is built and C2 stays.
+
+Data used, if built: released challenge data only: wild-type E8.75 cells, the released knockout tables
+transfer_mab21l2_all and gata4_pooled in C2's size-held product, and the frozen per-label depth ratios of the two
+Gata4 validation files (the decision file of 2026-10-28); no outside data, no gene set.
