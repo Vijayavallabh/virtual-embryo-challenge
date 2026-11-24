@@ -12443,3 +12443,26 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     scores, with the organisers' words and the round's own record; its result goes to the captain.
   - **The four order items of the earlier replies** (T1's order, the heart's order) are not touched by these words;
     the order on record stands until the captain names a file.
+- 2026-11-24 (a), T3's second search line ends at its own guard, before any code is merged and before any build (state
+  at 00:00 UTC, 2026-11-24). Written by the AI assistant, which designed neither the line nor its guard and states no
+  preference.
+  - **What was run.** An early trial of the guard that the line's text sets before its build (entry 2026-11-23 (ff):
+    the den-weighted total of phi_M * phi_G ** 2 must lie within 5% of that of phi_M). The main session ran it in its
+    scratch folder with the repository's own `build_outside_form.wt_den` on the released wild-type E8.75 file and the
+    two pinned tables, each checked against its pinned sha256 (`transfer_mab21l2_all` 64b1e0b8572c, `gata4_pooled`
+    36f2d65a36d2). It is target-free: no fold, no score, nothing of a hidden sample.
+  - **The result.** At w = 2 the den-weighted total stands 38.2% above that of phi_M alone, against the limit of 5%.
+    At w = 1, C1's own figure, which the text records and which gates nothing, it stands 10.4% above.
+  - **What follows, by the line's own text:** 'If it fails, the file is not built (exit 5, nothing written) and the
+    line ends at w = 1.' The trial is not the reviewed builder's run, but the margin leaves no doubt that the reviewed
+    guard would fail the same way, and the guard and its 5% are fixed by the text. The line ends. `T3_c1_s2_g2.h5ad`
+    is not built and nothing of it is uploaded. The engineer started under entry 2026-11-23 (hh) was stopped after
+    about five minutes; nothing of its work is merged. Row R22's first cell keeps the clause that names
+    `--gata4-exponent 2.0` (the cell is add-only); no builder takes the option.
+  - **An ordering fault of the AI assistant's, the second of its kind.** It started the engineer before running this
+    one-minute gate, although its own note of 2026-11-23 says to run a line's cheap gate on real inputs first. The
+    cost was minutes of one agent.
+  - **For the captain.** The yes of entry 2026-11-23 (hh) stands recorded; the file it allowed cannot exist under the
+    guard the analysts set before any build. The round of analysts blind to test scores that is asked whether the
+    framework admits a further T3 line on today's order is told this fact and may check any guard it sets on released
+    data before it hands a line back. No file, order or queue changes.

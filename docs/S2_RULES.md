@@ -2447,3 +2447,12 @@ weight raised from 1 to 2 through a new builder option, which no file in force d
 computed power c) and which the R22 framework admits only if you count that built-in weight as C1's open setting; cost
 about 6 to 12 hours of coding, review and DGX builds by 2026-11-25 12:00 UTC and, if uploaded, one T3 slot, third to
 fifth in the queue; default: no, and the line is void?" Every upload is the captain's own act.
+
+## Note of 2026-11-24: T3's second search line ended at its own guard; no file exists (decision log 2026-11-24 (a))
+
+The amendment above, "T3's second search line, the Gata4-table weight on C1", sets a guard computed from released
+wild-type data before any build: the den-weighted total of phi_M * phi_G ** 2 within 5% of that of phi_M. An early
+trial on 2026-11-24 with the repository's own `wt_den` and the two pinned tables put it 38.2% above. By the line's own
+words the file is not built and the line ends at w = 1. `T3_c1_s2_g2.h5ad` does not exist and holds no place in T3's
+order; the option named in row R22's first cell is taken by no builder. Every other T3 file keeps its place and its
+condition.
