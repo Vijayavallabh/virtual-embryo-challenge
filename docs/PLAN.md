@@ -13277,3 +13277,33 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     not asked for again (a safety classifier stopped that text on 2026-11-24, entry (b)); the heart's and the embryo's
     designers reported hours ago and nothing they were given has changed but the allowance, which the captain's orders
     on the heart's caps already used.
+- 2026-11-24 (o), the embryo candidate's code review: one blocker, being fixed; three statements of fact in row E55
+  corrected before any read (state at 02:36 UTC, 2026-11-24). Written by the AI assistant, which is recused on the
+  embryo's occupancy term and shape forms and states no preference.
+  - **The review** (a reviewer blind to test scores, started through the route that relays no message, with the
+    blocker standard fixed in its brief; it met no test score): NOT READY, one blocker. The reading left out two items
+    the row lists as reported, deciding nothing: the arm's means against the floor (the ledger's rule 5) and the thin
+    SDs. Everything else holds by the reviewer's own runs: existing outputs unchanged, old against new (240 form
+    calls, 76 interpolation calls, 68 candidates, 10,560 builder argument sets); the arm, the placebos and the builder
+    as the row's cell 3; every clause, void rule, guard and refusal of the read as the row fixes them; the run step
+    cannot start without row E55, step 0 and the gate. Sixteen lesser points.
+  - **What the engineer now fixes on the branch, by the AI assistant's choice among the lesser points:** the blocker;
+    step 0's verdict stops the launcher where the row puts it (it had exited 0 whatever the comparison said, so the
+    reproduction gate could have run after a step-0 failure); 8 BLAS threads for the reproduction gate, the run and
+    the read, as the runs they are compared with used (3 stay for step 0, as the recorded gate ran); after a failed
+    step the launcher still writes the VOID reading; the stream constant's name as the row has it; two labels in the
+    reading; a refusal of the test build if the brackets' blocks are not 1 then 2,3. The reviewer then checks the
+    change. Not changed: the pin of the record (it holds with the committed record), exit-code overlaps.
+  - **Three statements of fact in row E55 were wrong and are corrected before any read**, on the rulings of the
+    specification's author (`embryo_osr_open_points_3.json` in the round's scratch folder): (1) the gate's count
+    differs from the read's on new1 alone, not on x1 to x3, and eight of the nine tasks are twin-board tasks; P7's
+    set, the small-g set and step 0's recompute are fixed from or by the gate record, so nothing in the read changes;
+    (2) the anti placebo is the spectrum mirrored about the earlier bracket, not a reversed sign: by the gate record
+    it stretches against the arm on four pairs and the same way but further on five; P5 against it stands exactly as
+    registered and is not easier for the candidate; (3) the run step builds five files per task-seed, C0 only in the
+    reproduction gate. No clause, threshold, task set, void condition or outcome changed; the row's last-but-one cell
+    says so and names the commit that holds the earlier wording.
+  - **Checked on the DGX before any launch:** the launcher's five refusal paths (exit records written); its tests step
+    in the environment the gate used (297 passed); and the gate recomputed at the branch's code in the run's own
+    worktree, environment and thread setting (run g3): every g equal to the recorded one (largest change 0.0 over 100
+    pair-seeds), so step 0 holds at this code. Nothing has been read against a practice target; no try is counted.
