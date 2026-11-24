@@ -13989,3 +13989,14 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     designer blind to test scores named eight files around the new T1 best; a cold challenger fixed seven and struck
     the pair P1. One gate is already decided by headlines on record: candidate C's file scored above candidate B's, so
     MSBd10 is not held back.
+- 2026-11-24 (jjj), the captain reports two more headlines and each board's rule is applied by its letter (state at
+  20:47 UTC, 2026-11-24). Written by the AI assistant, which records the headlines only.
+  - **The paste (headlines, each with its file named for its board; both shown as submitted 2026-11-24 20:44):**
+    T2:embryo:test_interp `T2embryo_s2x_ovsb.h5ad` 64.11; T2:heart:test_extrap `T2heart_organ_ts125_half.h5ad` 61.97.
+    Each file's sha256 on disk matches its sheet row. The paste's per-metric lines, ranks and file sizes are not
+    recorded or used.
+  - **Each rule by its letter.** Heart: OTS125 scored strictly above OTS10, so it holds the board's best; by row R49
+    the pair goes up together, so OTS075 stays due; the line has no further file (row H34's outcome stands: nothing at
+    1.5 or above). Embryo: W scored below O, which keeps the board's best; W was an extra file and replaces nothing.
+  - **Standing:** T1 73.47, T3 63.94, heart 61.97, embryo 69.9; overall 203.345 by the challenge's formula (it was
+    203.255).
