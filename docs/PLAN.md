@@ -13241,3 +13241,39 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **What does not change.** Every other line's rule and order; the files handed over; the heart's first and second
     lines, which still end at TS10 and OTS10; the pathway tier, which stays out; the closed levers; the bulk approval
     of outside data, which stands recorded and by two independent rounds buys nothing inside the organisers' rules.
+- 2026-11-24 (n), the captain lifts row K27's stop for CHIPQ-C, states a new upload allowance of 20 uploads over two
+  days, and orders the widest effort (state at 02:25 UTC, 2026-11-24). Written by the AI assistant; its readings are
+  labelled.
+  - **The captain's message, in full, the one figure withheld:** '"lift K27's stop for CHIPQ-C" if it improves our
+    scores and also remember that today and tomorrow we have 20 uploads to submit [quota lifted]. /ambition-lift So go
+    ahead and do whatever it takes to lit our scores to [a target figure for the Overall score, not written here]'.
+    The figure is a target for the Overall score; like the four target figures of an earlier message it is not written
+    into the repository.
+  - **Row K27's stop is lifted for CHIPQ-C (ruling row R33).** The answer to the one question of entry (m). The AI
+    assistant's reading of 'if it improves our scores', its own: the lift changes no file and cannot lower a board's
+    mark; whether the candidate can raise it is what its database gate and its practice read are for; the committed
+    odds stay the analyst's, about 0.02 end to end. So the sentence is lifted for this one candidate and bars
+    everything else as before; a file still comes only through the gate, the pass rule of a new practice row and the
+    captain's naming with the provenance and A15 rulings.
+  - **The upload allowance (ruling row R34).** 20 uploads over 24 and 25 Nov, no cap per board, on the captain's word;
+    the AI assistant has not opened the challenge site and takes the figure as the team's own allowance. The search
+    framework's clause (5) and each line's 'two uploads a board a day' sentence follow it; every condition, every stop
+    rule, 'named before its own score', 'nothing rebuilt after a score', headline-only comparison, the closed levers
+    and the build cut-off of 2026-11-25 12:00 UTC stand. The upload sheet is re-cut: nine files are due now (T1: B25,
+    Cm20; T3: K23 and the second search's file; embryo: its three; heart: TS10, OTS05), seven wait on one reported
+    score each, three T1 files stand last, and up to five are in work.
+  - **'Do whatever it takes' (the captain invoked the ambition skill).** The AI assistant's reading, its own: this
+    widens the effort and lifts no rule. The organisers' data rules, the never-open list, 'scores choose, never
+    compute', the closed levers with their named exception per file, the pathway tier's exclusion and the AI
+    assistant's recusals stand. **What the record says of the target, stated once:** no file waiting or in work is
+    priced by its practice row at more than about two board points at the top of its range, the ledger's central
+    figure for most is zero (rule J6), and all of them together at the top of their ranges come to a few points of the
+    Overall score; the target lies far beyond that. The AI assistant works as if more were reachable, raises no
+    estimate because a target is set, and reports what the board returns.
+  - **What the wider effort is, as of this entry.** The upload plan above, so that no upload of the allowance goes
+    unused; the four candidates in work (the heart's third and fourth lines, the embryo's overlay with one stretch,
+    CHIPQ-C), each through its own row, review and read; and one more design round for T1 by analysts blind to test
+    scores, asked whether the larger allowance admits further search steps. T3's line on its best file's command is
+    not asked for again (a safety classifier stopped that text on 2026-11-24, entry (b)); the heart's and the embryo's
+    designers reported hours ago and nothing they were given has changed but the allowance, which the captain's orders
+    on the heart's caps already used.

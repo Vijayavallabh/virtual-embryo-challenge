@@ -2863,3 +2863,28 @@ on 26 Nov; it reaches it only through three strict improvements reported in time
 files to find no slot. What practice shows: nothing for the trend on D's pool at any strength (rows H28, H29a, H29b);
 on the full trim the gain rose with strength up to 1 but never beat its placebo (H28); on the whole pool steps beyond
 strength 1 were worse or mixed (H13h, H11s). Default if no answer: no.
+
+## Amendment of 2026-11-24: the upload allowance is 20 uploads over 24 and 25 Nov, no cap per board (row R34; the captain's word; decision log 2026-11-24 (n))
+
+The captain's words: "today and tomorrow we have 20 uploads to submit [quota lifted]". Clause (5) of the amendment "a
+score-guided search of round steps may run" ("At most two official uploads a board a day until 2026-11-26 11:59 UTC;
+files already queued keep their places unless the captain says otherwise") and the same sentence in each search line's
+text now read: at most the allowance the captain states, 20 uploads over 2026-11-24 and 2026-11-25 on any board; files
+already queued keep their places within their board unless the captain says otherwise. The 'earliest upload' dates
+that the heart's third and fourth lines derived from two uploads a board a day no longer bind: a file of those lines
+goes when its rule names it next, the headline that rule needs has been reported and the file is built. **Nothing else
+changes:** every line's conditions and stop rules; every file named with its command and sha256 before its own score;
+nothing rebuilt, re-seeded, resized or changed after a score; only the team's own headlines compared, no per-metric
+value read, recorded, compared or quoted; the closed levers; the build cut-off of 2026-11-25 12:00 UTC. The AI
+assistant has not opened the challenge site and takes the figure as the team's own allowance, on the captain's word,
+as it took the earlier one.
+
+## Amendment of 2026-11-24: row K27's stop is lifted for CHIPQ-C and for nothing else (row R33; the captain's order; decision log 2026-11-24 (n))
+
+The captain's words: "lift K27's stop for CHIPQ-C", with "if it improves our scores". The sentence of row K27's
+outcome cell, "By this row the candidate is not rerun under another row and no further size, weight, sign or query of
+this database is read on this fold", no longer bars the one candidate CHIPQ-C of decision log 2026-11-24 (b); it bars
+everything else as before, and row K27 is not rerun. CHIPQ-C reads a fold only under a new practice row of its own,
+placed before that read, after its database-only gate has passed on the real database; a pass leads only to a priced
+question for the captain, and any file needs the captain's provenance and A15 rulings. The AI assistant's reading of
+the condition is in row R33's last cell.
