@@ -1,20 +1,23 @@
 """Row R36's file cD7 in experiments/t3_decomp/build_two_knockout.py: C2 on the barred s2 (`--form c2-s2`) rebuilt by
 its own command with one change, its composition block replaced by the decision file's
 submissions.allowed.s1.composition (`--composition-from allowed-s1`, only with `--form c2-s2` and `--captain-ruling
-R36`, only while row R36's first cell names it), and its two target-free gates: g1 (the composition routine finds the
-five scenario states at 0.3835 of their wild-type share before renormalising) and g2 (the file's gate bar, as row N4's
-diagnostic computes it, at most C2's plus 0.01).
+R36`, only while row R36's first cell names it; only the composition block, never that entry's factor or depth step),
+and its two target-free gates: g1 (the composition routine finds each of the five scenario states at 0.3835131214774091
+of its wild-type share before renormalising, within a relative 1e-12) and g2 (on each of row N4's three gene sets, the
+file's gate bar as N4's diagnostic computes it is at most C2's plus 0.01).
 
 Offline, synthetic and fast: the throwaway world of tests/test_t3_two_knockout_build.py (a small synthetic WT file,
 synthetic `transfer_mab21l2_all` and `gata4_pooled` tables, a decision file with the frozen hashes), a decision file
-that also carries the allowed s1 composition block, and small ledger files written under tmp_path. Nothing here reads
-the repository's own TRIES.md, builds from released data or pins bytes built on one machine.
+that also carries rule D7's m and an allowed s1 entry (factor, depth step and composition block), and small ledger files
+written under tmp_path. Nothing here reads the repository's own TRIES.md, builds from released data or pins bytes built
+on one machine.
 """
 
 from __future__ import annotations
 
 import hashlib
 import importlib.util
+import inspect
 import json
 import sys
 from pathlib import Path
@@ -45,20 +48,28 @@ REAL_DECISION_PIN = bk.R36_DECISION_SHA256  # read before any test patches it
 RULES = tx.RULES
 STATES = list(RULES["presets"]["gata4"]["scenario"]["depleted_states"])
 L2 = 1.3826521560990648
+RATIO = 0.3835131214774091
 # the block as the frozen rules write a central composition at this magnitude (decide_submissions' form)
 BLOCK = json.loads(json.dumps(bs.composition_spec("central", L2, RULES, "Gata4 replicates (D7)")))
 OPT = "`--composition-from allowed-s1`"
 ROW = ("| R36 (the captain's named exception of a day, \"yes, one file\": a composition changes for one file; "
        "ruling, no run, not a try; the T3 two-knockout builder is to take `--composition-from allowed-s1` with "
        "`--form c2-s2` only with `--captain-ruling R36`) | T3 | x |\n")
-OTHER_FORMS = [f for f in ("identity-s1", "identity-s1x1.5", "identity-s1x2.0", "identity-s2", "c1-s1", "c1-s2",
-                           "c2-s1", "c2-s1x1.5", "c2-s1x2.0")]
+OTHER_FORMS = ["identity-s1", "identity-s1x1.5", "identity-s1x2.0", "identity-s2", "c1-s1", "c1-s2", "c2-s1",
+               "c2-s1x1.5", "c2-s1x2.0"]
 
 
-def write_decision(path: Path, block=BLOCK, **over) -> Path:
-    """A synthetic decision file: the frozen hashes, D7m, and submissions.allowed.s1.composition = block."""
-    sub = {"allowed": {"s1": {"composition": block}}} if block is not None else {}
-    return tx._decision(path, **({"submissions": sub} | over))
+def write_decision(path: Path, block=BLOCK, d7_m=L2, **over) -> Path:
+    """A synthetic decision file: the frozen hashes, rule D7m (the barred compositions' m), rule D7 with its m, and
+    submissions.allowed.s1 as the decision file holds it: the Gata4 factor, the depth step on, and the composition
+    block (absent when block is None)."""
+    rules = {"D7m": {"outcome": True, "m": tx.M7M, "n_counted": 1}}
+    if d7_m is not None:
+        rules["D7"] = {"outcome": True, "m": d7_m}
+    entry = {"factor": {"source": "gata4", "exponent": 1.0}, "composition": block, "depth": True, "stage": False,
+             "coverage": False}
+    sub = {"allowed": {"s1": entry}} if block is not None else {}
+    return tx._decision(path, **({"rules": rules, "submissions": sub} | over))
 
 
 @pytest.fixture(scope="module")
@@ -122,6 +133,19 @@ def wt_without(tmp_path: Path, monkeypatch, state: str) -> SimpleNamespace:
     return SimpleNamespace(wt=wt, run=run)
 
 
+def skew_routine(monkeypatch, state: str, by: float) -> None:
+    """The frozen composition routine, then one state's share multiplied by `by` (renormalised)."""
+    real = bs.composition
+
+    def skewed(V, spec, params):
+        f, info = real(V, spec, params)
+        f = f.copy()
+        f[V.index([state])] *= by
+        return f / f.sum(), info
+
+    monkeypatch.setattr(bs, "composition", skewed)
+
+
 # ------------------------------------------------------------------------------------------------------ constants
 
 
@@ -131,8 +155,10 @@ def test_the_line_s_constants():
     assert bk.R36_NAMES == (OPT, "`--form c2-s2`", "`--captain-ruling R36`")
     assert bk.R36_OPENER == "the captain's named exception"
     assert bk.COMPOSITION_FROM == {"allowed-s1": ("allowed", "s1")}
-    assert bk.R36_LOG2_MAGNITUDE == L2 and bk.R36_RATIO == 2.0 ** -L2 and round(bk.R36_RATIO, 4) == 0.3835
-    assert bk.R36_N_STATES == 5 == len(STATES) and bk.R36_G2_MARGIN == 0.01 and bk.R36_RATIO_RTOL == 1e-9
+    assert bk.R36_LOG2_MAGNITUDE == L2 and bk.R36_RATIO == 2.0 ** -L2 == RATIO and round(bk.R36_RATIO, 4) == 0.3835
+    assert bk.R36_N_STATES == 5 == len(STATES) and bk.R36_RATIO_RTOL == 1e-12 and bk.R36_G2_MARGIN == 0.01
+    assert bk.N4_SETS == ("all_genes", "feasible_down_or_up", "top20pct_abs_dp")
+    assert bk.G2_FAILED_LINE == "G2 failed: no upload; C2 stays."
     assert (bk.EXIT_REFUSED, bk.EXIT_GATE_FAILED, bk.EXIT_GATE_CRASHED, bk.EXIT_FACTOR_MISMATCH) == (2, 1, 3, 5)
     assert bk.N4_SCRIPT == ROOT / "experiments" / "research_2026_11" / "diagnostics.py" and bk.N4_SCRIPT.is_file()
     assert bk.TRIES_FILE == ROOT / "experiments" / "harness" / "TRIES.md"
@@ -151,15 +177,17 @@ def test_the_line_s_constants():
 
 def test_the_pin_is_the_committed_decision_file_s_and_its_block_is_the_line_s(monkeypatch):
     """The pin is the committed decision file's sha256, and that file's submissions.allowed.s1.composition passes the
-    builder's check: the frozen rules' central composition at the pinned magnitude, as composition_spec writes it."""
+    builder's checks: the frozen rules' central composition at rule D7's m, as composition_spec writes it. The entry
+    also holds a factor and a depth step, which the builder never takes."""
     path = T3 / "results" / "gata4" / "gata4_decisions.json"
     assert REAL_DECISION_PIN == hashlib.sha256(path.read_bytes()).hexdigest()
     monkeypatch.setattr(bk, "R36_DECISION_SHA256", REAL_DECISION_PIN)
     dec = json.loads(path.read_text())
     block, rec = bk.composition_block(dec, RULES, path)
     assert block == dec["submissions"]["allowed"]["s1"]["composition"] == BLOCK
-    assert block["depleted_states"] == STATES and block["log2_magnitude"] == L2
-    assert block["depletion_factor"] == bk.R36_RATIO
+    assert {"factor", "depth", "composition"} <= set(dec["submissions"]["allowed"]["s1"])
+    assert block["depleted_states"] == STATES and block["log2_magnitude"] == L2 == rec["rule_d7_m"]
+    assert block["depletion_factor"] == RATIO
     assert rec["decision_sha256"] == rec["pinned_sha256"] == REAL_DECISION_PIN
     assert rec["source"] == "decision file submissions.allowed.s1.composition"
 
@@ -264,27 +292,42 @@ def test_the_builder_refuses_and_builds_nothing(world, cw, tmp_path, kw, monkeyp
     assert nothing_written(out) and frozen_functions_restored()
 
 
-@pytest.mark.parametrize("block,says", [
-    ({**BLOCK, "log2_magnitude": 0.7}, "not the central composition"),
-    ({**BLOCK, "log2_magnitude": float(np.nextafter(L2, 0.0))}, "not the central composition"),  # one ulp below
-    ({**BLOCK, "log2_magnitude": L2 / 2}, "not the central composition"),  # the mild magnitude of the same m
-    ({**BLOCK, "log2_magnitude": "1.3826521560990648"}, "not the central composition"),
-    ({**BLOCK, "kind": "mild"}, "not the central composition"),
-    ({**BLOCK, "depleted_states": STATES[::-1]}, "not the central composition"),
-    ({**BLOCK, "depleted_states": STATES[:4]}, "not the central composition"),
-    ({**BLOCK, "spared_states": BLOCK["spared_states"][:2]}, "not the central composition"),
-    ({**BLOCK, "depletion_factor": 0.3835}, "not the central composition"),
-    ({k: v for k, v in BLOCK.items() if k != "depletion_factor"}, "not the central composition"),
-    ("central", "not the central composition"),
-    (None, "has no submissions.allowed.s1.composition"),
+@pytest.mark.parametrize("block,d7_m,says", [
+    # the copied block's states differ from rules.yaml's scenario states
+    ({**BLOCK, "depleted_states": STATES[::-1]}, L2, "are not rules.yaml's scenario states"),
+    ({**BLOCK, "depleted_states": STATES[:4]}, L2, "are not rules.yaml's scenario states"),
+    ({**BLOCK, "depleted_states": [*STATES, "vCM1"]}, L2, "are not rules.yaml's scenario states"),
+    ({**BLOCK, "spared_states": BLOCK["spared_states"][:2]}, L2, "are not rules.yaml's scenario states"),
+    ({k: v for k, v in BLOCK.items() if k != "depleted_states"}, L2, "are not rules.yaml's scenario states"),
+    # its log2 magnitude differs from rule D7's m
+    ({**BLOCK, "log2_magnitude": 0.7}, L2, "is not rule D7's m"),
+    ({**BLOCK, "log2_magnitude": float(np.nextafter(L2, 0.0))}, L2, "is not rule D7's m"),  # one ulp below
+    ({**BLOCK, "log2_magnitude": L2 / 2}, L2, "is not rule D7's m"),  # the mild magnitude of the same m
+    ({**BLOCK, "log2_magnitude": "1.3826521560990648"}, L2, "is not rule D7's m"),
+    ({k: v for k, v in BLOCK.items() if k != "log2_magnitude"}, L2, "is not rule D7's m"),
+    (BLOCK, 0.7, "is not rule D7's m"),  # the decision file's rule D7 gives another m
+    (BLOCK, None, "is not rule D7's m"),  # no rule D7
+    ({**BLOCK, "log2_magnitude": 0.7, "depletion_factor": 2.0 ** -0.7}, 0.7, "is not rule D7's m"),  # not the pinned m
+    # not a central composition at 2 ** -m
+    ({**BLOCK, "kind": "mild"}, L2, "not the central composition at depletion factor"),
+    ({**BLOCK, "depletion_factor": 0.3835}, L2, "not the central composition at depletion factor"),
+    ({k: v for k, v in BLOCK.items() if k != "depletion_factor"}, L2, "not the central composition"),
+    # no block
+    ("central", L2, "is not a composition block"),
+    (None, L2, "has no submissions.allowed.s1.composition"),
 ])
-def test_a_block_other_than_the_line_s_is_refused(world, cw, tmp_path, monkeypatch, block, says):
-    dec = write_decision(tmp_path / "dec.json", block)
+def test_a_block_other_than_the_line_s_is_refused(world, cw, tmp_path, monkeypatch, block, d7_m, says):
+    dec = write_decision(tmp_path / "dec.json", block, d7_m)
     monkeypatch.setattr(bk, "R36_DECISION_SHA256", t3d.sha256(dec))
     out = tmp_path / "x.h5ad"
     with pytest.raises(bk.Refused, match=says):
         build_cd7(world, cw, tmp_path, out, dec=dec)
     assert nothing_written(out) and frozen_functions_restored()
+    # the gates refuse it too, before anything loads
+    with pytest.raises(bk.Refused, match=says):
+        bk.run_g1(dec, world.wt, "allowed-s1", threads=2)
+    with pytest.raises(bk.Refused, match=says):
+        bk.run_g2(dec, world.wt, world.run, world.board, N, SEED, "allowed-s1", threads=2)
 
 
 def test_a_decision_file_other_than_the_pinned_one_is_refused(world, cw, tmp_path, monkeypatch):
@@ -300,6 +343,23 @@ def test_a_decision_file_other_than_the_pinned_one_is_refused(world, cw, tmp_pat
     assert nothing_written(out)
 
 
+def test_a_barred_s2_spec_other_than_c2_s_is_refused(world, cw, tmp_path, monkeypatch):
+    """The replacement takes the barred s2's spec as the frozen builder resolves it; if that spec held anything but
+    the factor and the composition (a depth step, say), nothing is built."""
+    real = bs.barred_table
+
+    def with_depth(dec, rules):
+        tab = real(dec, rules)
+        tab["s2"] = {**tab["s2"], "depth": True}
+        return tab
+
+    monkeypatch.setattr(bs, "barred_table", with_depth)
+    out = tmp_path / "x.h5ad"
+    with pytest.raises(bk.Refused, match="not C2's"):
+        build_cd7(world, cw, tmp_path, out)
+    assert nothing_written(out) and frozen_functions_restored()
+
+
 # ------------------------------------------------------------------------------------------------------- the file
 
 
@@ -308,11 +368,12 @@ def test_cd7_is_c2_with_its_composition_block_replaced(world, cw, tmp_path, monk
     c2 = build(world, cw, tmp_path / "c2.h5ad")
     out = tmp_path / bk.R36_FILE
     cd7 = build_cd7(world, cw, tmp_path, out)
-    # C2's factor, applied once in each
+    # C2's factor, applied once in each: never the allowed s1 entry's Gata4 factor
     assert len(spy.seen) == 2 and np.array_equal(spy.seen[0], spy.seen[1])
-    # the spec: C2's, its composition block replaced by the decision file's, nothing else
+    # the spec: C2's, its composition block replaced by the decision file's, nothing else (no depth step)
     assert c2["spec"]["composition"]["kind"] == "mild" and cd7["spec"]["composition"] == BLOCK
-    assert cd7["spec"] == {**c2["spec"], "composition": BLOCK}
+    assert cd7["spec"] == {**c2["spec"], "composition": BLOCK} and set(cd7["spec"]) == {"factor", "composition"}
+    assert cd7["spec"]["factor"] == {"source": "mab21l2", "exponent": 1.0}
     assert cd7["spec_source"] == {**c2["spec_source"], "composition_source": bk.R36_SOURCE}
     assert cd7["branch"] == c2["branch"] == "barred" and cd7["submission"] == c2["submission"] == "s2"
     # factor, row number, seed, streams, board and coordinates rule: C2's
@@ -320,12 +381,11 @@ def test_cd7_is_c2_with_its_composition_block_replaced(world, cw, tmp_path, monk
     assert cd7["inputs"]["rng_streams"] == ["submission:barred:s2", "submission:barred:s2:assemble"]
     assert cd7["inputs"]["seed"] == SEED and cd7["warnings"] == c2["warnings"]
     con7, con2 = cd7["construction"], c2["construction"]
-    assert {k: v for k, v in con7.items() if k not in ("composition", "cells_by_source", "duplicate_positions_moved")
-            } == {k: v for k, v in con2.items() if k not in ("composition", "cells_by_source",
-                                                             "duplicate_positions_moved")}
+    skip = ("composition", "cells_by_source", "duplicate_positions_moved")
+    assert {k: v for k, v in con7.items() if k not in skip} == {k: v for k, v in con2.items() if k not in skip}
     assert con7["factor_exponent"] == 1.0 and con7["depth_ratios"] is None and con7["stage_alphas"] is None
     comp = con7["composition"]
-    assert comp["kind"] == "central" and comp["log2_magnitude"] == L2
+    assert comp["kind"] == "central" and comp["log2_magnitude"] == L2 and comp["coverage"] is False
     assert comp["states_found"] == STATES and comp["states_missing"] == []
     # combined_build: C2's, plus the line's block
     cb7, cb2 = cd7["combined_build"], c2["combined_build"]
@@ -335,8 +395,9 @@ def test_cd7_is_c2_with_its_composition_block_replaced(world, cw, tmp_path, monk
     assert cl["captain_ruling"]["row"] == "R36" and cl["captain_ruling"]["option"] == OPT
     assert cl["composition_from"] == "allowed-s1" and cl["file"] == "T3_c2_s2_cd7.h5ad"
     assert cl["decision_file"]["decision_sha256"] == cw.sha and cl["log2_magnitude"] == L2
+    assert cl["decision_file"]["rule_d7_m"] == L2 and "composition block only" in cl["decision_file"]["taken"]
     assert list(cl["ratios_before_renormalising"]) == STATES
-    assert all(r == pytest.approx(bk.R36_RATIO, rel=1e-12, abs=0) for r in cl["ratios_before_renormalising"].values())
+    assert all(r == pytest.approx(RATIO, rel=1e-12, abs=0) for r in cl["ratios_before_renormalising"].values())
     assert cl["c2_reference_sha256"] == bk.C2_S2_SHA256 and cl["line"] == bk.R36_LINE
     assert not any("cell" in k.lower() for k in cl)
     on_disk = json.loads(out.with_suffix(".json").read_text())
@@ -348,20 +409,20 @@ def test_cd7_is_c2_with_its_composition_block_replaced(world, cw, tmp_path, monk
     assert frozen_functions_restored()
 
 
-def test_the_shares_are_the_scenario_at_0_3835_by_hand(world, cw, tmp_path):
+def test_the_shares_are_the_scenario_at_the_depletion_factor_by_hand(world, cw, tmp_path):
     side = build_cd7(world, cw, tmp_path, tmp_path / "f.h5ad")
     ref = bs.load_reference(world.wt, "gata4", RULES, None, 2)
     p = np.asarray(ref.V.p, dtype=np.float64)
     raw = p.copy()
     idx = ref.V.index(STATES)
     assert len(idx) == 5
-    raw[idx] *= 2.0 ** -L2
+    raw[idx] *= RATIO
     want = raw / raw.sum()
     shares = side["construction"]["composition"]["shares"]
     got = np.array([shares[t] for t in ref.V.labels])
     assert np.allclose(got, want, rtol=1e-12, atol=0)
     rest = np.setdiff1d(np.arange(p.size), idx)
-    assert np.allclose(got[idx] / p[idx] / (got[rest] / p[rest]).mean(), 0.3835131214774091, rtol=1e-12, atol=0)
+    assert np.allclose(got[idx] / p[idx] / (got[rest] / p[rest]).mean(), RATIO, rtol=1e-12, atol=0)
 
 
 def test_built_twice_gives_one_sha256(world, cw, tmp_path):
@@ -380,16 +441,8 @@ def test_the_build_refuses_a_routine_that_does_not_give_the_five_states(world, c
     with pytest.raises(bk.Refused, match="does not give the 5 scenario states"):
         build_cd7(world, cw, tmp_path, out, wt=other.wt, run_dir=other.run)
     assert nothing_written(out) and frozen_functions_restored()
-    # a routine that moves one state otherwise
-    real = bs.composition
-
-    def skewed(V, spec, params):
-        f, info = real(V, spec, params)
-        f = f.copy()
-        f[V.index(["aSHF"])] *= 1.01
-        return f / f.sum(), info
-
-    monkeypatch.setattr(bs, "composition", skewed)
+    # a routine that moves one state otherwise, beyond the relative 1e-12
+    skew_routine(monkeypatch, "aSHF", 1 + 1e-11)
     with pytest.raises(bk.Refused, match="does not give the 5 scenario states"):
         build_cd7(world, cw, tmp_path, out)
     assert nothing_written(out)
@@ -401,12 +454,12 @@ def test_every_existing_form_never_touches_the_line(world, cw, tmp_path, monkeyp
     the line's functions booby-trapped as without, and no sidecar has the line's block."""
     plain = build(world, cw, tmp_path / "plain.h5ad", form)
     for name in ("ruling_row_names", "composition_block", "with_composition", "composition_ratios", "ratios_pass",
-                 "r36_composition", "run_g1", "run_g2", "_n4", "n4_bar", "g2_passes"):
+                 "r36_composition", "run_g1", "run_g2", "_n4", "n4_sets", "n4_bars", "g2_passes"):
         monkeypatch.setattr(bk, name, lambda *a, _n=name, **k: pytest.fail(f"{_n} reached on {form}"))
     trapped = build(world, cw, tmp_path / "trapped.h5ad", form, gata4_exponent=None, captain_ruling=None,
                     composition_from=None)
     assert (tmp_path / "plain.h5ad").read_bytes() == (tmp_path / "trapped.h5ad").read_bytes()
-    assert plain["combined_build"] == {**trapped["combined_build"]}
+    assert plain["combined_build"] == trapped["combined_build"]
     assert "composition_line" not in plain["combined_build"] and plain["spec"] == trapped["spec"]
     assert "composition_source" not in plain["spec_source"]
 
@@ -449,18 +502,19 @@ def test_composition_ratios_by_hand():
     assert all(np.isnan(bk.composition_ratios(V, f, info, ["a", "b", "c", "d", "e"])))
 
 
-def test_ratios_pass():
-    r = bk.R36_RATIO
-    assert bk.ratios_pass([r] * 5) and bk.ratios_pass([r * (1 + 5e-10)] * 5)
+def test_ratios_pass_within_a_relative_1e_12():
+    r = RATIO
+    assert bk.ratios_pass([r] * 5) and bk.ratios_pass([r * (1 + 5e-13)] * 5) and bk.ratios_pass([r * (1 - 9e-13)] * 5)
+    assert not bk.ratios_pass([r, r, r, r, r * (1 + 2e-12)]) and not bk.ratios_pass([r * (1 - 2e-12)] + [r] * 4)
     assert not bk.ratios_pass([r] * 4) and not bk.ratios_pass([r] * 6)
-    assert not bk.ratios_pass([r, r, r, r, r * (1 + 1e-6)]) and not bk.ratios_pass([r, r, r, r, float("nan")])
+    assert not bk.ratios_pass([r, r, r, r, float("nan")]) and not bk.ratios_pass([r, r, r, r, float("inf")])
     assert not bk.ratios_pass([0.3835] * 5)  # the rounded value is not the routine's
     assert not bk.ratios_pass([2.0 ** (-L2 / 2)] * 5)  # the mild magnitude
 
 
-def test_g1_finds_the_five_states_at_0_3835(world, cw):
+def test_g1_finds_the_five_states_at_the_depletion_factor(world, cw):
     ratios = bk.run_g1(cw.dec, world.wt, "allowed-s1", threads=2)
-    assert len(ratios) == 5 and all(x == pytest.approx(bk.R36_RATIO, rel=1e-12, abs=0) for x in ratios)
+    assert len(ratios) == 5 and all(x == pytest.approx(RATIO, rel=1e-12, abs=0) for x in ratios)
     assert bk.ratios_pass(ratios) and frozen_functions_restored()
 
 
@@ -470,34 +524,41 @@ def _g1(args):
     return CliRunner().invoke(bk.app, ["g1", *map(str, args)])
 
 
-def test_g1_cli_prints_the_five_ratios_and_nothing_else(world, cw):
+def test_g1_passes_and_prints_the_five_ratios_and_nothing_else(world, cw):
     res = _g1([cw.dec, "--wt", world.wt, "--composition-from", "allowed-s1", "--threads", "2"])
     assert res.exit_code == 0, res.output
-    assert res.stdout.splitlines() == ["0.3835"] * 5
+    lines = res.stdout.splitlines()
+    assert len(lines) == 5 and all(ln == repr(float(ln)) for ln in lines)  # each the float's own round-trip form
+    assert all(float(ln) == pytest.approx(RATIO, rel=1e-12, abs=0) for ln in lines)
 
 
-def test_g1_fails_without_a_state_or_with_a_routine_that_moves_one_otherwise(world, cw, tmp_path, monkeypatch):
+def test_g1_fails_without_a_state(world, cw, tmp_path, monkeypatch):
     other = wt_without(tmp_path, monkeypatch, "pPHM")
     res = _g1([cw.dec, "--wt", other.wt, "--composition-from", "allowed-s1", "--threads", "2"])
     assert res.exit_code == 1, res.output
-    assert res.stdout.splitlines() == ["0.3835"] * 4 + ["nan"]  # pPHM is the block's fifth state
-    real = bs.composition
+    lines = res.stdout.splitlines()
+    assert lines[4] == "nan" and len(lines) == 5  # pPHM is the block's fifth state
+    assert all(float(ln) == pytest.approx(RATIO, rel=1e-12, abs=0) for ln in lines[:4])
 
-    def skewed(V, spec, params):
-        f, info = real(V, spec, params)
-        f = f.copy()
-        f[V.index(["aSHF"])] *= 1.01
-        return f / f.sum(), info
 
-    monkeypatch.setattr(bs, "composition", skewed)
+@pytest.mark.parametrize("by,code", [(1 + 1e-11, 1), (1 - 1e-11, 1), (1.01, 1), (1 + 1e-14, 0)])
+def test_g1_fails_beyond_a_relative_1e_12_and_passes_within(world, cw, monkeypatch, by, code):
+    skew_routine(monkeypatch, "aSHF", by)
     res = _g1([cw.dec, "--wt", world.wt, "--composition-from", "allowed-s1", "--threads", "2"])
-    assert res.exit_code == 1 and len(res.stdout.splitlines()) == 5
+    assert res.exit_code == code, res.output
+    lines = res.stdout.splitlines()
+    assert len(lines) == 5 and float(lines[1]) == pytest.approx(RATIO * by, rel=1e-13, abs=0)  # aSHF: second
 
 
-def test_g1_refusals_and_a_failure_print_no_figure(world, cw, monkeypatch):
+def test_g1_refusals_and_a_failure_print_no_figure(world, cw, tmp_path, monkeypatch):
     for value in ("allowed-s2", "refused-s1", ""):
         res = _g1([cw.dec, "--wt", world.wt, "--composition-from", value, "--threads", "2"])
         assert res.exit_code == 2 and "refused" in res.output
+    for block, d7_m in (({**BLOCK, "depleted_states": STATES[::-1]}, L2), (BLOCK, 0.7)):
+        dec = write_decision(tmp_path / f"dec{d7_m}.json", block, d7_m)
+        monkeypatch.setattr(bk, "R36_DECISION_SHA256", t3d.sha256(dec))
+        res = _g1([dec, "--wt", world.wt, "--composition-from", "allowed-s1", "--threads", "2"])
+        assert res.exit_code == 2 and "refused" in res.stdout and "0.38" not in res.stdout
     monkeypatch.setattr(bk, "R36_DECISION_SHA256", REAL_DECISION_PIN)
     res = _g1([cw.dec, "--wt", world.wt, "--composition-from", "allowed-s1", "--threads", "2"])
     assert res.exit_code == 2 and "not the pinned one" in res.output
@@ -509,33 +570,65 @@ def test_g1_refusals_and_a_failure_print_no_figure(world, cw, monkeypatch):
 # --------------------------------------------------------------------------------------------------------- G2
 
 
-def test_n4_bar_is_row_n4_s_gate_bar():
+def test_n4_sets_and_bars_are_row_n4_s():
+    """The three gene sets and the bar, as N4's t3-gate writes them for each file, and with N4's own cos2_ones."""
     n4 = bk._n4()
     assert Path(n4.__file__).resolve() == bk.N4_SCRIPT.resolve() and n4 is bk._n4()
+    src = inspect.getsource(n4.t3_gate)
+    for expr in ("feas = pb_wt >= 0.25", "top = np.argsort(-np.abs(dp))[: max(1, dp.size // 5)]",
+                 'sets = {"all_genes": np.arange(dp.size), "feasible_down_or_up": np.flatnonzero(feas | (dp > 0)),',
+                 '"top20pct_abs_dp": top}', "c2 = cos2_ones(dp[idx])", "0.01 + 0.99 * c2"):
+        assert expr in src, expr
+    mine = inspect.getsource(bk.n4_sets)
+    for expr in ("feas = np.asarray(pb_wt, dtype=np.float64) >= 0.25",
+                 "top = np.argsort(-np.abs(dp))[: max(1, dp.size // 5)]",
+                 'sets = {"all_genes": np.arange(dp.size), "feasible_down_or_up": np.flatnonzero(feas | (dp > 0)),',
+                 '"top20pct_abs_dp": top}'):
+        assert expr in mine, expr
     rng = np.random.default_rng(3)
-    dp = rng.normal(0.01, 0.1, 500)
-    assert bk.n4_bar(dp) == 0.01 + 0.99 * n4.cos2_ones(dp)
-    assert bk.n4_bar(dp) == pytest.approx(0.01 + 0.99 * dp.sum() ** 2 / (dp.size * float(dp @ dp)), rel=1e-12)
-    assert bk.n4_bar(np.full(7, -0.2)) == pytest.approx(1.0) and bk.n4_bar(np.array([1.0, -1.0])) == 0.01
+    dp, pb = rng.normal(0.01, 0.1, 503), rng.uniform(0.0, 1.0, 503)
+    # N4's loop for one file, written out again
+    feas = pb >= 0.25
+    top = np.argsort(-np.abs(dp))[: max(1, dp.size // 5)]
+    sets = {"all_genes": np.arange(dp.size), "feasible_down_or_up": np.flatnonzero(feas | (dp > 0)),
+            "top20pct_abs_dp": top}
+    want = {s: 0.01 + 0.99 * n4.cos2_ones(dp[idx]) for s, idx in sets.items()}
+    got = bk.n4_bars(dp, pb)
+    assert list(got) == list(bk.N4_SETS) and got == want
+    assert {s: list(v) for s, v in bk.n4_sets(dp, pb).items()} == {s: list(v) for s, v in sets.items()}
+    assert len(sets["top20pct_abs_dp"]) == 100
+    # by hand: a one-signed dp gives bar 1, a zero-sum one 0.01, on every set it fills
+    assert all(b == pytest.approx(1.0) for b in bk.n4_bars(np.full(10, -0.2), np.ones(10)).values())
+    assert bk.n4_bars(np.array([1.0, -1.0, 1.0, -1.0, 0.5]), np.ones(5))["all_genes"] == pytest.approx(
+        0.01 + 0.99 * 0.25 / (5 * 4.25))
 
 
-def test_g2_passes():
-    assert bk.g2_passes(0.10, 0.10) and bk.g2_passes(0.10, 0.05) and bk.g2_passes(0.10, 0.1099)
-    assert not bk.g2_passes(0.10, 0.1101) and not bk.g2_passes(0.02, 0.5)
-    assert not bk.g2_passes(float("nan"), 0.1) and not bk.g2_passes(0.1, float("nan"))
+SETS = ("all_genes", "feasible_down_or_up", "top20pct_abs_dp")
+
+
+def test_g2_passes_only_when_every_set_is_within_0_01():
+    c2 = {"all_genes": 0.10, "feasible_down_or_up": 0.20, "top20pct_abs_dp": 0.30}
+    assert bk.g2_passes(c2, dict(c2)) and bk.g2_passes(c2, {s: v + 0.0099 for s, v in c2.items()})
+    assert bk.g2_passes(c2, {s: v - 0.05 for s, v in c2.items()})
+    for s in SETS:  # one set beyond C2's plus 0.01 fails the gate, whatever the others do
+        assert not bk.g2_passes(c2, {**{k: v - 0.05 for k, v in c2.items()}, s: c2[s] + 0.0101})
+        assert not bk.g2_passes(c2, {**c2, s: float("nan")}) and not bk.g2_passes({**c2, s: float("nan")}, c2)
+        assert not bk.g2_passes(c2, {k: v for k, v in c2.items() if k != s})
+    assert not bk.g2_passes(c2, {s: v + 0.5 for s, v in c2.items()})
 
 
 def test_g2_bars_are_the_two_built_files_bars(world, cw, tmp_path):
-    """G2 draws each file's cells from its own build inputs, in memory; its bars are the bars of the files the
-    builder writes (pseudobulk over the board's panel minus WT's as released, N4's functions), to float32 summation."""
+    """G2 draws each file's cells from its own build inputs, in memory; its bars are those of the files the builder
+    writes (pseudobulk over the board's panel minus WT's as released, N4's functions and sets), to float32 sums."""
     import anndata as ad
 
     from vec.prep import load_stage
 
     res = bk.run_g2(cw.dec, world.wt, world.run, world.board, N, SEED, "allowed-s1", threads=2)
     assert frozen_functions_restored()
-    assert set(res) == {"c2", "cd7", "margin", "gene_set", "passes"} and res["margin"] == 0.01
-    assert res["passes"] == bk.g2_passes(res["c2"], res["cd7"]) and res["gene_set"] == "all panel genes"
+    assert set(res) == {"c2", "cd7", "margin", "sets", "passes"} and res["margin"] == 0.01
+    assert res["sets"] == list(SETS) and all(list(res[k]) == list(SETS) for k in ("c2", "cd7"))
+    assert res["passes"] == bk.g2_passes(res["c2"], res["cd7"])
     n4 = bk._n4()
     w = load_stage(world.wt)
     pos = {g: i for i, g in enumerate(w.var_names)}
@@ -546,7 +639,9 @@ def test_g2_bars_are_the_two_built_files_bars(world, cw, tmp_path):
         a = ad.read_h5ad(tmp_path / f"{name}.h5ad")
         assert list(a.var_names) == list(world.board.genes)
         dp = n4.pseudobulk(a.X) - pb_wt
-        assert res[name] == pytest.approx(bk.n4_bar(dp), abs=1e-6)
+        bars = bk.n4_bars(dp, pb_wt)
+        for s in SETS:
+            assert res[name][s] == pytest.approx(bars[s], abs=1e-6), (name, s)
     assert res["c2"] != res["cd7"]
 
 
@@ -561,24 +656,32 @@ def _g2_args(world, cw, tmp_path, *extra):
             "--run-dir", world.run, "--composition-from", "allowed-s1", "--threads", "2", *extra]
 
 
-def test_g2_cli_prints_the_two_bars_and_nothing_else(world, cw, tmp_path):
+def test_g2_cli_prints_the_six_bars_and_nothing_else(world, cw, tmp_path):
     res = _g2(_g2_args(world, cw, tmp_path))
     want = bk.run_g2(cw.dec, world.wt, world.run, world.board, N, SEED, "allowed-s1", threads=2)
     assert res.exit_code == (0 if want["passes"] else 1), res.output
-    assert res.stdout.splitlines() == [f"{want['c2']:.4f}", f"{want['cd7']:.4f}"]
+    assert res.stdout.splitlines() == [repr(want[f][s]) for f in ("c2", "cd7") for s in SETS]
 
 
-@pytest.mark.parametrize("c2,cd7,code", [(0.10, 0.105, 0), (0.10, 0.11, 0), (0.10, 0.2, 1), (0.30, 0.01, 0)])
-def test_g2_cli_exits_by_the_verdict(world, cw, tmp_path, monkeypatch, c2, cd7, code):
+@pytest.mark.parametrize("cd7,code", [
+    ({"all_genes": 0.105, "feasible_down_or_up": 0.21, "top20pct_abs_dp": 0.30}, 0),
+    ({"all_genes": 0.05, "feasible_down_or_up": 0.10, "top20pct_abs_dp": 0.20}, 0),
+    ({"all_genes": 0.111, "feasible_down_or_up": 0.20, "top20pct_abs_dp": 0.30}, 1),
+    ({"all_genes": 0.10, "feasible_down_or_up": 0.211, "top20pct_abs_dp": 0.30}, 1),
+    ({"all_genes": 0.10, "feasible_down_or_up": 0.20, "top20pct_abs_dp": 0.311}, 1),
+])
+def test_g2_cli_exits_by_the_verdict_on_every_set(world, cw, tmp_path, monkeypatch, cd7, code):
+    c2 = {"all_genes": 0.10, "feasible_down_or_up": 0.20, "top20pct_abs_dp": 0.30}
     seen = []
 
     def fake(decision, wt, run_dir, board, n_cells, seed, composition_from, threads):
         seen.append((n_cells, seed, composition_from))
-        return {"c2": c2, "cd7": cd7, "margin": 0.01, "gene_set": "all panel genes", "passes": bk.g2_passes(c2, cd7)}
+        return {"c2": c2, "cd7": cd7, "margin": 0.01, "sets": list(SETS), "passes": bk.g2_passes(c2, cd7)}
 
     monkeypatch.setattr(bk, "run_g2", fake)
     res = _g2(_g2_args(world, cw, tmp_path))
-    assert res.exit_code == code and res.stdout.splitlines() == [f"{c2:.4f}", f"{cd7:.4f}"]
+    assert res.exit_code == code
+    assert res.stdout.splitlines() == [repr(v) for v in (*c2.values(), *cd7.values())]
     assert seen == [(N, SEED, "allowed-s1")]  # the board's max_cells, read in code
 
 
@@ -587,7 +690,7 @@ def test_g2_refusals_and_a_failure_print_no_figure(world, cw, tmp_path, monkeypa
     base = [cw.dec, "--wt", world.wt, "--board", "T3:synthetic", "--boards-dir", boards, "--run-dir", world.run,
             "--threads", "2"]
     for extra in (["--composition-from", "allowed-s2"], ["--composition-from", "allowed-s1", "--seed", "1000002"],
-                  ["--composition-from", "allowed-s1", "--n-cells", str(N)], ["--composition-from", "", ]):
+                  ["--composition-from", "allowed-s1", "--n-cells", str(N)], ["--composition-from", ""]):
         res = _g2([*base, *extra])
         assert res.exit_code == 2 and "refused" in res.output, (extra, res.output)
     monkeypatch.setattr(bk, "R36_DECISION_SHA256", REAL_DECISION_PIN)
@@ -633,6 +736,13 @@ def test_the_build_cli(world, cw, tmp_path, monkeypatch):
     side = json.loads(ok.with_suffix(".json").read_text())
     assert side["combined_build"]["form"] == "c2-s2" and side["spec"]["composition"] == BLOCK
     assert side["combined_build"]["composition_line"]["captain_ruling"]["row"] == "R36"
+    # a block whose magnitude is not rule D7's m: refused at the command line too, nothing written
+    bad = write_decision(tmp_path / "bad.json", {**BLOCK, "log2_magnitude": 0.7})
+    monkeypatch.setattr(bk, "R36_DECISION_SHA256", t3d.sha256(bad))
+    res = runner.invoke(bk.app, [*base[:1], str(bad), *base[2:], "--form", "c2-s2", "--composition-from",
+                                 "allowed-s1", "--captain-ruling", "R36", "--out", str(tmp_path / "m.h5ad")])
+    assert res.exit_code == 2 and "is not rule D7's m" in res.output and nothing_written(tmp_path / "m.h5ad")
+    monkeypatch.setattr(bk, "R36_DECISION_SHA256", cw.sha)
     # the ruling row gone: refused
     monkeypatch.setattr(bk, "TRIES_FILE", ledger(tmp_path, "", name="old.md"))
     res = runner.invoke(bk.app, [*base, "--form", "c2-s2", "--composition-from", "allowed-s1", "--captain-ruling",

@@ -20,12 +20,15 @@
 #          sha256 the recorded one: identity-s1 and identity-s2 (the barred s1 and s2, builds_dc7b6ae.SHA256SUMS),
 #          c1-s2 and c2-s2 (C1 and C2, t3two_fb01487.SHA256SUMS), and c1-s2 with --gata4-exponent 2.0
 #          --captain-ruling R22 (T3_c1_s2_g2.h5ad, t3g2_a3c511c.SHA256SUMS)
-#   g1     G1, before the file is built: `build_two_knockout.py g1`, the composition routine on WT E8.75 finds the five
-#          scenario states at 0.3835 of their wild-type share before renormalising; its five ratios go to g1.out
+#   g1     G1, before the file is built: `build_two_knockout.py g1`, the composition routine on WT E8.75 finds each of
+#          the five scenario states at 0.3835131214774091 of its wild-type share before renormalising (within a
+#          relative 1e-12); its five ratios go to g1.out
 #   a b    the file T3_c2_s2_cd7.h5ad built twice, into folders a and b
 #   pair   the two files byte for byte (one sha256)
-#   g2     G2, before upload: `build_two_knockout.py g2`, the file's gate bar cos^2(dp, 1) as row N4 computes it, from
-#          the file's own build inputs, at most C2's plus 0.01; its two bar values (C2's, then cD7's) go to g2.out
+#   g2     G2, before upload: `build_two_knockout.py g2`, the gate bar 0.01 + 0.99 cos^2(dp, 1) as row N4 computes it,
+#          from each file's own build inputs, on each of N4's three gene sets: on every set the file's bar is at most
+#          C2's plus 0.01; its six bars (C2's three, then the file's) go to g2.out. If it does not pass, the fixed line
+#          "G2 failed: no upload; C2 stays." goes to g2.verdict and to the standard error, and the run ends with 32
 #   done   one SHA256SUMS over every built file, copied into the output folder
 # A build step is the builder's command, then `vec check --board T3:bcatenin`, then its stamp: it fails unless the
 # stamp says COMMIT and clean True. Builds run at 16 BLAS threads, as the earlier T3 builds; NUMPY_MADVISE_HUGEPAGE=0.
@@ -36,8 +39,9 @@
 # Exit codes: 90 odd RUN, 91 run folder exists, 96 HEAD is not COMMIT, 98 tree not clean, 95 row R36, 94 row R22, 93
 # output folder exists, 10 tests, 11 build failed, 12 the builder refused (its exit 2), 13 vec check, 14 no stamp, 15
 # stamp not this commit and clean, 20 21 22 23 24 an identity gate is not its recorded bytes (ids1 ids2 c1s2 c2s2
-# c1g2), 30 G1 did not pass, 31 the pair differs, 32 G2 did not pass, 33 hash list, 99 the launcher stopped
-# unexpectedly (a failing command, a TERM, INT or HUP signal, or an exit that was not one of the finishes above).
+# c1g2), 30 G1 did not pass, 31 the pair differs, 32 G2 did not pass (its own exit in g2.rc), 33 hash list, 99 the
+# launcher stopped unexpectedly (a failing command, a TERM, INT or HUP signal, or an exit that was not one of the
+# finishes above).
 set -u
 COMMIT=${1:?usage: t3_cd7_build.sh COMMIT RUN}
 RUN=${2:?usage: t3_cd7_build.sh COMMIT RUN}
@@ -175,7 +179,12 @@ begin
 rc=0
 $PY experiments/t3_decomp/build_two_knockout.py g2 "$DEC" --wt "$WT" --run-dir "$RUN_DIR" --board "$BOARD" \
   --seed 1000001 --composition-from allowed-s1 > "$S/g2.out" 2> /dev/null || rc=$?
-[ $rc = 0 ] || { echo "stopped: G2 did not pass (exit $rc; g2.out)" >&2; finish 32; }
+if [ $rc != 0 ]; then
+  echo "$rc" > "$S/g2.rc"
+  echo "G2 failed: no upload; C2 stays." > "$S/g2.verdict"
+  echo "G2 failed: no upload; C2 stays." >&2
+  finish 32
+fi
 step_ok
 
 STEP=done

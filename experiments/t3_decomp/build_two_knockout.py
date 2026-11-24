@@ -77,31 +77,37 @@ weight, row R30's lifting, the figures and the sha256 of the factor applied).
 default: without both, every form, byte and behaviour above is unchanged and nothing below is read or computed): the
 file cD7, T3_c2_s2_cd7.h5ad, which is C2 on the barred s2 (`--form c2-s2`, recorded sha256 47111ac1d07e...) rebuilt by
 its own command with one change: its composition block is replaced by submissions.allowed.s1.composition of the
-decision file, read by code, so that the five scenario states go to 2^-1.3826521560990648 = 0.3835 of their wild-type
-share (before the composition routine renormalises). C2's factor, row number (max_cells, read by code), seed, streams
-and coordinates rule are unchanged. The replacement is made where the frozen builder resolves the barred s2's spec
-(bs.resolve_spec, for this process only), so the frozen validation, composition routine, draw and assembly run on it as
-on any spec; at the build the composition routine's result is checked as G1 checks it, before any cell is drawn.
+decision file, read by code, so that the five scenario states go to 2^-1.3826521560990648 = 0.3835131214774091 of their
+wild-type share (before the composition routine renormalises). Only that block is copied: the same entry's factor
+(gata4) and depth step (depth: true, a closed lever) are never taken. C2's factor, row number (max_cells, read by
+code), seed, streams and coordinates rule are unchanged, and C2 has no depth step. The replacement is made where the
+frozen builder resolves the barred s2's spec (bs.resolve_spec, for this process only), so the frozen validation,
+composition routine, draw and assembly run on it as on any spec; at the build the composition routine's result is
+checked as G1 checks it, before any cell is drawn.
 Refused (exit 2, nothing built): --captain-ruling R36 without the option; any value but allowed-s1; any form but
 c2-s2; the option without --captain-ruling R36 or with another ruling; --gata4-exponent beside it; a ledger
 (experiments/harness/TRIES.md) without exactly one row R36 whose first cell opens "R36 (the captain's named
 exception", says "ruling, no run" and names `--composition-from allowed-s1`, `--form c2-s2` and `--captain-ruling
 R36` (the check build_outside_form.captain_order_names makes of an order); a decision file whose sha256 is not the
-pinned one (9440ae67...); a block that is not the central composition of rules.yaml's scenario states at the pinned
-magnitude; a composition routine that does not give the five states at 0.3835 of their wild-type share. The sidecar's
-combined_build then also holds `composition_line` (the ruling row, the block and the one it replaced, the five ratios).
+pinned one (9440ae67...); a copied block whose states differ from rules.yaml's scenario states, or whose log2
+magnitude differs from rule D7's m (the decision file's rules.D7.m, 1.3826521560990648), or that is not a central
+composition at depletion factor 2 ** -m; a composition routine that does not give the five states at that factor of
+their wild-type share. The sidecar's combined_build then also holds `composition_line` (the ruling row, the block and
+the one it replaced, the five ratios).
 
 The two target-free gates of row R36's file (they build and write nothing):
 
   g1 DECISIONS.json --wt WT --composition-from allowed-s1
       before any build: the frozen composition routine (bs.composition), given C2's spec with the block replaced, on
       the reference the build draws from; prints the five states' shares over their wild-type shares before
-      renormalising, one per line, and nothing else; exit 0 when all five are 0.3835, 1 otherwise, 2 refused
+      renormalising, one per line, and nothing else; exit 0 when each is 0.3835131214774091 within a relative 1e-12,
+      1 otherwise, 2 refused, 3 not computed
   g2 DECISIONS.json --wt WT --run-dir RUN --board T3:bcatenin --seed 1000001 --composition-from allowed-s1
-      before upload: C2's and cD7's gate bar 0.01 + 0.99 cos^2(dp, 1) over all panel genes, as row N4's diagnostic
-      computes it (experiments/research_2026_11/diagnostics.py t3-gate, its pseudobulk and cos2_ones), each from the
-      file's own build inputs (the cells the build draws, in memory; no built file is read); prints C2's bar, then
-      cD7's, and nothing else; exit 0 when cD7's is at most C2's plus 0.01, 1 otherwise, 2 refused
+      before upload: C2's and cD7's gate bars 0.01 + 0.99 cos^2(dp, 1) on each of row N4's three gene sets, as N4's
+      diagnostic computes them (experiments/research_2026_11/diagnostics.py t3-gate: its pseudobulk and cos2_ones; all
+      genes, the genes feasible down or up, the top fifth by |dp|), each from the file's own build inputs (the cells
+      the build draws, in memory; no built file is read); prints the six bars (C2's three, then cD7's) and nothing
+      else; exit 0 when on each set cD7's bar is at most C2's plus 0.01, 1 otherwise, 2 refused, 3 not computed
 """
 
 from __future__ import annotations
@@ -194,14 +200,18 @@ R36_NAMES = (R36_OPTION, "`--form c2-s2`", "`--captain-ruling R36`")  # what row
 R36_OPENER = "the captain's named exception"
 R36_FILE = "T3_c2_s2_cd7.h5ad"
 C2_S2_SHA256 = "47111ac1d07e73c0c26e990a474dff0de94ae22d6a4474a569bcb674ae2b85a7"  # C2's file (t3two_fb01487)
-COMPOSITION_FROM = {"allowed-s1": ("allowed", "s1")}  # --composition-from -> submissions.<branch>.<slot>.composition
+# --composition-from -> submissions.<branch>.<slot>; only that entry's composition block is copied, never its factor
+# (gata4) or its depth step (depth: true; a closed lever): the factor stays C2's and C2 has no depth step
+COMPOSITION_FROM = {"allowed-s1": ("allowed", "s1")}
 # experiments/t3_decomp/results/gata4/gata4_decisions.json, the run of 2026-10-28 that the frozen rules decided on
 R36_DECISION_SHA256 = "9440ae67625608112666d5235e6ceaa5dd9f47a4b0bbd30e16943f32f35c5a8c"
-R36_LOG2_MAGNITUDE = 1.3826521560990648  # the block's log2_magnitude (rule D7 on the released validation knockout)
-R36_RATIO = 2.0 ** -R36_LOG2_MAGNITUDE  # 0.3835: each scenario state's share over its wild-type share, before renorm
-R36_RATIO_RTOL = 1e-9
+R36_LOG2_MAGNITUDE = 1.3826521560990648  # rule D7's m (the released validation knockout), the block's log2_magnitude
+R36_RATIO = 2.0 ** -R36_LOG2_MAGNITUDE  # 0.3835131214774091: each scenario state's share over its wild-type share
+R36_RATIO_RTOL = 1e-12  # G1: each of the five ratios within this relative distance of R36_RATIO
 R36_N_STATES = 5
-R36_G2_MARGIN = 0.01  # G2: cD7's bar at most C2's plus this
+R36_G2_MARGIN = 0.01  # G2: on each of N4's three gene sets, cD7's bar at most C2's plus this
+N4_SETS = ("all_genes", "feasible_down_or_up", "top20pct_abs_dp")  # row N4's gene sets, in its order
+G2_FAILED_LINE = "G2 failed: no upload; C2 stays."  # the launcher's fixed line when G2 does not pass
 R36_SOURCE = ("decision file submissions.allowed.s1.composition (--composition-from allowed-s1, row R36), replacing "
               "the barred s2's composition block")
 R36_LINE = ("T3 file cD7 (row R36): C2 on the barred s2 (--form c2-s2) rebuilt by its own command with one change, "
@@ -533,9 +543,11 @@ def check_composition_from(form, composition_from=None, captain_ruling=None, gat
 def composition_block(dec: dict, rules: dict, decision: Path, composition_from: str = "allowed-s1") -> tuple[dict,
                                                                                                              dict]:
     """The block --composition-from names, read by code from the decision file (allowed-s1:
-    submissions.allowed.s1.composition): Refused unless the file is the pinned one (R36_DECISION_SHA256) and the block
-    is the central composition of rules.yaml's scenario (its depleted and spared states, in order) at the pinned
-    magnitude R36_LOG2_MAGNITUDE with depletion factor 2 ** -magnitude. Returns (a copy of the block, its record)."""
+    submissions.allowed.s1.composition), and that block only: the entry's factor and depth step are never read.
+    Refused unless the file is the pinned one (R36_DECISION_SHA256); the block's depleted and spared states are
+    rules.yaml's scenario states, in order (five depleted); its log2 magnitude is rule D7's m, as the decision file
+    records it (rules.D7.m) and as pinned here (R36_LOG2_MAGNITUDE); and it is a central composition whose depletion
+    factor is 2 ** -magnitude. Returns (a copy of the block, its record)."""
     if not isinstance(composition_from, str) or composition_from not in COMPOSITION_FROM:
         raise Refused(f"--composition-from {composition_from!r} is refused: only allowed-s1")
     branch, slot = COMPOSITION_FROM[composition_from]
@@ -548,17 +560,23 @@ def composition_block(dec: dict, rules: dict, decision: Path, composition_from: 
         block = dec["submissions"][branch][slot]["composition"]
     except (KeyError, TypeError):
         raise Refused(f"the decision file has no {where}: not built") from None
+    if not isinstance(block, dict):
+        raise Refused(f"{where} is not a composition block: not built")
     scen = rules["presets"]["gata4"]["scenario"]
-    l2 = block.get("log2_magnitude") if isinstance(block, dict) else None
-    if not (isinstance(block, dict) and block.get("kind") == "central"
-            and block.get("depleted_states") == list(scen["depleted_states"])
-            and block.get("spared_states") == list(scen["spared_states"])
-            and len(scen["depleted_states"]) == R36_N_STATES
-            and type(l2) is float and l2 == R36_LOG2_MAGNITUDE and block.get("depletion_factor") == R36_RATIO):
-        raise Refused(f"{where} is not the central composition of the scenario's {R36_N_STATES} states at "
-                      f"log2 magnitude {R36_LOG2_MAGNITUDE!r}: not built")
+    if (block.get("depleted_states") != list(scen["depleted_states"]) or len(scen["depleted_states"]) != R36_N_STATES
+            or block.get("spared_states") != list(scen["spared_states"])):
+        raise Refused(f"the states of {where} are not rules.yaml's scenario states: not built")
+    d7 = (dec.get("rules") or {}).get("D7")
+    m = d7.get("m") if isinstance(d7, dict) else None
+    l2 = block.get("log2_magnitude")
+    if not (type(m) is float and m == R36_LOG2_MAGNITUDE and type(l2) is float and l2 == m):
+        raise Refused(f"the log2 magnitude of {where} is not rule D7's m ({R36_LOG2_MAGNITUDE!r}): not built")
+    if block.get("kind") != "central" or block.get("depletion_factor") != R36_RATIO:
+        raise Refused(f"{where} is not the central composition at depletion factor {R36_RATIO!r}: not built")
     return copy.deepcopy(block), {"source": f"decision file {where}", "decision": str(decision),
-                                  "decision_sha256": got, "pinned_sha256": R36_DECISION_SHA256}
+                                  "decision_sha256": got, "pinned_sha256": R36_DECISION_SHA256,
+                                  "rule_d7_m": m, "taken": "the composition block only (not the entry's factor or "
+                                  "depth step)"}
 
 
 def with_composition(spec: dict, block: dict) -> dict:
@@ -608,6 +626,9 @@ def r36_composition(block: dict, out: dict):
         spec, info = orig_resolve(dec, rules, branch, submission, hashes)
         if (branch, submission) != (BRANCH, R36_BASE):
             raise Refused(f"--composition-from replaces the barred s2's composition only, not {branch} {submission}")
+        if set(spec) != {"factor", "composition"} or spec["factor"] != FROZEN_FACTOR:
+            raise Refused("the barred s2's spec is not C2's (its factor alone, no depth, stage or coverage step): "
+                          "not built")
         out.update(replaced=copy.deepcopy(spec.get("composition")), n_resolves=out.get("n_resolves", 0) + 1)
         return with_composition(spec, block), {**info, "composition_source": R36_SOURCE}
 
@@ -663,25 +684,39 @@ def _n4():
     return sys.modules[name]
 
 
-def n4_bar(dp) -> float:
-    """Row N4's gate bar over all of dp's genes (its first gene set): 0.01 + 0.99 cos^2(dp, 1), cos2_ones its own."""
-    return 0.01 + 0.99 * _n4().cos2_ones(np.asarray(dp, dtype=np.float64))
+def n4_sets(dp, pb_wt) -> dict[str, np.ndarray]:
+    """Row N4's three gene sets for one file's dp, as its t3-gate builds them for each file (N4_SETS): every gene;
+    the genes feasible down (pb_wt >= 0.25) or with dp > 0; the fifth of the genes with the largest |dp|."""
+    dp = np.asarray(dp, dtype=np.float64)
+    feas = np.asarray(pb_wt, dtype=np.float64) >= 0.25
+    top = np.argsort(-np.abs(dp))[: max(1, dp.size // 5)]
+    sets = {"all_genes": np.arange(dp.size), "feasible_down_or_up": np.flatnonzero(feas | (dp > 0)),
+            "top20pct_abs_dp": top}
+    return {s: sets[s] for s in N4_SETS}
 
 
-def g2_passes(bar_c2: float, bar_cd7: float) -> bool:
-    """G2's verdict: both bars finite and cD7's at most C2's plus R36_G2_MARGIN."""
-    return bool(np.isfinite(bar_c2) and np.isfinite(bar_cd7) and bar_cd7 <= bar_c2 + R36_G2_MARGIN)
+def n4_bars(dp, pb_wt) -> dict[str, float]:
+    """Row N4's gate bar 0.01 + 0.99 cos^2(dp, 1) on each of its three gene sets (n4_sets), cos2_ones its own."""
+    dp = np.asarray(dp, dtype=np.float64)
+    return {s: 0.01 + 0.99 * _n4().cos2_ones(dp[idx]) for s, idx in n4_sets(dp, pb_wt).items()}
+
+
+def g2_passes(bars_c2: dict, bars_cd7: dict) -> bool:
+    """G2's verdict: on each of N4's three gene sets both bars are finite and cD7's is at most C2's plus
+    R36_G2_MARGIN."""
+    return all(s in bars_c2 and s in bars_cd7 and bool(np.isfinite(bars_c2[s]) and np.isfinite(bars_cd7[s]))
+               and bars_cd7[s] <= bars_c2[s] + R36_G2_MARGIN for s in N4_SETS)
 
 
 def run_g2(decision: Path, wt: Path, run_dir: Path | None, board, n_cells: int, seed: int = 1_000_001,
            composition_from: str = "allowed-s1", threads: int = 16) -> dict:
-    """G2, before upload: C2's and cD7's gate bars (n4_bar) as row N4's diagnostic computes them: dp is the pseudobulk
-    of the drawn cells over the board's panel minus that of `wt` as released (vec.prep.load_stage, as the scorer loads
-    the reference), both by N4's pseudobulk. Each file's cells come from its own build inputs, through the build's own
-    code up to the draw: bs.preflight on the barred s2 (cD7's under r36_composition), bs.load_reference, the run
-    records check, bs.inputs_for with C2's factor (combined_loader, c2 at x = 1) and bs.construct at the seed and the
-    stream "submission:barred:s2". Nothing is assembled, written or read from a built file. Returns both bars and the
-    verdict (g2_passes)."""
+    """G2, before upload: C2's and cD7's gate bars on N4's three gene sets (n4_bars), as row N4's diagnostic computes
+    them: dp is the pseudobulk of the drawn cells over the board's panel minus that of `wt` as released
+    (vec.prep.load_stage, as the scorer loads the reference), both by N4's pseudobulk. Each file's cells come from its
+    own build inputs, through the build's own code up to the draw: bs.preflight on the barred s2 (cD7's under
+    r36_composition), bs.load_reference, the run records check, bs.inputs_for with C2's factor (combined_loader, c2 at
+    x = 1) and bs.construct at the seed and the stream "submission:barred:s2". Nothing is assembled, written or read
+    from a built file. Returns both files' three bars and the verdict (g2_passes)."""
     from vec.prep import load_stage
 
     n4 = _n4()
@@ -719,8 +754,8 @@ def run_g2(decision: Path, wt: Path, run_dir: Path | None, board, n_cells: int, 
         del built
     if hook.get("n_resolves") != 1 or hook.get("n_compositions") != 1:
         raise RuntimeError("cD7's composition was not replaced and checked exactly once")
-    bars = {name: n4_bar(dp) for name, dp in dps.items()}
-    return {"c2": bars["c2"], "cd7": bars["cd7"], "margin": R36_G2_MARGIN, "gene_set": "all panel genes",
+    bars = {name: n4_bars(dp, pb_wt) for name, dp in dps.items()}
+    return {"c2": bars["c2"], "cd7": bars["cd7"], "margin": R36_G2_MARGIN, "sets": list(N4_SETS),
             "passes": g2_passes(bars["c2"], bars["cd7"])}
 
 
@@ -753,6 +788,8 @@ def build_form(decision: Path, form, wt: Path, board, n_cells: int, out: Path, r
                                        run_dir=run_dir, seed=seed, overwrite=overwrite, threads=threads)
         if hook.get("n_resolves") != 1 or hook.get("n_compositions") != 1 or side["spec"]["composition"] != block:
             raise RuntimeError("the build did not replace and check the composition block exactly once")
+        if set(side["spec"]) != {"factor", "composition"} or side["construction"]["depth_ratios"] is not None:
+            raise RuntimeError("the build took more than the composition block")
     elif ruled is None:
         with combined_loader(kind, x, got):
             side = bs.build_submission(Path(decision), BRANCH, slot, Path(wt), board, n_cells, Path(out),
@@ -884,7 +921,8 @@ def g1(
     threads: int = typer.Option(16, help="BLAS threads while preparing the reference (the frozen default)"),
 ):
     """G1, row R36's gate before any build: prints the five scenario states' shares over their wild-type shares
-    before renormalising, one per line, and nothing else; exit 0 when all five are 0.3835, 1 otherwise, 2 refused."""
+    before renormalising, one per line in the block's order (Python's shortest round-trip form), and nothing else;
+    exit 0 when each is 0.3835131214774091 within a relative 1e-12, 1 otherwise, 2 refused, 3 not computed."""
     try:
         with redirect_stdout(io.StringIO()):  # anything the loading code prints is dropped: the ratios only
             ratios = run_g1(decision, wt, composition_from, threads)
@@ -895,7 +933,7 @@ def g1(
         bs.say(f"failed: {type(e).__name__}", "red")
         raise typer.Exit(EXIT_GATE_CRASHED) from None
     for r in ratios:
-        print(f"{r:.4f}")
+        print(repr(float(r)))
     raise typer.Exit(0 if ratios_pass(ratios) else EXIT_GATE_FAILED)
 
 
@@ -913,15 +951,16 @@ def g2(
     composition_from: str = typer.Option(..., help="allowed-s1 only"),
     threads: int = typer.Option(16, help="BLAS threads while preparing the reference (the frozen default)"),
 ):
-    """G2, row R36's gate before upload: prints C2's gate bar, then cD7's, one per line, and nothing else; exit 0 when
-    cD7's is at most C2's plus 0.01, 1 otherwise, 2 refused."""
+    """G2, row R36's gate before upload: prints the six gate bars, one per line, and nothing else: C2's on N4's three
+    gene sets (all genes, feasible down or up, the top fifth by |dp|), then cD7's on the same three; exit 0 when on
+    each set cD7's bar is at most C2's plus 0.01, 1 otherwise, 2 refused, 3 not computed."""
     try:
         if seed != LIST_SEED or n_cells != LIST_N_CELLS:
             raise Refused(LIST_INPUTS_REFUSAL)
         if not isinstance(composition_from, str) or composition_from not in COMPOSITION_FROM:
             raise Refused(f"--composition-from {composition_from!r} is refused: only allowed-s1")
         b = bs.board_spec(board, boards_dir)
-        with redirect_stdout(io.StringIO()):  # anything the loading code prints is dropped: the two bars only
+        with redirect_stdout(io.StringIO()):  # anything the loading code prints is dropped: the six bars only
             res = run_g2(decision, wt, run_dir, b, bs.resolve_n_cells(n_cells, b), seed, composition_from, threads)
     except Refused as e:
         bs.say(f"refused: {e}", "red")
@@ -929,8 +968,9 @@ def g2(
     except Exception as e:  # the type only: a message or traceback could carry a count of the test build
         bs.say(f"failed: {type(e).__name__}", "red")
         raise typer.Exit(EXIT_GATE_CRASHED) from None
-    print(f"{res['c2']:.4f}")
-    print(f"{res['cd7']:.4f}")
+    for name in ("c2", "cd7"):
+        for s in N4_SETS:
+            print(repr(float(res[name][s])))
     raise typer.Exit(0 if res["passes"] else EXIT_GATE_FAILED)
 
 
