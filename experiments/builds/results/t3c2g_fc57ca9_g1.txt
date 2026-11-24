@@ -1,0 +1,16 @@
+T3's third search line (row R41): T3_c2_s2_g2.h5ad, C2 with the gata4_pooled weight at 2
+==========================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-24 in the campaign checkout ~/v/vec-campaign-c at commit fc57ca9 (main; clean tree) with `experiments/t3_decomp/t3_c2g_build.sh fc57ca9e6a6769df877ace7cf847c961bf80500f g1`, after its refusal path was traced.
+Every exit record is 0 (all 0, b 0, c1g2 0, c1s2 0, c2s2 0, done 0, gate 0, ids1 0, ids2 0, pair 0, tests 0).
+The five identity gates rebuilt the recorded bytes:
+  gate/identity-s1.h5ad  3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2
+  gate/identity-s2.h5ad  1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f
+  gate/c1-s2.h5ad  8718330866429dc089eaffd2f96f66936fe54134eba2d50f8126266e6a3e54b8
+  gate/c2-s2.h5ad  47111ac1d07e73c0c26e990a474dff0de94ae22d6a4474a569bcb674ae2b85a7
+  gate/T3_c1_s2_g2.h5ad  e01e24facb6841a18a503655bcc5e9816304a993fe9a0dcfeca458c42ead1e16
+The file, built twice into separate folders, format-checked, each stamp of this commit and clean:
+  a and b  T3_c2_s2_g2.h5ad  014d2bf9d8ba7fdc56dcfba2a3b8aa77f0ea20bb806ebc2c1193e483d62712ac
+The builder's guard (den-weighted total within 5% of C2's) passed in each build; its figures are in the build's own record and were not read here.
+The upload file is runs/manual_upload/T3_c2_s2_g2.h5ad on the local machine, the same bytes.
+No log, size, shape or sidecar of these builds was read. No score of the file exists at this record.

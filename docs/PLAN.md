@@ -13704,3 +13704,18 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **"skip the pooled base file"**: `T1_s2rc_pooled.h5ad` is never uploaded. It is built by the T1 launcher run
     already under way (stopping that run would also stop the other three files), and is recorded in the sheet's
     skipped section with its sha256 when the run ends; row R37's last cell says so.
+- 2026-11-24 (ll), `T3_c2_s2_g2.h5ad` is built, before any score of it (state at 08:29 UTC, 2026-11-24). Written by
+  the AI assistant, which designed none of it.
+  - **The code.** The option was coded by an engineer blind to test scores and passed an independent review (no
+    blocker: 36 builds of every existing form and option byte-identical old against new; the factor exactly the
+    formula at g = 2, 1 and 0; the builder's guard equal to the trial's); merged at fc57ca9.
+  - **The build.** `experiments/t3_decomp/t3_c2g_build.sh fc57ca9... g1` on `~/v/vec-campaign-c`, clean, after a
+    traced refusal (exit 96); the five identity gates gave the recorded bytes; the file built twice with one sha256:
+    **`runs/manual_upload/T3_c2_s2_g2.h5ad`, sha256 014d2bf9d8ba7fdc56dcfba2a3b8aa77f0ea20bb806ebc2c1193e483d62712ac**
+    (local copy checked; record `experiments/builds/results/t3c2g_fc57ca9_g1.txt`). Before checking out the commit
+    there, the read's untracked copy of row K29's results (identical to the committed one) was moved, not deleted, to
+    `~/v/scratch/k29_results_from_campaign_c`.
+  - **Its standing.** In force under row R41; it comes after the T3 files queued now; the uploads are the captain's
+    own acts. Data used: released challenge data only: wild-type E8.75 cells and the released knockout tables
+    transfer_mab21l2_all and gata4_pooled, in C2's size-held product, gata4_pooled at weight 2 (applied powers 0.6159
+    and 1.2318; C2: c on both). No outside data, no gene set.

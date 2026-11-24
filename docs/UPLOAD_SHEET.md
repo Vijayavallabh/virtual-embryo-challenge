@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-24, 07:38 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-24, 08:29 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's word of 2026-11-24: 20 uploads over 24
@@ -33,11 +33,10 @@ formula a point on T1 or T3 counts twice a point on the heart or the embryo boar
 **Last on T1, if uploads are left (3):** `T1_s2rcMSB.h5ad`, `T1_s2rcA15.h5ad`, then `T1_s2rcA20.h5ad` only if A15 scores
 strictly above A.
 
-**In work, not built (up to 4):** T1: `T1_s2rcCm30.h5ad` (line 7: only if `T1_s2rcCm25.h5ad` scores strictly above
+**In work, not built (up to 3):** T1: `T1_s2rcCm30.h5ad` (line 7: only if `T1_s2rcCm25.h5ad` scores strictly above
 Cm20), `T1_s2rcB25d15.h5ad` and `T1_s2rcB25d20.h5ad` (line 6: B25d15 only if Cm25 scores strictly above both the 2.5
-file and the 2.0 file). T3: `T3_c2_s2_g2.h5ad` (third line, the captain's yes of 2026-11-24; after the files queued
-now). Skipped by the captain's word of 2026-11-24: `T1_s2rc_pooled.h5ad`, built with the T1 files above and never
-uploaded.
+file and the 2.0 file). Skipped by the captain's word of 2026-11-24: `T1_s2rc_pooled.h5ad`, built with the T1 files
+above and never uploaded.
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)). The boards' best headlines stand with `T1_s2rcB2.h5ad` (the 2.0 file), `T3_c2_s2.h5ad`
@@ -85,6 +84,7 @@ Never uploaded: `builds/T1_s2.h5ad`.
 | 2 | `T3_ck_s2.h5ad` (CK) | `e470aaeeab28918e157fb57cdc771122af35e46f0916cd1c6d63650c31faae26` | only if K23 scores strictly above the barred s2 (`barred_s2.h5ad`), the base all three are built on; C2 has been uploaded and has scored above it, so K23's score alone now decides | released challenge data (the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files the team unlocked) and the two studies named for K23, in the same form. No data on a perturbation of beta-catenin or Gata4 from outside the release |
 | then | `T3_k23_s2_e4.h5ad` | `9934f1b104fafed0514cff7bb1dec3f5e362e6a5068ae32711cbfc67f62b90f1` | only if K23 scores strictly above the barred s2 (`barred_s2.h5ad`) | as K23 |
 | then | `T3_c1_s2_g2.h5ad` (the second search's file: C1 with the Gata4 table at double strength) | `e01e24facb6841a18a503655bcc5e9816304a993fe9a0dcfeca458c42ead1e16` | none; by its rule it comes after the files above (after CK and the E = 4 file when their condition is met), unless the captain places it earlier; with no cap per board it need not wait for a day | released challenge data only: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files the team unlocked; no outside data |
+| then | `T3_c2_s2_g2.h5ad` (the third search's one file: C2 with the Gata4 table at weight 2) | `014d2bf9d8ba7fdc56dcfba2a3b8aa77f0ea20bb806ebc2c1193e483d62712ac` | none; by the captain's yes of 2026-11-24 (row R41) it comes after the files above; the uploads are the captain's own acts | released challenge data only: wild-type E8.75 cells and the released knockout tables transfer_mab21l2_all and gata4_pooled, in C2's size-held product, gata4_pooled at weight 2 (applied powers 0.6159 and 1.2318; C2: c on both). No outside data, no gene set. |
 
 ## Task 2, embryo
 

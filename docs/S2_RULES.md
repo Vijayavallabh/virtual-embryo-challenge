@@ -3159,3 +3159,16 @@ file). Default: no. Any other reply, a general go-ahead included, is no: nothing
 The captain's words: "skip the pooled base file". `T1_s2rc_pooled.h5ad` is never uploaded. It is built by the T1
 launcher run already under way with the other three new T1 files, and its sha256 is recorded with them; it stands in
 the upload sheet's skipped section.
+
+## Note of 2026-11-24: the file of T3's third search line is built (row R41; decision log 2026-11-24 (ll))
+
+The builder takes `--form c2-s2 --gata4-exponent 2.0` only with `--captain-ruling R22` and only while row R22's first
+cell names it (merged at fc57ca9 after an independent review that found no blocker); at that clean commit, on
+`~/v/vec-campaign-c`, the five identity gates rebuilt the recorded bytes of identity-s1, identity-s2, C1, C2 and line
+2's file; the file was built twice with one sha256, its guard passed in each build, and it passed the format check.
+**The file:** `runs/manual_upload/T3_c2_s2_g2.h5ad`, sha256
+014d2bf9d8ba7fdc56dcfba2a3b8aa77f0ea20bb806ebc2c1193e483d62712ac (build record
+`experiments/builds/results/t3c2g_fc57ca9_g1.txt`), added before any score of it; no T3 headline beyond the six of
+decision log 2026-11-23 (gg) had reached the main session at this note's commit. Data used: released challenge data
+only: wild-type E8.75 cells and the released knockout tables transfer_mab21l2_all and gata4_pooled, in C2's size-held
+product, gata4_pooled at weight 2 (applied powers 0.6159 and 1.2318; C2: c on both). No outside data, no gene set.
