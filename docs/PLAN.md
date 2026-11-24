@@ -13039,3 +13039,28 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     (re-pinned); the last cells of ledger rows R26 and R22 say so.
   - **What does not change.** Lines 1, 3 and 5 and their conditions; every other board; the files on disk. A later
     word of the captain's ('keep MSB', 'keep A15') puts a file back.
+- 2026-11-24 (i), the captain keeps T1's combined momentum file and A15 after all; they stand last in T1's order
+  (state at 00:46 UTC, 2026-11-24). Written by the AI assistant.
+  - **The captain's words, verbatim:** "keep MSB and A15 if they can improve our scores". They follow entry (h), which
+    applied the captain's earlier condition, 'skip them if they don't improve'.
+  - **The AI assistant's answer to the condition, from the record (its own judgement, labelled).** Can they improve
+    the board's mark of 72.29? Each can, at the very top of what practice read, and the record expects neither to. The
+    combined momentum file: its base returned 71.59; the momentum's practice gain was +0.73 and +0.70 on the two cuts
+    and +0.86, +0.73 and +1.29 on the three libraries (row R23), read on another base one day ahead; the range the
+    record states for the test is 0 to +0.73, which tops out 0.03 above the best, and with the largest library figure
+    0.59 above; the combination with the stronger atlas step is unmeasured in sign (rows R23 and R26). A15: its base
+    returned 70.8, so it needs +1.49; the half-step below it (damping 0.5 to 1.0) gained +1.47 and +1.36 on the two
+    practice cuts and between +0.68 and +1.83 across row T59's reference worlds, and no row reads any damping above
+    1.0. So A15 passes the best only if a step no row has read gains at least as much as its lower neighbour did on
+    practice and all of it carries to the test. By rule J6 the central figure of both gains is zero. The earlier
+    statement of entry (h), that nothing on record expects either file to pass the best, stands; 'can' and 'is
+    expected to' are different conditions, and both of the captain's sentences are met.
+  - **The reading of the two sentences together (the AI assistant's own).** A lower score never replaces a board's
+    best and an unused daily slot is lost, so a file that can improve the mark is worth a slot that nothing better
+    placed needs. The three files return to T1's order as its last files: at each slot line 1's due file goes first,
+    then line 3's, then line 5's; `T1_s2rcMSB.h5ad`, then `T1_s2rcA15.h5ad`, take a slot only when none of those lines
+    has a file due; `T1_s2rcA20.h5ad` only if A15's headline is strictly above A's. This is not their earlier place
+    (the combined file first, A15 before line 3's file); the captain restores that by saying so.
+  - **Recorded.** The upload sheet (three rows marked 'kept, last'; the skipped section holds three files again); a
+    note in `docs/S2_RULES.md` that sets the note of entry (h) aside (re-pinned); the last cells of rows R26 and R22.
+    No file is moved, deleted or rebuilt; no line's condition changes.

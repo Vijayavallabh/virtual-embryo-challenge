@@ -2633,3 +2633,17 @@ line 1's due file, then line 3's, then line 5's. **What does not change:** lines
 theirs (none of their comparisons uses a headline of the three files); the three files stay on disk as built; the
 checked readings of 2026-11-23 class the combined file and A15 as files without an expectation, not as files below the
 best, and that stands. A later word of the captain's can put any of them back.
+
+## Note of 2026-11-24: the combined momentum file and A15 are kept after all, as the last files of T1's order (the captain's word; decision log 2026-11-24 (i))
+
+The captain's words, verbatim: "keep MSB and A15 if they can improve our scores", written after the note above ("three
+more T1 files are skipped") had been applied on the captain's earlier condition. The AI assistant's answer to the new
+condition: by the record's own practice figures each file can pass the board's best only at the very top of what was
+read (the decision-log entry gives the figures), and the record expects neither to; so both can improve the mark and
+neither is expected to. **What changes:** the note above is set aside. `T1_s2rcMSB.h5ad`, `T1_s2rcA15.h5ad` and, on
+its own condition (A15's headline strictly above A's), `T1_s2rcA20.h5ad` are back in T1's order. By the AI assistant's
+reading of the captain's two sentences together they stand last: at each slot the due file of line 1 goes first, then
+line 3's, then line 5's, and one of the three takes a slot only when none of those lines has a file due, the combined
+file before A15, so that no slot goes unused. Line 2 lives again with its rule unchanged. **What does not change:**
+every line's condition; no comparison of lines 1, 3 or 5 uses a headline of the three files. The captain may place any
+of them elsewhere, their earlier places included (the combined file first, A15 before line 3's file).
