@@ -2900,3 +2900,20 @@ uploaded ... the line ends with no upload"): its practice row is not placed, not
 built, and no try is counted. **What does not change:** the second heart search line (OTS05, then OTS10 only if
 OTS05's headline is strictly above D's) and the fourth (OTS15, ruling row R32), with every condition and with their
 practice row; ruling rows R28 and R31 stay on record. The captain reverses a skip by naming the file.
+
+## Note of 2026-11-24: T1's line 5 reads a headline that line 3 keeps to itself; it waits on the captain's own words (decision log 2026-11-24 (r))
+
+Found on 2026-11-24 by a cold challenger of a second T1 design round, who knew only the order of the six reported T1
+headlines. Line 3's text holds the sentence: "The headlines of the first upload, R13's file, B, line 1's files
+(T1_s2rcB2, T1_s2rcB25, T1_s2rcB30), line 2's new files (T1_s2rcA15, T1_s2rcA20) and any other T1 file do not enter
+this line, and this line's new files' headlines enter no other line." Line 5 (the amendment of 2026-11-24 above, in
+force since 00:07 UTC, its two files built) opens on T1_s2rcCm20's headline, which is one of line 3's new files. The
+challenger's ruling, which the AI assistant records and does not soften: the sentence binds every other line, whenever
+written; line 5 is at fault; its opening condition cannot be established inside line 5, so by its own words the line
+'ends with no new upload' and T1_s2rcB2d15 and T1_s2rcB2d20 never fall due, unless the captain, by the captain's own
+named order recorded in a ruling row before T1_s2rcCm20's headline is returned to anyone on the team, lets that one
+headline serve line 5 as well. The words that count as yes: "Yes: T1_s2rcCm20's headline may serve line 5; line 5
+stands." Default: no; a general go-ahead is not a yes. The fault is the AI assistant's and the morning round's: line 5
+was put in force without this sentence being weighed. The two files' bytes are not void and stay on disk; nothing else
+in any line changes. No T1 headline beyond the six of decision log 2026-11-23 (gg) had reached the main session at
+this note's commit.

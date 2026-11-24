@@ -13358,3 +13358,43 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the environment and the data folder the recorded gate used; before the launch the gate had been recomputed there
     at the fixed code (run g4) with every g equal to the record's. The three embryo tries (89 to 91) count when the
     run step starts; the outcome cell of row E55 will quote the read's own statement.
+- 2026-11-24 (r), the second T1 design round: a fault found in line 5, two further lines that stand only on the
+  captain's named order, one line struck (state at 03:44 UTC, 2026-11-24). Written by the AI assistant, which designed
+  none of it and states no preference on any line.
+  - **The round** (entry (n)): a designer and a cold challenger, both started through the route that relays no
+    message, both given the order of the six reported T1 headlines and no value, both reporting that they met no test
+    score. The designer's answer: every neighbour of the 2.0 file is built; three further lines 'as cheap options
+    only'. Its attack on the AI assistant's brief: the upload, not the build, is the binding cost, and the brief
+    leaned towards building.
+  - **The fault in line 5, found by the challenger.** Line 3's text says: "The headlines of the first upload, R13's
+    file, B, line 1's files (T1_s2rcB2, T1_s2rcB25, T1_s2rcB30), line 2's new files (T1_s2rcA15, T1_s2rcA20) and any
+    other T1 file do not enter this line, and this line's new files' headlines enter no other line." Line 5, in force
+    since entry (c) with its two files built (entry (k)), opens on T1_s2rcCm20's headline. The challenger's ruling:
+    the sentence binds every other line; line 5 is at fault; T1_s2rcB2d15 and T1_s2rcB2d20 can never fall due by line
+    5's rule unless the captain, by the captain's own named order recorded before T1_s2rcCm20's headline is returned,
+    lets that headline serve line 5 as well. **The AI assistant's part, stated plainly:** it put line 5 in force on
+    the morning challenger's text without weighing this sentence. The cure is still open: no T1 headline beyond the
+    six has reached the main session. The question is put to the captain now, before the captain uploads T1_s2rcCm20,
+    with the words that count as yes: "Yes: T1_s2rcCm20's headline may serve line 5; line 5 stands." Default: no.
+  - **Row R22's first cell.** The challenger also ruled that the AI assistant's reading of a general order is not
+    enough to write a new option pair into that cell: the cell is the captain's order naming each option, so a new
+    pair needs the captain's own words naming it. The AI assistant accepts the ruling for every new line. Line 5's
+    pairs were added on such a reading (entry (c) said so and told the captain); the captain's answer to the question
+    above settles that too.
+  - **Line 7 (the challenger's final text, `T1b_line_7_final.txt` in the round's scratch folder; not in force):** line
+    3 carried one half step on: T1_s2rcCm30 (damping 1.0, multiplier 3.0), next only if T1_s2rcCm25's headline is
+    strictly above T1_s2rcCm20's. It lifts line 3's cap, fixed before any score, so it stands only on the captain's
+    own named order recorded before T1_s2rcCm25 is uploaded: "Yes: lift line 3's cap by one half step and build
+    T1_s2rcCm30 (damping 1.0, multiplier 3.0)." About 3 to 4 agent hours; nothing is built before a yes and before
+    T1_s2rcCm20 stands above C. Practice does not show the sign (rule J6).
+  - **Line 6 (final text `T1b_line_6_final.txt`; not in force):** g_mom's damping at 1.5 and 2.0 on the 2.5 file's
+    command (T1_s2rcB25d15, T1_s2rcB25d20), opened only if T1_s2rcCm25 stands strictly above the 2.5 file and the 2.0
+    file. It lifts no cap but reads T1_s2rcCm25's headline, which line 3 keeps to itself, and needs its pairs named:
+    it stands only on the captain's words, before T1_s2rcCm25 is uploaded: "Yes: build T1_s2rcB25d15 and T1_s2rcB25d20
+    (damping 1.5 and 2.0 at multiplier 2.5); T1_s2rcCm25's headline may serve line 6." About 3 to 5 agent hours (5 to
+    7 with line 7). The challenger calls it second after line 7: five to nine T1 uploads stand before its first file,
+    and no practice row reads a damping above 1.0.
+  - **Line 8 (multiplier 3.5 at damping 0.5): struck by the challenger.** No question goes to the captain on it.
+  - **Recorded.** A note in `docs/S2_RULES.md` on line 5 (re-pinned); the upload sheet says what the captain's
+    sentence decides, beside T1_s2rcCm20 and the fifth search's two rows. Nothing is put in force and nothing is built
+    by this entry.
