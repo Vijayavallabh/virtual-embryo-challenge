@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-24, 07:23 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-24, 07:38 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's word of 2026-11-24: 20 uploads over 24
@@ -33,10 +33,11 @@ formula a point on T1 or T3 counts twice a point on the heart or the embryo boar
 **Last on T1, if uploads are left (3):** `T1_s2rcMSB.h5ad`, `T1_s2rcA15.h5ad`, then `T1_s2rcA20.h5ad` only if A15 scores
 strictly above A.
 
-**In work, not built (up to 5):** T1: `T1_s2rcCm30.h5ad` (line 7: only if `T1_s2rcCm25.h5ad` scores strictly above
+**In work, not built (up to 4):** T1: `T1_s2rcCm30.h5ad` (line 7: only if `T1_s2rcCm25.h5ad` scores strictly above
 Cm20), `T1_s2rcB25d15.h5ad` and `T1_s2rcB25d20.h5ad` (line 6: B25d15 only if Cm25 scores strictly above both the 2.5
-file and the 2.0 file), `T1_s2rc_pooled.h5ad` (the captain's named exception on depth; no condition). T3:
-`T3_c2_s2_g2.h5ad` (third line; after the files queued now).
+file and the 2.0 file). T3: `T3_c2_s2_g2.h5ad` (third line, the captain's yes of 2026-11-24; after the files queued
+now). Skipped by the captain's word of 2026-11-24: `T1_s2rc_pooled.h5ad`, built with the T1 files above and never
+uploaded.
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)). The boards' best headlines stand with `T1_s2rcB2.h5ad` (the 2.0 file), `T3_c2_s2.h5ad`

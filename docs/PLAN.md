@@ -13694,3 +13694,13 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     challenger had given the read about 0.75 to strike. No later composition tier is tried on any T3 file.
   - **Recorded:** the outcome cell of row K29 and the reading under `experiments/t3_decomp/results/k29_cd7_read/`
     (checked file by file against the DGX); the upload sheet no longer lists the cD7 file in work.
+- 2026-11-24 (kk), the captain says yes to the C2 line's one file and skips the pooled-base T1 file (state at 07:38
+  UTC, 2026-11-24). Written by the AI assistant.
+  - **The captain's message, verbatim:** "yes, T3_c2_s2_g2", "skip the pooled base file".
+  - **"yes, T3_c2_s2_g2"**: the yes-words of the corrected question (entry (cc)). Ruling row R41; row R22's first cell
+    gains `--form c2-s2 --gata4-exponent 2.0`; the line's text is an amendment in `docs/S2_RULES.md` (re-pinned); row
+    R38 is marked superseded. Next: the builder option (part 2 of the T3 builder engineer's work), its review,
+    identity gates and two builds by 2026-11-25 12:00 UTC; its sha256 into this log before its score.
+  - **"skip the pooled base file"**: `T1_s2rc_pooled.h5ad` is never uploaded. It is built by the T1 launcher run
+    already under way (stopping that run would also stop the other three files), and is recorded in the sheet's
+    skipped section with its sha256 when the run ends; row R37's last cell says so.

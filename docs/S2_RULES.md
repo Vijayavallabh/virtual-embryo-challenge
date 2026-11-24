@@ -3067,3 +3067,95 @@ file dropped by the line's guard); its text enters this file when its cold chall
 under review, built twice with one sha256 at one clean commit by 2026-11-25 12:00 UTC, and named with its sha256 in
 the decision log before its own score. The method report names each exception and says it was chosen after the
 exposure and after the first scores.
+
+## Amendment of 2026-11-24: T3's third search line, the gata4_pooled weight inside C2, one file (row R41; the captain's yes; decision log 2026-11-24 (kk))
+
+In force since this amendment's commit at 07:38 UTC on 2026-11-24, on the captain's words "yes, T3_c2_s2_g2" (row
+R41). The text is the line's cold challenger's final text, verbatim; a blind designer proposed the line and the
+challenger restated it after the guard's trial on the real tables. At this commit no T3 headline beyond the six of
+decision log 2026-11-23 (gg) has reached the main session and the captain has reported none.
+
+T3 search line 3 (R22), proposed 2026-11-24 and restated by a cold challenger after the guard trial: the gata4_pooled
+weight inside C2, one new file. Written blind to test scores; it holds none. It stands only on the captain's own yes
+in part 3's words; without it the line is void and nothing is coded or built. Setting. The weight g of the table
+gata4_pooled (phi_G, sha256 36f2d65a36d2...) inside C2's size-held product on base B, the barred s2: factor phi_M ** c
+* phi_G ** (g c), c = SD(ln phi_M) / SD(ln phi_M + g ln phi_G), population SD over the panel's genes, from the two
+pinned tables as loaded (phi_M = transfer_mab21l2_all, 64b1e0b8572c...). g = 0 gives B's factor, g = 1 C2's, value for
+value; at every g the SD of ln factor is the base's; nothing is rescaled or clipped after the product. Cells, streams,
+composition, seed, count and board stay B's. Only g changes, by one round step of 1. Admissibility. g is not a setting
+of C2's command: the builder refuses `--gata4-exponent` on c2-s2, and its code holds no g for C2 (KINDS' 1.0 only
+labels the record; combine() writes phi_G ** c). The line needs a new function beside combine(), which stays
+unchanged, and a new route. The framework does not admit that by itself; it stands only as the captain's own named
+exception, as line 2 stood on his yes of 2026-11-23, which named `--gata4-exponent 2.0` on `--form c1-s2` only and
+does not reach C2. Unlike C1's weight, g moves both applied powers: at g = 2, c = 0.6159, so the file applies
+transfer_mab21l2_all at power 0.6159 and gata4_pooled at 1.2318 (C2: c on both). On c2-s2 the option's value is g, not
+a power; the sidecar and the method report say so. File. T3_c2_s2_g2.h5ad (g = 2), C2's command with one option pair
+added: uv run --frozen --no-sync python -I -B experiments/t3_decomp/build_two_knockout.py build
+experiments/t3_decomp/results/gata4/gata4_decisions.json --form c2-s2 --gata4-exponent 2.0 --captain-ruling R22 --wt
+data/raw/T2/E8.75.h5ad --run-dir ~/v/virtual-embryo-challenge/runs/t3_decomp/gata4_20261028T122425Z --board
+T3:bcatenin --seed 1000001 --out <O>/<a|b>/T3_c2_s2_g2.h5ad. On record: B (g = 0; barred_s2.h5ad, 1b69521e3c28...), C2
+(g = 1; T3_c2_s2.h5ad, 47111ac1d07e...). Route. On c2-s2 the option takes 2.0 only, only with `--captain-ruling R22`,
+only while R22's first cell names `--form c2-s2 --gata4-exponent 2.0` in backticks
+(build_outside_form.captain_order_names); line 2's entry there does not open it. Refused (exit 2, nothing built): any
+other value on c2-s2, 3.0 included; any form but c1-s2 (line 2's) and c2-s2; the option or the ruling alone. Launcher:
+build_two_knockout.sh <clean commit> s2 c2g, traced once with bash -x on a harmless path. On the yes, R22's first cell
+gains, every string in it kept: "by T3's third search line (decision log 2026-11-24), on the captain's own yes naming
+T3_c2_s2_g2.h5ad, the T3 two-knockout builder is also to take `--form c2-s2 --gata4-exponent 2.0`, only with
+`--captain-ruling R22`". Rule. Members: B (g = 0), C2 (g = 1) and T3_c2_s2_g2.h5ad (g = 2). Only their headlines
+enter, as the captain reports them for the team's own T3 uploads; no other headline, line 2's file's included, enters,
+starts or stops the line (fixed before it is returned). No line in force keeps B's or C2's headline to itself. The
+line's first step, g 0 to 1, is R17's C2, taken before it: C2's headline strictly above B's fixes the direction upward
+(two points fix a direction, not a trend), so the new file, g = 2, is its second step; that condition is met. If its
+headline is strictly above C2's, it holds the line's best; otherwise, tie included, C2 holds it. The line ends there
+whatever its headline: g = 3 is dropped by the guard; no other g or setting of C2 is ever tried. A file never built,
+uploaded or reported ends the line with C2 as its best. The best headline is kept. Nothing is computed from the size
+of any headline, no difference is read as evidence of anything, no per-metric value is read, recorded, compared or
+quoted, and no property of a hidden sample is inferred or bounded from a score. Guard, fixed before its trial and not
+changed after it: from released WT E8.75 and the two pinned tables only (den as build_outside_form.wt_den makes it),
+the den-weighted total of the file's factor lies within 5% of C2's factor's. Trial, target-free
+(lift8/t3_c2g_guard_trial.py): C2 +3.75% from phi_M's total (recorded, gating nothing); g = 2: c = 0.6159, +3.99% from
+C2's, passes; g = 3: c = 0.4756, +6.89%, fails and is dropped. This bounds the step from C2. Lines 1 and 2 bound the
+distance from B's own factor phi_M (row K23's pre-gate bound), a stricter test: by it the g = 2 file lies about +7.9%
+from phi_M's total (1.0375 x 1.0399 - 1), beyond 5%, and would be stopped, as line 2's file was before row R30 lifted
+the limit for that file only. The builder records both figures first, refuses only on this line's bound (exit 6,
+nothing written) and applies only the factor they describe (sha256, else exit 5). Bound and reference never change; no
+lifting is asked. Build. Twice, one sha256, one clean commit, by 2026-11-25 12:00 UTC, on a DGX campaign checkout;
+each copy format-checked, its stamp of that commit and clean; first these rebuild their recorded bytes into a gate
+folder: identity-s1 (3712c3f9988d...), identity-s2 (1b69521e3c28...), c1-s2 (871833086642...), c2-s2 (47111ac1d07e...)
+and line 2's command for T3_c1_s2_g2.h5ad (its recorded sha256). Gate builds replace no file. No file is rebuilt,
+re-seeded, resized or changed after a score. Void unless the yes in part 3's words and the addition to R22's first
+cell are committed before any build, this text is in the decision log before the file's score, and the gates and
+builds pass by the deadline. Under any organiser restriction on the validation files behind gata4_pooled, no file of
+this line is marked, and the mark is chosen as if it had not been uploaded. Every upload is the captain's own act.
+Practice. No practice read prices this file, and none can: each fold's truth is a knockout one of its two tables is
+measured from (rule 9, J2). Rows K2a and K2b, gata4_pooled alone at exponent 1, found no cross-knockout support. The
+step rests on the direction rule and one ordinal fact, C2 above B. Overlap. The file's factor is line 2's factor phi_M
+* phi_G ** 2 raised to the power 0.6159, as C2 is C1 raised to C2's c. So it asks line 2's question, weight 2 against
+1, again: at C2's held size, where only the mix moves; line 2's step moves mix and size together. It is a distinct
+step of one setting, not a combination file; its own reason is that it steps from C2, the file that holds the board's
+best. If both are uploaded, two files asked one question; the method report says so. Place and cost. Within T3 it
+follows K23's file and line 2's file, then CK and line 1's E = 4 file if K23's file beats B (the refused s1 stays
+skipped): T3's third or fifth upload from now. Across boards it goes after every file queued now. With about 20
+uploads spoken for if every condition is met, and no allowance stated for 26 Nov, it is reached only if a condition
+fails (K23's file not beating B frees two) or a file in work is not built. A place inside the 20 moves other boards'
+queued files back and, if every condition is met, leaves the last of the 20 without an upload; it is taken only on the
+captain's words naming the file it goes ahead of. Cost: about 5 to 9 hours of coding, review and DGX builds by
+2026-11-25 12:00 UTC; one T3 upload. Data used: released challenge data only: wild-type E8.75 cells and the released
+knockout tables transfer_mab21l2_all and gata4_pooled, in C2's size-held product, gata4_pooled at weight 2 (applied
+powers 0.6159 and 1.2318; C2: c on both). No outside data, no gene set. Method report: on T3, the gata4_pooled weight
+in C2's size-held product on the barred s2 was tried at 0, 1 and 2 and the best headline kept; weight 2 was also tried
+on C1 (line 2), one question at two sizes. Question for the captain (one, priced): "May the team build
+T3_c2_s2_g2.h5ad, C2 with gata4_pooled at weight 2 instead of 1 at C2's held size (applied powers 0.6159 on
+transfer_mab21l2_all, 1.2318 on gata4_pooled), through a new builder path, `--form c2-s2 --gata4-exponent 2.0` with
+`--captain-ruling R22`? The framework does not admit it by itself; your yes of 2026-11-23 named C1's weight only. It
+asks line 2's weight-2 question again at C2's size. Its den-weighted total is +3.99% from C2's but about +7.9% from
+the base's, beyond the 5% that lines 1 and 2 hold. No practice read can show it better or worse than C2. Cost: about 5
+to 9 hours by 2026-11-25 12:00 UTC and one T3 upload, after every queued file, so it may never be reached." Yes is the
+words "yes, T3_c2_s2_g2" (that place) or "yes, T3_c2_s2_g2 ahead of" and a queued file's name (just ahead of that
+file). Default: no. Any other reply, a general go-ahead included, is no: nothing is coded or built.
+
+## Note of 2026-11-24: the pooled-base T1 file is skipped by the captain's word (row R37; decision log 2026-11-24 (kk))
+
+The captain's words: "skip the pooled base file". `T1_s2rc_pooled.h5ad` is never uploaded. It is built by the T1
+launcher run already under way with the other three new T1 files, and its sha256 is recorded with them; it stands in
+the upload sheet's skipped section.
