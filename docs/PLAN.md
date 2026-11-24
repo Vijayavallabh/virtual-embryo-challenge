@@ -13731,3 +13731,22 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     `T1_s2rcCm30.h5ad` only if Cm25's headline is strictly above Cm20's. `T1_s2rc_pooled.h5ad` is skipped by the
     captain's word and stands in the sheet's skipped section. Data used, for all: released challenge data and the
     outside heart atlas on recomputed groups (GEO GSE193346, register row X002).
+- 2026-11-24 (nn), the captain reports four headlines, one per board, and each board's rule is applied by its letter
+  (state at 16:57 UTC, 2026-11-24). Written by the AI assistant, which records the headlines only.
+  - **The captain's report (headlines, each with the file named for its board):** T1:test `T1_s2rcB25.h5ad` 72.66;
+    T2:heart:test_extrap `T2heart_organ_ts05_half.h5ad` 61.29; T2:embryo:test_interp `T2embryo_s2xs_ov.h5ad` 64.27;
+    T3:bcatenin `T3_k23_s2.h5ad` 62.34. Each file's sha256 on disk matches its sheet row. The paste's per-metric lines
+    and ranks are not recorded and not used. Rows added to `results/manual_uploads.csv`.
+  - **Each rule by its letter.** T1: the 2.5 file scored strictly above the 2.0 file, so `T1_s2rcB30.h5ad` is due; the
+    2.5 file now holds the board's best. Heart: OTS05 scored strictly above D, so it becomes the line's best and
+    `T2heart_organ_ts10_half.h5ad` is due (the line ends at OTS10 in any case); OTS05 holds the board's best. T3: K23
+    scored strictly above the barred s2, so `T3_ck_s2.h5ad` and `T3_k23_s2_e4.h5ad` are due; C2 keeps the board's
+    best. Embryo: by the embryo's order rule no score decides another embryo file; O keeps the board's best.
+  - **Standing:** T1 72.66, T3 63.94, heart 61.29, embryo 69.9; overall 202.195 by the challenge's formula (it was
+    201.38).
+  - **Uploads:** four of the 20 used on 24 Nov, 16 left. Due now (9): T1 `T1_s2rcB30.h5ad`, `T1_s2rcCm20.h5ad`; T3
+    `T3_ck_s2.h5ad`, `T3_k23_s2_e4.h5ad`, `T3_c1_s2_g2.h5ad`, `T3_c2_s2_g2.h5ad`; embryo `T2embryo_s2.h5ad`,
+    `T2embryo_s2x_ovhi.h5ad`; heart `T2heart_organ_ts10_half.h5ad`. Waiting on a score (6): Cm25, B2d15, B2d20,
+    B25d15, B25d20, Cm30. Last on T1 (3): MSB, A15, A20. The sheet's waiting list now also names the sixth and seventh
+    searches' files (built in entry (mm)), and the Data-used cells of CK and the E = 4 file are written out in full
+    now that K23's row has left the table.
