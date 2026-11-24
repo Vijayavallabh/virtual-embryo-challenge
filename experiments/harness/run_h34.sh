@@ -15,15 +15,16 @@
 #          output folder is new; then it writes the head file
 #   tests  the unit tests of the script and of this launcher, and rows H29b's and H27's (synthetic arrays, hand-made
 #          tables and throwaway repositories only), into tests.log
-#   gate   first, and not a try: the control D_f alone built and scored, held against row H29b's committed reading bit
-#          for bit, and the trend step's factors at 1.5 against 1.5 times those at 1; one process, both transitions,
-#          ten seeds; into <output>/gate (gate.json, gate.txt); exit 0 PASS, 3 FAIL (the read is void: nothing further
-#          runs), else an error. Its printed lines are in gate.out
-#   run    the counted arms: per transition five processes of two seeds, the two transitions on E10.5 one after the
-#          other, into <output>/<short>/<seeds>/h34.json. Each part refuses before anything loads unless row H34 is in
-#          TRIES.md, the tracked tree is clean, HEAD is COMMIT, the gate of COMMIT said PASS and its output does not
-#          exist. The script prints "<task> seed <s> (<sec> s) done" and "wrote <path>" only; any other log line is
-#          counted, never printed (<output>/exit/*.other_lines and other_lines)
+#   gate   first, counting nothing: the control D_f alone built and scored, its eighteen plain means held against row
+#          H29b's committed reading exactly (G1), and the trend step's log factors and damping at 1.5 against 1.5 times
+#          those at 1.0, exactly (G2); one process, both transitions, ten seeds; into <output>/gate (gate.json,
+#          gate.txt); exit 0 PASS, 3 FAIL (the outcome is VOID: nothing further runs), else an error. Its printed lines
+#          are in gate.out
+#   run    the counted arms beside a rebuilt control: per transition five processes of two seeds, the two transitions
+#          on E10.5 one after the other, into <output>/<short>/<seeds>/h34.json. Each part refuses before anything
+#          loads unless row H34 is in TRIES.md, the tracked tree is clean, HEAD is COMMIT, the gate of COMMIT said PASS
+#          and its output does not exist. The script prints "<task> seed <s> (<sec> s) done" and "wrote <path>" only;
+#          any other log line is counted, never printed (<output>/exit/*.other_lines and other_lines)
 #   read   the one read (the void conditions first, then the stop rule) into experiments/harness/results/
 #          h34_heart_organ_trend (reading.json, reading.txt; never overwritten); its two printed lines, the outcome and
 #          what follows, in read.out
