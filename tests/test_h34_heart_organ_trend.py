@@ -14,6 +14,7 @@ import inspect
 import json
 import os
 import re
+import shlex
 import subprocess
 import sys
 from pathlib import Path
@@ -1586,6 +1587,8 @@ BASE="$HOME/v/scratch/h34"
 S="$BASE/$STUB_RUN"
 threads="$OMP_NUM_THREADS|$OPENBLAS_NUM_THREADS|$MKL_NUM_THREADS"
 echo "$UV_PROJECT_ENVIRONMENT|$threads|$NUMPY_MADVISE_HUGEPAGE|$TMPDIR|$*" >> "$HOME/uvcalls"
+quoted=$(printf '%q ' "$@")
+echo "$quoted" >> "$HOME/uvargs"
 args=("$@")
 [ "${args[0]}" = run ] || exit 90
 args=("${args[@]:1}")
@@ -1700,6 +1703,13 @@ def _launch(repo, *args, cwd=None, **extra):
 def _uv_calls(repo):
     f = repo.tmp / "home" / "uvcalls"
     return f.read_text().splitlines() if f.exists() else []
+
+
+def _uv_args(repo):
+    """The stand-in's calls in order, each as the list of its arguments (recorded shell-quoted: a path holding a space
+    stays one argument)."""
+    f = repo.tmp / "home" / "uvargs"
+    return [shlex.split(ln) for ln in f.read_text().splitlines()] if f.exists() else []
 
 
 def _kinds(repo):
@@ -1853,16 +1863,19 @@ def test_the_launcher_runs_the_four_steps_in_order(repo):
 def test_the_launchers_calls_are_calls_the_script_takes(repo, h34, monkeypatch):
     """Every call the launcher makes of the script, word for word, parses under the script's own command line and
     reaches the step it names; the gate is given no reading and no parts of its own choosing (the committed ones)."""
-    data = repo.tmp / "data"
+    data = repo.tmp / "data dir"  # a space in the path: each argument stays one argument
     (data / "T2").mkdir(parents=True)
     assert _launch(repo, repo.head, "x1", H34_DATA=str(data)) == (0, "")
     reached = []
     for name in ("gate", "run", "read", "refusals"):
         monkeypatch.setattr(h34, f"cmd_{name}", lambda a, name=name: reached.append((name, vars(a))))
-    script = "experiments/harness/h34_heart_organ_trend.py "
-    for call in _uv_calls(repo):
-        if script in call:
-            h34.main(call.split(script, 1)[1].split())
+    script = "experiments/harness/h34_heart_organ_trend.py"
+    calls = _uv_args(repo)
+    assert len(calls) == len(_uv_calls(repo)) == len(ONE_CALL)
+    for args in calls:
+        assert args[:6] == ["run", "--frozen", "--no-sync", "python", "-I", "-B"]
+        if script in args:
+            h34.main(args[args.index(script) + 1:])
     assert [name for name, _ in reached] == [k.split()[0].replace("ask", "refusals") for k in ONE_CALL[1:]]
     by: dict = {}
     for name, a in reached:
