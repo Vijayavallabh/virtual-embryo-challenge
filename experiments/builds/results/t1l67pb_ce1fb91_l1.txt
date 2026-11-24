@@ -1,0 +1,27 @@
+T1's lines 6 and 7 (rows R40, R39) and the pooled base (row R37, skipped for upload)
+==========================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-24 in the worktree ~/v/scratch/t1line-wt of ~/v/vec-campaign-d at commit ce1fb91 (main; clean tree) with `experiments/builds/t1_l67pb_line.sh ce1fb9164c348341af111c43103f14213ed93739 l1`, after its refusal path was traced (exit 96).
+Every exit record is 0. The fifteen identity commands rebuilt the recorded bytes:
+  T1_s2rc.h5ad  ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f
+  T1_s2rcA.h5ad  76865826f5a3741c7585f81c4241048ca1a95b5791ebb3c8feb1f2b536678ce4
+  T1_s2rcB.h5ad  c7240cb6a7f7ee93d037f437832efbaad004f1fbe608d80072f8efd5d20a0062
+  T1_s2rcC.h5ad  31477ef7df5d5374a74a8249c570217020c593916ab4d3780049b7b3f87b0620
+  T1_s2rcB2.h5ad  52897fe375b8a81afffa788592047c30361824148b00a8176514385060518837
+  T1_s2rcB25.h5ad  ccb7c457c0e8ac8ac668bcea17bc61ed22f414f58ab5a63e946cb2f08c4f4e77
+  T1_s2rcB30.h5ad  b639de29bd13d7005450ca53e7cd3dacb2e362a55beca8545937858e6582a024
+  T1_s2rcA15.h5ad  e2334137b54d98b04e9dece90213987e61fe9aa15a3fb8d85e6c262d8fb5ba75
+  T1_s2rcA20.h5ad  372713686782be273a52427140eab652517e35b679f54fc2a969484dee730218
+  T1_s2rcCm20.h5ad  acce5f5f7097269bffebbfd583833e4c9c1c5ae77f1d5294dde6d13e197f863e
+  T1_s2rcCm25.h5ad  c5fb96a64075b6fbfb2f3066604d622ea8b89ac3a5e4f8a99d0fea7d93011dfd
+  T1_s2rcB2d15.h5ad  fe4e7403d6257cc265a02d0a13d40cdb60a97e9fdc0647d6b5c7e318aedaed6c
+  T1_s2rcB2d20.h5ad  bd12c66312ba32ab938b4ee71bd5c79e58a154d6fc56434012e6dad907e668dd
+  T1_s2rc_MS.h5ad  6103d10535665634ee0cad3390590a5df132d1805682fb1d309bb19581fdaa5e
+  T1_s2rcMSB.h5ad  78bb17eea5721e590cfd2c9f707e9cd6f2f496e081acede4f697dc4035871da2
+The new files, each built twice into separate folders with one sha256, format-checked, each stamp of this commit and clean:
+  T1_s2rcCm30.h5ad  807fe097c88ee779430896002a34635aeffbc99b433c68ebdb7bd41d8af2cbbe
+  T1_s2rcB25d15.h5ad  5bc2b32e4688439f29c54c1b1203325595d996c37df30ba2b9ff26f27a60f4c6
+  T1_s2rcB25d20.h5ad  e6520dbee0fdc3f1336bc3f9de1e99e8a501de2d440b3f9085c88b5c7ecfb3f6
+  T1_s2rc_pooled.h5ad  91341a5f8c71dcc103a47f9c19a5d7794b1358c1c642c5c9251624eb6feb8bdc
+`T1_s2rc_pooled.h5ad` is skipped for upload by the captain's word of 2026-11-24 and is never uploaded.
+The local copies under runs/manual_upload/ are the same bytes. No log, size, shape or sidecar of these builds was read. No score of any of them exists at this record.

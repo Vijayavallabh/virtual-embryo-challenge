@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-24, 08:29 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-24, 08:50 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's word of 2026-11-24: 20 uploads over 24
@@ -33,10 +33,7 @@ formula a point on T1 or T3 counts twice a point on the heart or the embryo boar
 **Last on T1, if uploads are left (3):** `T1_s2rcMSB.h5ad`, `T1_s2rcA15.h5ad`, then `T1_s2rcA20.h5ad` only if A15 scores
 strictly above A.
 
-**In work, not built (up to 3):** T1: `T1_s2rcCm30.h5ad` (line 7: only if `T1_s2rcCm25.h5ad` scores strictly above
-Cm20), `T1_s2rcB25d15.h5ad` and `T1_s2rcB25d20.h5ad` (line 6: B25d15 only if Cm25 scores strictly above both the 2.5
-file and the 2.0 file). Skipped by the captain's word of 2026-11-24: `T1_s2rc_pooled.h5ad`, built with the T1 files
-above and never uploaded.
+**In work, not built:** none.
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)). The boards' best headlines stand with `T1_s2rcB2.h5ad` (the 2.0 file), `T3_c2_s2.h5ad`
@@ -70,6 +67,9 @@ after every search file; the captain may place them anywhere.
 | third search | `T1_s2rcCm25.h5ad` | `c5fb96a64075b6fbfb2f3066604d622ea8b89ac3a5e4f8a99d0fea7d93011dfd` | only if Cm20 scores strictly above C |
 | fifth search | `T1_s2rcB2d15.h5ad` | `fe4e7403d6257cc265a02d0a13d40cdb60a97e9fdc0647d6b5c7e318aedaed6c` | only if Cm20 scores strictly above the 2.0 file (`T1_s2rcB2.h5ad`) |
 | fifth search | `T1_s2rcB2d20.h5ad` | `bd12c66312ba32ab938b4ee71bd5c79e58a154d6fc56434012e6dad907e668dd` | only if B2d15 scores strictly above the higher of the 2.0 file and Cm20 |
+| sixth search | `T1_s2rcB25d15.h5ad` | `5bc2b32e4688439f29c54c1b1203325595d996c37df30ba2b9ff26f27a60f4c6` | only if `T1_s2rcCm25.h5ad` scores strictly above both the 2.5 file (`T1_s2rcB25.h5ad`) and the 2.0 file |
+| sixth search | `T1_s2rcB25d20.h5ad` | `e6520dbee0fdc3f1336bc3f9de1e99e8a501de2d440b3f9085c88b5c7ecfb3f6` | only if B25d15 scores strictly above Cm25 |
+| seventh search | `T1_s2rcCm30.h5ad` | `807fe097c88ee779430896002a34635aeffbc99b433c68ebdb7bd41d8af2cbbe` | only if `T1_s2rcCm25.h5ad` scores strictly above Cm20 |
 | kept, last | `T1_s2rcMSB.h5ad` (combined momentum) | `78bb17eea5721e590cfd2c9f707e9cd6f2f496e081acede4f697dc4035871da2` | none; last on T1, after every search file |
 | kept, last | `T1_s2rcA15.h5ad` (the second search's file) | `e2334137b54d98b04e9dece90213987e61fe9aa15a3fb8d85e6c262d8fb5ba75` | none (its condition is met); last on T1, after every search file |
 | kept, last | `T1_s2rcA20.h5ad` | `372713686782be273a52427140eab652517e35b679f54fc2a969484dee730218` | only if A15 scores strictly above A |
@@ -123,6 +123,7 @@ built). The files stay in `runs/manual_upload/` as built; nothing was deleted or
 | Task 1 | `T1_s2none.h5ad` (F) | `55eaee547ff18d7477da5b730c34e7de9ab74f85cc12fd01a9eff6450367611c` | on practice it never stands above the atlas file it was cut from, whose headline is under the board's best | released challenge data only; no outside data |
 | Task 3 | `T3_refused_s1.h5ad` | `0394575a11fcd4f915e0daf4972e5a783b6b89efa065ed4f85fe2445cbbb1545` | its expected board score on record is under the board's best headline | released challenge data only (released wild-type stage files; its composition at the released Mab21l2 knockout's magnitude; no Gata4 validation file and no Gata4-derived number); no outside data |
 | Task 2, heart | `T2heart_core_ts10_half.h5ad` (TS10, the full trim with the trend step at strength 1.0) | `cf53b0c0afe7d18b8f7c84d7595729e4fc46e15e6077e645b6dc0a2fbfed39af` | the captain's word of 2026-11-24, "skip TS10, TS15 and TS20" | released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data |
+| Task 1 | `T1_s2rc_pooled.h5ad` (R13's command on the pooled base) | `91341a5f8c71dcc103a47f9c19a5d7794b1358c1c642c5c9251624eb6feb8bdc` | the captain's word of 2026-11-24, "skip the pooled base file" | as the Task 1 files above |
 
 ## When a score comes back
 

@@ -3172,3 +3172,18 @@ cell names it (merged at fc57ca9 after an independent review that found no block
 decision log 2026-11-23 (gg) had reached the main session at this note's commit. Data used: released challenge data
 only: wild-type E8.75 cells and the released knockout tables transfer_mab21l2_all and gata4_pooled, in C2's size-held
 product, gata4_pooled at weight 2 (applied powers 0.6159 and 1.2318; C2: c on both). No outside data, no gene set.
+
+## Note of 2026-11-24: the files of T1's lines 6 and 7 are built; the pooled-base file is built and skipped (rows R39, R40, R37; decision log 2026-11-24 (mm))
+
+The builder takes the three new option pairs only with `--captain-ruling R22` while row R22's first cell names them,
+and the pooled base only with `--captain-ruling R37` (merged at ce1fb91 after an independent review that found no
+blocker); at that clean commit, on `~/v/vec-campaign-d`'s worktree, the fifteen identity commands rebuilt the recorded
+bytes and each new file was built twice with one sha256 and passed the format check. **The files:**
+`runs/manual_upload/T1_s2rcCm30.h5ad`, sha256 807fe097c88ee779430896002a34635aeffbc99b433c68ebdb7bd41d8af2cbbe;
+`runs/manual_upload/T1_s2rcB25d15.h5ad`, sha256 5bc2b32e4688439f29c54c1b1203325595d996c37df30ba2b9ff26f27a60f4c6;
+`runs/manual_upload/T1_s2rcB25d20.h5ad`, sha256 e6520dbee0fdc3f1336bc3f9de1e99e8a501de2d440b3f9085c88b5c7ecfb3f6;
+`runs/manual_upload/T1_s2rc_pooled.h5ad`, sha256 91341a5f8c71dcc103a47f9c19a5d7794b1358c1c642c5c9251624eb6feb8bdc
+(build record `experiments/builds/results/t1l67pb_ce1fb91_l1.txt`). Added before any score of any of them; no T1
+headline beyond the six of decision log 2026-11-23 (gg) had reached the main session at this note's commit.
+`T1_s2rc_pooled.h5ad` is skipped by the captain's word and never uploaded. Data used: released challenge data and the
+outside heart atlas on recomputed groups (GEO GSE193346, register row X002).

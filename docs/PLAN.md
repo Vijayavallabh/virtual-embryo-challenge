@@ -13719,3 +13719,15 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     own acts. Data used: released challenge data only: wild-type E8.75 cells and the released knockout tables
     transfer_mab21l2_all and gata4_pooled, in C2's size-held product, gata4_pooled at weight 2 (applied powers 0.6159
     and 1.2318; C2: c on both). No outside data, no gene set.
+- 2026-11-24 (mm), the files of T1's lines 6 and 7 are built, and the skipped pooled-base file with them, before any
+  score (state at 08:50 UTC, 2026-11-24). Written by the AI assistant, which designed none of it.
+  - **The build.** `experiments/builds/t1_l67pb_line.sh ce1fb91... l1` in the worktree `~/v/scratch/t1line-wt` of
+    `~/v/vec-campaign-d`, clean, after a traced refusal; the fifteen identity commands gave the recorded bytes; each
+    new file built twice with one sha256; local copies checked: **`T1_s2rcCm30.h5ad`** 807fe097c88e...;
+    **`T1_s2rcB25d15.h5ad`** 5bc2b32e4688...; **`T1_s2rcB25d20.h5ad`** e6520dbee0fd...; **`T1_s2rc_pooled.h5ad`**
+    91341a5f8c71... (full sha256 in the rules note and the record).
+  - **Their standing.** Line 6: `T1_s2rcB25d15.h5ad` only if `T1_s2rcCm25.h5ad`'s headline is strictly above both the
+    2.5 file's and the 2.0 file's, then `T1_s2rcB25d20.h5ad` only if B25d15's is strictly above Cm25's. Line 7:
+    `T1_s2rcCm30.h5ad` only if Cm25's headline is strictly above Cm20's. `T1_s2rc_pooled.h5ad` is skipped by the
+    captain's word and stands in the sheet's skipped section. Data used, for all: released challenge data and the
+    outside heart atlas on recomputed groups (GEO GSE193346, register row X002).
