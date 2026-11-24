@@ -3443,3 +3443,25 @@ Added before any score of any of them; no T3 headline beyond those of the decisi
 reached the main session at this note's commit. Data used: released challenge data only: wild-type E8.75 cells, the
 released knockout tables transfer_mab21l2_all and gata4_pooled in C2's size-held product, and the frozen per-label
 depth ratios of the two Gata4 validation files (the decision file of 2026-10-28); no outside data, no gene set.
+
+## Amendment of 2026-11-24: six files of the step-change round's second wave (rows R54 to R59; decision log 2026-11-24 (www))
+
+In force since this amendment's commit at 23:48 UTC on 2026-11-24, on the captain's picks in one dialog, each recorded
+verbatim in its row. Each file is built only after its gate or read passes, twice with one sha256; the board keeps its
+best headline.
+
+T1: `T1_s2rcMSB_LM16` (row R54: "Yes, T1_s2rcMSB_LM16, my named exception, bound to T72: T1's composition and depth
+and the 17 November request rule may change for this file, and the strict form is set aside for Feng's pooled
+E15.5–E17.5 counts, at row R54's shares."; `--late-mix e15_17`, gate T72, shares from row N64) and `T1_s2rcMSBm20`
+(row R58: "Yes, T1_s2rcMSBm20 under R22, bound to its gate G0."; `--direction-momentum-damping 2.0`, gate T73).
+
+Heart ("Yes to OTK125, OTX125, OTW125 and OTP125: my named exception on the heart's scope and size for these four
+files, bound to their screen; and yes to XPC: my named exception on the heart's scope and size for this file and my
+A15 exception, bound to its read."): OTK125, OTX125, OTW125 and OTP125 (row R55; `--trend-form category`, `contrast`,
+`whole` or `portion`; screen H35) and OXP125 (row R56; `--run-profile`; read H36). The AI assistant, recused on the
+heart's scope and size, gave no view.
+
+Embryo: `T2embryo_s2x_ovrs.h5ad` (row R57: "Yes to T2embryo_s2x_ovrs.h5ad (RS), bound to row E57's read.";
+`--neighbourhood run_sorted`; read E57) and `T2embryo_s2x_ovt23.h5ad` (row R59: "Yes to T2embryo_s2x_ovt23.h5ad
+(Ot23): my named exception on the embryo's overlay form for this file, bound to its gate G1."; `--mix-lean later`;
+gate E58). The AI assistant, recused on the embryo's occupancy term and shape forms, gave no view on R59.

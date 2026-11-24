@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-24, 23:13 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-24, 23:48 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -41,7 +41,9 @@ words "yes, T3_c2_s2_g2 ahead of" and a queued file's name (for example `T3_k23_
 file `T1_s2rcB25.h5ad` (row R46); both parts are built. Heart: The composition files of row R50 are not built: the
 line ended at its screening. T1 (row R51, decision log 2026-11-24 (iii)): seven files around the combined-momentum
 file, `T1_s2rcMS20`, `T1_s2rcMSBd10`, `T1_s2rcMSBH05`, `T1_s2rcMSBm10`, and, as gated, `T1_s2rcMS30`, `T1_s2rcMSBd15`,
-`T1_s2rcMSBH10`.
+`T1_s2rcMSBH10`. Step-change round, second wave (decision log 2026-11-24 (www)), each built only after its gate or
+read passes: T1 `T1_s2rcMSB_LM16` (R54) and `T1_s2rcMSBm20` (R58); heart OTK125, OTX125, OTW125, OTP125 (R55) and
+OXP125 (R56); embryo `T2embryo_s2x_ovrs.h5ad` (R57) and `T2embryo_s2x_ovt23.h5ad` (R59).
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)), and twenty-one on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy), (aaa), (bbb),

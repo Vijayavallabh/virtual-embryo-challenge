@@ -14136,3 +14136,22 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     only: wild-type E8.75 cells, the released knockout tables transfer_mab21l2_all and gata4_pooled in C2's size-held
     product, and the frozen per-label depth ratios of the two Gata4 validation files (the decision file of
     2026-10-28); no outside data, no gene set.
+- 2026-11-24 (www), the captain picks six lines of the step-change round's second wave (state at 23:48 UTC,
+  2026-11-24). Written by the AI assistant.
+  - **The captain's picks, verbatim (each option recorded its words as the captain's):** T1 "Yes, T1_s2rcMSB_LM16, my
+    named exception, bound to T72: T1's composition and depth and the 17 November request rule may change for this
+    file, and the strict form is set aside for Feng's pooled E15.5–E17.5 counts, at row R54's shares."; heart "Yes to
+    OTK125, OTX125, OTW125 and OTP125: my named exception on the heart's scope and size for these four files, bound to
+    their screen; and yes to XPC: my named exception on the heart's scope and size for this file and my A15 exception,
+    bound to its read."; "Yes to T2embryo_s2x_ovrs.h5ad (RS), bound to row E57's read."; "Yes, T1_s2rcMSBm20 under
+    R22, bound to its gate G0."; embryo "Yes to T2embryo_s2x_ovt23.h5ad (Ot23): my named exception on the embryo's
+    overlay form for this file, bound to its gate G1."
+  - **What the main session gave.** For LM16, the policy's outcome on an exposed lever (declined) and no lean; for the
+    heart lines and Ot23, no view (recused); for RS, a recommendation (no closed or recused term); for MSBm20, no
+    lean. Not put forward: T1's first-wave proposals (about 0.02 to 0.04 for about +1), T3's stage-step files (the
+    rule's outcome decline; little beyond the depth line), the heart's OCS125 (about 0.02 for about +0.5).
+  - **Row N63's matter.** The T1 CLOSED challenger disclosed a mental comparison of the late-mix rule with E9.5's
+    committed share, which the ledger's rules count as a reading needing its row first; it decided nothing in the
+    verdict, and it is recorded here.
+  - **Recorded:** rows R54 to R59 and an amendment in `docs/S2_RULES.md` (re-pinned). Engineers blind to test scores
+    now write each line's code; each gate's row is placed after review and before its read.
