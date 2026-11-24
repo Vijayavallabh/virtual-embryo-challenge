@@ -13154,3 +13154,126 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     to the captain. The challenger wrote that the rest is worth doing only if no Task 1 or Task 3 line competes for
     the same review hours; both lines are coded and reviewed, so the row is started now. No file, order or queue
     changes by this entry.
+- 2026-11-24 (k), the two files of T1's search line on the 2.0 file's command are built, before any score of them
+  (state at 01:42 UTC, 2026-11-24). Written by the AI assistant, which designed none of the line and states no
+  preference on the candidate.
+  - **The code.** An engineer blind to test scores wrote the option pair and the launcher on branch
+    `campaign/t1-line5`; a reviewer blind to test scores, with the blocker standard fixed in its brief, returned READY
+    with no blocker: it ran the old and the new builder side by side on 14,112 argument sets against four synthetic
+    ledgers and found the routing equal everywhere but on the two new pairs, which are taken only under
+    `--captain-ruling R22` with nothing else added and only while row R22's first cell names the combined option.
+    Declared and judged harmless: three pinned refusal messages in two existing tests were updated; the record text
+    names 'T1 line 5' without this log's label (no code changed after the review). Merged at 7e7d9a6.
+  - **The build.** `experiments/builds/t1_b2d_line.sh 7e7d9a6... b1` in the detached worktree `~/v/scratch/t1line-wt`
+    of `~/v/vec-campaign-d`, clean tree, after its refusal path had been traced under a throwaway home folder (exit
+    96, record written): every exit record 0; the eleven identity commands gave the recorded bytes; each new file was
+    built twice with one sha256, each stamp of that commit and clean. **`runs/manual_upload/T1_s2rcB2d15.h5ad`, sha256
+    fe4e7403d6257cc265a02d0a13d40cdb60a97e9fdc0647d6b5c7e318aedaed6c; `runs/manual_upload/T1_s2rcB2d20.h5ad`, sha256
+    bd12c66312ba32ab938b4ee71bd5c79e58a154d6fc56434012e6dad907e668dd** (local copies checked against both builds;
+    record `experiments/builds/results/t1b2dline_7e7d9a6_b1.txt`). No log, size or sidecar was read.
+  - **Their standing.** In force under row R22 (entry (c)); named with command and value there and with their sha256
+    here, before any score and before any T1 headline beyond the six of entry 2026-11-23 (gg). B2d15 goes only if
+    Cm20's headline is strictly above the 2.0 file's; B2d20 only if B2d15's is strictly above the line's best. The
+    upload sheet and the rules note carry them.
+- 2026-11-24 (l), ledger row E55 is placed: the practice read of the embryo candidate OSR, before any read against a
+  practice target (state at 01:45 UTC, 2026-11-24). Written by the AI assistant, which is recused on the embryo's
+  occupancy term and shape forms, wrote none of the row and states no preference.
+  - **The row and who wrote it.** A rule writer blind to test scores turned the cold challenger's specification,
+    practice read and pass rule (entry (j)) into the row's eleven cells with no design choice; a second analyst
+    checked the draft cold against its sources and the ledger's rules and corrected seven cells (13 changes, among
+    them the order of the steps, the weighting of the test-like merge, P5 in E49's merged form, a restored void
+    condition and two pronouns for the captain); the specification's author then ruled, in two rounds, on the points
+    its texts had left open (the control's reproduction guard, the gate record and its rerun, P7's set and weighting,
+    refusals, void against STOP, a failure before the run step, what follows a void), choosing the reading stricter
+    for the candidate where no source settled it; the writer folded the rulings in word for word.
+  - **What the row fixes.** Three counted embryo tries when the run step starts (89 to 91): the arm
+    `fgw_shape0x_ov_sr` and its placebos `fgw_shape0x_ov_sr_anti` and `fgw_shape0x_ov_sr_axes`, against the control O
+    rescored and not counted, on the nine practice tasks, ten seeds. All eight clauses of the pass rule must hold (P1,
+    P1b and P2 to P7). The labels: diagnostic (J5), selected on the same nine tasks, no J8 use. A pass leads only to
+    one priced naming question to the captain; a stop or a void leaves the embryo's files as they are.
+  - **The J7 dry run the author asked for before placement.** The target-free gate was run a second time at commit
+    d145d78 in the same checkout (run g2): the largest absolute change of g between the two runs over all 100
+    pair-seeds is 0.0, within the 1e-9 the row fixes for the read's recompute.
+  - **Committed with the row:** the gate's record of run g1 under `experiments/coords/results/osr_gate_g1/`
+    (gate.json, sha256 7c0fc6b63980..., which the row quotes in full, the ten per-pair files and gate.txt):
+    target-free figures only.
+  - **Not yet:** the code is on branch `campaign/emb-osr` with an engineer blind to test scores and is merged only
+    after an independent review; nothing has been read against a practice target; no try is counted. The embryo's
+    running count stays 88 until the run step starts.
+- 2026-11-24 (m), the captain orders the heart's third and fourth search lines and CHIPQ-C (state at 02:08 UTC,
+  2026-11-24). Written by the AI assistant, which is recused on the heart's scope and size, designed none of the three
+  and states no preference; its readings are labelled.
+  - **The captain's message, in full.** Under a side note headed 'Extra outside data is not our limit', whose last
+    point listed three orders 'waiting on your exact words (default no)', the captain's own line reads: '"run
+    CHIPQ-C", an outside-data long shot (about 2% odds, 14–18 hours); and two further heart options: "yes to TS15 and
+    TS20", "yes to OTS15"'. **The AI assistant's reading:** a forwarded note orders nothing by itself; here the
+    captain's own line repeats the three phrases that entries (b) and (g) named as the orders, so all three are
+    ordered. The captain can say otherwise; nothing of any of the three is uploaded without the captain, and each has
+    its own stop before a file (a practice read for each heart line, a database gate and a practice read for CHIPQ-C).
+  - **The heart's third search line is in force (ruling row R31).** Files TS15 and TS20: the full trim C with the
+    trend step at strength 1.5 and 2.0, nothing else changed. The first line's cap is lifted for these two files only
+    and the exception on the heart's scope and size is named for them. The rule text is entry (g)'s, verbatim, now an
+    amendment in `docs/S2_RULES.md` (re-pinned). Order of work, as the text fixes it: this row and the text; a
+    practice row committed before its run (row H28's script with strengths 1.5 and 2.0 and a placebo of each; eight
+    counted heart tries) and its read; the builder option only for a strength the read does not stop; identity builds;
+    each file built twice with one sha256 by 2026-11-25 12:00 UTC. Upload rule: the line starts only if TS10's
+    headline is strictly above TS05's; TS20 only if TS15's is strictly above the line's best.
+  - **The heart's fourth search line is in force (ruling row R32).** One file, OTS15: the organ cut D with the trend
+    step at strength 1.5, nothing else changed. The second line's cap is lifted for this one file only and the
+    exception is named for it. Rule text as entry (g), now an amendment in `docs/S2_RULES.md`. Order of work: this row
+    and the text; a practice row committed before its run (a new script joining row H28's arms to row H29b's D_f form;
+    eight counted heart tries) and its read; the builder option only if the read does not stop; identity builds; the
+    file built twice with one sha256 by 2026-11-25 12:00 UTC. Upload rule: only if OTS10's headline is strictly above
+    OTS05's (and OTS10 goes only if OTS05's is strictly above D's).
+  - **The validity conditions of both texts, checked at this commit.** No heart headline beyond the six of entry
+    2026-11-23 (gg) (the first upload, K2, K1, C, TS05, D) has reached the main session; no code, practice read or
+    build of either line exists; rows R31 and R32 and both texts are in the log with this commit.
+  - **CHIPQ-C is started (T3; entry (b) holds the analyst's text and its committed odds: about 0.02 end to end, 14 to
+    18 hours).** What starts now: a cold challenger blind to test scores attacks the candidate and writes its
+    corrected specification, its database-only gate and its practice read; the database-only gate is run on the real
+    database before any downstream engineering; a new practice row is placed before any read of a fold. **One point
+    the order meets, which the AI assistant puts to the captain as one question:** row K27's outcome cell ends 'By
+    this row the candidate is not rerun under another row and no further size, weight, sign or query of this database
+    is read on this fold'. CHIPQ-C reads a further query of that database (the partners' bound set) on that fold, so
+    it cannot run without that sentence being lifted for it. The sentence is the team's own, not the organisers'. No
+    fold is read under CHIPQ-C before the captain has answered that question. As the analyst wrote, any file would
+    still need the captain's provenance and A15 rulings.
+  - **What does not change.** Every other line's rule and order; the files handed over; the heart's first and second
+    lines, which still end at TS10 and OTS10; the pathway tier, which stays out; the closed levers; the bulk approval
+    of outside data, which stands recorded and by two independent rounds buys nothing inside the organisers' rules.
+- 2026-11-24 (n), the captain lifts row K27's stop for CHIPQ-C, states a new upload allowance of 20 uploads over two
+  days, and orders the widest effort (state at 02:25 UTC, 2026-11-24). Written by the AI assistant; its readings are
+  labelled.
+  - **The captain's message, in full, the one figure withheld:** '"lift K27's stop for CHIPQ-C" if it improves our
+    scores and also remember that today and tomorrow we have 20 uploads to submit [quota lifted]. /ambition-lift So go
+    ahead and do whatever it takes to lit our scores to [a target figure for the Overall score, not written here]'.
+    The figure is a target for the Overall score; like the four target figures of an earlier message it is not written
+    into the repository.
+  - **Row K27's stop is lifted for CHIPQ-C (ruling row R33).** The answer to the one question of entry (m). The AI
+    assistant's reading of 'if it improves our scores', its own: the lift changes no file and cannot lower a board's
+    mark; whether the candidate can raise it is what its database gate and its practice read are for; the committed
+    odds stay the analyst's, about 0.02 end to end. So the sentence is lifted for this one candidate and bars
+    everything else as before; a file still comes only through the gate, the pass rule of a new practice row and the
+    captain's naming with the provenance and A15 rulings.
+  - **The upload allowance (ruling row R34).** 20 uploads over 24 and 25 Nov, no cap per board, on the captain's word;
+    the AI assistant has not opened the challenge site and takes the figure as the team's own allowance. The search
+    framework's clause (5) and each line's 'two uploads a board a day' sentence follow it; every condition, every stop
+    rule, 'named before its own score', 'nothing rebuilt after a score', headline-only comparison, the closed levers
+    and the build cut-off of 2026-11-25 12:00 UTC stand. The upload sheet is re-cut: nine files are due now (T1: B25,
+    Cm20; T3: K23 and the second search's file; embryo: its three; heart: TS10, OTS05), seven wait on one reported
+    score each, three T1 files stand last, and up to five are in work.
+  - **'Do whatever it takes' (the captain invoked the ambition skill).** The AI assistant's reading, its own: this
+    widens the effort and lifts no rule. The organisers' data rules, the never-open list, 'scores choose, never
+    compute', the closed levers with their named exception per file, the pathway tier's exclusion and the AI
+    assistant's recusals stand. **What the record says of the target, stated once:** no file waiting or in work is
+    priced by its practice row at more than about two board points at the top of its range, the ledger's central
+    figure for most is zero (rule J6), and all of them together at the top of their ranges come to a few points of the
+    Overall score; the target lies far beyond that. The AI assistant works as if more were reachable, raises no
+    estimate because a target is set, and reports what the board returns.
+  - **What the wider effort is, as of this entry.** The upload plan above, so that no upload of the allowance goes
+    unused; the four candidates in work (the heart's third and fourth lines, the embryo's overlay with one stretch,
+    CHIPQ-C), each through its own row, review and read; and one more design round for T1 by analysts blind to test
+    scores, asked whether the larger allowance admits further search steps. T3's line on its best file's command is
+    not asked for again (a safety classifier stopped that text on 2026-11-24, entry (b)); the heart's and the embryo's
+    designers reported hours ago and nothing they were given has changed but the allowance, which the captain's orders
+    on the heart's caps already used.

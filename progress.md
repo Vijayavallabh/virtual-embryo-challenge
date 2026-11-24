@@ -2,6 +2,14 @@
 
 ## Current State
 
+- **2026-11-24, 01:50 UTC.** The captain kept the combined momentum file and A15 after all; they stand last in T1's
+  order. T1's fifth search line is built and handed over (`T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`; all eleven
+  identity rebuilds matched, each new file built twice with one sha256), recorded before any score. The embryo's
+  long-shot candidate (the overlay file with one stretch) passed its target-free gate; its ledger row E55 was written,
+  checked cold, completed by the author's rulings and placed after a second gate run reproduced the first exactly; its
+  code is written and under independent review; nothing has been read against a practice target and no try is counted.
+  Decision log 2026-11-24 (i) to (l).
+
 - **2026-11-24, 00:45 UTC.** The stronger T3 file was coded, reviewed, built twice with one sha256 and handed to the
   captain (`T3_c1_s2_g2.h5ad`). T1's fifth search line was coded, reviewed and merged, and its build runs on the DGX.
   On the captain's order a design round ran for the heart and the embryo: the heart gave two search-line texts that

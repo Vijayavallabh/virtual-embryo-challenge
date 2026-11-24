@@ -1,0 +1,26 @@
+{
+ "verdict": "PASS",
+ "stopped_by": [],
+ "why": {},
+ "not_evaluable": {},
+ "median_g": {
+  "test": 0.038257023777726246,
+  "half": 0.03126969852624148,
+  "late": 0.07401345839564585,
+  "new1": 0.012039732161322682,
+  "new2": 0.046011356337878714,
+  "e75": 0.007823573474555695,
+  "e725": 0.014387253766069731,
+  "x1": 0.09772022399175259,
+  "x2": 0.10371149909282626,
+  "x3": 0.16179777648710408
+ },
+ "commits": [
+  "d145d7882e4113b450c643a5c23ca225f7c57ff0"
+ ],
+ "reported_only": {
+  "test_abs_median_g_inside_test_like_range": true,
+  "statement": "If the test-pair |median g| lies outside the range of the four test-like tasks' |median g|, any practice gain is shown at the test as a range from zero."
+ },
+ "script": "experiments/coords/osr_gate.py"
+}

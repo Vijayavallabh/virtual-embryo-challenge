@@ -1,0 +1,14 @@
+OSR gate: PASS
+median g per pair:
+  test  +0.0383
+  half  +0.0313
+  late  +0.0740
+  new1  +0.0120
+  new2  +0.0460
+  e75   +0.0078
+  e725  +0.0144
+  x1    +0.0977
+  x2    +0.1037
+  x3    +0.1618
+reported only, deciding nothing: test-pair |median g| inside the test-like range: True
+  If the test-pair |median g| lies outside the range of the four test-like tasks' |median g|, any practice gain is shown at the test as a range from zero.
