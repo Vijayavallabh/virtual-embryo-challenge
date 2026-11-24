@@ -13917,3 +13917,14 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     **`T3_c2_s2_gonly_s067.h5ad`** f744f5dc7d0e...; **`T3_c2_s2_s067.h5ad`** 808700e11c25... (full sha256 in the rules
     note and `experiments/builds/results/t3gonly_466e94d_g1.txt`).
   - **Their standing.** Due now: the gonly pair goes up together; s067 whatever the pair reads.
+- 2026-11-24 (aaa), the captain reports two more headlines and each board's rule is applied by its letter (state at
+  19:35 UTC, 2026-11-24). Written by the AI assistant, which records the headlines only.
+  - **The paste (headlines, each with its file named for its board):** T1:test `T1_s2rcCm30.h5ad` 72.18 (shown as
+    submitted 2026-11-24 19:29); T3:bcatenin `T3_c2_s2_gonly.h5ad` 60.28 (19:32). Each file's sha256 on disk matches
+    its sheet row. The paste's per-metric lines, ranks and file sizes are not recorded or used.
+  - **Each rule by its letter.** Both scored below their boards' best, which stays (T1 the 2.5 file, T3 C2). Line 7 of
+    T1 ends with its one file. By row R47 the gonly pair goes up together, so `T3_c2_s2_gonly_s067.h5ad` stays due,
+    and `T3_c2_s2_s067.h5ad` is due whatever the pair reads. Standing unchanged: overall 202.445.
+  - **The main session's reading after the result, beyond the rule:** the full-size file of the Gata4-alone direction
+    scored well below C2, so its 0.67 twin, which moves less along the same direction, has little hope; the rule keeps
+    it due all the same.
