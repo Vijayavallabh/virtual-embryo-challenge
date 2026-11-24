@@ -12705,3 +12705,27 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Next.** An engineer and a reviewer, both blind to test scores and started through the route that relays nothing;
     the identity commands the text names on `~/v/vec-campaign-d`; each new file built twice with one sha256; the
     sha256 into this log before any score; all by 2026-11-25 12:00 UTC. Nothing is coded or built by this entry.
+- 2026-11-24 (d), the captain lifts the 5% guard of T3's second search line; its one file is to be built (state at
+  00:13 UTC, 2026-11-24). Written by the AI assistant, which designed neither the line nor its guard and states no
+  preference.
+  - **What the captain sent.** A side agent's note (the check that stopped the new T3 file is the team's own limit,
+    not the organisers'; the file had to keep its overall expression total within 5% and shifts it by 38%; C1 itself
+    shifts it by about 10%; nothing shows the stronger file would score higher, since C2 scored slightly above C1; the
+    main agent cannot propose a looser limit; 'If you want a version tried anyway, say so in the main session'), and
+    under it the captain's own words, verbatim: "[loosen it all the way]".
+  - **The AI assistant's reading (its own).** The words are the captain's own order on one named limit of the team's:
+    the 5% guard of T3's second search line is lifted entirely for that line's one file. Nothing else of the line
+    changes: C1's command with `--gata4-exponent 2.0 --captain-ruling R22`, the factor phi_M * phi_G ** 2 with nothing
+    rescaled or clipped, one new file `T3_c1_s2_g2.h5ad`, the line ending at it, its place after row K23's file and
+    the two conditional files. The guard's figures are still computed and recorded, and the check that the factor
+    applied is the factor computed stays. The order touches no rule of the organisers and no closed lever: the file
+    was named with its command and value in entry 2026-11-23 (ff), before any score of it.
+  - **What it sets aside.** Entry 2026-11-24 (a) recorded that the line ended at its guard. Its figures stand (38.2%
+    at weight 2; 10.4% at weight 1); the line's end is set aside by this order.
+  - **Recorded.** Ruling row R30; an amendment in `docs/S2_RULES.md` (re-pinned). Row R22's first cell already names
+    the option.
+  - **Next.** An engineer and a reviewer, both blind to test scores and started through the route that relays nothing;
+    before that, the cheap checks that can still stop the file are run first this time: a rehearsal of the existing
+    launcher on the DGX campaign checkout, to see that the four identity forms still rebuild their recorded bytes
+    there. Then the file built twice with one sha256, its sha256 into this log before any score, and the hand-over.
+    All by 2026-11-25 12:00 UTC.

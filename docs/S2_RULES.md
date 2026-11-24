@@ -2589,3 +2589,20 @@ file's command (the atlas step at 2.0 times the calendar fraction) g_mom's dampi
 2.0 that was uploaded were tried, names any file built and not uploaded, and says that the best headline was kept.
 Data used: as R13's file (released challenge data and the outside heart atlas on recomputed groups, register row
 X002). Each upload is the captain's own act.
+
+## Amendment of 2026-11-24: the guard of T3's second search line gates nothing (row R30; the captain's order; decision log 2026-11-24 (d))
+
+The captain's words, verbatim: "[loosen it all the way]". They stood under a forwarded note which said that the 5%
+check that stopped the new T3 file is the team's own limit and not the organisers', that C1 itself shifts the total by
+about 10%, that nothing shows the stronger file would score higher (C2, the variant kept at the base's overall size,
+scored slightly above C1), and that a version would be tried only on the captain's word in the main session. The AI
+assistant reads the order as lifting that limit entirely for the one file of the line above ("T3's second search line,
+the Gata4-table weight on C1") and as changing nothing else: one new file, `T3_c1_s2_g2.h5ad`, the weight at 2, C1's
+command with `--gata4-exponent 2.0 --captain-ruling R22`, the line ending at that file. The guard's figures are still
+computed from released wild-type data and the two pinned tables and written to the build's record, and the check that
+the factor applied is the factor computed stays; no value of the figure stops the build. This sets aside the note of
+2026-11-24 above ("ended at its own guard") as to the line's end: the figures it reports stand. The file takes the
+place the line's text gives it, after row K23's file, CK on its condition and the E = 4 file on its condition, unless
+the captain says otherwise. The AI assistant, which designed neither the line nor its guard, states no preference.
+Committed at 00:13 UTC on 2026-11-24, before any code of the option is merged and before any build; no score of the
+file exists.
