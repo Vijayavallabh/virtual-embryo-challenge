@@ -2647,3 +2647,20 @@ line 3's, then line 5's, and one of the three takes a slot only when none of tho
 file before A15, so that no slot goes unused. Line 2 lives again with its rule unchanged. **What does not change:**
 every line's condition; no comparison of lines 1, 3 or 5 uses a headline of the three files. The captain may place any
 of them elsewhere, their earlier places included (the combined file first, A15 before line 3's file).
+
+## Note of 2026-11-24: the two files of T1's search line on the 2.0 file's command are built (row R22; decision log 2026-11-24 (k))
+
+The five conditions of the amendment "T1's search line on the 2.0 file's command" now hold. The builder takes
+`--g-mom-damping 1.5 --feng-fraction-mult 2.0` and `--g-mom-damping 2.0 --feng-fraction-mult 2.0` only with
+`--captain-ruling R22` and only while row R22's first cell names the combined option (merged at 7e7d9a6); an
+independent reviewer passed the change with no blocker, comparing the old and the new routing on every existing option
+set; at that one clean commit, on `~/v/vec-campaign-d`, the eleven identity commands rebuilt R13's, A's, B's, C's, the
+2.0 file's, T1_s2rcB25's, T1_s2rcA15's, T1_s2rcA20's, T1_s2rcCm20's, MS's and T1_s2rcMSB's recorded bytes; after the
+launcher's refusal path had been traced, each new file was built twice there with one sha256 and passed the format
+check. **The files:** `runs/manual_upload/T1_s2rcB2d15.h5ad`, sha256
+fe4e7403d6257cc265a02d0a13d40cdb60a97e9fdc0647d6b5c7e318aedaed6c, and `runs/manual_upload/T1_s2rcB2d20.h5ad`, sha256
+bd12c66312ba32ab938b4ee71bd5c79e58a154d6fc56434012e6dad907e668dd (build record
+`experiments/builds/results/t1b2dline_7e7d9a6_b1.txt`). These sha256 are the ones the amendment's fifth condition asks
+for, added before any score of either file; no T1 headline beyond the six of decision log 2026-11-23 (gg) had reached
+the main session at this note's commit. Data used: as R13's file (released challenge data and the outside heart atlas
+on recomputed groups, register row X002).

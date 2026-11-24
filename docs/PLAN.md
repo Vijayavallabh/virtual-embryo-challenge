@@ -13154,3 +13154,24 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     to the captain. The challenger wrote that the rest is worth doing only if no Task 1 or Task 3 line competes for
     the same review hours; both lines are coded and reviewed, so the row is started now. No file, order or queue
     changes by this entry.
+- 2026-11-24 (k), the two files of T1's search line on the 2.0 file's command are built, before any score of them
+  (state at 01:42 UTC, 2026-11-24). Written by the AI assistant, which designed none of the line and states no
+  preference on the candidate.
+  - **The code.** An engineer blind to test scores wrote the option pair and the launcher on branch
+    `campaign/t1-line5`; a reviewer blind to test scores, with the blocker standard fixed in its brief, returned READY
+    with no blocker: it ran the old and the new builder side by side on 14,112 argument sets against four synthetic
+    ledgers and found the routing equal everywhere but on the two new pairs, which are taken only under
+    `--captain-ruling R22` with nothing else added and only while row R22's first cell names the combined option.
+    Declared and judged harmless: three pinned refusal messages in two existing tests were updated; the record text
+    names 'T1 line 5' without this log's label (no code changed after the review). Merged at 7e7d9a6.
+  - **The build.** `experiments/builds/t1_b2d_line.sh 7e7d9a6... b1` in the detached worktree `~/v/scratch/t1line-wt`
+    of `~/v/vec-campaign-d`, clean tree, after its refusal path had been traced under a throwaway home folder (exit
+    96, record written): every exit record 0; the eleven identity commands gave the recorded bytes; each new file was
+    built twice with one sha256, each stamp of that commit and clean. **`runs/manual_upload/T1_s2rcB2d15.h5ad`, sha256
+    fe4e7403d6257cc265a02d0a13d40cdb60a97e9fdc0647d6b5c7e318aedaed6c; `runs/manual_upload/T1_s2rcB2d20.h5ad`, sha256
+    bd12c66312ba32ab938b4ee71bd5c79e58a154d6fc56434012e6dad907e668dd** (local copies checked against both builds;
+    record `experiments/builds/results/t1b2dline_7e7d9a6_b1.txt`). No log, size or sidecar was read.
+  - **Their standing.** In force under row R22 (entry (c)); named with command and value there and with their sha256
+    here, before any score and before any T1 headline beyond the six of entry 2026-11-23 (gg). B2d15 goes only if
+    Cm20's headline is strictly above the 2.0 file's; B2d20 only if B2d15's is strictly above the line's best. The
+    upload sheet and the rules note carry them.

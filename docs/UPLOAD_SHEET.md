@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-24, 00:46 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-24, 01:42 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 this sheet was written. No file here has a score. The order is the order on record in `docs/S2_RULES.md` and the
@@ -22,10 +22,10 @@ Each slot takes the due file of the first search, then of the third, then of the
 once the score its condition needs has been reported. The two ready search files are each one step from the 2.0 file,
 which holds the board's best: `T1_s2rcB25.h5ad` (the atlas step one notch stronger) and `T1_s2rcCm20.h5ad` (the same
 atlas step with g_mom's damping at 1.0 instead of 0.5). The fifth search's two files (`T1_s2rcB2d15.h5ad`,
-`T1_s2rcB2d20.h5ad`) are being built and are not in the table yet; the first would go only if `T1_s2rcCm20.h5ad`
-scores strictly above the 2.0 file. The three files marked 'kept, last' were skipped and then kept by the captain's
-words of 2026-11-24: by the main session's reading of those words they take a slot only when no search file is due, so
-that no slot goes unused; the captain may place them anywhere.
+`T1_s2rcB2d20.h5ad`: g_mom's damping at 1.5 and 2.0 on the 2.0 file's command) are built; the first goes only if
+`T1_s2rcCm20.h5ad` scores strictly above the 2.0 file. The three files marked 'kept, last' were skipped and then kept
+by the captain's words of 2026-11-24: by the main session's reading of those words they take a slot only when no
+search file is due, so that no slot goes unused; the captain may place them anywhere.
 
 | Order | File | sha256 | Condition |
 |---|---|---|---|
@@ -33,6 +33,8 @@ that no slot goes unused; the captain may place them anywhere.
 | first search | `T1_s2rcB30.h5ad` | `b639de29bd13d7005450ca53e7cd3dacb2e362a55beca8545937858e6582a024` | only if the 2.5 file scores strictly above the 2.0 file (`T1_s2rcB2.h5ad`) |
 | third search | `T1_s2rcCm20.h5ad` | `acce5f5f7097269bffebbfd583833e4c9c1c5ae77f1d5294dde6d13e197f863e` | none (its condition is met: C scored strictly above A) |
 | third search | `T1_s2rcCm25.h5ad` | `c5fb96a64075b6fbfb2f3066604d622ea8b89ac3a5e4f8a99d0fea7d93011dfd` | only if Cm20 scores strictly above C |
+| fifth search | `T1_s2rcB2d15.h5ad` | `fe4e7403d6257cc265a02d0a13d40cdb60a97e9fdc0647d6b5c7e318aedaed6c` | only if Cm20 scores strictly above the 2.0 file (`T1_s2rcB2.h5ad`) |
+| fifth search | `T1_s2rcB2d20.h5ad` | `bd12c66312ba32ab938b4ee71bd5c79e58a154d6fc56434012e6dad907e668dd` | only if B2d15 scores strictly above the higher of the 2.0 file and Cm20 |
 | kept, last | `T1_s2rcMSB.h5ad` (combined momentum) | `78bb17eea5721e590cfd2c9f707e9cd6f2f496e081acede4f697dc4035871da2` | none; it takes a slot only when no search file above is due |
 | kept, last | `T1_s2rcA15.h5ad` (the second search's file) | `e2334137b54d98b04e9dece90213987e61fe9aa15a3fb8d85e6c262d8fb5ba75` | none (its condition is met); it takes a slot only when no file above is due |
 | kept, last | `T1_s2rcA20.h5ad` | `372713686782be273a52427140eab652517e35b679f54fc2a969484dee730218` | only if A15 scores strictly above A |
