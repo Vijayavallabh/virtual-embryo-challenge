@@ -1,0 +1,10 @@
+OUTCOME Try K28: STOP at G0: the database bars are not met; no fold read, no try, no file.
+tries counted: 0
+stopped at step g0a of gate G0 (database files only: no fold, no barred factor, no score)
+G0a: classes excluded by class (vi): 4
+G0a Ctnnb1: usable experiments in its class: 0; candidates: 0
+G0a Gata4: usable experiments in its class: 6; candidates: 3
+bars: a1, 2 or more usable experiments in the query's class; a2, 11 or more candidates in that class
+bars met: Ctnnb1 a1 no, a2 no; Gata4 a1 yes, a2 no
+kept list f0f3f1bf8000294412299830eccfc775ac4ca052c7a9019c0ab746409d170215; fetch manifest f1782a0ccd36ea4d3d4a78bb695e54f2486c6d01ff56fac5b47062d569c9ed10
+read by experiments/t3_decomp/k28_chip_partners.py 7ca0c79f9828 (chipq_partners d9d970742343, chipq 8bdba91d0768, chipq_fetch f41ff076f634) at commit a2a2ec3c042cf12e3444ae376d8aee6b0f9bd764, clean True, machine p01r10srv05

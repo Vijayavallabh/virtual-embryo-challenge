@@ -13644,3 +13644,16 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Next:** the gate's code (branch `campaign/t3-chipqc-2`) is merged only after its reviewer passes the change;
     then the database-only gate G0a runs on the DGX. It reads no fold and counts no try; the challenger gave it about
     0.85 to stop the candidate.
+- 2026-11-24 (ff), CHIPQ-C stops at its database gate: no fold read, no try, no file (state at 06:04 UTC, 2026-11-24).
+  Written by the AI assistant.
+  - **The gate.** Its code reviewed READY on another model after one round of fixes (the whole register text; class
+    (vi) counted two ways), merged at a2a2ec3; run once on the DGX after a traced refusal: "Try K28: STOP at G0: the
+    database bars are not met; no fold read, no try, no file." The test's query has no usable experiment in a class
+    that is not excluded, and neither query has the eleven candidates bar a2 asks for. The challenger had given the
+    gate about 0.85 to stop the candidate here.
+  - **What it closes.** Row K28 and the candidate: no rerun under another row, no changed bar or source; ruling row
+    R33's lift of row K27's closing sentence is spent. Nothing was counted; T3's running count stays 75.
+  - **A slip of the AI assistant's, recorded.** The merge chain of a2a2ec3 piped a guard test through `tail`, which
+    hid its failure: the step-script guard failed because the H34 merge (2b4989c) had added a test file that names the
+    builder without listing it in `experiments/external/n54_step.sh`. The push went through; the list was fixed at
+    2dca92c, where the guard passes. Nothing that ran used that list.

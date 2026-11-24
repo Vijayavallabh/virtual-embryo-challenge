@@ -1,0 +1,98 @@
+{
+ "outcome": "Try K28: STOP at G0: the database bars are not met; no fold read, no try, no file.",
+ "stop": "G0",
+ "step": "g0a",
+ "passes": false,
+ "tries_counted": 0,
+ "row": "K28",
+ "candidate": "CHIPQ-C",
+ "register_row": "X018",
+ "g0a": {
+  "classes_excluded": 4,
+  "queries": {
+   "Ctnnb1": {
+    "usable_in_class": 0,
+    "candidates": 0,
+    "a1": false,
+    "a2": false
+   },
+   "Gata4": {
+    "usable_in_class": 6,
+    "candidates": 3,
+    "a1": true,
+    "a2": false
+   }
+  },
+  "passes": false
+ },
+ "bars": {
+  "a1_min_usable_in_class": 2,
+  "a2_min_candidates": 11
+ },
+ "readings": {
+  "MIN_BOUND_GENES": 200,
+  "QUERY_MIN_USABLE": 2,
+  "CANDIDATE_MIN_USABLE": 3,
+  "MIN_CANDIDATES": 11,
+  "CANDIDATE_EXCLUDE": [
+   "Ctnnb1",
+   "Gata4",
+   "Gata6",
+   "Mab21l2"
+  ],
+  "CLASS_V_WORDS": [
+   "carcinoma",
+   "sarcoma",
+   "lymphoma",
+   "leukemia",
+   "leukaemia",
+   "myeloma",
+   "melanoma",
+   "glioma",
+   "blastoma",
+   "adenoma",
+   "tumor",
+   "tumour",
+   "cancer",
+   "neoplas",
+   "malignan",
+   "metasta",
+   "transform",
+   "immortal"
+  ],
+  "CLASS_VI_ENTRIES": [
+   15,
+   17,
+   18,
+   19,
+   20
+  ],
+  "CLASS_VI_SHARE": [
+   5,
+   100
+  ],
+  "CLASS_VI_ROWS": [
+   "analysis list",
+   "manifest"
+  ],
+  "CLASS_VI_EXCLUDED_BY": "either count",
+  "CLASS_VI_NAMED": [
+   "Unclassified",
+   "No description",
+   "Others"
+  ],
+  "CLASS_FIELD": "Cell type class"
+ },
+ "kept_sha256": "f0f3f1bf8000294412299830eccfc775ac4ca052c7a9019c0ab746409d170215",
+ "fetch_manifest_sha256": "f1782a0ccd36ea4d3d4a78bb695e54f2486c6d01ff56fac5b47062d569c9ed10",
+ "reading_code": {
+  "script": "experiments/t3_decomp/k28_chip_partners.py",
+  "script_sha256": "7ca0c79f98287ae1a23f166a713e58670ff74ca2e6908717c405c5f3b7f0431f",
+  "chipq_partners_sha256": "d9d970742343d3ae19b732e415cd325fed3fc7568843554671062585f2e8af56",
+  "chipq_sha256": "8bdba91d07689cca113834910aaa2be64d88a9e1f139da88c4e58d0fcfab5186",
+  "chipq_fetch_sha256": "f41ff076f6341671a42009b4f06b722e1cefd8e0e2919fe5575039067c8f03e7",
+  "commit": "a2a2ec3c042cf12e3444ae376d8aee6b0f9bd764",
+  "tree_clean": true,
+  "machine": "p01r10srv05"
+ }
+}
