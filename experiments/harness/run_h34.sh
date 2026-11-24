@@ -11,7 +11,8 @@
 # stops at the first step that does not exit 0. ~/v/scratch/h34/<RUN>/done.exit holds the word running from the start
 # and the call's exit code at its end: 0 only when every step exited 0, otherwise the failed step's code.
 #   check  HEAD is COMMIT, the tracked tree is clean, the script is here (the checkout's root), TRIES.md holds a row
-#          H34, no reading exists yet, the output folder is new; then it writes the head file
+#          H34, no reading exists yet, the virtual environment and the T2 stages are where they are said to be, the
+#          output folder is new; then it writes the head file
 #   tests  the unit tests of the script and of this launcher, and rows H29b's and H27's (synthetic arrays, hand-made
 #          tables and throwaway repositories only), into tests.log
 #   gate   first, and not a try: the control D_f alone built and scored, held against row H29b's committed reading bit
@@ -32,9 +33,9 @@
 # 8 BLAS threads a process, NUMPY_MADVISE_HUGEPAGE=0, TMPDIR under the run's scratch folder. Nothing here deletes or
 # sends anything.
 # Exit codes of the launcher's own refusals: 90 odd RUN, 91 the run folder exists, 92 the output folder exists, 93 no
-# row H34 in TRIES.md, 94 not the checkout's root, 95 a reading exists, 96 HEAD is not COMMIT, 98 tracked tree not
-# clean. Otherwise the failed step's own code: tests (pytest's), gate (3 FAIL; anything else an error), run (1: a
-# part failed or wrote no file), read.
+# row H34 in TRIES.md, 94 not the checkout's root, 95 a reading exists, 96 HEAD is not COMMIT, 97 no T2 stages in the
+# data folder, 98 tracked tree not clean, 99 no virtual environment. Otherwise the failed step's own code: tests
+# (pytest's), gate (3 FAIL; anything else an error), run (1: a part failed or wrote no file), read.
 set -u
 COMMIT=${1:?usage: run_h34.sh COMMIT RUN}
 RUN=${2:?usage: run_h34.sh COMMIT RUN}
@@ -68,6 +69,12 @@ if [ -e "$OUT/reading.json" ] || [ -e "$OUT/reading.txt" ]; then
   echo "refused: $OUT already holds a reading" >&2
   finish 95
 fi
+VENV=${H34_VENV:-$PWD/.venv}
+[ -x "$VENV/bin/python" ] \
+  || { echo "refused: no virtual environment at $VENV (name one with H34_VENV)" >&2; finish 99; }
+DATA=${H34_DATA:-data/raw}
+[ -d "$DATA/T2" ] \
+  || { echo "refused: no T2 stages under $DATA (name the data folder with H34_DATA)" >&2; finish 97; }
 R=runs/h34_${head:0:7}_$RUN
 mkdir -p runs
 mkdir "$R" 2> /dev/null || { echo "refused: the output folder $R exists" >&2; finish 92; }
@@ -76,7 +83,7 @@ echo "$R" > "$S/output"
 step_ok
 
 export OMP_NUM_THREADS=8 OPENBLAS_NUM_THREADS=8 MKL_NUM_THREADS=8 NUMPY_MADVISE_HUGEPAGE=0 TMPDIR="$S/tmp"
-export UV_PROJECT_ENVIRONMENT="${H34_VENV:-$PWD/.venv}"
+export UV_PROJECT_ENVIRONMENT="$VENV"
 PY="uv run --frozen --no-sync python -I -B"
 DATA_ARGS=()
 if [ -n "${H34_DATA:-}" ]; then DATA_ARGS=(--data "$H34_DATA"); fi

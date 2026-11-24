@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import ast
 import copy
+import hashlib
 import importlib.util
 import inspect
 import json
@@ -115,7 +116,9 @@ def test_the_fixed_constants_and_names(h34):
     assert h34.BUILT == ("control", *h34.COUNTED) and h34.ALL == ("floor", *h34.BUILT)
     assert h34.PERM_SEED == 20261120 and h34.BAR == 0.3 and h34.MIN_SEEDS == 8
     assert h34.PRACTICE_BUDGET == {KEY1: 0.375, KEY2: 0.125} and h34.FILE == "OTS15" and h34.RULING_ROW == "R32"
-    assert h34.GATE_EXIT == {"PASS": 0, "FAIL": 3} and h34.FACTOR_LOG_TOL == 1e-12
+    assert h34.GATE_EXIT == {"PASS": 0, "FAIL": 3} and h34.TOL == 1e-9 and h34.FACTOR_RTOL == 1e-12
+    assert re.fullmatch(r"[0-9a-f]{64}", h34.H29B_READING_SHA256)
+    assert h34.H29B_READING == REPO_ROOT / "experiments" / "harness" / "results" / "h29b_heart_organ" / "reading.json"
     assert h34.RULE_PAIRS == (("trend_s1.5", "trend_s1.0"), ("trend_s1.5", "control"))
     assert [w for w, _ in h34.G1_WORLDS] == ["own", "CLEAN", "truth own", "truth radial_0", "truth thin_0.5",
                                               "truth thin_0"]
@@ -159,9 +162,11 @@ def test_vec_is_this_checkouts_own(h34):
 def test_the_script_names_no_test_stage_and_reads_no_test_score():
     src = SCRIPT.read_text()
     for bad in ("results/p3", "/p3", "size_heart_E12", "submissions", "leaderboard", "registry", "build_test",
-                "boards/", "upload", "12.5", "manual_uploads", "index.json", "test_extrap", "size_or_hold(",
-                "headline", "halve.py"):
+                "boards/", "12.5", "manual_uploads", "index.json", "test_extrap", "size_or_hold(", "headline",
+                "halve.py"):
         assert bad not in src, bad
+    # the one word of the test stage is in the row's fixed what-follows sentence: "NOT STOPPED uploads nothing"
+    assert src.count("upload") == 1 and "NOT STOPPED uploads nothing" in src
 
 
 # ------------------------------------------------------------------------------------------------ the arms (synthetic)
@@ -241,69 +246,76 @@ def test_with_the_trend_switched_off_the_arms_cells_and_counts_are_the_controls(
 
 
 # ------------------------------------------------------------------------------------------------ the gate's G2
-def test_the_gate_reads_the_steps_factors_and_builds_no_arm(h34, dform, monkeypatch):
-    _, _, rows, rec = h34.h28.trend_expression(dform.ctx(), 1.0)
-    fallback, shifted = rec["fallback"], rec["shifted"]
-    assert fallback == ["Tiny"] and rec["n_trend"] == 2  # the mapping's two lineages and one through the damping
-    own = t1_scope.apply_factors
+def test_the_gate_reads_the_steps_arguments_and_builds_no_arm(h34, dform, monkeypatch):
+    _, _, _, rec = h34.h28.trend_expression(dform.ctx(), 1.0)
+    assert rec["fallback"] == ["Tiny"] and rec["n_trend"] == 2  # the mapping's two lineages; one through the damping
+    own = t1_scope.momentum_shift
+    pool, rows, _, _ = harness.draw_copy(dform.ctx())
 
     def boom(*a, **k):
-        raise AssertionError("an arm was built")
-    monkeypatch.setattr(harness, "finish", boom)  # the step never reaches the stage: no count changes
-    f1, f15 = h34.step_factors(dform.ctx(), 1.0), h34.step_factors(dform.ctx(), 1.5)
-    assert t1_scope.apply_factors is own
-    pool = dform.inputs["ref"]
+        raise AssertionError("a count was touched or an arm was built")
+    monkeypatch.setattr(t1_scope, "apply_factors", boom)  # the step is stopped before any count is touched
+    monkeypatch.setattr(harness, "finish", boom)  # and it never reaches a stage: no arm is built
+    lo, hi = h34.step_arguments(dform.ctx(), 1.0), h34.step_arguments(dform.ctx(), 1.5)
+    assert t1_scope.momentum_shift is own
+    (d_lo, m_lo), (d_hi, m_hi) = lo, hi
+    assert (d_lo, d_hi) == (harness.B0_DAMPING, 1.5 * harness.B0_DAMPING) == (0.5, 0.75)
+    assert sorted(m_lo) == sorted(m_hi) == ["CM", "Endothelial"]  # Tiny is left to the damping
+    # the vectors are the harness's own b0_trend factors on D's context: the input stages and the draw only
     merged = np.asarray(pool.obs["merged"]).astype(str)[rows]
     types = sorted(set(np.where(merged == "Untracked", "Untracked@end", merged)))
-    assert f1.shape == f15.shape == (len(types), len(dform.mod.GENES))
-    moved = [t for t, row in zip(types, f1, strict=True) if not (row == 1.0).all()]
-    assert moved == shifted and "Untracked@end" not in moved
-    got = h34.factor_identity(f1, f15)
-    assert got["ok"] is True and got["why"] is None and got["max_abs_dev"] <= 1e-12 and got["ratio"] == 1.5
-    assert got["moved_types"] == 3 and got["max_abs_log_factor"] > 0.01
-    np.testing.assert_allclose(np.log(f15), 1.5 * np.log(f1), rtol=0, atol=1e-12)
-    # the factors are B0's and the trend's own: strength 1 hands apply_factors the harness's b0_trend factors
     logf, _ = harness.b0_trend_factors(dform.ctx(), list(pool.var_names), types)
-    for t in ("CM", "Endothelial"):
-        np.testing.assert_allclose(np.log(f1[types.index(t)]), logf[t], rtol=0, atol=1e-12)
-    # strength 1 against itself is not the identity of 1.5
-    assert h34.factor_identity(f1, f1)["ok"] is False
+    assert sorted(logf) == sorted(m_lo)
+    for k in m_lo:
+        np.testing.assert_array_equal(m_lo[k], logf[k])
+        np.testing.assert_array_equal(m_hi[k], 1.5 * logf[k])
+        assert m_lo[k].shape == (len(dform.mod.GENES),) and np.abs(m_lo[k]).max() > 0.01
+    assert h34.factor_identity(lo, hi) == {"ratio": 1.5, "lineages": ["CM", "Endothelial"], "damping": [0.5, 0.75],
+                                           "ok": True, "why": None}
+    assert h34.factor_identity(lo, lo)["ok"] is False  # strength 1 against itself is not the identity of 1.5
 
 
-def test_reading_the_factors_leaves_the_module_as_it_was_when_the_step_fails(h34, dform):
-    own = t1_scope.apply_factors
+def test_reading_the_arguments_leaves_the_module_as_it_was_when_the_step_fails(h34, dform):
+    own = t1_scope.momentum_shift
     two = dform.mod._view(inputs={"ref": "T2/E9.5.h5ad", "start": "T2/E8.75.h5ad"})  # b0_trend needs three stages
     with pytest.raises(ValueError, match="three input stages"):
-        h34.step_factors(dform.ctx(view=two), 1.0)
-    assert t1_scope.apply_factors is own
+        h34.step_arguments(dform.ctx(view=two), 1.0)
+    assert t1_scope.momentum_shift is own
 
 
-def test_the_factor_identity_by_hand(h34):
+def test_the_factor_identity_by_hand_exactly_and_with_no_tolerance(h34):
     rng = np.random.default_rng(0)
-    logf = rng.normal(0.0, 0.4, (4, 30))
-    logf[3] = 0.0  # a type the step does not shift
-    lo, hi = np.exp(logf), np.exp(1.5 * logf)
-    ok = h34.factor_identity(lo, hi)
-    assert ok["ok"] is True and ok["moved_types"] == 3 and ok["tol"] == 1e-12
-    clipped = h34.factor_identity(lo, np.exp(np.clip(1.5 * logf, -0.5, 0.5)))  # a clip breaks the scale
-    assert clipped["ok"] is False and "1.5 times" in clipped["why"]
-    off = 1.5 * logf.copy()
-    off[1, 7] += 1e-9
-    assert h34.factor_identity(lo, np.exp(off))["ok"] is False
-    off[1, 7] -= 1e-9 - 1e-14
-    assert h34.factor_identity(lo, np.exp(off))["ok"] is True
-    damping_only = 1.5 * logf.copy()
-    damping_only[2] = logf[2]  # one lineage left at strength 1 (a damping that did not scale)
-    assert h34.factor_identity(lo, np.exp(damping_only))["ok"] is False
-    assert h34.factor_identity(lo, hi[:3])["ok"] is False and "shape" in h34.factor_identity(lo, hi[:3])["why"]
-    assert h34.factor_identity(np.ones((0, 5)), np.ones((0, 5)))["ok"] is False
-    still = h34.factor_identity(np.ones((3, 5)), np.ones((3, 5)))
-    assert still["ok"] is False and "no factor moves" in still["why"]
-    for bad in (np.nan, 0.0, -1.0, np.inf):
-        x = hi.copy()
-        x[0, 0] = bad
-        assert h34.factor_identity(lo, x)["ok"] is False
-    assert h34.factor_identity(lo, np.exp(2.0 * logf), 2.0)["ok"] is True
+    m = {"CM": rng.normal(0.0, 0.4, 30), "Endothelial": rng.normal(0.0, 0.4, 30)}
+
+    def at(s, damping=0.5):
+        return damping * s, {k: s * v for k, v in m.items()}
+    ok = h34.factor_identity(at(1.0), at(1.5))
+    assert ok == {"ratio": 1.5, "lineages": ["CM", "Endothelial"], "damping": [0.5, 0.75], "ok": True, "why": None}
+    # one element one unit in the last place off: exactly means exactly
+    d, hi = at(1.5)
+    hi["CM"][7] = np.nextafter(hi["CM"][7], np.inf)
+    bad = h34.factor_identity(at(1.0), (d, hi))
+    assert bad["ok"] is False
+    assert bad["why"] == "the log-factor vectors of ['CM'] are not 1.5 times the lower strength's"
+    # a clip breaks the scale
+    assert h34.factor_identity(at(1.0), (0.75, {k: np.clip(1.5 * v, -0.5, 0.5) for k, v in m.items()}))["ok"] is False
+    # a damping that did not scale (the lineages the mapping leaves out would stay at strength 1)
+    bad = h34.factor_identity(at(1.0), (0.5, at(1.5)[1]))
+    assert bad["ok"] is False and bad["why"] == "the damping 0.5 is not 1.5 times the lower strength's 0.5"
+    assert h34.factor_identity(at(1.0), (float(np.nextafter(0.75, 1.0)), at(1.5)[1]))["ok"] is False
+    # a lineage in one mapping only; vectors of another length; a value that is not a number
+    only = h34.factor_identity(at(1.0), (0.75, {"CM": 1.5 * m["CM"]}))
+    assert only["ok"] is False and only["why"] == "the two strengths' mappings name different lineages"
+    assert h34.factor_identity(at(1.0), (0.75, {k: 1.5 * v[:20] for k, v in m.items()}))["ok"] is False
+    d, nan = at(1.5)
+    nan["Endothelial"][0] = np.nan
+    assert h34.factor_identity(at(1.0), (d, nan))["ok"] is False
+    # no lineage in the mapping: the damping alone is held
+    assert h34.factor_identity((0.5, {}), (0.75, {}))["ok"] is True
+    assert h34.factor_identity((0.5, {}), (0.5, {}))["ok"] is False
+    # another ratio
+    assert h34.factor_identity(at(1.0), at(2.0), 2.0)["ok"] is True
+    assert h34.factor_identity(at(1.0), at(2.0))["ok"] is False
 
 
 # ------------------------------------------------------------------------------------------------ the loader
@@ -504,8 +516,10 @@ def _read(h34, parts=None, committed="default", gate="default", commit=COMMIT, *
 
 
 NOT_STOPPED_LINES = ("Try H34: NOT STOPPED.",
-                     "A screen, not evidence of development. What follows: the builder option under ruling row R32 "
-                     "may be coded and reviewed.")
+                     "A screen, not evidence of development. What follows: step (3), the builder option under ruling "
+                     "row R32, is coded and reviewed, then the identity builds (step 4), then the file (step 5), each "
+                     "as the line's Build passage has it; NOT STOPPED uploads nothing, the file going in only under "
+                     "the line's Rule and on the captain's word at the time.")
 NOTHING_BUILT = "A screen, not evidence of development. What follows: nothing is built."
 GOOD = {HI: 0.6, LO: 0.4}  # 1.5 above 1 and ahead of the copy by the bar, in every seed and both worlds
 
@@ -515,9 +529,9 @@ def test_not_stopped_when_1_5_is_above_1_and_ahead_of_the_copy_in_both_worlds(h3
     res = _read(h34, score=GOOD)
     assert res["why"] == [] and res["void"] is False and res["outcome"] == "NOT STOPPED" and res["clauses"] == []
     st = res["statements"]
-    assert st["a_below"] == {"own": False, "CLEAN": False} and st["b_ahead"] == {"own": True, "CLEAN": True}
-    assert st["fires"] == {"a": False, "b": False} and st["stop"] is False
-    assert (res["line"], res["follows"]) == NOT_STOPPED_LINES
+    assert st["a_in_world"] == {"own": False, "CLEAN": False} and st["bar_met"] == {"own": True, "CLEAN": True}
+    assert st["holds"] == {"a": False, "b": False} and st["stop"] is False
+    assert (res["line"], res["follows"]) == NOT_STOPPED_LINES and res["notes"] == []
     for w in ("own", "CLEAN"):
         a = res["tables"][w]["fold E10.5"]["trend_s1.5 - trend_s1.0"]["score"]
         b = res["tables"][w]["fold E10.5"]["trend_s1.5 - control"]["score"]
@@ -539,33 +553,39 @@ def test_clause_a_a_mean_below_zero_with_eight_seeds_below_in_either_world(h34):
     up = np.full(10, 0.2)
     res = run(_dips(8), up)
     assert res["outcome"] == "STOPPED" and res["clauses"] == ["a"] and res["void"] is False
-    assert res["statements"]["a_below"] == {"own": True, "CLEAN": False}
-    assert res["statements"]["b_ahead"] == {"own": True, "CLEAN": True}
+    assert res["statements"]["a_in_world"] == {"own": True, "CLEAN": False}
+    assert res["statements"]["bar_met"] == {"own": True, "CLEAN": True}
+    assert res["statements"]["holds"] == {"a": True, "b": False}
     assert res["line"] == "Try H34: STOPPED (a): OTS15 is not built." and res["follows"] == NOTHING_BUILT
     s = res["tables"]["own"]["fold E10.5"]["trend_s1.5 - trend_s1.0"]["score"]
     assert s["mean"] == pytest.approx(-0.038) and s["behind"] == 8 and s["ahead"] == 2
-    assert run(up, _dips(8))["clauses"] == ["a"]  # EITHER world: CLEAN alone stops
-    assert run(up, _dips(8))["statements"]["a_below"] == {"own": False, "CLEAN": True}
+    assert run(up, _dips(8))["clauses"] == ["a"]  # in own or in CLEAN: CLEAN alone stops
+    assert run(up, _dips(8))["statements"]["a_in_world"] == {"own": False, "CLEAN": True}
     assert run(_dips(10), _dips(10))["clauses"] == ["a"]
     assert run(_dips(9), up)["clauses"] == ["a"]
     assert run(_dips(7), up)["outcome"] == "NOT STOPPED"  # the mean is below 0, but 7 of 10 seeds are not 8
     assert run(_dips(8, rise=1.0), up)["outcome"] == "NOT STOPPED"  # 8 seeds below, but the mean is above 0
-    assert run(np.zeros(10), up)["outcome"] == "NOT STOPPED"  # a tie is not below
+    # a difference of exactly 0 is neither above nor below 0
+    tie = run(np.zeros(10), up)
+    assert tie["outcome"] == "NOT STOPPED"
+    s = tie["tables"]["own"]["fold E10.5"]["trend_s1.5 - trend_s1.0"]["score"]
+    assert (s["mean"], s["ahead"], s["behind"]) == (0.0, 0, 0)
     assert run(up, up)["outcome"] == "NOT STOPPED"
 
 
-def test_clause_b_not_ahead_of_the_copy_by_the_s1_bar_in_both_worlds(h34):
+def test_clause_b_holds_unless_the_s1_bar_is_met_in_own_and_also_in_clean(h34):
     def run(own, clean):
         # trend_s1.0 stays 0.1 under trend_s1.5 in both worlds, so clause (a) is silent
         own, clean = np.asarray(own, float), np.asarray(clean, float)
         return _read(h34, score={HI: {"own": own, "CLEAN": clean}, LO: {"own": own - 0.1, "CLEAN": clean - 0.1}})
     res = run(0.6, 0.29)
     assert res["outcome"] == "STOPPED" and res["clauses"] == ["b"]
-    assert res["statements"]["b_ahead"] == {"own": True, "CLEAN": False}
-    assert res["statements"]["a_below"] == {"own": False, "CLEAN": False}
+    assert res["statements"]["bar_met"] == {"own": True, "CLEAN": False}
+    assert res["statements"]["a_in_world"] == {"own": False, "CLEAN": False}
+    assert res["statements"]["holds"] == {"a": False, "b": True}
     assert res["line"] == "Try H34: STOPPED (b): OTS15 is not built." and res["follows"] == NOTHING_BUILT
-    assert run(0.29, 0.6)["clauses"] == ["b"]  # the bar must hold in own and in CLEAN: one world failing stops
-    assert run(0.29, 0.6)["statements"]["b_ahead"] == {"own": False, "CLEAN": True}
+    assert run(0.29, 0.6)["clauses"] == ["b"]  # the bar failing in one world is enough for clause (b)
+    assert run(0.29, 0.6)["statements"]["bar_met"] == {"own": False, "CLEAN": True}
     assert run(0.1, 0.1)["clauses"] == ["b"] and run(-0.5, -0.5)["clauses"] == ["b"]
     assert run(0.31, 0.31)["outcome"] == "NOT STOPPED"
     seven = np.where(np.arange(10) < 7, 1.0, -0.1)  # a mean of +0.67 with 7 of 10 seeds above 0
@@ -577,7 +597,7 @@ def test_clause_b_not_ahead_of_the_copy_by_the_s1_bar_in_both_worlds(h34):
 def test_both_clauses_and_the_diagnostics_gate_nothing(h34):
     res = _read(h34, score={HI: 0.1, LO: 0.2})
     assert res["clauses"] == ["a", "b"] and res["line"] == "Try H34: STOPPED (a, b): OTS15 is not built."
-    assert res["statements"]["fires"] == {"a": True, "b": True}
+    assert res["statements"]["holds"] == {"a": True, "b": True}
     # arm minus placebo and the DE terms: whatever they are, the outcome is as it was
     for plc, de in ((2.0, -0.3), (-2.0, 0.3), (0.6, 0.0)):
         extra = {"placebo_s1.5": plc, "placebo_s1.0": plc}
@@ -597,8 +617,8 @@ def test_the_rules_two_bars_at_their_edges(h34):
     passes = h34.h28.passes  # row H28's S1 bar, in one world
     assert passes({"mean": 0.3000001, "ahead": 8}) and not passes({"mean": 0.3, "ahead": 10})
     assert not passes({"mean": 5.0, "ahead": 7})
-    assert h34.outcome_line("VOID", ["G: no gate record", "V1: no part"]) == \
-        "Try H34: VOID: G: no gate record; V1: no part; nothing is built."
+    assert h34.outcome_line("VOID", ["v3: no gate record", "v4: missing transition x"]) == \
+        "Try H34: VOID: v3: no gate record; v4: missing transition x; nothing is built."
     assert h34.outcome_line("STOPPED", clauses=["a"]) == "Try H34: STOPPED (a): OTS15 is not built."
     assert h34.outcome_line("NOT STOPPED") == "Try H34: NOT STOPPED."
     assert h34.follows_line("VOID") == h34.follows_line("STOPPED") == NOTHING_BUILT
@@ -610,31 +630,49 @@ def test_the_reading_and_its_text(h34):
     json.dumps(res, default=float)
     assert res["row"] == "H34" and res["commit"] == COMMIT and res["gate"]["verdict"] == "PASS"
     assert res["prior"] == "No row on record had read the trend step on D's pool at any strength before this one."
-    assert res["guards"]["V4"] == {"means": 18, "unequal": 0, "largest_abs_diff": 0.0}
+    assert res["guards"]["G1"] == {"means": 18, "unequal": 0, "largest_abs_diff": 0.0}
+    assert res["h29b_reading_sha256"] == h34.H29B_READING_SHA256
     assert res["budgets"] == {"1": {"test": 0.5, KEY1: 0.375, KEY2: 0.125},
                               "1.5": {"test": 0.75, KEY1: 0.5625, KEY2: 0.1875}}
     lines = h34.text(res).splitlines()
     assert tuple(lines[:2]) == NOT_STOPPED_LINES
     assert res["prior"] in lines and h34.RULE in lines
     txt = "\n".join(lines)
-    for need in ("Row H34 (commit " + COMMIT, "no test score enters the row", "GATE (first; not a try): PASS",
-                 "(a) own: FALSE (trend_s1.5 minus trend_s1.0, fold E10.5: +0.20 [+0.20, +0.20] 10/10 above, "
-                 "0/10 below", "(a) CLEAN: FALSE", "(a) fires: FALSE", "(b) own: the bar HOLDS (trend_s1.5 minus "
-                 "the copy D_f, fold E10.5: +0.60", "(b) CLEAN: the bar HOLDS", "(b) fires: FALSE",
+    for need in ("Row H34 (commit " + COMMIT, "no test score enters the row",
+                 f"GATE (first, counting nothing): PASS at commit {COMMIT}.",
+                 "Clause (a) in own: does not hold (trend_s1.5 minus trend_s1.0, fold E10.5: +0.20 [+0.20, +0.20] "
+                 "10/10 above, 0/10 below", "Clause (a) in CLEAN: does not hold",
+                 "The S1 bar in own: MET (trend_s1.5 minus the control D_f, fold E10.5: +0.60",
+                 "The S1 bar in CLEAN: MET",
+                 "Clause (a) holds in own or in CLEAN: FALSE. Clause (b) holds (the bar is not met in both worlds): "
+                 "FALSE.",
                  "DIAGNOSTIC, gates nothing: trend_s1.0 minus placebo_s1.0, fold E10.5",
                  "DIAGNOSTIC, gates nothing: trend_s1.5 minus placebo_s1.5, fold E10.5",
+                 "DIAGNOSTIC, gates nothing: the DE terms of trend_s1.0 minus control, fold E10.5",
                  "DIAGNOSTIC, gates nothing: the DE terms of trend_s1.5 minus control, fold E10.5",
-                 "DIAGNOSTIC, gates nothing: the DE terms of trend_s1.5 minus trend_s1.0, fold E10.5",
-                 "18 plain means compared, 0 unequal", "eight tries"):
+                 "G1 repeated on the run's own control, against row H29b's committed D_f: 18 plain means compared, "
+                 "0 unequal.", "Beside the read, gating nothing (the target-free records against row H29b's "
+                 "committed ones): no difference.", "TABLES, practice diagnostics that gate nothing", "eight tries"):
         assert need in txt, need
     tagged = [ln for ln in lines if ln.startswith(h34.TAG)]
     assert len(tagged) == len(h34.WORLDS) * len(h34.UNITS) * len(h34.PAIRS) == 42
     stopped = h34.text(_read(h34, score={HI: 0.1, LO: 0.2}))
     assert stopped.startswith("Try H34: STOPPED (a, b): OTS15 is not built.\n" + NOTHING_BUILT + "\n")
-    for need in ("(a) own: TRUE", "(a) fires: TRUE", "(b) own: the bar FAILS", "(b) fires: TRUE"):
+    for need in ("Clause (a) in own: HOLDS", "Clause (a) in CLEAN: HOLDS", "The S1 bar in own: not met",
+                 "Clause (a) holds in own or in CLEAN: TRUE. Clause (b) holds (the bar is not met in both worlds): "
+                 "TRUE."):
         assert need in stopped, need
-    assert "in both worlds" in h34.RULE and "in EITHER world" in h34.RULE and "VOID wins over STOP" in h34.RULE
-    assert "above +0.3 with at least 8 of 10 seeds above 0" in h34.RULE
+    # the rule's words are the eighth cell's
+    for words in ("Clause (a) holds in a world if trend_s1.5 minus trend_s1.0 has a paired mean below 0 with at "
+                  "least 8 of the 10 seeds below 0 in that world.",
+                  "The S1 bar (row H28's) is met in a world if trend_s1.5 minus the control D_f has a paired mean "
+                  "above +0.3 with at least 8 of the 10 seeds above 0 in that world.",
+                  "Clause (b) holds unless the S1 bar is met in own and also in CLEAN; the bar failing in one world "
+                  "is enough for clause (b).",
+                  "STOPPED if clause (a) holds in own or in CLEAN, or clause (b) holds; NOT STOPPED otherwise.",
+                  "VOID is decided first, and under VOID the rule is not read.",
+                  "a difference of exactly 0 is neither above nor below 0"):
+        assert words in h34.RULE, words
 
 
 # ------------------------------------------------------------------------------------------------ the void
@@ -652,123 +690,159 @@ def test_every_void_condition(h34):
         edit(c)
         return why(committed=c)
     assert why() == []
-    # G: the gate record
-    assert why(gate=None) == ["G: no gate record"]
-    assert why(gate={"verdict": "PASS", "commit": COMMIT}) == ["G: no gate record"]  # another row's record
-    assert why(gate=_gate(h34, "FAIL")) == ["G: the gate said 'FAIL', not PASS"]
-    assert why(gate=_gate(h34, commit="d" * 40)) == ["G: the gate record is not of the run commit"]
-    assert why(gate=_gate(h34, clean=False)) == ["G: the gate record comes from a dirty tree"]
-    # V1: a transition, seed, truth or arm missing; a seed twice; another transition's part
-    assert bad(lambda p: p.pop(KEY2)) == [f"V1: missing transition {KEY2}"]
-    assert why(parts={}) == [f"V1: missing transition {KEY1}", f"V1: missing transition {KEY2}"]
-    assert any(w.startswith(f"V1: {KEY1}: seeds [0, 1, 2, 3, 4, 5, 6, 7, 8], not") for w in
+    # v3: the gate fails, or its record is missing or of another commit than the run commit
+    assert why(gate=None) == ["v3: no gate record"]
+    assert why(gate={"verdict": "PASS", "commit": COMMIT}) == ["v3: no gate record"]  # another row's record
+    assert why(gate=_gate(h34, "FAIL")) == ["v3: the gate said 'FAIL', not PASS"]
+    assert why(gate=_gate(h34, commit="d" * 40)) == ["v3: the gate record is not of the run commit"]
+    assert why(gate=_gate(h34, clean=False)) == ["v3: the gate record is not of the run commit"]
+    # v4: a transition, seed, truth or arm is missing or a seed occurs twice
+    assert bad(lambda p: p.pop(KEY2)) == [f"v4: missing transition {KEY2}"]
+    assert why(parts={}) == [f"v4: missing transition {KEY1}", f"v4: missing transition {KEY2}"]
+    assert any(w.startswith(f"v4: {KEY1}: seeds [0, 1, 2, 3, 4, 5, 6, 7, 8], not") for w in
                bad(lambda p: p[KEY1][1]["rows"].pop()))
-    assert any("occur in more than one part" in w for w in
-               bad(lambda p: p[KEY1][1]["rows"].append(p[KEY1][0]["rows"][0])))
+    assert f"v4: {KEY1}: seeds [0] occur in more than one part" in bad(
+        lambda p: p[KEY1][1]["rows"].append(p[KEY1][0]["rows"][0]))
     assert any("missing from scores: ['thin_0/control'" in w for w in
                bad(lambda p: p[KEY2][0]["rows"][0]["scores"].pop("thin_0")))
-    assert any("missing from skills: ['own/placebo_s1.5']" in w for w in
-               bad(lambda p: p[KEY1][0]["rows"][3]["skills"]["own"].pop("placebo_s1.5")))
-    assert any("missing from groups: ['radial_0/floor']" in w for w in
-               bad(lambda p: p[KEY1][0]["rows"][3]["groups"]["radial_0"].pop("floor")))
-    for gone in ("draw", "checks", "n_cells"):
-        assert any("records, checks, draw or cell numbers missing" in w for w in
-                   bad(lambda p, gone=gone: p[KEY1][0]["rows"][0].pop(gone))), gone
-    assert any("records, checks, draw or cell numbers missing" in w for w in
-               bad(lambda p: p[KEY1][0]["rows"][0]["records"].pop("trend_s1.0")))
-    assert any("parts of other transitions ['T2h/E8.25_late->E8.5']" in w for w in
-               bad(lambda p: p.update({"T2h/E8.25_late->E8.5": p[KEY1]})))
-    # V2: the commit and the tree
-    assert "V2: the parts come from different commits" in bad(
+    assert f"v4: {KEY1} seed 3: missing from skills: ['own/placebo_s1.5']" in bad(
+        lambda p: p[KEY1][0]["rows"][3]["skills"]["own"].pop("placebo_s1.5"))
+    assert f"v4: {KEY1} seed 3: missing from groups: ['radial_0/floor']" in bad(
+        lambda p: p[KEY1][0]["rows"][3]["groups"]["radial_0"].pop("floor"))
+    assert f"v4: {KEY1} seed 3: missing from scores: ['own/control']" in bad(
+        lambda p: p[KEY1][0]["rows"][3]["scores"]["own"].pop("control"))
+    for gone in ("checks", "n_cells"):
+        assert f"v4: {KEY1} seed 0: records, checks or cell numbers missing" in bad(
+            lambda p, gone=gone: p[KEY1][0]["rows"][0].pop(gone)), gone
+    assert f"v4: {KEY1} seed 0: records, checks or cell numbers missing" in bad(
+        lambda p: p[KEY1][0]["rows"][0]["records"].pop("trend_s1.0"))
+    assert "v4: parts of other transitions ['T2h/E8.25_late->E8.5']" in bad(
+        lambda p: p.update({"T2h/E8.25_late->E8.5": p[KEY1]}))
+    # v4: the parts come from more than one commit, from a commit other than the run commit or from an unclean tree
+    assert "v4: the parts come from more than one commit" in bad(
         lambda p: p[KEY1][0]["provenance"].update(commit="d" * 40))
-    assert why(parts=_parts(h34, clean=False, score=GOOD)) == ["V2: a part comes from a dirty tree"]
-    assert "V2: a part comes from a dirty tree" in bad(lambda p: p[KEY2][1]["provenance"].update(tree_clean=None))
+    assert why(parts=_parts(h34, clean=False, score=GOOD)) == ["v4: a part comes from an unclean tree"]
+    assert bad(lambda p: p[KEY2][1]["provenance"].update(tree_clean=None)) == ["v4: a part comes from an unclean tree"]
     for other in ("d" * 40, COMMIT[:12], "", None):
         w = why(commit=other, gate=_gate(h34, commit=other))
-        assert any(x.startswith("V2: a part does not come from the row's run commit") for x in w), other
-    # V3: the transition's target-free records against row H29b's committed reading
-    for void in (None, {"row": "H29b", "void": True}, {"row": "H27", "void": False, "outcome": "READ"},
-                 {"row": "H29b", "void": False, "outcome": "VOID"}):
-        assert why(committed=void) == ["V3: row H29b's committed reading is void or unreadable"]
-    assert f"V3: {KEY1}: truth radial_0 differs from row H29b's (cells or core share)" in bad(
-        lambda p: p[KEY1][0]["truth_info"]["radial_0"].update(cells=999))
-    assert f"V3: {KEY2}: truth own differs from row H29b's (cells or core share)" in bad(
-        lambda p: p[KEY2][1]["truth_info"]["own"].update(core_share=0.41))
-    assert f"V3: {KEY1}: D's pool differs from row H29b's (rows or core share)" in bad(
-        lambda p: p[KEY1][0]["pred_info"]["organ"].update(pool_cells=POOL_CELLS + 1))
-    for field, value in (("link_length", 2.5 + 1e-12), ("label_config_sha256", "1" * 64), ("components_kept", 3),
-                         ("kept_categories", ["cm"]), ("kept_share", 0.51)):
-        assert f"V3: {KEY1}: D's record on the reference stage differs from row H29b's" in bad(
-            lambda p, field=field, value=value: p[KEY1][0]["organ_record"]["reference"].update({field: value})), field
-    for pool in ("organ", "label"):
-        assert f"V3: {KEY2}: rms(pool) / rms(core) differs from row H29b's" in bad(
-            lambda p, pool=pool: p[KEY2][0]["ratios"].update({pool: 1.5 + 1e-12}))
-    for field in ("target", "base", "ratio"):
-        assert f"V3: {KEY1}: D_f's size differs from row H29b's" in bad(
-            lambda p, field=field: p[KEY1][1]["d_targets"]["organ:f"].update({field: 3.0 + 1e-12})), field
-    assert f"V3: {KEY1}: the reference cloud is not the cloud the size result measured" in bad(
-        lambda p: p[KEY1][0]["v7"].update(ok=False))
-    assert f"V3: {KEY2}: the control's draw from D's pool differs from row H29b's" in bad(
-        lambda p: p[KEY2][0]["rows"][1]["draw"].update(drawn=DRAWN + 1))
-    assert f"V3: {KEY1}: truth thin_0 differs from row H29b's (cells or core share)" in committed(
-        lambda c: c["truth_info"][KEY1]["thin_0"].update(cells=1))
-    # prose in row H29b's records is not compared: the rule's words and the config's path may be reworded
-    assert bad(lambda p: p[KEY1][0]["organ_record"]["reference"].update(rule="other words", label_config="x")) == []
-    assert bad(lambda p: p[KEY1][0]["d_targets"]["organ:f"].update(source="other words")) == []
-    # V4: the run's own control against row H29b's committed D_f, bit for bit
+        assert any(x.startswith("v4: a part comes from a commit other than the run commit") for x in w), other
+    # v3 again: G1 on the run's own control, the control the rule's differences are paired with: bit for bit
+    g1 = "v3: G1 on the run's own control: "
     w = bad(lambda p: p[KEY2][1]["rows"][2]["scores"]["thin_0"].update(
         control=p[KEY2][1]["rows"][2]["scores"]["thin_0"]["control"] * (1 + 1e-12)))
-    assert len(w) == 4 and all(x.startswith("V4: ") for x in w)
-    assert {x.split(":")[1].strip() for x in w} == {f"CLEAN {KEY2}", "CLEAN fold E10.5", f"truth thin_0 {KEY2}",
-                                                   "truth thin_0 fold E10.5"}
+    assert len(w) == 4 and all(x.startswith(g1) and x.endswith(" from row H29b's committed D_f") for x in w)
+    assert {x[len(g1):].split(": ")[0] for x in w} == {f"CLEAN {KEY2}", "CLEAN fold E10.5", f"truth thin_0 {KEY2}",
+                                                       "truth thin_0 fold E10.5"}
     w = committed(lambda c: c["tables"]["own"]["fold E10.5"]["mean"].update(
         {"organ:f": c["tables"]["own"]["fold E10.5"]["mean"]["organ:f"] + 1e-12}))
-    assert len(w) == 1 and w[0].startswith("V4: own fold E10.5: the control's mean is -")
-    # V5: the identities
-    assert any("strength 1 is not the harness's b0_trend" in w for w in
-               bad(lambda p: p[KEY1][0]["rows"][0]["checks"].update(s1_equals_harness_b0_trend=False)))
+    assert len(w) == 1 and w[0].startswith(g1 + "own fold E10.5: the control's mean is -")
+    for void in (None, {"row": "H29b", "void": True}, {"row": "H27", "void": False, "outcome": "READ"},
+                 {"row": "H29b", "void": False, "outcome": "VOID"}):
+        assert why(committed=void) == ["v3: row H29b's committed reading is not at hand (missing, not the file its "
+                                       "row records, or void)"]
+    # v5: an arm is not the arm the third cell defines
+    assert bad(lambda p: p[KEY1][0]["rows"][0]["checks"].update(s1_equals_harness_b0_trend=False)) == [
+        f"v5: {KEY1} seed 0: trend_s1.0 before the size step is not the harness's b0_trend on the same context"]
     for k in ("same_draw", "pre_size_coords_equal", "post_size_coords_equal"):
-        assert f"V5: {KEY2} seed 6: {k.replace('_', ' ')} fails" in bad(
-            lambda p, k=k: p[KEY2][1]["rows"][1]["checks"].pop(k))
-    assert f"V5: {KEY1} seed 0: the arms' cell numbers differ" in bad(
-        lambda p: p[KEY1][0]["rows"][0]["n_cells"].update({"trend_s1.5": 351}))
-    assert f"V5: {KEY1} seed 0: the arms' cell numbers differ" in bad(
-        lambda p: p[KEY1][0]["rows"][0]["n_cells"].pop("placebo_s1.0"))
-    assert f"V5: {KEY1} seed 4: control is not at D_f's size" in bad(
-        lambda p: p[KEY1][0]["rows"][4]["records"]["control"]["size"].update(log_rms_after_vs_target=1e-6))
-    assert f"V5: {KEY1} seed 4: trend_s1.5's size is not D_f's field" in bad(
-        lambda p: p[KEY1][0]["rows"][4]["records"]["trend_s1.5"]["size"].update(target_rms_full=3.1))
-    assert f"V5: {KEY2} seed 9 thin_0.5: trend_s1.0's d2_shape is not the control's" in bad(
-        lambda p: p[KEY2][1]["rows"][4]["skills"]["thin_0.5"]["trend_s1.0"].update(d2_shape=0.5 + 1e-6))
-    # V6: the trend records
+        assert bad(lambda p, k=k: p[KEY2][1]["rows"][1]["checks"].pop(k)) == [
+            f"v5: {KEY2} seed 6: {k.replace('_', ' ')} fails"]
+    assert bad(lambda p: p[KEY1][0]["rows"][0]["n_cells"].update({"trend_s1.5": 351})) == [
+        f"v5: {KEY1} seed 0: the arms' cell numbers are not the control's"]
+    assert bad(lambda p: p[KEY1][0]["rows"][0]["n_cells"].pop("placebo_s1.0")) == [
+        f"v5: {KEY1} seed 0: the arms' cell numbers are not the control's"]
+    for term in ("d2_shape", "occupancy_dice", "scale_log_ratio"):  # more than 1e-9 from the control's
+        assert bad(lambda p, term=term: p[KEY2][1]["rows"][4]["skills"]["thin_0.5"]["trend_s1.0"].update(
+            {term: 0.5 + 2e-9})) == [f"v5: {KEY2} seed 9 thin_0.5: trend_s1.0's {term} is not the control's"]
+        assert bad(lambda p, term=term: p[KEY2][1]["rows"][4]["skills"]["thin_0.5"]["trend_s1.0"].update(
+            {term: 0.5 + 5e-10})) == []
     rec = "records"
-    assert any("trend_s1.5's record is not strength 1.5 trend" in w for w in
-               bad(lambda p: p[KEY1][0]["rows"][0][rec]["trend_s1.5"]["trend"].update(strength=1.0)))
-    assert any("placebo_s1.0's record is not strength 1 placebo" in w for w in
-               bad(lambda p: p[KEY1][0]["rows"][0][rec]["placebo_s1.0"]["trend"].update(placebo=False)))
-    assert any("trend_s1.0's budget is 0.5, not 0.375" in w for w in
-               bad(lambda p: p[KEY1][0]["rows"][0][rec]["trend_s1.0"]["trend"].update(budget_days=0.5)))
-    assert any("trend_s1.5's budget at its strength is not 1.5 times 0.125" in w for w in
-               bad(lambda p: p[KEY2][0]["rows"][0][rec]["trend_s1.5"]["trend"].update(effective_budget_days=0.125)))
-    assert any("placebo_s1.5's reference is not D's pool" in w for w in
-               bad(lambda p: p[KEY1][0]["rows"][0][rec]["placebo_s1.5"]["trend"].update(ref_cells=POOL_CELLS + 5)))
-    assert any("the arms shift different lineages, or none" in w for w in
-               bad(lambda p: p[KEY1][0]["rows"][0][rec]["trend_s1.5"]["trend"].update(shifted=["CM"])))
-
-    def none_shifted(p):
-        for a in h34.COUNTED:
-            p[KEY1][0]["rows"][0][rec][a]["trend"]["shifted"] = []
-    assert f"V6: {KEY1} seed 0: the arms shift different lineages, or none" in bad(none_shifted)
-    assert any("placebo_s1.5 leaves a gene on its own factor" in w for w in
-               bad(lambda p: p[KEY1][0]["rows"][0][rec]["placebo_s1.5"]["trend"]["fixed_points"].update(CM=2)))
-    # a malformed part is void, never a crash
-    for edit in (lambda p: p[KEY1][0].pop("v7"), lambda p: p[KEY1][0].pop("provenance"),
+    assert bad(lambda p: p[KEY1][0]["rows"][0][rec]["trend_s1.0"]["trend"].update(budget_days=0.5)) == [
+        f"v5: {KEY1} seed 0: trend_s1.0's budget is 0.5, not 0.375"]
+    assert bad(lambda p: p[KEY2][0]["rows"][0][rec]["placebo_s1.5"]["trend"].update(
+        budget_days=0.125 * (1 + 1e-11))) != []  # relative 1e-12
+    assert bad(lambda p: p[KEY2][0]["rows"][0][rec]["placebo_s1.5"]["trend"].update(
+        budget_days=0.125 * (1 + 4e-13))) == []
+    assert bad(lambda p: p[KEY1][0]["rows"][0][rec]["placebo_s1.5"]["trend"].update(ref_cells=POOL_CELLS + 5)) == [
+        f"v5: {KEY1} seed 0: placebo_s1.5's reference is not D's pool"]
+    assert bad(lambda p: p[KEY1][0]["rows"][0][rec]["trend_s1.5"]["trend"].update(shifted=["CM"])) == [
+        f"v5: {KEY1} seed 0: the arms shift different lineages"]
+    assert bad(lambda p: p[KEY1][0]["rows"][0][rec]["placebo_s1.5"]["trend"]["fixed_points"].update(CM=2)) == [
+        f"v5: {KEY1} seed 0: placebo_s1.5 leaves a gene on its own factor"]
+    # a malformed part or committed record is void, never a crash
+    for edit in (lambda p: p[KEY1][0].pop("provenance"), lambda p: p[KEY1][0].pop("pred_info"),
                  lambda p: p[KEY2][0]["rows"][0]["records"]["trend_s1.5"].pop("trend"),
                  lambda p: p[KEY2][0].update(rows=[{"no": "seed"}])):
         w = bad(edit)
-        assert len(w) == 1 and w[0].startswith("a part or a committed record cannot be read ("), w
-    assert why(committed={"row": "H29b", "void": False, "outcome": "READ"})[0].startswith(
-        "a part or a committed record cannot be read (KeyError")
+        assert len(w) == 1 and w[0].startswith("v4: a part or a committed record cannot be read ("), w
+    assert why(committed={"row": "H29b", "void": False, "outcome": "READ"}) == [
+        "v4: a part or a committed record cannot be read (KeyError: 'tables')"]
+
+
+def test_what_the_row_does_not_fix_as_void_is_a_note_and_gates_nothing(h34):
+    """The target-free records against row H29b's committed ones, the control's size record and an arm set that
+    shifts no lineage: written beside the read, never a void condition and never part of the rule."""
+    def read(edit=None, committed=None):
+        p = _parts(h34, score=GOOD)
+        if edit:
+            edit(p)
+        return _read(h34, parts=p, committed=committed or _committed(h34))
+
+    def noted(edit, note):
+        res = read(edit)
+        assert res["why"] == [] and res["outcome"] == "NOT STOPPED" and res["notes"] == [note], res["notes"]
+        assert note in h34.text(res)
+    assert read()["notes"] == []
+    noted(lambda p: p[KEY1][0]["truth_info"]["radial_0"].update(cells=999),
+          f"note: {KEY1}: truth radial_0 differs from row H29b's (cells or core share)")
+    noted(lambda p: p[KEY2][0]["truth_info"]["own"].update(core_share=0.41),
+          f"note: {KEY2}: truth own differs from row H29b's (cells or core share)")
+    noted(lambda p: p[KEY1][0]["pred_info"]["organ"].update(core_share=0.71),
+          f"note: {KEY1}: D's pool differs from row H29b's (rows or core share)")
+    for field, value in (("link_length", 2.5 + 1e-12), ("label_config_sha256", "1" * 64), ("components_kept", 3),
+                         ("kept_categories", ["cm"]), ("kept_share", 0.51)):
+        noted(lambda p, field=field, value=value: p[KEY1][0]["organ_record"]["reference"].update({field: value}),
+              f"note: {KEY1}: D's record on the reference stage differs from row H29b's")
+    for pool in ("organ", "label"):
+        noted(lambda p, pool=pool: p[KEY2][0]["ratios"].update({pool: 1.5 + 1e-12}),
+              f"note: {KEY2}: rms(pool) / rms(core) differs from row H29b's")
+    for field in ("target", "base", "ratio"):
+        noted(lambda p, field=field: p[KEY1][0]["d_targets"]["organ:f"].update({field: 3.0 + 1e-12}),
+              f"note: {KEY1}: D_f's size differs from row H29b's")
+    noted(lambda p: p[KEY1][0]["v7"].update(ok=False),
+          f"note: {KEY1}: the reference cloud is not the cloud the size result measured")
+    noted(lambda p: p[KEY2][0]["rows"][1]["draw"].update(drawn=DRAWN + 1),
+          f"note: {KEY2}: the control's draw from D's pool differs from row H29b's")
+    noted(lambda p: p[KEY1][0]["rows"][4]["records"]["control"]["size"].update(log_rms_after_vs_target=1e-6),
+          f"note: {KEY1} seed 4: the control is not at D_f's size")
+    noted(lambda p: p[KEY1][0]["rows"][4]["records"]["control"]["size"].update(target_rms_full=3.1),
+          f"note: {KEY1} seed 4: the control's size is not D_f's field")
+
+    def none_shifted(p):
+        for a in h34.COUNTED:
+            p[KEY1][0]["rows"][0]["records"][a]["trend"]["shifted"] = []
+    noted(none_shifted, f"note: {KEY1} seed 0: the arms shift no lineage")
+    # prose in row H29b's records is not compared: the rule's words and the config's path may be reworded
+    assert read(lambda p: p[KEY1][0]["organ_record"]["reference"].update(rule="other", label_config="x"))["notes"] == []
+    assert read(lambda p: p[KEY1][0]["d_targets"]["organ:f"].update(source="other words"))["notes"] == []
+    # records that cannot be compared are a note too: the eighteen means are all G1 needs
+    res = read(lambda p: p[KEY1][0].pop("v7"))
+    assert res["why"] == [] and res["notes"] == ["note: the target-free records cannot be compared (KeyError: 'v7')"]
+    bare = _committed(h34)
+    for k in ("truth_info", "pool_info", "organ_records", "ratios", "d_targets", "pools_short"):
+        bare.pop(k)
+    res = read(committed=bare)
+    assert res["why"] == [] and res["outcome"] == "NOT STOPPED" and len(res["notes"]) == 1
+    assert res["notes"][0].startswith("note: the target-free records cannot be compared (KeyError")
+    # the same notes at the gate
+    rows, facts = _gate_rows(h34), {k: _facts(h34) for k in h34.TASK_KEYS}
+    assert h34.notes(facts, rows, _committed(h34), lambda r: r["size_record"]) == []
+    facts[KEY2]["ratios"]["label"] = 1.9
+    rows[KEY1][2]["draw"]["short"] = True
+    assert h34.notes(facts, rows, _committed(h34), lambda r: r["size_record"]) == [
+        f"note: {KEY1}: the control's draw from D's pool differs from row H29b's",
+        f"note: {KEY2}: rms(pool) / rms(core) differs from row H29b's"]
+    assert h34.notes(facts, rows, None, lambda r: r["size_record"]) == [
+        "note: row H29b's committed reading is not at hand; its target-free records are not compared"]
 
 
 def test_void_wins_over_stop(h34):
@@ -786,10 +860,18 @@ def test_void_wins_over_stop(h34):
         assert res["line"] == "Try H34: VOID: " + "; ".join(res["why"]) + "; nothing is built."
         assert res["follows"] == NOTHING_BUILT
         txt = h34.text(res)
-        assert txt.startswith(res["line"] + "\n" + NOTHING_BUILT + "\n") and "STOPPED" not in txt
-        assert all(w in txt.splitlines() for w in res["why"]) and res["prior"] in txt
+        assert txt.startswith(res["line"] + "\n" + NOTHING_BUILT + "\n")
+        # under VOID the rule is not read: its words are there, no clause's finding, no table and no figure of an arm
+        for absent in ("Try H34: STOPPED", "Clause (a) in ", "The S1 bar in ", "Clause (a) holds in own or in CLEAN: ",
+                       "DIAGNOSTIC", h34.TAG, "TABLES"):
+            assert absent not in txt, absent
+        assert all(w in txt.splitlines() for w in res["why"]) and res["prior"] in txt and h34.RULE in txt
     res = _read(h34, score=stop, gate=_gate(h34, "FAIL"))
-    assert res["line"] == "Try H34: VOID: G: the gate said 'FAIL', not PASS; nothing is built."
+    assert res["line"] == "Try H34: VOID: v3: the gate said 'FAIL', not PASS; nothing is built."
+    # every condition that holds is in the line
+    res = _read(h34, parts=dirty, gate=None, score=stop)
+    assert res["line"] == ("Try H34: VOID: v3: no gate record; v4: a part comes from an unclean tree; nothing is "
+                           "built.")
 
 
 # ------------------------------------------------------------------------------------------------ the gate's verdict
@@ -801,65 +883,86 @@ def _gate_rows(h34):
             sc = _row(h34, k, s)["scores"]
             rows[k].append({"seed": s, "scores": {q: {a: sc[q][a] for a in ("floor", "control")} for q in h34.TRUTHS},
                             "size_record": dict(SIZE_REC), "draw": dict(DRAW),
-                            "factors": {"ok": True, "why": None, "max_abs_dev": 2e-16}})
+                            "factors": {"ratio": 1.5, "lineages": ["CM", "Endothelial"], "damping": [0.5, 0.75],
+                                        "ok": True, "why": None}})
     return rows
 
 
 def test_the_gates_two_checks(h34):
-    def facts():
-        return {k: _facts(h34) for k in h34.TASK_KEYS}
-    why, dist = h34.gate_reasons(_gate_rows(h34), facts(), _committed(h34))
+    why, dist = h34.gate_reasons(_gate_rows(h34), _committed(h34))
     assert why == [] and dist["G1"] == {"means": 18, "unequal": 0, "largest_abs_diff": 0.0}
-    assert dist["G2"] == {"draws": 20, "largest_abs_dev": 2e-16, "tol": 1e-12}
-    # G1, bit for bit: one seed's control score a part in 1e12 off
+    assert dist["G2"] == {"contexts": 20, "failed": 0, "lineages": ["CM", "Endothelial"]}
+    # G1, exactly and with no tolerance: one seed's control score a part in 1e12 off
     rows = _gate_rows(h34)
     rows[KEY2][3]["scores"]["thin_0.5"]["control"] *= 1 + 1e-12
-    why, dist = h34.gate_reasons(rows, facts(), _committed(h34))
+    why, dist = h34.gate_reasons(rows, _committed(h34))
     assert len(why) == 4 and all(w.startswith("G1: ") and "from row H29b's committed D_f" in w for w in why)
     assert dist["G1"]["unequal"] == 4 and 0 < dist["G1"]["largest_abs_diff"] < 1e-10
-    # G1: a committed mean a part in 1e12 off
+    assert dist["G2"]["failed"] == 0
+    # G1: a committed mean a part in 1e12 off; each of the eighteen entries is held
     c = _committed(h34)
     c["tables"]["truth radial_0"][KEY1]["mean"]["organ:f"] *= 1 + 1e-12
-    why, _ = h34.gate_reasons(_gate_rows(h34), facts(), c)
+    why, _ = h34.gate_reasons(_gate_rows(h34), c)
     assert len(why) == 1 and why[0].startswith(f"G1: truth radial_0 {KEY1}: the control's mean is ")
-    # G1: the target-free records and the control's size and draw
-    f = facts()
-    f[KEY1]["ratios"]["organ"] = 1.5 + 1e-12
-    assert h34.gate_reasons(_gate_rows(h34), f, _committed(h34))[0] == [
-        f"G1: {KEY1}: rms(pool) / rms(core) differs from row H29b's"]
-    f = facts()
-    f[KEY2]["pred_info"]["organ"]["core_share"] = 0.71
-    assert h34.gate_reasons(_gate_rows(h34), f, _committed(h34))[0] == [
-        f"G1: {KEY2}: D's pool differs from row H29b's (rows or core share)"]
+    seen = set()
+    for w, _ in h34.G1_WORLDS:
+        for u in h34.G1_UNITS:
+            c = _committed(h34)
+            c["tables"][w][u]["mean"]["organ:f"] = float(np.nextafter(c["tables"][w][u]["mean"]["organ:f"], 100.0))
+            why, dist = h34.gate_reasons(_gate_rows(h34), c)
+            assert len(why) == 1 and why[0].startswith(f"G1: {w} {u}: ") and dist["G1"]["unequal"] == 1
+            seen.add((w, u))
+    assert len(seen) == 18
+    # G1 is the eighteen means and nothing else: the row's other figures of D_f's table do not enter
+    c = _committed(h34)
+    c["tables"]["own"][KEY1]["mean"]["core_iso_half:f"] = 1.0
+    c["tables"]["truth organ"] = {"fold E10.5": {"mean": {"organ:f": 1.0}}}
+    assert h34.gate_reasons(_gate_rows(h34), c)[0] == []
+    # G2: one seed's context where the identity fails
     rows = _gate_rows(h34)
-    rows[KEY1][5]["size_record"]["log_rms_after_vs_target"] = 1e-6
-    assert h34.gate_reasons(rows, facts(), _committed(h34))[0] == [
-        f"G1: {KEY1} seed 5: the control is not at D_f's size"]
-    rows = _gate_rows(h34)
-    rows[KEY1][5]["draw"]["short"] = True
-    assert h34.gate_reasons(rows, facts(), _committed(h34))[0] == [
-        f"G1: {KEY1}: the control's draw from D's pool differs from row H29b's"]
-    # G2: one draw whose factors are not 1.5 times strength 1's
-    rows = _gate_rows(h34)
-    rows[KEY1][7]["factors"] = {"ok": False, "why": "a log factor is 1.000e-03 from 1.5 times the lower strength's",
-                                "max_abs_dev": 1e-3}
-    why, dist = h34.gate_reasons(rows, facts(), _committed(h34))
-    assert why == [f"G2: {KEY1} seed 7: the strength-1.5 log factors are not 1.5 times the strength-1 ones (a log "
-                   "factor is 1.000e-03 from 1.5 times the lower strength's)"]
-    assert dist["G2"]["largest_abs_dev"] == 1e-3 and dist["G1"]["unequal"] == 0
+    rows[KEY1][7]["factors"] = {"ok": False, "lineages": ["CM"],
+                                "why": "the damping 0.5 is not 1.5 times the lower strength's 0.5"}
+    why, dist = h34.gate_reasons(rows, _committed(h34))
+    assert why == [f"G2: {KEY1} seed 7: the damping 0.5 is not 1.5 times the lower strength's 0.5"]
+    assert dist["G2"] == {"contexts": 20, "failed": 1, "lineages": ["CM", "Endothelial"]}
+    assert dist["G1"]["unequal"] == 0
     rows = _gate_rows(h34)
     rows[KEY2][0]["factors"] = {}
-    assert h34.gate_reasons(rows, facts(), _committed(h34))[0][0].startswith(f"G2: {KEY2} seed 0: ")
+    assert h34.gate_reasons(rows, _committed(h34))[0] == [f"G2: {KEY2} seed 0: None"]
+    # both fail: both are named
+    rows = _gate_rows(h34)
+    rows[KEY1][0]["scores"]["own"]["control"] += 1e-9
+    rows[KEY2][9]["factors"] = {"ok": False, "why": "the two strengths' mappings name different lineages"}
+    why, _ = h34.gate_reasons(rows, _committed(h34))
+    assert [w[:2] for w in why] == ["G1", "G1", "G1", "G1", "G2"]
     # both transitions and every seed, or the gate fails
     rows = _gate_rows(h34)
     rows.pop(KEY2)
-    assert h34.gate_reasons(rows, facts(), _committed(h34))[0] == [f"G1: missing transition {KEY2}"]
+    assert h34.gate_reasons(rows, _committed(h34))[0] == [f"G1: missing transition {KEY2}"]
     rows = _gate_rows(h34)
     rows[KEY1].pop()
-    assert h34.gate_reasons(rows, facts(), _committed(h34))[0][0].startswith(f"G1: {KEY1}: seeds [0, 1, 2")
+    assert h34.gate_reasons(rows, _committed(h34))[0][0].startswith(f"G1: {KEY1}: seeds [0, 1, 2")
     for void in (None, {"row": "H29b", "void": True}):
-        assert h34.gate_reasons(_gate_rows(h34), facts(), void)[0][0] == \
-            "G1: row H29b's committed reading is void or unreadable"
+        assert h34.gate_reasons(_gate_rows(h34), void)[0] == [
+            "G1: row H29b's committed reading is not at hand (missing, not the file its row records, or void)"]
+
+
+def test_row_h29bs_reading_is_the_file_its_row_records_and_no_other(h34, monkeypatch, tmp_path):
+    """The reading is loaded only when its sha256 is the one named; any other file, a changed byte, a missing file
+    or a file that is not JSON gives nothing, and G1 then cannot hold."""
+    f = tmp_path / "reading.json"
+    f.write_text(json.dumps(_committed(h34)))
+    assert h34.load_h29b_reading(f) is None  # not the file the row records
+    monkeypatch.setattr(h34, "H29B_READING_SHA256", hashlib.sha256(f.read_bytes()).hexdigest())
+    assert h34.load_h29b_reading(f) == _committed(h34)
+    monkeypatch.setattr(h34, "H29B_READING", f)
+    assert h34.load_h29b_reading() == _committed(h34)  # the default path is the module's own
+    f.write_text(json.dumps(_committed(h34)) + "\n")
+    assert h34.load_h29b_reading(f) is None and h34.load_h29b_reading(tmp_path / "none.json") is None
+    f.write_text("not json")
+    monkeypatch.setattr(h34, "H29B_READING_SHA256", hashlib.sha256(f.read_bytes()).hexdigest())
+    assert h34.load_h29b_reading(f) is None
+    assert h34.gate_reasons(_gate_rows(h34), None)[0][0].startswith("G1: row H29b's committed reading is not at hand")
 
 
 def test_the_gate_record_decides_whether_the_run_may_follow(h34, tmp_path):
@@ -873,13 +976,24 @@ def test_the_gate_record_decides_whether_the_run_may_follow(h34, tmp_path):
     assert passed({**_gate(h34), "axis": "h29b-heart-organ:gate"}) is False
     assert passed({**_gate(h34), "provenance": {"commit": "d" * 40, "tree_clean": True}}) is False
     assert h34.gate_passed(tmp_path / "none", COMMIT) is False
-    txt = h34.gate_text({**_gate(h34), "distances": {"G1": {"means": 18, "unequal": 0, "largest_abs_diff": 0.0},
-                                                     "G2": {"draws": 20, "largest_abs_dev": 3e-16, "tol": 1e-12}}})
-    assert "not a try" in txt and "no arm is built" in txt and txt.rstrip().endswith(h34.GATE_LINES["PASS"])
-    assert "18 means compared, 0 unequal" in txt and "over 20 draws: largest difference 3.000e-16" in txt
+    dist = {"G1": {"means": 18, "unequal": 0, "largest_abs_diff": 0.0},
+            "G2": {"contexts": 20, "failed": 0, "lineages": ["CM", "Endothelial"]}}
+    txt = h34.gate_text({**_gate(h34), "distances": dist, "notes": []})
+    for need in ("first, counting nothing", "No counted arm and no placebo is built or scored in it",
+                 "the input stages and the draw only", "eighteen entries", "exactly, with no tolerance",
+                 f"sha256 {h34.H29B_READING_SHA256}", "G1 found: 18 means compared, 0 unequal",
+                 "G2 found: 20 contexts, 0 failed; the mapping's lineages: CM, Endothelial.",
+                 "Beside the gate, gating nothing (the target-free records against row H29b's committed ones): no "
+                 "difference."):
+        assert need in txt, need
+    assert txt.rstrip().endswith(h34.GATE_LINES["PASS"])
+    noted = h34.gate_text({**_gate(h34), "distances": dist, "notes": ["note: x differs", "note: y differs"]})
+    assert "committed ones): note: x differs; note: y differs" in noted and noted.rstrip().endswith(
+        h34.GATE_LINES["PASS"])  # a note gates nothing
     failed = h34.gate_text({**_gate(h34, "FAIL"), "why": ["G1: a", "G2: b"]}).splitlines()
     assert failed[-4:] == [h34.GATE_LINES["FAIL"], "WHY: G1: a; G2: b",
                            "Try H34: VOID: G1: a; G2: b; nothing is built.", NOTHING_BUILT]
+    assert "the run step refuses, no try is counted and the outcome is VOID" in h34.GATE_LINES["FAIL"]
 
 
 # ------------------------------------------------------------------------------------------------ the steps, end to end
@@ -914,7 +1028,12 @@ def test_gate_run_and_read_end_to_end_on_stand_in_stages(h34, fake_io, monkeypat
                                                    "short_in_seeds": len(seeds) * d["short"],
                                                    "repeated_rows_at_least": d["repeated_rows_at_least"]}}
     reading = tmp_path / "h29b_reading.json"
-    reading.write_text(json.dumps(committed, default=float))
+
+    def commit_reading():
+        """Write the stand-in reading and name it as the file row H29b's row records."""
+        reading.write_text(json.dumps(committed, default=float))
+        monkeypatch.setattr(h34, "H29B_READING_SHA256", hashlib.sha256(reading.read_bytes()).hexdigest())
+    commit_reading()
     gate_dir, runs, out = tmp_path / "run" / "gate", tmp_path / "run", tmp_path / "out"
     common = ["--commit", COMMIT, "--data", str(tmp_path)]
     run = ["run", "--task", KEY1, "--seeds", "0-1", "--out", str(runs / "e95" / "0-1"), "--gate", str(gate_dir),
@@ -932,9 +1051,12 @@ def test_gate_run_and_read_end_to_end_on_stand_in_stages(h34, fake_io, monkeypat
     g = json.loads((gate_dir / "gate.json").read_text())
     assert g["verdict"] == "PASS" and g["why"] == [] and g["commit"] == COMMIT and g["axis"] == h34.GATE_AXIS
     assert g["distances"]["G1"] == {"means": 18, "unequal": 0, "largest_abs_diff": 0.0}
-    assert g["distances"]["G2"]["draws"] == 4 and g["distances"]["G2"]["largest_abs_dev"] <= 1e-12
+    assert g["distances"]["G2"] == {"contexts": 4, "failed": 0, "lineages": ["CM", "Endothelial"]}
+    assert g["notes"] == [] and g["h29b_reading_sha256"] == h34.H29B_READING_SHA256
     assert set(g["rows"]) == set(h34.TASK_KEYS) and [r["seed"] for r in g["rows"][KEY1]] == [0, 1]
     assert set(g["rows"][KEY1][0]["scores"]["own"]) == {"floor", "control"}  # only the control is built and scored
+    assert g["rows"][KEY2][1]["factors"] == {"ratio": 1.5, "lineages": ["CM", "Endothelial"], "damping": [0.5, 0.75],
+                                             "ok": True, "why": None}
     assert h34.GATE_LINES["PASS"] in (gate_dir / "gate.txt").read_text() and h34.gate_passed(gate_dir, COMMIT)
     with pytest.raises(SystemExit, match="already holds a gate record"):
         h34.main(["gate", "--out", str(gate_dir), "--h29b", str(reading), *common])
@@ -955,8 +1077,9 @@ def test_gate_run_and_read_end_to_end_on_stand_in_stages(h34, fake_io, monkeypat
             "--commit", COMMIT]
     h34.main(read)
     res = json.loads((out / "reading.json").read_text())
-    assert res["void"] is False and res["why"] == [] and res["guards"]["V4"]["unequal"] == 0
-    # two seeds cannot reach the bar's eight: clause (b) fires here whatever the scores, and the read says so
+    assert res["void"] is False and res["why"] == [] and res["notes"] == []
+    assert res["guards"]["G1"] == {"means": 18, "unequal": 0, "largest_abs_diff": 0.0}
+    # two seeds cannot reach the bar's eight: clause (b) holds here whatever the scores, and the read says so
     assert res["outcome"] == "STOPPED" and res["clauses"] == ["b"]
     assert capsys.readouterr().out == "Try H34: STOPPED (b): OTS15 is not built.\n" + NOTHING_BUILT + "\n"
     assert (out / "reading.txt").read_text().startswith("Try H34: STOPPED (b): OTS15 is not built.\n")
@@ -964,7 +1087,7 @@ def test_gate_run_and_read_end_to_end_on_stand_in_stages(h34, fake_io, monkeypat
     assert all(v > 0 for v in res["changed_counts"][KEY2].values())
     # a committed mean a part in 1e12 off: the gate fails, exits 3 and prints the void line in its fixed words
     committed["tables"]["CLEAN"]["fold E10.5"]["mean"]["organ:f"] *= 1 + 1e-12
-    reading.write_text(json.dumps(committed, default=float))
+    commit_reading()
     with pytest.raises(SystemExit) as e:
         h34.main(["gate", "--out", str(tmp_path / "gate2"), "--h29b", str(reading), *common])
     assert e.value.code == 3
@@ -976,15 +1099,29 @@ def test_gate_run_and_read_end_to_end_on_stand_in_stages(h34, fake_io, monkeypat
     assert g2["verdict"] == "FAIL" and len(g2["why"]) == 1 and not h34.gate_passed(tmp_path / "gate2", COMMIT)
     with pytest.raises(SystemExit, match="has not said PASS"):
         h34.main([*run[:6], str(runs / "e95" / "again"), "--gate", str(tmp_path / "gate2"), *common])
-    # and a read against that gate is void
+    # and a read against that gate is void: the gate failed, and G1 fails on the run's own control too
     h34.main([*read[:4], str(tmp_path / "gate2"), *read[5:8], str(tmp_path / "out2"), *read[9:]])
-    assert capsys.readouterr().out.startswith("Try H34: VOID: G: the gate said 'FAIL', not PASS; ")
-    # a missing committed reading fails the gate too
-    with pytest.raises(SystemExit) as e:
-        h34.main(["gate", "--out", str(tmp_path / "gate3"), "--h29b", str(tmp_path / "none.json"), *common])
-    assert e.value.code == 3
-    assert json.loads((tmp_path / "gate3" / "gate.json").read_text())["why"] == [
-        "G1: row H29b's committed reading is void or unreadable"]
+    line = capsys.readouterr().out.splitlines()[0]
+    assert line.startswith("Try H34: VOID: v3: the gate said 'FAIL', not PASS; v3: G1 on the run's own control: "
+                           "CLEAN fold E10.5: the control's mean is ") and line.endswith("; nothing is built.")
+    # a reading that is not the file row H29b's row records, or a missing one, fails the gate too
+    for i, other in enumerate((reading.with_name("other.json"), tmp_path / "none.json")):
+        if i == 0:
+            other.write_text(reading.read_text() + "\n")
+        with pytest.raises(SystemExit) as e:
+            h34.main(["gate", "--out", str(tmp_path / f"gate{3 + i}"), "--h29b", str(other), *common])
+        assert e.value.code == 3
+        g3 = json.loads((tmp_path / f"gate{3 + i}" / "gate.json").read_text())
+        assert g3["why"] == ["G1: row H29b's committed reading is not at hand (missing, not the file its row "
+                             "records, or void)"]
+        assert g3["notes"] == ["note: row H29b's committed reading is not at hand; its target-free records are not "
+                               "compared"]
+    capsys.readouterr()
+    # tracked files or HEAD changing while the gate runs: no gate record at all
+    monkeypatch.setattr(h34, "git_state", lambda: {"commit": COMMIT, "tree_clean": False, "utc": "x"})
+    with pytest.raises(SystemExit, match="changed while the gate ran; no gate record is written"):
+        h34.main(["gate", "--out", str(tmp_path / "gate5"), "--h29b", str(reading), *common])
+    assert not (tmp_path / "gate5").exists()
 
 
 def test_the_read_step_writes_one_reading_and_never_overwrites_it(h34, monkeypatch, tmp_path, capsys):
@@ -1002,6 +1139,13 @@ def test_the_read_step_writes_one_reading_and_never_overwrites_it(h34, monkeypat
     out = tmp_path / "out"
     args = ["read", "--runs", str(runs), "--gate", str(runs / "gate"), "--h29b", str(tmp_path / "h29b.json"),
             "--out", str(out), "--commit", COMMIT]
+    # a reading that is not the file row H29b's row records: the read is void, and writes that
+    h34.main([*args[:8], str(tmp_path / "void"), *args[9:]])
+    assert capsys.readouterr().out.splitlines()[0] == (
+        "Try H34: VOID: v3: row H29b's committed reading is not at hand (missing, not the file its row records, or "
+        "void); nothing is built.")
+    monkeypatch.setattr(h34, "H29B_READING_SHA256",
+                        hashlib.sha256((tmp_path / "h29b.json").read_bytes()).hexdigest())
     h34.main(args)
     assert capsys.readouterr().out == "\n".join(NOT_STOPPED_LINES) + "\n"  # the two lines, and nothing else
     res = json.loads((out / "reading.json").read_text())
@@ -1168,8 +1312,10 @@ def test_each_step_prints_only_its_lines(h34):
     for fn in own:
         if fn not in (h34.run_transition, h34.run_gate, h34.cmd_read):
             assert _prints(fn) == [], fn.__name__
+    # the fixed words hold names (rows, steps, the two strengths) and no figure
+    names = r"H29b|H34|R32|G1|G2|step \(3\)|step 4|step 5|strength-1\.5|1\.5 times|strength-1 "
     for words in (*h34.FOLLOWS.values(), h34.SCREEN, h34.NO_PRIOR, *h34.GATE_LINES.values()):
-        assert not re.search(r"\d", re.sub(r"H29b|H34|R32|strength-1\.5|1\.5 times|strength-1 ", "", words)), words
+        assert not re.search(r"\d", re.sub(names, "", words)), words
 
 
 # ================================================================================================ the launcher
@@ -1235,10 +1381,18 @@ def _env(tmp_path, extra=None):
     return env
 
 
+def _stand_in_env(path):
+    """A folder that looks like a virtual environment to the launcher's check (an executable bin/python)."""
+    (path / "bin").mkdir(parents=True)
+    (path / "bin" / "python").write_text("#!/bin/sh\nexit 0\n")
+    (path / "bin" / "python").chmod(0o755)
+    return path
+
+
 @pytest.fixture()
 def repo(tmp_path):
-    """A throwaway git repository with a ledger that holds a row H34 and a stand-in for the script, a temporary home
-    and the stand-in uv."""
+    """A throwaway git repository with a ledger that holds a row H34, a stand-in for the script, for the virtual
+    environment and for the data folder, a temporary home and the stand-in uv."""
     root = tmp_path / "repo"
     (root / "experiments" / "harness").mkdir(parents=True)
     (tmp_path / "home").mkdir()
@@ -1248,7 +1402,9 @@ def repo(tmp_path):
     (root / "experiments" / "harness" / "TRIES.md").write_text("| H29b (a row) | heart | x |\n"
                                                               "| H34 (the row) | heart | x |\n")
     (root / "experiments" / "harness" / "h34_heart_organ_trend.py").write_text("# a stand-in\n")
-    (root / ".gitignore").write_text("runs/\n")
+    (root / ".gitignore").write_text("runs/\n.venv/\ndata/\n")
+    _stand_in_env(root / ".venv")
+    (root / "data" / "raw" / "T2").mkdir(parents=True)
 
     def git(*a):
         return subprocess.run(["git", "-c", "user.name=t", "-c", "user.email=t@t", "-c", "init.defaultBranch=x", *a],
@@ -1287,7 +1443,9 @@ def test_the_launcher_text():
         assert "'" not in m.group(1) and '"' not in m.group(1), m.group(0)
     assert len(re.findall(r"\$\{[A-Za-z0-9_]+:\?", sh)) == 2
     assert 'PY="uv run --frozen --no-sync python -I -B"' in code
-    assert 'export UV_PROJECT_ENVIRONMENT="${H34_VENV:-$PWD/.venv}"' in code
+    assert "VENV=${H34_VENV:-$PWD/.venv}\n" in code and 'export UV_PROJECT_ENVIRONMENT="$VENV"\n' in code
+    assert "DATA=${H34_DATA:-data/raw}\n" in code
+    assert max(len(ln) for ln in sh.splitlines()) <= 120
     assert "export OMP_NUM_THREADS=8 OPENBLAS_NUM_THREADS=8 MKL_NUM_THREADS=8 NUMPY_MADVISE_HUGEPAGE=0 " \
            'TMPDIR="$S/tmp"' in code
     assert 'if [ -n "${H34_DATA:-}" ]; then DATA_ARGS=(--data "$H34_DATA"); fi' in code
@@ -1353,6 +1511,14 @@ def test_the_launcher_runs_the_four_steps_in_order(repo):
 
 def test_the_launchers_environment_overrides(repo):
     venv, data = repo.tmp / "shared env", repo.tmp / "data raw"
+    # a named environment or data folder that is not there: refused before any step
+    got, err = _launch(repo, repo.head, "v0", H34_VENV=str(venv))
+    assert got == 99 and "no virtual environment at" in err and _exits(repo, "v0") == {"check": "99", "done": "99"}
+    got, err = _launch(repo, repo.head, "d0", H34_DATA=str(data))
+    assert got == 97 and "no T2 stages under" in err and _exits(repo, "d0") == {"check": "97", "done": "97"}
+    assert _uv_calls(repo) == [] and not (repo.root / "runs").exists()
+    _stand_in_env(venv)
+    (data / "T2").mkdir(parents=True)
     code, err = _launch(repo, repo.head, "e1", H34_VENV=str(venv), H34_DATA=str(data))
     assert (code, err) == (0, "")
     calls = _uv_calls(repo)

@@ -28,36 +28,46 @@ cells. Counted under rule 4: eight tries (two strengths and two placebos on two 
 Transitions: the two heart backtests on E10.5 (`T2h/<=E9.5->E10.5`, `T2h/<=E8.75->E10.5`), merged seed by seed into
 fold E10.5; seeds 0 to 9; worlds own (the truth as released) and CLEAN (radial_0, thin_0.5, thin_0, equal weights).
 
-THE RULE, on fold E10.5: STOP if (a) trend_s1.5 minus trend_s1.0 has a paired mean below 0 with at least 8 of 10
-seeds below 0 in EITHER world, or (b) trend_s1.5 is not ahead of the copy D_f by row H28's S1 bar (paired mean above
-+0.3 with at least 8 of 10 seeds above 0) in both worlds; (b) is read as row H28 codes S1: the bar must hold in own
-and in CLEAN, so it fires when either world fails it. Arm minus placebo and the DE terms are printed as labelled
-diagnostics and gate nothing. VOID wins over STOP.
+THE RULE (row H34's eighth cell), on fold E10.5, every difference paired by seed; a difference of exactly 0 is neither
+above nor below 0. Clause (a) holds in a world if trend_s1.5 minus trend_s1.0 has a paired mean below 0 with at least
+8 of the 10 seeds below 0 there. Row H28's S1 bar is met in a world if trend_s1.5 minus the control has a paired mean
+above +0.3 with at least 8 of the 10 seeds above 0 there. Clause (b) holds unless the bar is met in own and also in
+CLEAN. STOPPED if clause (a) holds in own or in CLEAN, or clause (b) holds; NOT STOPPED otherwise. VOID is decided
+first, and under VOID the rule is not read. Arm minus placebo and the DE terms are printed as labelled diagnostics and
+gate nothing.
 
-  gate  first, and not a try. It builds and scores only the control D_f, per transition and seed, and holds it
-        against row H29b's committed reading bit for bit (G1); and it reads the factors row H28's step hands
-        vec.core.apply_factors at strengths 1 and 1.5, stopping the step there, so that no count changes and no arm
-        is built (G2: the strength-1.5 log factors equal 1.5 times the strength-1 ones). It adds no reading of a
-        target: D_f's figures are row H29b's own. Writes gate.json and gate.txt under --out; exit 0 PASS, 3 FAIL. A
-        failed gate voids the read.
-  run   one transition, a seed range, one JSON under --out: the control and the four counted arms. Refused unless
-        the gate record of this commit says PASS. Prints only "<task> seed <s> (<sec> s) done" and "wrote <path>".
-  read  the void conditions first, then the rule; writes reading.json and reading.txt under --out and never
-        overwrites a reading; prints the outcome line and what follows, and nothing else.
+  gate  first, counting nothing. No counted arm and no placebo is built or scored in it.
+        G1: the control D_f, built and scored on both transitions and seeds 0 to 9 against the four truths, against
+        row H29b's committed D_f. Row H29b committed no per-seed part: its committed D_f is the plain ten-seed means
+        under `organ:f` in its reading.json (the file of sha256 H29B_READING_SHA256), tables[world][unit].mean for
+        the worlds own, CLEAN and the four single truths and the units of the two transitions and fold E10.5:
+        eighteen entries. Each, recomputed from the control's per-seed scores by row H29b's own arithmetic
+        (h29b.series with the world's truths of h29b.WORLDS and the unit's entry of h29b.UNITS, then the mean over
+        the seeds), must equal the committed number exactly, with no tolerance.
+        G2: in every seed's context of each transition, the log-factor mapping and the damping that row H28's step
+        gives vec.t1_scope.momentum_shift at strength 1.5 against those it gives at strength 1.0 (read through
+        h28.trend_expression itself, stopped at that call, so that no count is touched): every lineage's vector
+        equals 1.5 times the other, element by element, and the damping equals 1.5 times the other; exactly.
+        Writes gate.json and gate.txt under --out; exit 0 PASS, 3 FAIL. A failed gate voids the read.
+  run   one transition, a seed range, one JSON under --out: the four counted arms, beside a rebuilt control (the
+        paired reference of the read). Refused unless the gate record of this commit says PASS. Prints only
+        "<task> seed <s> (<sec> s) done" and "wrote <path>".
+  read  the void conditions first (the eighth cell's v3 to v5, as far as code can hold them), then the rule; writes
+        reading.json and reading.txt under --out and never overwrites a reading; prints the outcome line and what
+        follows, and nothing else. It repeats G1 on the run's own control, the control its differences are paired
+        with (void under v3 if it fails).
 Every step is refused before anything loads unless row H34 is in TRIES.md, the tracked tree is clean, HEAD is the
 commit given and vec is this checkout's own.
 
-G1 and the committed record. Row H29b committed its reading, not its per-seed parts. G1 therefore holds the control
-against every figure of D_f that reading holds and this row can form: the plain mean per world (own, CLEAN and each of
-their four truths) and unit (each of the two transitions, fold E10.5), by row H29b's own arithmetic (h29b.series),
-exactly; and, exactly, the target-free records beside them (the truths' and D's pool's cell numbers and core shares,
-D's record on the reference stage, both rms ratios, D_f's size, the draw). The read repeats G1 on the run's own
-control.
+Beside the gate and the read, gating nothing: the transitions' target-free records (the truths' and D's pool's cell
+numbers and core shares, D's record on the reference stage, both rms ratios, D_f's size, the draw, the size after
+the size step) are held against row H29b's committed ones, and any difference is written as a note.
 """
 
 from __future__ import annotations
 
 import argparse
+import functools
 import hashlib
 import importlib.util
 import json
@@ -100,6 +110,8 @@ GATE_JSON, GATE_TXT = "gate.json", "gate.txt"
 SOURCE = "experiments/harness/h34_heart_organ_trend.py (row H34)"
 RESULTS = HERE / "experiments" / "harness" / "results" / "h34_heart_organ_trend"
 H29B_READING = h29b.RESULTS / "reading.json"  # row H29b's committed reading (its parts were not committed)
+# the file row H29b's outcome cell records (and row H34's eighth cell names): G1 is held against this file only
+H29B_READING_SHA256 = "e86754f7b4ca012886aee9d7fcadf969eda26d57f27eeaf928e469d8788a3784"
 
 TASK_KEYS = h28.TASK_KEYS  # the two heart backtests on E10.5
 UNITS = h28.UNITS  # each transition, and fold E10.5 (the two merged seed by seed)
@@ -114,9 +126,8 @@ CONTROL = h28.CONTROL
 PERM_SEED = h28.PERM_SEED  # the placebo's derangement (20261120)
 PRACTICE_BUDGET = h28.PRACTICE_BUDGET
 BAR, MIN_SEEDS = h28.BAR, h28.MIN_SEEDS  # row H28's S1 bar: +0.3 board points, 8 of 10 seeds
-TOL, FACTOR_RTOL = h28.TOL, h28.FACTOR_RTOL
+TOL, FACTOR_RTOL = h28.TOL, h28.FACTOR_RTOL  # 1e-9 on a shape term's skill; relative 1e-12 on a budget
 SIZE_LOG_TOL = h29b.SIZE_LOG_TOL
-FACTOR_LOG_TOL = 1e-12  # G2: on a log factor
 DE_TERMS, TERMS, SHAPE_TERMS = h28.DE_TERMS, h28.TERMS, h28.SHAPE_TERMS
 TAG = h28.TAG
 FILE, RULING_ROW = "OTS15", "R32"  # the line's one file and the ruling row its builder option stands under
@@ -186,16 +197,15 @@ def load_gate(gate_dir: Path) -> dict | None:
 
 
 def gate_record_reasons(gate: dict | None, commit: str | None) -> list[str]:
-    """G: the gate record is missing, did not say PASS, or is not of the run commit from a clean tree."""
+    """v3: the gate failed, or its record is missing or of another commit than the run commit (a record whose tree was
+    not the commit's is not of the commit)."""
     if not isinstance(gate, dict) or gate.get("axis") != GATE_AXIS:
-        return ["G: no gate record"]
+        return ["v3: no gate record"]
     if gate.get("verdict") != PASS:
-        return [f"G: the gate said {gate.get('verdict')!r}, not {PASS}"]
+        return [f"v3: the gate said {gate.get('verdict')!r}, not {PASS}"]
     prov = gate.get("provenance") or {}
-    if not commit or gate.get("commit") != commit or prov.get("commit") != commit:
-        return ["G: the gate record is not of the run commit"]
-    if prov.get("tree_clean") is not True:
-        return ["G: the gate record comes from a dirty tree"]
+    if not commit or gate.get("commit") != commit or prov.get("commit") != commit or prov.get("tree_clean") is not True:
+        return ["v3: the gate record is not of the run commit"]
     return []
 
 
@@ -296,8 +306,9 @@ def build_control(ctx: harness.BuildContext, target: dict) -> tuple[Stage, dict,
 
 def build_arms(ctx: harness.BuildContext, target: dict, strengths=STRENGTHS) -> tuple[dict, dict]:
     """Every arm of one seed on D's context: the control (`harness._copy`) and, per strength, row H28's step and its
-    placebo (h28.trend_expression), each then through size_and_half; and the identity checks of guard V5. Strength 1
-    must be among the strengths: its arm is held against the harness's own b0_trend on the same context."""
+    placebo (h28.trend_expression), each then through size_and_half; and the identity checks the read's condition v5
+    holds the arms to. Strength 1 must be among the strengths: its arm is held against the harness's own b0_trend on
+    the same context."""
     if LO not in strengths:
         raise ValueError("strength 1 must be among the strengths")
     pre = {CONTROL: (harness._copy(ctx), None, None, {"strength": None})}
@@ -343,58 +354,60 @@ def score_arms(tr: Transition, s: int, preds: dict) -> tuple[dict, dict, dict]:
 
 
 # ------------------------------------------------------------------------------------------------ the gate's factors
-class _FactorsRead(Exception):
-    """Raised in place of apply_factors once the factors are read: the step stops before any count changes."""
+class _StepRead(Exception):
+    """Raised in place of momentum_shift once its arguments are read: the step stops before any count is touched."""
 
 
-def step_factors(ctx: harness.BuildContext, strength: float) -> np.ndarray:
-    """The factor matrix (the drawn cells' types x genes; the exponential of the log factors) that row H28's step at
-    `strength` hands vec.core.apply_factors on this context: read through h28.trend_expression itself, which is
-    stopped at that call. No count is changed and no arm is built; vec.t1_scope is as it was afterwards."""
-    seen: list[np.ndarray] = []
+def step_arguments(ctx: harness.BuildContext, strength: float) -> tuple[float, dict[str, np.ndarray]]:
+    """The damping and the log-factor mapping (lineage -> vector, `logf_by_type`) that row H28's step at `strength`
+    gives vec.t1_scope.momentum_shift on this context: read through h28.trend_expression itself, which is stopped at
+    that call. Both come from the input stages and the draw only. No count is touched and no arm is built;
+    vec.t1_scope is as it was afterwards. The stand-in keeps momentum_shift's signature, whose defaults (eps,
+    min_cells) b0_trend_factors reads before the call."""
+    seen: list[tuple[float, dict[str, np.ndarray]]] = []
+    own = t1_scope.momentum_shift
 
-    def stop(C, factors, *a, **k):
-        seen.append(np.array(factors, dtype=np.float64))
-        raise _FactorsRead
+    @functools.wraps(own)
+    def stop(start, ref, target_like, damping, *a, logf_by_type=None, **k):
+        seen.append((float(damping), {t: np.array(v, dtype=np.float64) for t, v in (logf_by_type or {}).items()}))
+        raise _StepRead
 
-    own = t1_scope.apply_factors
-    t1_scope.apply_factors = stop
+    t1_scope.momentum_shift = stop
     try:
         h28.trend_expression(ctx, strength)
-    except _FactorsRead:
+    except _StepRead:
         pass
     finally:
-        t1_scope.apply_factors = own
+        t1_scope.momentum_shift = own
     if len(seen) != 1:
-        raise RuntimeError("the trend step did not reach apply_factors exactly once")
+        raise RuntimeError("the trend step did not reach momentum_shift exactly once")
     return seen[0]
 
 
-def factor_identity(f_lo: np.ndarray, f_hi: np.ndarray, ratio: float = HI / LO) -> dict:
-    """G2 on one draw. f_lo and f_hi are the factor matrices of the lower and the higher strength (step_factors);
-    the check is max |log f_hi - ratio x log f_lo| <= FACTOR_LOG_TOL over every type and gene, with the same shape
-    and at least one factor away from 1 at the lower strength (an identity between factors that move nothing shows
-    nothing)."""
-    lo, hi = np.asarray(f_lo, dtype=np.float64), np.asarray(f_hi, dtype=np.float64)
-    rec = {"ratio": float(ratio), "tol": FACTOR_LOG_TOL, "shape": [list(lo.shape), list(hi.shape)], "ok": False}
-    if lo.shape != hi.shape or lo.ndim != 2 or lo.size == 0:
-        return {**rec, "why": "the two strengths' factor matrices differ in shape or are empty"}
-    if not (np.isfinite(lo).all() and np.isfinite(hi).all() and (lo > 0).all() and (hi > 0).all()):
-        return {**rec, "why": "a factor is not a positive finite number"}
-    a, b = np.log(lo), np.log(hi)
-    dev, moved = float(np.abs(b - ratio * a).max()), float(np.abs(a).max())
-    rec.update(max_abs_dev=dev, max_abs_log_factor=moved, moved_types=int((np.abs(a).max(axis=1) > 0).sum()))
-    if not moved > 0:
-        return {**rec, "why": "no factor moves at the lower strength (the step shifts no lineage)"}
-    if not dev <= FACTOR_LOG_TOL:
-        return {**rec, "why": f"a log factor is {dev:.3e} from {ratio:g} times the lower strength's"}
+def factor_identity(lo: tuple[float, dict], hi: tuple[float, dict], ratio: float = HI / LO) -> dict:
+    """G2 in one seed's context, exactly and with no tolerance. lo and hi are step_arguments at the lower and the
+    higher strength. For every lineage of the mapping, the log-factor vector given at the higher strength equals
+    `ratio` times the vector given at the lower one, element by element; and the damping given at the higher strength
+    equals `ratio` times the damping given at the lower one."""
+    (d_lo, m_lo), (d_hi, m_hi) = lo, hi
+    rec = {"ratio": float(ratio), "lineages": sorted(m_lo), "damping": [float(d_lo), float(d_hi)], "ok": False}
+    if sorted(m_lo) != sorted(m_hi):
+        return {**rec, "why": "the two strengths' mappings name different lineages"}
+    off = [k for k in sorted(m_lo)
+           if m_lo[k].shape != m_hi[k].shape or not np.array_equal(m_hi[k], ratio * m_lo[k])]
+    if off:
+        return {**rec, "why": f"the log-factor vectors of {off} are not {ratio:g} times the lower strength's"}
+    if not d_hi == ratio * d_lo:
+        return {**rec, "why": f"the damping {d_hi!r} is not {ratio:g} times the lower strength's {d_lo!r}"}
     return {**rec, "ok": True, "why": None}
 
 
 # ------------------------------------------------------------------------------------------------ the committed D_f
-def load_h29b_reading(path: Path = H29B_READING) -> dict | None:
+def load_h29b_reading(path: Path | None = None) -> dict | None:
+    """Row H29b's committed reading: the file of sha256 H29B_READING_SHA256 and no other (None otherwise)."""
     try:
-        return json.loads(Path(path).read_text())
+        raw = Path(H29B_READING if path is None else path).read_bytes()
+        return json.loads(raw) if hashlib.sha256(raw).hexdigest() == H29B_READING_SHA256 else None
     except (OSError, ValueError):
         return None
 
@@ -402,16 +415,59 @@ def load_h29b_reading(path: Path = H29B_READING) -> dict | None:
 def committed_reasons(committed: dict | None, tag: str) -> list[str]:
     if (not isinstance(committed, dict) or committed.get("row") != h29b.ROW or committed.get("void") is not False
             or committed.get("outcome") != h29b.READ):
-        return [f"{tag}: row H29b's committed reading is void or unreadable"]
+        return [f"{tag}: row H29b's committed reading is not at hand (missing, not the file its row records, or void)"]
     return []
 
 
+def reproduces(rows: dict[str, list[dict]], committed: dict, tag: str) -> tuple[list[str], dict]:
+    """G1, bit for bit: the control's plain mean per world and unit, by row H29b's own arithmetic (as h29b.cell forms
+    a mean: h29b.series with the world's truths and the unit's entry of h29b.UNITS, then the mean over the seeds),
+    equals row H29b's committed reading.json (tables[world][unit].mean under organ:f) exactly: eighteen entries, no
+    tolerance."""
+    why, n, worst = [], 0, 0.0
+    for w, ts in G1_WORLDS:
+        for u in G1_UNITS:
+            want = committed["tables"][w][u]["mean"][D_F]
+            got = float(h29b.series(rows, h29b.UNITS[u], ts, CONTROL).mean())
+            n += 1
+            if got != want:
+                worst = max(worst, abs(got - want))
+                why.append(f"{tag}: {w} {u}: the control's mean is {got - want:+.3e} from row H29b's committed D_f")
+    return why, {"means": n, "unequal": len(why), "largest_abs_diff": worst}
+
+
+def gate_reasons(rows: dict[str, list[dict]], committed: dict | None) -> tuple[list[str], dict]:
+    """Why the gate fails (empty when it passes), and what it compared. G1: reproduces, on the control's rows of both
+    transitions and every seed. G2: factor_identity in every seed's context of each transition."""
+    dist: dict = {"G1": None, "G2": None}
+    why = committed_reasons(committed, "G1")
+    for key in TASK_KEYS:
+        if key not in rows:
+            why.append(f"G1: missing transition {key}")
+        elif [r["seed"] for r in rows[key]] != list(SEEDS):
+            why.append(f"G1: {key}: seeds {[r['seed'] for r in rows[key]]}, not {list(SEEDS)}")
+    if why:
+        return why, dist
+    w1, dist["G1"] = reproduces(rows, committed, "G1")
+    w2, lineages, n = [], set(), 0
+    for key in TASK_KEYS:
+        for r in rows[key]:
+            f = r["factors"]
+            n += 1
+            lineages |= set(f.get("lineages") or [])
+            if f.get("ok") is not True:
+                w2.append(f"G2: {key} seed {r['seed']}: {f.get('why')}")
+    dist["G2"] = {"contexts": n, "failed": len(w2), "lineages": sorted(lineages)}
+    return w1 + w2, dist
+
+
+# ------------------------------------------------------------------------------------------------ notes (gate nothing)
 def _fields_differ(mine, theirs, fields) -> bool:
     return not (isinstance(mine, dict) and isinstance(theirs, dict)
                 and all(k in mine and k in theirs and mine[k] == theirs[k] for k in fields))
 
 
-def same_facts(key: str, f: dict, committed: dict, tag: str = "V3") -> list[str]:
+def same_facts(key: str, f: dict, committed: dict, tag: str = "note") -> list[str]:
     """A transition's target-free records against row H29b's committed reading, exactly: the truths of the two
     worlds and D's pool (cell numbers and core shares, as row H27's V3 compares them), D's record on the reference
     stage, both rms ratios and D_f's size; and the size result's reference is the loaded cloud (row H27's V7)."""
@@ -440,14 +496,14 @@ def pool_draw(rows: list[dict]) -> dict:
             "repeated_rows_at_least": max(r["draw"]["repeated_rows_at_least"] for r in rows)}
 
 
-def same_draw(key: str, rows: list[dict], committed: dict, tag: str) -> list[str]:
+def same_draw(key: str, rows: list[dict], committed: dict, tag: str = "note") -> list[str]:
     if pool_draw(rows) != committed["pools_short"][key].get(POOL):
         return [f"{tag}: {key}: the control's draw from D's pool differs from row H29b's"]
     return []
 
 
-def at_size(key: str, seed: int, name: str, rec: dict, target: dict, tag: str) -> list[str]:
-    """An arm at D_f's size (h29b.size_checks's two conditions)."""
+def at_size(key: str, seed: int, name: str, rec: dict, target: dict, tag: str = "note") -> list[str]:
+    """A build at D_f's size (h29b.size_checks's two conditions)."""
     why = []
     if not abs(rec["log_rms_after_vs_target"]) <= SIZE_LOG_TOL:
         why.append(f"{tag}: {key} seed {seed}: {name} is not at D_f's size")
@@ -456,63 +512,42 @@ def at_size(key: str, seed: int, name: str, rec: dict, target: dict, tag: str) -
     return why
 
 
-def reproduces(rows: dict[str, list[dict]], committed: dict, tag: str) -> tuple[list[str], dict]:
-    """Bit for bit: the control's plain mean per world and unit, by row H29b's own arithmetic (h29b.series), equals
-    row H29b's committed reading.json (tables[world][unit].mean of organ:f) exactly."""
-    why, n, worst = [], 0, 0.0
-    for w, ts in G1_WORLDS:
-        for u in G1_UNITS:
-            want = committed["tables"][w][u]["mean"][D_F]
-            got = float(h29b.series(rows, h29b.UNITS[u], ts, CONTROL).mean())
-            n += 1
-            if got != want:
-                worst = max(worst, abs(got - want))
-                why.append(f"{tag}: {w} {u}: the control's mean is {got - want:+.3e} from row H29b's committed D_f")
-    return why, {"means": n, "unequal": len(why), "largest_abs_diff": worst}
-
-
-def gate_reasons(rows: dict[str, list[dict]], facts: dict[str, dict], committed: dict | None
-                 ) -> tuple[list[str], dict]:
-    """Why the gate fails (empty when it passes), and its distances. G1: the control D_f against row H29b's committed
-    reading (same_facts, same_draw, at_size, reproduces). G2: factor_identity in every seed of every transition."""
-    dist: dict = {"G1": None, "G2": None}
-    why = committed_reasons(committed, "G1")
-    for key in TASK_KEYS:
-        if key not in rows or key not in facts:
-            why.append(f"G1: missing transition {key}")
-        elif [r["seed"] for r in rows[key]] != list(SEEDS):
-            why.append(f"G1: {key}: seeds {[r['seed'] for r in rows[key]]}, not {list(SEEDS)}")
-    if why:
-        return why, dist
-    devs = []
-    for key in TASK_KEYS:
-        why += same_facts(key, facts[key], committed, "G1") + same_draw(key, rows[key], committed, "G1")
-        for r in rows[key]:
-            why += at_size(key, r["seed"], "the control", r["size_record"], facts[key]["d_targets"][D_F], "G1")
-            f = r["factors"]
-            if f.get("ok") is not True:
-                why.append(f"G2: {key} seed {r['seed']}: the strength-{HI:g} log factors are not {HI / LO:g} times "
-                           f"the strength-{LO:g} ones ({f.get('why')})")
-            devs.append(f.get("max_abs_dev"))
-    w1, dist["G1"] = reproduces(rows, committed, "G1")
-    seen = [d for d in devs if isinstance(d, int | float)]
-    dist["G2"] = {"draws": len(devs), "largest_abs_dev": max(seen) if seen else None, "tol": FACTOR_LOG_TOL}
-    return why + w1, dist
+def notes(facts: dict[str, dict], rows: dict[str, list[dict]], committed: dict | None, size_of) -> list[str]:
+    """Gating nothing: each transition's target-free records against row H29b's committed ones (same_facts,
+    same_draw) and the control at D_f's size in every seed (at_size; `size_of` gives a row's size record of the
+    control). Every difference is a note; none is expected."""
+    try:
+        if committed_reasons(committed, "note"):
+            return ["note: row H29b's committed reading is not at hand; its target-free records are not compared"]
+        out = []
+        for key in TASK_KEYS:
+            out += same_facts(key, facts[key], committed) + same_draw(key, rows[key], committed)
+            for r in rows[key]:
+                out += at_size(key, r["seed"], "the control", size_of(r), facts[key]["d_targets"][D_F])
+        return out
+    except (KeyError, TypeError, ValueError, IndexError, AttributeError) as e:
+        return [f"note: the target-free records cannot be compared ({type(e).__name__}: {e})"]
 
 
 # ------------------------------------------------------------------------------------------------ the fixed words
 SCREEN = "A screen, not evidence of development."
 NO_PRIOR = "No row on record had read the trend step on D's pool at any strength before this one."
-FOLLOWS = {
-    NOT_STOPPED: f"What follows: the builder option under ruling row {RULING_ROW} may be coded and reviewed.",
+FOLLOWS = {  # row H34's eighth cell, "What follows, fixed now"
+    NOT_STOPPED: (f"What follows: step (3), the builder option under ruling row {RULING_ROW}, is coded and reviewed, "
+                  "then the identity builds (step 4), then the file (step 5), each as the line's Build passage has "
+                  "it; NOT STOPPED uploads nothing, the file going in only under the line's Rule and on the "
+                  "captain's word at the time."),
     STOPPED: "What follows: nothing is built.",
     VOID: "What follows: nothing is built.",
 }
-RULE = (f"RULE, fixed in the row before its run, on fold E10.5: STOP if (a) {arm(HI)} minus {arm(LO)} has a paired "
-        f"mean below 0 with at least {MIN_SEEDS} of 10 seeds below 0 in EITHER world, or (b) {arm(HI)} is not ahead "
-        f"of the copy D_f by row H28's S1 bar (paired mean above +{BAR} with at least {MIN_SEEDS} of 10 seeds above "
-        "0) in both worlds: the bar must hold in own and in CLEAN, as row H28 codes S1. Arm minus placebo and the "
-        "DE terms are labelled diagnostics and gate nothing. VOID wins over STOP.")
+RULE = (f"RULE, fixed in the row before its run, on fold E10.5 (every difference paired by seed; a difference of "
+        f"exactly 0 is neither above nor below 0). Clause (a) holds in a world if {arm(HI)} minus {arm(LO)} has a "
+        f"paired mean below 0 with at least {MIN_SEEDS} of the 10 seeds below 0 in that world. The S1 bar (row "
+        f"H28's) is met in a world if {arm(HI)} minus the control D_f has a paired mean above +{BAR} with at least "
+        f"{MIN_SEEDS} of the 10 seeds above 0 in that world. Clause (b) holds unless the S1 bar is met in own and "
+        "also in CLEAN; the bar failing in one world is enough for clause (b). STOPPED if clause (a) holds in own "
+        "or in CLEAN, or clause (b) holds; NOT STOPPED otherwise. VOID is decided first, and under VOID the rule is "
+        "not read. Arm minus placebo and the DE terms are labelled diagnostics and gate nothing.")
 L0 = ("Row H34 (commit {commit}). The practice read the heart's fourth search line requires before any build: row "
       "H28's trend arms on row H29b's D_f form (D's pool at its practice forecast size, the half). One truth (E10.5; "
       "the two backtests merged seed by seed into fold E10.5), worlds own and CLEAN, seeds 0 to 9, released stages "
@@ -526,9 +561,10 @@ L1 = (f"Arms: the control is the copy D_f (row H29b's {D_F}: the copy draw from 
       f"level bins (seed {PERM_SEED}). Counted: eight tries (two strengths and two placebos on two transitions); the "
       "control is a reference.")
 GATE_LINES = {
-    PASS: (f"GATE PASS: the control D_f reproduces row H29b's committed reading bit for bit and the strength-{HI:g} "
-           f"log factors equal {HI / LO:g} times the strength-{LO:g} ones; the run may follow at this commit."),
-    FAIL: "GATE FAIL: the read is void; nothing further runs.",
+    PASS: (f"GATE PASS: G1 and G2 hold (the control D_f reproduces row H29b's committed D_f bit for bit; the "
+           f"strength-{HI:g} factors equal {HI / LO:g} times the strength-{LO:g} factors); the run may follow at "
+           "this commit."),
+    FAIL: "GATE FAIL: G1 or G2 does not hold; the run step refuses, no try is counted and the outcome is VOID.",
 }
 
 
@@ -547,21 +583,24 @@ def follows_line(outcome: str) -> str:
 
 # ------------------------------------------------------------------------------------------------ the gate step
 def gate_text(g: dict) -> str:
-    lines = [f"Row {ROW}'s gate (commit {g['commit']}): first, and not a try. It builds and scores only the control "
-             "D_f (the copy draw from D's pool at its practice forecast size, the half), whose figures row H29b "
-             "committed, and it reads the trend step's factors without changing a count; no arm is built.",
-             f"G1 holds the control, on both E10.5 backtests and seeds 0 to 9, against row H29b's committed reading "
-             f"(sha256 {g.get('h29b_reading_sha256')}): every plain mean of D_f it holds that this row can form, by "
-             "row H29b's own arithmetic, exactly, and the target-free records beside them, exactly."]
+    lines = [f"Row {ROW}'s gate (commit {g['commit']}): first, counting nothing. No counted arm and no placebo is "
+             "built or scored in it: the one build it scores is the control D_f (the copy draw from D's pool at its "
+             "practice forecast size, the half), a reference whose figures row H29b committed; the factors it checks "
+             "come from the input stages and the draw only.",
+             f"G1: the control, built and scored on both transitions and seeds 0 to 9 against the four truths, "
+             f"against the plain ten-seed means under {D_F} in row H29b's reading.json (sha256 "
+             f"{H29B_READING_SHA256}): eighteen entries, by row H29b's own arithmetic, exactly, with no tolerance.",
+             f"G2: in every seed's context, every lineage's log-factor vector given to momentum_shift at strength "
+             f"{HI:g} against {HI / LO:g} times the one given at strength {LO:g}, and the damping likewise; exactly."]
     d = g.get("distances") or {}
     if d.get("G1"):
-        lines.append(f"G1: {d['G1']['means']} means compared, {d['G1']['unequal']} unequal (largest difference "
-                     f"{d['G1']['largest_abs_diff']:.3e}).")
+        lines.append(f"G1 found: {d['G1']['means']} means compared, {d['G1']['unequal']} unequal (largest "
+                     f"difference {d['G1']['largest_abs_diff']:.3e}).")
     if d.get("G2"):
-        big = d["G2"]["largest_abs_dev"]
-        lines.append(f"G2: the strength-{HI:g} log factors against {HI / LO:g} times the strength-{LO:g} ones, over "
-                     f"{d['G2']['draws']} draws: largest difference "
-                     f"{'not read' if big is None else format(big, '.3e')} (tolerance {FACTOR_LOG_TOL:g}).")
+        lines.append(f"G2 found: {d['G2']['contexts']} contexts, {d['G2']['failed']} failed; the mapping's lineages: "
+                     f"{', '.join(d['G2']['lineages']) or 'none'}.")
+    lines.append("Beside the gate, gating nothing (the target-free records against row H29b's committed ones): "
+                 + ("no difference." if not g.get("notes") else "; ".join(g["notes"])))
     lines.append(GATE_LINES[g["verdict"]])
     if g["verdict"] == FAIL:
         lines += ["WHY: " + "; ".join(g["why"]), outcome_line(VOID, g["why"]), follows_line(VOID)]
@@ -569,20 +608,20 @@ def gate_text(g: dict) -> str:
 
 
 def gate_seed(tr: Transition, s: int, data_dir: Path) -> dict:
-    """One seed of the gate: the control built and scored; the step's factors at the two strengths read, no arm
+    """One seed of the gate: the control built and scored; the step's arguments at the two strengths read, no arm
     built."""
     t0 = time.time()
     ctx = context(tr, s)
     with harness.guarded_reads(harness.REPO_ROOT, data_dir):
         stage, rec, draw = build_control(ctx, tr.target)
-        factors = factor_identity(step_factors(ctx, LO), step_factors(ctx, HI))
+        factors = factor_identity(step_arguments(ctx, LO), step_arguments(ctx, HI))
     scores, skills, groups = score_arms(tr, s, {CONTROL: stage})
     return {"seed": s, "build_seed": harness.BUILD_SEED_OFFSET + s, "n_cells": {CONTROL: int(stage.n)},
             "size_record": rec, "draw": draw, "factors": factors, "scores": scores, "skills": skills,
             "groups": groups, "seconds": round(time.time() - t0, 1)}
 
 
-def run_gate(out: Path, data_dir: Path, commit: str | None, h29b_reading: Path = H29B_READING) -> int:
+def run_gate(out: Path, data_dir: Path, commit: str | None, h29b_reading: Path | None = None) -> int:
     """The gate step: the refusals first, then both transitions and every seed in this one process."""
     refuse_state(commit, "gate")
     out = Path(out)
@@ -594,28 +633,29 @@ def run_gate(out: Path, data_dir: Path, commit: str | None, h29b_reading: Path =
         try:
             tr = load_transition(key, data_dir)
         except t2_build.UnmappedT2LabelError as e:
-            why.append(f"G1: {key}: labels without a T2 chamber category on the reference stage: {sorted(e.labels)}")
+            why.append(f"G1: {key}: the control cannot be built: labels without a T2 chamber category on the "
+                       f"reference stage: {sorted(e.labels)}")
             continue
         facts[key], rows[key] = tr.facts, []
         for s in SEEDS:
             rows[key].append(gate_seed(tr, s, data_dir))
             print(f"{key} seed {s} ({rows[key][-1]['seconds']} s) done", flush=True)
         del tr
+    state = git_state()
+    if state.get("tree_clean") is not True or state.get("commit") != commit:
+        sys.exit(f"{ROW} is refused: tracked files or HEAD changed while the gate ran; no gate record is written")
     dist: dict = {}
     if not why:
         try:
-            why, dist = gate_reasons(rows, facts, committed)
+            why, dist = gate_reasons(rows, committed)
         except (KeyError, TypeError, ValueError, IndexError, AttributeError) as e:  # a malformed committed record
             why = [f"G1: row H29b's committed reading cannot be read ({type(e).__name__}: {e})"]
-    try:
-        sha = hashlib.sha256(Path(h29b_reading).read_bytes()).hexdigest()
-    except OSError:
-        sha = None
-    g = {"row": ROW, "axis": GATE_AXIS, "commit": commit, "provenance": git_state(),
-         "label": "the gate of row H34: not a try; the control D_f alone is built and scored, and its figures are "
-                  "row H29b's own", "verdict": FAIL if why else PASS, "why": why, "distances": dist,
-         "h29b_reading": str(h29b_reading), "h29b_reading_sha256": sha, "strengths": list(STRENGTHS),
-         "transitions": facts, "rows": rows, "source": SOURCE}
+    g = {"row": ROW, "axis": GATE_AXIS, "commit": commit, "provenance": state,
+         "label": "the gate of row H34: counting nothing; the control D_f alone is built and scored, and its figures "
+                  "are row H29b's own", "verdict": FAIL if why else PASS, "why": why, "distances": dist,
+         "notes": notes(facts, rows, committed, lambda r: r["size_record"]) if len(facts) == len(TASK_KEYS) else [],
+         "h29b_reading_sha256": H29B_READING_SHA256, "strengths": list(STRENGTHS), "transitions": facts, "rows": rows,
+         "source": SOURCE}
     out.mkdir(parents=True, exist_ok=True)
     (out / GATE_JSON).write_text(json.dumps(g, indent=1, default=float))
     (out / GATE_TXT).write_text(gate_text(g))
@@ -668,116 +708,112 @@ def load_parts(root: Path) -> dict[str, list[dict]]:
 
 
 # ------------------------------------------------------------------------------------------------ the void
-def identities(key: str, rows: list[dict], target: dict) -> list[str]:
-    """V5: strength 1 is the harness's own b0_trend on D's context, bit for bit; every arm has the control's draw,
-    coordinates (before and after the size step and half) and cell number, at D_f's size; and no shape term moves."""
+def identities(key: str, rows: list[dict]) -> list[str]:
+    """v5, the arm is the arm the third cell defines: trend_s1.0's expression and coordinates before the size step
+    are `harness._b0_t2(ctx, trend=True)`'s on the same context, bit for bit; every arm's draw, coordinates (before
+    and after the size step and the half) and cell number are the control's; and no arm's d2_shape, occupancy_dice or
+    scale_log_ratio is more than 1e-9 from the control's in any seed and truth."""
     why = []
     for r in rows:
         c = r["checks"]
-        tag = f"V5: {key} seed {r['seed']}"
+        tag = f"v5: {key} seed {r['seed']}"
         if c.get("s1_equals_harness_b0_trend") is not True:
-            why.append(f"{tag}: strength 1 is not the harness's b0_trend expression on the same cells")
+            why.append(f"{tag}: {arm(LO)} before the size step is not the harness's b0_trend on the same context")
         for k in ("same_draw", "pre_size_coords_equal", "post_size_coords_equal"):
             if c.get(k) is not True:
                 why.append(f"{tag}: {k.replace('_', ' ')} fails")
         if set(r["n_cells"]) != set(BUILT) or len(set(r["n_cells"].values())) != 1:
-            why.append(f"{tag}: the arms' cell numbers differ")
-        for name in BUILT:
-            why += at_size(key, r["seed"], name, r["records"][name]["size"], target, "V5")
+            why.append(f"{tag}: the arms' cell numbers are not the control's")
         for q in TRUTHS:
-            for name in BUILT:
+            for name in COUNTED:
                 for m in SHAPE_TERMS:
-                    if abs(r["skills"][q][name][m] - r["skills"][q][CONTROL][m]) > TOL:
+                    if not abs(r["skills"][q][name][m] - r["skills"][q][CONTROL][m]) <= TOL:
                         why.append(f"{tag} {q}: {name}'s {m} is not the control's")
     return why
 
 
 def trend_records(key: str, rows: list[dict], pool_cells: int) -> list[str]:
-    """V6: each arm's record names its strength and kind, the transition's own budget and that budget times the
-    strength, and D's pool as the step's reference; the arms shift the same lineages, at least one; and no placebo
-    leaves a gene on its own factor."""
+    """v5, the arms' records: each holds its transition's budget as it is before the strength is applied (relative
+    1e-12) and D's pool as the step's reference; the arms shift the same lineages; no placebo leaves a gene on its
+    own factor."""
     why = []
     want = PRACTICE_BUDGET[key]
     for r in rows:
         shifted = set()
-        tag = f"V6: {key} seed {r['seed']}"
+        tag = f"v5: {key} seed {r['seed']}"
         for s in STRENGTHS:
             for name, is_placebo in ((arm(s), False), (placebo(s), True)):
                 rec = r["records"][name]["trend"]
-                if rec.get("strength") != s or bool(rec.get("placebo")) != is_placebo:
-                    why.append(f"{tag}: {name}'s record is not strength {s:g} "
-                               f"{'placebo' if is_placebo else 'trend'}")
-                if abs(rec["budget_days"] - want) > FACTOR_RTOL * want:
+                if not abs(rec["budget_days"] - want) <= FACTOR_RTOL * want:
                     why.append(f"{tag}: {name}'s budget is {rec['budget_days']}, not {want}")
-                if abs(rec["effective_budget_days"] - s * want) > FACTOR_RTOL * want:
-                    why.append(f"{tag}: {name}'s budget at its strength is not {s:g} times {want}")
                 if rec["ref_cells"] != pool_cells:
                     why.append(f"{tag}: {name}'s reference is not D's pool")
                 shifted.add(tuple(rec["shifted"]))
                 if is_placebo and any(v for v in rec["fixed_points"].values()):
                     why.append(f"{tag}: {name} leaves a gene on its own factor")
-        if len(shifted) != 1 or not next(iter(shifted)):
-            why.append(f"{tag}: the arms shift different lineages, or none")
+        if len(shifted) != 1:
+            why.append(f"{tag}: the arms shift different lineages")
     return why
 
 
 def void_reasons(parts: dict[str, list[dict]], committed: dict | None, gate: dict | None, commit: str | None
                  ) -> tuple[list[str], dict]:
-    """Why the read is void (empty when it may be read), and the control's distance from row H29b's committed D_f.
-    G the gate record; V1 completeness; V2 the commit and the tree; V3 the transition's target-free records against
-    row H29b's; V4 the run's own control against row H29b's committed D_f, bit for bit; V5 the identities; V6 the
-    trend records."""
-    dist: dict = {"V4": None}
-    why = gate_record_reasons(gate, commit) + committed_reasons(committed, "V3")
+    """Why the read is void (empty when it may be read), by the eighth cell's conditions that code can hold, and
+    what G1 found on the run's own control.
+      v3  the gate failed, or its record is missing or of another commit than the run commit; and G1 repeated on the
+          run's own control, the control the rule's differences are paired with
+      v4  the read is not the read registered: a transition, seed, truth or arm is missing or a seed occurs twice
+          (or a part of another transition is among them); the parts come from more than one commit, from a commit
+          other than the run commit or from an unclean tree
+      v5  an arm is not the arm the third cell defines (identities, trend_records)
+    (v1, v2 and v6 are not the read's to decide: the line's own void, the row before its steps, which every step's
+    refusal holds, and no test score in the row.)"""
+    dist: dict = {"G1": None}
+    why = gate_record_reasons(gate, commit)
     every = [p for ps in parts.values() for p in ps]
     complete = True
-    for key in TASK_KEYS:  # V1
+    for key in TASK_KEYS:  # v4: completeness
         ps = parts.get(key)
         if not ps:
-            why.append(f"V1: missing transition {key}")
+            why.append(f"v4: missing transition {key}")
             complete = False
             continue
         rows, twice = h26.merge_rows(ps)
         if twice:
-            why.append(f"V1: {key}: seeds {twice} occur in more than one part")
+            why.append(f"v4: {key}: seeds {twice} occur in more than one part")
             complete = False
         if [r["seed"] for r in rows] != list(SEEDS):
-            why.append(f"V1: {key}: seeds {[r['seed'] for r in rows]}, not {list(SEEDS)}")
+            why.append(f"v4: {key}: seeds {[r['seed'] for r in rows]}, not {list(SEEDS)}")
             complete = False
         for r in rows:
             for field in ("scores", "skills", "groups"):
                 gone = sorted({f"{q}/{a}" for q in TRUTHS for a in ALL if a not in r.get(field, {}).get(q, {})})
                 if gone:
-                    why.append(f"V1: {key} seed {r['seed']}: missing from {field}: {gone[:6]}")
+                    why.append(f"v4: {key} seed {r['seed']}: missing from {field}: {gone[:6]}")
                     complete = False
-            if set(r.get("records", {})) != set(BUILT) or "checks" not in r or "draw" not in r \
-                    or "n_cells" not in r:
-                why.append(f"V1: {key} seed {r['seed']}: records, checks, draw or cell numbers missing")
+            if set(r.get("records", {})) != set(BUILT) or "checks" not in r or "n_cells" not in r:
+                why.append(f"v4: {key} seed {r['seed']}: records, checks or cell numbers missing")
                 complete = False
     if set(parts) - set(TASK_KEYS):
-        why.append(f"V1: parts of other transitions {sorted(set(parts) - set(TASK_KEYS))}")
+        why.append(f"v4: parts of other transitions {sorted(set(parts) - set(TASK_KEYS))}")
     if not every:
-        return why + ([] if any(w.startswith("V1") for w in why) else ["V1: no part"]), dist
-    if len({p["provenance"]["commit"] for p in every}) > 1:  # V2
-        why.append("V2: the parts come from different commits")
+        return why, dist
+    if len({p["provenance"]["commit"] for p in every}) > 1:  # v4: the commit and the tree
+        why.append("v4: the parts come from more than one commit")
     if not all(p["provenance"]["tree_clean"] is True for p in every):
-        why.append("V2: a part comes from a dirty tree")
+        why.append("v4: a part comes from an unclean tree")
     if not commit or any(str(p["provenance"]["commit"]) != commit for p in every):
-        why.append(f"V2: a part does not come from the row's run commit {commit!r}")
-    if not complete or committed_reasons(committed, "V3"):
+        why.append(f"v4: a part comes from a commit other than the run commit {commit!r}")
+    if not complete:
         return why, dist
     merged = {}
-    for key in TASK_KEYS:
-        ps = parts[key]
-        for p in ps:
-            why += same_facts(key, p, committed, "V3")
-        rows = h26.merge_rows(ps)[0]
-        merged[key] = rows
-        why += same_draw(key, rows, committed, "V3")
-        why += identities(key, rows, ps[0]["d_targets"][D_F])
-        why += trend_records(key, rows, ps[0]["pred_info"][POOL]["pool_cells"])
-    w4, dist["V4"] = reproduces(merged, committed, "V4")
-    return why + w4, dist
+    for key in TASK_KEYS:  # v5
+        rows = merged[key] = h26.merge_rows(parts[key])[0]
+        why += identities(key, rows) + trend_records(key, rows, parts[key][0]["pred_info"][POOL]["pool_cells"])
+    g1 = committed_reasons(committed, "v3")  # v3: G1 on the run's own control
+    if not g1:
+        g1, dist["G1"] = reproduces(merged, committed, "v3: G1 on the run's own control")
+    return why + g1, dist
 
 
 # ------------------------------------------------------------------------------------------------ the tables
@@ -802,28 +838,39 @@ def below(s: dict) -> bool:
 
 
 def stop_rule(tab: dict) -> dict:
-    """The rule on fold E10.5. (a): trend_s1.5 minus trend_s1.0 is below in EITHER world. (b): trend_s1.5 is not
-    ahead of the control by row H28's S1 bar (h28.passes) in both worlds, so it fires when either world fails the
-    bar."""
+    """The rule on fold E10.5. Clause (a) holds in a world if trend_s1.5 minus trend_s1.0 is below there (`below`).
+    Row H28's S1 bar is met in a world if trend_s1.5 minus the control passes there (h28.passes). Clause (b) holds
+    unless the bar is met in own and also in CLEAN. STOPPED if clause (a) holds in own or in CLEAN, or clause (b)
+    holds."""
     def fold(w, a, b):
         return tab[w][FOLD][pname(a, b)]["score"]
     a = {w: below(fold(w, arm(HI), arm(LO))) for w, _ in WORLDS}
-    ahead = {w: bool(h28.passes(fold(w, arm(HI), CONTROL))) for w, _ in WORLDS}
-    fires = {"a": any(a.values()), "b": not all(ahead.values())}
-    clauses = [c for c in ("a", "b") if fires[c]]
-    return {"a_below": a, "b_ahead": ahead, "fires": fires, "clauses": clauses, "stop": bool(clauses)}
+    bar = {w: bool(h28.passes(fold(w, arm(HI), CONTROL))) for w, _ in WORLDS}
+    holds = {"a": any(a.values()), "b": not all(bar.values())}
+    clauses = [c for c in ("a", "b") if holds[c]]
+    return {"a_in_world": a, "bar_met": bar, "holds": holds, "clauses": clauses, "stop": bool(clauses)}
+
+
+def read_notes(parts: dict[str, list[dict]], committed: dict | None) -> list[str]:
+    """Gating nothing: `notes` on the run's parts, and a transition whose arms shift no lineage."""
+    try:
+        rows = {k: h26.merge_rows(parts[k])[0] for k in TASK_KEYS}
+        out = notes({k: parts[k][0] for k in TASK_KEYS}, rows, committed, lambda r: r["records"][CONTROL]["size"])
+        return out + [f"note: {k} seed {r['seed']}: the arms shift no lineage" for k in TASK_KEYS for r in rows[k]
+                      if not r["records"][arm(LO)]["trend"]["shifted"]]
+    except (KeyError, TypeError, ValueError, IndexError, AttributeError) as e:
+        return [f"note: the run's records cannot be compared ({type(e).__name__}: {e})"]
 
 
 def reading(parts: dict[str, list[dict]], committed: dict | None, gate: dict | None, commit: str | None) -> dict:
     try:
         why, dist = void_reasons(parts, committed, gate, commit)
     except (KeyError, TypeError, ValueError, IndexError, AttributeError) as e:  # a malformed part or record
-        why, dist = [f"a part or a committed record cannot be read ({type(e).__name__}: {e})"], {}
+        why, dist = [f"v4: a part or a committed record cannot be read ({type(e).__name__}: {e})"], {}
     g = gate if isinstance(gate, dict) else {}
     res = {"row": ROW, "commit": commit, "void": bool(why), "why": why, "guards": dist, "prior": NO_PRIOR,
-           "screen": SCREEN, "rule": RULE,
-           "gate": {k: g.get(k) for k in ("verdict", "commit", "why", "distances", "provenance",
-                                          "h29b_reading_sha256")}}
+           "screen": SCREEN, "rule": RULE, "h29b_reading_sha256": H29B_READING_SHA256,
+           "gate": {k: g.get(k) for k in ("verdict", "commit", "why", "distances", "notes", "provenance")}}
     if why:
         res.update(outcome=VOID, clauses=[])
     else:
@@ -831,6 +878,7 @@ def reading(parts: dict[str, list[dict]], committed: dict | None, gate: dict | N
         tab = tables(rows)
         st = stop_rule(tab)
         res.update(tables=tab, statements=st, clauses=st["clauses"], outcome=STOPPED if st["stop"] else NOT_STOPPED,
+                   notes=read_notes(parts, committed),
                    budgets={f"{s:g}": {"test": h28.budget_at_test(s), **{k: s * b for k, b in PRACTICE_BUDGET.items()}}
                             for s in STRENGTHS},
                    trend_record={k: rows[k][0]["records"][arm(LO)]["trend"] for k in TASK_KEYS},
@@ -859,13 +907,13 @@ def rule_lines(res: dict) -> list[str]:
         return tab[w][FOLD][pname(a, b)]
     lines = [RULE]
     for w, _ in WORLDS:
-        lines.append(f"(a) {w}: {str(st['a_below'][w]).upper()} ({arm(HI)} minus {arm(LO)}, fold E10.5: "
-                     f"{_st(fold(w, arm(HI), arm(LO))['score'])})")
-    lines.append(f"(a) fires: {str(st['fires']['a']).upper()} (below in either world)")
+        lines.append(f"Clause (a) in {w}: {'HOLDS' if st['a_in_world'][w] else 'does not hold'} ({arm(HI)} minus "
+                     f"{arm(LO)}, fold E10.5: {_st(fold(w, arm(HI), arm(LO))['score'])})")
     for w, _ in WORLDS:
-        lines.append(f"(b) {w}: the bar {'HOLDS' if st['b_ahead'][w] else 'FAILS'} ({arm(HI)} minus the copy D_f, "
-                     f"fold E10.5: {_st(fold(w, arm(HI), CONTROL)['score'])})")
-    lines.append(f"(b) fires: {str(st['fires']['b']).upper()} (the bar fails in a world)")
+        lines.append(f"The S1 bar in {w}: {'MET' if st['bar_met'][w] else 'not met'} ({arm(HI)} minus the control "
+                     f"D_f, fold E10.5: {_st(fold(w, arm(HI), CONTROL)['score'])})")
+    lines.append(f"Clause (a) holds in own or in CLEAN: {str(st['holds']['a']).upper()}. Clause (b) holds (the bar "
+                 f"is not met in both worlds): {str(st['holds']['b']).upper()}.")
     for s in STRENGTHS:
         lines.append(f"DIAGNOSTIC, gates nothing: {arm(s)} minus {placebo(s)}, fold E10.5: "
                      + "; ".join(f"{w} {_st(fold(w, arm(s), placebo(s))['score'])}" for w, _ in WORLDS))
@@ -879,19 +927,22 @@ def rule_lines(res: dict) -> list[str]:
 def text(res: dict) -> str:
     lines = [res["line"], res["follows"], L0.format(commit=res["commit"]), NO_PRIOR, L1]
     g = res.get("gate") or {}
-    lines.append(f"GATE (first; not a try): {g.get('verdict')} at commit {g.get('commit')}.")
+    lines.append("GATE (first, counting nothing): "
+                 + (f"{g['verdict']} at commit {g.get('commit')}." if g.get("verdict") else "no record."))
     if res["void"]:
-        lines += [RULE, "VOID, the reasons one by one:", *res["why"]]
+        lines += [RULE, "VOID, the conditions that hold, one by one:", *res["why"]]
         return "\n".join(lines) + "\n"
-    v4 = res["guards"]["V4"]
-    lines.append(f"The run's own control against row H29b's committed D_f: {v4['means']} plain means compared, "
-                 f"{v4['unequal']} unequal.")
+    g1 = res["guards"]["G1"]
+    lines.append(f"G1 repeated on the run's own control, against row H29b's committed D_f: {g1['means']} plain "
+                 f"means compared, {g1['unequal']} unequal.")
+    lines.append("Beside the read, gating nothing (the target-free records against row H29b's committed ones): "
+                 + ("no difference." if not res["notes"] else "; ".join(res["notes"])))
     lines.append("Budgets (B0's damping times the last gap, times the strength): "
                  + "; ".join(f"strength {s}: " + ", ".join(f"{k} {v:.4g} day" for k, v in b.items())
                              for s, b in res["budgets"].items()) + ".")
     lines += rule_lines(res)
-    lines.append("TABLES (paired by seed: mean [min, max] seeds above and below 0 of 10 (se); per-term mean skill "
-                 "differences):")
+    lines.append("TABLES, practice diagnostics that gate nothing (paired by seed: mean [min, max] seeds above and "
+                 "below 0 of 10 (se); per-term mean skill differences):")
     for w, _ in WORLDS:
         for u in UNITS:
             for p, c in res["tables"][w][u].items():
