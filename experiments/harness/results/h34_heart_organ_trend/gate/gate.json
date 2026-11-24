@@ -1,0 +1,5290 @@
+{
+ "row": "H34",
+ "axis": "h34-heart-organ-trend:gate",
+ "commit": "2b4989c1e98213a40bf6cafea1baccf1520b9744",
+ "provenance": {
+  "commit": "2b4989c1e98213a40bf6cafea1baccf1520b9744",
+  "tree_clean": true,
+  "utc": "2026-11-24 06:09:47"
+ },
+ "label": "the gate of row H34: counting nothing; the control D_f alone is built and scored, and its figures are row H29b's own",
+ "verdict": "PASS",
+ "why": [],
+ "found": {
+  "R": {
+   "T2h/<=E9.5->E10.5": [],
+   "T2h/<=E8.75->E10.5": []
+  },
+  "D": {
+   "T2h/<=E9.5->E10.5": true,
+   "T2h/<=E8.75->E10.5": true
+  },
+  "M": {
+   "means": 18,
+   "unequal": [],
+   "largest_abs_diff": 0.0
+  },
+  "P": {
+   "numbers": 270,
+   "unequal": []
+  },
+  "G2": {
+   "contexts": 20,
+   "failed": 0,
+   "lineages": [
+    "CM",
+    "Endothelial"
+   ]
+  }
+ },
+ "h29b_reading_sha256": "e86754f7b4ca012886aee9d7fcadf969eda26d57f27eeaf928e469d8788a3784",
+ "strengths": [
+  1.0,
+  1.5
+ ],
+ "transitions": {
+  "T2h/<=E9.5->E10.5": {
+   "truth_info": {
+    "own": {
+     "cells": 167864,
+     "core_share": 0.2306748320068627,
+     "xy_scope": 0.20989552277802517
+    },
+    "radial_0": {
+     "cells": 96544,
+     "core_share": 0.40108137222406365,
+     "xy_scope": -2.170625565868641e-06
+    },
+    "thin_0.5": {
+     "cells": 45788,
+     "core_share": 0.8456800908534987,
+     "xy_scope": 0.10493046043228518
+    },
+    "thin_0": {
+     "cells": 38722,
+     "core_share": 1.0,
+     "xy_scope": 0.0
+    }
+   },
+   "pred_info": {
+    "organ": {
+     "pool_cells": 25765,
+     "core_share": 0.771589365418203,
+     "xy_scope": 0.07250912372400115
+    }
+   },
+   "organ_record": {
+    "reference": {
+     "rule": "organ cut: chamber-category cells (configs/t2_chamber_classes.yaml, T1's chamber scope) in a connected component that holds core cells, two chamber-category cells linked when closer than L (3D, stored units); L = the 99th percentile of each core cell's distance to its nearest other core cell on the same stage; core cells (CM plus endocardium) always kept",
+     "label_config": "configs/t2_chamber_classes.yaml",
+     "label_config_sha256": "c4c750c1b6dac08b056684e4157afbf5683ee046919dd7302f2ec6632ecc1b6c",
+     "kept_categories": [
+      "cm",
+      "endocardium",
+      "epicardium",
+      "vascular_endothelium",
+      "blood"
+     ],
+     "link_percentile": 99.0,
+     "link_length": 25.996365624683808,
+     "kept_share": 0.47942019277287784,
+     "chamber_share": 0.4844814111867813,
+     "core_share_of_kept": 0.771589365418203,
+     "components_kept": 88,
+     "components_total": 225
+    }
+   },
+   "ratios": {
+    "organ": 1.0819975589700042,
+    "label": 1.0891041878833045
+   },
+   "d_targets": {
+    "organ:f": {
+     "target": 566.9479655638804,
+     "base": 523.9826660085818,
+     "ratio": 1.0819975589700042,
+     "source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage"
+    }
+   },
+   "forecast_targets": {
+    "full_iso_half": 568.6940113806332,
+    "half_iso_half": 574.6407571684713,
+    "core_iso_half": 523.9826660085818
+   },
+   "size_result": {
+    "board": "heart",
+    "valid": true,
+    "target_t": 10.5,
+    "timestamp": "try H27 analogue (in memory, never a size file)",
+    "preregistered": {
+     "target_t": 10.5,
+     "z_mode_requested": "raw",
+     "z_mode": "raw",
+     "rules": [
+      "latest_rate",
+      "half_rate",
+      "power_t"
+     ],
+     "min_start_t": -Infinity,
+     "tie_tol": Infinity,
+     "reference": "E9.5",
+     "stages": [
+      {
+       "name": "E8.25_late",
+       "t": 8.25,
+       "n_cells": 54431,
+       "n_core": 2036,
+       "n_levels": 38,
+       "z_step": 15.0,
+       "z_range": 555.0,
+       "rms_full": 353.4964257628457,
+       "rms_core": 152.17958425737348,
+       "rms_xy_full": 321.70018435371907,
+       "sd_z_full": 146.52206118496372,
+       "rms_xy_core": 125.45807745419077,
+       "sd_z_core": 86.13301728283587,
+       "core_thin_axis_cos_z": 0.7354854035259737,
+       "log_scope": 0.8428120754583706,
+       "log_scope_xy": 0.9416483487288667,
+       "core_thin_axis_angle_deg": 42.65175200533025
+      },
+      {
+       "name": "E8.5",
+       "t": 8.5,
+       "n_cells": 23710,
+       "n_core": 2431,
+       "n_levels": 25,
+       "z_step": 15.0,
+       "z_range": 360.0000000000001,
+       "rms_full": 255.22353488610761,
+       "rms_core": 134.07526158422002,
+       "rms_xy_full": 231.62806165620404,
+       "sd_z_full": 107.17972668909886,
+       "rms_xy_core": 107.75796844638313,
+       "sd_z_core": 79.77716468504832,
+       "core_thin_axis_cos_z": 0.2736455051050436,
+       "log_scope": 0.6437384726629188,
+       "log_scope_xy": 0.7652452233295622,
+       "core_thin_axis_angle_deg": 74.11868863245238
+      },
+      {
+       "name": "E8.75",
+       "t": 8.75,
+       "n_cells": 23377,
+       "n_core": 3914,
+       "n_levels": 35,
+       "z_step": 14.0,
+       "z_range": 476.0,
+       "rms_full": 216.9416140719822,
+       "rms_core": 154.4831472408458,
+       "rms_xy_full": 169.4958000360066,
+       "sd_z_full": 135.40619515484116,
+       "rms_xy_core": 119.36506828412158,
+       "sd_z_core": 98.06642266833148,
+       "core_thin_axis_cos_z": 0.42628193988806146,
+       "log_scope": 0.3395432467203799,
+       "log_scope_xy": 0.3506415502450217,
+       "core_thin_axis_angle_deg": 64.76816696175234
+      },
+      {
+       "name": "E9.5",
+       "t": 9.5,
+       "n_cells": 53742,
+       "n_core": 19880,
+       "n_levels": 40,
+       "z_step": 15.0,
+       "z_range": 585.0,
+       "rms_full": 334.9661603604817,
+       "rms_core": 278.5107252333298,
+       "rms_xy_full": 286.8812998466944,
+       "sd_z_full": 172.92035272030571,
+       "rms_xy_core": 247.5256310010816,
+       "sd_z_core": 127.66865734201056,
+       "core_thin_axis_cos_z": 0.9277759576927032,
+       "log_scope": 0.1845729435355595,
+       "log_scope_xy": 0.1475544045764524,
+       "core_thin_axis_angle_deg": 21.909260420744427
+      }
+     ],
+     "growth": {
+      "core": {
+       "valid": true,
+       "applicable": [
+        "latest_rate",
+        "half_rate",
+        "power_t"
+       ],
+       "chosen": [
+        "latest_rate",
+        "half_rate",
+        "power_t"
+       ],
+       "mae_common": {
+        "latest_rate": 0.5567864720410949,
+        "half_rate": 0.5220783271678204,
+        "power_t": 0.5516824544345807
+       },
+       "common_pseudo_targets": [
+        "E8.75:next",
+        "E9.5:next",
+        "E9.5:skip"
+       ],
+       "pseudo_targets": [
+        {
+         "target": "E8.75",
+         "t_target": 8.75,
+         "kind": "next",
+         "train": "E8.25_late,E8.5",
+         "rule": "copy_last",
+         "pred": 4.898401295896137,
+         "obs": 5.040085011040939,
+         "error": -0.1416837151448025,
+         "eligible": true
+        },
+        {
+         "target": "E8.75",
+         "t_target": 8.75,
+         "kind": "next",
+         "train": "E8.25_late,E8.5",
+         "rule": "latest_rate",
+         "pred": 4.771741292961326,
+         "obs": 5.040085011040939,
+         "error": -0.2683437180796133,
+         "eligible": true
+        },
+        {
+         "target": "E8.75",
+         "t_target": 8.75,
+         "kind": "next",
+         "train": "E8.25_late,E8.5",
+         "rule": "half_rate",
+         "pred": 4.835071294428731,
+         "obs": 5.040085011040939,
+         "error": -0.2050137166122079,
+         "eligible": true
+        },
+        {
+         "target": "E8.75",
+         "t_target": 8.75,
+         "kind": "next",
+         "train": "E8.25_late,E8.5",
+         "rule": "power_t",
+         "pred": 4.7754131192441225,
+         "obs": 5.040085011040939,
+         "error": -0.2646718917968167,
+         "eligible": true
+        },
+        {
+         "target": "E8.75",
+         "t_target": 8.75,
+         "kind": "next",
+         "train": "E8.25_late,E8.5",
+         "rule": "decaying_rate",
+         "pred": 4.771741292961326,
+         "obs": 5.040085011040939,
+         "error": -0.2683437180796133,
+         "eligible": false
+        },
+        {
+         "target": "E9.5",
+         "t_target": 9.5,
+         "kind": "next",
+         "train": "E8.25_late,E8.5,E8.75",
+         "rule": "copy_last",
+         "pred": 5.040085011040939,
+         "obs": 5.629456569337956,
+         "error": -0.5893715582970165,
+         "eligible": true
+        },
+        {
+         "target": "E9.5",
+         "t_target": 9.5,
+         "kind": "next",
+         "train": "E8.25_late,E8.5,E8.75",
+         "rule": "latest_rate",
+         "pred": 5.465136156475347,
+         "obs": 5.629456569337956,
+         "error": -0.164320412862609,
+         "eligible": true
+        },
+        {
+         "target": "E9.5",
+         "t_target": 9.5,
+         "kind": "next",
+         "train": "E8.25_late,E8.5,E8.75",
+         "rule": "half_rate",
+         "pred": 5.252610583758143,
+         "obs": 5.629456569337956,
+         "error": -0.37684598557981275,
+         "eligible": true
+        },
+        {
+         "target": "E9.5",
+         "t_target": 9.5,
+         "kind": "next",
+         "train": "E8.25_late,E8.5,E8.75",
+         "rule": "power_t",
+         "pred": 5.442043940342341,
+         "obs": 5.629456569337956,
+         "error": -0.18741262899561484,
+         "eligible": true
+        },
+        {
+         "target": "E9.5",
+         "t_target": 9.5,
+         "kind": "next",
+         "train": "E8.25_late,E8.5,E8.75",
+         "rule": "decaying_rate",
+         "pred": 5.465136156475347,
+         "obs": 5.629456569337956,
+         "error": -0.164320412862609,
+         "eligible": true
+        },
+        {
+         "target": "E9.5",
+         "t_target": 9.5,
+         "kind": "skip",
+         "train": "E8.25_late,E8.5",
+         "rule": "copy_last",
+         "pred": 4.898401295896137,
+         "obs": 5.629456569337956,
+         "error": -0.731055273441819,
+         "eligible": true
+        },
+        {
+         "target": "E9.5",
+         "t_target": 9.5,
+         "kind": "skip",
+         "train": "E8.25_late,E8.5",
+         "rule": "latest_rate",
+         "pred": 4.391761284156893,
+         "obs": 5.629456569337956,
+         "error": -1.2376952851810623,
+         "eligible": true
+        },
+        {
+         "target": "E9.5",
+         "t_target": 9.5,
+         "kind": "skip",
+         "train": "E8.25_late,E8.5",
+         "rule": "half_rate",
+         "pred": 4.645081290026515,
+         "obs": 5.629456569337956,
+         "error": -0.9843752793114406,
+         "eligible": true
+        },
+        {
+         "target": "E9.5",
+         "t_target": 9.5,
+         "kind": "skip",
+         "train": "E8.25_late,E8.5",
+         "rule": "power_t",
+         "pred": 4.426493726826645,
+         "obs": 5.629456569337956,
+         "error": -1.2029628425113108,
+         "eligible": true
+        },
+        {
+         "target": "E9.5",
+         "t_target": 9.5,
+         "kind": "skip",
+         "train": "E8.25_late,E8.5",
+         "rule": "decaying_rate",
+         "pred": 4.391761284156893,
+         "obs": 5.629456569337956,
+         "error": -1.2376952851810623,
+         "eligible": false
+        }
+       ],
+       "all_rule_predictions": {
+        "copy_last": 5.629456569337956,
+        "latest_rate": 6.415285313733977,
+        "half_rate": 6.022370941535967,
+        "power_t": 6.346719555642821,
+        "decaying_rate": 6.415285313733977
+       },
+       "pred_log_target": 6.261458603637588
+      }
+     },
+     "scope": {
+      "H1": {
+       "pred_log_scope": 0.08188392025332984,
+       "pred_rms_full": 568.6940113806332,
+       "scale_vs_reference_full": 1.697765561657392
+      },
+      "H0": {
+       "pred_log_scope": 0.1845729435355595,
+       "pred_rms_full": 630.1964191192268,
+       "scale_vs_reference_full": 1.8813733854220562
+      },
+      "H2": {
+       "pred_log_scope": 0.09228647176777975,
+       "pred_rms_full": 574.6407571684713,
+       "scale_vs_reference_full": 1.7155188349475605
+      }
+     },
+     "valid": true,
+     "pred_rms_core": 523.9826660085818,
+     "pred_log_growth_core": 0.632002034299632
+    },
+    "z_modes": {
+     "raw": {
+      "target_t": 10.5,
+      "z_mode_requested": "raw",
+      "z_mode": "raw",
+      "rules": [
+       "latest_rate",
+       "half_rate",
+       "power_t"
+      ],
+      "min_start_t": -Infinity,
+      "tie_tol": Infinity,
+      "reference": "E9.5",
+      "stages": [
+       {
+        "name": "E8.25_late",
+        "t": 8.25,
+        "n_cells": 54431,
+        "n_core": 2036,
+        "n_levels": 38,
+        "z_step": 15.0,
+        "z_range": 555.0,
+        "rms_full": 353.4964257628457,
+        "rms_core": 152.17958425737348,
+        "rms_xy_full": 321.70018435371907,
+        "sd_z_full": 146.52206118496372,
+        "rms_xy_core": 125.45807745419077,
+        "sd_z_core": 86.13301728283587,
+        "core_thin_axis_cos_z": 0.7354854035259737,
+        "log_scope": 0.8428120754583706,
+        "log_scope_xy": 0.9416483487288667,
+        "core_thin_axis_angle_deg": 42.65175200533025
+       },
+       {
+        "name": "E8.5",
+        "t": 8.5,
+        "n_cells": 23710,
+        "n_core": 2431,
+        "n_levels": 25,
+        "z_step": 15.0,
+        "z_range": 360.0000000000001,
+        "rms_full": 255.22353488610761,
+        "rms_core": 134.07526158422002,
+        "rms_xy_full": 231.62806165620404,
+        "sd_z_full": 107.17972668909886,
+        "rms_xy_core": 107.75796844638313,
+        "sd_z_core": 79.77716468504832,
+        "core_thin_axis_cos_z": 0.2736455051050436,
+        "log_scope": 0.6437384726629188,
+        "log_scope_xy": 0.7652452233295622,
+        "core_thin_axis_angle_deg": 74.11868863245238
+       },
+       {
+        "name": "E8.75",
+        "t": 8.75,
+        "n_cells": 23377,
+        "n_core": 3914,
+        "n_levels": 35,
+        "z_step": 14.0,
+        "z_range": 476.0,
+        "rms_full": 216.9416140719822,
+        "rms_core": 154.4831472408458,
+        "rms_xy_full": 169.4958000360066,
+        "sd_z_full": 135.40619515484116,
+        "rms_xy_core": 119.36506828412158,
+        "sd_z_core": 98.06642266833148,
+        "core_thin_axis_cos_z": 0.42628193988806146,
+        "log_scope": 0.3395432467203799,
+        "log_scope_xy": 0.3506415502450217,
+        "core_thin_axis_angle_deg": 64.76816696175234
+       },
+       {
+        "name": "E9.5",
+        "t": 9.5,
+        "n_cells": 53742,
+        "n_core": 19880,
+        "n_levels": 40,
+        "z_step": 15.0,
+        "z_range": 585.0,
+        "rms_full": 334.9661603604817,
+        "rms_core": 278.5107252333298,
+        "rms_xy_full": 286.8812998466944,
+        "sd_z_full": 172.92035272030571,
+        "rms_xy_core": 247.5256310010816,
+        "sd_z_core": 127.66865734201056,
+        "core_thin_axis_cos_z": 0.9277759576927032,
+        "log_scope": 0.1845729435355595,
+        "log_scope_xy": 0.1475544045764524,
+        "core_thin_axis_angle_deg": 21.909260420744427
+       }
+      ],
+      "growth": {
+       "core": {
+        "valid": true,
+        "applicable": [
+         "latest_rate",
+         "half_rate",
+         "power_t"
+        ],
+        "chosen": [
+         "latest_rate",
+         "half_rate",
+         "power_t"
+        ],
+        "mae_common": {
+         "latest_rate": 0.5567864720410949,
+         "half_rate": 0.5220783271678204,
+         "power_t": 0.5516824544345807
+        },
+        "common_pseudo_targets": [
+         "E8.75:next",
+         "E9.5:next",
+         "E9.5:skip"
+        ],
+        "pseudo_targets": [
+         {
+          "target": "E8.75",
+          "t_target": 8.75,
+          "kind": "next",
+          "train": "E8.25_late,E8.5",
+          "rule": "copy_last",
+          "pred": 4.898401295896137,
+          "obs": 5.040085011040939,
+          "error": -0.1416837151448025,
+          "eligible": true
+         },
+         {
+          "target": "E8.75",
+          "t_target": 8.75,
+          "kind": "next",
+          "train": "E8.25_late,E8.5",
+          "rule": "latest_rate",
+          "pred": 4.771741292961326,
+          "obs": 5.040085011040939,
+          "error": -0.2683437180796133,
+          "eligible": true
+         },
+         {
+          "target": "E8.75",
+          "t_target": 8.75,
+          "kind": "next",
+          "train": "E8.25_late,E8.5",
+          "rule": "half_rate",
+          "pred": 4.835071294428731,
+          "obs": 5.040085011040939,
+          "error": -0.2050137166122079,
+          "eligible": true
+         },
+         {
+          "target": "E8.75",
+          "t_target": 8.75,
+          "kind": "next",
+          "train": "E8.25_late,E8.5",
+          "rule": "power_t",
+          "pred": 4.7754131192441225,
+          "obs": 5.040085011040939,
+          "error": -0.2646718917968167,
+          "eligible": true
+         },
+         {
+          "target": "E8.75",
+          "t_target": 8.75,
+          "kind": "next",
+          "train": "E8.25_late,E8.5",
+          "rule": "decaying_rate",
+          "pred": 4.771741292961326,
+          "obs": 5.040085011040939,
+          "error": -0.2683437180796133,
+          "eligible": false
+         },
+         {
+          "target": "E9.5",
+          "t_target": 9.5,
+          "kind": "next",
+          "train": "E8.25_late,E8.5,E8.75",
+          "rule": "copy_last",
+          "pred": 5.040085011040939,
+          "obs": 5.629456569337956,
+          "error": -0.5893715582970165,
+          "eligible": true
+         },
+         {
+          "target": "E9.5",
+          "t_target": 9.5,
+          "kind": "next",
+          "train": "E8.25_late,E8.5,E8.75",
+          "rule": "latest_rate",
+          "pred": 5.465136156475347,
+          "obs": 5.629456569337956,
+          "error": -0.164320412862609,
+          "eligible": true
+         },
+         {
+          "target": "E9.5",
+          "t_target": 9.5,
+          "kind": "next",
+          "train": "E8.25_late,E8.5,E8.75",
+          "rule": "half_rate",
+          "pred": 5.252610583758143,
+          "obs": 5.629456569337956,
+          "error": -0.37684598557981275,
+          "eligible": true
+         },
+         {
+          "target": "E9.5",
+          "t_target": 9.5,
+          "kind": "next",
+          "train": "E8.25_late,E8.5,E8.75",
+          "rule": "power_t",
+          "pred": 5.442043940342341,
+          "obs": 5.629456569337956,
+          "error": -0.18741262899561484,
+          "eligible": true
+         },
+         {
+          "target": "E9.5",
+          "t_target": 9.5,
+          "kind": "next",
+          "train": "E8.25_late,E8.5,E8.75",
+          "rule": "decaying_rate",
+          "pred": 5.465136156475347,
+          "obs": 5.629456569337956,
+          "error": -0.164320412862609,
+          "eligible": true
+         },
+         {
+          "target": "E9.5",
+          "t_target": 9.5,
+          "kind": "skip",
+          "train": "E8.25_late,E8.5",
+          "rule": "copy_last",
+          "pred": 4.898401295896137,
+          "obs": 5.629456569337956,
+          "error": -0.731055273441819,
+          "eligible": true
+         },
+         {
+          "target": "E9.5",
+          "t_target": 9.5,
+          "kind": "skip",
+          "train": "E8.25_late,E8.5",
+          "rule": "latest_rate",
+          "pred": 4.391761284156893,
+          "obs": 5.629456569337956,
+          "error": -1.2376952851810623,
+          "eligible": true
+         },
+         {
+          "target": "E9.5",
+          "t_target": 9.5,
+          "kind": "skip",
+          "train": "E8.25_late,E8.5",
+          "rule": "half_rate",
+          "pred": 4.645081290026515,
+          "obs": 5.629456569337956,
+          "error": -0.9843752793114406,
+          "eligible": true
+         },
+         {
+          "target": "E9.5",
+          "t_target": 9.5,
+          "kind": "skip",
+          "train": "E8.25_late,E8.5",
+          "rule": "power_t",
+          "pred": 4.426493726826645,
+          "obs": 5.629456569337956,
+          "error": -1.2029628425113108,
+          "eligible": true
+         },
+         {
+          "target": "E9.5",
+          "t_target": 9.5,
+          "kind": "skip",
+          "train": "E8.25_late,E8.5",
+          "rule": "decaying_rate",
+          "pred": 4.391761284156893,
+          "obs": 5.629456569337956,
+          "error": -1.2376952851810623,
+          "eligible": false
+         }
+        ],
+        "all_rule_predictions": {
+         "copy_last": 5.629456569337956,
+         "latest_rate": 6.415285313733977,
+         "half_rate": 6.022370941535967,
+         "power_t": 6.346719555642821,
+         "decaying_rate": 6.415285313733977
+        },
+        "pred_log_target": 6.261458603637588
+       }
+      },
+      "scope": {
+       "H1": {
+        "pred_log_scope": 0.08188392025332984,
+        "pred_rms_full": 568.6940113806332,
+        "scale_vs_reference_full": 1.697765561657392
+       },
+       "H0": {
+        "pred_log_scope": 0.1845729435355595,
+        "pred_rms_full": 630.1964191192268,
+        "scale_vs_reference_full": 1.8813733854220562
+       },
+       "H2": {
+        "pred_log_scope": 0.09228647176777975,
+        "pred_rms_full": 574.6407571684713,
+        "scale_vs_reference_full": 1.7155188349475605
+       }
+      },
+      "valid": true,
+      "pred_rms_core": 523.9826660085818,
+      "pred_log_growth_core": 0.632002034299632
+     }
+    },
+    "provenance": {
+     "analogue": "size procedure, E9.0 cut-off lifted, all three rules averaged",
+     "git_commit": null,
+     "size_procedure_sha256": null,
+     "departures": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f"
+     ]
+    }
+   },
+   "v7": {
+    "reference": "E9.5",
+    "loaded_rms_full": 334.9661603604817,
+    "size_rms_full": 334.9661603604817,
+    "log_diff": 0.0,
+    "ok": true
+   }
+  },
+  "T2h/<=E8.75->E10.5": {
+   "truth_info": {
+    "own": {
+     "cells": 167864,
+     "core_share": 0.2306748320068627,
+     "xy_scope": 0.20989552277802517
+    },
+    "radial_0": {
+     "cells": 96544,
+     "core_share": 0.40108137222406365,
+     "xy_scope": -2.170625565868641e-06
+    },
+    "thin_0.5": {
+     "cells": 45788,
+     "core_share": 0.8456800908534987,
+     "xy_scope": 0.10493046043228518
+    },
+    "thin_0": {
+     "cells": 38722,
+     "core_share": 1.0,
+     "xy_scope": 0.0
+    }
+   },
+   "pred_info": {
+    "organ": {
+     "pool_cells": 4976,
+     "core_share": 0.7865755627009646,
+     "xy_scope": 0.19259785444841504
+    }
+   },
+   "organ_record": {
+    "reference": {
+     "rule": "organ cut: chamber-category cells (configs/t2_chamber_classes.yaml, T1's chamber scope) in a connected component that holds core cells, two chamber-category cells linked when closer than L (3D, stored units); L = the 99th percentile of each core cell's distance to its nearest other core cell on the same stage; core cells (CM plus endocardium) always kept",
+     "label_config": "configs/t2_chamber_classes.yaml",
+     "label_config_sha256": "c4c750c1b6dac08b056684e4157afbf5683ee046919dd7302f2ec6632ecc1b6c",
+     "kept_categories": [
+      "cm",
+      "endocardium",
+      "epicardium",
+      "vascular_endothelium",
+      "blood"
+     ],
+     "link_percentile": 99.0,
+     "link_length": 21.533326125057773,
+     "kept_share": 0.21285879283055995,
+     "chamber_share": 0.23026906788723958,
+     "core_share_of_kept": 0.7865755627009646,
+     "components_kept": 32,
+     "components_total": 146
+    }
+   },
+   "ratios": {
+    "organ": 1.1590372013654688,
+    "label": 1.222864419011249
+   },
+   "d_targets": {
+    "organ:f": {
+     "target": 395.6835692510699,
+     "base": 341.3898784136632,
+     "ratio": 1.1590372013654688,
+     "source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage"
+    }
+   },
+   "forecast_targets": {
+    "full_iso_half": 342.7089940258472,
+    "half_iso_half": 404.5586767733152,
+    "core_iso_half": 341.3898784136632
+   },
+   "size_result": {
+    "board": "heart",
+    "valid": true,
+    "target_t": 10.5,
+    "timestamp": "try H27 analogue (in memory, never a size file)",
+    "preregistered": {
+     "target_t": 10.5,
+     "z_mode_requested": "raw",
+     "z_mode": "raw",
+     "rules": [
+      "latest_rate",
+      "half_rate",
+      "power_t"
+     ],
+     "min_start_t": -Infinity,
+     "tie_tol": Infinity,
+     "reference": "E8.75",
+     "stages": [
+      {
+       "name": "E8.25_late",
+       "t": 8.25,
+       "n_cells": 54431,
+       "n_core": 2036,
+       "n_levels": 38,
+       "z_step": 15.0,
+       "z_range": 555.0,
+       "rms_full": 353.4964257628457,
+       "rms_core": 152.17958425737348,
+       "rms_xy_full": 321.70018435371907,
+       "sd_z_full": 146.52206118496372,
+       "rms_xy_core": 125.45807745419077,
+       "sd_z_core": 86.13301728283587,
+       "core_thin_axis_cos_z": 0.7354854035259737,
+       "log_scope": 0.8428120754583706,
+       "log_scope_xy": 0.9416483487288667,
+       "core_thin_axis_angle_deg": 42.65175200533025
+      },
+      {
+       "name": "E8.5",
+       "t": 8.5,
+       "n_cells": 23710,
+       "n_core": 2431,
+       "n_levels": 25,
+       "z_step": 15.0,
+       "z_range": 360.0000000000001,
+       "rms_full": 255.22353488610761,
+       "rms_core": 134.07526158422002,
+       "rms_xy_full": 231.62806165620404,
+       "sd_z_full": 107.17972668909886,
+       "rms_xy_core": 107.75796844638313,
+       "sd_z_core": 79.77716468504832,
+       "core_thin_axis_cos_z": 0.2736455051050436,
+       "log_scope": 0.6437384726629188,
+       "log_scope_xy": 0.7652452233295622,
+       "core_thin_axis_angle_deg": 74.11868863245238
+      },
+      {
+       "name": "E8.75",
+       "t": 8.75,
+       "n_cells": 23377,
+       "n_core": 3914,
+       "n_levels": 35,
+       "z_step": 14.0,
+       "z_range": 476.0,
+       "rms_full": 216.9416140719822,
+       "rms_core": 154.4831472408458,
+       "rms_xy_full": 169.4958000360066,
+       "sd_z_full": 135.40619515484116,
+       "rms_xy_core": 119.36506828412158,
+       "sd_z_core": 98.06642266833148,
+       "core_thin_axis_cos_z": 0.42628193988806146,
+       "log_scope": 0.3395432467203799,
+       "log_scope_xy": 0.3506415502450217,
+       "core_thin_axis_angle_deg": 64.76816696175234
+      }
+     ],
+     "growth": {
+      "core": {
+       "valid": true,
+       "applicable": [
+        "latest_rate",
+        "half_rate",
+        "power_t"
+       ],
+       "chosen": [
+        "latest_rate",
+        "half_rate",
+        "power_t"
+       ],
+       "mae_common": {
+        "latest_rate": 0.2683437180796133,
+        "half_rate": 0.2050137166122079,
+        "power_t": 0.2646718917968167
+       },
+       "common_pseudo_targets": [
+        "E8.75:next"
+       ],
+       "pseudo_targets": [
+        {
+         "target": "E8.75",
+         "t_target": 8.75,
+         "kind": "next",
+         "train": "E8.25_late,E8.5",
+         "rule": "copy_last",
+         "pred": 4.898401295896137,
+         "obs": 5.040085011040939,
+         "error": -0.1416837151448025,
+         "eligible": true
+        },
+        {
+         "target": "E8.75",
+         "t_target": 8.75,
+         "kind": "next",
+         "train": "E8.25_late,E8.5",
+         "rule": "latest_rate",
+         "pred": 4.771741292961326,
+         "obs": 5.040085011040939,
+         "error": -0.2683437180796133,
+         "eligible": true
+        },
+        {
+         "target": "E8.75",
+         "t_target": 8.75,
+         "kind": "next",
+         "train": "E8.25_late,E8.5",
+         "rule": "half_rate",
+         "pred": 4.835071294428731,
+         "obs": 5.040085011040939,
+         "error": -0.2050137166122079,
+         "eligible": true
+        },
+        {
+         "target": "E8.75",
+         "t_target": 8.75,
+         "kind": "next",
+         "train": "E8.25_late,E8.5",
+         "rule": "power_t",
+         "pred": 4.7754131192441225,
+         "obs": 5.040085011040939,
+         "error": -0.2646718917968167,
+         "eligible": true
+        },
+        {
+         "target": "E8.75",
+         "t_target": 8.75,
+         "kind": "next",
+         "train": "E8.25_late,E8.5",
+         "rule": "decaying_rate",
+         "pred": 4.771741292961326,
+         "obs": 5.040085011040939,
+         "error": -0.2683437180796133,
+         "eligible": false
+        }
+       ],
+       "all_rule_predictions": {
+        "copy_last": 5.040085011040939,
+        "latest_rate": 6.031871017054557,
+        "half_rate": 5.535978014047748,
+        "power_t": 5.931226456776795,
+        "decaying_rate": 6.031871017054557
+       },
+       "pred_log_target": 5.833025162626367
+      }
+     },
+     "scope": {
+      "H1": {
+       "pred_log_scope": 0.0038565105139775503,
+       "pred_rms_full": 342.7089940258472,
+       "scale_vs_reference_full": 1.579729161193273
+      },
+      "H0": {
+       "pred_log_scope": 0.3395432467203799,
+       "pred_rms_full": 479.41586233631404,
+       "scale_vs_reference_full": 2.2098842787130812
+      },
+      "H2": {
+       "pred_log_scope": 0.16977162336018994,
+       "pred_rms_full": 404.5586767733152,
+       "scale_vs_reference_full": 1.8648274490991885
+      }
+     },
+     "valid": true,
+     "pred_rms_core": 341.3898784136632,
+     "pred_log_growth_core": 0.7929401515854276
+    },
+    "z_modes": {
+     "raw": {
+      "target_t": 10.5,
+      "z_mode_requested": "raw",
+      "z_mode": "raw",
+      "rules": [
+       "latest_rate",
+       "half_rate",
+       "power_t"
+      ],
+      "min_start_t": -Infinity,
+      "tie_tol": Infinity,
+      "reference": "E8.75",
+      "stages": [
+       {
+        "name": "E8.25_late",
+        "t": 8.25,
+        "n_cells": 54431,
+        "n_core": 2036,
+        "n_levels": 38,
+        "z_step": 15.0,
+        "z_range": 555.0,
+        "rms_full": 353.4964257628457,
+        "rms_core": 152.17958425737348,
+        "rms_xy_full": 321.70018435371907,
+        "sd_z_full": 146.52206118496372,
+        "rms_xy_core": 125.45807745419077,
+        "sd_z_core": 86.13301728283587,
+        "core_thin_axis_cos_z": 0.7354854035259737,
+        "log_scope": 0.8428120754583706,
+        "log_scope_xy": 0.9416483487288667,
+        "core_thin_axis_angle_deg": 42.65175200533025
+       },
+       {
+        "name": "E8.5",
+        "t": 8.5,
+        "n_cells": 23710,
+        "n_core": 2431,
+        "n_levels": 25,
+        "z_step": 15.0,
+        "z_range": 360.0000000000001,
+        "rms_full": 255.22353488610761,
+        "rms_core": 134.07526158422002,
+        "rms_xy_full": 231.62806165620404,
+        "sd_z_full": 107.17972668909886,
+        "rms_xy_core": 107.75796844638313,
+        "sd_z_core": 79.77716468504832,
+        "core_thin_axis_cos_z": 0.2736455051050436,
+        "log_scope": 0.6437384726629188,
+        "log_scope_xy": 0.7652452233295622,
+        "core_thin_axis_angle_deg": 74.11868863245238
+       },
+       {
+        "name": "E8.75",
+        "t": 8.75,
+        "n_cells": 23377,
+        "n_core": 3914,
+        "n_levels": 35,
+        "z_step": 14.0,
+        "z_range": 476.0,
+        "rms_full": 216.9416140719822,
+        "rms_core": 154.4831472408458,
+        "rms_xy_full": 169.4958000360066,
+        "sd_z_full": 135.40619515484116,
+        "rms_xy_core": 119.36506828412158,
+        "sd_z_core": 98.06642266833148,
+        "core_thin_axis_cos_z": 0.42628193988806146,
+        "log_scope": 0.3395432467203799,
+        "log_scope_xy": 0.3506415502450217,
+        "core_thin_axis_angle_deg": 64.76816696175234
+       }
+      ],
+      "growth": {
+       "core": {
+        "valid": true,
+        "applicable": [
+         "latest_rate",
+         "half_rate",
+         "power_t"
+        ],
+        "chosen": [
+         "latest_rate",
+         "half_rate",
+         "power_t"
+        ],
+        "mae_common": {
+         "latest_rate": 0.2683437180796133,
+         "half_rate": 0.2050137166122079,
+         "power_t": 0.2646718917968167
+        },
+        "common_pseudo_targets": [
+         "E8.75:next"
+        ],
+        "pseudo_targets": [
+         {
+          "target": "E8.75",
+          "t_target": 8.75,
+          "kind": "next",
+          "train": "E8.25_late,E8.5",
+          "rule": "copy_last",
+          "pred": 4.898401295896137,
+          "obs": 5.040085011040939,
+          "error": -0.1416837151448025,
+          "eligible": true
+         },
+         {
+          "target": "E8.75",
+          "t_target": 8.75,
+          "kind": "next",
+          "train": "E8.25_late,E8.5",
+          "rule": "latest_rate",
+          "pred": 4.771741292961326,
+          "obs": 5.040085011040939,
+          "error": -0.2683437180796133,
+          "eligible": true
+         },
+         {
+          "target": "E8.75",
+          "t_target": 8.75,
+          "kind": "next",
+          "train": "E8.25_late,E8.5",
+          "rule": "half_rate",
+          "pred": 4.835071294428731,
+          "obs": 5.040085011040939,
+          "error": -0.2050137166122079,
+          "eligible": true
+         },
+         {
+          "target": "E8.75",
+          "t_target": 8.75,
+          "kind": "next",
+          "train": "E8.25_late,E8.5",
+          "rule": "power_t",
+          "pred": 4.7754131192441225,
+          "obs": 5.040085011040939,
+          "error": -0.2646718917968167,
+          "eligible": true
+         },
+         {
+          "target": "E8.75",
+          "t_target": 8.75,
+          "kind": "next",
+          "train": "E8.25_late,E8.5",
+          "rule": "decaying_rate",
+          "pred": 4.771741292961326,
+          "obs": 5.040085011040939,
+          "error": -0.2683437180796133,
+          "eligible": false
+         }
+        ],
+        "all_rule_predictions": {
+         "copy_last": 5.040085011040939,
+         "latest_rate": 6.031871017054557,
+         "half_rate": 5.535978014047748,
+         "power_t": 5.931226456776795,
+         "decaying_rate": 6.031871017054557
+        },
+        "pred_log_target": 5.833025162626367
+       }
+      },
+      "scope": {
+       "H1": {
+        "pred_log_scope": 0.0038565105139775503,
+        "pred_rms_full": 342.7089940258472,
+        "scale_vs_reference_full": 1.579729161193273
+       },
+       "H0": {
+        "pred_log_scope": 0.3395432467203799,
+        "pred_rms_full": 479.41586233631404,
+        "scale_vs_reference_full": 2.2098842787130812
+       },
+       "H2": {
+        "pred_log_scope": 0.16977162336018994,
+        "pred_rms_full": 404.5586767733152,
+        "scale_vs_reference_full": 1.8648274490991885
+       }
+      },
+      "valid": true,
+      "pred_rms_core": 341.3898784136632,
+      "pred_log_growth_core": 0.7929401515854276
+     }
+    },
+    "provenance": {
+     "analogue": "size procedure, E9.0 cut-off lifted, all three rules averaged",
+     "git_commit": null,
+     "size_procedure_sha256": null,
+     "departures": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f"
+     ]
+    }
+   },
+   "v7": {
+    "reference": "E8.75",
+    "loaded_rms_full": 216.9416140719822,
+    "size_rms_full": 216.9416140719822,
+    "log_diff": 0.0,
+    "ok": true
+   }
+  }
+ },
+ "rows": {
+  "T2h/<=E9.5->E10.5": [
+   {
+    "seed": 0,
+    "build_seed": 1000000,
+    "n_cells": {
+     "control": 12589
+    },
+    "size_record": {
+     "sizing": "f",
+     "target_rms_full": 566.9479655638804,
+     "base_rms": 523.9826660085818,
+     "ratio": 1.0819975589700042,
+     "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+     "rms_before": 301.4909223158064,
+     "rms_after": 566.9479655638803,
+     "log_rms_after_vs_target": -2.220446049250313e-16
+    },
+    "draw": {
+     "pool_cells": 25765,
+     "drawn": 25179,
+     "short": false,
+     "repeated_rows_at_least": 0
+    },
+    "factors": {
+     "ratio": 1.5,
+     "lineages": [
+      "CM",
+      "Endothelial"
+     ],
+     "damping": [
+      0.5,
+      0.75
+     ],
+     "ok": true,
+     "why": null
+    },
+    "scores": {
+     "own": {
+      "floor": 50.0,
+      "control": 26.658120876122172
+     },
+     "radial_0": {
+      "floor": 50.0,
+      "control": 28.719449195890935
+     },
+     "thin_0.5": {
+      "floor": 50.0,
+      "control": 51.602149893020076
+     },
+     "thin_0": {
+      "floor": 50.0,
+      "control": 53.649264540707556
+     }
+    },
+    "skills": {
+     "own": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.4421704844160721,
+       "de_direction": 0.44583839201402936,
+       "mmd_u": 0.17728129986943275,
+       "variogram": 0.27599953727186166,
+       "d2_shape": 0.23167385339082716,
+       "occupancy_dice": 0.46824747887707807,
+       "scale_log_ratio": 0.509282782880594,
+       "neighborhood_mmd": 0.22454111139049537
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.4915147375610781,
+       "de_direction": 0.4896661367249602,
+       "mmd_u": 0.17925341875077,
+       "variogram": 0.3155933275575175,
+       "d2_shape": 0.4114767163839235,
+       "occupancy_dice": 0.4416361822414366,
+       "scale_log_ratio": 0.185788011115522,
+       "neighborhood_mmd": 0.2507373250315997
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6019253284766489,
+       "de_direction": 0.621402590772765,
+       "mmd_u": 0.4222716323883639,
+       "variogram": 0.4881717617161223,
+       "d2_shape": 0.7914893617021277,
+       "occupancy_dice": 0.46736947791164657,
+       "scale_log_ratio": 0.24648155192088242,
+       "neighborhood_mmd": 0.5020102214650767
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6568485200232153,
+       "de_direction": 0.6743313650573116,
+       "mmd_u": 0.5678952473326866,
+       "variogram": 0.599266992821237,
+       "d2_shape": 0.4146153846153846,
+       "occupancy_dice": 0.37839937839937854,
+       "scale_log_ratio": 0.022741368616911308,
+       "neighborhood_mmd": 0.6280179830160404
+      }
+     }
+    },
+    "groups": {
+     "own": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.44400443821505076,
+       "cell_state": 0.21676859483040434,
+       "shape_growth": 0.18101069060893638,
+       "local_organisation": 0.22454111139049537
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.49059043714301914,
+       "cell_state": 0.23378938227346902,
+       "shape_growth": 0.17366082338754943,
+       "local_organisation": 0.2507373250315997
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.611663959624707,
+       "cell_state": 0.4486316841194673,
+       "shape_growth": 0.5017801305115522,
+       "local_organisation": 0.5020102214650767
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6655899425402634,
+       "cell_state": 0.5804439455281067,
+       "shape_growth": 0.27191871054389144,
+       "local_organisation": 0.6280179830160404
+      }
+     }
+    },
+    "seconds": 52.6
+   },
+   {
+    "seed": 1,
+    "build_seed": 1000001,
+    "n_cells": {
+     "control": 12589
+    },
+    "size_record": {
+     "sizing": "f",
+     "target_rms_full": 566.9479655638804,
+     "base_rms": 523.9826660085818,
+     "ratio": 1.0819975589700042,
+     "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+     "rms_before": 301.41640883926675,
+     "rms_after": 566.9479655638804,
+     "log_rms_after_vs_target": 0.0
+    },
+    "draw": {
+     "pool_cells": 25765,
+     "drawn": 25179,
+     "short": false,
+     "repeated_rows_at_least": 0
+    },
+    "factors": {
+     "ratio": 1.5,
+     "lineages": [
+      "CM",
+      "Endothelial"
+     ],
+     "damping": [
+      0.5,
+      0.75
+     ],
+     "ok": true,
+     "why": null
+    },
+    "scores": {
+     "own": {
+      "floor": 50.0,
+      "control": 27.121739799872778
+     },
+     "radial_0": {
+      "floor": 50.0,
+      "control": 29.088265557281805
+     },
+     "thin_0.5": {
+      "floor": 50.0,
+      "control": 51.77081379550529
+     },
+     "thin_0": {
+      "floor": 50.0,
+      "control": 56.22234472450888
+     }
+    },
+    "skills": {
+     "own": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.43704370911159574,
+       "de_direction": 0.4486133768352365,
+       "mmd_u": 0.17574050102794486,
+       "variogram": 0.26586545367488634,
+       "d2_shape": 0.29830368225072407,
+       "occupancy_dice": 0.48306451612903234,
+       "scale_log_ratio": 0.5215339233038349,
+       "neighborhood_mmd": 0.23025272463474708
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5039931393042826,
+       "de_direction": 0.4902233250620347,
+       "mmd_u": 0.18486803519061581,
+       "variogram": 0.29835434921991877,
+       "d2_shape": 0.40409635450212544,
+       "occupancy_dice": 0.42742653606411407,
+       "scale_log_ratio": 0.19794294585678246,
+       "neighborhood_mmd": 0.2586473928755808
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6037625309204531,
+       "de_direction": 0.6262599986993561,
+       "mmd_u": 0.4528745458431289,
+       "variogram": 0.4900238625198019,
+       "d2_shape": 0.7618705035971223,
+       "occupancy_dice": 0.45427477669076993,
+       "scale_log_ratio": 0.24210118239968986,
+       "neighborhood_mmd": 0.5020048602673147
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6632383191301792,
+       "de_direction": 0.676561187342481,
+       "mmd_u": 0.5782312925170068,
+       "variogram": 0.5906749699395201,
+       "d2_shape": 0.6573033707865168,
+       "occupancy_dice": 0.4159525379037574,
+       "scale_log_ratio": 0.04731556585554269,
+       "neighborhood_mmd": 0.6222614474094071
+      }
+     }
+    },
+    "groups": {
+     "own": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.4428285429734161,
+       "cell_state": 0.21179048208672147,
+       "shape_growth": 0.19999784230002643,
+       "local_organisation": 0.23025272463474708
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.49710823218315864,
+       "cell_state": 0.230262560802337,
+       "shape_growth": 0.17751243643019582,
+       "local_organisation": 0.2586473928755808
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6150112648099046,
+       "cell_state": 0.4677342725137981,
+       "shape_growth": 0.486082154229194,
+       "local_organisation": 0.5020048602673147
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6698997532363301,
+       "cell_state": 0.5832087634860121,
+       "shape_growth": 0.37352382484860563,
+       "local_organisation": 0.6222614474094071
+      }
+     }
+    },
+    "seconds": 48.1
+   },
+   {
+    "seed": 2,
+    "build_seed": 1000002,
+    "n_cells": {
+     "control": 12589
+    },
+    "size_record": {
+     "sizing": "f",
+     "target_rms_full": 566.9479655638804,
+     "base_rms": 523.9826660085818,
+     "ratio": 1.0819975589700042,
+     "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+     "rms_before": 301.4411449564559,
+     "rms_after": 566.9479655638804,
+     "log_rms_after_vs_target": 0.0
+    },
+    "draw": {
+     "pool_cells": 25765,
+     "drawn": 25179,
+     "short": false,
+     "repeated_rows_at_least": 0
+    },
+    "factors": {
+     "ratio": 1.5,
+     "lineages": [
+      "CM",
+      "Endothelial"
+     ],
+     "damping": [
+      0.5,
+      0.75
+     ],
+     "ok": true,
+     "why": null
+    },
+    "scores": {
+     "own": {
+      "floor": 50.0,
+      "control": 27.29318316991103
+     },
+     "radial_0": {
+      "floor": 50.0,
+      "control": 28.535944644258564
+     },
+     "thin_0.5": {
+      "floor": 50.0,
+      "control": 52.74795529948274
+     },
+     "thin_0": {
+      "floor": 50.0,
+      "control": 54.212042143013036
+     }
+    },
+    "skills": {
+     "own": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.4388590133270984,
+       "de_direction": 0.4466006303466907,
+       "mmd_u": 0.19022913964548205,
+       "variogram": 0.25473448320199843,
+       "d2_shape": 0.29719853836784405,
+       "occupancy_dice": 0.4393132030787448,
+       "scale_log_ratio": 0.5196322543574029,
+       "neighborhood_mmd": 0.2356369416205835
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.49178977428744025,
+       "de_direction": 0.4885928724091655,
+       "mmd_u": 0.1715821044738815,
+       "variogram": 0.2911977491961415,
+       "d2_shape": 0.36168091168091165,
+       "occupancy_dice": 0.42659176029962537,
+       "scale_log_ratio": 0.18434093161546086,
+       "neighborhood_mmd": 0.2619605219136835
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6078560168155543,
+       "de_direction": 0.6176264715240217,
+       "mmd_u": 0.43969434118133,
+       "variogram": 0.48855286222710126,
+       "d2_shape": 0.8217576187101346,
+       "occupancy_dice": 0.5032051282051281,
+       "scale_log_ratio": 0.25519699069491186,
+       "neighborhood_mmd": 0.5112193056731583
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6732636014749042,
+       "de_direction": 0.6678450033990483,
+       "mmd_u": 0.5879899916597164,
+       "variogram": 0.6095304501624123,
+       "d2_shape": 0.4748711340206186,
+       "occupancy_dice": 0.3582309582309584,
+       "scale_log_ratio": 0.005348652931854201,
+       "neighborhood_mmd": 0.6218376264949402
+      }
+     }
+    },
+    "groups": {
+     "own": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.4427298218368946,
+       "cell_state": 0.2160312770680886,
+       "shape_growth": 0.1973292862708744,
+       "local_organisation": 0.2356369416205835
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.49019132334830284,
+       "cell_state": 0.2194283623627855,
+       "shape_growth": 0.16985757814557073,
+       "local_organisation": 0.2619605219136835
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.612741244169788,
+       "cell_state": 0.4592377495996385,
+       "shape_growth": 0.5267199125367248,
+       "local_organisation": 0.5112193056731583
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6705543024369762,
+       "cell_state": 0.5966061750607947,
+       "shape_growth": 0.27948358172781035,
+       "local_organisation": 0.6218376264949402
+      }
+     }
+    },
+    "seconds": 59.3
+   },
+   {
+    "seed": 3,
+    "build_seed": 1000003,
+    "n_cells": {
+     "control": 12589
+    },
+    "size_record": {
+     "sizing": "f",
+     "target_rms_full": 566.9479655638804,
+     "base_rms": 523.9826660085818,
+     "ratio": 1.0819975589700042,
+     "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+     "rms_before": 301.3514804901873,
+     "rms_after": 566.9479655638803,
+     "log_rms_after_vs_target": -2.220446049250313e-16
+    },
+    "draw": {
+     "pool_cells": 25765,
+     "drawn": 25179,
+     "short": false,
+     "repeated_rows_at_least": 0
+    },
+    "factors": {
+     "ratio": 1.5,
+     "lineages": [
+      "CM",
+      "Endothelial"
+     ],
+     "damping": [
+      0.5,
+      0.75
+     ],
+     "ok": true,
+     "why": null
+    },
+    "scores": {
+     "own": {
+      "floor": 50.0,
+      "control": 27.154012437334927
+     },
+     "radial_0": {
+      "floor": 50.0,
+      "control": 27.59197755999015
+     },
+     "thin_0.5": {
+      "floor": 50.0,
+      "control": 51.89405503303455
+     },
+     "thin_0": {
+      "floor": 50.0,
+      "control": 52.58341682210741
+     }
+    },
+    "skills": {
+     "own": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.4459415357359317,
+       "de_direction": 0.44471369592532756,
+       "mmd_u": 0.1705284701410716,
+       "variogram": 0.2524182686420962,
+       "d2_shape": 0.2666425470332851,
+       "occupancy_dice": 0.4630206857466706,
+       "scale_log_ratio": 0.5166504381694255,
+       "neighborhood_mmd": 0.23898316682633092
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.4921879028515444,
+       "de_direction": 0.4818315377081293,
+       "mmd_u": 0.15187052890817404,
+       "variogram": 0.28184961434704964,
+       "d2_shape": 0.3969427390051372,
+       "occupancy_dice": 0.4814231738035264,
+       "scale_log_ratio": 0.1807465618860511,
+       "neighborhood_mmd": 0.24196311599314724
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6039733368187165,
+       "de_direction": 0.6123030187962787,
+       "mmd_u": 0.44401401955358794,
+       "variogram": 0.4902126892573901,
+       "d2_shape": 0.7580278949075575,
+       "occupancy_dice": 0.54,
+       "scale_log_ratio": 0.20758483033932137,
+       "neighborhood_mmd": 0.5032596276631494
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6442510178295662,
+       "de_direction": 0.6741611898996888,
+       "mmd_u": 0.5993690851735016,
+       "variogram": 0.5994457761683752,
+       "d2_shape": 0.37590014402304367,
+       "occupancy_dice": 0.3703041144901609,
+       "scale_log_ratio": 0.01101061738104601,
+       "neighborhood_mmd": 0.5923258488168008
+      }
+     }
+    },
+    "groups": {
+     "own": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.44532761583062963,
+       "cell_state": 0.20328438954148143,
+       "shape_growth": 0.19856532529495524,
+       "local_organisation": 0.23898316682633092
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.48700972027983686,
+       "cell_state": 0.2038621630837243,
+       "shape_growth": 0.17084410304289763,
+       "local_organisation": 0.24196311599314724
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6081381778074976,
+       "cell_state": 0.46249348743510876,
+       "shape_growth": 0.5018709084156263,
+       "local_organisation": 0.5032596276631494
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6592061038646275,
+       "cell_state": 0.599399761571451,
+       "shape_growth": 0.2524049586314168,
+       "local_organisation": 0.5923258488168008
+      }
+     }
+    },
+    "seconds": 53.2
+   },
+   {
+    "seed": 4,
+    "build_seed": 1000004,
+    "n_cells": {
+     "control": 12589
+    },
+    "size_record": {
+     "sizing": "f",
+     "target_rms_full": 566.9479655638804,
+     "base_rms": 523.9826660085818,
+     "ratio": 1.0819975589700042,
+     "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+     "rms_before": 301.41307201689136,
+     "rms_after": 566.9479655638804,
+     "log_rms_after_vs_target": 0.0
+    },
+    "draw": {
+     "pool_cells": 25765,
+     "drawn": 25179,
+     "short": false,
+     "repeated_rows_at_least": 0
+    },
+    "factors": {
+     "ratio": 1.5,
+     "lineages": [
+      "CM",
+      "Endothelial"
+     ],
+     "damping": [
+      0.5,
+      0.75
+     ],
+     "ok": true,
+     "why": null
+    },
+    "scores": {
+     "own": {
+      "floor": 50.0,
+      "control": 27.023080971217944
+     },
+     "radial_0": {
+      "floor": 50.0,
+      "control": 28.629737150478668
+     },
+     "thin_0.5": {
+      "floor": 50.0,
+      "control": 52.33905129368247
+     },
+     "thin_0": {
+      "floor": 50.0,
+      "control": 55.693823074484385
+     }
+    },
+    "skills": {
+     "own": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.4551774076755974,
+       "de_direction": 0.4403515000887627,
+       "mmd_u": 0.17571599045346062,
+       "variogram": 0.2722707214538745,
+       "d2_shape": 0.2697472353870458,
+       "occupancy_dice": 0.4637251998815516,
+       "scale_log_ratio": 0.5170510546027992,
+       "neighborhood_mmd": 0.22840428575970495
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.4793293762365928,
+       "de_direction": 0.48804661818906264,
+       "mmd_u": 0.17365752477529384,
+       "variogram": 0.2818080683880789,
+       "d2_shape": 0.4110537432527576,
+       "occupancy_dice": 0.461191335740072,
+       "scale_log_ratio": 0.21558289396602226,
+       "neighborhood_mmd": 0.25769704433497537
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6213361499867969,
+       "de_direction": 0.6192420569095317,
+       "mmd_u": 0.4500694858050427,
+       "variogram": 0.48466523457948985,
+       "d2_shape": 0.7017592083562396,
+       "occupancy_dice": 0.5023510971786833,
+       "scale_log_ratio": 0.26619690741828145,
+       "neighborhood_mmd": 0.519262758666578
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6732484562018753,
+       "de_direction": 0.6672371303395399,
+       "mmd_u": 0.577807848443843,
+       "variogram": 0.5862648479310795,
+       "d2_shape": 0.6253315649867375,
+       "occupancy_dice": 0.379120879120879,
+       "scale_log_ratio": 0.018886292834890964,
+       "neighborhood_mmd": 0.6352065691557608
+      }
+     }
+    },
+    "groups": {
+     "own": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.44776445388218006,
+       "cell_state": 0.21433788285362615,
+       "shape_growth": 0.19041661635320664,
+       "local_organisation": 0.22840428575970495
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.48368799721282774,
+       "cell_state": 0.21691774222040788,
+       "shape_growth": 0.18688670225093576,
+       "local_organisation": 0.25769704433497537
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6202891034481643,
+       "cell_state": 0.4639077853148216,
+       "shape_growth": 0.4901024043177348,
+       "local_organisation": 0.519262758666578
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6702427932707076,
+       "cell_state": 0.5811906482387377,
+       "shape_growth": 0.3411129123141691,
+       "local_organisation": 0.6352065691557608
+      }
+     }
+    },
+    "seconds": 48.8
+   },
+   {
+    "seed": 5,
+    "build_seed": 1000005,
+    "n_cells": {
+     "control": 12589
+    },
+    "size_record": {
+     "sizing": "f",
+     "target_rms_full": 566.9479655638804,
+     "base_rms": 523.9826660085818,
+     "ratio": 1.0819975589700042,
+     "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+     "rms_before": 301.4190167121686,
+     "rms_after": 566.9479655638803,
+     "log_rms_after_vs_target": -2.220446049250313e-16
+    },
+    "draw": {
+     "pool_cells": 25765,
+     "drawn": 25179,
+     "short": false,
+     "repeated_rows_at_least": 0
+    },
+    "factors": {
+     "ratio": 1.5,
+     "lineages": [
+      "CM",
+      "Endothelial"
+     ],
+     "damping": [
+      0.5,
+      0.75
+     ],
+     "ok": true,
+     "why": null
+    },
+    "scores": {
+     "own": {
+      "floor": 50.0,
+      "control": 27.181385119248404
+     },
+     "radial_0": {
+      "floor": 50.0,
+      "control": 28.0816629337271
+     },
+     "thin_0.5": {
+      "floor": 50.0,
+      "control": 50.87651286508914
+     },
+     "thin_0": {
+      "floor": 50.0,
+      "control": 56.56037335905114
+     }
+    },
+    "skills": {
+     "own": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.44594211123723043,
+       "de_direction": 0.447381501061859,
+       "mmd_u": 0.18876146788990825,
+       "variogram": 0.2814721873693016,
+       "d2_shape": 0.2291745194119864,
+       "occupancy_dice": 0.4740368509212731,
+       "scale_log_ratio": 0.5102947113443682,
+       "neighborhood_mmd": 0.2292686088337276
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.49181617878501727,
+       "de_direction": 0.4904208854476871,
+       "mmd_u": 0.16435618833520668,
+       "variogram": 0.29565006199588395,
+       "d2_shape": 0.4107496793750729,
+       "occupancy_dice": 0.41627486437613015,
+       "scale_log_ratio": 0.20580832526621493,
+       "neighborhood_mmd": 0.2459346523687258
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6110925938270783,
+       "de_direction": 0.6191897383794769,
+       "mmd_u": 0.4397035256410256,
+       "variogram": 0.5110968687053653,
+       "d2_shape": 0.739012642986153,
+       "occupancy_dice": 0.4601463226800153,
+       "scale_log_ratio": 0.2528601900329649,
+       "neighborhood_mmd": 0.48356316580615644
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6732754139749016,
+       "de_direction": 0.6712788547160764,
+       "mmd_u": 0.6022783556215948,
+       "variogram": 0.6205492222894621,
+       "d2_shape": 0.6364217252396166,
+       "occupancy_dice": 0.40015879317189357,
+       "scale_log_ratio": 0.009549512144488272,
+       "neighborhood_mmd": 0.6318410875424821
+      }
+     }
+    },
+    "groups": {
+     "own": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.4466618061495447,
+       "cell_state": 0.22584575568166557,
+       "shape_growth": 0.18547923410499834,
+       "local_organisation": 0.2292686088337276
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.49111853211635215,
+       "cell_state": 0.2168737377994776,
+       "shape_growth": 0.16933959506452828,
+       "local_organisation": 0.2459346523687258
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6151411661032775,
+       "cell_state": 0.4682608628667615,
+       "shape_growth": 0.4680953198273701,
+       "local_organisation": 0.48356316580615644
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.672277134345489,
+       "cell_state": 0.6095867022887418,
+       "shape_growth": 0.34871001018533276,
+       "local_organisation": 0.6318410875424821
+      }
+     }
+    },
+    "seconds": 49.8
+   },
+   {
+    "seed": 6,
+    "build_seed": 1000006,
+    "n_cells": {
+     "control": 12589
+    },
+    "size_record": {
+     "sizing": "f",
+     "target_rms_full": 566.9479655638804,
+     "base_rms": 523.9826660085818,
+     "ratio": 1.0819975589700042,
+     "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+     "rms_before": 301.20485756447613,
+     "rms_after": 566.9479655638805,
+     "log_rms_after_vs_target": 2.2204460492503128e-16
+    },
+    "draw": {
+     "pool_cells": 25765,
+     "drawn": 25179,
+     "short": false,
+     "repeated_rows_at_least": 0
+    },
+    "factors": {
+     "ratio": 1.5,
+     "lineages": [
+      "CM",
+      "Endothelial"
+     ],
+     "damping": [
+      0.5,
+      0.75
+     ],
+     "ok": true,
+     "why": null
+    },
+    "scores": {
+     "own": {
+      "floor": 50.0,
+      "control": 27.179496179359564
+     },
+     "radial_0": {
+      "floor": 50.0,
+      "control": 28.227454769802318
+     },
+     "thin_0.5": {
+      "floor": 50.0,
+      "control": 53.99930641871785
+     },
+     "thin_0": {
+      "floor": 50.0,
+      "control": 54.83688951199785
+     }
+    },
+    "skills": {
+     "own": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.4452509725780434,
+       "de_direction": 0.4472007591161719,
+       "mmd_u": 0.18776661123563013,
+       "variogram": 0.2786314297566372,
+       "d2_shape": 0.31336088154269975,
+       "occupancy_dice": 0.463393119670685,
+       "scale_log_ratio": 0.52239663093415,
+       "neighborhood_mmd": 0.22337567576531456
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5,
+       "de_direction": 0.49428643342562295,
+       "mmd_u": 0.15574278280262668,
+       "variogram": 0.3006043261061212,
+       "d2_shape": 0.41537342386032977,
+       "occupancy_dice": 0.4603469640644361,
+       "scale_log_ratio": 0.20637970791698693,
+       "neighborhood_mmd": 0.24298103777745114
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6354299475846438,
+       "de_direction": 0.6197540256117663,
+       "mmd_u": 0.45465299684542587,
+       "variogram": 0.4863247711943918,
+       "d2_shape": 0.9229195088676672,
+       "occupancy_dice": 0.5376999238385378,
+       "scale_log_ratio": 0.22082018927444796,
+       "neighborhood_mmd": 0.5045786895719458
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6761996731540633,
+       "de_direction": 0.6726395589248794,
+       "mmd_u": 0.5720020070245861,
+       "variogram": 0.6001238472996269,
+       "d2_shape": 0.534841628959276,
+       "occupancy_dice": 0.40856378233719887,
+       "scale_log_ratio": 0.02863617634940255,
+       "neighborhood_mmd": 0.6117913587572146
+      }
+     }
+    },
+    "groups": {
+     "own": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.44622586584710766,
+       "cell_state": 0.22411253864403297,
+       "shape_growth": 0.1934657669179274,
+       "local_organisation": 0.22337567576531456
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.4971432167128115,
+       "cell_state": 0.21368740012402448,
+       "shape_growth": 0.17528653617780562,
+       "local_organisation": 0.24298103777745114
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.627591986598205,
+       "cell_state": 0.46732170658501226,
+       "shape_growth": 0.5604798739935509,
+       "local_organisation": 0.5045786895719458
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6744196160394713,
+       "cell_state": 0.5832507431346025,
+       "shape_growth": 0.32401386254862574,
+       "local_organisation": 0.6117913587572146
+      }
+     }
+    },
+    "seconds": 49.0
+   },
+   {
+    "seed": 7,
+    "build_seed": 1000007,
+    "n_cells": {
+     "control": 12589
+    },
+    "size_record": {
+     "sizing": "f",
+     "target_rms_full": 566.9479655638804,
+     "base_rms": 523.9826660085818,
+     "ratio": 1.0819975589700042,
+     "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+     "rms_before": 301.25752979781606,
+     "rms_after": 566.9479655638804,
+     "log_rms_after_vs_target": 0.0
+    },
+    "draw": {
+     "pool_cells": 25765,
+     "drawn": 25179,
+     "short": false,
+     "repeated_rows_at_least": 0
+    },
+    "factors": {
+     "ratio": 1.5,
+     "lineages": [
+      "CM",
+      "Endothelial"
+     ],
+     "damping": [
+      0.5,
+      0.75
+     ],
+     "ok": true,
+     "why": null
+    },
+    "scores": {
+     "own": {
+      "floor": 50.0,
+      "control": 27.79379346041133
+     },
+     "radial_0": {
+      "floor": 50.0,
+      "control": 28.901260912846748
+     },
+     "thin_0.5": {
+      "floor": 50.0,
+      "control": 51.99567857289008
+     },
+     "thin_0": {
+      "floor": 50.0,
+      "control": 55.40482637973757
+     }
+    },
+    "skills": {
+     "own": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.44594532506317486,
+       "de_direction": 0.44628061959654175,
+       "mmd_u": 0.1859533183352081,
+       "variogram": 0.2725434657026256,
+       "d2_shape": 0.26348396501457727,
+       "occupancy_dice": 0.4874936191934662,
+       "scale_log_ratio": 0.5296374448494149,
+       "neighborhood_mmd": 0.240081448251726
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5076963906581742,
+       "de_direction": 0.4876573807871517,
+       "mmd_u": 0.17311960542540072,
+       "variogram": 0.29455012717253076,
+       "d2_shape": 0.39931458284093596,
+       "occupancy_dice": 0.4182225541448843,
+       "scale_log_ratio": 0.19569433669511246,
+       "neighborhood_mmd": 0.26062963633074004
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.617625491633891,
+       "de_direction": 0.6249274240371588,
+       "mmd_u": 0.4470677837014471,
+       "variogram": 0.47255067567567566,
+       "d2_shape": 0.7697271927251395,
+       "occupancy_dice": 0.4892128279883381,
+       "scale_log_ratio": 0.23897131552917905,
+       "neighborhood_mmd": 0.5019859658413874
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6666421586648041,
+       "de_direction": 0.6750515463917525,
+       "mmd_u": 0.6328930703817622,
+       "variogram": 0.5845012366034624,
+       "d2_shape": 0.6190998902305159,
+       "occupancy_dice": 0.32333533293341354,
+       "scale_log_ratio": 0.007400194741966894,
+       "neighborhood_mmd": 0.6151980598221504
+      }
+     }
+    },
+    "groups": {
+     "own": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.4461129723298583,
+       "cell_state": 0.2205893772821751,
+       "shape_growth": 0.20496794055269382,
+       "local_organisation": 0.240081448251726
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.49767688572266294,
+       "cell_state": 0.22169181412425276,
+       "shape_growth": 0.1760521003362142,
+       "local_organisation": 0.26062963633074004
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.621276457835525,
+       "cell_state": 0.4572609404911385,
+       "shape_growth": 0.49930377874755216,
+       "local_organisation": 0.5019859658413874
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6708468525282782,
+       "cell_state": 0.6135363368704423,
+       "shape_growth": 0.3166118059686321,
+       "local_organisation": 0.6151980598221504
+      }
+     }
+    },
+    "seconds": 50.7
+   },
+   {
+    "seed": 8,
+    "build_seed": 1000008,
+    "n_cells": {
+     "control": 12589
+    },
+    "size_record": {
+     "sizing": "f",
+     "target_rms_full": 566.9479655638804,
+     "base_rms": 523.9826660085818,
+     "ratio": 1.0819975589700042,
+     "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+     "rms_before": 301.469255072044,
+     "rms_after": 566.9479655638805,
+     "log_rms_after_vs_target": 2.2204460492503128e-16
+    },
+    "draw": {
+     "pool_cells": 25765,
+     "drawn": 25179,
+     "short": false,
+     "repeated_rows_at_least": 0
+    },
+    "factors": {
+     "ratio": 1.5,
+     "lineages": [
+      "CM",
+      "Endothelial"
+     ],
+     "damping": [
+      0.5,
+      0.75
+     ],
+     "ok": true,
+     "why": null
+    },
+    "scores": {
+     "own": {
+      "floor": 50.0,
+      "control": 27.19226311751055
+     },
+     "radial_0": {
+      "floor": 50.0,
+      "control": 27.95358579557588
+     },
+     "thin_0.5": {
+      "floor": 50.0,
+      "control": 51.64460284684955
+     },
+     "thin_0": {
+      "floor": 50.0,
+      "control": 57.93139303305901
+     }
+    },
+    "skills": {
+     "own": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.4362347729789591,
+       "de_direction": 0.44633124634025495,
+       "mmd_u": 0.18309962021618462,
+       "variogram": 0.2579226631777875,
+       "d2_shape": 0.3605633802816901,
+       "occupancy_dice": 0.4804377564979479,
+       "scale_log_ratio": 0.5302649390833495,
+       "neighborhood_mmd": 0.226404658880177
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.4836044410018074,
+       "de_direction": 0.4882684882684883,
+       "mmd_u": 0.16199848599545796,
+       "variogram": 0.30461400016361706,
+       "d2_shape": 0.42992002097810406,
+       "occupancy_dice": 0.4513404333455748,
+       "scale_log_ratio": 0.19867549668874174,
+       "neighborhood_mmd": 0.24021658872754123
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6224407327586208,
+       "de_direction": 0.6186046511627906,
+       "mmd_u": 0.44951140065146583,
+       "variogram": 0.47760673083988536,
+       "d2_shape": 0.6879321181646763,
+       "occupancy_dice": 0.4590476190476189,
+       "scale_log_ratio": 0.2547441058079356,
+       "neighborhood_mmd": 0.5172706081796992
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6494984705129118,
+       "de_direction": 0.6693863558450462,
+       "mmd_u": 0.5662951256030611,
+       "variogram": 0.5930381885772221,
+       "d2_shape": 1.0,
+       "occupancy_dice": 0.3911205073995772,
+       "scale_log_ratio": 0.04454165838138794,
+       "neighborhood_mmd": 0.6022669020903343
+      }
+     }
+    },
+    "groups": {
+     "own": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.441283009659607,
+       "cell_state": 0.2130288374008258,
+       "shape_growth": 0.20697401875981236,
+       "local_organisation": 0.226404658880177
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.48593646463514784,
+       "cell_state": 0.2190446916627216,
+       "shape_growth": 0.17294568679762448,
+       "local_organisation": 0.24021658872754123
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6205226919607056,
+       "cell_state": 0.46074953272683367,
+       "shape_growth": 0.46724128100674356,
+       "local_organisation": 0.5172706081796992
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.659442413178979,
+       "cell_state": 0.5769923507927255,
+       "shape_growth": 0.4785540552603217,
+       "local_organisation": 0.6022669020903343
+      }
+     }
+    },
+    "seconds": 50.0
+   },
+   {
+    "seed": 9,
+    "build_seed": 1000009,
+    "n_cells": {
+     "control": 12589
+    },
+    "size_record": {
+     "sizing": "f",
+     "target_rms_full": 566.9479655638804,
+     "base_rms": 523.9826660085818,
+     "ratio": 1.0819975589700042,
+     "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+     "rms_before": 301.1989002540282,
+     "rms_after": 566.9479655638804,
+     "log_rms_after_vs_target": 0.0
+    },
+    "draw": {
+     "pool_cells": 25765,
+     "drawn": 25179,
+     "short": false,
+     "repeated_rows_at_least": 0
+    },
+    "factors": {
+     "ratio": 1.5,
+     "lineages": [
+      "CM",
+      "Endothelial"
+     ],
+     "damping": [
+      0.5,
+      0.75
+     ],
+     "ok": true,
+     "why": null
+    },
+    "scores": {
+     "own": {
+      "floor": 50.0,
+      "control": 27.484951549055815
+     },
+     "radial_0": {
+      "floor": 50.0,
+      "control": 27.84000223283937
+     },
+     "thin_0.5": {
+      "floor": 50.0,
+      "control": 49.78048791723125
+     },
+     "thin_0": {
+      "floor": 50.0,
+      "control": 57.94416739500265
+     }
+    },
+    "skills": {
+     "own": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.4482694884709579,
+       "de_direction": 0.4493036338066506,
+       "mmd_u": 0.19644670050761423,
+       "variogram": 0.2685825410544512,
+       "d2_shape": 0.27227369921596584,
+       "occupancy_dice": 0.45748987854251016,
+       "scale_log_ratio": 0.5218377765173,
+       "neighborhood_mmd": 0.2318525156830111
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.4833324443970345,
+       "de_direction": 0.4904382470119522,
+       "mmd_u": 0.17067159581022798,
+       "variogram": 0.28290727987237846,
+       "d2_shape": 0.3999467802022352,
+       "occupancy_dice": 0.4631317315658657,
+       "scale_log_ratio": 0.19078558771411694,
+       "neighborhood_mmd": 0.24148634666426738
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5980518162754516,
+       "de_direction": 0.6176191979791601,
+       "mmd_u": 0.41095600676818955,
+       "variogram": 0.4921546333143832,
+       "d2_shape": 0.7477973568281938,
+       "occupancy_dice": 0.4733952702702704,
+       "scale_log_ratio": 0.27328306500917054,
+       "neighborhood_mmd": 0.4708413001912045
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6500107999136007,
+       "de_direction": 0.6724659606656581,
+       "mmd_u": 0.581490727532097,
+       "variogram": 0.6033277813074163,
+       "d2_shape": 1.0,
+       "occupancy_dice": 0.3165704863973619,
+       "scale_log_ratio": 0.04695016355589763,
+       "neighborhood_mmd": 0.6117958831504992
+      }
+     }
+    },
+    "groups": {
+     "own": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.4487865611388042,
+       "cell_state": 0.225301036726349,
+       "shape_growth": 0.1934579484140682,
+       "local_organisation": 0.2318525156830111
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.4868853457044934,
+       "cell_state": 0.21556586943508818,
+       "shape_growth": 0.16966252750972588,
+       "local_organisation": 0.24148634666426738
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6078355071273058,
+       "cell_state": 0.443435457386667,
+       "shape_growth": 0.4691072519840726,
+       "local_organisation": 0.4708413001912045
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6612383802896293,
+       "cell_state": 0.5902255490422247,
+       "shape_growth": 0.45450688331775313,
+       "local_organisation": 0.6117958831504992
+      }
+     }
+    },
+    "seconds": 50.0
+   }
+  ],
+  "T2h/<=E8.75->E10.5": [
+   {
+    "seed": 0,
+    "build_seed": 1000000,
+    "n_cells": {
+     "control": 12589
+    },
+    "size_record": {
+     "sizing": "f",
+     "target_rms_full": 395.6835692510699,
+     "base_rms": 341.3898784136632,
+     "ratio": 1.1590372013654688,
+     "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+     "rms_before": 179.1260267079997,
+     "rms_after": 395.68356925106997,
+     "log_rms_after_vs_target": 2.2204460492503128e-16
+    },
+    "draw": {
+     "pool_cells": 4976,
+     "drawn": 25179,
+     "short": true,
+     "repeated_rows_at_least": 20203
+    },
+    "factors": {
+     "ratio": 1.5,
+     "lineages": [
+      "CM",
+      "Endothelial"
+     ],
+     "damping": [
+      0.5,
+      0.75
+     ],
+     "ok": true,
+     "why": null
+    },
+    "scores": {
+     "own": {
+      "floor": 50.0,
+      "control": 44.14971302299154
+     },
+     "radial_0": {
+      "floor": 50.0,
+      "control": 46.86905552875636
+     },
+     "thin_0.5": {
+      "floor": 50.0,
+      "control": 59.23514341413291
+     },
+     "thin_0": {
+      "floor": 50.0,
+      "control": 59.18502691655378
+     }
+    },
+    "skills": {
+     "own": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5073591698432868,
+       "de_direction": 0.5274976112113813,
+       "mmd_u": 0.30890383140033395,
+       "variogram": 0.39856628957999746,
+       "d2_shape": 0.7100280504908836,
+       "occupancy_dice": 0.36920821114369506,
+       "scale_log_ratio": 0.8804032766225584,
+       "neighborhood_mmd": 0.3918578680203046
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5781230956733698,
+       "de_direction": 0.5995371780037756,
+       "mmd_u": 0.4088524224157178,
+       "variogram": 0.4635138679957387,
+       "d2_shape": 0.25794621026894865,
+       "occupancy_dice": 0.22668579626972743,
+       "scale_log_ratio": 0.9148167268972638,
+       "neighborhood_mmd": 0.4424367331288343
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6033165763530718,
+       "de_direction": 0.6734011330284622,
+       "mmd_u": 0.5502926730808048,
+       "variogram": 0.5629258517034068,
+       "d2_shape": 0.6579298513152878,
+       "occupancy_dice": 0.35292131036811897,
+       "scale_log_ratio": 0.9411374564748798,
+       "neighborhood_mmd": 0.5250380646252749
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6171728030099436,
+       "de_direction": 0.6956675633583463,
+       "mmd_u": 0.5726653420380359,
+       "variogram": 0.6086904761904761,
+       "d2_shape": 0.7393890675241157,
+       "occupancy_dice": 0.1520076481835566,
+       "scale_log_ratio": 0.8004991977179534,
+       "neighborhood_mmd": 0.559940193303786
+      }
+     }
+    },
+    "groups": {
+     "own": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.517428390527334,
+       "cell_state": 0.34476881467219933,
+       "shape_growth": 0.5119334476998239,
+       "local_organisation": 0.3918578680203046
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.5888301368385727,
+       "cell_state": 0.43071700064772617,
+       "shape_growth": 0.41277835053512135,
+       "local_organisation": 0.4424367331288343
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.638358854690767,
+       "cell_state": 0.5553459445298455,
+       "shape_growth": 0.6506628727194288,
+       "local_organisation": 0.5250380646252749
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.656420183184145,
+       "cell_state": 0.587075395699012,
+       "shape_growth": 0.5639653044752085,
+       "local_organisation": 0.559940193303786
+      }
+     }
+    },
+    "seconds": 47.4
+   },
+   {
+    "seed": 1,
+    "build_seed": 1000001,
+    "n_cells": {
+     "control": 12589
+    },
+    "size_record": {
+     "sizing": "f",
+     "target_rms_full": 395.6835692510699,
+     "base_rms": 341.3898784136632,
+     "ratio": 1.1590372013654688,
+     "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+     "rms_before": 179.02143209595877,
+     "rms_after": 395.68356925106997,
+     "log_rms_after_vs_target": 2.2204460492503128e-16
+    },
+    "draw": {
+     "pool_cells": 4976,
+     "drawn": 25179,
+     "short": true,
+     "repeated_rows_at_least": 20203
+    },
+    "factors": {
+     "ratio": 1.5,
+     "lineages": [
+      "CM",
+      "Endothelial"
+     ],
+     "damping": [
+      0.5,
+      0.75
+     ],
+     "ok": true,
+     "why": null
+    },
+    "scores": {
+     "own": {
+      "floor": 50.0,
+      "control": 45.871054152169094
+     },
+     "radial_0": {
+      "floor": 50.0,
+      "control": 50.2125186415678
+     },
+     "thin_0.5": {
+      "floor": 50.0,
+      "control": 61.091991479944284
+     },
+     "thin_0": {
+      "floor": 50.0,
+      "control": 62.65623268703175
+     }
+    },
+    "skills": {
+     "own": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5151647392537638,
+       "de_direction": 0.5277290370606689,
+       "mmd_u": 0.3217077570655442,
+       "variogram": 0.42400428647972843,
+       "d2_shape": 0.746746394653535,
+       "occupancy_dice": 0.36128133704735377,
+       "scale_log_ratio": 0.8733466433740953,
+       "neighborhood_mmd": 0.4096523987359954
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5725140203823192,
+       "de_direction": 0.5935642672750194,
+       "mmd_u": 0.4015180896448557,
+       "variogram": 0.48041557975170956,
+       "d2_shape": 0.38131166569936153,
+       "occupancy_dice": 0.37539992890152873,
+       "scale_log_ratio": 0.9062816616008106,
+       "neighborhood_mmd": 0.4706228099920877
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.626,
+       "de_direction": 0.672887612797375,
+       "mmd_u": 0.565531914893617,
+       "variogram": 0.5882741936372704,
+       "d2_shape": 0.6867775299127966,
+       "occupancy_dice": 0.40570999248685197,
+       "scale_log_ratio": 0.9439946018893387,
+       "neighborhood_mmd": 0.5407796516450096
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6315896325370508,
+       "de_direction": 0.7002701549836484,
+       "mmd_u": 0.5908212560386473,
+       "variogram": 0.6237330196432312,
+       "d2_shape": 0.7394256613382373,
+       "occupancy_dice": 0.3798641136504016,
+       "scale_log_ratio": 0.7721923335574983,
+       "neighborhood_mmd": 0.6058394160583941
+      }
+     }
+    },
+    "groups": {
+     "own": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.5214468881572163,
+       "cell_state": 0.3626263688312179,
+       "shape_growth": 0.5411165103623341,
+       "local_organisation": 0.4096523987359954
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.5830391438286693,
+       "cell_state": 0.43307708568759723,
+       "shape_growth": 0.5217617061543576,
+       "local_organisation": 0.4706228099920877
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6494438063986875,
+       "cell_state": 0.5746288263910784,
+       "shape_growth": 0.6788273747629957,
+       "local_organisation": 0.5407796516450096
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6659298937603496,
+       "cell_state": 0.6039859614804809,
+       "shape_growth": 0.6304940361820457,
+       "local_organisation": 0.6058394160583941
+      }
+     }
+    },
+    "seconds": 46.3
+   },
+   {
+    "seed": 2,
+    "build_seed": 1000002,
+    "n_cells": {
+     "control": 12589
+    },
+    "size_record": {
+     "sizing": "f",
+     "target_rms_full": 395.6835692510699,
+     "base_rms": 341.3898784136632,
+     "ratio": 1.1590372013654688,
+     "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+     "rms_before": 179.13993143597477,
+     "rms_after": 395.6835692510699,
+     "log_rms_after_vs_target": 0.0
+    },
+    "draw": {
+     "pool_cells": 4976,
+     "drawn": 25179,
+     "short": true,
+     "repeated_rows_at_least": 20203
+    },
+    "factors": {
+     "ratio": 1.5,
+     "lineages": [
+      "CM",
+      "Endothelial"
+     ],
+     "damping": [
+      0.5,
+      0.75
+     ],
+     "ok": true,
+     "why": null
+    },
+    "scores": {
+     "own": {
+      "floor": 50.0,
+      "control": 46.007634649524086
+     },
+     "radial_0": {
+      "floor": 50.0,
+      "control": 49.76205894941437
+     },
+     "thin_0.5": {
+      "floor": 50.0,
+      "control": 60.732005952608745
+     },
+     "thin_0": {
+      "floor": 50.0,
+      "control": 60.45182909688278
+     }
+    },
+    "skills": {
+     "own": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5037079892704991,
+       "de_direction": 0.5309587573647563,
+       "mmd_u": 0.3284431002573015,
+       "variogram": 0.3981181578115252,
+       "d2_shape": 0.7446970853044407,
+       "occupancy_dice": 0.39856321839080455,
+       "scale_log_ratio": 0.8727520773905494,
+       "neighborhood_mmd": 0.4123956849175657
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5658947117106362,
+       "de_direction": 0.5914619604102075,
+       "mmd_u": 0.41369801339411333,
+       "variogram": 0.460869786109841,
+       "d2_shape": 0.47431939376929555,
+       "occupancy_dice": 0.2208972174900622,
+       "scale_log_ratio": 0.9121680263843083,
+       "neighborhood_mmd": 0.4726984652493674
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6083207162135476,
+       "de_direction": 0.66752090639331,
+       "mmd_u": 0.5620472547559406,
+       "variogram": 0.563202828237241,
+       "d2_shape": 0.7043603258265453,
+       "occupancy_dice": 0.3675126903553301,
+       "scale_log_ratio": 0.9734697416334316,
+       "neighborhood_mmd": 0.5470690233806914
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6143038779402417,
+       "de_direction": 0.6930693069306931,
+       "mmd_u": 0.5931178460873947,
+       "variogram": 0.6139333985039102,
+       "d2_shape": 0.7483039348710991,
+       "occupancy_dice": 0.2606721162579473,
+       "scale_log_ratio": 0.7549887211521776,
+       "neighborhood_mmd": 0.5749542469587684
+      }
+     }
+    },
+    "groups": {
+     "own": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.5173333733176277,
+       "cell_state": 0.356313123278991,
+       "shape_growth": 0.554263204466779,
+       "local_organisation": 0.4123956849175657
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.5786783360604218,
+       "cell_state": 0.4325667224804044,
+       "shape_growth": 0.5065388341863809,
+       "local_organisation": 0.4726984652493674
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6379208113034287,
+       "cell_state": 0.5625094841484608,
+       "shape_growth": 0.681780919271769,
+       "local_organisation": 0.5470690233806914
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6536865924354673,
+       "cell_state": 0.6014440670540009,
+       "shape_growth": 0.5879882574270747,
+       "local_organisation": 0.5749542469587684
+      }
+     }
+    },
+    "seconds": 47.0
+   },
+   {
+    "seed": 3,
+    "build_seed": 1000003,
+    "n_cells": {
+     "control": 12589
+    },
+    "size_record": {
+     "sizing": "f",
+     "target_rms_full": 395.6835692510699,
+     "base_rms": 341.3898784136632,
+     "ratio": 1.1590372013654688,
+     "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+     "rms_before": 179.1571524668881,
+     "rms_after": 395.6835692510699,
+     "log_rms_after_vs_target": 0.0
+    },
+    "draw": {
+     "pool_cells": 4976,
+     "drawn": 25179,
+     "short": true,
+     "repeated_rows_at_least": 20203
+    },
+    "factors": {
+     "ratio": 1.5,
+     "lineages": [
+      "CM",
+      "Endothelial"
+     ],
+     "damping": [
+      0.5,
+      0.75
+     ],
+     "ok": true,
+     "why": null
+    },
+    "scores": {
+     "own": {
+      "floor": 50.0,
+      "control": 46.45020995044932
+     },
+     "radial_0": {
+      "floor": 50.0,
+      "control": 49.5412238824125
+     },
+     "thin_0.5": {
+      "floor": 50.0,
+      "control": 61.39236286147667
+     },
+     "thin_0": {
+      "floor": 50.0,
+      "control": 60.19925167446666
+     }
+    },
+    "skills": {
+     "own": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5149269993462627,
+       "de_direction": 0.5285531642872363,
+       "mmd_u": 0.33864524147727276,
+       "variogram": 0.4097555160051434,
+       "d2_shape": 0.7195783599441947,
+       "occupancy_dice": 0.3971509971509973,
+       "scale_log_ratio": 0.8720009893643333,
+       "neighborhood_mmd": 0.4167041596793325
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5703229737964656,
+       "de_direction": 0.5925082409349716,
+       "mmd_u": 0.3944994499449945,
+       "variogram": 0.4712655241621102,
+       "d2_shape": 0.4270489723420452,
+       "occupancy_dice": 0.29227467811158786,
+       "scale_log_ratio": 0.9007452574525745,
+       "neighborhood_mmd": 0.4687528530996074
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5982722785138997,
+       "de_direction": 0.6732855680655067,
+       "mmd_u": 0.5744737190520324,
+       "variogram": 0.5816640943818003,
+       "d2_shape": 0.6724898694281854,
+       "occupancy_dice": 0.41900647948164127,
+       "scale_log_ratio": 0.9337225274725275,
+       "neighborhood_mmd": 0.5674927631913057
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6230758934546914,
+       "de_direction": 0.6994979848688397,
+       "mmd_u": 0.613587457731325,
+       "variogram": 0.625664259254324,
+       "d2_shape": 0.7514378983367013,
+       "occupancy_dice": 0.21296296296296297,
+       "scale_log_ratio": 0.7549567869852567,
+       "neighborhood_mmd": 0.5551457333814027
+      }
+     }
+    },
+    "groups": {
+     "own": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.5217400818167495,
+       "cell_state": 0.367089351288421,
+       "shape_growth": 0.5524748052334696,
+       "local_organisation": 0.4167041596793325
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.5814156073657186,
+       "cell_state": 0.42520587963184076,
+       "shape_growth": 0.5062746151993333,
+       "local_organisation": 0.4687528530996074
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6357789232897032,
+       "cell_state": 0.5773498691839396,
+       "shape_growth": 0.675072958794118,
+       "local_organisation": 0.5674927631913057
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6612869391617655,
+       "cell_state": 0.6184181783405246,
+       "shape_growth": 0.5731192160949736,
+       "local_organisation": 0.5551457333814027
+      }
+     }
+    },
+    "seconds": 46.1
+   },
+   {
+    "seed": 4,
+    "build_seed": 1000004,
+    "n_cells": {
+     "control": 12589
+    },
+    "size_record": {
+     "sizing": "f",
+     "target_rms_full": 395.6835692510699,
+     "base_rms": 341.3898784136632,
+     "ratio": 1.1590372013654688,
+     "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+     "rms_before": 179.05472034523294,
+     "rms_after": 395.6835692510699,
+     "log_rms_after_vs_target": 0.0
+    },
+    "draw": {
+     "pool_cells": 4976,
+     "drawn": 25179,
+     "short": true,
+     "repeated_rows_at_least": 20203
+    },
+    "factors": {
+     "ratio": 1.5,
+     "lineages": [
+      "CM",
+      "Endothelial"
+     ],
+     "damping": [
+      0.5,
+      0.75
+     ],
+     "ok": true,
+     "why": null
+    },
+    "scores": {
+     "own": {
+      "floor": 50.0,
+      "control": 46.01147741700976
+     },
+     "radial_0": {
+      "floor": 50.0,
+      "control": 46.212900734952164
+     },
+     "thin_0.5": {
+      "floor": 50.0,
+      "control": 60.881838581164274
+     },
+     "thin_0": {
+      "floor": 50.0,
+      "control": 61.11208551796968
+     }
+    },
+    "skills": {
+     "own": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5,
+       "de_direction": 0.5285379618783942,
+       "mmd_u": 0.326603269780297,
+       "variogram": 0.4154572833835287,
+       "d2_shape": 0.7297068293509574,
+       "occupancy_dice": 0.4252643612460704,
+       "scale_log_ratio": 0.8722466960352423,
+       "neighborhood_mmd": 0.4099740666035484
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5572491813039595,
+       "de_direction": 0.5946271533550174,
+       "mmd_u": 0.3983762597984323,
+       "variogram": 0.45558010715258646,
+       "d2_shape": 0.30888369374634717,
+       "occupancy_dice": 0.30912724850099926,
+       "scale_log_ratio": 0.9267123287671232,
+       "neighborhood_mmd": 0.41940760500289404
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6153647347677198,
+       "de_direction": 0.6733105802047782,
+       "mmd_u": 0.5716324844113891,
+       "variogram": 0.5690179606025493,
+       "d2_shape": 0.6488169364881694,
+       "occupancy_dice": 0.4408044112877068,
+       "scale_log_ratio": 0.972541616612322,
+       "neighborhood_mmd": 0.5329615560764029
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6187091817134076,
+       "de_direction": 0.6937429854096521,
+       "mmd_u": 0.5990558968979469,
+       "variogram": 0.6100000534876631,
+       "d2_shape": 0.7190284564530037,
+       "occupancy_dice": 0.3911310413552565,
+       "scale_log_ratio": 0.752434648898001,
+       "neighborhood_mmd": 0.5639590620546703
+      }
+     }
+    },
+    "groups": {
+     "own": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.5142689809391972,
+       "cell_state": 0.3621448752215897,
+       "shape_growth": 0.5540711739160552,
+       "local_organisation": 0.4099740666035484
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.5759381673294884,
+       "cell_state": 0.42125779874009395,
+       "shape_growth": 0.43191245832561004,
+       "local_organisation": 0.41940760500289404
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6443376574862489,
+       "cell_state": 0.5705866748878532,
+       "shape_growth": 0.687387654796066,
+       "local_organisation": 0.5329615560764029
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6562260835615299,
+       "cell_state": 0.6034335595338334,
+       "shape_growth": 0.6208647155687537,
+       "local_organisation": 0.5639590620546703
+      }
+     }
+    },
+    "seconds": 46.0
+   },
+   {
+    "seed": 5,
+    "build_seed": 1000005,
+    "n_cells": {
+     "control": 12589
+    },
+    "size_record": {
+     "sizing": "f",
+     "target_rms_full": 395.6835692510699,
+     "base_rms": 341.3898784136632,
+     "ratio": 1.1590372013654688,
+     "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+     "rms_before": 179.094934480083,
+     "rms_after": 395.6835692510699,
+     "log_rms_after_vs_target": 0.0
+    },
+    "draw": {
+     "pool_cells": 4976,
+     "drawn": 25179,
+     "short": true,
+     "repeated_rows_at_least": 20203
+    },
+    "factors": {
+     "ratio": 1.5,
+     "lineages": [
+      "CM",
+      "Endothelial"
+     ],
+     "damping": [
+      0.5,
+      0.75
+     ],
+     "ok": true,
+     "why": null
+    },
+    "scores": {
+     "own": {
+      "floor": 50.0,
+      "control": 46.720077102927874
+     },
+     "radial_0": {
+      "floor": 50.0,
+      "control": 48.84608120592752
+     },
+     "thin_0.5": {
+      "floor": 50.0,
+      "control": 61.76247800783082
+     },
+     "thin_0": {
+      "floor": 50.0,
+      "control": 61.60502029088328
+     }
+    },
+    "skills": {
+     "own": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5,
+       "de_direction": 0.5324570815450643,
+       "mmd_u": 0.34821428571428575,
+       "variogram": 0.4253931534577485,
+       "d2_shape": 0.7348277747402953,
+       "occupancy_dice": 0.4081041968162084,
+       "scale_log_ratio": 0.8816159549987216,
+       "neighborhood_mmd": 0.41430364864595576
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5801471475093475,
+       "de_direction": 0.5978037890672138,
+       "mmd_u": 0.4276617137749972,
+       "variogram": 0.4708915302275235,
+       "d2_shape": 0.30659536541889487,
+       "occupancy_dice": 0.23496993987975964,
+       "scale_log_ratio": 0.9112565005871497,
+       "neighborhood_mmd": 0.4673059534573835
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6278914739017398,
+       "de_direction": 0.6694995920587435,
+       "mmd_u": 0.5742236457317923,
+       "variogram": 0.594005231257047,
+       "d2_shape": 0.6671163878395395,
+       "occupancy_dice": 0.37731196054254,
+       "scale_log_ratio": 0.9529569892473118,
+       "neighborhood_mmd": 0.5738721948479665
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6176701570680628,
+       "de_direction": 0.697371203044612,
+       "mmd_u": 0.5888833605799986,
+       "variogram": 0.6375684905183868,
+       "d2_shape": 0.7668862000306326,
+       "occupancy_dice": 0.3634232121922625,
+       "scale_log_ratio": 0.7865668982718689,
+       "neighborhood_mmd": 0.5593639488587185
+      }
+     }
+    },
+    "groups": {
+     "own": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.5162285407725322,
+       "cell_state": 0.37908583281167085,
+       "shape_growth": 0.5591850618869562,
+       "local_organisation": 0.41430364864595576
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.5889754682882806,
+       "cell_state": 0.4449536403560077,
+       "shape_growth": 0.45260818613542897,
+       "local_organisation": 0.4673059534573835
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6486955329802417,
+       "cell_state": 0.5821362799418942,
+       "shape_growth": 0.6657951125431304,
+       "local_organisation": 0.5738721948479665
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6575206800563373,
+       "cell_state": 0.6083574125553539,
+       "shape_growth": 0.6389587701649213,
+       "local_organisation": 0.5593639488587185
+      }
+     }
+    },
+    "seconds": 46.3
+   },
+   {
+    "seed": 6,
+    "build_seed": 1000006,
+    "n_cells": {
+     "control": 12589
+    },
+    "size_record": {
+     "sizing": "f",
+     "target_rms_full": 395.6835692510699,
+     "base_rms": 341.3898784136632,
+     "ratio": 1.1590372013654688,
+     "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+     "rms_before": 179.10774404773494,
+     "rms_after": 395.6835692510699,
+     "log_rms_after_vs_target": 0.0
+    },
+    "draw": {
+     "pool_cells": 4976,
+     "drawn": 25179,
+     "short": true,
+     "repeated_rows_at_least": 20203
+    },
+    "factors": {
+     "ratio": 1.5,
+     "lineages": [
+      "CM",
+      "Endothelial"
+     ],
+     "damping": [
+      0.5,
+      0.75
+     ],
+     "ok": true,
+     "why": null
+    },
+    "scores": {
+     "own": {
+      "floor": 50.0,
+      "control": 45.73770506056404
+     },
+     "radial_0": {
+      "floor": 50.0,
+      "control": 49.887670948466564
+     },
+     "thin_0.5": {
+      "floor": 50.0,
+      "control": 60.98528116020868
+     },
+     "thin_0": {
+      "floor": 50.0,
+      "control": 62.2779407106482
+     }
+    },
+    "skills": {
+     "own": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5112900678983104,
+       "de_direction": 0.5299898520536238,
+       "mmd_u": 0.3325666769870406,
+       "variogram": 0.41083516633416883,
+       "d2_shape": 0.7349493029150824,
+       "occupancy_dice": 0.40239821528165076,
+       "scale_log_ratio": 0.8703269586674892,
+       "neighborhood_mmd": 0.40411140313346783
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5806271344303011,
+       "de_direction": 0.5959235514696988,
+       "mmd_u": 0.40526404589168213,
+       "variogram": 0.470505958392244,
+       "d2_shape": 0.44672241704882654,
+       "occupancy_dice": 0.2753460531238309,
+       "scale_log_ratio": 0.9099949435361537,
+       "neighborhood_mmd": 0.46736155460268225
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6198341711823464,
+       "de_direction": 0.6721412021262095,
+       "mmd_u": 0.5712204260043017,
+       "variogram": 0.5759808987175163,
+       "d2_shape": 0.6986790818536162,
+       "occupancy_dice": 0.36424674779689453,
+       "scale_log_ratio": 0.9386312704706086,
+       "neighborhood_mmd": 0.5531132446241087
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6278914739017398,
+       "de_direction": 0.6938976377952756,
+       "mmd_u": 0.5761131401041262,
+       "variogram": 0.6253883454385155,
+       "d2_shape": 0.8373076923076923,
+       "occupancy_dice": 0.3505788712011577,
+       "scale_log_ratio": 0.7995701235894681,
+       "neighborhood_mmd": 0.5719142879734325
+      }
+     }
+    },
+    "groups": {
+     "own": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.5206399599759671,
+       "cell_state": 0.3638740727258919,
+       "shape_growth": 0.5408827665872346,
+       "local_organisation": 0.40411140313346783
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.58827534295,
+       "cell_state": 0.4313608108919069,
+       "shape_growth": 0.5085091294940737,
+       "local_organisation": 0.46736155460268225
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.645987686654278,
+       "cell_state": 0.5731246150895875,
+       "shape_growth": 0.667185700040373,
+       "local_organisation": 0.5531132446241087
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6608945558485078,
+       "cell_state": 0.5958232222378819,
+       "shape_growth": 0.662485562366106,
+       "local_organisation": 0.5719142879734325
+      }
+     }
+    },
+    "seconds": 46.1
+   },
+   {
+    "seed": 7,
+    "build_seed": 1000007,
+    "n_cells": {
+     "control": 12589
+    },
+    "size_record": {
+     "sizing": "f",
+     "target_rms_full": 395.6835692510699,
+     "base_rms": 341.3898784136632,
+     "ratio": 1.1590372013654688,
+     "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+     "rms_before": 179.08493658173316,
+     "rms_after": 395.6835692510699,
+     "log_rms_after_vs_target": 0.0
+    },
+    "draw": {
+     "pool_cells": 4976,
+     "drawn": 25179,
+     "short": true,
+     "repeated_rows_at_least": 20203
+    },
+    "factors": {
+     "ratio": 1.5,
+     "lineages": [
+      "CM",
+      "Endothelial"
+     ],
+     "damping": [
+      0.5,
+      0.75
+     ],
+     "ok": true,
+     "why": null
+    },
+    "scores": {
+     "own": {
+      "floor": 50.0,
+      "control": 44.960818799454806
+     },
+     "radial_0": {
+      "floor": 50.0,
+      "control": 47.838928525481876
+     },
+     "thin_0.5": {
+      "floor": 50.0,
+      "control": 60.54471717275808
+     },
+     "thin_0": {
+      "floor": 50.0,
+      "control": 60.779493463037014
+     }
+    },
+    "skills": {
+     "own": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.49285126517177535,
+       "de_direction": 0.5222578441162559,
+       "mmd_u": 0.3260283502913297,
+       "variogram": 0.4082361245599587,
+       "d2_shape": 0.7192110061329355,
+       "occupancy_dice": 0.3937198067632851,
+       "scale_log_ratio": 0.8709286838600314,
+       "neighborhood_mmd": 0.4012647775562403
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5555555555555556,
+       "de_direction": 0.5848855774348057,
+       "mmd_u": 0.40137915313158945,
+       "variogram": 0.4612988573596998,
+       "d2_shape": 0.38325875230323775,
+       "occupancy_dice": 0.26481655691439293,
+       "scale_log_ratio": 0.9078925412981812,
+       "neighborhood_mmd": 0.45058861117255283
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6134492830589484,
+       "de_direction": 0.6694580610021786,
+       "mmd_u": 0.5595021675290169,
+       "variogram": 0.5647896976922323,
+       "d2_shape": 0.6616534582132566,
+       "occupancy_dice": 0.37803138373751777,
+       "scale_log_ratio": 0.9570677074495164,
+       "neighborhood_mmd": 0.5531336521520263
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.629639396136858,
+       "de_direction": 0.6957716701902747,
+       "mmd_u": 0.6073575378696803,
+       "variogram": 0.6096266097344932,
+       "d2_shape": 0.7398537214972035,
+       "occupancy_dice": 0.24642652944539745,
+       "scale_log_ratio": 0.7483676544450026,
+       "neighborhood_mmd": 0.5819930702797745
+      }
+     }
+    },
+    "groups": {
+     "own": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.5075545546440157,
+       "cell_state": 0.3589114599987813,
+       "shape_growth": 0.5307019597791549,
+       "local_organisation": 0.4012647775562403
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.5702205664951807,
+       "cell_state": 0.4253470348228336,
+       "shape_growth": 0.4674009285287079,
+       "local_organisation": 0.45058861117255283
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6414536720305635,
+       "cell_state": 0.561617179594303,
+       "shape_growth": 0.6655841831334303,
+       "local_organisation": 0.5531336521520263
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6627055331635664,
+       "cell_state": 0.6082651666156054,
+       "shape_growth": 0.5782159684625345,
+       "local_organisation": 0.5819930702797745
+      }
+     }
+    },
+    "seconds": 46.5
+   },
+   {
+    "seed": 8,
+    "build_seed": 1000008,
+    "n_cells": {
+     "control": 12589
+    },
+    "size_record": {
+     "sizing": "f",
+     "target_rms_full": 395.6835692510699,
+     "base_rms": 341.3898784136632,
+     "ratio": 1.1590372013654688,
+     "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+     "rms_before": 179.00052839991355,
+     "rms_after": 395.6835692510699,
+     "log_rms_after_vs_target": 0.0
+    },
+    "draw": {
+     "pool_cells": 4976,
+     "drawn": 25179,
+     "short": true,
+     "repeated_rows_at_least": 20203
+    },
+    "factors": {
+     "ratio": 1.5,
+     "lineages": [
+      "CM",
+      "Endothelial"
+     ],
+     "damping": [
+      0.5,
+      0.75
+     ],
+     "ok": true,
+     "why": null
+    },
+    "scores": {
+     "own": {
+      "floor": 50.0,
+      "control": 45.69612506777612
+     },
+     "radial_0": {
+      "floor": 50.0,
+      "control": 48.7781618630366
+     },
+     "thin_0.5": {
+      "floor": 50.0,
+      "control": 60.65224958664324
+     },
+     "thin_0": {
+      "floor": 50.0,
+      "control": 60.573905202263
+     }
+    },
+    "skills": {
+     "own": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.49241701134796906,
+       "de_direction": 0.524164551607445,
+       "mmd_u": 0.31354748603351956,
+       "variogram": 0.40838278931750743,
+       "d2_shape": 0.731415643180349,
+       "occupancy_dice": 0.4299305734121882,
+       "scale_log_ratio": 0.8735389206665009,
+       "neighborhood_mmd": 0.41079380643052665
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5736485669367517,
+       "de_direction": 0.5920377223349648,
+       "mmd_u": 0.40968245705361794,
+       "variogram": 0.47392704751646714,
+       "d2_shape": 0.4016227180527383,
+       "occupancy_dice": 0.22217047042384705,
+       "scale_log_ratio": 0.9041936583702693,
+       "neighborhood_mmd": 0.46214023565771684
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6347826086956522,
+       "de_direction": 0.6641226529785222,
+       "mmd_u": 0.5449089545113551,
+       "variogram": 0.5677130490471037,
+       "d2_shape": 0.6618317825214377,
+       "occupancy_dice": 0.35909281814363697,
+       "scale_log_ratio": 0.9435199193141706,
+       "neighborhood_mmd": 0.5677919203099059
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6153647347677198,
+       "de_direction": 0.6937341949985951,
+       "mmd_u": 0.5809872587167163,
+       "variogram": 0.6108665204407917,
+       "d2_shape": 0.73439446366782,
+       "occupancy_dice": 0.34537357743691255,
+       "scale_log_ratio": 0.7825030376670717,
+       "neighborhood_mmd": 0.554710753543748
+      }
+     }
+    },
+    "groups": {
+     "own": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.508290781477707,
+       "cell_state": 0.3514816073471147,
+       "shape_growth": 0.5572788074556966,
+       "local_organisation": 0.41079380643052665
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.5828431446358582,
+       "cell_state": 0.4353802932387576,
+       "shape_growth": 0.47076280098913137,
+       "local_organisation": 0.46214023565771684
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6494526308370872,
+       "cell_state": 0.5540305923256545,
+       "shape_growth": 0.6548148399930818,
+       "local_organisation": 0.5677919203099059
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6545494648831575,
+       "cell_state": 0.5929389634063464,
+       "shape_growth": 0.620757026257268,
+       "local_organisation": 0.554710753543748
+      }
+     }
+    },
+    "seconds": 46.4
+   },
+   {
+    "seed": 9,
+    "build_seed": 1000009,
+    "n_cells": {
+     "control": 12589
+    },
+    "size_record": {
+     "sizing": "f",
+     "target_rms_full": 395.6835692510699,
+     "base_rms": 341.3898784136632,
+     "ratio": 1.1590372013654688,
+     "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+     "rms_before": 178.9800569315826,
+     "rms_after": 395.6835692510699,
+     "log_rms_after_vs_target": 0.0
+    },
+    "draw": {
+     "pool_cells": 4976,
+     "drawn": 25179,
+     "short": true,
+     "repeated_rows_at_least": 20203
+    },
+    "factors": {
+     "ratio": 1.5,
+     "lineages": [
+      "CM",
+      "Endothelial"
+     ],
+     "damping": [
+      0.5,
+      0.75
+     ],
+     "ok": true,
+     "why": null
+    },
+    "scores": {
+     "own": {
+      "floor": 50.0,
+      "control": 45.62482222323297
+     },
+     "radial_0": {
+      "floor": 50.0,
+      "control": 49.4465257256697
+     },
+     "thin_0.5": {
+      "floor": 50.0,
+      "control": 60.897036442231745
+     },
+     "thin_0": {
+      "floor": 54.166666666666664,
+      "control": 59.65410552900443
+     }
+    },
+    "skills": {
+     "own": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5036500239782598,
+       "de_direction": 0.5297450424929179,
+       "mmd_u": 0.32301963739527456,
+       "variogram": 0.4189801846217495,
+       "d2_shape": 0.7129359216629446,
+       "occupancy_dice": 0.39689644882124747,
+       "scale_log_ratio": 0.8709991481075818,
+       "neighborhood_mmd": 0.4080453884439711
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.5596949764247046,
+       "de_direction": 0.5894855918075732,
+       "mmd_u": 0.3959452054794521,
+       "variogram": 0.4663680329414403,
+       "d2_shape": 0.4375406636304489,
+       "occupancy_dice": 0.3570931849791378,
+       "scale_log_ratio": 0.9118096856414613,
+       "neighborhood_mmd": 0.4580572204003166
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 0.5,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.6125937436659686,
+       "de_direction": 0.6624161073825503,
+       "mmd_u": 0.5623119445805053,
+       "variogram": 0.587620103261525,
+       "d2_shape": 0.6634112656604518,
+       "occupancy_dice": 0.4100204498977506,
+       "scale_log_ratio": 1.0,
+       "neighborhood_mmd": 0.5347974189260295
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5,
+       "d2_shape": 0.5,
+       "occupancy_dice": 1.0,
+       "scale_log_ratio": 0.5,
+       "neighborhood_mmd": 0.5
+      },
+      "control": {
+       "de_score": 0.629639396136858,
+       "de_direction": 0.6900884458795452,
+       "mmd_u": 0.6024858424652497,
+       "variogram": 0.6345918278064572,
+       "d2_shape": 0.7317185344166793,
+       "occupancy_dice": 0.1374358974358972,
+       "scale_log_ratio": 0.773075641452849,
+       "neighborhood_mmd": 0.563562039115101
+      }
+     }
+    },
+    "groups": {
+     "own": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.5166975332355888,
+       "cell_state": 0.3614038562858646,
+       "shape_growth": 0.5388461109638943,
+       "local_organisation": 0.4080453884439711
+      }
+     },
+     "radial_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.5745902841161389,
+       "cell_state": 0.4241143364642474,
+       "shape_growth": 0.521099188046085,
+       "local_organisation": 0.4580572204003166
+      }
+     },
+     "thin_0.5": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.5,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6375049255242595,
+       "cell_state": 0.5724352080529131,
+       "shape_growth": 0.6911439051860675,
+       "local_organisation": 0.5347974189260295
+      }
+     },
+     "thin_0": {
+      "floor": {
+       "expression_change": 0.5,
+       "cell_state": 0.5,
+       "shape_growth": 0.6666666666666666,
+       "local_organisation": 0.5
+      },
+      "control": {
+       "expression_change": 0.6598639210082016,
+       "cell_state": 0.6153282366017327,
+       "shape_growth": 0.5474100244351419,
+       "local_organisation": 0.563562039115101
+      }
+     }
+    },
+    "seconds": 46.0
+   }
+  ]
+ },
+ "source": "experiments/harness/h34_heart_organ_trend.py (row H34)"
+}

@@ -1,0 +1,2056 @@
+{
+ "label": "row H34: row H28's trend step at strengths 1 and 1.5, and a placebo of each, on row H29b's D_f form; a screen on one truth, not an adoption result",
+ "axis": "h34-heart-organ-trend",
+ "task": "T2h/<=E8.75->E10.5",
+ "arms": [
+  "control",
+  "trend_s1.0",
+  "placebo_s1.0",
+  "trend_s1.5",
+  "placebo_s1.5"
+ ],
+ "truth_values": [
+  "own",
+  "radial_0",
+  "thin_0.5",
+  "thin_0"
+ ],
+ "truth_info": {
+  "own": {
+   "cells": 167864,
+   "core_share": 0.2306748320068627,
+   "xy_scope": 0.20989552277802517
+  },
+  "radial_0": {
+   "cells": 96544,
+   "core_share": 0.40108137222406365,
+   "xy_scope": -2.170625565868641e-06
+  },
+  "thin_0.5": {
+   "cells": 45788,
+   "core_share": 0.8456800908534987,
+   "xy_scope": 0.10493046043228518
+  },
+  "thin_0": {
+   "cells": 38722,
+   "core_share": 1.0,
+   "xy_scope": 0.0
+  }
+ },
+ "pred_info": {
+  "organ": {
+   "pool_cells": 4976,
+   "core_share": 0.7865755627009646,
+   "xy_scope": 0.19259785444841504
+  }
+ },
+ "organ_record": {
+  "reference": {
+   "rule": "organ cut: chamber-category cells (configs/t2_chamber_classes.yaml, T1's chamber scope) in a connected component that holds core cells, two chamber-category cells linked when closer than L (3D, stored units); L = the 99th percentile of each core cell's distance to its nearest other core cell on the same stage; core cells (CM plus endocardium) always kept",
+   "label_config": "configs/t2_chamber_classes.yaml",
+   "label_config_sha256": "c4c750c1b6dac08b056684e4157afbf5683ee046919dd7302f2ec6632ecc1b6c",
+   "kept_categories": [
+    "cm",
+    "endocardium",
+    "epicardium",
+    "vascular_endothelium",
+    "blood"
+   ],
+   "link_percentile": 99.0,
+   "link_length": 21.533326125057773,
+   "kept_share": 0.21285879283055995,
+   "chamber_share": 0.23026906788723958,
+   "core_share_of_kept": 0.7865755627009646,
+   "components_kept": 32,
+   "components_total": 146
+  }
+ },
+ "ratios": {
+  "organ": 1.1590372013654688,
+  "label": 1.222864419011249
+ },
+ "d_targets": {
+  "organ:f": {
+   "target": 395.6835692510699,
+   "base": 341.3898784136632,
+   "ratio": 1.1590372013654688,
+   "source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage"
+  }
+ },
+ "forecast_targets": {
+  "full_iso_half": 342.7089940258472,
+  "half_iso_half": 404.5586767733152,
+  "core_iso_half": 341.3898784136632
+ },
+ "size_result": {
+  "board": "heart",
+  "valid": true,
+  "target_t": 10.5,
+  "timestamp": "try H27 analogue (in memory, never a size file)",
+  "preregistered": {
+   "target_t": 10.5,
+   "z_mode_requested": "raw",
+   "z_mode": "raw",
+   "rules": [
+    "latest_rate",
+    "half_rate",
+    "power_t"
+   ],
+   "min_start_t": -Infinity,
+   "tie_tol": Infinity,
+   "reference": "E8.75",
+   "stages": [
+    {
+     "name": "E8.25_late",
+     "t": 8.25,
+     "n_cells": 54431,
+     "n_core": 2036,
+     "n_levels": 38,
+     "z_step": 15.0,
+     "z_range": 555.0,
+     "rms_full": 353.4964257628457,
+     "rms_core": 152.17958425737348,
+     "rms_xy_full": 321.70018435371907,
+     "sd_z_full": 146.52206118496372,
+     "rms_xy_core": 125.45807745419077,
+     "sd_z_core": 86.13301728283587,
+     "core_thin_axis_cos_z": 0.7354854035259737,
+     "log_scope": 0.8428120754583706,
+     "log_scope_xy": 0.9416483487288667,
+     "core_thin_axis_angle_deg": 42.65175200533025
+    },
+    {
+     "name": "E8.5",
+     "t": 8.5,
+     "n_cells": 23710,
+     "n_core": 2431,
+     "n_levels": 25,
+     "z_step": 15.0,
+     "z_range": 360.0000000000001,
+     "rms_full": 255.22353488610761,
+     "rms_core": 134.07526158422002,
+     "rms_xy_full": 231.62806165620404,
+     "sd_z_full": 107.17972668909886,
+     "rms_xy_core": 107.75796844638313,
+     "sd_z_core": 79.77716468504832,
+     "core_thin_axis_cos_z": 0.2736455051050436,
+     "log_scope": 0.6437384726629188,
+     "log_scope_xy": 0.7652452233295622,
+     "core_thin_axis_angle_deg": 74.11868863245238
+    },
+    {
+     "name": "E8.75",
+     "t": 8.75,
+     "n_cells": 23377,
+     "n_core": 3914,
+     "n_levels": 35,
+     "z_step": 14.0,
+     "z_range": 476.0,
+     "rms_full": 216.9416140719822,
+     "rms_core": 154.4831472408458,
+     "rms_xy_full": 169.4958000360066,
+     "sd_z_full": 135.40619515484116,
+     "rms_xy_core": 119.36506828412158,
+     "sd_z_core": 98.06642266833148,
+     "core_thin_axis_cos_z": 0.42628193988806146,
+     "log_scope": 0.3395432467203799,
+     "log_scope_xy": 0.3506415502450217,
+     "core_thin_axis_angle_deg": 64.76816696175234
+    }
+   ],
+   "growth": {
+    "core": {
+     "valid": true,
+     "applicable": [
+      "latest_rate",
+      "half_rate",
+      "power_t"
+     ],
+     "chosen": [
+      "latest_rate",
+      "half_rate",
+      "power_t"
+     ],
+     "mae_common": {
+      "latest_rate": 0.2683437180796133,
+      "half_rate": 0.2050137166122079,
+      "power_t": 0.2646718917968167
+     },
+     "common_pseudo_targets": [
+      "E8.75:next"
+     ],
+     "pseudo_targets": [
+      {
+       "target": "E8.75",
+       "t_target": 8.75,
+       "kind": "next",
+       "train": "E8.25_late,E8.5",
+       "rule": "copy_last",
+       "pred": 4.898401295896137,
+       "obs": 5.040085011040939,
+       "error": -0.1416837151448025,
+       "eligible": true
+      },
+      {
+       "target": "E8.75",
+       "t_target": 8.75,
+       "kind": "next",
+       "train": "E8.25_late,E8.5",
+       "rule": "latest_rate",
+       "pred": 4.771741292961326,
+       "obs": 5.040085011040939,
+       "error": -0.2683437180796133,
+       "eligible": true
+      },
+      {
+       "target": "E8.75",
+       "t_target": 8.75,
+       "kind": "next",
+       "train": "E8.25_late,E8.5",
+       "rule": "half_rate",
+       "pred": 4.835071294428731,
+       "obs": 5.040085011040939,
+       "error": -0.2050137166122079,
+       "eligible": true
+      },
+      {
+       "target": "E8.75",
+       "t_target": 8.75,
+       "kind": "next",
+       "train": "E8.25_late,E8.5",
+       "rule": "power_t",
+       "pred": 4.7754131192441225,
+       "obs": 5.040085011040939,
+       "error": -0.2646718917968167,
+       "eligible": true
+      },
+      {
+       "target": "E8.75",
+       "t_target": 8.75,
+       "kind": "next",
+       "train": "E8.25_late,E8.5",
+       "rule": "decaying_rate",
+       "pred": 4.771741292961326,
+       "obs": 5.040085011040939,
+       "error": -0.2683437180796133,
+       "eligible": false
+      }
+     ],
+     "all_rule_predictions": {
+      "copy_last": 5.040085011040939,
+      "latest_rate": 6.031871017054557,
+      "half_rate": 5.535978014047748,
+      "power_t": 5.931226456776795,
+      "decaying_rate": 6.031871017054557
+     },
+     "pred_log_target": 5.833025162626367
+    }
+   },
+   "scope": {
+    "H1": {
+     "pred_log_scope": 0.0038565105139775503,
+     "pred_rms_full": 342.7089940258472,
+     "scale_vs_reference_full": 1.579729161193273
+    },
+    "H0": {
+     "pred_log_scope": 0.3395432467203799,
+     "pred_rms_full": 479.41586233631404,
+     "scale_vs_reference_full": 2.2098842787130812
+    },
+    "H2": {
+     "pred_log_scope": 0.16977162336018994,
+     "pred_rms_full": 404.5586767733152,
+     "scale_vs_reference_full": 1.8648274490991885
+    }
+   },
+   "valid": true,
+   "pred_rms_core": 341.3898784136632,
+   "pred_log_growth_core": 0.7929401515854276
+  },
+  "z_modes": {
+   "raw": {
+    "target_t": 10.5,
+    "z_mode_requested": "raw",
+    "z_mode": "raw",
+    "rules": [
+     "latest_rate",
+     "half_rate",
+     "power_t"
+    ],
+    "min_start_t": -Infinity,
+    "tie_tol": Infinity,
+    "reference": "E8.75",
+    "stages": [
+     {
+      "name": "E8.25_late",
+      "t": 8.25,
+      "n_cells": 54431,
+      "n_core": 2036,
+      "n_levels": 38,
+      "z_step": 15.0,
+      "z_range": 555.0,
+      "rms_full": 353.4964257628457,
+      "rms_core": 152.17958425737348,
+      "rms_xy_full": 321.70018435371907,
+      "sd_z_full": 146.52206118496372,
+      "rms_xy_core": 125.45807745419077,
+      "sd_z_core": 86.13301728283587,
+      "core_thin_axis_cos_z": 0.7354854035259737,
+      "log_scope": 0.8428120754583706,
+      "log_scope_xy": 0.9416483487288667,
+      "core_thin_axis_angle_deg": 42.65175200533025
+     },
+     {
+      "name": "E8.5",
+      "t": 8.5,
+      "n_cells": 23710,
+      "n_core": 2431,
+      "n_levels": 25,
+      "z_step": 15.0,
+      "z_range": 360.0000000000001,
+      "rms_full": 255.22353488610761,
+      "rms_core": 134.07526158422002,
+      "rms_xy_full": 231.62806165620404,
+      "sd_z_full": 107.17972668909886,
+      "rms_xy_core": 107.75796844638313,
+      "sd_z_core": 79.77716468504832,
+      "core_thin_axis_cos_z": 0.2736455051050436,
+      "log_scope": 0.6437384726629188,
+      "log_scope_xy": 0.7652452233295622,
+      "core_thin_axis_angle_deg": 74.11868863245238
+     },
+     {
+      "name": "E8.75",
+      "t": 8.75,
+      "n_cells": 23377,
+      "n_core": 3914,
+      "n_levels": 35,
+      "z_step": 14.0,
+      "z_range": 476.0,
+      "rms_full": 216.9416140719822,
+      "rms_core": 154.4831472408458,
+      "rms_xy_full": 169.4958000360066,
+      "sd_z_full": 135.40619515484116,
+      "rms_xy_core": 119.36506828412158,
+      "sd_z_core": 98.06642266833148,
+      "core_thin_axis_cos_z": 0.42628193988806146,
+      "log_scope": 0.3395432467203799,
+      "log_scope_xy": 0.3506415502450217,
+      "core_thin_axis_angle_deg": 64.76816696175234
+     }
+    ],
+    "growth": {
+     "core": {
+      "valid": true,
+      "applicable": [
+       "latest_rate",
+       "half_rate",
+       "power_t"
+      ],
+      "chosen": [
+       "latest_rate",
+       "half_rate",
+       "power_t"
+      ],
+      "mae_common": {
+       "latest_rate": 0.2683437180796133,
+       "half_rate": 0.2050137166122079,
+       "power_t": 0.2646718917968167
+      },
+      "common_pseudo_targets": [
+       "E8.75:next"
+      ],
+      "pseudo_targets": [
+       {
+        "target": "E8.75",
+        "t_target": 8.75,
+        "kind": "next",
+        "train": "E8.25_late,E8.5",
+        "rule": "copy_last",
+        "pred": 4.898401295896137,
+        "obs": 5.040085011040939,
+        "error": -0.1416837151448025,
+        "eligible": true
+       },
+       {
+        "target": "E8.75",
+        "t_target": 8.75,
+        "kind": "next",
+        "train": "E8.25_late,E8.5",
+        "rule": "latest_rate",
+        "pred": 4.771741292961326,
+        "obs": 5.040085011040939,
+        "error": -0.2683437180796133,
+        "eligible": true
+       },
+       {
+        "target": "E8.75",
+        "t_target": 8.75,
+        "kind": "next",
+        "train": "E8.25_late,E8.5",
+        "rule": "half_rate",
+        "pred": 4.835071294428731,
+        "obs": 5.040085011040939,
+        "error": -0.2050137166122079,
+        "eligible": true
+       },
+       {
+        "target": "E8.75",
+        "t_target": 8.75,
+        "kind": "next",
+        "train": "E8.25_late,E8.5",
+        "rule": "power_t",
+        "pred": 4.7754131192441225,
+        "obs": 5.040085011040939,
+        "error": -0.2646718917968167,
+        "eligible": true
+       },
+       {
+        "target": "E8.75",
+        "t_target": 8.75,
+        "kind": "next",
+        "train": "E8.25_late,E8.5",
+        "rule": "decaying_rate",
+        "pred": 4.771741292961326,
+        "obs": 5.040085011040939,
+        "error": -0.2683437180796133,
+        "eligible": false
+       }
+      ],
+      "all_rule_predictions": {
+       "copy_last": 5.040085011040939,
+       "latest_rate": 6.031871017054557,
+       "half_rate": 5.535978014047748,
+       "power_t": 5.931226456776795,
+       "decaying_rate": 6.031871017054557
+      },
+      "pred_log_target": 5.833025162626367
+     }
+    },
+    "scope": {
+     "H1": {
+      "pred_log_scope": 0.0038565105139775503,
+      "pred_rms_full": 342.7089940258472,
+      "scale_vs_reference_full": 1.579729161193273
+     },
+     "H0": {
+      "pred_log_scope": 0.3395432467203799,
+      "pred_rms_full": 479.41586233631404,
+      "scale_vs_reference_full": 2.2098842787130812
+     },
+     "H2": {
+      "pred_log_scope": 0.16977162336018994,
+      "pred_rms_full": 404.5586767733152,
+      "scale_vs_reference_full": 1.8648274490991885
+     }
+    },
+    "valid": true,
+    "pred_rms_core": 341.3898784136632,
+    "pred_log_growth_core": 0.7929401515854276
+   }
+  },
+  "provenance": {
+   "analogue": "size procedure, E9.0 cut-off lifted, all three rules averaged",
+   "git_commit": null,
+   "size_procedure_sha256": null,
+   "departures": [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f"
+   ]
+  }
+ },
+ "v7": {
+  "reference": "E8.75",
+  "loaded_rms_full": 216.9416140719822,
+  "size_rms_full": 216.9416140719822,
+  "log_diff": 0.0,
+  "ok": true
+ },
+ "strengths": [
+  1.0,
+  1.5
+ ],
+ "truth_seed": 20261102,
+ "half_seed_base": 2000000,
+ "perm_seed": 20261120,
+ "departures": {
+  "a": "the E9.0 rate cut-off is lifted (min_start_t = -inf): every practice rate interval starts before E9.0, so the pre-registered settings give valid=False and no figure (row H25)",
+  "b": "rule selection is forced to all three pre-registered rules (tie_tol = inf), the test's outcome, reached at the test by no eligible pseudo-target",
+  "c": "copy_last on E8.25_late -> E8.5, the one transition with one input stage",
+  "d": "an in-memory size result applied through apply_size_procedure; size_or_hold's crosscheck (hardwired to E10.5) is redone by guard V7 on each transition's untrimmed reference stage",
+  "e": "the practice board's count rule sets the cell number, not the test board's",
+  "f": "the preregistered field holds the raw result; the builder passes --z-mode raw, so the recorded mode never enters"
+ },
+ "seeds": [
+  2,
+  3
+ ],
+ "rows": [
+  {
+   "seed": 2,
+   "build_seed": 1000002,
+   "n_cells": {
+    "control": 12589,
+    "trend_s1.0": 12589,
+    "placebo_s1.0": 12589,
+    "trend_s1.5": 12589,
+    "placebo_s1.5": 12589
+   },
+   "checks": {
+    "s1_equals_harness_b0_trend": true,
+    "same_draw": true,
+    "pre_size_coords_equal": true,
+    "changed_counts": {
+     "trend_s1.0": 340449,
+     "placebo_s1.0": 366973,
+     "trend_s1.5": 449160,
+     "placebo_s1.5": 474492
+    },
+    "post_size_coords_equal": true,
+    "n_cells": {
+     "control": 12589,
+     "trend_s1.0": 12589,
+     "placebo_s1.0": 12589,
+     "trend_s1.5": 12589,
+     "placebo_s1.5": 12589
+    }
+   },
+   "records": {
+    "control": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 395.6835692510699,
+      "base_rms": 341.3898784136632,
+      "ratio": 1.1590372013654688,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 179.13993143597477,
+      "rms_after": 395.6835692510699,
+      "log_rms_after_vs_target": 0.0
+     },
+     "trend": {
+      "strength": null
+     }
+    },
+    "trend_s1.0": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 395.6835692510699,
+      "base_rms": 341.3898784136632,
+      "ratio": 1.1590372013654688,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 179.13993143597477,
+      "rms_after": 395.6835692510699,
+      "log_rms_after_vs_target": 0.0
+     },
+     "trend": {
+      "strength": 1.0,
+      "placebo": false,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.125,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 2,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1900
+        ],
+        "own_factor": false,
+        "cosine": 0.7184552589981649,
+        "norm_ratio": 0.7242143961116093
+       }
+      ],
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "fixed_points": {},
+      "ref_cells": 4976
+     }
+    },
+    "placebo_s1.0": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 395.6835692510699,
+      "base_rms": 341.3898784136632,
+      "ratio": 1.1590372013654688,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 179.13993143597477,
+      "rms_after": 395.6835692510699,
+      "log_rms_after_vs_target": 0.0
+     },
+     "trend": {
+      "strength": 1.0,
+      "placebo": true,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.125,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 2,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1900
+        ],
+        "own_factor": false,
+        "cosine": 0.7184552589981649,
+        "norm_ratio": 0.7242143961116093
+       }
+      ],
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "fixed_points": {
+       "CM": 0,
+       "Endothelial": 0
+      },
+      "ref_cells": 4976
+     }
+    },
+    "trend_s1.5": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 395.6835692510699,
+      "base_rms": 341.3898784136632,
+      "ratio": 1.1590372013654688,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 179.13993143597477,
+      "rms_after": 395.6835692510699,
+      "log_rms_after_vs_target": 0.0
+     },
+     "trend": {
+      "strength": 1.5,
+      "placebo": false,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.1875,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 2,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1900
+        ],
+        "own_factor": false,
+        "cosine": 0.7184552589981649,
+        "norm_ratio": 0.7242143961116093
+       }
+      ],
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "fixed_points": {},
+      "ref_cells": 4976
+     }
+    },
+    "placebo_s1.5": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 395.6835692510699,
+      "base_rms": 341.3898784136632,
+      "ratio": 1.1590372013654688,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 179.13993143597477,
+      "rms_after": 395.6835692510699,
+      "log_rms_after_vs_target": 0.0
+     },
+     "trend": {
+      "strength": 1.5,
+      "placebo": true,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.1875,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 2,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1900
+        ],
+        "own_factor": false,
+        "cosine": 0.7184552589981649,
+        "norm_ratio": 0.7242143961116093
+       }
+      ],
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "fixed_points": {
+       "CM": 0,
+       "Endothelial": 0
+      },
+      "ref_cells": 4976
+     }
+    }
+   },
+   "draw": {
+    "pool_cells": 4976,
+    "drawn": 25179,
+    "short": true,
+    "repeated_rows_at_least": 20203
+   },
+   "scores": {
+    "own": {
+     "floor": 50.0,
+     "control": 46.007634649524086,
+     "trend_s1.0": 46.75456873799242,
+     "placebo_s1.0": 46.56880448433945,
+     "trend_s1.5": 47.02285655842417,
+     "placebo_s1.5": 46.85988705593354
+    },
+    "radial_0": {
+     "floor": 50.0,
+     "control": 49.76205894941437,
+     "trend_s1.0": 50.930125767870614,
+     "placebo_s1.0": 50.60706841234853,
+     "trend_s1.5": 51.32252539565385,
+     "placebo_s1.5": 50.94630117751302
+    },
+    "thin_0.5": {
+     "floor": 50.0,
+     "control": 60.732005952608745,
+     "trend_s1.0": 62.04954989901632,
+     "placebo_s1.0": 61.37511011061038,
+     "trend_s1.5": 62.55556400315181,
+     "placebo_s1.5": 61.81834694893378
+    },
+    "thin_0": {
+     "floor": 50.0,
+     "control": 60.45182909688278,
+     "trend_s1.0": 61.73875970847259,
+     "placebo_s1.0": 61.431136905036276,
+     "trend_s1.5": 62.26308489768749,
+     "placebo_s1.5": 61.805749091896786
+    }
+   },
+   "skills": {
+    "own": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.5037079892704991,
+      "de_direction": 0.5309587573647563,
+      "mmd_u": 0.3284431002573015,
+      "variogram": 0.3981181578115252,
+      "d2_shape": 0.7446970853044407,
+      "occupancy_dice": 0.39856321839080455,
+      "scale_log_ratio": 0.8727520773905494,
+      "neighborhood_mmd": 0.4123956849175657
+     },
+     "trend_s1.0": {
+      "de_score": 0.5190785907859079,
+      "de_direction": 0.537289972899729,
+      "mmd_u": 0.33248035094132705,
+      "variogram": 0.4144296421502124,
+      "d2_shape": 0.7446970853044407,
+      "occupancy_dice": 0.39856321839080455,
+      "scale_log_ratio": 0.8727520773905494,
+      "neighborhood_mmd": 0.4166958023980421
+     },
+     "placebo_s1.0": {
+      "de_score": 0.5037079892704991,
+      "de_direction": 0.5295123123764757,
+      "mmd_u": 0.3366803942436722,
+      "variogram": 0.41073002997707636,
+      "d2_shape": 0.7446970853044407,
+      "occupancy_dice": 0.39856321839080455,
+      "scale_log_ratio": 0.8727520773905494,
+      "neighborhood_mmd": 0.4180197652107533
+     },
+     "trend_s1.5": {
+      "de_score": 0.5230760828008083,
+      "de_direction": 0.5377854934085607,
+      "mmd_u": 0.3336390315480558,
+      "variogram": 0.4215379325322137,
+      "d2_shape": 0.7446970853044407,
+      "occupancy_dice": 0.39856321839080455,
+      "scale_log_ratio": 0.8727520773905494,
+      "neighborhood_mmd": 0.4188060688742817
+     },
+     "placebo_s1.5": {
+      "de_score": 0.5,
+      "de_direction": 0.530504120732099,
+      "mmd_u": 0.3409239996251523,
+      "variogram": 0.4173572599647013,
+      "d2_shape": 0.7446970853044407,
+      "occupancy_dice": 0.39856321839080455,
+      "scale_log_ratio": 0.8727520773905494,
+      "neighborhood_mmd": 0.4213492492617394
+     }
+    },
+    "radial_0": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.5658947117106362,
+      "de_direction": 0.5914619604102075,
+      "mmd_u": 0.41369801339411333,
+      "variogram": 0.460869786109841,
+      "d2_shape": 0.47431939376929555,
+      "occupancy_dice": 0.2208972174900622,
+      "scale_log_ratio": 0.9121680263843083,
+      "neighborhood_mmd": 0.4726984652493674
+     },
+     "trend_s1.0": {
+      "de_score": 0.6033089405027044,
+      "de_direction": 0.5996856486519163,
+      "mmd_u": 0.4215748121809944,
+      "variogram": 0.4818905250632158,
+      "d2_shape": 0.47431939376929555,
+      "occupancy_dice": 0.2208972174900622,
+      "scale_log_ratio": 0.9121680263843083,
+      "neighborhood_mmd": 0.4778970521433524
+     },
+     "placebo_s1.0": {
+      "de_score": 0.5793461655973112,
+      "de_direction": 0.5916383372099959,
+      "mmd_u": 0.42412877913685665,
+      "variogram": 0.4764413304831484,
+      "d2_shape": 0.47431939376929555,
+      "occupancy_dice": 0.2208972174900622,
+      "scale_log_ratio": 0.9121680263843083,
+      "neighborhood_mmd": 0.4796976241900648
+     },
+     "trend_s1.5": {
+      "de_score": 0.6134187370600415,
+      "de_direction": 0.6006296924194721,
+      "mmd_u": 0.42434913121283846,
+      "variogram": 0.4907225083308088,
+      "d2_shape": 0.47431939376929555,
+      "occupancy_dice": 0.2208972174900622,
+      "scale_log_ratio": 0.9121680263843083,
+      "neighborhood_mmd": 0.4802969868806767
+     },
+     "placebo_s1.5": {
+      "de_score": 0.574815084273069,
+      "de_direction": 0.5939764085982876,
+      "mmd_u": 0.42955647753170106,
+      "variogram": 0.4843451332158684,
+      "d2_shape": 0.47431939376929555,
+      "occupancy_dice": 0.2208972174900622,
+      "scale_log_ratio": 0.9121680263843083,
+      "neighborhood_mmd": 0.4836789508069785
+     }
+    },
+    "thin_0.5": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.6083207162135476,
+      "de_direction": 0.66752090639331,
+      "mmd_u": 0.5620472547559406,
+      "variogram": 0.563202828237241,
+      "d2_shape": 0.7043603258265453,
+      "occupancy_dice": 0.3675126903553301,
+      "scale_log_ratio": 0.9734697416334316,
+      "neighborhood_mmd": 0.5470690233806914
+     },
+     "trend_s1.0": {
+      "de_score": 0.6347712597884325,
+      "de_direction": 0.6792944890535996,
+      "mmd_u": 0.580640649041824,
+      "variogram": 0.5931699864191943,
+      "d2_shape": 0.7043603258265453,
+      "occupancy_dice": 0.3675126903553301,
+      "scale_log_ratio": 0.9734697416334316,
+      "neighborhood_mmd": 0.5575158182750954
+     },
+     "placebo_s1.0": {
+      "de_score": 0.6033165763530718,
+      "de_direction": 0.6706416423876956,
+      "mmd_u": 0.5750103892505887,
+      "variogram": 0.5821573560364983,
+      "d2_shape": 0.7043603258265453,
+      "occupancy_dice": 0.3675126903553301,
+      "scale_log_ratio": 0.9734697416334316,
+      "neighborhood_mmd": 0.5583751998173099
+     },
+     "trend_s1.5": {
+      "de_score": 0.645997902831178,
+      "de_direction": 0.6818213129434456,
+      "mmd_u": 0.5870871932678029,
+      "variogram": 0.6056972813682721,
+      "d2_shape": 0.7043603258265453,
+      "occupancy_dice": 0.3675126903553301,
+      "scale_log_ratio": 0.9734697416334316,
+      "neighborhood_mmd": 0.5620008044590012
+     },
+     "placebo_s1.5": {
+      "de_score": 0.6083207162135476,
+      "de_direction": 0.6752626552053487,
+      "mmd_u": 0.5813725490196079,
+      "variogram": 0.5915097959552186,
+      "d2_shape": 0.7043603258265453,
+      "occupancy_dice": 0.3675126903553301,
+      "scale_log_ratio": 0.9734697416334316,
+      "neighborhood_mmd": 0.5637338251822819
+     }
+    },
+    "thin_0": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.6143038779402417,
+      "de_direction": 0.6930693069306931,
+      "mmd_u": 0.5931178460873947,
+      "variogram": 0.6139333985039102,
+      "d2_shape": 0.7483039348710991,
+      "occupancy_dice": 0.2606721162579473,
+      "scale_log_ratio": 0.7549887211521776,
+      "neighborhood_mmd": 0.5749542469587684
+     },
+     "trend_s1.0": {
+      "de_score": 0.6323539035403442,
+      "de_direction": 0.7056048041178152,
+      "mmd_u": 0.6129752250576593,
+      "variogram": 0.6454400232355505,
+      "d2_shape": 0.7483039348710991,
+      "occupancy_dice": 0.2606721162579473,
+      "scale_log_ratio": 0.7549887211521776,
+      "neighborhood_mmd": 0.5866216327539335
+     },
+     "placebo_s1.0": {
+      "de_score": 0.6277528746832975,
+      "de_direction": 0.696345421193735,
+      "mmd_u": 0.6087631151174819,
+      "variogram": 0.6324993568656643,
+      "d2_shape": 0.7483039348710991,
+      "occupancy_dice": 0.2606721162579473,
+      "scale_log_ratio": 0.7549887211521776,
+      "neighborhood_mmd": 0.588950459019105
+     },
+     "trend_s1.5": {
+      "de_score": 0.6418039319872475,
+      "de_direction": 0.7083393139084254,
+      "mmd_u": 0.6200797772258598,
+      "variogram": 0.6582869056977817,
+      "d2_shape": 0.7483039348710991,
+      "occupancy_dice": 0.2606721162579473,
+      "scale_log_ratio": 0.7549887211521776,
+      "neighborhood_mmd": 0.59210088691796
+     },
+     "placebo_s1.5": {
+      "de_score": 0.6231781245969301,
+      "de_direction": 0.7010939053842875,
+      "mmd_u": 0.6154478225143796,
+      "variogram": 0.6413455508133579,
+      "d2_shape": 0.7483039348710991,
+      "occupancy_dice": 0.2606721162579473,
+      "scale_log_ratio": 0.7549887211521776,
+      "neighborhood_mmd": 0.596298777424217
+     }
+    }
+   },
+   "groups": {
+    "own": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.5173333733176277,
+      "cell_state": 0.356313123278991,
+      "shape_growth": 0.554263204466779,
+      "local_organisation": 0.4123956849175657
+     },
+     "trend_s1.0": {
+      "expression_change": 0.5281842818428184,
+      "cell_state": 0.3652600674248812,
+      "shape_growth": 0.560042597853955,
+      "local_organisation": 0.4166958023980421
+     },
+     "placebo_s1.0": {
+      "expression_change": 0.5166101508234874,
+      "cell_state": 0.36630024853703386,
+      "shape_growth": 0.5618220148023036,
+      "local_organisation": 0.4180197652107533
+     },
+     "trend_s1.5": {
+      "expression_change": 0.5304307881046846,
+      "cell_state": 0.368798591941719,
+      "shape_growth": 0.5628788134162812,
+      "local_organisation": 0.4188060688742817
+     },
+     "placebo_s1.5": {
+      "expression_change": 0.5152520603660495,
+      "cell_state": 0.3714973037609719,
+      "shape_growth": 0.5662968688485808,
+      "local_organisation": 0.4213492492617394
+     }
+    },
+    "radial_0": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.5786783360604218,
+      "cell_state": 0.4325667224804044,
+      "shape_growth": 0.5065388341863809,
+      "local_organisation": 0.4726984652493674
+     },
+     "trend_s1.0": {
+      "expression_change": 0.6014972945773104,
+      "cell_state": 0.44570109733388297,
+      "shape_growth": 0.5121095866602791,
+      "local_organisation": 0.4778970521433524
+     },
+     "placebo_s1.0": {
+      "expression_change": 0.5854922514036536,
+      "cell_state": 0.44505379967537334,
+      "shape_growth": 0.5140390612248498,
+      "local_organisation": 0.4796976241900648
+     },
+     "trend_s1.5": {
+      "expression_change": 0.6070242147397568,
+      "cell_state": 0.4508984820600266,
+      "shape_growth": 0.514681332145694,
+      "local_organisation": 0.4802969868806767
+     },
+     "placebo_s1.5": {
+      "expression_change": 0.5843957464356784,
+      "cell_state": 0.45147193980536804,
+      "shape_growth": 0.5183054100524958,
+      "local_organisation": 0.4836789508069785
+     }
+    },
+    "thin_0.5": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.6379208113034287,
+      "cell_state": 0.5625094841484608,
+      "shape_growth": 0.681780919271769,
+      "local_organisation": 0.5470690233806914
+     },
+     "trend_s1.0": {
+      "expression_change": 0.6570328744210161,
+      "cell_state": 0.5856523839927721,
+      "shape_growth": 0.681780919271769,
+      "local_organisation": 0.5575158182750954
+     },
+     "placebo_s1.0": {
+      "expression_change": 0.6369791093703837,
+      "cell_state": 0.5778691759649526,
+      "shape_growth": 0.681780919271769,
+      "local_organisation": 0.5583751998173099
+     },
+     "trend_s1.5": {
+      "expression_change": 0.6639096078873118,
+      "cell_state": 0.5945312285079906,
+      "shape_growth": 0.681780919271769,
+      "local_organisation": 0.5620008044590012
+     },
+     "placebo_s1.5": {
+      "expression_change": 0.6417916857094481,
+      "cell_state": 0.5854274477938521,
+      "shape_growth": 0.681780919271769,
+      "local_organisation": 0.5637338251822819
+     }
+    },
+    "thin_0": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.6536865924354673,
+      "cell_state": 0.6014440670540009,
+      "shape_growth": 0.5879882574270747,
+      "local_organisation": 0.5749542469587684
+     },
+     "trend_s1.0": {
+      "expression_change": 0.6689793538290797,
+      "cell_state": 0.6259611443288158,
+      "shape_growth": 0.5879882574270747,
+      "local_organisation": 0.5866216327539335
+     },
+     "placebo_s1.0": {
+      "expression_change": 0.6620491479385162,
+      "cell_state": 0.6182576118167549,
+      "shape_growth": 0.5879882574270747,
+      "local_organisation": 0.588950459019105
+     },
+     "trend_s1.5": {
+      "expression_change": 0.6750716229478364,
+      "cell_state": 0.6353626286146286,
+      "shape_growth": 0.5879882574270747,
+      "local_organisation": 0.59210088691796
+     },
+     "placebo_s1.5": {
+      "expression_change": 0.6621360149906088,
+      "cell_state": 0.6258069138339709,
+      "shape_growth": 0.5879882574270747,
+      "local_organisation": 0.596298777424217
+     }
+    }
+   },
+   "seconds": 130.6
+  },
+  {
+   "seed": 3,
+   "build_seed": 1000003,
+   "n_cells": {
+    "control": 12589,
+    "trend_s1.0": 12589,
+    "placebo_s1.0": 12589,
+    "trend_s1.5": 12589,
+    "placebo_s1.5": 12589
+   },
+   "checks": {
+    "s1_equals_harness_b0_trend": true,
+    "same_draw": true,
+    "pre_size_coords_equal": true,
+    "changed_counts": {
+     "trend_s1.0": 340973,
+     "placebo_s1.0": 366956,
+     "trend_s1.5": 448808,
+     "placebo_s1.5": 473356
+    },
+    "post_size_coords_equal": true,
+    "n_cells": {
+     "control": 12589,
+     "trend_s1.0": 12589,
+     "placebo_s1.0": 12589,
+     "trend_s1.5": 12589,
+     "placebo_s1.5": 12589
+    }
+   },
+   "records": {
+    "control": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 395.6835692510699,
+      "base_rms": 341.3898784136632,
+      "ratio": 1.1590372013654688,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 179.1571524668881,
+      "rms_after": 395.6835692510699,
+      "log_rms_after_vs_target": 0.0
+     },
+     "trend": {
+      "strength": null
+     }
+    },
+    "trend_s1.0": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 395.6835692510699,
+      "base_rms": 341.3898784136632,
+      "ratio": 1.1590372013654688,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 179.1571524668881,
+      "rms_after": 395.6835692510699,
+      "log_rms_after_vs_target": 0.0
+     },
+     "trend": {
+      "strength": 1.0,
+      "placebo": false,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.125,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 2,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1900
+        ],
+        "own_factor": false,
+        "cosine": 0.7184552589981649,
+        "norm_ratio": 0.7242143961116093
+       }
+      ],
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "fixed_points": {},
+      "ref_cells": 4976
+     }
+    },
+    "placebo_s1.0": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 395.6835692510699,
+      "base_rms": 341.3898784136632,
+      "ratio": 1.1590372013654688,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 179.1571524668881,
+      "rms_after": 395.6835692510699,
+      "log_rms_after_vs_target": 0.0
+     },
+     "trend": {
+      "strength": 1.0,
+      "placebo": true,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.125,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 2,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1900
+        ],
+        "own_factor": false,
+        "cosine": 0.7184552589981649,
+        "norm_ratio": 0.7242143961116093
+       }
+      ],
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "fixed_points": {
+       "CM": 0,
+       "Endothelial": 0
+      },
+      "ref_cells": 4976
+     }
+    },
+    "trend_s1.5": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 395.6835692510699,
+      "base_rms": 341.3898784136632,
+      "ratio": 1.1590372013654688,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 179.1571524668881,
+      "rms_after": 395.6835692510699,
+      "log_rms_after_vs_target": 0.0
+     },
+     "trend": {
+      "strength": 1.5,
+      "placebo": false,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.1875,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 2,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1900
+        ],
+        "own_factor": false,
+        "cosine": 0.7184552589981649,
+        "norm_ratio": 0.7242143961116093
+       }
+      ],
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "fixed_points": {},
+      "ref_cells": 4976
+     }
+    },
+    "placebo_s1.5": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 395.6835692510699,
+      "base_rms": 341.3898784136632,
+      "ratio": 1.1590372013654688,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 179.1571524668881,
+      "rms_after": 395.6835692510699,
+      "log_rms_after_vs_target": 0.0
+     },
+     "trend": {
+      "strength": 1.5,
+      "placebo": true,
+      "budget_days": 0.125,
+      "effective_budget_days": 0.1875,
+      "stages": [
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75
+      ],
+      "n_trend": 2,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076
+        ],
+        "own_factor": false,
+        "cosine": 0.705126965230826,
+        "norm_ratio": 0.46182380548608976
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         1900
+        ],
+        "own_factor": false,
+        "cosine": 0.7184552589981649,
+        "norm_ratio": 0.7242143961116093
+       }
+      ],
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "fixed_points": {
+       "CM": 0,
+       "Endothelial": 0
+      },
+      "ref_cells": 4976
+     }
+    }
+   },
+   "draw": {
+    "pool_cells": 4976,
+    "drawn": 25179,
+    "short": true,
+    "repeated_rows_at_least": 20203
+   },
+   "scores": {
+    "own": {
+     "floor": 50.0,
+     "control": 46.45020995044932,
+     "trend_s1.0": 47.2690757146713,
+     "placebo_s1.0": 47.018833428215636,
+     "trend_s1.5": 47.536907694165485,
+     "placebo_s1.5": 47.28620961340634
+    },
+    "radial_0": {
+     "floor": 50.0,
+     "control": 49.5412238824125,
+     "trend_s1.0": 50.463131648403106,
+     "placebo_s1.0": 50.26150054879041,
+     "trend_s1.5": 50.843089711810975,
+     "placebo_s1.5": 50.42089703981843
+    },
+    "thin_0.5": {
+     "floor": 50.0,
+     "control": 61.39236286147667,
+     "trend_s1.0": 62.46793758147633,
+     "placebo_s1.0": 62.14679838197761,
+     "trend_s1.5": 62.999925247264585,
+     "placebo_s1.5": 62.669870945891525
+    },
+    "thin_0": {
+     "floor": 50.0,
+     "control": 60.19925167446666,
+     "trend_s1.0": 61.47298700288775,
+     "placebo_s1.0": 61.096136083483934,
+     "trend_s1.5": 62.15960401359227,
+     "placebo_s1.5": 61.513252730817925
+    }
+   },
+   "skills": {
+    "own": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.5149269993462627,
+      "de_direction": 0.5285531642872363,
+      "mmd_u": 0.33864524147727276,
+      "variogram": 0.4097555160051434,
+      "d2_shape": 0.7195783599441947,
+      "occupancy_dice": 0.3971509971509973,
+      "scale_log_ratio": 0.8720009893643333,
+      "neighborhood_mmd": 0.4167041596793325
+     },
+     "trend_s1.0": {
+      "de_score": 0.5390669556290635,
+      "de_direction": 0.5332688380092444,
+      "mmd_u": 0.3426146315174923,
+      "variogram": 0.42483986173589433,
+      "d2_shape": 0.7195783599441947,
+      "occupancy_dice": 0.3971509971509973,
+      "scale_log_ratio": 0.8720009893643333,
+      "neighborhood_mmd": 0.4209656426254571
+     },
+     "placebo_s1.0": {
+      "de_score": 0.5187990559306219,
+      "de_direction": 0.5298515433087686,
+      "mmd_u": 0.3461747890008168,
+      "variogram": 0.4227663705773303,
+      "d2_shape": 0.7195783599441947,
+      "occupancy_dice": 0.3971509971509973,
+      "scale_log_ratio": 0.8720009893643333,
+      "neighborhood_mmd": 0.4211918887074436
+     },
+     "trend_s1.5": {
+      "de_score": 0.5433120652986148,
+      "de_direction": 0.5340725589406825,
+      "mmd_u": 0.34500067833401166,
+      "variogram": 0.43269831706450723,
+      "d2_shape": 0.7195783599441947,
+      "occupancy_dice": 0.3971509971509973,
+      "scale_log_ratio": 0.8720009893643333,
+      "neighborhood_mmd": 0.42251944012441683
+     },
+     "placebo_s1.5": {
+      "de_score": 0.5149269993462627,
+      "de_direction": 0.529936441809539,
+      "mmd_u": 0.3510329913035476,
+      "variogram": 0.43043783573444494,
+      "d2_shape": 0.7195783599441947,
+      "occupancy_dice": 0.3971509971509973,
+      "scale_log_ratio": 0.8720009893643333,
+      "neighborhood_mmd": 0.4240317982227957
+     }
+    },
+    "radial_0": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.5703229737964656,
+      "de_direction": 0.5925082409349716,
+      "mmd_u": 0.3944994499449945,
+      "variogram": 0.4712655241621102,
+      "d2_shape": 0.4270489723420452,
+      "occupancy_dice": 0.29227467811158786,
+      "scale_log_ratio": 0.9007452574525745,
+      "neighborhood_mmd": 0.4687528530996074
+     },
+     "trend_s1.0": {
+      "de_score": 0.5935062464328746,
+      "de_direction": 0.5995875788452207,
+      "mmd_u": 0.4009391771019678,
+      "variogram": 0.4907855586287821,
+      "d2_shape": 0.4270489723420452,
+      "occupancy_dice": 0.29227467811158786,
+      "scale_log_ratio": 0.9007452574525745,
+      "neighborhood_mmd": 0.47359560926113825
+     },
+     "placebo_s1.0": {
+      "de_score": 0.5748065348237318,
+      "de_direction": 0.5975580270793036,
+      "mmd_u": 0.40453494274916796,
+      "variogram": 0.48755724396336386,
+      "d2_shape": 0.4270489723420452,
+      "occupancy_dice": 0.29227467811158786,
+      "scale_log_ratio": 0.9007452574525745,
+      "neighborhood_mmd": 0.47428465855292024
+     },
+     "trend_s1.5": {
+      "de_score": 0.603300457680655,
+      "de_direction": 0.6007170201130217,
+      "mmd_u": 0.40476324849032114,
+      "variogram": 0.5006706675145757,
+      "d2_shape": 0.4270489723420452,
+      "occupancy_dice": 0.29227467811158786,
+      "scale_log_ratio": 0.9007452574525745,
+      "neighborhood_mmd": 0.47527250005785565
+     },
+     "placebo_s1.5": {
+      "de_score": 0.5572491813039595,
+      "de_direction": 0.5982450832072617,
+      "mmd_u": 0.41128569790113545,
+      "variogram": 0.49696323525511477,
+      "d2_shape": 0.4270489723420452,
+      "occupancy_dice": 0.29227467811158786,
+      "scale_log_ratio": 0.9007452574525745,
+      "neighborhood_mmd": 0.47764908363568703
+     }
+    },
+    "thin_0.5": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.5982722785138997,
+      "de_direction": 0.6732855680655067,
+      "mmd_u": 0.5744737190520324,
+      "variogram": 0.5816640943818003,
+      "d2_shape": 0.6724898694281854,
+      "occupancy_dice": 0.41900647948164127,
+      "scale_log_ratio": 0.9337225274725275,
+      "neighborhood_mmd": 0.5674927631913057
+     },
+     "trend_s1.0": {
+      "de_score": 0.6140257316178922,
+      "de_direction": 0.6835469345341185,
+      "mmd_u": 0.5899789244680128,
+      "variogram": 0.6107897362547364,
+      "d2_shape": 0.6724898694281854,
+      "occupancy_dice": 0.41900647948164127,
+      "scale_log_ratio": 0.9337225274725275,
+      "neighborhood_mmd": 0.5765549622062276
+     },
+     "placebo_s1.0": {
+      "de_score": 0.5982722785138997,
+      "de_direction": 0.6812344656172329,
+      "mmd_u": 0.5902999795932249,
+      "variogram": 0.6015199450184313,
+      "d2_shape": 0.6724898694281854,
+      "occupancy_dice": 0.41900647948164127,
+      "scale_log_ratio": 0.9337225274725275,
+      "neighborhood_mmd": 0.5762576386561122
+     },
+     "trend_s1.5": {
+      "de_score": 0.6249830370470891,
+      "de_direction": 0.6851131787251771,
+      "mmd_u": 0.5985240361404234,
+      "variogram": 0.6259338503002505,
+      "d2_shape": 0.6724898694281854,
+      "occupancy_dice": 0.41900647948164127,
+      "scale_log_ratio": 0.9337225274725275,
+      "neighborhood_mmd": 0.5803879814059781
+     },
+     "placebo_s1.5": {
+      "de_score": 0.6086697944888654,
+      "de_direction": 0.6825539568345323,
+      "mmd_u": 0.5991852516743769,
+      "variogram": 0.6129603583893316,
+      "d2_shape": 0.6724898694281854,
+      "occupancy_dice": 0.41900647948164127,
+      "scale_log_ratio": 0.9337225274725275,
+      "neighborhood_mmd": 0.5814147090194854
+     }
+    },
+    "thin_0": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.6230758934546914,
+      "de_direction": 0.6994979848688397,
+      "mmd_u": 0.613587457731325,
+      "variogram": 0.625664259254324,
+      "d2_shape": 0.7514378983367013,
+      "occupancy_dice": 0.21296296296296297,
+      "scale_log_ratio": 0.7549567869852567,
+      "neighborhood_mmd": 0.5551457333814027
+     },
+     "trend_s1.0": {
+      "de_score": 0.6480128071274448,
+      "de_direction": 0.7106019250107743,
+      "mmd_u": 0.630647709320695,
+      "variogram": 0.6556410127515542,
+      "d2_shape": 0.7514378983367013,
+      "occupancy_dice": 0.21296296296296297,
+      "scale_log_ratio": 0.7549567869852567,
+      "neighborhood_mmd": 0.5658478672583882
+     },
+     "placebo_s1.0": {
+      "de_score": 0.6279085452215553,
+      "de_direction": 0.707906976744186,
+      "mmd_u": 0.6271798900235663,
+      "variogram": 0.6449067944203015,
+      "d2_shape": 0.7514378983367013,
+      "occupancy_dice": 0.21296296296296297,
+      "scale_log_ratio": 0.7549567869852567,
+      "neighborhood_mmd": 0.5685478144792524
+     },
+     "trend_s1.5": {
+      "de_score": 0.6694470410584598,
+      "de_direction": 0.7121364814281602,
+      "mmd_u": 0.6391802097510207,
+      "variogram": 0.6711415535557055,
+      "d2_shape": 0.7514378983367013,
+      "occupancy_dice": 0.21296296296296297,
+      "scale_log_ratio": 0.7549567869852567,
+      "neighborhood_mmd": 0.5705084359325125
+     },
+     "placebo_s1.5": {
+      "de_score": 0.6279085452215553,
+      "de_direction": 0.7088707366007452,
+      "mmd_u": 0.634658187599364,
+      "variogram": 0.6557948546048772,
+      "d2_shape": 0.7514378983367013,
+      "occupancy_dice": 0.21296296296296297,
+      "scale_log_ratio": 0.7549567869852567,
+      "neighborhood_mmd": 0.5759083978250238
+     }
+    }
+   },
+   "groups": {
+    "own": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.5217400818167495,
+      "cell_state": 0.367089351288421,
+      "shape_growth": 0.5524748052334696,
+      "local_organisation": 0.4167041596793325
+     },
+     "trend_s1.0": {
+      "expression_change": 0.5361678968191539,
+      "cell_state": 0.3755047236048531,
+      "shape_growth": 0.558124765537388,
+      "local_organisation": 0.4209656426254571
+     },
+     "placebo_s1.0": {
+      "expression_change": 0.5243252996196952,
+      "cell_state": 0.3768114216314222,
+      "shape_growth": 0.5584247271700642,
+      "local_organisation": 0.4211918887074436
+     },
+     "trend_s1.5": {
+      "expression_change": 0.5386923121196486,
+      "cell_state": 0.38007973382620985,
+      "shape_growth": 0.5601848216963441,
+      "local_organisation": 0.42251944012441683
+     },
+     "placebo_s1.5": {
+      "expression_change": 0.5224317205779009,
+      "cell_state": 0.3827949290759065,
+      "shape_growth": 0.5621899366596507,
+      "local_organisation": 0.4240317982227957
+     }
+    },
+    "radial_0": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.5814156073657186,
+      "cell_state": 0.42520587963184076,
+      "shape_growth": 0.5062746151993333,
+      "local_organisation": 0.4687528530996074
+     },
+     "trend_s1.0": {
+      "expression_change": 0.5965469126390477,
+      "cell_state": 0.4368777297126935,
+      "shape_growth": 0.5115050143232448,
+      "local_organisation": 0.47359560926113825
+     },
+     "placebo_s1.0": {
+      "expression_change": 0.5861822809515177,
+      "cell_state": 0.4377438632348463,
+      "shape_growth": 0.512249219212332,
+      "local_organisation": 0.47428465855292024
+     },
+     "trend_s1.5": {
+      "expression_change": 0.6020087388968384,
+      "cell_state": 0.44312621610002295,
+      "shape_growth": 0.5133161334177221,
+      "local_organisation": 0.47527250005785565
+     },
+     "placebo_s1.5": {
+      "expression_change": 0.5777471322556106,
+      "cell_state": 0.4455567128427272,
+      "shape_growth": 0.5158829528587122,
+      "local_organisation": 0.47764908363568703
+     }
+    },
+    "thin_0.5": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.6357789232897032,
+      "cell_state": 0.5773498691839396,
+      "shape_growth": 0.675072958794118,
+      "local_organisation": 0.5674927631913057
+     },
+     "trend_s1.0": {
+      "expression_change": 0.6487863330760053,
+      "cell_state": 0.5983032491827023,
+      "shape_growth": 0.675072958794118,
+      "local_organisation": 0.5765549622062276
+     },
+     "placebo_s1.0": {
+      "expression_change": 0.6397533720655664,
+      "cell_state": 0.5947879657633075,
+      "shape_growth": 0.675072958794118,
+      "local_organisation": 0.5762576386561122
+     },
+     "trend_s1.5": {
+      "expression_change": 0.6550481078861331,
+      "cell_state": 0.6094879618043543,
+      "shape_growth": 0.675072958794118,
+      "local_organisation": 0.5803879814059781
+     },
+     "placebo_s1.5": {
+      "expression_change": 0.6456118756616989,
+      "cell_state": 0.6046952943603587,
+      "shape_growth": 0.675072958794118,
+      "local_organisation": 0.5814147090194854
+     }
+    },
+    "thin_0": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.6612869391617655,
+      "cell_state": 0.6184181783405246,
+      "shape_growth": 0.5731192160949736,
+      "local_organisation": 0.5551457333814027
+     },
+     "trend_s1.0": {
+      "expression_change": 0.6793073660691096,
+      "cell_state": 0.6406450306930387,
+      "shape_growth": 0.5731192160949736,
+      "local_organisation": 0.5658478672583882
+     },
+     "placebo_s1.0": {
+      "expression_change": 0.6679077609828706,
+      "cell_state": 0.6342706517822605,
+      "shape_growth": 0.5731192160949736,
+      "local_organisation": 0.5685478144792524
+     },
+     "trend_s1.5": {
+      "expression_change": 0.69079176124331,
+      "cell_state": 0.6519647472728947,
+      "shape_growth": 0.5731192160949736,
+      "local_organisation": 0.5705084359325125
+     },
+     "placebo_s1.5": {
+      "expression_change": 0.6683896409111503,
+      "cell_state": 0.6431128544015693,
+      "shape_growth": 0.5731192160949736,
+      "local_organisation": 0.5759083978250238
+     }
+    }
+   },
+   "seconds": 121.6
+  }
+ ],
+ "source": "experiments/harness/h34_heart_organ_trend.py (row H34)",
+ "provenance": {
+  "commit": "2b4989c1e98213a40bf6cafea1baccf1520b9744",
+  "tree_clean": true,
+  "utc": "2026-11-24 06:18:33"
+ }
+}

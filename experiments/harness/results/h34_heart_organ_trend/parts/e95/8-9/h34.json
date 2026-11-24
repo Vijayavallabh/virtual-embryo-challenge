@@ -1,0 +1,2366 @@
+{
+ "label": "row H34: row H28's trend step at strengths 1 and 1.5, and a placebo of each, on row H29b's D_f form; a screen on one truth, not an adoption result",
+ "axis": "h34-heart-organ-trend",
+ "task": "T2h/<=E9.5->E10.5",
+ "arms": [
+  "control",
+  "trend_s1.0",
+  "placebo_s1.0",
+  "trend_s1.5",
+  "placebo_s1.5"
+ ],
+ "truth_values": [
+  "own",
+  "radial_0",
+  "thin_0.5",
+  "thin_0"
+ ],
+ "truth_info": {
+  "own": {
+   "cells": 167864,
+   "core_share": 0.2306748320068627,
+   "xy_scope": 0.20989552277802517
+  },
+  "radial_0": {
+   "cells": 96544,
+   "core_share": 0.40108137222406365,
+   "xy_scope": -2.170625565868641e-06
+  },
+  "thin_0.5": {
+   "cells": 45788,
+   "core_share": 0.8456800908534987,
+   "xy_scope": 0.10493046043228518
+  },
+  "thin_0": {
+   "cells": 38722,
+   "core_share": 1.0,
+   "xy_scope": 0.0
+  }
+ },
+ "pred_info": {
+  "organ": {
+   "pool_cells": 25765,
+   "core_share": 0.771589365418203,
+   "xy_scope": 0.07250912372400115
+  }
+ },
+ "organ_record": {
+  "reference": {
+   "rule": "organ cut: chamber-category cells (configs/t2_chamber_classes.yaml, T1's chamber scope) in a connected component that holds core cells, two chamber-category cells linked when closer than L (3D, stored units); L = the 99th percentile of each core cell's distance to its nearest other core cell on the same stage; core cells (CM plus endocardium) always kept",
+   "label_config": "configs/t2_chamber_classes.yaml",
+   "label_config_sha256": "c4c750c1b6dac08b056684e4157afbf5683ee046919dd7302f2ec6632ecc1b6c",
+   "kept_categories": [
+    "cm",
+    "endocardium",
+    "epicardium",
+    "vascular_endothelium",
+    "blood"
+   ],
+   "link_percentile": 99.0,
+   "link_length": 25.996365624683808,
+   "kept_share": 0.47942019277287784,
+   "chamber_share": 0.4844814111867813,
+   "core_share_of_kept": 0.771589365418203,
+   "components_kept": 88,
+   "components_total": 225
+  }
+ },
+ "ratios": {
+  "organ": 1.0819975589700042,
+  "label": 1.0891041878833045
+ },
+ "d_targets": {
+  "organ:f": {
+   "target": 566.9479655638804,
+   "base": 523.9826660085818,
+   "ratio": 1.0819975589700042,
+   "source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage"
+  }
+ },
+ "forecast_targets": {
+  "full_iso_half": 568.6940113806332,
+  "half_iso_half": 574.6407571684713,
+  "core_iso_half": 523.9826660085818
+ },
+ "size_result": {
+  "board": "heart",
+  "valid": true,
+  "target_t": 10.5,
+  "timestamp": "try H27 analogue (in memory, never a size file)",
+  "preregistered": {
+   "target_t": 10.5,
+   "z_mode_requested": "raw",
+   "z_mode": "raw",
+   "rules": [
+    "latest_rate",
+    "half_rate",
+    "power_t"
+   ],
+   "min_start_t": -Infinity,
+   "tie_tol": Infinity,
+   "reference": "E9.5",
+   "stages": [
+    {
+     "name": "E8.25_late",
+     "t": 8.25,
+     "n_cells": 54431,
+     "n_core": 2036,
+     "n_levels": 38,
+     "z_step": 15.0,
+     "z_range": 555.0,
+     "rms_full": 353.4964257628457,
+     "rms_core": 152.17958425737348,
+     "rms_xy_full": 321.70018435371907,
+     "sd_z_full": 146.52206118496372,
+     "rms_xy_core": 125.45807745419077,
+     "sd_z_core": 86.13301728283587,
+     "core_thin_axis_cos_z": 0.7354854035259737,
+     "log_scope": 0.8428120754583706,
+     "log_scope_xy": 0.9416483487288667,
+     "core_thin_axis_angle_deg": 42.65175200533025
+    },
+    {
+     "name": "E8.5",
+     "t": 8.5,
+     "n_cells": 23710,
+     "n_core": 2431,
+     "n_levels": 25,
+     "z_step": 15.0,
+     "z_range": 360.0000000000001,
+     "rms_full": 255.22353488610761,
+     "rms_core": 134.07526158422002,
+     "rms_xy_full": 231.62806165620404,
+     "sd_z_full": 107.17972668909886,
+     "rms_xy_core": 107.75796844638313,
+     "sd_z_core": 79.77716468504832,
+     "core_thin_axis_cos_z": 0.2736455051050436,
+     "log_scope": 0.6437384726629188,
+     "log_scope_xy": 0.7652452233295622,
+     "core_thin_axis_angle_deg": 74.11868863245238
+    },
+    {
+     "name": "E8.75",
+     "t": 8.75,
+     "n_cells": 23377,
+     "n_core": 3914,
+     "n_levels": 35,
+     "z_step": 14.0,
+     "z_range": 476.0,
+     "rms_full": 216.9416140719822,
+     "rms_core": 154.4831472408458,
+     "rms_xy_full": 169.4958000360066,
+     "sd_z_full": 135.40619515484116,
+     "rms_xy_core": 119.36506828412158,
+     "sd_z_core": 98.06642266833148,
+     "core_thin_axis_cos_z": 0.42628193988806146,
+     "log_scope": 0.3395432467203799,
+     "log_scope_xy": 0.3506415502450217,
+     "core_thin_axis_angle_deg": 64.76816696175234
+    },
+    {
+     "name": "E9.5",
+     "t": 9.5,
+     "n_cells": 53742,
+     "n_core": 19880,
+     "n_levels": 40,
+     "z_step": 15.0,
+     "z_range": 585.0,
+     "rms_full": 334.9661603604817,
+     "rms_core": 278.5107252333298,
+     "rms_xy_full": 286.8812998466944,
+     "sd_z_full": 172.92035272030571,
+     "rms_xy_core": 247.5256310010816,
+     "sd_z_core": 127.66865734201056,
+     "core_thin_axis_cos_z": 0.9277759576927032,
+     "log_scope": 0.1845729435355595,
+     "log_scope_xy": 0.1475544045764524,
+     "core_thin_axis_angle_deg": 21.909260420744427
+    }
+   ],
+   "growth": {
+    "core": {
+     "valid": true,
+     "applicable": [
+      "latest_rate",
+      "half_rate",
+      "power_t"
+     ],
+     "chosen": [
+      "latest_rate",
+      "half_rate",
+      "power_t"
+     ],
+     "mae_common": {
+      "latest_rate": 0.5567864720410949,
+      "half_rate": 0.5220783271678204,
+      "power_t": 0.5516824544345807
+     },
+     "common_pseudo_targets": [
+      "E8.75:next",
+      "E9.5:next",
+      "E9.5:skip"
+     ],
+     "pseudo_targets": [
+      {
+       "target": "E8.75",
+       "t_target": 8.75,
+       "kind": "next",
+       "train": "E8.25_late,E8.5",
+       "rule": "copy_last",
+       "pred": 4.898401295896137,
+       "obs": 5.040085011040939,
+       "error": -0.1416837151448025,
+       "eligible": true
+      },
+      {
+       "target": "E8.75",
+       "t_target": 8.75,
+       "kind": "next",
+       "train": "E8.25_late,E8.5",
+       "rule": "latest_rate",
+       "pred": 4.771741292961326,
+       "obs": 5.040085011040939,
+       "error": -0.2683437180796133,
+       "eligible": true
+      },
+      {
+       "target": "E8.75",
+       "t_target": 8.75,
+       "kind": "next",
+       "train": "E8.25_late,E8.5",
+       "rule": "half_rate",
+       "pred": 4.835071294428731,
+       "obs": 5.040085011040939,
+       "error": -0.2050137166122079,
+       "eligible": true
+      },
+      {
+       "target": "E8.75",
+       "t_target": 8.75,
+       "kind": "next",
+       "train": "E8.25_late,E8.5",
+       "rule": "power_t",
+       "pred": 4.7754131192441225,
+       "obs": 5.040085011040939,
+       "error": -0.2646718917968167,
+       "eligible": true
+      },
+      {
+       "target": "E8.75",
+       "t_target": 8.75,
+       "kind": "next",
+       "train": "E8.25_late,E8.5",
+       "rule": "decaying_rate",
+       "pred": 4.771741292961326,
+       "obs": 5.040085011040939,
+       "error": -0.2683437180796133,
+       "eligible": false
+      },
+      {
+       "target": "E9.5",
+       "t_target": 9.5,
+       "kind": "next",
+       "train": "E8.25_late,E8.5,E8.75",
+       "rule": "copy_last",
+       "pred": 5.040085011040939,
+       "obs": 5.629456569337956,
+       "error": -0.5893715582970165,
+       "eligible": true
+      },
+      {
+       "target": "E9.5",
+       "t_target": 9.5,
+       "kind": "next",
+       "train": "E8.25_late,E8.5,E8.75",
+       "rule": "latest_rate",
+       "pred": 5.465136156475347,
+       "obs": 5.629456569337956,
+       "error": -0.164320412862609,
+       "eligible": true
+      },
+      {
+       "target": "E9.5",
+       "t_target": 9.5,
+       "kind": "next",
+       "train": "E8.25_late,E8.5,E8.75",
+       "rule": "half_rate",
+       "pred": 5.252610583758143,
+       "obs": 5.629456569337956,
+       "error": -0.37684598557981275,
+       "eligible": true
+      },
+      {
+       "target": "E9.5",
+       "t_target": 9.5,
+       "kind": "next",
+       "train": "E8.25_late,E8.5,E8.75",
+       "rule": "power_t",
+       "pred": 5.442043940342341,
+       "obs": 5.629456569337956,
+       "error": -0.18741262899561484,
+       "eligible": true
+      },
+      {
+       "target": "E9.5",
+       "t_target": 9.5,
+       "kind": "next",
+       "train": "E8.25_late,E8.5,E8.75",
+       "rule": "decaying_rate",
+       "pred": 5.465136156475347,
+       "obs": 5.629456569337956,
+       "error": -0.164320412862609,
+       "eligible": true
+      },
+      {
+       "target": "E9.5",
+       "t_target": 9.5,
+       "kind": "skip",
+       "train": "E8.25_late,E8.5",
+       "rule": "copy_last",
+       "pred": 4.898401295896137,
+       "obs": 5.629456569337956,
+       "error": -0.731055273441819,
+       "eligible": true
+      },
+      {
+       "target": "E9.5",
+       "t_target": 9.5,
+       "kind": "skip",
+       "train": "E8.25_late,E8.5",
+       "rule": "latest_rate",
+       "pred": 4.391761284156893,
+       "obs": 5.629456569337956,
+       "error": -1.2376952851810623,
+       "eligible": true
+      },
+      {
+       "target": "E9.5",
+       "t_target": 9.5,
+       "kind": "skip",
+       "train": "E8.25_late,E8.5",
+       "rule": "half_rate",
+       "pred": 4.645081290026515,
+       "obs": 5.629456569337956,
+       "error": -0.9843752793114406,
+       "eligible": true
+      },
+      {
+       "target": "E9.5",
+       "t_target": 9.5,
+       "kind": "skip",
+       "train": "E8.25_late,E8.5",
+       "rule": "power_t",
+       "pred": 4.426493726826645,
+       "obs": 5.629456569337956,
+       "error": -1.2029628425113108,
+       "eligible": true
+      },
+      {
+       "target": "E9.5",
+       "t_target": 9.5,
+       "kind": "skip",
+       "train": "E8.25_late,E8.5",
+       "rule": "decaying_rate",
+       "pred": 4.391761284156893,
+       "obs": 5.629456569337956,
+       "error": -1.2376952851810623,
+       "eligible": false
+      }
+     ],
+     "all_rule_predictions": {
+      "copy_last": 5.629456569337956,
+      "latest_rate": 6.415285313733977,
+      "half_rate": 6.022370941535967,
+      "power_t": 6.346719555642821,
+      "decaying_rate": 6.415285313733977
+     },
+     "pred_log_target": 6.261458603637588
+    }
+   },
+   "scope": {
+    "H1": {
+     "pred_log_scope": 0.08188392025332984,
+     "pred_rms_full": 568.6940113806332,
+     "scale_vs_reference_full": 1.697765561657392
+    },
+    "H0": {
+     "pred_log_scope": 0.1845729435355595,
+     "pred_rms_full": 630.1964191192268,
+     "scale_vs_reference_full": 1.8813733854220562
+    },
+    "H2": {
+     "pred_log_scope": 0.09228647176777975,
+     "pred_rms_full": 574.6407571684713,
+     "scale_vs_reference_full": 1.7155188349475605
+    }
+   },
+   "valid": true,
+   "pred_rms_core": 523.9826660085818,
+   "pred_log_growth_core": 0.632002034299632
+  },
+  "z_modes": {
+   "raw": {
+    "target_t": 10.5,
+    "z_mode_requested": "raw",
+    "z_mode": "raw",
+    "rules": [
+     "latest_rate",
+     "half_rate",
+     "power_t"
+    ],
+    "min_start_t": -Infinity,
+    "tie_tol": Infinity,
+    "reference": "E9.5",
+    "stages": [
+     {
+      "name": "E8.25_late",
+      "t": 8.25,
+      "n_cells": 54431,
+      "n_core": 2036,
+      "n_levels": 38,
+      "z_step": 15.0,
+      "z_range": 555.0,
+      "rms_full": 353.4964257628457,
+      "rms_core": 152.17958425737348,
+      "rms_xy_full": 321.70018435371907,
+      "sd_z_full": 146.52206118496372,
+      "rms_xy_core": 125.45807745419077,
+      "sd_z_core": 86.13301728283587,
+      "core_thin_axis_cos_z": 0.7354854035259737,
+      "log_scope": 0.8428120754583706,
+      "log_scope_xy": 0.9416483487288667,
+      "core_thin_axis_angle_deg": 42.65175200533025
+     },
+     {
+      "name": "E8.5",
+      "t": 8.5,
+      "n_cells": 23710,
+      "n_core": 2431,
+      "n_levels": 25,
+      "z_step": 15.0,
+      "z_range": 360.0000000000001,
+      "rms_full": 255.22353488610761,
+      "rms_core": 134.07526158422002,
+      "rms_xy_full": 231.62806165620404,
+      "sd_z_full": 107.17972668909886,
+      "rms_xy_core": 107.75796844638313,
+      "sd_z_core": 79.77716468504832,
+      "core_thin_axis_cos_z": 0.2736455051050436,
+      "log_scope": 0.6437384726629188,
+      "log_scope_xy": 0.7652452233295622,
+      "core_thin_axis_angle_deg": 74.11868863245238
+     },
+     {
+      "name": "E8.75",
+      "t": 8.75,
+      "n_cells": 23377,
+      "n_core": 3914,
+      "n_levels": 35,
+      "z_step": 14.0,
+      "z_range": 476.0,
+      "rms_full": 216.9416140719822,
+      "rms_core": 154.4831472408458,
+      "rms_xy_full": 169.4958000360066,
+      "sd_z_full": 135.40619515484116,
+      "rms_xy_core": 119.36506828412158,
+      "sd_z_core": 98.06642266833148,
+      "core_thin_axis_cos_z": 0.42628193988806146,
+      "log_scope": 0.3395432467203799,
+      "log_scope_xy": 0.3506415502450217,
+      "core_thin_axis_angle_deg": 64.76816696175234
+     },
+     {
+      "name": "E9.5",
+      "t": 9.5,
+      "n_cells": 53742,
+      "n_core": 19880,
+      "n_levels": 40,
+      "z_step": 15.0,
+      "z_range": 585.0,
+      "rms_full": 334.9661603604817,
+      "rms_core": 278.5107252333298,
+      "rms_xy_full": 286.8812998466944,
+      "sd_z_full": 172.92035272030571,
+      "rms_xy_core": 247.5256310010816,
+      "sd_z_core": 127.66865734201056,
+      "core_thin_axis_cos_z": 0.9277759576927032,
+      "log_scope": 0.1845729435355595,
+      "log_scope_xy": 0.1475544045764524,
+      "core_thin_axis_angle_deg": 21.909260420744427
+     }
+    ],
+    "growth": {
+     "core": {
+      "valid": true,
+      "applicable": [
+       "latest_rate",
+       "half_rate",
+       "power_t"
+      ],
+      "chosen": [
+       "latest_rate",
+       "half_rate",
+       "power_t"
+      ],
+      "mae_common": {
+       "latest_rate": 0.5567864720410949,
+       "half_rate": 0.5220783271678204,
+       "power_t": 0.5516824544345807
+      },
+      "common_pseudo_targets": [
+       "E8.75:next",
+       "E9.5:next",
+       "E9.5:skip"
+      ],
+      "pseudo_targets": [
+       {
+        "target": "E8.75",
+        "t_target": 8.75,
+        "kind": "next",
+        "train": "E8.25_late,E8.5",
+        "rule": "copy_last",
+        "pred": 4.898401295896137,
+        "obs": 5.040085011040939,
+        "error": -0.1416837151448025,
+        "eligible": true
+       },
+       {
+        "target": "E8.75",
+        "t_target": 8.75,
+        "kind": "next",
+        "train": "E8.25_late,E8.5",
+        "rule": "latest_rate",
+        "pred": 4.771741292961326,
+        "obs": 5.040085011040939,
+        "error": -0.2683437180796133,
+        "eligible": true
+       },
+       {
+        "target": "E8.75",
+        "t_target": 8.75,
+        "kind": "next",
+        "train": "E8.25_late,E8.5",
+        "rule": "half_rate",
+        "pred": 4.835071294428731,
+        "obs": 5.040085011040939,
+        "error": -0.2050137166122079,
+        "eligible": true
+       },
+       {
+        "target": "E8.75",
+        "t_target": 8.75,
+        "kind": "next",
+        "train": "E8.25_late,E8.5",
+        "rule": "power_t",
+        "pred": 4.7754131192441225,
+        "obs": 5.040085011040939,
+        "error": -0.2646718917968167,
+        "eligible": true
+       },
+       {
+        "target": "E8.75",
+        "t_target": 8.75,
+        "kind": "next",
+        "train": "E8.25_late,E8.5",
+        "rule": "decaying_rate",
+        "pred": 4.771741292961326,
+        "obs": 5.040085011040939,
+        "error": -0.2683437180796133,
+        "eligible": false
+       },
+       {
+        "target": "E9.5",
+        "t_target": 9.5,
+        "kind": "next",
+        "train": "E8.25_late,E8.5,E8.75",
+        "rule": "copy_last",
+        "pred": 5.040085011040939,
+        "obs": 5.629456569337956,
+        "error": -0.5893715582970165,
+        "eligible": true
+       },
+       {
+        "target": "E9.5",
+        "t_target": 9.5,
+        "kind": "next",
+        "train": "E8.25_late,E8.5,E8.75",
+        "rule": "latest_rate",
+        "pred": 5.465136156475347,
+        "obs": 5.629456569337956,
+        "error": -0.164320412862609,
+        "eligible": true
+       },
+       {
+        "target": "E9.5",
+        "t_target": 9.5,
+        "kind": "next",
+        "train": "E8.25_late,E8.5,E8.75",
+        "rule": "half_rate",
+        "pred": 5.252610583758143,
+        "obs": 5.629456569337956,
+        "error": -0.37684598557981275,
+        "eligible": true
+       },
+       {
+        "target": "E9.5",
+        "t_target": 9.5,
+        "kind": "next",
+        "train": "E8.25_late,E8.5,E8.75",
+        "rule": "power_t",
+        "pred": 5.442043940342341,
+        "obs": 5.629456569337956,
+        "error": -0.18741262899561484,
+        "eligible": true
+       },
+       {
+        "target": "E9.5",
+        "t_target": 9.5,
+        "kind": "next",
+        "train": "E8.25_late,E8.5,E8.75",
+        "rule": "decaying_rate",
+        "pred": 5.465136156475347,
+        "obs": 5.629456569337956,
+        "error": -0.164320412862609,
+        "eligible": true
+       },
+       {
+        "target": "E9.5",
+        "t_target": 9.5,
+        "kind": "skip",
+        "train": "E8.25_late,E8.5",
+        "rule": "copy_last",
+        "pred": 4.898401295896137,
+        "obs": 5.629456569337956,
+        "error": -0.731055273441819,
+        "eligible": true
+       },
+       {
+        "target": "E9.5",
+        "t_target": 9.5,
+        "kind": "skip",
+        "train": "E8.25_late,E8.5",
+        "rule": "latest_rate",
+        "pred": 4.391761284156893,
+        "obs": 5.629456569337956,
+        "error": -1.2376952851810623,
+        "eligible": true
+       },
+       {
+        "target": "E9.5",
+        "t_target": 9.5,
+        "kind": "skip",
+        "train": "E8.25_late,E8.5",
+        "rule": "half_rate",
+        "pred": 4.645081290026515,
+        "obs": 5.629456569337956,
+        "error": -0.9843752793114406,
+        "eligible": true
+       },
+       {
+        "target": "E9.5",
+        "t_target": 9.5,
+        "kind": "skip",
+        "train": "E8.25_late,E8.5",
+        "rule": "power_t",
+        "pred": 4.426493726826645,
+        "obs": 5.629456569337956,
+        "error": -1.2029628425113108,
+        "eligible": true
+       },
+       {
+        "target": "E9.5",
+        "t_target": 9.5,
+        "kind": "skip",
+        "train": "E8.25_late,E8.5",
+        "rule": "decaying_rate",
+        "pred": 4.391761284156893,
+        "obs": 5.629456569337956,
+        "error": -1.2376952851810623,
+        "eligible": false
+       }
+      ],
+      "all_rule_predictions": {
+       "copy_last": 5.629456569337956,
+       "latest_rate": 6.415285313733977,
+       "half_rate": 6.022370941535967,
+       "power_t": 6.346719555642821,
+       "decaying_rate": 6.415285313733977
+      },
+      "pred_log_target": 6.261458603637588
+     }
+    },
+    "scope": {
+     "H1": {
+      "pred_log_scope": 0.08188392025332984,
+      "pred_rms_full": 568.6940113806332,
+      "scale_vs_reference_full": 1.697765561657392
+     },
+     "H0": {
+      "pred_log_scope": 0.1845729435355595,
+      "pred_rms_full": 630.1964191192268,
+      "scale_vs_reference_full": 1.8813733854220562
+     },
+     "H2": {
+      "pred_log_scope": 0.09228647176777975,
+      "pred_rms_full": 574.6407571684713,
+      "scale_vs_reference_full": 1.7155188349475605
+     }
+    },
+    "valid": true,
+    "pred_rms_core": 523.9826660085818,
+    "pred_log_growth_core": 0.632002034299632
+   }
+  },
+  "provenance": {
+   "analogue": "size procedure, E9.0 cut-off lifted, all three rules averaged",
+   "git_commit": null,
+   "size_procedure_sha256": null,
+   "departures": [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f"
+   ]
+  }
+ },
+ "v7": {
+  "reference": "E9.5",
+  "loaded_rms_full": 334.9661603604817,
+  "size_rms_full": 334.9661603604817,
+  "log_diff": 0.0,
+  "ok": true
+ },
+ "strengths": [
+  1.0,
+  1.5
+ ],
+ "truth_seed": 20261102,
+ "half_seed_base": 2000000,
+ "perm_seed": 20261120,
+ "departures": {
+  "a": "the E9.0 rate cut-off is lifted (min_start_t = -inf): every practice rate interval starts before E9.0, so the pre-registered settings give valid=False and no figure (row H25)",
+  "b": "rule selection is forced to all three pre-registered rules (tie_tol = inf), the test's outcome, reached at the test by no eligible pseudo-target",
+  "c": "copy_last on E8.25_late -> E8.5, the one transition with one input stage",
+  "d": "an in-memory size result applied through apply_size_procedure; size_or_hold's crosscheck (hardwired to E10.5) is redone by guard V7 on each transition's untrimmed reference stage",
+  "e": "the practice board's count rule sets the cell number, not the test board's",
+  "f": "the preregistered field holds the raw result; the builder passes --z-mode raw, so the recorded mode never enters"
+ },
+ "seeds": [
+  8,
+  9
+ ],
+ "rows": [
+  {
+   "seed": 8,
+   "build_seed": 1000008,
+   "n_cells": {
+    "control": 12589,
+    "trend_s1.0": 12589,
+    "placebo_s1.0": 12589,
+    "trend_s1.5": 12589,
+    "placebo_s1.5": 12589
+   },
+   "checks": {
+    "s1_equals_harness_b0_trend": true,
+    "same_draw": true,
+    "pre_size_coords_equal": true,
+    "changed_counts": {
+     "trend_s1.0": 315078,
+     "placebo_s1.0": 334875,
+     "trend_s1.5": 409330,
+     "placebo_s1.5": 431413
+    },
+    "post_size_coords_equal": true,
+    "n_cells": {
+     "control": 12589,
+     "trend_s1.0": 12589,
+     "placebo_s1.0": 12589,
+     "trend_s1.5": 12589,
+     "placebo_s1.5": 12589
+    }
+   },
+   "records": {
+    "control": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 566.9479655638804,
+      "base_rms": 523.9826660085818,
+      "ratio": 1.0819975589700042,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 301.469255072044,
+      "rms_after": 566.9479655638805,
+      "log_rms_after_vs_target": 2.2204460492503128e-16
+     },
+     "trend": {
+      "strength": null
+     }
+    },
+    "trend_s1.0": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 566.9479655638804,
+      "base_rms": 523.9826660085818,
+      "ratio": 1.0819975589700042,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 301.469255072044,
+      "rms_after": 566.9479655638805,
+      "log_rms_after_vs_target": 2.2204460492503128e-16
+     },
+     "trend": {
+      "strength": 1.0,
+      "placebo": false,
+      "budget_days": 0.375,
+      "effective_budget_days": 0.375,
+      "stages": [
+       "earliest",
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75,
+       9.5
+      ],
+      "n_trend": 2,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earliest",
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076,
+         16291
+        ],
+        "own_factor": false,
+        "cosine": 0.8011924964195043,
+        "norm_ratio": 0.6765220310718135
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earliest",
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         2307,
+         8030
+        ],
+        "own_factor": false,
+        "cosine": 0.6355391432578954,
+        "norm_ratio": 0.8255603771550468
+       }
+      ],
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "fixed_points": {},
+      "ref_cells": 25765
+     }
+    },
+    "placebo_s1.0": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 566.9479655638804,
+      "base_rms": 523.9826660085818,
+      "ratio": 1.0819975589700042,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 301.469255072044,
+      "rms_after": 566.9479655638805,
+      "log_rms_after_vs_target": 2.2204460492503128e-16
+     },
+     "trend": {
+      "strength": 1.0,
+      "placebo": true,
+      "budget_days": 0.375,
+      "effective_budget_days": 0.375,
+      "stages": [
+       "earliest",
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75,
+       9.5
+      ],
+      "n_trend": 2,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earliest",
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076,
+         16291
+        ],
+        "own_factor": false,
+        "cosine": 0.8011924964195043,
+        "norm_ratio": 0.6765220310718135
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earliest",
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         2307,
+         8030
+        ],
+        "own_factor": false,
+        "cosine": 0.6355391432578954,
+        "norm_ratio": 0.8255603771550468
+       }
+      ],
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "fixed_points": {
+       "CM": 0,
+       "Endothelial": 0
+      },
+      "ref_cells": 25765
+     }
+    },
+    "trend_s1.5": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 566.9479655638804,
+      "base_rms": 523.9826660085818,
+      "ratio": 1.0819975589700042,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 301.469255072044,
+      "rms_after": 566.9479655638805,
+      "log_rms_after_vs_target": 2.2204460492503128e-16
+     },
+     "trend": {
+      "strength": 1.5,
+      "placebo": false,
+      "budget_days": 0.375,
+      "effective_budget_days": 0.5625,
+      "stages": [
+       "earliest",
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75,
+       9.5
+      ],
+      "n_trend": 2,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earliest",
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076,
+         16291
+        ],
+        "own_factor": false,
+        "cosine": 0.8011924964195043,
+        "norm_ratio": 0.6765220310718135
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earliest",
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         2307,
+         8030
+        ],
+        "own_factor": false,
+        "cosine": 0.6355391432578954,
+        "norm_ratio": 0.8255603771550468
+       }
+      ],
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "fixed_points": {},
+      "ref_cells": 25765
+     }
+    },
+    "placebo_s1.5": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 566.9479655638804,
+      "base_rms": 523.9826660085818,
+      "ratio": 1.0819975589700042,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 301.469255072044,
+      "rms_after": 566.9479655638805,
+      "log_rms_after_vs_target": 2.2204460492503128e-16
+     },
+     "trend": {
+      "strength": 1.5,
+      "placebo": true,
+      "budget_days": 0.375,
+      "effective_budget_days": 0.5625,
+      "stages": [
+       "earliest",
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75,
+       9.5
+      ],
+      "n_trend": 2,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earliest",
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076,
+         16291
+        ],
+        "own_factor": false,
+        "cosine": 0.8011924964195043,
+        "norm_ratio": 0.6765220310718135
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earliest",
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         2307,
+         8030
+        ],
+        "own_factor": false,
+        "cosine": 0.6355391432578954,
+        "norm_ratio": 0.8255603771550468
+       }
+      ],
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "fixed_points": {
+       "CM": 0,
+       "Endothelial": 0
+      },
+      "ref_cells": 25765
+     }
+    }
+   },
+   "draw": {
+    "pool_cells": 25765,
+    "drawn": 25179,
+    "short": false,
+    "repeated_rows_at_least": 0
+   },
+   "scores": {
+    "own": {
+     "floor": 50.0,
+     "control": 27.19226311751055,
+     "trend_s1.0": 27.726891806814336,
+     "placebo_s1.0": 27.276650828913816,
+     "trend_s1.5": 27.981964115334453,
+     "placebo_s1.5": 27.209929672898962
+    },
+    "radial_0": {
+     "floor": 50.0,
+     "control": 27.95358579557588,
+     "trend_s1.0": 28.325875688584468,
+     "placebo_s1.0": 27.90441878781304,
+     "trend_s1.5": 28.369517611739465,
+     "placebo_s1.5": 27.573894381161494
+    },
+    "thin_0.5": {
+     "floor": 50.0,
+     "control": 51.64460284684955,
+     "trend_s1.0": 52.6182258563774,
+     "placebo_s1.0": 51.73376619573891,
+     "trend_s1.5": 52.402945294125836,
+     "placebo_s1.5": 51.07335605684479
+    },
+    "thin_0": {
+     "floor": 50.0,
+     "control": 57.93139303305901,
+     "trend_s1.0": 58.1089586550246,
+     "placebo_s1.0": 57.00331258563804,
+     "trend_s1.5": 57.40524797309649,
+     "placebo_s1.5": 56.02197916759465
+    }
+   },
+   "skills": {
+    "own": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.4362347729789591,
+      "de_direction": 0.44633124634025495,
+      "mmd_u": 0.18309962021618462,
+      "variogram": 0.2579226631777875,
+      "d2_shape": 0.3605633802816901,
+      "occupancy_dice": 0.4804377564979479,
+      "scale_log_ratio": 0.5302649390833495,
+      "neighborhood_mmd": 0.226404658880177
+     },
+     "trend_s1.0": {
+      "de_score": 0.4513911170188385,
+      "de_direction": 0.44851310369800396,
+      "mmd_u": 0.18473214943629798,
+      "variogram": 0.2718193743596618,
+      "d2_shape": 0.3605633802816901,
+      "occupancy_dice": 0.4804377564979479,
+      "scale_log_ratio": 0.5302649390833495,
+      "neighborhood_mmd": 0.22963207391519552
+     },
+     "placebo_s1.0": {
+      "de_score": 0.4513911170188385,
+      "de_direction": 0.4493673756292232,
+      "mmd_u": 0.18002297860117764,
+      "variogram": 0.26721387087361276,
+      "d2_shape": 0.3605633802816901,
+      "occupancy_dice": 0.4804377564979479,
+      "scale_log_ratio": 0.5302649390833495,
+      "neighborhood_mmd": 0.22243886846731664
+     },
+     "trend_s1.5": {
+      "de_score": 0.4609839442025933,
+      "de_direction": 0.4522179627601315,
+      "mmd_u": 0.18511408107509414,
+      "variogram": 0.278351930657149,
+      "d2_shape": 0.3605633802816901,
+      "occupancy_dice": 0.4804377564979479,
+      "scale_log_ratio": 0.5302649390833495,
+      "neighborhood_mmd": 0.2300039661554733
+     },
+     "placebo_s1.5": {
+      "de_score": 0.4577484428744073,
+      "de_direction": 0.453875045804324,
+      "mmd_u": 0.17706052687336676,
+      "variogram": 0.26916986678044846,
+      "d2_shape": 0.3605633802816901,
+      "occupancy_dice": 0.4804377564979479,
+      "scale_log_ratio": 0.5302649390833495,
+      "neighborhood_mmd": 0.21872642695499125
+     }
+    },
+    "radial_0": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.4836044410018074,
+      "de_direction": 0.4882684882684883,
+      "mmd_u": 0.16199848599545796,
+      "variogram": 0.30461400016361706,
+      "d2_shape": 0.42992002097810406,
+      "occupancy_dice": 0.4513404333455748,
+      "scale_log_ratio": 0.19867549668874174,
+      "neighborhood_mmd": 0.24021658872754123
+     },
+     "trend_s1.0": {
+      "de_score": 0.5,
+      "de_direction": 0.4875685828678761,
+      "mmd_u": 0.16187594553706505,
+      "variogram": 0.3221020761245674,
+      "d2_shape": 0.42992002097810406,
+      "occupancy_dice": 0.4513404333455748,
+      "scale_log_ratio": 0.19867549668874174,
+      "neighborhood_mmd": 0.24028755724063222
+     },
+     "placebo_s1.0": {
+      "de_score": 0.49579120122822806,
+      "de_direction": 0.4874722016308376,
+      "mmd_u": 0.15744941753525443,
+      "variogram": 0.3182070674699825,
+      "d2_shape": 0.42992002097810406,
+      "occupancy_dice": 0.4513404333455748,
+      "scale_log_ratio": 0.19867549668874174,
+      "neighborhood_mmd": 0.2341875419905941
+     },
+     "trend_s1.5": {
+      "de_score": 0.508608048661272,
+      "de_direction": 0.4880027704942364,
+      "mmd_u": 0.16011971567527122,
+      "variogram": 0.3280231397192694,
+      "d2_shape": 0.42992002097810406,
+      "occupancy_dice": 0.4513404333455748,
+      "scale_log_ratio": 0.19867549668874174,
+      "neighborhood_mmd": 0.23790951638065524
+     },
+     "placebo_s1.5": {
+      "de_score": 0.49167847955058536,
+      "de_direction": 0.4912350597609562,
+      "mmd_u": 0.15325853425638578,
+      "variogram": 0.31955887401304495,
+      "d2_shape": 0.42992002097810406,
+      "occupancy_dice": 0.4513404333455748,
+      "scale_log_ratio": 0.19867549668874174,
+      "neighborhood_mmd": 0.22775003500256685
+     }
+    },
+    "thin_0.5": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.6224407327586208,
+      "de_direction": 0.6186046511627906,
+      "mmd_u": 0.44951140065146583,
+      "variogram": 0.47760673083988536,
+      "d2_shape": 0.6879321181646763,
+      "occupancy_dice": 0.4590476190476189,
+      "scale_log_ratio": 0.2547441058079356,
+      "neighborhood_mmd": 0.5172706081796992
+     },
+     "trend_s1.0": {
+      "de_score": 0.6288786064235166,
+      "de_direction": 0.6220926507336452,
+      "mmd_u": 0.4526445264452644,
+      "variogram": 0.5088464398950953,
+      "d2_shape": 0.6879321181646763,
+      "occupancy_dice": 0.4590476190476189,
+      "scale_log_ratio": 0.2547441058079356,
+      "neighborhood_mmd": 0.5368768328445749
+     },
+     "placebo_s1.0": {
+      "de_score": 0.6288786064235166,
+      "de_direction": 0.6175030210519622,
+      "mmd_u": 0.44045481747456616,
+      "variogram": 0.4983515430323941,
+      "d2_shape": 0.6879321181646763,
+      "occupancy_dice": 0.4590476190476189,
+      "scale_log_ratio": 0.2547441058079356,
+      "neighborhood_mmd": 0.515305045387376
+     },
+     "trend_s1.5": {
+      "de_score": 0.6224407327586208,
+      "de_direction": 0.6216147000448172,
+      "mmd_u": 0.4407185628742515,
+      "variogram": 0.5149336502277679,
+      "d2_shape": 0.6879321181646763,
+      "occupancy_dice": 0.4590476190476189,
+      "scale_log_ratio": 0.2547441058079356,
+      "neighborhood_mmd": 0.5364442165409128
+     },
+     "placebo_s1.5": {
+      "de_score": 0.6224407327586208,
+      "de_direction": 0.6228908705972926,
+      "mmd_u": 0.4226646248085758,
+      "variogram": 0.49480435444579784,
+      "d2_shape": 0.6879321181646763,
+      "occupancy_dice": 0.4590476190476189,
+      "scale_log_ratio": 0.2547441058079356,
+      "neighborhood_mmd": 0.5015066429256266
+     }
+    },
+    "thin_0": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.6494984705129118,
+      "de_direction": 0.6693863558450462,
+      "mmd_u": 0.5662951256030611,
+      "variogram": 0.5930381885772221,
+      "d2_shape": 1.0,
+      "occupancy_dice": 0.3911205073995772,
+      "scale_log_ratio": 0.04454165838138794,
+      "neighborhood_mmd": 0.6022669020903343
+     },
+     "trend_s1.0": {
+      "de_score": 0.6562679700977574,
+      "de_direction": 0.6725682006062276,
+      "mmd_u": 0.5508982035928144,
+      "variogram": 0.6246173560190789,
+      "d2_shape": 1.0,
+      "occupancy_dice": 0.3911205073995772,
+      "scale_log_ratio": 0.04454165838138794,
+      "neighborhood_mmd": 0.6010003410253496
+     },
+     "placebo_s1.0": {
+      "de_score": 0.642867201802563,
+      "de_direction": 0.6618983050847458,
+      "mmd_u": 0.5375868603916614,
+      "variogram": 0.6168447694038245,
+      "d2_shape": 1.0,
+      "occupancy_dice": 0.3911205073995772,
+      "scale_log_ratio": 0.04454165838138794,
+      "neighborhood_mmd": 0.5799056707250192
+     },
+     "trend_s1.5": {
+      "de_score": 0.6494984705129118,
+      "de_direction": 0.6697996706915478,
+      "mmd_u": 0.5307968189614846,
+      "variogram": 0.6274313501144165,
+      "d2_shape": 1.0,
+      "occupancy_dice": 0.3911205073995772,
+      "scale_log_ratio": 0.04454165838138794,
+      "neighborhood_mmd": 0.5885561616386509
+     },
+     "placebo_s1.5": {
+      "de_score": 0.6494984705129118,
+      "de_direction": 0.6668260364729185,
+      "mmd_u": 0.5093520873859045,
+      "variogram": 0.6120576899600635,
+      "d2_shape": 1.0,
+      "occupancy_dice": 0.3911205073995772,
+      "scale_log_ratio": 0.04454165838138794,
+      "neighborhood_mmd": 0.5537285295349811
+     }
+    }
+   },
+   "groups": {
+    "own": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.441283009659607,
+      "cell_state": 0.2130288374008258,
+      "shape_growth": 0.20697401875981236,
+      "local_organisation": 0.226404658880177
+     },
+     "trend_s1.0": {
+      "expression_change": 0.4499521103584212,
+      "cell_state": 0.21956703940564354,
+      "shape_growth": 0.20992444859331308,
+      "local_organisation": 0.22963207391519552
+     },
+     "placebo_s1.0": {
+      "expression_change": 0.4503792463240308,
+      "cell_state": 0.21489933551015167,
+      "shape_growth": 0.20334858285505367,
+      "local_organisation": 0.22243886846731664
+     },
+     "trend_s1.5": {
+      "expression_change": 0.4566009534813624,
+      "cell_state": 0.2224092209079161,
+      "shape_growth": 0.21026442406862614,
+      "local_organisation": 0.2300039661554733
+     },
+     "placebo_s1.5": {
+      "expression_change": 0.45581174433936567,
+      "cell_state": 0.21390426283619945,
+      "shape_growth": 0.19995475278540212,
+      "local_organisation": 0.21872642695499125
+     }
+    },
+    "radial_0": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.48593646463514784,
+      "cell_state": 0.2190446916627216,
+      "shape_growth": 0.17294568679762448,
+      "local_organisation": 0.24021658872754123
+     },
+     "trend_s1.0": {
+      "expression_change": 0.49378429143393804,
+      "cell_state": 0.225966397772066,
+      "shape_growth": 0.17299678109674238,
+      "local_organisation": 0.24028755724063222
+     },
+     "placebo_s1.0": {
+      "expression_change": 0.49163170142953283,
+      "cell_state": 0.22175247750914567,
+      "shape_growth": 0.16860503058324894,
+      "local_organisation": 0.2341875419905941
+     },
+     "trend_s1.5": {
+      "expression_change": 0.49830540957775415,
+      "cell_state": 0.2272810852928705,
+      "shape_growth": 0.17128469321829864,
+      "local_organisation": 0.23790951638065524
+     },
+     "placebo_s1.5": {
+      "expression_change": 0.4914567696557708,
+      "cell_state": 0.21977867015904945,
+      "shape_growth": 0.16397030042907274,
+      "local_organisation": 0.22775003500256685
+     }
+    },
+    "thin_0.5": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.6205226919607056,
+      "cell_state": 0.46074953272683367,
+      "shape_growth": 0.46724128100674356,
+      "local_organisation": 0.5172706081796992
+     },
+     "trend_s1.0": {
+      "expression_change": 0.6254856285785808,
+      "cell_state": 0.4751252918251967,
+      "shape_growth": 0.46724128100674356,
+      "local_organisation": 0.5368768328445749
+     },
+     "placebo_s1.0": {
+      "expression_change": 0.6231908137377393,
+      "cell_state": 0.4636135076976973,
+      "shape_growth": 0.46724128100674356,
+      "local_organisation": 0.515305045387376
+     },
+     "trend_s1.5": {
+      "expression_change": 0.6220277164017189,
+      "cell_state": 0.4704045978156581,
+      "shape_growth": 0.46724128100674356,
+      "local_organisation": 0.5364442165409128
+     },
+     "placebo_s1.5": {
+      "expression_change": 0.6226658016779567,
+      "cell_state": 0.4515205166634646,
+      "shape_growth": 0.46724128100674356,
+      "local_organisation": 0.5015066429256266
+     }
+    },
+    "thin_0": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.659442413178979,
+      "cell_state": 0.5769923507927255,
+      "shape_growth": 0.4785540552603217,
+      "local_organisation": 0.6022669020903343
+     },
+     "trend_s1.0": {
+      "expression_change": 0.6644180853519925,
+      "cell_state": 0.5803858645633202,
+      "shape_growth": 0.4785540552603217,
+      "local_organisation": 0.6010003410253496
+     },
+     "placebo_s1.0": {
+      "expression_change": 0.6523827534436544,
+      "cell_state": 0.5692900239965266,
+      "shape_growth": 0.4785540552603217,
+      "local_organisation": 0.5799056707250192
+     },
+     "trend_s1.5": {
+      "expression_change": 0.6596490706022298,
+      "cell_state": 0.5694506314226573,
+      "shape_growth": 0.4785540552603217,
+      "local_organisation": 0.5885561616386509
+     },
+     "placebo_s1.5": {
+      "expression_change": 0.6581622534929151,
+      "cell_state": 0.5504343284155682,
+      "shape_growth": 0.4785540552603217,
+      "local_organisation": 0.5537285295349811
+     }
+    }
+   },
+   "seconds": 124.2
+  },
+  {
+   "seed": 9,
+   "build_seed": 1000009,
+   "n_cells": {
+    "control": 12589,
+    "trend_s1.0": 12589,
+    "placebo_s1.0": 12589,
+    "trend_s1.5": 12589,
+    "placebo_s1.5": 12589
+   },
+   "checks": {
+    "s1_equals_harness_b0_trend": true,
+    "same_draw": true,
+    "pre_size_coords_equal": true,
+    "changed_counts": {
+     "trend_s1.0": 315318,
+     "placebo_s1.0": 335101,
+     "trend_s1.5": 409638,
+     "placebo_s1.5": 431671
+    },
+    "post_size_coords_equal": true,
+    "n_cells": {
+     "control": 12589,
+     "trend_s1.0": 12589,
+     "placebo_s1.0": 12589,
+     "trend_s1.5": 12589,
+     "placebo_s1.5": 12589
+    }
+   },
+   "records": {
+    "control": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 566.9479655638804,
+      "base_rms": 523.9826660085818,
+      "ratio": 1.0819975589700042,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 301.1989002540282,
+      "rms_after": 566.9479655638804,
+      "log_rms_after_vs_target": 0.0
+     },
+     "trend": {
+      "strength": null
+     }
+    },
+    "trend_s1.0": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 566.9479655638804,
+      "base_rms": 523.9826660085818,
+      "ratio": 1.0819975589700042,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 301.1989002540282,
+      "rms_after": 566.9479655638804,
+      "log_rms_after_vs_target": 0.0
+     },
+     "trend": {
+      "strength": 1.0,
+      "placebo": false,
+      "budget_days": 0.375,
+      "effective_budget_days": 0.375,
+      "stages": [
+       "earliest",
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75,
+       9.5
+      ],
+      "n_trend": 2,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earliest",
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076,
+         16291
+        ],
+        "own_factor": false,
+        "cosine": 0.8011924964195043,
+        "norm_ratio": 0.6765220310718135
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earliest",
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         2307,
+         8030
+        ],
+        "own_factor": false,
+        "cosine": 0.6355391432578954,
+        "norm_ratio": 0.8255603771550468
+       }
+      ],
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "fixed_points": {},
+      "ref_cells": 25765
+     }
+    },
+    "placebo_s1.0": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 566.9479655638804,
+      "base_rms": 523.9826660085818,
+      "ratio": 1.0819975589700042,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 301.1989002540282,
+      "rms_after": 566.9479655638804,
+      "log_rms_after_vs_target": 0.0
+     },
+     "trend": {
+      "strength": 1.0,
+      "placebo": true,
+      "budget_days": 0.375,
+      "effective_budget_days": 0.375,
+      "stages": [
+       "earliest",
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75,
+       9.5
+      ],
+      "n_trend": 2,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earliest",
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076,
+         16291
+        ],
+        "own_factor": false,
+        "cosine": 0.8011924964195043,
+        "norm_ratio": 0.6765220310718135
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earliest",
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         2307,
+         8030
+        ],
+        "own_factor": false,
+        "cosine": 0.6355391432578954,
+        "norm_ratio": 0.8255603771550468
+       }
+      ],
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "fixed_points": {
+       "CM": 0,
+       "Endothelial": 0
+      },
+      "ref_cells": 25765
+     }
+    },
+    "trend_s1.5": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 566.9479655638804,
+      "base_rms": 523.9826660085818,
+      "ratio": 1.0819975589700042,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 301.1989002540282,
+      "rms_after": 566.9479655638804,
+      "log_rms_after_vs_target": 0.0
+     },
+     "trend": {
+      "strength": 1.5,
+      "placebo": false,
+      "budget_days": 0.375,
+      "effective_budget_days": 0.5625,
+      "stages": [
+       "earliest",
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75,
+       9.5
+      ],
+      "n_trend": 2,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earliest",
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076,
+         16291
+        ],
+        "own_factor": false,
+        "cosine": 0.8011924964195043,
+        "norm_ratio": 0.6765220310718135
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earliest",
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         2307,
+         8030
+        ],
+        "own_factor": false,
+        "cosine": 0.6355391432578954,
+        "norm_ratio": 0.8255603771550468
+       }
+      ],
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "fixed_points": {},
+      "ref_cells": 25765
+     }
+    },
+    "placebo_s1.5": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 566.9479655638804,
+      "base_rms": 523.9826660085818,
+      "ratio": 1.0819975589700042,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 301.1989002540282,
+      "rms_after": 566.9479655638804,
+      "log_rms_after_vs_target": 0.0
+     },
+     "trend": {
+      "strength": 1.5,
+      "placebo": true,
+      "budget_days": 0.375,
+      "effective_budget_days": 0.5625,
+      "stages": [
+       "earliest",
+       "earlier",
+       "start",
+       "ref"
+      ],
+      "days": [
+       8.3,
+       8.5,
+       8.75,
+       9.5
+      ],
+      "n_trend": 2,
+      "fallback": [],
+      "lineages": [
+       {
+        "lineage": "CM",
+        "stages": [
+         "earliest",
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         1357,
+         1919,
+         3076,
+         16291
+        ],
+        "own_factor": false,
+        "cosine": 0.8011924964195043,
+        "norm_ratio": 0.6765220310718135
+       },
+       {
+        "lineage": "Endothelial",
+        "stages": [
+         "earliest",
+         "earlier",
+         "start",
+         "ref"
+        ],
+        "n_cells": [
+         6519,
+         1702,
+         2307,
+         8030
+        ],
+        "own_factor": false,
+        "cosine": 0.6355391432578954,
+        "norm_ratio": 0.8255603771550468
+       }
+      ],
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "fixed_points": {
+       "CM": 0,
+       "Endothelial": 0
+      },
+      "ref_cells": 25765
+     }
+    }
+   },
+   "draw": {
+    "pool_cells": 25765,
+    "drawn": 25179,
+    "short": false,
+    "repeated_rows_at_least": 0
+   },
+   "scores": {
+    "own": {
+     "floor": 50.0,
+     "control": 27.484951549055815,
+     "trend_s1.0": 28.121025872391282,
+     "placebo_s1.0": 27.555919939781827,
+     "trend_s1.5": 28.35620150341269,
+     "placebo_s1.5": 27.470330132546017
+    },
+    "radial_0": {
+     "floor": 50.0,
+     "control": 27.84000223283937,
+     "trend_s1.0": 28.316739360866315,
+     "placebo_s1.0": 27.70663857969986,
+     "trend_s1.5": 28.40913955599923,
+     "placebo_s1.5": 27.603687815065562
+    },
+    "thin_0.5": {
+     "floor": 50.0,
+     "control": 49.78048791723125,
+     "trend_s1.0": 51.11765293738857,
+     "placebo_s1.0": 49.25630317567712,
+     "trend_s1.5": 50.62138520614583,
+     "placebo_s1.5": 48.19175799392822
+    },
+    "thin_0": {
+     "floor": 50.0,
+     "control": 57.94416739500265,
+     "trend_s1.0": 58.09264848803587,
+     "placebo_s1.0": 57.24422384049145,
+     "trend_s1.5": 57.339099917485555,
+     "placebo_s1.5": 55.986589476583774
+    }
+   },
+   "skills": {
+    "own": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.4482694884709579,
+      "de_direction": 0.4493036338066506,
+      "mmd_u": 0.19644670050761423,
+      "variogram": 0.2685825410544512,
+      "d2_shape": 0.27227369921596584,
+      "occupancy_dice": 0.45748987854251016,
+      "scale_log_ratio": 0.5218377765173,
+      "neighborhood_mmd": 0.2318525156830111
+     },
+     "trend_s1.0": {
+      "de_score": 0.4710137890852593,
+      "de_direction": 0.45277498399926847,
+      "mmd_u": 0.19766508573513314,
+      "variogram": 0.2822300640485899,
+      "d2_shape": 0.27227369921596584,
+      "occupancy_dice": 0.45748987854251016,
+      "scale_log_ratio": 0.5218377765173,
+      "neighborhood_mmd": 0.2352024416377155
+     },
+     "placebo_s1.0": {
+      "de_score": 0.46763075439865026,
+      "de_direction": 0.45024321498386144,
+      "mmd_u": 0.19225037257824146,
+      "variogram": 0.2767629349933667,
+      "d2_shape": 0.27227369921596584,
+      "occupancy_dice": 0.45748987854251016,
+      "scale_log_ratio": 0.5218377765173,
+      "neighborhood_mmd": 0.22745541321276058
+     },
+     "trend_s1.5": {
+      "de_score": 0.47792885998620555,
+      "de_direction": 0.4568476405738272,
+      "mmd_u": 0.19754977029096477,
+      "variogram": 0.28616376333358917,
+      "d2_shape": 0.27227369921596584,
+      "occupancy_dice": 0.45748987854251016,
+      "scale_log_ratio": 0.5218377765173,
+      "neighborhood_mmd": 0.23651560663445212
+     },
+     "placebo_s1.5": {
+      "de_score": 0.4710137890852593,
+      "de_direction": 0.4559642742046867,
+      "mmd_u": 0.1886884446611409,
+      "variogram": 0.2779724189340291,
+      "d2_shape": 0.27227369921596584,
+      "occupancy_dice": 0.45748987854251016,
+      "scale_log_ratio": 0.5218377765173,
+      "neighborhood_mmd": 0.2240089059311027
+     }
+    },
+    "radial_0": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.4833324443970345,
+      "de_direction": 0.4904382470119522,
+      "mmd_u": 0.17067159581022798,
+      "variogram": 0.28290727987237846,
+      "d2_shape": 0.3999467802022352,
+      "occupancy_dice": 0.4631317315658657,
+      "scale_log_ratio": 0.19078558771411694,
+      "neighborhood_mmd": 0.24148634666426738
+     },
+     "trend_s1.0": {
+      "de_score": 0.5,
+      "de_direction": 0.48999900487610715,
+      "mmd_u": 0.17018923568444336,
+      "variogram": 0.2969573208086584,
+      "d2_shape": 0.3999467802022352,
+      "occupancy_dice": 0.4631317315658657,
+      "scale_log_ratio": 0.19078558771411694,
+      "neighborhood_mmd": 0.2447900041041543
+     },
+     "placebo_s1.0": {
+      "de_score": 0.49153829464091997,
+      "de_direction": 0.48617693522906796,
+      "mmd_u": 0.1655708308427974,
+      "variogram": 0.29157476841640934,
+      "d2_shape": 0.3999467802022352,
+      "occupancy_dice": 0.4631317315658657,
+      "scale_log_ratio": 0.19078558771411694,
+      "neighborhood_mmd": 0.23695594596980663
+     },
+     "trend_s1.5": {
+      "de_score": 0.5087867048453203,
+      "de_direction": 0.48861324733316797,
+      "mmd_u": 0.16832766164316967,
+      "variogram": 0.29902531975269714,
+      "d2_shape": 0.3999467802022352,
+      "occupancy_dice": 0.4631317315658657,
+      "scale_log_ratio": 0.19078558771411694,
+      "neighborhood_mmd": 0.24495756137628913
+     },
+     "placebo_s1.5": {
+      "de_score": 0.5043410507569012,
+      "de_direction": 0.48810467882632835,
+      "mmd_u": 0.16018968309044646,
+      "variogram": 0.29024017031468297,
+      "d2_shape": 0.3999467802022352,
+      "occupancy_dice": 0.4631317315658657,
+      "scale_log_ratio": 0.19078558771411694,
+      "neighborhood_mmd": 0.23242119847592657
+     }
+    },
+    "thin_0.5": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.5980518162754516,
+      "de_direction": 0.6176191979791601,
+      "mmd_u": 0.41095600676818955,
+      "variogram": 0.4921546333143832,
+      "d2_shape": 0.7477973568281938,
+      "occupancy_dice": 0.4733952702702704,
+      "scale_log_ratio": 0.27328306500917054,
+      "neighborhood_mmd": 0.4708413001912045
+     },
+     "trend_s1.0": {
+      "de_score": 0.6224303013235709,
+      "de_direction": 0.6232077996558976,
+      "mmd_u": 0.40682579564489113,
+      "variogram": 0.5182280754265189,
+      "d2_shape": 0.7477973568281938,
+      "occupancy_dice": 0.4733952702702704,
+      "scale_log_ratio": 0.27328306500917054,
+      "neighborhood_mmd": 0.486145385320454
+     },
+     "placebo_s1.0": {
+      "de_score": 0.6161404975956514,
+      "de_direction": 0.6124365959045651,
+      "mmd_u": 0.3874376869391825,
+      "variogram": 0.5069787416791927,
+      "d2_shape": 0.7477973568281938,
+      "occupancy_dice": 0.4733952702702704,
+      "scale_log_ratio": 0.27328306500917054,
+      "neighborhood_mmd": 0.46120401337792644
+     },
+     "trend_s1.5": {
+      "de_score": 0.6099765420173865,
+      "de_direction": 0.6185567010309279,
+      "mmd_u": 0.3938779647273465,
+      "variogram": 0.5157171508568479,
+      "d2_shape": 0.7477973568281938,
+      "occupancy_dice": 0.4733952702702704,
+      "scale_log_ratio": 0.27328306500917054,
+      "neighborhood_mmd": 0.4848804500703235
+     },
+     "placebo_s1.5": {
+      "de_score": 0.6288498470730494,
+      "de_direction": 0.6137433322874176,
+      "mmd_u": 0.36088410104011887,
+      "variogram": 0.4960273501661637,
+      "d2_shape": 0.7477973568281938,
+      "occupancy_dice": 0.4733952702702704,
+      "scale_log_ratio": 0.27328306500917054,
+      "neighborhood_mmd": 0.44653843662975196
+     }
+    },
+    "thin_0": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "control": {
+      "de_score": 0.6500107999136007,
+      "de_direction": 0.6724659606656581,
+      "mmd_u": 0.581490727532097,
+      "variogram": 0.6033277813074163,
+      "d2_shape": 1.0,
+      "occupancy_dice": 0.3165704863973619,
+      "scale_log_ratio": 0.04695016355589763,
+      "neighborhood_mmd": 0.6117958831504992
+     },
+     "trend_s1.0": {
+      "de_score": 0.6700809025458324,
+      "de_direction": 0.6766069328167162,
+      "mmd_u": 0.5633097253411643,
+      "variogram": 0.6279892761394102,
+      "d2_shape": 1.0,
+      "occupancy_dice": 0.3165704863973619,
+      "scale_log_ratio": 0.04695016355589763,
+      "neighborhood_mmd": 0.6066735928619447
+     },
+     "placebo_s1.0": {
+      "de_score": 0.684198560060629,
+      "de_direction": 0.6646051379638439,
+      "mmd_u": 0.546597385182702,
+      "variogram": 0.6208541692435461,
+      "d2_shape": 1.0,
+      "occupancy_dice": 0.3165704863973619,
+      "scale_log_ratio": 0.04695016355589763,
+      "neighborhood_mmd": 0.5845601224826287
+     },
+     "trend_s1.5": {
+      "de_score": 0.684198560060629,
+      "de_direction": 0.6694735400835216,
+      "mmd_u": 0.5391865079365079,
+      "variogram": 0.6222615779686531,
+      "d2_shape": 1.0,
+      "occupancy_dice": 0.3165704863973619,
+      "scale_log_ratio": 0.04695016355589763,
+      "neighborhood_mmd": 0.589804527360228
+     },
+     "placebo_s1.5": {
+      "de_score": 0.684198560060629,
+      "de_direction": 0.6640184694778298,
+      "mmd_u": 0.509292519131657,
+      "variogram": 0.6070910221853618,
+      "d2_shape": 1.0,
+      "occupancy_dice": 0.3165704863973619,
+      "scale_log_ratio": 0.04695016355589763,
+      "neighborhood_mmd": 0.5624362606232295
+     }
+    }
+   },
+   "groups": {
+    "own": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.4487865611388042,
+      "cell_state": 0.225301036726349,
+      "shape_growth": 0.1934579484140682,
+      "local_organisation": 0.2318525156830111
+     },
+     "trend_s1.0": {
+      "expression_change": 0.4618943865422639,
+      "cell_state": 0.23149107706051586,
+      "shape_growth": 0.1962531296551559,
+      "local_organisation": 0.2352024416377155
+     },
+     "placebo_s1.0": {
+      "expression_change": 0.4589369846912559,
+      "cell_state": 0.22605539754429155,
+      "shape_growth": 0.1897890021429649,
+      "local_organisation": 0.22745541321276058
+     },
+     "trend_s1.5": {
+      "expression_change": 0.4673882502800164,
+      "cell_state": 0.23299536750801453,
+      "shape_growth": 0.19734883571402465,
+      "local_organisation": 0.23651560663445212
+     },
+     "placebo_s1.5": {
+      "expression_change": 0.463489031644973,
+      "cell_state": 0.22440203437029616,
+      "shape_growth": 0.1869132333554687,
+      "local_organisation": 0.2240089059311027
+     }
+    },
+    "radial_0": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.4868853457044934,
+      "cell_state": 0.21556586943508818,
+      "shape_growth": 0.16966252750972588,
+      "local_organisation": 0.24148634666426738
+     },
+     "trend_s1.0": {
+      "expression_change": 0.4949995024380536,
+      "cell_state": 0.22089646973412938,
+      "shape_growth": 0.17198359815831532,
+      "local_organisation": 0.2447900041041543
+     },
+     "placebo_s1.0": {
+      "expression_change": 0.48885761493499397,
+      "cell_state": 0.21597240587224217,
+      "shape_growth": 0.16647957641095154,
+      "local_organisation": 0.23695594596980663
+     },
+     "trend_s1.5": {
+      "expression_change": 0.4986999760892441,
+      "cell_state": 0.22060672488698066,
+      "shape_growth": 0.17210131988745536,
+      "local_organisation": 0.24495756137628913
+     },
+     "placebo_s1.5": {
+      "expression_change": 0.49622286479161476,
+      "cell_state": 0.21220987798014107,
+      "shape_growth": 0.1632935713549401,
+      "local_organisation": 0.23242119847592657
+     }
+    },
+    "thin_0.5": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.6078355071273058,
+      "cell_state": 0.443435457386667,
+      "shape_growth": 0.4691072519840726,
+      "local_organisation": 0.4708413001912045
+     },
+     "trend_s1.0": {
+      "expression_change": 0.6228190504897342,
+      "cell_state": 0.45138670755754223,
+      "shape_growth": 0.48435497412781214,
+      "local_organisation": 0.486145385320454
+     },
+     "placebo_s1.0": {
+      "expression_change": 0.6142885467501082,
+      "cell_state": 0.43525410883518656,
+      "shape_growth": 0.4595054580638636,
+      "local_organisation": 0.46120401337792644
+     },
+     "trend_s1.5": {
+      "expression_change": 0.6142666215241572,
+      "cell_state": 0.44261363917914703,
+      "shape_growth": 0.4830946974722054,
+      "local_organisation": 0.4848804500703235
+     },
+     "placebo_s1.5": {
+      "expression_change": 0.6212965896802335,
+      "cell_state": 0.4149414006905368,
+      "shape_growth": 0.44489389275660646,
+      "local_organisation": 0.44653843662975196
+     }
+    },
+    "thin_0": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "control": {
+      "expression_change": 0.6612383802896293,
+      "cell_state": 0.5902255490422247,
+      "shape_growth": 0.45450688331775313,
+      "local_organisation": 0.6117958831504992
+     },
+     "trend_s1.0": {
+      "expression_change": 0.6733439176812743,
+      "cell_state": 0.5891815456604627,
+      "shape_growth": 0.45450688331775313,
+      "local_organisation": 0.6066735928619447
+     },
+     "placebo_s1.0": {
+      "expression_change": 0.6744018490122364,
+      "cell_state": 0.5763000988070396,
+      "shape_growth": 0.45450688331775313,
+      "local_organisation": 0.5845601224826287
+     },
+     "trend_s1.5": {
+      "expression_change": 0.6768360500720753,
+      "cell_state": 0.572416535949366,
+      "shape_growth": 0.45450688331775313,
+      "local_organisation": 0.589804527360228
+     },
+     "placebo_s1.5": {
+      "expression_change": 0.6741085147692294,
+      "cell_state": 0.5484119203531389,
+      "shape_growth": 0.45450688331775313,
+      "local_organisation": 0.5624362606232295
+     }
+    }
+   },
+   "seconds": 129.0
+  }
+ ],
+ "source": "experiments/harness/h34_heart_organ_trend.py (row H34)",
+ "provenance": {
+  "commit": "2b4989c1e98213a40bf6cafea1baccf1520b9744",
+  "tree_clean": true,
+  "utc": "2026-11-24 06:14:12"
+ }
+}

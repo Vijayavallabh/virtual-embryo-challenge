@@ -1,0 +1,9 @@
+Row H34's gate (commit 2b4989c1e98213a40bf6cafea1baccf1520b9744): first, counting nothing. It builds and scores the control D_f (the copy draw from D's pool at its practice forecast size, the half) and nothing else; no counted arm and no placebo is built or scored in it. G1 and G2 by exact equality, with no tolerance.
+G1: the control against row H29b's committed D_f, its reading.json of sha256 e86754f7b4ca012886aee9d7fcadf969eda26d57f27eeaf928e469d8788a3784: (R) per transition ratios.organ, the target, base and ratio of d_targets[organ:f], pool_info.organ and organ_records.reference but its two descriptions; (D) per transition pools_short over the ten seeds; (M) the eighteen plain ten-seed means under organ:f, by row H29b's own arithmetic; (P) in each of the eighteen entries the mean, se, lo, hi and ahead of D_f minus C_f, B_f and A_f, the three from row H27's committed parts.
+G2: in every seed's context, the mapping and the damping h28.trend_expression forms for momentum_shift at strength 1.5 against 1.5 times those at strength 1: the same lineages, every element equal and finite.
+(R) found: T2h/<=E9.5->E10.5: equal; T2h/<=E8.75->E10.5: equal.
+(D) found: T2h/<=E9.5->E10.5: equal; T2h/<=E8.75->E10.5: equal.
+(M) found: 18 means compared, 0 unequal (largest difference 0.000e+00).
+(P) found: 270 paired statistics compared, 0 unequal.
+G2 found: 20 contexts, 0 failed; the mapping's lineages: CM, Endothelial.
+GATE PASS: G1 and G2 hold (the control D_f reproduces row H29b's committed D_f bit for bit; the strength-1.5 factors equal 1.5 times the strength-1 factors); the run may follow at this commit.

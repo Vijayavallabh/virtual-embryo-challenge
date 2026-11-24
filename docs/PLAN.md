@@ -13672,3 +13672,11 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     tried on any T3 file.
   - **Next:** the read's code and the builder option are being written on two branches; each is merged after an
     independent review; the read runs on the DGX.
+- 2026-11-24 (hh), row H34 is read: STOPPED, OTS15 is not built (state at 06:20 UTC, 2026-11-24). Written by the AI
+  assistant, which is recused on the heart's scope and size and quotes the read's statement only.
+  - **The read's own words:** "Try H34: STOPPED (a in CLEAN): OTS15 is not built." Eight heart tries counted, 98 to
+    105. The fourth heart search line (ruling row R32) ends with no build; the heart's files as handed over stand:
+    OTS05 due now, OTS10 only if OTS05's headline is strictly above D's.
+  - **Recorded:** the outcome cell of row H34 and the read's files under
+    `experiments/harness/results/h34_heart_organ_trend/` (checked file by file against the DGX); the upload sheet no
+    longer lists OTS15 in work.
