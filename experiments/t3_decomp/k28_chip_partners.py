@@ -110,11 +110,19 @@ def register_reopened(path: Path | None = None) -> None:
                       f"({REGISTER_WORDS!r}): refused")
 
 
-def _git(*args: str) -> tuple[int, str]:
-    env = {k: v for k, v in os.environ.items() if k not in ("GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE")}
+def _git_env(environ=None) -> dict:
+    """The environment of the step's git calls: the process's own without GIT_DIR, GIT_WORK_TREE and GIT_INDEX_FILE (a
+    shell that exports one must not point the step at another repository), and with no optional lock taken."""
+    environ = os.environ if environ is None else environ
+    env = {k: v for k, v in environ.items() if k not in ("GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE")}
     env["GIT_OPTIONAL_LOCKS"] = "0"
+    return env
+
+
+def _git(*args: str) -> tuple[int, str]:
     try:
-        r = subprocess.run(["git", "-C", str(REPO), *args], capture_output=True, text=True, env=env, check=False)
+        r = subprocess.run(["git", "-C", str(REPO), *args], capture_output=True, text=True, env=_git_env(),
+                           check=False)
     except OSError:
         return 1, ""
     return r.returncode, r.stdout.strip()
