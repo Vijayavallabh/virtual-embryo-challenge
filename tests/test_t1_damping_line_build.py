@@ -242,7 +242,9 @@ def test_the_two_values_give_two_files_and_2_is_2_0_and_an_explicit_multiplier_1
     (["--captain-ruling", "T63"], "refused with --captain-ruling T63: only row R22"),
     (["--captain-ruling", "R22", "--feng-fraction-mult", "1.5"], "with --feng-fraction-mult other than 1"),
     (["--captain-ruling", "R22", "--feng-fraction-mult", "0.8"], "with --feng-fraction-mult other than 1"),
-    (["--captain-ruling", "R22", "--feng-fraction-mult", "2.5"], "with --g-mom-damping other than 0.5"),
+    # with 2.5 each value is the sixth line's pair (tests/test_t1_l67pb_build.py): refused unless row R22's first cell
+    # names the combined option (this ledger names the bare options only); with 3.0 refused as before
+    (["--captain-ruling", "R22", "--feng-fraction-mult", "2.5"], "refused: experiments/harness/TRIES.md has no single"),
     (["--captain-ruling", "R22", "--feng-fraction-mult", "3.0"], "with --g-mom-damping other than 0.5"),
     # with 2.0 each value is the fifth line's pair (tests/test_t1_line5_build.py): refused unless row R22's first cell
     # names the combined option (this ledger names the bare options only), and refused with R20 all the same
