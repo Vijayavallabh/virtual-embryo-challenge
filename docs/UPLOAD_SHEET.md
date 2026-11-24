@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-24, 20:48 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-24, 20:51 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -15,12 +15,12 @@ decision log 2026-11-24 (pp)), every due file can go now and nothing waits for r
 score. `T3_c2_s2_g2.h5ad` keeps its place after every queued file, by its rule. Between boards the captain decides; by
 the challenge's formula a point on T1 or T3 counts twice a point on the heart or the embryo board.
 
-**Due now (5), in the order of each board's table below:**
+**Due now (4), in the order of each board's table below:**
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`
 - T3: none (`T3_c2_s2_g2.h5ad` is last of all by its rule)
 - Embryo: none (every built embryo file is uploaded)
-- Heart: `T2heart_organ_ts075_half.h5ad` (the pair's other file)
+- Heart: none (OTS15, row R52, is in work)
 
 **Waiting on a score (1):** only `T1_s2rcA20.h5ad`, in the last-on-T1 list below.
 
@@ -93,13 +93,12 @@ Every built embryo file is uploaded, W included, and O holds the board's best.
 
 Data used, for every heart file: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data.
 
-`T2heart_organ_ts125_half.h5ad` (OTS125, the fourth line's first file) holds the board's best. The fourth line's other
-file is due. The full-trim file `T2heart_core_ts10_half.h5ad` is skipped by the captain's word of 2026-11-24 and
-stands in the skipped section.
+`T2heart_organ_ts125_half.h5ad` (OTS125) holds the board's best; the fourth line is spent.
+`T2heart_organ_ts15_half.h5ad` (row R52) is in work. The full-trim file `T2heart_core_ts10_half.h5ad` is skipped by
+the captain's word of 2026-11-24 and stands in the skipped section.
 
 | Order | File | sha256 | Condition |
 |---|---|---|---|
-| fourth line | `T2heart_organ_ts075_half.h5ad` (OTS075, trend strength 0.75 on D) | `1a66b5a5a9d5388d806f548d5c51570345f02e340a6ef2d4ce3490d1e2673f5d` | none; the pair's other file (row R49), its first file uploaded |
 
 ## Skipped by the captain's words: not uploaded unless the captain says otherwise
 

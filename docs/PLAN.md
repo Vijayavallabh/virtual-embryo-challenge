@@ -14007,3 +14007,8 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     (the line rose at each step on the board; row H34's practice read stopped 1.5) and no view. Recorded as row R52, a
     note on row H34 and an amendment in `docs/S2_RULES.md` (re-pinned). An engineer blind to test scores adds the
     value to the heart builder under R52.
+- 2026-11-24 (lll), the captain reports one more headline (state at 20:51 UTC, 2026-11-24). Written by the AI
+  assistant, which records the headline only.
+  - T2:heart:test_extrap `T2heart_organ_ts075_half.h5ad` 61.58 (shown as submitted 2026-11-24 20:49), below OTS125,
+    which keeps the board's best; the fourth line is spent. Per-metric lines, rank and file size not recorded.
+    Standing unchanged: 203.345.
