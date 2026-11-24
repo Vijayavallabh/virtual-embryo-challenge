@@ -405,17 +405,21 @@ def test_every_row_mode_never_reads_average_string_or_a_column_not_kept(small):
         assert got == ["SRX20000", "SRX20002"] and np.array_equal(E, ref[:, [0, 2]])
 
 
-@pytest.mark.parametrize("case", ["two rows", "no symbol", "short row", "blank lines and CRLF"])
+@pytest.mark.parametrize("case", ["two rows", "no symbol", "short row", "long row", "blank lines and CRLF"])
 def test_every_row_mode_on_odd_rows(small, case):
     cols = columns(small.exps, "Ctnnb1")
     lines = target_bytes("Ctnnb1", cols).decode().splitlines()
     ref = cq.open_target("Ctnnb1", None, small.root, small.kept, every_row=True)[0]
+    row = lines[7].split("\t")
+    fresh = ["gs99999", *row[1:]]  # a further gene, so that only the fault named is in the file
     if case == "two rows":
-        text = "\n".join([*lines, lines[7]]) + "\n"
+        text, msg = "\n".join([*lines, lines[7]]) + "\n", "two rows"
     elif case == "no symbol":
-        text = "\n".join([*lines, "\t".join(["", *lines[7].split("\t")[1:]])]) + "\n"
+        text, msg = "\n".join([*lines, "\t".join(["", *row[1:]])]) + "\n", "no gene symbol"
     elif case == "short row":
-        text = "\n".join([*lines, "\t".join(lines[7].split("\t")[:-1])]) + "\n"
+        text, msg = "\n".join([*lines, "\t".join(fresh[:-1])]) + "\n", "number of fields"
+    elif case == "long row":
+        text, msg = "\n".join([*lines[:9], "\t".join([*fresh, "0"]), *lines[9:]]) + "\n", "number of fields"
     else:
         text = "\r\n".join([lines[0], "", *lines[1:], "", ""]) + "\r\n"
     H._rewrite_target(small.root, "Ctnnb1", text.encode())
@@ -423,12 +427,16 @@ def test_every_row_mode_on_odd_rows(small, case):
         E, _, symbols = cq.open_target("Ctnnb1", None, small.root, small.kept, every_row=True)
         assert np.array_equal(E, ref) and symbols == SYMBOLS
         return
-    with pytest.raises(cq.Refused) as e:
+    with pytest.raises(cq.Refused, match=msg) as e:
         cq.open_target("Ctnnb1", None, small.root, small.kept, every_row=True)
     assert not MADE_UP.search(str(e.value)), str(e.value)
     if case == "two rows":  # the panel mode's own rule stands: a second row of a gene off the panel is not its matter
-        other = [g for g in SYMBOLS[:20] if g != lines[7].split("\t")[0]]
+        other = [g for g in SYMBOLS[:20] if g != row[0]]
         assert cq.open_target("Ctnnb1", other, small.root, small.kept)[0].shape == (len(other), 3)
+    # the fault alone: the same file with a well-formed further row is read
+    H._rewrite_target(small.root, "Ctnnb1", ("\n".join([*lines, "\t".join(fresh)]) + "\n").encode())
+    E, _, symbols = cq.open_target("Ctnnb1", None, small.root, small.kept, every_row=True)
+    assert symbols == [*SYMBOLS, "gs99999"] and np.array_equal(E[:-1], ref) and np.array_equal(E[-1], E[6])
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -728,6 +736,8 @@ def test_bars_on_a_structure():
     assert cp.bars(st(2, 10)) == {"usable_in_class": 2, "candidates": 10, "a1": True, "a2": False}
     assert cp.bars(st(9, 99)) == {"usable_in_class": 9, "candidates": 99, "a1": True, "a2": True}
     assert cp.bars(st(0, 0, None)) == {"usable_in_class": 0, "candidates": 0, "a1": False, "a2": False}
+    # without a class no bar can be computed, whatever else the structure holds: neither is met
+    assert cp.bars(st(5, 20, None)) == {"usable_in_class": 5, "candidates": 20, "a1": False, "a2": False}
 
 
 # ---------------------------------------------------------------------------------------------------------------------

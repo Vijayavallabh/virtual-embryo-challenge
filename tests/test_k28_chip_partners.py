@@ -255,6 +255,21 @@ def test_the_reading_is_never_overwritten(tmp_path):
 
 
 @pytest.mark.parametrize("name", ["reading.json", "reading.txt"])
+def test_the_write_itself_never_replaces_a_file(tmp_path, monkeypatch, name):
+    """Past the check too (a file that appears between the check and the write): each file is created new."""
+    st = {"commit": HEAD, "tree_clean": True, "machine": "m1"}
+    counts = {"classes_excluded": 1, "passes": False,
+              "queries": {q: {"usable_in_class": 1, "candidates": 2, "a1": False, "a2": False} for q in k28.QUERIES}}
+    out = tmp_path / "results"
+    out.mkdir()
+    (out / name).write_text("appeared after the check\n")
+    monkeypatch.setattr(k28, "reading_absent", lambda out=None: None)
+    with pytest.raises(k28.Refused, match="never overwritten"):
+        k28.write_reading(k28.reading_record("g0a", counts, st, "a" * 64, "b" * 64), out)
+    assert (out / name).read_text() == "appeared after the check\n"
+
+
+@pytest.mark.parametrize("name", ["reading.json", "reading.txt"])
 def test_a_reading_that_appears_while_the_step_counts_is_not_overwritten(tmp_path, monkeypatch, capsys, name):
     E = make_env(tmp_path, monkeypatch, a2_not_met())
     real = cp.g0a

@@ -47,6 +47,8 @@ if script.endswith("k28_chip_partners.py") and step == "g0a":
     print("refused: the words of a refusal", file=sys.stderr)
     if r in (0, 3):
         sys.stdout.write({block!r})
+    else:
+        print("words on stdout before a refusal or a crash")
     if r == 3 and not os.environ.get("STUB_NO_READING"):
         head = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
         os.makedirs({out!r}, exist_ok=True)
