@@ -14012,3 +14012,21 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - T2:heart:test_extrap `T2heart_organ_ts075_half.h5ad` 61.58 (shown as submitted 2026-11-24 20:49), below OTS125,
     which keeps the board's best; the fourth line is spent. Per-metric lines, rank and file size not recorded.
     Standing unchanged: 203.345.
+- 2026-11-24 (mmm), the captain sets a goal on every board and the step-change design round opens (state at 21:17 UTC,
+  2026-11-24). Written by the AI assistant, which designs no line.
+  - **The captain's words, verbatim, with the figures left out:** "Your goal is to beat the current first-place score
+    on all four tasks. A better average is not enough: each task must clear its own target." The message went on to
+    ask for the gap to each target, for experiments and outside datasets at scale chosen by the size of the gap, the
+    likely gain and the time and compute they need, and for deep research where it can find a technique worth testing.
+    The pasted per-board figures of other entries are kept out of the repository and out of every brief, as row R42's
+    figure is; the paste's per-metric lines are not recorded or used. No rule, lever or window changes: closed levers
+    still need the captain's named exception file by file, and every new file needs the captain's yes naming it.
+  - **The round** (folder `.cache/vec-work/lift8/round_1125_gap/`, outside the repository: `RULES_gap.md`,
+    `TASK_gap.md`): eight designers blind to test scores, two per board from two starting points (MODEL: a new
+    predictor built with the field's instruments and every allowed dataset, the banked file as control; ERROR: the
+    banked file's largest error on the board's committed practice reads, and what removes it), each to propose at most
+    three lines with a gate of at most about 3 hours, a build plan and an honest price; a separate methods digest from
+    the literature (methods only; no held-out stage or genotype content); then cold challengers, gate rows written
+    before any gate reads, and the captain's yes before any build.
+  - **Running beside it:** the T1 build of rows R44 and R45 (on the DGX), the review of row R51's code, and the heart
+    engineer for row R52.
