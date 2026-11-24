@@ -3187,3 +3187,13 @@ bytes and each new file was built twice with one sha256 and passed the format ch
 headline beyond the six of decision log 2026-11-23 (gg) had reached the main session at this note's commit.
 `T1_s2rc_pooled.h5ad` is skipped by the captain's word and never uploaded. Data used: released challenge data and the
 outside heart atlas on recomputed groups (GEO GSE193346, register row X002).
+
+## Note of 2026-11-24: the conditions of six T1 files are dropped (row R43; decision log 2026-11-24 (qq))
+
+The captain's words: "drop their conditions, and name the files" if it improves our score. With no limit on uploads
+(row R42), the six built T1 files that waited on another file's headline are due now: `T1_s2rcCm25.h5ad` (line 3),
+`T1_s2rcB2d15.h5ad` and `T1_s2rcB2d20.h5ad` (line 5), `T1_s2rcB25d15.h5ad` and `T1_s2rcB25d20.h5ad` (line 6), and
+`T1_s2rcCm30.h5ad` (line 7). Each keeps its command and sha256 as recorded; nothing is rebuilt. The lines' step-on
+rules no longer decide whether these six go up; T1's best is still chosen by headline only. `T1_s2rcA20.h5ad` still
+waits on A15's headline. No T1 headline beyond those of decision log 2026-11-24 (nn) had reached the main session at
+this note's commit.

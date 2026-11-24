@@ -13779,3 +13779,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     to scout outside datasets inside the windows and to name new files (fast steps on the banked files' open settings,
     and data-driven approaches with a cheap practice gate each). Each design then goes to a cold challenger, and each
     new file to the captain by name before it is built for upload.
+- 2026-11-24 (qq), the captain drops the conditions of six built T1 files (state at 17:22 UTC, 2026-11-24). Written by
+  the AI assistant.
+  - **The captain's words, verbatim:** "drop their conditions, and name the files" if it improves our score, given
+    under a side note which said that six built T1 files still waited on other files' headlines and that, with no
+    limit on uploads, the conditions only cost time.
+  - **Recorded as ruling row R43, with a note in `docs/S2_RULES.md` (re-pinned).** The six files are
+    `T1_s2rcCm25.h5ad`, `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`,
+    `T1_s2rcCm30.h5ad`; each keeps its command and sha256 and is due now. The main session's reading of 'if it
+    improves our score': with no limit on uploads each file is one more chance at a new T1 best and a lower headline
+    changes nothing, so the change can raise T1's best or leave it, never lower it. `T1_s2rcA20.h5ad` (only if A15
+    scores strictly above A) is not among the six and still waits. No T1 headline beyond those of entry (nn) had
+    reached the main session.
+  - **The upload sheet:** fourteen files due now (T1's eight search files, T3's three, the embryo's two, the heart's
+    one), MSB and A15 reached, A20 waiting, `T3_c2_s2_g2.h5ad` at its rule's place.

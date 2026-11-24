@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-24, 17:18 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-24, 17:22 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -10,26 +10,21 @@ order. This sheet holds no score: where a file waits on a condition, the conditi
 ## The uploads: what is due now and what waits on a score
 
 Four uploads were used on 2026-11-24 before the limit was lifted (decision log 2026-11-24 (nn)). With no limit (row
-R42, decision log 2026-11-24 (pp)), every due file can go now and nothing waits for room: eight files are due, and the
-two T1 files kept last are reached as well. Six more wait on one reported score each. `T3_c2_s2_g2.h5ad` keeps its
-place after every queued file, by its rule. Between boards the captain decides; by the challenge's formula a point on
-T1 or T3 counts twice a point on the heart or the embryo board.
+R42, decision log 2026-11-24 (pp)), every due file can go now and nothing waits for room: fourteen files are due, six
+of them T1 files whose conditions the captain dropped (row R43, decision log 2026-11-24 (qq)), and the two T1 files
+kept last are reached as well. Only `T1_s2rcA20.h5ad` waits on a score. `T3_c2_s2_g2.h5ad` keeps its place after every
+queued file, by its rule. Between boards the captain decides; by the challenge's formula a point on T1 or T3 counts
+twice a point on the heart or the embryo board.
 
-**Due now (8), in the order of each board's table below:**
+**Due now (14), in the order of each board's table below:**
 
-- T1: `T1_s2rcB30.h5ad`, `T1_s2rcCm20.h5ad`
+- T1: `T1_s2rcB30.h5ad`, `T1_s2rcCm20.h5ad`, `T1_s2rcCm25.h5ad`, `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`,
+  `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcCm30.h5ad`
 - T3: `T3_ck_s2.h5ad`, `T3_k23_s2_e4.h5ad`, `T3_c1_s2_g2.h5ad`
 - Embryo: `T2embryo_s2.h5ad`, `T2embryo_s2x_ovhi.h5ad`
 - Heart: `T2heart_organ_ts10_half.h5ad`
 
-**Waiting on a score (6):**
-
-- `T1_s2rcCm25.h5ad`: only if `T1_s2rcCm20.h5ad` scores strictly above C
-- `T1_s2rcB2d15.h5ad`: only if `T1_s2rcCm20.h5ad` scores strictly above the 2.0 file; then `T1_s2rcB2d20.h5ad`: only
-  if B2d15 scores strictly above the higher of the 2.0 file and Cm20
-- `T1_s2rcB25d15.h5ad`: only if `T1_s2rcCm25.h5ad` scores strictly above both the 2.5 file and the 2.0 file; then
-  `T1_s2rcB25d20.h5ad`: only if B25d15 scores strictly above Cm25
-- `T1_s2rcCm30.h5ad`: only if `T1_s2rcCm25.h5ad` scores strictly above Cm20
+**Waiting on a score (1):** only `T1_s2rcA20.h5ad`, in the last-on-T1 list below.
 
 **Last on T1 (3):** `T1_s2rcMSB.h5ad`, `T1_s2rcA15.h5ad`, then `T1_s2rcA20.h5ad` only if A15 scores strictly above A.
 With no limit they are reached: MSB and A15 can go with the due files, after T1's due search files (the main session's
@@ -55,14 +50,11 @@ stand in a section of their own at the end.
 Data used, for every Task 1 file in the order below: released challenge data and the outside heart atlas on recomputed
 groups (GEO GSE193346, register row X002).
 
-A search's next file is due once the score its condition needs has been reported; with no cap per board the due files
-of different searches do not wait for each other. The first search's 2.5 file (`T1_s2rcB25.h5ad`) was uploaded on
-2026-11-24 and holds the board's best; that search's next file, `T1_s2rcB30.h5ad`, is due. `T1_s2rcCm20.h5ad` (the 2.0
-file's atlas step with g_mom's damping at 1.0 instead of 0.5) is due; its headline decides the third and fifth
-searches' next files (`T1_s2rcCm25.h5ad`, `T1_s2rcB2d15.h5ad`), and Cm25's headline in turn decides the sixth and
-seventh searches' (`T1_s2rcB25d15.h5ad`, `T1_s2rcCm30.h5ad`). The three files marked 'kept, last' were skipped and
-then kept by the captain's words of 2026-11-24: by the main session's reading of those words they come after every
-search file; the captain may place them anywhere.
+The search lines' step-on rules no longer decide which of their built files go up: with no limit on uploads the
+captain dropped the conditions of the six files that waited (row R43, decision log 2026-11-24 (qq)), so every built
+search file is due now. The first search's 2.5 file (`T1_s2rcB25.h5ad`) was uploaded on 2026-11-24 and holds the
+board's best. The three files marked 'kept, last' were skipped and then kept by the captain's words of 2026-11-24:
+with no limit they go after T1's due search files (the main session's reading); the captain may place them anywhere.
 
 **The fifth search stands by the captain's words of 2026-11-24** ("Yes: T1_s2rcCm20's headline may serve line 5; line
 5 stands."; ruling row R35): `T1_s2rcCm20.h5ad`'s headline serves the fifth search as well as the third.
@@ -71,12 +63,12 @@ search file; the captain may place them anywhere.
 |---|---|---|---|
 | first search | `T1_s2rcB30.h5ad` | `b639de29bd13d7005450ca53e7cd3dacb2e362a55beca8545937858e6582a024` | none (its condition is met: the 2.5 file scored strictly above the 2.0 file) |
 | third search | `T1_s2rcCm20.h5ad` | `acce5f5f7097269bffebbfd583833e4c9c1c5ae77f1d5294dde6d13e197f863e` | none (its condition is met: C scored strictly above A) |
-| third search | `T1_s2rcCm25.h5ad` | `c5fb96a64075b6fbfb2f3066604d622ea8b89ac3a5e4f8a99d0fea7d93011dfd` | only if Cm20 scores strictly above C |
-| fifth search | `T1_s2rcB2d15.h5ad` | `fe4e7403d6257cc265a02d0a13d40cdb60a97e9fdc0647d6b5c7e318aedaed6c` | only if Cm20 scores strictly above the 2.0 file (`T1_s2rcB2.h5ad`) |
-| fifth search | `T1_s2rcB2d20.h5ad` | `bd12c66312ba32ab938b4ee71bd5c79e58a154d6fc56434012e6dad907e668dd` | only if B2d15 scores strictly above the higher of the 2.0 file and Cm20 |
-| sixth search | `T1_s2rcB25d15.h5ad` | `5bc2b32e4688439f29c54c1b1203325595d996c37df30ba2b9ff26f27a60f4c6` | only if `T1_s2rcCm25.h5ad` scores strictly above both the 2.5 file (`T1_s2rcB25.h5ad`) and the 2.0 file |
-| sixth search | `T1_s2rcB25d20.h5ad` | `e6520dbee0fdc3f1336bc3f9de1e99e8a501de2d440b3f9085c88b5c7ecfb3f6` | only if B25d15 scores strictly above Cm25 |
-| seventh search | `T1_s2rcCm30.h5ad` | `807fe097c88ee779430896002a34635aeffbc99b433c68ebdb7bd41d8af2cbbe` | only if `T1_s2rcCm25.h5ad` scores strictly above Cm20 |
+| third search | `T1_s2rcCm25.h5ad` | `c5fb96a64075b6fbfb2f3066604d622ea8b89ac3a5e4f8a99d0fea7d93011dfd` | none (the captain dropped its condition: row R43) |
+| fifth search | `T1_s2rcB2d15.h5ad` | `fe4e7403d6257cc265a02d0a13d40cdb60a97e9fdc0647d6b5c7e318aedaed6c` | none (the captain dropped its condition: row R43) |
+| fifth search | `T1_s2rcB2d20.h5ad` | `bd12c66312ba32ab938b4ee71bd5c79e58a154d6fc56434012e6dad907e668dd` | none (the captain dropped its condition: row R43) |
+| sixth search | `T1_s2rcB25d15.h5ad` | `5bc2b32e4688439f29c54c1b1203325595d996c37df30ba2b9ff26f27a60f4c6` | none (the captain dropped its condition: row R43) |
+| sixth search | `T1_s2rcB25d20.h5ad` | `e6520dbee0fdc3f1336bc3f9de1e99e8a501de2d440b3f9085c88b5c7ecfb3f6` | none (the captain dropped its condition: row R43) |
+| seventh search | `T1_s2rcCm30.h5ad` | `807fe097c88ee779430896002a34635aeffbc99b433c68ebdb7bd41d8af2cbbe` | none (the captain dropped its condition: row R43) |
 | kept, last | `T1_s2rcMSB.h5ad` (combined momentum) | `78bb17eea5721e590cfd2c9f707e9cd6f2f496e081acede4f697dc4035871da2` | none; last on T1; with no limit on uploads, after T1's due search files |
 | kept, last | `T1_s2rcA15.h5ad` (the second search's file) | `e2334137b54d98b04e9dece90213987e61fe9aa15a3fb8d85e6c262d8fb5ba75` | none (its condition is met); last on T1; with no limit on uploads, after T1's due search files |
 | kept, last | `T1_s2rcA20.h5ad` | `372713686782be273a52427140eab652517e35b679f54fc2a969484dee730218` | only if A15 scores strictly above A |
