@@ -59,11 +59,18 @@ def old(tmp_path_factory):
     d = tmp_path_factory.mktemp("old_module")
     path = d / "build_two_knockout.py"
     path.write_bytes(res.stdout)
-    before = list(sys.path)
+    before, frozen = list(sys.path), sys.modules.get("build_submission")
+    # the old module imports the frozen builder by name: it gets the very module object the new one uses (another
+    # test module may have loaded a second copy under that name since), so both build through one frozen builder
+    sys.modules["build_submission"] = bs
     try:
         mod = _load("_build_two_knockout_at_0470b57", path)
     finally:
         sys.path[:] = before  # the old module puts its own folder first on sys.path: taken out again
+        if frozen is None:
+            sys.modules.pop("build_submission", None)
+        else:
+            sys.modules["build_submission"] = frozen
     assert mod.bs is bs and mod.SCRIPT_PATH == path.resolve()
     mod.sha256_of_text = hashlib.sha256(res.stdout).hexdigest()
     return mod
