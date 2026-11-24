@@ -22,11 +22,6 @@ the heart or the embryo board.
 - Embryo: `T2embryo_s2.h5ad`, `T2embryo_s2x_ovhi.h5ad`
 - Heart: `T2heart_organ_ts10_half.h5ad`
 
-- T1: `T1_s2rcB25.h5ad`, `T1_s2rcCm20.h5ad`
-- T3: `T3_k23_s2.h5ad`, `T3_c1_s2_g2.h5ad`
-- Embryo: `T2embryo_s2xs_ov.h5ad`, `T2embryo_s2.h5ad`, `T2embryo_s2x_ovhi.h5ad`
-- Heart: `T2heart_organ_ts05_half.h5ad`
-
 **Waiting on a score (6):**
 
 - `T1_s2rcCm25.h5ad`: only if `T1_s2rcCm20.h5ad` scores strictly above C
