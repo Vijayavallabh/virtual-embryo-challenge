@@ -3,7 +3,10 @@ row R36's option), read with `git show 0470b57:experiments/t3_decomp/build_two_k
 folder and loaded beside it, on every existing form and option set, on the synthetic tables and stage of
 tests/test_t3_two_knockout_build.py. Each pair gives the same file bytes, the same sidecar but for the fields that name
 the run (when and how it ran, its output path, the builder's own sha256), the same stamp, the same refusal messages and
-the same command-line exit codes and output. Nothing here builds from released data or reads the repository's ledger.
+the same command-line exit codes and output. The two routed differences, each refused by both modules here, are named
+in their own tests: --captain-ruling R36 (row R36's option) and --gata4-exponent on --form c2-s2 (row R22's third
+line); tests/test_t3_c2g_old_new.py compares against the module with row R36's option. Nothing here builds from
+released data or reads the repository's ledger.
 """
 
 from __future__ import annotations
@@ -140,7 +143,8 @@ REFUSALS = [
     ("c1-s2", {"gata4_exponent": 3.0, "captain_ruling": "R22"}),
     ("c1-s2", {"gata4_exponent": 2.0}),
     ("c1-s2", {"captain_ruling": "R22"}),
-    ("c2-s2", {"gata4_exponent": 2.0, "captain_ruling": "R22"}),
+    ("c2-s2", {"captain_ruling": "R22"}),  # the ruling alone on c2-s2: refused as before
+    ("c2-s2", {"gata4_exponent": 3.0, "captain_ruling": "R22"}),  # another value on c2-s2: refused as before
     ("c1-s1", {"gata4_exponent": 2.0, "captain_ruling": "R22"}),
     ("c1-s2", {"gata4_exponent": 2.0, "captain_ruling": "R30"}),
     ("c1-s2", {"gata4_exponent": "x", "captain_ruling": "R22"}),
@@ -203,7 +207,7 @@ CLI_CASES = [[f"--form={f}"] for f in FORMS] + [
     ["--form=c1-s1", "--seed=1000002"], ["--form=c1-s1", "--n-cells=max_cells"],
     ["--form=c1-s2", "--gata4-exponent=3.0", "--captain-ruling=R22"],
     ["--form=c1-s2", "--gata4-exponent=2.0"], ["--form=c1-s2", "--captain-ruling=R22"],
-    ["--form=c2-s2", "--gata4-exponent=2.0", "--captain-ruling=R22"],
+    ["--form=c2-s2", "--captain-ruling=R22"], ["--form=c2-s2", "--gata4-exponent=3.0", "--captain-ruling=R22"],
     ["--form=c1-s2", "--gata4-exponent=2.0", "--captain-ruling=R30"],
     ["--form=c1-s1", "--exponent=1.5"], ["--form=c1-s1", "--branch=allowed"], ["--form=c1-s1", "--depth"],
 ]
@@ -244,3 +248,18 @@ def test_the_one_routing_difference_is_the_new_ruling_r36(world, old, tmp_path):
             mod.build_form(world.dec, "c2-s2", world.wt, world.board, N, out, run_dir=world.run, seed=SEED,
                            threads=2, captain_ruling="R36", tries=t)
         assert not out.exists()
+
+
+@pytest.mark.parametrize("kw", [{"gata4_exponent": 2.0, "captain_ruling": "R22"}, {"gata4_exponent": 2.0}])
+def test_the_other_routing_difference_is_row_r22_s_third_line_on_c2_s2(world, old, tmp_path, kw):
+    """The new module routes --gata4-exponent on --form c2-s2 to row R22's third line; the old one refused it as a
+    form other than c1-s2. Under a ledger whose row R22 names line 2 only, or without the ruling, both refuse it and
+    build nothing (the line's own build is compared in tests/test_t3_c2g_build.py)."""
+    t = _ledger(tmp_path)
+    for mod, says in ((old, "is taken on --form c1-s2 only, not 'c2-s2'"),
+                      (bk, "no single row R22" if kw.get("captain_ruling") else "only with --captain-ruling R22")):
+        out = tmp_path / f"{mod.__name__}.h5ad"
+        with pytest.raises(bs.Refused, match=says):
+            mod.build_form(world.dec, "c2-s2", world.wt, world.board, N, out, run_dir=world.run, seed=SEED,
+                           threads=2, tries=t, **kw)
+        assert not out.exists() and not out.with_suffix(".json").exists()
