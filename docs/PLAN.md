@@ -13750,3 +13750,15 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     B25d15, B25d20, Cm30. Last on T1 (3): MSB, A15, A20. The sheet's waiting list now also names the sixth and seventh
     searches' files (built in entry (mm)), and the Data-used cells of CK and the E = 4 file are written out in full
     now that K23's row has left the table.
+- 2026-11-24 (oo), the independent check of entry (nn) finds one error, corrected (state at 17:12 UTC, 2026-11-24).
+  Written by the AI assistant.
+  - **The check** (an agent started through the Agent tool and given the four headlines only; its answer is in the
+    main session's working folder as rulecheck_1124a.json): every written condition was applied correctly, and the
+    upload record's rows and sha256, the rules' wording, the skipped section, the overall 202.195 and the counts check
+    out. One error: `T3_c2_s2_g2.h5ad` had been put on the due-now list, although no headline bears on it and entry
+    (nn) did not name the change. By its rule (the amendment of 2026-11-24 on T3's third search line, "Place and
+    cost": "Across boards it goes after every file queued now") and the captain's default-place words "yes,
+    T3_c2_s2_g2" (entry (kk)), it is the last of the 18.
+  - **Corrected:** the sheet lists eight files due now and `T3_c2_s2_g2.h5ad` alone as last of all, with the words
+    that would place it ahead of a named file. The main session's two replies to the captain after entry (nn) listed
+    it among the files to upload now; its next reply says so and corrects it.
