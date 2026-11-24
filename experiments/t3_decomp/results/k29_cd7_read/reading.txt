@@ -1,0 +1,149 @@
+Try K29: STRUCK (S3, S4): no file; C2 stays.
+tries counted: 5 (own_h, own_f, own_d, oth_h, oth_d); the run step started: True
+target-free gate: passes True; failed none; scenario states found 5 of 5; the own list 7 of 9 (missing ['V-CM', 'IFT-CM']); depletion factor 0.3835131214774091; OFT/RV-CM 0.38351312147740907 to 0.3835131214774092, aSHF 0.38351312147740907 to 0.3835131214774092, pSHF 0.38351312147740907 to 0.3835131214774092, aPHM 0.383513121477409 to 0.3835131214774091, pPHM 0.3835131214774091 to 0.3835131214774092
+guard step: passes True, failed none
+  guard step plain g1: passes True; mean +0.0000, largest seed 0.0000, seeds differing none
+  guard step plain g2: passes True; mean +0.0000, largest seed 0.0000, seeds differing none
+  guard step dm g1: passes True; mean +0.0000, largest seed 0.0000, seeds differing none
+  guard step dm g2: passes True; mean +0.0000, largest seed 0.0000, seeds differing none
+  the guard step's oth_f read again, plain g1: passes True; mean +0.0000, largest seed 0.0000, seeds differing none
+  the guard step's oth_f read again, plain g2: passes True; mean +0.0000, largest seed 0.0000, seeds differing none
+  the guard step's oth_f read again, dm g1: passes True; mean +0.0000, largest seed 0.0000, seeds differing none
+  the guard step's oth_f read again, dm g2: passes True; mean +0.0000, largest seed 0.0000, seeds differing none
+  the run step's oth_f against the guard step's, plain g1: passes True; mean +0.0000, largest seed 0.0000, seeds differing none
+  the run step's oth_f against the guard step's, plain g2: passes True; mean +0.0000, largest seed 0.0000, seeds differing none
+  the run step's oth_f against the guard step's, dm g1: passes True; mean +0.0000, largest seed 0.0000, seeds differing none
+  the run step's oth_f against the guard step's, dm g2: passes True; mean +0.0000, largest seed 0.0000, seeds differing none
+commit 611e9bc7e8063f9eae3f9df3d7607f90d578204b, machine p01r10srv05.
+strike: S1 no, S2 no, S3 yes, S4 yes; C's four-cell mean -0.60; S4 cells ['dm g1: oth_d 6 against oth_h 4']
+per cell, paired by seed (AHEAD: mean > 0.3 with >= 8 of 10 positive; BEHIND: mean < -0.3):
+  G = own_f - own_h: plain g1 +0.96 (sd 0.31, 10 of 10 positive) AHEAD; plain g2 +0.42 (sd 0.29, 10 of 10 positive) AHEAD; dm g1 +0.65 (sd 0.31, 10 of 10 positive) AHEAD; dm g2 +0.23 (sd 0.40, 8 of 10 positive)
+  Gd = own_d - own_h: plain g1 +1.56 (sd 0.43, 10 of 10 positive) AHEAD; plain g2 +0.24 (sd 0.27, 7 of 10 positive); dm g1 +3.48 (sd 3.99, 10 of 10 positive) AHEAD; dm g2 +0.43 (sd 0.49, 8 of 10 positive) AHEAD
+  C = oth_d - oth_h: plain g1 +0.11 (sd 0.27, 7 of 10 positive); plain g2 -0.25 (sd 0.34, 3 of 10 positive); dm g1 -1.88 (sd 4.07, 4 of 10 positive) BEHIND; dm g2 -0.41 (sd 0.20, 0 of 10 positive) BEHIND
+labelled, deciding nothing: no label; L1 False (AHEAD cells: C 0, Gd 3); L2 False (gate flips of own_d and own_h {'dm g1': [0, 7], 'dm g2': []}; Gd's flip-free means dm g1 1.594, dm g2 0.427); L3 False (Gd's AHEAD cells counted ['plain g1', 'dm g1', 'dm g2']; G's AHEAD cells ['plain g1', 'plain g2', 'dm g1'])
+reported, deciding nothing (each arm against oth_f, own_d - own_f, per-term skills, gated counts, the realised cut-state shares; both files' gate bars belong to the file build before upload):
+plain g1:
+    floor  50.00 (sd 0.00); severity scored 0, gated 10 {'no_response': 10}, median beta n/a, r2 n/a; skills de_score 0.500, de_direction 0.500, severity_slope 0.500, mmd_u 0.500, variogram 0.500
+    oth_f  59.43 (sd 0.46); severity scored 10, gated 0 {'scored': 10}, median beta 0.437, r2 0.167; skills de_score 0.486, de_direction 0.527, severity_slope 0.897, mmd_u 0.493, variogram 0.418
+    own_h  60.22 (sd 0.36); severity scored 10, gated 0 {'scored': 10}, median beta 0.441, r2 0.172; skills de_score 0.502, de_direction 0.537, severity_slope 0.899, mmd_u 0.494, variogram 0.420
+    own_f  61.18 (sd 0.37); severity scored 10, gated 0 {'scored': 10}, median beta 0.455, r2 0.178; skills de_score 0.521, de_direction 0.541, severity_slope 0.902, mmd_u 0.505, variogram 0.427
+    own_d  61.78 (sd 0.38); severity scored 10, gated 0 {'scored': 10}, median beta 0.477, r2 0.178; skills de_score 0.535, de_direction 0.545, severity_slope 0.906, mmd_u 0.502, variogram 0.431
+    oth_h  59.32 (sd 0.30); severity scored 10, gated 0 {'scored': 10}, median beta 0.435, r2 0.163; skills de_score 0.485, de_direction 0.528, severity_slope 0.895, mmd_u 0.488, variogram 0.417
+    oth_d  59.44 (sd 0.35); severity scored 10, gated 0 {'scored': 10}, median beta 0.448, r2 0.173; skills de_score 0.481, de_direction 0.526, severity_slope 0.899, mmd_u 0.497, variogram 0.428
+    G: +0.96 (sd 0.31, ahead 10 of 10)
+    Gd: +1.56 (sd 0.43, ahead 10 of 10)
+    C: +0.11 (sd 0.27, ahead 7 of 10)
+    own_h - oth_f: +0.79 (sd 0.26, ahead 10 of 10)
+    own_f - oth_f: +1.75 (sd 0.40, ahead 10 of 10)
+    own_d - oth_f: +2.35 (sd 0.57, ahead 10 of 10)
+    oth_h - oth_f: -0.11 (sd 0.37, ahead 3 of 10)
+    oth_d - oth_f: +0.01 (sd 0.21, ahead 4 of 10)
+    own_d - own_f: +0.60 (sd 0.33, ahead 10 of 10)
+    oth_f - floor: +9.43 (sd 0.46, ahead 10 of 10)
+    per-term skill, G: de_score +0.020, de_direction +0.004, severity_slope +0.003, mmd_u +0.011, variogram +0.007
+    per-term skill, Gd: de_score +0.033, de_direction +0.008, severity_slope +0.008, mmd_u +0.008, variogram +0.010
+    per-term skill, C: de_score -0.005, de_direction -0.002, severity_slope +0.004, mmd_u +0.009, variogram +0.011
+    per-term skill, own_h - oth_f: de_score +0.016, de_direction +0.010, severity_slope +0.001, mmd_u +0.001, variogram +0.003
+    per-term skill, own_f - oth_f: de_score +0.035, de_direction +0.014, severity_slope +0.005, mmd_u +0.012, variogram +0.009
+    per-term skill, own_d - oth_f: de_score +0.049, de_direction +0.018, severity_slope +0.009, mmd_u +0.009, variogram +0.013
+    per-term skill, oth_h - oth_f: de_score -0.001, de_direction +0.001, severity_slope -0.002, mmd_u -0.004, variogram -0.001
+    per-term skill, oth_d - oth_f: de_score -0.005, de_direction -0.001, severity_slope +0.002, mmd_u +0.005, variogram +0.010
+    per-term skill, own_d - own_f: de_score +0.014, de_direction +0.004, severity_slope +0.004, mmd_u -0.003, variogram +0.004
+    gate flips of own_d and own_h (seeds): none; gated-state changes: own_d - own_h none; oth_d - oth_h none
+plain g2:
+    floor  50.00 (sd 0.00); severity scored 0, gated 10 {'no_response': 10}, median beta n/a, r2 n/a; skills de_score 0.500, de_direction 0.500, severity_slope 0.500, mmd_u 0.500, variogram 0.500
+    oth_f  62.04 (sd 0.50); severity scored 10, gated 0 {'scored': 10}, median beta 0.433, r2 0.265; skills de_score 0.499, de_direction 0.559, severity_slope 0.893, mmd_u 0.564, variogram 0.500
+    own_h  62.52 (sd 0.58); severity scored 10, gated 0 {'scored': 10}, median beta 0.431, r2 0.267; skills de_score 0.505, de_direction 0.571, severity_slope 0.893, mmd_u 0.564, variogram 0.502
+    own_f  62.94 (sd 0.63); severity scored 10, gated 0 {'scored': 10}, median beta 0.431, r2 0.267; skills de_score 0.516, de_direction 0.574, severity_slope 0.892, mmd_u 0.564, variogram 0.505
+    own_d  62.75 (sd 0.52); severity scored 10, gated 0 {'scored': 10}, median beta 0.426, r2 0.250; skills de_score 0.517, de_direction 0.574, severity_slope 0.891, mmd_u 0.549, variogram 0.504
+    oth_h  62.20 (sd 0.56); severity scored 10, gated 0 {'scored': 10}, median beta 0.430, r2 0.264; skills de_score 0.503, de_direction 0.562, severity_slope 0.892, mmd_u 0.564, variogram 0.499
+    oth_d  61.95 (sd 0.65); severity scored 10, gated 0 {'scored': 10}, median beta 0.432, r2 0.256; skills de_score 0.495, de_direction 0.557, severity_slope 0.893, mmd_u 0.566, variogram 0.509
+    G: +0.42 (sd 0.29, ahead 10 of 10)
+    Gd: +0.24 (sd 0.27, ahead 7 of 10)
+    C: -0.25 (sd 0.34, ahead 3 of 10)
+    own_h - oth_f: +0.48 (sd 0.34, ahead 9 of 10)
+    own_f - oth_f: +0.90 (sd 0.49, ahead 10 of 10)
+    own_d - oth_f: +0.71 (sd 0.44, ahead 10 of 10)
+    oth_h - oth_f: +0.16 (sd 0.31, ahead 7 of 10)
+    oth_d - oth_f: -0.09 (sd 0.32, ahead 4 of 10)
+    own_d - own_f: -0.19 (sd 0.36, ahead 4 of 10)
+    oth_f - floor: +12.04 (sd 0.50, ahead 10 of 10)
+    per-term skill, G: de_score +0.011, de_direction +0.002, severity_slope -0.000, mmd_u +0.001, variogram +0.004
+    per-term skill, Gd: de_score +0.012, de_direction +0.002, severity_slope -0.001, mmd_u -0.015, variogram +0.002
+    per-term skill, C: de_score -0.008, de_direction -0.006, severity_slope +0.001, mmd_u +0.003, variogram +0.010
+    per-term skill, own_h - oth_f: de_score +0.006, de_direction +0.012, severity_slope -0.000, mmd_u -0.001, variogram +0.002
+    per-term skill, own_f - oth_f: de_score +0.017, de_direction +0.014, severity_slope -0.001, mmd_u +0.000, variogram +0.006
+    per-term skill, own_d - oth_f: de_score +0.018, de_direction +0.014, severity_slope -0.001, mmd_u -0.015, variogram +0.004
+    per-term skill, oth_h - oth_f: de_score +0.004, de_direction +0.003, severity_slope -0.001, mmd_u -0.000, variogram -0.001
+    per-term skill, oth_d - oth_f: de_score -0.004, de_direction -0.003, severity_slope -0.000, mmd_u +0.002, variogram +0.009
+    per-term skill, own_d - own_f: de_score +0.001, de_direction -0.000, severity_slope -0.001, mmd_u -0.015, variogram -0.002
+    gate flips of own_d and own_h (seeds): none; gated-state changes: own_d - own_h none; oth_d - oth_h none
+dm g1:
+    oth_f  55.64 (sd 5.17); severity scored 6, gated 4 {'r2_gate': 4, 'scored': 6}, median beta 0.415, r2 0.017; skills de_score 0.550, de_direction 0.560, severity_slope 0.735, mmd_u 0.356, variogram 0.314
+    own_h  57.30 (sd 5.06); severity scored 7, gated 3 {'r2_gate': 3, 'scored': 7}, median beta 0.436, r2 0.024; skills de_score 0.553, de_direction 0.573, severity_slope 0.778, mmd_u 0.365, variogram 0.320
+    own_f  57.95 (sd 5.30); severity scored 7, gated 3 {'r2_gate': 3, 'scored': 7}, median beta 0.468, r2 0.053; skills de_score 0.560, de_direction 0.580, severity_slope 0.784, mmd_u 0.372, variogram 0.323
+    own_d  60.78 (sd 3.59); severity scored 9, gated 1 {'r2_gate': 1, 'scored': 9}, median beta 0.512, r2 0.070; skills de_score 0.572, de_direction 0.586, severity_slope 0.872, mmd_u 0.378, variogram 0.328
+    oth_h  55.70 (sd 5.17); severity scored 6, gated 4 {'r2_gate': 4, 'scored': 6}, median beta 0.416, r2 0.029; skills de_score 0.551, de_direction 0.560, severity_slope 0.735, mmd_u 0.357, variogram 0.315
+    oth_d  53.82 (sd 5.32); severity scored 4, gated 6 {'r2_gate': 6, 'scored': 4}, median beta 0.414, r2 0.006; skills de_score 0.554, de_direction 0.559, severity_slope 0.657, mmd_u 0.358, variogram 0.314
+    G: +0.65 (sd 0.31, ahead 10 of 10)
+    Gd: +3.48 (sd 3.99, ahead 10 of 10)
+    C: -1.88 (sd 4.07, ahead 4 of 10)
+    own_h - oth_f: +1.66 (sd 3.20, ahead 10 of 10)
+    own_f - oth_f: +2.31 (sd 3.30, ahead 10 of 10)
+    own_d - oth_f: +5.14 (sd 4.58, ahead 10 of 10)
+    oth_h - oth_f: +0.06 (sd 0.20, ahead 5 of 10)
+    oth_d - oth_f: -1.82 (sd 4.13, ahead 7 of 10)
+    own_d - own_f: +2.83 (sd 4.18, ahead 10 of 10)
+    per-term skill, G: de_score +0.007, de_direction +0.006, severity_slope +0.006, mmd_u +0.008, variogram +0.004
+    per-term skill, Gd: de_score +0.019, de_direction +0.012, severity_slope +0.094, mmd_u +0.013, variogram +0.009
+    per-term skill, C: de_score +0.003, de_direction -0.001, severity_slope -0.077, mmd_u +0.001, variogram -0.001
+    per-term skill, own_h - oth_f: de_score +0.003, de_direction +0.014, severity_slope +0.043, mmd_u +0.009, variogram +0.005
+    per-term skill, own_f - oth_f: de_score +0.010, de_direction +0.020, severity_slope +0.049, mmd_u +0.017, variogram +0.009
+    per-term skill, own_d - oth_f: de_score +0.022, de_direction +0.026, severity_slope +0.138, mmd_u +0.023, variogram +0.014
+    per-term skill, oth_h - oth_f: de_score +0.001, de_direction +0.000, severity_slope -0.000, mmd_u +0.002, variogram +0.000
+    per-term skill, oth_d - oth_f: de_score +0.004, de_direction -0.001, severity_slope -0.078, mmd_u +0.003, variogram -0.000
+    per-term skill, own_d - own_f: de_score +0.012, de_direction +0.006, severity_slope +0.088, mmd_u +0.006, variogram +0.005
+    gate flips of own_d and own_h (seeds): [0, 7]; gated-state changes: own_d - own_h [0, 7]; oth_d - oth_h [1, 5]
+dm g2:
+    oth_f  63.84 (sd 0.60); severity scored 10, gated 0 {'scored': 10}, median beta 0.513, r2 0.222; skills de_score 0.580, de_direction 0.591, severity_slope 0.914, mmd_u 0.455, variogram 0.420
+    own_h  64.83 (sd 0.77); severity scored 10, gated 0 {'scored': 10}, median beta 0.538, r2 0.253; skills de_score 0.584, de_direction 0.609, severity_slope 0.921, mmd_u 0.467, variogram 0.432
+    own_f  65.06 (sd 0.67); severity scored 10, gated 0 {'scored': 10}, median beta 0.548, r2 0.257; skills de_score 0.586, de_direction 0.615, severity_slope 0.923, mmd_u 0.463, variogram 0.433
+    own_d  65.25 (sd 0.57); severity scored 10, gated 0 {'scored': 10}, median beta 0.567, r2 0.266; skills de_score 0.589, de_direction 0.618, severity_slope 0.927, mmd_u 0.459, variogram 0.434
+    oth_h  64.09 (sd 0.70); severity scored 10, gated 0 {'scored': 10}, median beta 0.520, r2 0.236; skills de_score 0.580, de_direction 0.594, severity_slope 0.916, mmd_u 0.462, variogram 0.424
+    oth_d  63.68 (sd 0.74); severity scored 10, gated 0 {'scored': 10}, median beta 0.504, r2 0.218; skills de_score 0.578, de_direction 0.590, severity_slope 0.912, mmd_u 0.453, variogram 0.418
+    G: +0.23 (sd 0.40, ahead 8 of 10)
+    Gd: +0.43 (sd 0.49, ahead 8 of 10)
+    C: -0.41 (sd 0.20, ahead 0 of 10)
+    own_h - oth_f: +0.99 (sd 0.32, ahead 10 of 10)
+    own_f - oth_f: +1.22 (sd 0.43, ahead 10 of 10)
+    own_d - oth_f: +1.41 (sd 0.35, ahead 10 of 10)
+    oth_h - oth_f: +0.25 (sd 0.40, ahead 7 of 10)
+    oth_d - oth_f: -0.16 (sd 0.35, ahead 2 of 10)
+    own_d - own_f: +0.20 (sd 0.34, ahead 8 of 10)
+    per-term skill, G: de_score +0.003, de_direction +0.006, severity_slope +0.002, mmd_u -0.004, variogram +0.001
+    per-term skill, Gd: de_score +0.005, de_direction +0.009, severity_slope +0.005, mmd_u -0.008, variogram +0.002
+    per-term skill, C: de_score -0.002, de_direction -0.003, severity_slope -0.004, mmd_u -0.009, variogram -0.006
+    per-term skill, own_h - oth_f: de_score +0.004, de_direction +0.018, severity_slope +0.007, mmd_u +0.012, variogram +0.012
+    per-term skill, own_f - oth_f: de_score +0.006, de_direction +0.024, severity_slope +0.009, mmd_u +0.008, variogram +0.012
+    per-term skill, own_d - oth_f: de_score +0.009, de_direction +0.027, severity_slope +0.013, mmd_u +0.004, variogram +0.014
+    per-term skill, oth_h - oth_f: de_score +0.000, de_direction +0.003, severity_slope +0.002, mmd_u +0.007, variogram +0.004
+    per-term skill, oth_d - oth_f: de_score -0.002, de_direction -0.001, severity_slope -0.002, mmd_u -0.002, variogram -0.003
+    per-term skill, own_d - own_f: de_score +0.003, de_direction +0.003, severity_slope +0.003, mmd_u -0.004, variogram +0.001
+    gate flips of own_d and own_h (seeds): none; gated-state changes: own_d - own_h none; oth_d - oth_h none
+realised cut-state shares, plain world (target-free):
+    oth_f: cut 2^-0.717813870986706 = 0.6080; cut states' share 0.1239 (wild type) -> 0.0792; missing none; OFT/RV-CM 0.0242 -> 0.0155, aSHF 0.0238 -> 0.0152, pSHF 0.0110 -> 0.0070, aPHM 0.0258 -> 0.0165, pPHM 0.0391 -> 0.0250
+    own_h: cut 2^-0.358906935493353 = 0.7798; cut states' share 0.1300 (wild type) -> 0.1043; missing ['V-CM', 'IFT-CM']; vCM1 0.0291 -> 0.0234, vCM2 0.0265 -> 0.0213, aCM1 0.0236 -> 0.0189, aCM2 0.0156 -> 0.0125, OFT/RV-CM 0.0242 -> 0.0194, JCF/SV-CM 0.0064 -> 0.0051, FHF/JCF 0.0045 -> 0.0036
+    own_f: cut 2^-0.717813870986706 = 0.6080; cut states' share 0.1300 (wild type) -> 0.0833; missing ['V-CM', 'IFT-CM']; vCM1 0.0291 -> 0.0187, vCM2 0.0265 -> 0.0170, aCM1 0.0236 -> 0.0151, aCM2 0.0156 -> 0.0100, OFT/RV-CM 0.0242 -> 0.0155, JCF/SV-CM 0.0064 -> 0.0041, FHF/JCF 0.0045 -> 0.0029
+    own_d: cut 2^-1.3826521560990648 = 0.3835; cut states' share 0.1300 (wild type) -> 0.0542; missing ['V-CM', 'IFT-CM']; vCM1 0.0291 -> 0.0121, vCM2 0.0265 -> 0.0111, aCM1 0.0236 -> 0.0098, aCM2 0.0156 -> 0.0065, OFT/RV-CM 0.0242 -> 0.0101, JCF/SV-CM 0.0064 -> 0.0027, FHF/JCF 0.0045 -> 0.0019
+    oth_h: cut 2^-0.358906935493353 = 0.7798; cut states' share 0.1239 (wild type) -> 0.0993; missing none; OFT/RV-CM 0.0242 -> 0.0194, aSHF 0.0238 -> 0.0191, pSHF 0.0110 -> 0.0088, aPHM 0.0258 -> 0.0206, pPHM 0.0391 -> 0.0314
+    oth_d: cut 2^-1.3826521560990648 = 0.3835; cut states' share 0.1239 (wild type) -> 0.0514; missing none; OFT/RV-CM 0.0242 -> 0.0101, aSHF 0.0238 -> 0.0099, pSHF 0.0110 -> 0.0046, aPHM 0.0258 -> 0.0107, pPHM 0.0391 -> 0.0163
+realised cut-state shares, dm world (target-free):
+    oth_f: cut 2^-0.717813870986706 = 0.6080; cut states' share 0.1239 (wild type) -> 0.0792; missing none; OFT/RV-CM 0.0242 -> 0.0155, aSHF 0.0238 -> 0.0152, pSHF 0.0110 -> 0.0070, aPHM 0.0258 -> 0.0165, pPHM 0.0391 -> 0.0250
+    own_h: cut 2^-0.358906935493353 = 0.7798; cut states' share 0.1300 (wild type) -> 0.1043; missing ['V-CM', 'IFT-CM']; vCM1 0.0291 -> 0.0234, vCM2 0.0265 -> 0.0213, aCM1 0.0236 -> 0.0189, aCM2 0.0156 -> 0.0125, OFT/RV-CM 0.0242 -> 0.0194, JCF/SV-CM 0.0064 -> 0.0051, FHF/JCF 0.0045 -> 0.0036
+    own_f: cut 2^-0.717813870986706 = 0.6080; cut states' share 0.1300 (wild type) -> 0.0833; missing ['V-CM', 'IFT-CM']; vCM1 0.0291 -> 0.0187, vCM2 0.0265 -> 0.0170, aCM1 0.0236 -> 0.0151, aCM2 0.0156 -> 0.0100, OFT/RV-CM 0.0242 -> 0.0155, JCF/SV-CM 0.0064 -> 0.0041, FHF/JCF 0.0045 -> 0.0029
+    own_d: cut 2^-1.3826521560990648 = 0.3835; cut states' share 0.1300 (wild type) -> 0.0542; missing ['V-CM', 'IFT-CM']; vCM1 0.0291 -> 0.0121, vCM2 0.0265 -> 0.0111, aCM1 0.0236 -> 0.0098, aCM2 0.0156 -> 0.0065, OFT/RV-CM 0.0242 -> 0.0101, JCF/SV-CM 0.0064 -> 0.0027, FHF/JCF 0.0045 -> 0.0019
+    oth_h: cut 2^-0.358906935493353 = 0.7798; cut states' share 0.1239 (wild type) -> 0.0993; missing none; OFT/RV-CM 0.0242 -> 0.0194, aSHF 0.0238 -> 0.0191, pSHF 0.0110 -> 0.0088, aPHM 0.0258 -> 0.0206, pPHM 0.0391 -> 0.0314
+    oth_d: cut 2^-1.3826521560990648 = 0.3835; cut states' share 0.1239 (wild type) -> 0.0514; missing none; OFT/RV-CM 0.0242 -> 0.0101, aSHF 0.0238 -> 0.0099, pSHF 0.0110 -> 0.0046, aPHM 0.0258 -> 0.0107, pPHM 0.0391 -> 0.0163
+task files: gate.json 43a553634444, guard.json 44d8c9f6034d, guard/plain_g1/seed_0.json 2433417e413c, guard/plain_g1/seed_1.json 2118d53709e7, guard/plain_g1/seed_2.json d1e26c9449ee, guard/plain_g1/seed_3.json 642a591f280e, guard/plain_g1/seed_4.json 4411f9ef2701, guard/plain_g1/seed_5.json 801787618ce3, guard/plain_g1/seed_6.json 2d1f178e5d1b, guard/plain_g1/seed_7.json 355b5211f999, guard/plain_g1/seed_8.json e286c4944b75, guard/plain_g1/seed_9.json 5bca978e37b8, guard/plain_g2/seed_0.json ad62cf81e6d1, guard/plain_g2/seed_1.json 84c3cb702193, guard/plain_g2/seed_2.json d3554ac805a6, guard/plain_g2/seed_3.json b38bd236f650, guard/plain_g2/seed_4.json 43f4a946f886, guard/plain_g2/seed_5.json 91a2504e192d, guard/plain_g2/seed_6.json bee64cf1dbd7, guard/plain_g2/seed_7.json 43df746cc03b, guard/plain_g2/seed_8.json 9a0608fae6a6, guard/plain_g2/seed_9.json a443cf8b9ba4, guard/dm/g1_seed_0.json 5e0a08f7bf93, guard/dm/g1_seed_1.json 801c15c4faa0, guard/dm/g1_seed_2.json 036ae0d32c93, guard/dm/g1_seed_3.json 01028583f0cc, guard/dm/g1_seed_4.json c87507a5a9c5, guard/dm/g1_seed_5.json 2aa7a09e2f4b, guard/dm/g1_seed_6.json 93f9fe50cd33, guard/dm/g1_seed_7.json ca8ebb3ddd5b, guard/dm/g1_seed_8.json b43962e11596, guard/dm/g1_seed_9.json efc6e83b8f3f, guard/dm/g2_seed_0.json 8893bc557a01, guard/dm/g2_seed_1.json c8d0e17e9104, guard/dm/g2_seed_2.json 728bec4bd29e, guard/dm/g2_seed_3.json e90fb65d8137, guard/dm/g2_seed_4.json df850cb0de2b, guard/dm/g2_seed_5.json 26e5f355df2b, guard/dm/g2_seed_6.json 83748b2f15bc, guard/dm/g2_seed_7.json 83d9c68aec80, guard/dm/g2_seed_8.json 536849f9387a, guard/dm/g2_seed_9.json f3e90c1bd869, plain_g1/seed_0.json dd679840ae65, plain_g1/seed_1.json b9960026273f, plain_g1/seed_2.json c26de4217aaa, plain_g1/seed_3.json 45c25bb52ef2, plain_g1/seed_4.json fbf476b1c74a, plain_g1/seed_5.json 7392e0bb9c21, plain_g1/seed_6.json ec0c4d2c5979, plain_g1/seed_7.json 2f6fc833ae24, plain_g1/seed_8.json cf4fa359b472, plain_g1/seed_9.json 362be265bf63, plain_g2/seed_0.json 5fc0d11c0828, plain_g2/seed_1.json 25f86498ae46, plain_g2/seed_2.json 62cacae2f351, plain_g2/seed_3.json 92f4c91a5991, plain_g2/seed_4.json 38d1ca730c46, plain_g2/seed_5.json 1cb2f80d4685, plain_g2/seed_6.json 0be0f0a84b17, plain_g2/seed_7.json 3b84064797c4, plain_g2/seed_8.json 84c8b1bf2f0d, plain_g2/seed_9.json bdceefc5ac8e, dm/g1_seed_0.json 13563e32fba0, dm/g1_seed_1.json 1f3131b16ee8, dm/g1_seed_2.json 85ba889f869a, dm/g1_seed_3.json 1c809f6c593d, dm/g1_seed_4.json cb0c10856a55, dm/g1_seed_5.json f03cd7f7e9e8, dm/g1_seed_6.json 2e00ce04d832, dm/g1_seed_7.json 96bd51392a83, dm/g1_seed_8.json 58153a658f90, dm/g1_seed_9.json d422db887bbe, dm/g2_seed_0.json 6d55478f5f43, dm/g2_seed_1.json bd944595d130, dm/g2_seed_2.json 0fcf99c91903, dm/g2_seed_3.json 751fb3637038, dm/g2_seed_4.json 81fa56888f7b, dm/g2_seed_5.json ed4749f82c54, dm/g2_seed_6.json 44ea7d871d54, dm/g2_seed_7.json 1c216d245932, dm/g2_seed_8.json 3fdcba1c7420, dm/g2_seed_9.json 601812691c17
+g1 and g2 are two replicates of one knockout run; oth_f is the guard (K18's barred_form).
+read by experiments/t3_decomp/k29_cd7_read.py 26e373ef64c1 (k18 4355e6d21fec, k21 97ce564ddea8, k22 6482585242ad) at commit 611e9bc7e8063f9eae3f9df3d7607f90d578204b, clean True, machine p01r10srv05

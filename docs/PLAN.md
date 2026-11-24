@@ -13687,3 +13687,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     handed over.
   - **Recorded:** the outcome cell of row E55 and the reading under `experiments/coords/results/e55_overlay_stretch/`
     (checked file by file against the DGX); the upload sheet no longer lists an embryo file in work.
+- 2026-11-24 (jj), row K29 is read: STRUCK, no cD7 file, C2 stays (state at 07:23 UTC, 2026-11-24). Written by the AI
+  assistant, which quotes the read's statement only.
+  - **The read's own words:** "Try K29: STRUCK (S3, S4): no file; C2 stays." Five T3 tries counted (76 to 80). By the
+    captain's yes bound to this read (ruling row R36), `T3_c2_s2_cD7.h5ad` is not built and not uploaded. The
+    challenger had given the read about 0.75 to strike. No later composition tier is tried on any T3 file.
+  - **Recorded:** the outcome cell of row K29 and the reading under `experiments/t3_decomp/results/k29_cd7_read/`
+    (checked file by file against the DGX); the upload sheet no longer lists the cD7 file in work.
