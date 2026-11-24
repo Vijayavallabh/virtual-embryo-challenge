@@ -1954,7 +1954,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     alike). Rows, order, count and every random stream of the default are unchanged; stream 47's candidate draw still
     runs. Left at None, the result is bit-identical to a call without it. Row E53 (as specified) adds the harness-only
     forms `vec.shape_interp.GEODESIC_FORMS`, which also take every cell's joint PCs (`_joint_pc_loadings` of the
-    coupling's anchors).
+    coupling's anchors). Row E55 (as specified) adds `vec.shape_interp.COMPOSED_FORMS` and its harness-only placebos
+    `vec.shape_interp.COMPOSED_CONTROLS` (the overlay's union stretched; the pool is the overlay's, mapped alike).
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -1984,7 +1985,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     if shape_form is not None:
         from vec import shape_interp
 
-        if shape_form not in shape_interp.ALL_FORMS and shape_form not in shape_interp.GEODESIC_FORMS:
+        if (shape_form not in shape_interp.ALL_FORMS and shape_form not in shape_interp.GEODESIC_FORMS
+                and shape_form not in shape_interp.COMPOSED_FORMS and shape_form not in shape_interp.COMPOSED_CONTROLS):
             raise ValueError(f"shape_form must be one of {shape_interp.ALL_FORMS}, got {shape_form!r}")
         if positions != POSITIONS[1]:
             raise ValueError("shape_form acts on the exact-position cloud: pass positions='floor_exact'")

@@ -182,7 +182,10 @@ machine, and an official upload needs the captain's go-ahead.
           before the size rule (so the pre-registered size and the count rule are untouched); the record gains a
           shape_interp block. On a test board it is refused unless --shape-interp-test-ok (the captain's yes) is also
           given. With --row-order copy_parity the order is fixed: form, size, jitter, cloud guard, then the row order
-          on the final coordinates
+          on the final coordinates. Row E55 (as specified, branch campaign/emb-osr) adds --shape-interp overlay_stretch
+          (vec.shape_interp.COMPOSED_FORMS: the overlay's union stretched along its own principal axes to the brackets'
+          interpolated profile), under the same refusals; its record block gains f1, f2, f3, g, the target SDs and the
+          thin SD. Its placebos (overlay_stretch_anti, overlay_stretch_axes) are harness-only and refused by name
           --copy-rows (off by default; the investigator's Option A, the captain's order of 2026-11-21, docs/PLAN.md
           decision log 2026-11-21 (h); row E50 as specified): with --method fgw_shape0 --positions floor_exact and
           --expression mixture or series only, the file takes the floor copy's own rows, order, count and float32
@@ -360,6 +363,7 @@ HEART_OTS_STEP = ("row H28's strength-scaled b0_trend step: the vec.harness.b0_t
                   "the size step, on D's draw, organ-cut pool, count rule, size procedure and seed")
 # --shape-interp (row E49 as drafted; no ruling): off by default; the fixed order of the steps when it is given
 SHAPE_INTERP_OFF = "none"
+OSR_TEST_BLOCKS = "1|2,3"  # row E55: overlay_stretch on a test board only with these bracket blocks (seed-free)
 SHAPE_INTERP_ORDER = ("floor_exact positions, the shape form, the size rule's RMS rescale, the duplicate jitter, the "
                       "cloud guard, then --row-order copy_parity if given (on the final coordinates)")
 # --copy-rows (off by default; the investigator's Option A, the captain's order of 2026-11-21, docs/PLAN.md decision log
@@ -1989,6 +1993,8 @@ def build_embryo(a) -> dict:
     if a.row_order_test_ok and a.row_order != t2_build.ROW_ORDERS[1]:
         raise SystemExit("--row-order-test-ok is for --row-order copy_parity only")
     shape = None if a.shape_interp == SHAPE_INTERP_OFF else a.shape_interp
+    if shape is not None and shape not in (*shape_interp.FORMS, *shape_interp.COMPOSED_FORMS):  # by name: no control
+        raise SystemExit(f"--shape-interp {shape}: a harness-only control or an unknown form is never built")
     if a.shape_interp_test_ok and shape is None:
         raise SystemExit("--shape-interp-test-ok is for --shape-interp with a form only")
     if shape is not None and (a.method != "fgw_shape0" or a.positions != t2_build.POSITIONS[1]):
@@ -2040,6 +2046,10 @@ def build_embryo(a) -> dict:
                                                            t2_build.log_panel_counts(after, genes))),
                                           with_coupling=a.expression == "latent",
                                           **({} if shape is None else {"shape_form": shape}), positions=a.positions)
+        if (shape in shape_interp.COMPOSED_FORMS and (not dry or str(board.split).startswith("test"))
+                and res.record.get("shape_interp_blocks") != OSR_TEST_BLOCKS):  # row E55, cell 3: "must be"
+            raise SystemExit(f"--shape-interp {shape} on a test board needs the brackets' blocks {OSR_TEST_BLOCKS}; "
+                             f"they are {res.record.get('shape_interp_blocks')}: refused, nothing written")
         expr_rec = None
         if a.expression == "mixture":
             X = np.empty((len(res.rows), len(genes)), dtype=np.float32)
@@ -2084,7 +2094,9 @@ def build_embryo(a) -> dict:
            "count_decision": count, "target_rms": target,
            "record": {k: v for k, v in rec.items() if not isinstance(v, (dict, list))}}
     if shape is not None:  # written only when the option is given: flat values, no cell number
-        out["shape_interp"] = {"form": shape, "module": "vec.shape_interp", "ruling": None, "row": "E49 (as drafted)",
+        out["shape_interp"] = {"form": shape, "module": "vec.shape_interp", "ruling": None,
+                               "row": ("E55 (as specified)" if shape in shape_interp.COMPOSED_FORMS
+                                       else "E49 (as drafted)"),
                                "order": SHAPE_INTERP_ORDER,
                                **{k.removeprefix("shape_interp_"): v for k, v in rec.items()
                                   if k.startswith("shape_interp_") and not isinstance(v, (dict, list))}}
@@ -2298,12 +2310,14 @@ def build_parser() -> argparse.ArgumentParser:
                                 "in an upload. It assumes the server scores the prediction's rows as the file holds "
                                 "them (file order, full count, no subsample or sort); score_h5ad's _prediction does "
                                 "this in the pinned copy, but the live server's handling is not shown")
-            p.add_argument("--shape-interp", choices=(SHAPE_INTERP_OFF, *shape_interp.FORMS),
+            p.add_argument("--shape-interp",
+                           choices=(SHAPE_INTERP_OFF, *shape_interp.FORMS, *shape_interp.COMPOSED_FORMS),
                            default=SHAPE_INTERP_OFF,
                            help="--method fgw_shape0 --positions floor_exact only: none (the default, every file as "
                                 "built) or one shape form of vec.shape_interp between E7.5 and E8.0 at t = 1/2 on the "
-                                "exact-position cloud, before the size rule (row E49 as drafted). No try read and no "
-                                "ruling: only the captain's ruling puts it in an upload")
+                                "exact-position cloud, before the size rule (row E49 as drafted), or overlay_stretch "
+                                "(row E55 as specified: the overlay's union stretched to the brackets' interpolated "
+                                "profile). No try read and no ruling: only the captain's ruling puts it in an upload")
             p.add_argument("--shape-interp-test-ok", action="store_true",
                            help="--shape-interp on the test board: the captain's yes (off by default; without it the "
                                 "option refuses on a test board before anything loads)")

@@ -29,6 +29,9 @@ Row E53 (as specified; branch campaign/moon-embryo-geodesic) adds two harness-on
 ALL_FORMS (the builder does not offer them): geodesic_overlay (F3's rows on one LDDMM geodesic between the brackets,
 vec.lddmm) and its placebo geodesic_overlay_rot (the fit started from Q in place of R). They need every cell's joint PCs
 (apply_form's `features`).
+Row E55 (as specified; branch campaign/emb-osr) adds COMPOSED_FORMS (overlay_stretch, F3 then F1's stretch on the
+overlay's union) and its harness-only placebos COMPOSED_CONTROLS (overlay_stretch_anti, overlay_stretch_axes), also
+outside ALL_FORMS; the builder offers overlay_stretch only.
 
 Fixed constants (protocol, not tuned): IDENT_DRAWS draws of IDENT_FRAC of a bracket's cells (the emulator's 10 percent
 subsample halved, the truth half's share), from the seed-free streams default_rng([IDENT_STREAM, h]), so a pair of
@@ -356,6 +359,55 @@ def geodesic_overlay(Zb, Za, rows_b, rows_a, perm, R, t_mix: float, *, t: float,
 
 GEODESIC_FORMS = ("geodesic_overlay", "geodesic_overlay_rot")  # row E53: harness candidates only, not in ALL_FORMS
 
+# Row E55 (as specified by the cold challenger, round_1124_t2; branch campaign/emb-osr): F3 then F1's stretch, on the
+# overlay's union. In their own tuples, outside FORMS, CONTROLS and ALL_FORMS: the builder offers overlay_stretch only,
+# never a control. NEW_STREAM = 56 (alias AXES_STREAM), a stream no build step uses (47 the floor-exact draw, 48 the
+# row order, 49 the identifiability draws, 50 ROT_STREAM, 51 to 52 vec.lddmm, 53 to 55 vec.t2_mmflow).
+COMPOSED_FORMS = ("overlay_stretch",)
+COMPOSED_CONTROLS = ("overlay_stretch_anti", "overlay_stretch_axes")
+COMPOSED_CONTROL_OF = {"overlay_stretch": COMPOSED_CONTROLS}
+NEW_STREAM = 56
+AXES_STREAM = NEW_STREAM  # the same constant, by the name the code first used
+
+
+def axes_rotation(seed: int) -> np.ndarray:
+    """overlay_stretch_axes' uniform proper rotation Q: scipy Rotation.random from default_rng([seed, NEW_STREAM])."""
+    from scipy.spatial.transform import Rotation
+
+    return check_rotation(Rotation.random(random_state=np.random.default_rng([int(seed), NEW_STREAM])).as_matrix(),
+                          "Q")
+
+
+def overlay_stretch(Zb, Za, rows_b, rows_a, perm, R, t_mix: float, *, t: float, variant: str = "arm",
+                    Q=None) -> ShapeResult:
+    """Row E55 (OSR): U = overlay(...).Z, the union in the earlier bracket's normalised frame; blocks =
+    bracket_blocks(Zb, Za); target = log_interp_sds(normalised_sds(Zb), normalised_sds(Za), t) (variant "anti":
+    anti=True); s_o, V = principal(U); f = stretch_factors(s_o, target, blocks); M = stretch_matrix(V, f) (variant
+    "axes": the arm's own f along the turned frame V @ Q, M_ax = (V Q)^T diag(f) (V Q)); Z' = mean(U) + (U - mean(U))
+    @ M. The pool is the same affine map of overlay's pool, with overlay's pool weights. The caller applies the size
+    rule, the jitter and the cloud guard after it, unchanged. Record (flat): the blocks, f1 to f3, g = log(f1 / f2),
+    the target SDs and the thin SD of Z' (and of U, thin_sd_union)."""
+    if variant not in ("arm", "anti", "axes"):
+        raise ValueError(f"unknown variant {variant!r}")
+    Zb, Za = _check_cloud(Zb, "Zb"), _check_cloud(Za, "Za")
+    ov = overlay(Zb, Za, rows_b, rows_a, perm, R, t_mix)
+    U = _check_cloud(ov.Z, "U")
+    blocks = bracket_blocks(Zb, Za)
+    target = log_interp_sds(normalised_sds(Zb), normalised_sds(Za), t, anti=variant == "anti")
+    s_o, V = principal(U)
+    f = stretch_factors(s_o, target, blocks)
+    if variant == "axes":
+        Q = check_rotation(Q, "Q")
+        M = stretch_matrix(V @ Q, f)
+    else:
+        M = stretch_matrix(V, f)
+    m = U.mean(0)
+    Zn = _affine(U, m, M)
+    rec = {"blocks": blocks_text(blocks), **{f"f{j + 1}": float(f[j]) for j in range(3)},
+           "g": float(np.log(f[0] / f[1])), **{f"target_sd{j + 1}": float(target[j]) for j in range(3)},
+           "thin_sd": float(normalised_sds(Zn)[-1]), "thin_sd_union": float(s_o[-1])}
+    return ShapeResult(Z=Zn, pool=_affine(ov.pool, m, M), pool_weights=ov.pool_weights, record=rec)
+
 
 def apply_form(form: str, *, Z, Zb, Za, t: float, R, seed: int, rows_b, rows_a, perm, t_mix: float,
                features=None) -> ShapeResult:
@@ -374,6 +426,14 @@ def apply_form(form: str, *, Z, Zb, Za, t: float, R, seed: int, rows_b, rows_a, 
         return out
     if features is not None:
         raise ValueError(f"{form} takes no features")
+    if form in COMPOSED_FORMS or form in COMPOSED_CONTROLS:  # row E55: dispatched before the FORMS branch
+        variant = {"overlay_stretch": "arm", "overlay_stretch_anti": "anti", "overlay_stretch_axes": "axes"}[form]
+        out = overlay_stretch(Zb, Za, rows_b, rows_a, perm, R, t_mix, t=t, variant=variant,
+                              Q=axes_rotation(seed) if variant == "axes" else None)
+        out.record = {"form": form, **out.record, "ident_stream": IDENT_STREAM}
+        if variant == "axes":
+            out.record["axes_stream"] = NEW_STREAM
+        return out
     if form == "stretch_ratio":
         out = stretch_ratio(Z, Zb, Za, t)
     elif form == "stretch_ratio_anti":
