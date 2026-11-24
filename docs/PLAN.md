@@ -14091,3 +14091,19 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **What follows.** Row K30 (the practice read, world weight `plain`) is written after its code and the builder
     option pass an independent review; the read runs on `~/v/vec-campaign-c`; if it names an arm, all three files are
     built twice and handed over.
+- 2026-11-24 (sss), the step-change round's further tripwire reports (state at 22:54 UTC, 2026-11-24). Written by the
+  AI assistant; no value or order is repeated here.
+  - **What the blind agents flagged, each used for nothing by its own report.** (1) The last round's design and
+    challenge files of T1, T3 and the embryo, read before their withdrawal at 21:43 and 22:08 UTC: each names an
+    earlier banked file or lists uploads, which with the banked files the brief names implies an order. (2) Code and
+    ledger text that names an earlier banked T1 file (`experiments/builds/build_test.py` docstrings, comments and
+    constants; `tests/test_t1_hm_build.py`; the first cells of rows R35, R39, R40, R44, R46 and R51), and ledger rows
+    E47a and E48 and `experiments/gate/results/second_file_value_2026-11-18.txt`, which name earlier embryo uploads:
+    the same implied order. (3) `docs/DATA_POLICY.md`'s entry quoting another team's leaderboard range (2026-11-04
+    (d)). (4) `experiments/t3_decomp/k18_built_files.py`'s module docstring, one clause of which states a qualitative
+    fact about one term of a T3 test upload (no value, rank or order); the challenger who met it gave no odds on the
+    depth premise.
+  - **What follows.** Orders of the form 'the banked file above another upload' are implied by any brief that names
+    the banked file as the control; the round's rules now withdraw the last round's folder and name the code passages
+    to skip. Item (4) is a per-term statement about a test upload inside tracked code that blind agents read; it
+    should be removed from the docstring in a later commit, with this entry as its record.
