@@ -13946,3 +13946,11 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     combined-momentum file took T1's best (entry (bbb)). `T1_s2rc_MS.h5ad` (row R23's MS step at 1.0; sha256
     6103d10535665634ee0cad3390590a5df132d1805682fb1d309bb19581fdaa5e, checked on disk) leaves the skipped section and
     is due now; row R23's last cell says so; nothing is rebuilt.
+- 2026-11-24 (ddd), the captain reports two more headlines and each board's rule is applied by its letter (state at
+  19:49 UTC, 2026-11-24). Written by the AI assistant, which records the headlines only.
+  - **The paste (headlines, each with its file named for its board; both shown as submitted 2026-11-24 19:45):**
+    T1:test `T1_s2rc_MS.h5ad` 72.65; T3:bcatenin `T3_c2_s2_s067.h5ad` 63.73. Each file's sha256 on disk matches its
+    record. The paste's per-metric lines, ranks and file sizes are not recorded or used.
+  - **Each rule by its letter.** Both scored below their boards' best, which stays (T1 the combined-momentum file, T3
+    C2). No condition turns on either. T3's fourth line is spent: its three files all scored below C2. Standing
+    unchanged: overall 203.255.
