@@ -1,0 +1,12 @@
+The heart's fourth line (row R49): T2heart_organ_ts075_half.h5ad, T2heart_organ_ts125_half.h5ad
+==========================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-24 in the worktree ~/v/scratch/h29b-wt at commit ee53e77 (main; clean tree) with `experiments/builds/heart_trend_line_f.sh ee53e776aba1c183bad6c01a8ed6955a0197fd8d f1 R49`, after its refusal path was traced (exit 96).
+Every exit record is 0. The identity rebuilds gave the recorded bytes of the uploaded halves:
+  D/T2heart_organ_half.h5ad  1b4342c151c19dfc827d4b7a310c6a0fa8908f1e369836ebffb22c27c93b4f00
+  OTS05/T2heart_organ_ts05_half.h5ad  f918e76731aac18eda3b46c8a35c18f26ae00a1a6a1db36d33e7515704cc43ea
+  OTS10/T2heart_organ_ts10_half.h5ad  ee9e0e68d62e8d1448f1dbbbce1146dc5fb4877e94d77fc289fa82744acb06a9
+The new files, each built twice into separate folders with one sha256, halved, format-checked, each stamp of this commit and clean:
+  T2heart_organ_ts075_half.h5ad  1a66b5a5a9d5388d806f548d5c51570345f02e340a6ef2d4ce3490d1e2673f5d
+  T2heart_organ_ts125_half.h5ad  adc3243665949f9802056216d86443e2ea0d45d07534013f99e26afb7e57ade0
+The local copies under runs/manual_upload/ are the same bytes. No log, size, shape or sidecar of these builds was read. No score of either exists at this record.

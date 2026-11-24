@@ -3340,3 +3340,13 @@ f576b64b8b93d79b1269b580df31bd5c6e58246cd4f3eda12cba7d77387087ab (build record
 `experiments/builds/results/embovsb_20b2381_w1.txt`), an extra file beside O, never in its place. Added before any
 score of it. Data used: released challenge data only (the unlocked E7.5 validation file and the released E8.0); no
 outside data.
+
+## Note of 2026-11-24: the files of the heart's fourth line are built (row R49; decision log 2026-11-24 (hhh))
+
+Merged at ee53e77 after an independent review that found no blocker; at that clean commit, on the DGX worktree that
+built D, OTS05 and OTS10, the identity rebuilds gave their recorded bytes, and each file was built twice with one
+sha256 and halved as OTS05 and OTS10 are. **The files:** `runs/manual_upload/T2heart_organ_ts075_half.h5ad`, sha256
+1a66b5a5a9d5388d806f548d5c51570345f02e340a6ef2d4ce3490d1e2673f5d; `runs/manual_upload/T2heart_organ_ts125_half.h5ad`,
+sha256 adc3243665949f9802056216d86443e2ea0d45d07534013f99e26afb7e57ade0 (build record
+`experiments/builds/results/heartf_ee53e77_f1.txt`). Added before any score of either. Data used: released Task 2
+heart stages and the unlocked E10.5 validation file only; no outside data.

@@ -13974,3 +13974,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     f576b64b8b93d79b1269b580df31bd5c6e58246cd4f3eda12cba7d77387087ab** (local copy checked). Due now as an extra file
     beside O. Data used: released challenge data only (the unlocked E7.5 validation file and the released E8.0); no
     outside data.
+- 2026-11-24 (hhh), the files of the heart's fourth line are built, before any score (state at 20:03 UTC, 2026-11-24).
+  Written by the AI assistant, which designed none of it.
+  - `experiments/builds/heart_trend_line_f.sh ee53e77... f1 R49` on `~/v/scratch/h29b-wt`, clean, after a traced
+    refusal; the identity rebuilds gave the recorded bytes; each file built twice with one sha256:
+    **`T2heart_organ_ts075_half.h5ad`** 1a66b5a5a9d5...; **`T2heart_organ_ts125_half.h5ad`** adc324366594.... Due now,
+    together. Data used: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data.
