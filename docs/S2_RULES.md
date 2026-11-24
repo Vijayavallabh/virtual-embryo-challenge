@@ -2456,3 +2456,136 @@ trial on 2026-11-24 with the repository's own `wt_den` and the two pinned tables
 words the file is not built and the line ends at w = 1. `T3_c1_s2_g2.h5ad` does not exist and holds no place in T3's
 order; the option named in row R22's first cell is taken by no builder. Every other T3 file keeps its place and its
 condition.
+
+## Amendment of 2026-11-24: T1's search line on the 2.0 file's command, g_mom's within-type damping (row R22; decision log 2026-11-24 (c))
+
+Added under the amendment "a score-guided search of round steps may run" (row R22). The line was written by a designer
+and corrected by a cold challenger, both started through the route that relays no message and both reporting that they
+met no test score; they were given the order of the six reported T1 headlines and no value. The text below is the
+challenger's, verbatim. The AI assistant designed none of it and states no preference. The captain's words of
+2026-11-23, "Go ahead with yes for both if it would improve our scores", answered a question about an earlier text
+("T1 line 4", decision log 2026-11-23 (ff)) that is not in force and of which nothing is built; the AI assistant reads
+that yes as covering the add-only amendment of row R22's first cell for this line, has told the captain so, and the
+captain can say otherwise. The line's place in the upload order stays the captain's. It is committed at 00:07 UTC on
+2026-11-24, before any T1 headline beyond the six then reported had reached the main session, before any code of its
+options and before any build.
+
+T1 line 5 (under ruling row R22, a score-guided search of round steps; designed by a score-blind analyst and amended
+by a score-blind cold challenger, whose text this is; written after the order of the six reported T1 headlines was
+known and before any other T1 headline, and fixed before any score of its new files and before T1_s2rcCm20's headline
+is returned): g_mom's within-type damping, stepped on row R20's command, the 2.0 file's, `build_test.py t1 --g-mom
+--base lib3 --feng-groups recomputed --feng-fraction-mult 2.0 --captain-ruling R20`, with nothing else changed
+(default seed 1000001, board T1:test, the outside heart atlas's direction step held at 2.0 times the calendar fraction
+2/5 in every file of the line). The scale is the one candidates A and C and lines 2 and 3 already use: dampings 0.5,
+1.0, 1.5 and 2.0. The line's files, each named here with its command and value: the 2.0 file (damping 0.5, multiplier
+2.0, `T1_s2rcB2.h5ad`, sha256 52897fe375b8a81afffa788592047c30361824148b00a8176514385060518837, already scored); line
+3's T1_s2rcCm20 (damping 1.0, multiplier 2.0, `build_test.py t1 --g-mom --base lib3 --feng-groups recomputed
+--g-mom-damping 1.0 --feng-fraction-mult 2.0 --captain-ruling R22`, built and not scored, sha256
+acce5f5f7097269bffebbfd583833e4c9c1c5ae77f1d5294dde6d13e197f863e as
+experiments/builds/results/t1cline_2a1c248_c1.SHA256SUMS lists it); `build_test.py t1 --g-mom --base lib3
+--feng-groups recomputed --g-mom-damping 1.5 --feng-fraction-mult 2.0 --captain-ruling R22 --out
+<O>/T1_s2rcB2d15.h5ad` (damping 1.5, multiplier 2.0); and the same with `--g-mom-damping 2.0` and `T1_s2rcB2d20.h5ad`
+(damping 2.0, multiplier 2.0). Neither new file is line 2's T1_s2rcA15 or T1_s2rcA20 (dampings 1.5 and 2.0 at
+multiplier 1.0), the text "T1 line 4"'s T1_s2rcCd15 or T1_s2rcCd20 (multiplier 1.5; that text is not in force, nothing
+of it is built, and it binds nothing here), line 1's files (damping 0.5), line 3's files (damping 1.0) or T1_s2rcMSB;
+the "B2" in their names is the 2.0 file's and the "d" stands for the damping. Each new file's command differs from the
+2.0 file's in the damping and in the ruling row the builder takes it under (R22 for R20), as T1_s2rcCm20's already
+does; by build_test.py the ruling row enters only the refusals and the build's sidecar record, never a step, a stream
+or the file's bytes. This entry is also the list of its own that the T1 order rule of 2026-11-21, clause (5), asks of
+any combination: each new file puts a damping of line 2's scale on row R20's multiplier. How the framework's clause
+(3) is met: the line's first step, from damping 0.5 to 1.0 on this command, is a file another line already built and
+named, T1_s2rcCm20; this line takes it as its member and uploads nothing of its own until that member's headline is
+reported. Only if T1_s2rcCm20's headline is strictly above the 2.0 file's has the damping, moved up on this command,
+improved; the line then steps on in that direction to 1.5. If it has not, the line ends: it does not step below
+damping 0.5, because no candidate on any line uses a damping below 0.5 and at 0 g_mom would be removed, which is not a
+round step of this setting. The rule: the line's best is the highest headline among the line's uploaded files,
+starting from the 2.0 file's. If T1_s2rcCm20 has been uploaded and its headline is strictly above the 2.0 file's, the
+next file of the line is T1_s2rcB2d15. Otherwise the line ends with no new upload: that includes T1_s2rcCm20 level
+with or below the 2.0 file, T1_s2rcCm20 never uploaded, and its headline not reported. If T1_s2rcB2d15's headline is
+strictly above the line's best, the next file is T1_s2rcB2d20; otherwise the line ends. The line ends after
+T1_s2rcB2d20 in any case: at most two new files. Ties do not beat. A file of the line that is never uploaded, or whose
+headline the captain has not reported by 2026-11-26 11:59 UTC, does not beat: the line ends there, and no later file
+of the line is uploaded while that headline is unreported. Only the headlines of the team's own T1 uploads of the 2.0
+file, T1_s2rcCm20, T1_s2rcB2d15 and T1_s2rcB2d20, as the captain reports them, are compared, by higher, lower or equal
+and nothing else. The headlines of the first upload, R13's file, A, B, C, MS, F, T1_s2rcMSB, line 1's other files
+(T1_s2rcB25, T1_s2rcB30), line 2's new files (T1_s2rcA15, T1_s2rcA20), line 3's T1_s2rcCm25 and any other T1 file do
+not enter this line, and this line's new files' headlines enter no other line. The 2.0 file and T1_s2rcCm20 are each
+one upload: their headlines serve the lines that already name them and this line, and each is counted once on the
+board; this line changes no condition, member or order of lines 1, 2 or 3 or of the combined momentum list. No size of
+a headline or of a difference, no per-metric value and no interpolated value is read, and no value is fitted from the
+sizes of scores. No property of a hidden sample is inferred or bounded from these scores, in code, text or reasoning;
+in particular no outcome of this line is read as evidence on the depth of the hidden E12.5 sample. No value between
+the half steps and none above 2.0 is tried on this command, and the multiplier is not moved in this line. The base,
+the setting and the step were chosen from the reported order alone (which file stands above which); no size of any
+headline or difference entered. Order: every T1 file queued by an earlier decision-log entry (T1_s2rcMSB in the place
+the captain gave it, and any file an earlier entry queues on its own condition) keeps its place, and lines 1, 2 and 3
+keep theirs. When more than one line has a next file ready, line 1's goes first, then line 2's, then line 3's, then
+this line's, unless the captain says otherwise. Stated plainly: at most six T1 slots remain if every slot is used. In
+the order on record T1_s2rcMSB, T1_s2rcB25, T1_s2rcA15 and T1_s2rcCm20 take the first four, so this line's member is
+reported at the earliest after the fourth. Whenever T1_s2rcB2d15 is due, line 3's T1_s2rcCm25 is due too (T1_s2rcCm20
+above the 2.0 file is above C). So under that order T1_s2rcB2d15 reaches the sixth slot only if neither T1_s2rcB30 nor
+T1_s2rcA20 is due, and T1_s2rcB2d20 reaches no slot. A different place for T1_s2rcB2d15 needs the captain's own words
+naming the file it goes ahead of; every file it passes moves back one slot, and a file moved back from the sixth slot
+is not uploaded. A new file counts only after five conditions are met. First, row R22's first cell is amended by the
+captain's order, adding and removing nothing else, to name `--g-mom-damping 1.5 --feng-fraction-mult 2.0` and
+`--g-mom-damping 2.0 --feng-fraction-mult 2.0` each in backticks with `--captain-ruling R22`; the builder takes each
+pair only with `--captain-ruling R22` (refused without it and with R20, R23, R26 or any other row), and only while row
+R22's first cell names that combined option (the bare `--g-mom-damping 1.5` and `--g-mom-damping 2.0` of line 2, and
+`--feng-fraction-mult 2.0` of row R20, do not count). The pair's test stands in `_t1_candidate` beside line 3's
+`_is_line3`, before the multiplier's routing to `_t1_ruled` (which keeps refusing any damping other than 0.5 with 2.0)
+and before line 2's damping routing (which keeps refusing any multiplier other than 1.0); `_bet_refusals` lets the
+ordered pair through by its own predicate. The pair is refused with `--direction-momentum`, `--released-bet`,
+`--bet-strength`, `--no-hold-unbracketed`, a seed other than 1000001, a board other than the test board, a dry run,
+and any command but R13's options plus the pair; every other pair of the two options is taken or refused exactly as
+before. The builder writes for each new file a `t1_candidate` order text and a g_mom rule text that name this fifth
+line (g_mom's text is chosen on the damping and the multiplier together, not on the damping alone, which today names
+line 2's second line), while what it writes for T1_s2rcA15 and T1_s2rcA20 stays as it was; this is shown by the
+builder's tests on synthetic stages and by the reviewer's reading of the code, and nobody opens a test build's sidecar
+record. Second, an independent reviewer has passed the change and confirmed that it touches only option routing,
+refusals, the record texts, tests and the launcher, and no constant or step of g_mom, the atlas step or any other
+file. Third, on ~/v/vec-campaign-d, at one clean commit holding the reviewed change and the amended row R22, these
+commands rebuild these bytes (each sha256 as the inputs or the committed hash lists in experiments/builds/results/
+give it): `build_test.py t1 --g-mom --base lib3 --feng-groups recomputed` R13's
+(ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f); the same with `--g-mom-damping 1.0` A's
+(76865826f5a3741c7585f81c4241048ca1a95b5791ebb3c8feb1f2b536678ce4); with `--feng-fraction-mult 1.5` B's
+(c7240cb6a7f7ee93d037f437832efbaad004f1fbe608d80072f8efd5d20a0062); with `--g-mom-damping 1.0 --feng-fraction-mult
+1.5` C's (31477ef7df5d5374a74a8249c570217020c593916ab4d3780049b7b3f87b0620); with `--feng-fraction-mult 2.0
+--captain-ruling R20` the 2.0 file's (52897fe375b8a81afffa788592047c30361824148b00a8176514385060518837); with
+`--feng-fraction-mult 2.5 --captain-ruling R22` T1_s2rcB25's
+(ccb7c457c0e8ac8ac668bcea17bc61ed22f414f58ab5a63e946cb2f08c4f4e77); with `--g-mom-damping 1.5 --captain-ruling R22`
+T1_s2rcA15's (e2334137b54d98b04e9dece90213987e61fe9aa15a3fb8d85e6c262d8fb5ba75); with `--g-mom-damping 2.0
+--captain-ruling R22` T1_s2rcA20's (372713686782be273a52427140eab652517e35b679f54fc2a969484dee730218); with
+`--g-mom-damping 1.0 --feng-fraction-mult 2.0 --captain-ruling R22` T1_s2rcCm20's
+(acce5f5f7097269bffebbfd583833e4c9c1c5ae77f1d5294dde6d13e197f863e); with `--direction-momentum all --captain-ruling
+R23` MS's (6103d10535665634ee0cad3390590a5df132d1805682fb1d309bb19581fdaa5e); and with `--feng-fraction-mult 1.5
+--direction-momentum all --captain-ruling R26` T1_s2rcMSB's
+(78bb17eea5721e590cfd2c9f707e9cd6f2f496e081acede4f697dc4035871da2). Any mismatch stops the run and the line's files do
+not count. Fourth, after the launcher has been traced with bash -x on a harmless path, the file has been built twice
+there from that commit with one sha256, each stamp saying that commit and clean, and has passed the format check.
+Fifth, its sha256 has been added to this entry before its score. A file not ready by 2026-11-25 12:00 UTC drops and
+the line ends. No free T1 slot before 2026-11-26 11:59 UTC also ends the line. No file is rebuilt, re-seeded, resized
+or changed after a score. Void: the line is void unless this entry is committed to the decision log before any T1
+headline other than the six reported when it was written (the 2.0 file, C, B, the first upload, A, R13's file) reaches
+the main session, and in any case before T1_s2rcCm20's headline is returned and before T1_s2rcB2d15 is uploaded. It is
+void if the builder's code at the build commit writes for a new file a multiplier other than 2.0, a damping other than
+the file's, or another line's text, or if any file is rebuilt, re-seeded, resized or changed after any score. Practice
+evidence, stated plainly: rows T49 and T59 read g_mom's damping at 0.75 and 1.0 ahead of 0.5 on the two E9.5 -> E10.5
+cuts, at the practice fraction's 1.0 multiple, a labelled in-sample diagnostic on one truth (the damping was a size
+chosen on the cuts that kept g_mom, so the adoption rule cannot keep it), with a response close to straight in the
+damping up to 1.0; row T59 found that gain above a no-development twin and a permuted control; row T61 holds an arm at
+damping 1.0 (`gmom_s1`). In the rows read for this line no T row reads any damping above 1.0, on any command, and none
+reads any damping together with an atlas step above the practice fraction's 1.0 multiple, so nothing on practice reads
+a damping with the 2.0 step. Row T59's five worlds kept the gain of damping 1.0 over 0.5 positive in each but made it
+smaller as the truth stood deeper against the reference: largest where library 3's truth was thinned, smallest, and
+level by try T46's test, where the reference was thinned to a half, where the variogram term's part fell on every
+seed; that row itself says a thinned reference is not a deeper truth. T1's depth stays closed; this line moves no
+depth (each edited cell keeps its expected depth through apply_factors with keep_depth; the realised depth is a draw
+whose spread grows with the factors, as in line 2's files; the cells, their number, shares and scope and the advance
+draw are untouched), and no outcome of this line is read about depth. At damping 1.5 and 2.0 entries zeroed at 0.5
+come back and more entries reach the clip at log 3, so the step is not a plain scaling of T1_s2rcCm20's. The 2.0 step
+and a larger g_mom both move expression in the cardiomyocytes and the endocardium, so the two may overshoot together
+rather than add. So the sign of this line's step is unmeasured on practice. The method report says that on the 2.0
+file's command (the atlas step at 2.0 times the calendar fraction) g_mom's dampings 0.5 and 1.0 and each of 1.5 and
+2.0 that was uploaded were tried, names any file built and not uploaded, and says that the best headline was kept.
+Data used: as R13's file (released challenge data and the outside heart atlas on recomputed groups, register row
+X002). Each upload is the captain's own act.
