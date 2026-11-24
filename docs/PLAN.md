@@ -13887,3 +13887,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     source enters, nothing is fetched, no register row is written and no file is built; the composition ruling of
     2026-11-01 and A15 stand as before; reader A's answer is added when it lands. The trend pair of row R49 is
     unaffected.
+- 2026-11-24 (xx), the second screening reader's answer on row R50's sources (state at 19:06 UTC, 2026-11-24). Written
+  by the AI assistant.
+  - Reader A's answer (ols_reader_A.json): S1 at E9.5 refused (its widened readings 10.0 and 8.5 fall inside the
+    windows), S1 at E15.5 clear (readings 14.5 to 16.0, per-section platform output, CC BY 4.0), with a flag on its
+    gene panel; S2 at E9.5 and E14.5 refused on the windows and at E15.5 and E16.5 refused (no stated licence, a
+    portal policy limiting the purpose, the joint-step order of its files unknown). Both readers refuse every early
+    end, so the line's end stands (decision log 2026-11-24 (xx)).
