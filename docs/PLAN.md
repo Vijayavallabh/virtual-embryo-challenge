@@ -13762,3 +13762,20 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Corrected:** the sheet lists eight files due now and `T3_c2_s2_g2.h5ad` alone as last of all, with the words
     that would place it ahead of a named file. The main session's two replies to the captain after entry (nn) listed
     it among the files to upload now; its next reply says so and corrects it.
+- 2026-11-24 (pp), the captain lifts the limit on uploads for 48 hours and orders new approaches with many outside
+  datasets (state at 17:18 UTC, 2026-11-24). Written by the AI assistant.
+  - **The captain's message, verbatim but for the target figure, which is left out of the record:** "Also we have
+    unlimited uploads for the next 48 hours. So go ahead with implementing approaches, utilizing 100s of datasets to
+    improve our score above [a target total, left out of the record] at all drastic costs".
+  - **Recorded as ruling row R42.** Uploads: no limit for 48 hours from about 17:15 UTC, on the captain's word, within
+    the challenge's last upload time on record (2026-11-26 11:59 UTC); row R34's 20 is superseded. The upload sheet
+    now lists every due file as going now, with MSB and A15 reached; `T3_c2_s2_g2.h5ad` keeps its rule's place unless
+    the captain places it ahead of a named file.
+  - **The AI assistant's reading of the order of work.** It covers every effort, agent and compute, and outside data
+    at scale. It does not reach the organisers' rules (the windows, the genotype rule, removal of in-window cells,
+    disclosure, scores that choose and never compute), and the team's own bars still need the captain's words file by
+    file (closed levers, the T3 pathway tier, prior biology of the held-out gene, the assistant's recusals). The
+    assistant designs no line: four designers blind to test scores, one per board, are started through the Agent tool
+    to scout outside datasets inside the windows and to name new files (fast steps on the banked files' open settings,
+    and data-driven approaches with a cheap practice gate each). Each design then goes to a cold challenger, and each
+    new file to the captain by name before it is built for upload.

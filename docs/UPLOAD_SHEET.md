@@ -1,19 +1,19 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-24, 17:12 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-24, 17:18 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
-its row was written. No file here has a score. The allowance, on the captain's word of 2026-11-24: 20 uploads over 24
-and 25 Nov, no cap per board (decision log 2026-11-24 (n), row R34). A lower score never replaces a board's best. The
+its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
+on uploads for 48 hours from about 17:15 UTC that day, within the challenge's last upload time on record (2026-11-26 11:59
+UTC); row R34's 20 is superseded. A lower score never replaces a board's best. The
 order within a board is the order on record in `docs/S2_RULES.md` and the decision log; the captain may use any other
 order. This sheet holds no score: where a file waits on a condition, the condition is given in words.
 
-## The 20 uploads: what is due now and what waits on a score
+## The uploads: what is due now and what waits on a score
 
-Four of the 20 uploads were used on 2026-11-24, one per board (decision log 2026-11-24 (nn)); 16 are left. Eight files
-are due now: their conditions are met or they have none, and with no cap per board none of them has to wait for
-another. Six more wait on one reported score each. Three T1 files stand last by the captain's words of 2026-11-24 and
-take what is left, and `T3_c2_s2_g2.h5ad` comes after every one of them by its own rule. That is 18 if every condition
-is met, more than the 16 left; conditions that fail free their uploads. Between boards the captain decides; by the
-challenge's formula a point on T1 or T3 counts twice a point on the heart or the embryo board.
+Four uploads were used on 2026-11-24 before the limit was lifted (decision log 2026-11-24 (nn)). With no limit (row
+R42, decision log 2026-11-24 (pp)), every due file can go now and nothing waits for room: eight files are due, and the
+two T1 files kept last are reached as well. Six more wait on one reported score each. `T3_c2_s2_g2.h5ad` keeps its
+place after every queued file, by its rule. Between boards the captain decides; by the challenge's formula a point on
+T1 or T3 counts twice a point on the heart or the embryo board.
 
 **Due now (8), in the order of each board's table below:**
 
@@ -31,13 +31,14 @@ challenge's formula a point on T1 or T3 counts twice a point on the heart or the
   `T1_s2rcB25d20.h5ad`: only if B25d15 scores strictly above Cm25
 - `T1_s2rcCm30.h5ad`: only if `T1_s2rcCm25.h5ad` scores strictly above Cm20
 
-**Last on T1, if uploads are left (3):** `T1_s2rcMSB.h5ad`, `T1_s2rcA15.h5ad`, then `T1_s2rcA20.h5ad` only if A15 scores
-strictly above A.
+**Last on T1 (3):** `T1_s2rcMSB.h5ad`, `T1_s2rcA15.h5ad`, then `T1_s2rcA20.h5ad` only if A15 scores strictly above A.
+With no limit they are reached: MSB and A15 can go with the due files, after T1's due search files (the main session's
+reading of the captain's words that kept them; the captain may place them anywhere).
 
 **Last of all (1):** `T3_c2_s2_g2.h5ad`. By its rule (`docs/S2_RULES.md`, amendment of 2026-11-24 on T3's third search
 line, "Place and cost"; row R41) and the captain's default-place words "yes, T3_c2_s2_g2", it goes after every file
-queued at that yes, across boards, so it is reached only if uploads are left. The captain can place it ahead of a
-queued file with the words "yes, T3_c2_s2_g2 ahead of" and that file's name.
+queued at that yes, across boards. With no limit on uploads that place takes nothing from another file; the captain's
+words "yes, T3_c2_s2_g2 ahead of" and a queued file's name (for example `T3_ck_s2`) would send it with the due files.
 
 **In work, not built:** none.
 
@@ -76,8 +77,8 @@ search file; the captain may place them anywhere.
 | sixth search | `T1_s2rcB25d15.h5ad` | `5bc2b32e4688439f29c54c1b1203325595d996c37df30ba2b9ff26f27a60f4c6` | only if `T1_s2rcCm25.h5ad` scores strictly above both the 2.5 file (`T1_s2rcB25.h5ad`) and the 2.0 file |
 | sixth search | `T1_s2rcB25d20.h5ad` | `e6520dbee0fdc3f1336bc3f9de1e99e8a501de2d440b3f9085c88b5c7ecfb3f6` | only if B25d15 scores strictly above Cm25 |
 | seventh search | `T1_s2rcCm30.h5ad` | `807fe097c88ee779430896002a34635aeffbc99b433c68ebdb7bd41d8af2cbbe` | only if `T1_s2rcCm25.h5ad` scores strictly above Cm20 |
-| kept, last | `T1_s2rcMSB.h5ad` (combined momentum) | `78bb17eea5721e590cfd2c9f707e9cd6f2f496e081acede4f697dc4035871da2` | none; last on T1, after every search file |
-| kept, last | `T1_s2rcA15.h5ad` (the second search's file) | `e2334137b54d98b04e9dece90213987e61fe9aa15a3fb8d85e6c262d8fb5ba75` | none (its condition is met); last on T1, after every search file |
+| kept, last | `T1_s2rcMSB.h5ad` (combined momentum) | `78bb17eea5721e590cfd2c9f707e9cd6f2f496e081acede4f697dc4035871da2` | none; last on T1; with no limit on uploads, after T1's due search files |
+| kept, last | `T1_s2rcA15.h5ad` (the second search's file) | `e2334137b54d98b04e9dece90213987e61fe9aa15a3fb8d85e6c262d8fb5ba75` | none (its condition is met); last on T1; with no limit on uploads, after T1's due search files |
 | kept, last | `T1_s2rcA20.h5ad` | `372713686782be273a52427140eab652517e35b679f54fc2a969484dee730218` | only if A15 scores strictly above A |
 
 Never uploaded: `builds/T1_s2.h5ad`.
