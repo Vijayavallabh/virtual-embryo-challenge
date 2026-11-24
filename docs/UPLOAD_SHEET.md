@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-24, 19:35 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-24, 19:40 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -9,26 +9,26 @@ order. This sheet holds no score: where a file waits on a condition, the conditi
 
 ## The uploads: what is due now and what waits on a score
 
-Fifteen uploads were used on 2026-11-24: four before the limit was lifted (decision log 2026-11-24 (nn)) and eleven
-after (decision log 2026-11-24 (rr), (vv), (yy) and (aaa)). With no limit (row R42, decision log 2026-11-24 (pp)),
-every due file can go now and nothing waits for room: six files are due (four T1 search files whose conditions row R43
-dropped, and two files of T3's fourth line), and the two T1 files kept last are reached as well. Only
-`T1_s2rcA20.h5ad` waits on a score. `T3_c2_s2_g2.h5ad` keeps its place after every queued file, by its rule. Between
-boards the captain decides; by the challenge's formula a point on T1 or T3 counts twice a point on the heart or the
-embryo board.
+Seventeen uploads were used on 2026-11-24: four before the limit was lifted (decision log 2026-11-24 (nn)) and
+thirteen after (decision log 2026-11-24 (rr), (vv), (yy), (aaa) and (bbb)). With no limit (row R42, decision log
+2026-11-24 (pp)), every due file can go now and nothing waits for room: five files are due (four T1 search files whose
+conditions row R43 dropped, and one file of T3's fourth line), and the T1 file kept last, A15, is reached as well.
+Only `T1_s2rcA20.h5ad` waits on a score. `T3_c2_s2_g2.h5ad` keeps its place after every queued file, by its rule.
+Between boards the captain decides; by the challenge's formula a point on T1 or T3 counts twice a point on the heart
+or the embryo board.
 
-**Due now (6), in the order of each board's table below:**
+**Due now (5), in the order of each board's table below:**
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`
-- T3: `T3_c2_s2_gonly_s067.h5ad` (the pair's other file), `T3_c2_s2_s067.h5ad`
+- T3: `T3_c2_s2_s067.h5ad`
 - Embryo: none (every handed-over embryo file is uploaded)
 - Heart: none (the line ended at OTS10)
 
 **Waiting on a score (1):** only `T1_s2rcA20.h5ad`, in the last-on-T1 list below.
 
-**Last on T1 (3):** `T1_s2rcMSB.h5ad`, `T1_s2rcA15.h5ad`, then `T1_s2rcA20.h5ad` only if A15 scores strictly above A.
-With no limit they are reached: MSB and A15 can go with the due files, after T1's due search files (the main session's
-reading of the captain's words that kept them; the captain may place them anywhere).
+**Last on T1 (2):** `T1_s2rcA15.h5ad`, then `T1_s2rcA20.h5ad` only if A15 scores strictly above A. With no limit A15
+is reached and can go with the due files (the main session's reading of the captain's words that kept it; the captain
+may place it anywhere).
 
 **Last of all (1):** `T3_c2_s2_g2.h5ad`. By its rule (`docs/S2_RULES.md`, amendment of 2026-11-24 on T3's third search
 line, "Place and cost"; row R41) and the captain's default-place words "yes, T3_c2_s2_g2", it goes after every file
@@ -44,8 +44,8 @@ if its step 0 (row E56) passes. Heart (rows R49 and R50, decision log 2026-11-24
 screening.
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
-2026-11-23 (cc) and (gg)), and fifteen on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy) and (aaa)). The
-boards' best headlines stand with `T1_s2rcB25.h5ad` (the 2.5 file), `T3_c2_s2.h5ad` (C2),
+2026-11-23 (cc) and (gg)), and seventeen on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy), (aaa) and
+(bbb)). The boards' best headlines stand with `T1_s2rcMSB.h5ad` (the combined-momentum file), `T3_c2_s2.h5ad` (C2),
 `T2heart_organ_ts10_half.h5ad` (OTS10) and `T2embryo_s2x_ov.h5ad` (O).
 
 Five files are skipped by the captain's words of 2026-11-23 and 2026-11-24: they hold no place in any order below and
@@ -71,7 +71,6 @@ with no limit they go after T1's due search files (the main session's reading); 
 | fifth search | `T1_s2rcB2d20.h5ad` | `bd12c66312ba32ab938b4ee71bd5c79e58a154d6fc56434012e6dad907e668dd` | none (the captain dropped its condition: row R43) |
 | sixth search | `T1_s2rcB25d15.h5ad` | `5bc2b32e4688439f29c54c1b1203325595d996c37df30ba2b9ff26f27a60f4c6` | none (the captain dropped its condition: row R43) |
 | sixth search | `T1_s2rcB25d20.h5ad` | `e6520dbee0fdc3f1336bc3f9de1e99e8a501de2d440b3f9085c88b5c7ecfb3f6` | none (the captain dropped its condition: row R43) |
-| kept, last | `T1_s2rcMSB.h5ad` (combined momentum) | `78bb17eea5721e590cfd2c9f707e9cd6f2f496e081acede4f697dc4035871da2` | none; last on T1; with no limit on uploads, after T1's due search files |
 | kept, last | `T1_s2rcA15.h5ad` (the second search's file) | `e2334137b54d98b04e9dece90213987e61fe9aa15a3fb8d85e6c262d8fb5ba75` | none (its condition is met); last on T1; with no limit on uploads, after T1's due search files |
 | kept, last | `T1_s2rcA20.h5ad` | `372713686782be273a52427140eab652517e35b679f54fc2a969484dee730218` | only if A15 scores strictly above A |
 
@@ -81,7 +80,6 @@ Never uploaded: `builds/T1_s2.h5ad`.
 
 | Order | File | sha256 | Condition | Data used |
 |---|---|---|---|---|
-| fourth search | `T3_c2_s2_gonly_s067.h5ad` (the same at 0.67 of the size) | `f744f5dc7d0ecc3026f5d09f80ace1e2d661ede454f03b832e1969edcde508d3` | none; the pair's other file, uploaded with it by row R47 (the pair's first file is uploaded) | released challenge data only: wild-type E8.75 cells and the released knockout table gata4_pooled alone, at 0.67 of C2's held size. No outside data, no gene set. |
 | fourth search | `T3_c2_s2_s067.h5ad` (C2 at 0.67 of its size) | `808700e11c25065ce45a6bea2b50eb15c132e02d314e826c4e05fb37bb6331cd` | none; goes up whatever the pair reads (row R47) | released challenge data only: wild-type E8.75 cells and the released knockout tables transfer_mab21l2_all and gata4_pooled, in C2's size-held product at 0.67 of its size. No outside data, no gene set. |
 | last of all | `T3_c2_s2_g2.h5ad` (the third search's one file: C2 with the Gata4 table at weight 2) | `014d2bf9d8ba7fdc56dcfba2a3b8aa77f0ea20bb806ebc2c1193e483d62712ac` | none; by its rule (row R41) it goes after every other file in this sheet, across boards (see 'Last of all' above), unless the captain places it ahead of a named file | released challenge data only: wild-type E8.75 cells and the released knockout tables transfer_mab21l2_all and gata4_pooled, in C2's size-held product, gata4_pooled at weight 2 (applied powers 0.6159 and 1.2318; C2: c on both). No outside data, no gene set. |
 

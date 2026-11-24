@@ -13928,3 +13928,15 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **The main session's reading after the result, beyond the rule:** the full-size file of the Gata4-alone direction
     scored well below C2, so its 0.67 twin, which moves less along the same direction, has little hope; the rule keeps
     it due all the same.
+- 2026-11-24 (bbb), the captain reports two more headlines and each board's rule is applied by its letter (state at
+  19:40 UTC, 2026-11-24). Written by the AI assistant, which records the headlines only.
+  - **The paste (headlines, each with its file named for its board; both shown as submitted 2026-11-24 19:36):**
+    T1:test `T1_s2rcMSB.h5ad` 73.47; T3:bcatenin `T3_c2_s2_gonly_s067.h5ad` 60.05. Each file's sha256 on disk matches
+    its sheet row. The paste's per-metric lines, ranks and file sizes are not recorded or used.
+  - **Each rule by its letter.** T1: the combined-momentum file scored strictly above the 2.5 file, so it now holds
+    the board's best; no condition turns on its headline. Lines 8 and 9 keep their own words: row R44's line best is
+    the 2.5 file's headline until a file of that line beats it, and row R46's 'the banked file' is the 2.5 file its
+    row names. T3: the gonly pair is spent, both below C2, which keeps the board's best; `T3_c2_s2_s067.h5ad` stays
+    due by row R47.
+  - **Standing:** T1 73.47, T3 63.94, heart 61.79, embryo 69.9; overall 203.255 by the challenge's formula (it was
+    202.445).
