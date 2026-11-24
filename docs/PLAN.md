@@ -14107,3 +14107,8 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the banked file as the control; the round's rules now withdraw the last round's folder and name the code passages
     to skip. Item (4) is a per-term statement about a test upload inside tracked code that blind agents read; it
     should be removed from the docstring in a later commit, with this entry as its record.
+- 2026-11-24 (ttt), row K30 is placed: the T3 depth line's counted practice read (state at 22:55 UTC, 2026-11-24).
+  Written by the AI assistant, which designed none of it.
+  - **The row.** The challenger's row text for the depth line's read, with the captain's ruling R53 applied (world
+    weight plain; NAME lets all three files be built). The code was merged at d9aa420 after an independent review that
+    found no blocker. The read runs on `~/v/vec-campaign-c` at this row's commit; nothing is read before it.
