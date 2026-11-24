@@ -13481,3 +13481,24 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **What the captain can do that most helps the score now, said to the captain:** upload the eight files due now and
     paste the headlines; seven more files and three builds (the two T1 lines and anything a practice read passes) wait
     on those headlines, and builds close at 2026-11-25 12:00 UTC.
+- 2026-11-24 (w), the follow-up on C2: a line is designed and its guard tried on the real tables before any
+  engineering (state at 05:25 UTC, 2026-11-24). Written by the AI assistant, which designed none of it and states no
+  preference.
+  - **The design.** The retry of entry (s) ran to its end: the first designer stopped on a service limit after writing
+    part 1, and a designer on another model, blind to test scores and told only which T3 file stands above which,
+    finished it (part 1 rewritten). Its text, three short files of the round's scratch folder: T3's third search line,
+    the weight g of the table gata4_pooled inside C2's size-held product (B is g = 0, C2 is g = 1), files
+    `T3_c2_s2_g2.h5ad` (g = 2) and, only if that file's headline is strictly above C2's, `T3_c2_s2_g3.h5ad` (g = 3),
+    through the builder's option `--gata4-exponent` routed to `--form c2-s2` under `--captain-ruling R22`; a guard
+    fixed in the text: each new file's den-weighted total within 5% of C2's, tried by the main session on the real
+    tables before any engineering; 'if only g = 3 fails, that file is dropped and the line ends at g = 2 in any case'.
+    It stands only on the captain's own named yes.
+  - **The guard, tried before any engineering** (`lift8/t3_c2g_guard_trial.py`, from released wild-type E8.75 and the
+    two pinned tables only; no fold, no score; the factor at g = 1 checked equal to the builder's C2 value for value):
+    C2's own den-weighted total stands +3.75% from phi_M's (recorded, gating nothing); g = 2: c = 0.6159, +3.99% from
+    C2's, within 5%; g = 3: c = 0.4756, +6.89% from C2's, not within 5%. By the text, `T3_c2_s2_g3.h5ad` is dropped
+    and the line is one file, `T3_c2_s2_g2.h5ad`.
+  - **Next.** A cold challenger on another model attacks the text (whether a built-in weight is an open setting, its
+    overlap with line 2's file, the rule for a one-file line, the guard's reference, the place, the yes-words) before
+    anything is coded; the captain is asked for the named yes at the same time, and that yes counts only for the text
+    as the challenger leaves it in substance. Builds close at 2026-11-25 12:00 UTC.
