@@ -15066,3 +15066,19 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     keeping both sides), register row X005 names pyarrow (cd1daf2), row H38 placed at 5cb5375 before the prep, G0 and
     any read. In the DGX heart checkout, WBH's two G0 records, byte-identical to main's, were moved aside to
     `~/v/scratch/oic_moved/` before the checkout.
+- 2026-11-25 (dddd), the T3 sign cube's gate K31: its first run is INCOMPLETE, not a reading (state at 21:00 UTC).
+  Written by the AI assistant; no score or arm result was seen.
+  - **Before the run.** The cube's code (campaign/t3-cube) had an independent review with one blocker (the 1% library
+    hold applied only to labels holding at least 1% of C2's cells, against R72's "every label"); fixed at 59f8e7c
+    (every drawn label held, a label that cannot be held refuses its vertex; manifest sha256 49d10779...), re-checked
+    with no blocker. Merged at 2b17dfb with the guard tests; row K31 placed unedited at e1a288d; its checks dry-run on
+    the DGX (a first dry run under a throwaway home refused only because uv was off its PATH there).
+  - **Run k31a** (`run_k31.sh e1a288d... k31a` in `~/v/vec-campaign-c`): preflight, tests, C2's identity rebuild (C2's
+    recorded bytes), G0 (CONTINUE) and the guard dry run exit 0; the run step exits 30: one of its four parallel parts
+    (plain g1, seeds 5 to 9) crashed at its start. Its masked traceback names the cause: all four parts write
+    `run_started.json` through one temporary name, and one part's rename removed it from under another. The other
+    three parts finished. The read step was not called: by row K31's cell 8 this is INCOMPLETE, not a reading. The
+    tries count from the start of the run step (row K31's four: T3 tries 86 to 89).
+  - **What follows, by row K18's code-fix rule** (which K31 cites): the race is fixed in code with no change to any
+    computation, the fix is noted as an amendment to row K31, and all worlds are rerun at the new commit into a fresh
+    folder; run k31a's task files are never read and are kept aside.
