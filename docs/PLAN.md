@@ -14559,3 +14559,16 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     proposed. Its exposure note: lines 3 to 5 of the second wave's `T3_PORTFOLIO_challenge.md` relay a test upload's
     per-metric state (used for nothing; the third round's T3 challenger had flagged the same lines). Those lines are
     now redacted in the round folder, unread by the main session, with the removed text's sha256 noted in their place.
+- 2026-11-25 (oo), the captain reports two T1 headlines and the rules are applied by their letter (state at 13:38 UTC,
+  2026-11-25). Written by the AI assistant, which records the headlines only.
+  - **The paste:** T1:test `T1_s2rcMS20m20.h5ad` 70.35, `T1_s2rcMS20H10.h5ad` 73.95 (shown as submitted 2026-11-25
+    13:32 and 13:35). Each file's sha256 on disk matches its sheet row. The paste's per-metric lines, ranks and file
+    sizes are not recorded or used.
+  - **Each rule by its letter.** Both are below MS20m10 (74.35), which holds the board's best. MS20H10 is strictly
+    above MS20 (73.82) and above MS20H05 (73.89); MS20m20 is below MS20. Row R60 names no further file on these. Row
+    R66, read now for the slots whose files all have headlines: C3 (`T1_s2rcMS20H20`) needs MS20H10 strictly above
+    MS20 and above MS20H05: true, so C3 is built once R66's code is merged and reviewed. The axes' winners so far:
+    W(H) is MS20H10 (above MS20 and above MS20H05), W(m) is MS20m10 (MS20m20 is not above MS20); so K1's condition, at
+    least two winners, will hold whatever the d axis gives, and K1's file (and K2's and K3's, which need a d winner
+    too) is fixed when MS20d10's and MS20d20's headlines (and MS20d15's, if sent) are in. C1 waits on the same.
+  - **Standing unchanged:** 204.465.
