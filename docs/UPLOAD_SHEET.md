@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-25, 12:45 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-25, 13:11 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -19,14 +19,13 @@ point on the heart or the embryo board.
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcMSBm10.h5ad`,
   `T1_s2rcB25H20.h5ad`, `T1_s2rcMSBH10.h5ad`, `T1_s2rcMSB_LM16.h5ad`, `T1_s2rcMSBm20.h5ad`, `T1_s2rcMS20d10.h5ad`,
-  `T1_s2rcMS20H05.h5ad`, `T1_s2rcMS20d20.h5ad`, `T1_s2rcMS20m10.h5ad` (together), `T1_s2rcB25MSH05.h5ad`
+  `T1_s2rcMS20d20.h5ad` (together), `T1_s2rcB25MSH05.h5ad`, `T1_s2rcMS20H10.h5ad`, `T1_s2rcMS20m20.h5ad`
 - T3: none (every built T3 file is uploaded)
 - Embryo: none (every built embryo file is uploaded)
 - Heart: none (every built heart file is uploaded)
 
-**Waiting on a score (4):** `T1_s2rcA20.h5ad`, in the last-on-T1 list below. Row R60's three second-wave files, in
-T1's table: `T1_s2rcMS20d15.h5ad` (on MS20d10's and MS20d20's headlines), `T1_s2rcMS20H10.h5ad` (on MS20H05's) and
-`T1_s2rcMS20m20.h5ad` (on MS20m10's; row T73 passed).
+**Waiting on a score (2):** `T1_s2rcA20.h5ad`, in the last-on-T1 list below. Row R60's `T1_s2rcMS20d15.h5ad`, in T1's
+table (on MS20d10's and MS20d20's headlines).
 
 **Last on T1 (2):** `T1_s2rcA15.h5ad`, then `T1_s2rcA20.h5ad` only if A15 scores strictly above A. With no limit A15
 is reached and can go with the due files (the main session's reading of the captain's words that kept it; the captain
@@ -46,9 +45,10 @@ passed) are built (decision log 2026-11-25 (dd)). T1 line 12 (row R60) and row R
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)), and twenty-one on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy), (aaa), (bbb),
-(ddd) and (jjj)). Fourteen more were uploaded and reported on 2026-11-25 (decision log 2026-11-25 (d), (e), (g), (h),
-(k), (m), (n), (ii), (jj) and (kk)). The boards' best headlines stand with `T1_s2rcMS20.h5ad` (MS at the atlas
-multiplier 2.0), `T3_c2_s2.h5ad` (C2), `T2heart_organ_ts125_tk_half.h5ad` (OTK125) and `T2embryo_s2x_ov.h5ad` (O).
+(ddd) and (jjj)). Sixteen more were uploaded and reported on 2026-11-25 (decision log 2026-11-25 (d), (e), (g), (h),
+(k), (m), (n), (ii), (jj), (kk) and (mm)). The boards' best headlines stand with `T1_s2rcMS20m10.h5ad` (MS's own
+damping 1.0 on MS20), `T3_c2_s2.h5ad` (C2), `T2heart_organ_ts125_tk_half.h5ad` (OTK125) and `T2embryo_s2x_ov.h5ad`
+(O).
 
 Four files are skipped by the captain's words of 2026-11-23 and 2026-11-24: they hold no place in any order below and
 stand in a section of their own at the end.
@@ -77,13 +77,11 @@ with no limit they go after T1's due search files (the main session's reading); 
 | tenth search | `T1_s2rcMSBm10.h5ad` (MS's own damping 1.0) | `a0c46efac87deb3756b3ca489a215694640707ea8a8053e254b8a86ee9d7d964` | none (row R51) |
 | tenth search | `T1_s2rcMSBH10.h5ad` (Blood's own momentum at 1.0) | `1cfdfc54d838e03294c444dd284c319724519eb731349667e5bf7f4e79f79250` | none: its gate is met (MSBH05's headline is above MSB's; row R51) |
 | twelfth search | `T1_s2rcMS20d10.h5ad` (g_mom's damping 1.0 on MS20) | `16f35132bb96919f1dcc89ace1dd12f5a3ced88749e889086904e189ab9fd2a8` | none (row R60, wave 1: together with H05, d20 and m10) |
-| twelfth search | `T1_s2rcMS20H05.h5ad` (Blood's own momentum at 0.5 on MS20) | `97589938a95ef957d2aed1117f84147cd027f2a0c3d1c48fbcaf3c67570a87cc` | none (row R60, wave 1) |
 | twelfth search | `T1_s2rcMS20d20.h5ad` (g_mom's damping 2.0 on MS20) | `c5340b1505e4e032e764465d69973910b7071cedbd266487866606c0dafb8cd9` | none (row R60, wave 1) |
-| twelfth search | `T1_s2rcMS20m10.h5ad` (MS's own damping 1.0 on MS20) | `316b67b44df2501db6f5d43ea099bec107ba9422498ed90f1861fc32d70cc1c5` | none (row R60, wave 1) |
 | eighth and ninth, pair | `T1_s2rcB25MSH05.h5ad` (Blood's own momentum at 0.5 on B25MS: the pair of lines 8 and 9) | `7924f1f55624eb9e56df639f6ba3ceab0464acc3ad9f3eb91449380293b7e2d2` | none (row R46: B25H05 and B25MS each scored strictly above the 2.5 file) |
 | twelfth search | `T1_s2rcMS20d15.h5ad` (g_mom's damping 1.5 on MS20) | `cfea3b689696bd2e08abe04ad607ab5a826b300ad6d841c3f2d8fc475f536f63` | only if MS20d10's headline is strictly above MS20's and MS20d20's is not strictly above MS20d10's (row R60) |
-| twelfth search | `T1_s2rcMS20H10.h5ad` (Blood's own momentum at 1.0 on MS20) | `5888b0f4da0124e7561d17a002006d79b26efe48c14e346cf3e45faf1222be3e` | only if MS20H05's headline is strictly above MS20's (row R60) |
-| twelfth search | `T1_s2rcMS20m20.h5ad` (MS's own damping 2.0 on MS20) | `961df1c7b4b8cce40006729f8439701313cb5d2b41b159763e20d1dbd5097000` | only if MS20m10's headline is strictly above MS20's (row R60; its other condition, row T73, R58's gate G0, passed) |
+| twelfth search | `T1_s2rcMS20H10.h5ad` (Blood's own momentum at 1.0 on MS20) | `5888b0f4da0124e7561d17a002006d79b26efe48c14e346cf3e45faf1222be3e` | none: its gate is met (MS20H05's headline is above MS20's; row R60) |
+| twelfth search | `T1_s2rcMS20m20.h5ad` (MS's own damping 2.0 on MS20) | `961df1c7b4b8cce40006729f8439701313cb5d2b41b159763e20d1dbd5097000` | none: its gates are met (MS20m10's headline is above MS20's; row T73 passed; row R60) |
 | late mix | `T1_s2rcMSB_LM16.h5ad` (MSB with library 3's chamber mix moved to row N64's late shares) | `106d5ccfb924794f92c02aac3dc60332be5da9a231d6facc0d585a79d46b694b` | none (row R54; its read T72 passed; the captain's word, decision log 2026-11-25 (t)) |
 | eleventh search | `T1_s2rcMSBm20.h5ad` (MS's own damping 2.0 on MSB) | `d82c3db2e5f43a3abeefe32a04e4d58d2da41cefa8fa979eb642de884c435401` | none (row R58; its read T73 passed) |
 | kept, last | `T1_s2rcA15.h5ad` (the second search's file) | `e2334137b54d98b04e9dece90213987e61fe9aa15a3fb8d85e6c262d8fb5ba75` | none (its condition is met); last on T1; with no limit on uploads, after T1's due search files |

@@ -14531,3 +14531,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     slots, their conditions and the values are as placed at cbbf40b. The captain asked meanwhile that work go on in
     parallel while the line-12 headlines are gathered ("work on other tasks by then parallelly"); the R66 engineer
     starts now.
+- 2026-11-25 (mm), the captain reports two T1 headlines and the rules are applied by their letter (state at 13:11 UTC,
+  2026-11-25). Written by the AI assistant, which records the headlines only.
+  - **The paste:** T1:test `T1_s2rcMS20m10.h5ad` 74.35, `T1_s2rcMS20H05.h5ad` 73.89 (shown as submitted 2026-11-25
+    13:05 and 13:09). Each file's sha256 on disk matches its sheet row. The paste's per-metric lines, ranks and file
+    sizes are not recorded or used.
+  - **Each rule by its letter.** MS20m10 is strictly above MS20 (73.82) and holds the board's best; MS20H05 is
+    strictly above MS20 and below MS20m10. Row R60: `T1_s2rcMS20H10.h5ad` is now due (MS20H05 above MS20), and
+    `T1_s2rcMS20m20.h5ad` is now due (MS20m10 above MS20, and row T73 passed); `T1_s2rcMS20d15.h5ad` waits on
+    MS20d10's and MS20d20's headlines. Row R66: C3 is read when MS20H10 has its headline, C1 when MS20d10 and MS20d20
+    have theirs. **The AI assistant's reading of K1, K2 and K3's read-once moment, stated before the headlines it
+    bears on:** each is read once every file of row R60 that its own rule sends has a headline (d10, d20 and, if sent,
+    d15; H05 and H10; m10 and m20), or at the cut-off; a file that its own rule never sends is not a missing headline.
+    The captain can overrule this reading.
+  - **Standing:** 74.35 + 63.94 + (62.45 + 69.9) / 2 = 204.465 (from 203.935).
