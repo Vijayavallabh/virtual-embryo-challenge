@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-25, 12:34 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-25, 12:41 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -15,12 +15,12 @@ decision log 2026-11-24 (pp)), every due file can go now and nothing waits for r
 are listed below. `T3_c2_s2_g2.h5ad` keeps its place after every queued file, by its rule. Between boards the captain
 decides; by the challenge's formula a point on T1 or T3 counts twice a point on the heart or the embryo board.
 
-**Due now (17), in the order of each board's table below:**
+**Due now (14), in the order of each board's table below:**
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcMSBm10.h5ad`,
   `T1_s2rcB25H20.h5ad`, `T1_s2rcMSBH10.h5ad`, `T1_s2rcMSB_LM16.h5ad`, `T1_s2rcMSBm20.h5ad`, `T1_s2rcMS20d10.h5ad`,
   `T1_s2rcMS20H05.h5ad`, `T1_s2rcMS20d20.h5ad`, `T1_s2rcMS20m10.h5ad` (together), `T1_s2rcB25MSH05.h5ad`
-- T3: `T3_c2_s2_dd.h5ad`, `T3_c2_s2_ddh.h5ad`, `T3_c2_s2_dg.h5ad` (together)
+- T3: none (every built T3 file is uploaded but `T3_c2_s2_g2.h5ad`, last of all)
 - Embryo: none (every built embryo file is uploaded)
 - Heart: none (every built heart file is uploaded)
 
@@ -48,9 +48,9 @@ passed) are built (decision log 2026-11-25 (dd)). T1 line 12 (row R60) and row R
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)), and twenty-one on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy), (aaa), (bbb),
-(ddd) and (jjj)). Ten more were uploaded and reported on 2026-11-25 (decision log 2026-11-25 (d), (e), (g), (h), (k),
-(m), (n) and (ii)). The boards' best headlines stand with `T1_s2rcMS20.h5ad` (MS at the atlas multiplier 2.0),
-`T3_c2_s2.h5ad` (C2), `T2heart_organ_ts125_tk_half.h5ad` (OTK125) and `T2embryo_s2x_ov.h5ad` (O).
+(ddd) and (jjj)). Thirteen more were uploaded and reported on 2026-11-25 (decision log 2026-11-25 (d), (e), (g), (h),
+(k), (m), (n), (ii) and (jj)). The boards' best headlines stand with `T1_s2rcMS20.h5ad` (MS at the atlas multiplier
+2.0), `T3_c2_s2.h5ad` (C2), `T2heart_organ_ts125_tk_half.h5ad` (OTK125) and `T2embryo_s2x_ov.h5ad` (O).
 
 Four files are skipped by the captain's words of 2026-11-23 and 2026-11-24: they hold no place in any order below and
 stand in a section of their own at the end.
@@ -105,9 +105,6 @@ Never uploaded: `builds/T1_s2.h5ad`.
 
 | Order | File | sha256 | Condition | Data used |
 |---|---|---|---|---|
-| depth line, together (row R53) | `T3_c2_s2_dd.h5ad` (C2 with each cell thinned by its label's frozen depth ratio) | `2bc0a3f428d998cc4da1c653e358f777c21406a2a45be47e9ae8123a3fdb05ee` | none; the three go up together (row R53; read K30 named an arm) | released challenge data only: wild-type E8.75 cells, the released knockout tables transfer_mab21l2_all and gata4_pooled in C2's size-held product, and the frozen per-label depth ratios of the two Gata4 validation files (the decision file of 2026-10-28); no outside data, no gene set |
-| depth line, together (row R53) | `T3_c2_s2_ddh.h5ad` (the same at the ratios to the power 0.5) | `b22eea0d8f6ec798007d042af9e4f2e70f429e4c6540834bdd19f8ee285b8915` | none; the three go up together (row R53; read K30 named an arm) | released challenge data only: wild-type E8.75 cells, the released knockout tables transfer_mab21l2_all and gata4_pooled in C2's size-held product, and the frozen per-label depth ratios of the two Gata4 validation files (the decision file of 2026-10-28); no outside data, no gene set |
-| depth line, together (row R53) | `T3_c2_s2_dg.h5ad` (the same at one ratio for every label) | `ecf54089f2daf3ec8b682c144af0d1d537755c272fdd4ed1c0a851bff1030d79` | none; the three go up together (row R53; read K30 named an arm) | released challenge data only: wild-type E8.75 cells, the released knockout tables transfer_mab21l2_all and gata4_pooled in C2's size-held product, and the frozen per-label depth ratios of the two Gata4 validation files (the decision file of 2026-10-28); no outside data, no gene set |
 | last of all | `T3_c2_s2_g2.h5ad` (the third search's one file: C2 with the Gata4 table at weight 2) | `014d2bf9d8ba7fdc56dcfba2a3b8aa77f0ea20bb806ebc2c1193e483d62712ac` | none; by its rule (row R41) it goes after every other file in this sheet, across boards (see 'Last of all' above), unless the captain places it ahead of a named file | released challenge data only: wild-type E8.75 cells and the released knockout tables transfer_mab21l2_all and gata4_pooled, in C2's size-held product, gata4_pooled at weight 2 (applied powers 0.6159 and 1.2318; C2: c on both). No outside data, no gene set. |
 
 ## Task 2, embryo

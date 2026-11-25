@@ -14502,3 +14502,13 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     needs OTS175's headline, which never exists now that OTS175 is not sent: it reads false at the cut-off. No heart
     file of the third round is coded or built. Every built heart file is uploaded.
   - **Standing:** 73.82 + 63.94 + (62.45 + 69.9) / 2 = 203.935 (from 203.695).
+- 2026-11-25 (jj), the captain reports three T3 headlines and the rules are applied by their letter (state at 12:41
+  UTC, 2026-11-25). Written by the AI assistant, which records the headlines only, has seen the exposure that bears on
+  T3's depth, gives no lean on it, and draws nothing from these headlines about any property of the test sample.
+  - **The paste:** T3:bcatenin `T3_c2_s2_dd.h5ad` 50.21, `T3_c2_s2_ddh.h5ad` 60.74, `T3_c2_s2_dg.h5ad` 49.97 (shown as
+    submitted 2026-11-25 12:37, 12:37 and 12:40). Each file's sha256 on disk matches its sheet row. The paste's
+    per-metric lines, ranks, file sizes and the site's note are not recorded or used.
+  - **Each rule by its letter.** Row R53: the board keeps its best upload; all three are below C2 (63.94), which holds
+    the board's best. No rule names a further file on these headlines (the third round's T3 files were read false at
+    placement, entry (hh)). Every built T3 file is uploaded but `T3_c2_s2_g2.h5ad`, which goes last of all by its
+    rule. Standing unchanged: 203.935.
