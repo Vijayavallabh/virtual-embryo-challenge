@@ -14487,3 +14487,18 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Next.** Engineers blind to test scores code the live heart files (OTS175, OTS20, OTP15 now; OTKP125 only after
     its condition holds) and T1's five slots, each with a launcher that builds one named file twice after identity
     checks; independent reviews; then builds as the conditions are read.
+- 2026-11-25 (ii), the captain reports three heart headlines and the rules are applied by their letter (state at 12:34
+  UTC, 2026-11-25). Written by the AI assistant, which records the headlines only and is recused on the heart's scope
+  and size.
+  - **The paste:** T2:heart:test_extrap `T2heart_organ_ts15_half.h5ad` (OTS15) 61.91,
+    `T2heart_organ_ts125_tk_half.h5ad` (OTK125) 62.45, `T2heart_organ_ts125_tp_half.h5ad` (OTP125) 61.23 (shown as
+    submitted 2026-11-25 12:30, 12:31 and 12:32). Each file's sha256 on disk matches its sheet row. The paste's
+    per-metric lines, ranks and file sizes are not recorded or used.
+  - **Each rule by its letter.** OTK125 is strictly above OTS125 (61.97) and now holds the board's best; OTS15 and
+    OTP125 are below it. The fourth line's rule: OTS15 is not above the line's best, and the line ends at OTS15 in any
+    case. Rows R61 to R65, each condition read once now, when the files it names have headlines: R61 (OTS175) needs
+    OTS15 above OTS125: false. R62 (OTKP125) needs OTK125 and OTP125 each above OTS125: OTP125 is not, false. R63
+    (OTP15) needs OTP125 and OTS15 each above OTS125: false. R64 (OTP10) was read false at placement. R65 (OTS20)
+    needs OTS175's headline, which never exists now that OTS175 is not sent: it reads false at the cut-off. No heart
+    file of the third round is coded or built. Every built heart file is uploaded.
+  - **Standing:** 73.82 + 63.94 + (62.45 + 69.9) / 2 = 203.935 (from 203.695).
