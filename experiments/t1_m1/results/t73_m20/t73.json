@@ -1,0 +1,394 @@
+{
+ "label": "try T73 (gate G0 of row R58's file T1_s2rcMSBm20), a labelled in-sample diagnostic, never an adoption result: MS's momentum at 0.25, 0.5 and 1.0 of the released day's change per day with the atlas step at 1.5 x the practice fraction, on row T62's five tasks, after the gate arm m1rc_gmom_mom reproduces row T65's; every task scores one truth (E10.5) over one day, the test spans two",
+ "row": "T73",
+ "reading": {
+  "outcome": "PASS",
+  "ahead": true,
+  "failed": [],
+  "valid_libraries": [
+   "1",
+   "2",
+   "3"
+  ],
+  "ms1_minus_ms05": {
+   "chamber": {
+    "change": "ms1_x15",
+    "base": "ms05_x15",
+    "mean": 0.5575707290042686,
+    "sd": 0.09322474634697357,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.42284785162188854,
+     0.7193313561144166
+    ],
+    "groups": {
+     "de_recovery": 0.1272556610974962,
+     "direction": -0.02046456671797675,
+     "distribution": 0.23107270914502565,
+     "covariance": 0.21970692547972348
+    },
+    "behind": 0,
+    "mean_scores": {
+     "ms05_x15": 53.611824759421026,
+     "ms1_x15": 54.16939548842529
+    }
+   },
+   "whole": {
+    "change": "ms1_x15",
+    "base": "ms05_x15",
+    "mean": 0.6112513417882276,
+    "sd": 0.10593979652949415,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.4908013538463365,
+     0.8157874021323579
+    ],
+    "groups": {
+     "de_recovery": 0.1277707242316936,
+     "direction": 0.0467880717031699,
+     "distribution": 0.22275648638370527,
+     "covariance": 0.21393605946965977
+    },
+    "behind": 0,
+    "mean_scores": {
+     "ms05_x15": 47.6728656051839,
+     "ms1_x15": 48.28411694697213
+    }
+   },
+   "1": {
+    "change": "ms1_x15",
+    "base": "ms05_x15",
+    "mean": 0.7440651933336355,
+    "sd": 0.3581658068576034,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.1904055605556607,
+     1.3568667217595305
+    ],
+    "groups": {
+     "de_recovery": 0.11968258380443991,
+     "direction": 0.17042485704867383,
+     "distribution": 0.24377011478973562,
+     "covariance": 0.21018763769078563
+    },
+    "behind": 0,
+    "mean_scores": {
+     "ms05_x15": 76.77828206254416,
+     "ms1_x15": 77.5223472558778
+    }
+   },
+   "2": {
+    "change": "ms1_x15",
+    "base": "ms05_x15",
+    "mean": 0.40899875802665236,
+    "sd": 0.2503338825080359,
+    "ahead": 9,
+    "of": 10,
+    "range": [
+     -0.19073721871207283,
+     0.6631113538818454
+    ],
+    "groups": {
+     "de_recovery": 0.024365520456544054,
+     "direction": 0.01834067373652326,
+     "distribution": 0.0714722901160717,
+     "covariance": 0.29482027371751474
+    },
+    "behind": 1,
+    "mean_scores": {
+     "ms05_x15": 90.39030063792885,
+     "ms1_x15": 90.7992993959555
+    }
+   },
+   "3": {
+    "change": "ms1_x15",
+    "base": "ms05_x15",
+    "mean": 0.6566109081734623,
+    "sd": 0.2331080617183539,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.3917821769047265,
+     1.0789716775581866
+    ],
+    "groups": {
+     "de_recovery": 0.18864907243922924,
+     "direction": 0.06642477814434306,
+     "distribution": 0.23659705566406483,
+     "covariance": 0.16494000192582448
+    },
+    "behind": 0,
+    "mean_scores": {
+     "ms05_x15": 76.15726536114343,
+     "ms1_x15": 76.81387626931689
+    }
+   }
+  },
+  "ms1_minus_ms025": {
+   "chamber": {
+    "change": "ms1_x15",
+    "base": "ms025_x15",
+    "mean": 0.8936595613957742,
+    "sd": 0.11793670183343492,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.7264804149022694,
+     1.0658789971017555
+    ],
+    "groups": {
+     "de_recovery": 0.21926334859356952,
+     "direction": -0.004382029909240359,
+     "distribution": 0.35630068863135833,
+     "covariance": 0.3224775540800864
+    },
+    "behind": 0,
+    "mean_scores": {
+     "ms025_x15": 53.275735927029515,
+     "ms1_x15": 54.16939548842529
+    }
+   },
+   "whole": {
+    "change": "ms1_x15",
+    "base": "ms025_x15",
+    "mean": 0.9046582549768374,
+    "sd": 0.0945452192515507,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.8059494599230845,
+     1.0582126371928808
+    ],
+    "groups": {
+     "de_recovery": 0.16864942796038312,
+     "direction": 0.083861728276452,
+     "distribution": 0.34102681324974743,
+     "covariance": 0.3111202854902556
+    },
+    "behind": 0,
+    "mean_scores": {
+     "ms025_x15": 47.37945869199529,
+     "ms1_x15": 48.28411694697213
+    }
+   },
+   "1": {
+    "change": "ms1_x15",
+    "base": "ms025_x15",
+    "mean": 1.158076123148578,
+    "sd": 0.3545893371098498,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.5984088954704987,
+     1.715844536519512
+    ],
+    "groups": {
+     "de_recovery": 0.22439561912712486,
+     "direction": 0.2625404912216056,
+     "distribution": 0.3717745868080359,
+     "covariance": 0.29936542599181415
+    },
+    "behind": 0,
+    "mean_scores": {
+     "ms025_x15": 76.36427113272923,
+     "ms1_x15": 77.5223472558778
+    }
+   },
+   "2": {
+    "change": "ms1_x15",
+    "base": "ms025_x15",
+    "mean": 0.6194184045990057,
+    "sd": 0.3330867474768854,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.06783197807828856,
+     1.1015674145089918
+    ],
+    "groups": {
+     "de_recovery": 0.01043676778650332,
+     "direction": 0.045579512015865575,
+     "distribution": 0.13223685725233225,
+     "covariance": 0.4311652675443065
+    },
+    "behind": 0,
+    "mean_scores": {
+     "ms025_x15": 90.1798809913565,
+     "ms1_x15": 90.7992993959555
+    }
+   },
+   "3": {
+    "change": "ms1_x15",
+    "base": "ms025_x15",
+    "mean": 1.1765290217702542,
+    "sd": 0.24370931221796122,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.6972768991262654,
+     1.4866695762185742
+    ],
+    "groups": {
+     "de_recovery": 0.3559097465725805,
+     "direction": 0.13608349581138074,
+     "distribution": 0.38959338715841807,
+     "covariance": 0.2949423922278738
+    },
+    "behind": 0,
+    "mean_scores": {
+     "ms025_x15": 75.63734724754664,
+     "ms1_x15": 76.81387626931689
+    }
+   }
+  },
+  "ms05_minus_ms025": {
+   "chamber": {
+    "change": "ms05_x15",
+    "base": "ms025_x15",
+    "mean": 0.33608883239150555,
+    "sd": 0.08979063370946357,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.2253309181688934,
+     0.4759934981977665
+    ],
+    "groups": {
+     "de_recovery": 0.09200768749607333,
+     "direction": 0.016082536808736392,
+     "distribution": 0.12522797948633269,
+     "covariance": 0.1027706286003629
+    },
+    "behind": 0,
+    "mean_scores": {
+     "ms025_x15": 53.275735927029515,
+     "ms05_x15": 53.611824759421026
+    }
+   },
+   "whole": {
+    "change": "ms05_x15",
+    "base": "ms025_x15",
+    "mean": 0.2934069131886098,
+    "sd": 0.0310508074178543,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.24242523506052294,
+     0.3386735782329353
+    ],
+    "groups": {
+     "de_recovery": 0.040878703728689514,
+     "direction": 0.0370736565732821,
+     "distribution": 0.11827032686604218,
+     "covariance": 0.09718422602059584
+    },
+    "behind": 0,
+    "mean_scores": {
+     "ms025_x15": 47.37945869199529,
+     "ms05_x15": 47.6728656051839
+    }
+   },
+   "1": {
+    "change": "ms05_x15",
+    "base": "ms025_x15",
+    "mean": 0.4140109298149426,
+    "sd": 0.13142910898988527,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.15149002782098364,
+     0.6016818656030125
+    ],
+    "groups": {
+     "de_recovery": 0.10471303532268496,
+     "direction": 0.09211563417293178,
+     "distribution": 0.12800447201830023,
+     "covariance": 0.08917778830102852
+    },
+    "behind": 0,
+    "mean_scores": {
+     "ms025_x15": 76.36427113272923,
+     "ms05_x15": 76.77828206254416
+    }
+   },
+   "2": {
+    "change": "ms05_x15",
+    "base": "ms025_x15",
+    "mean": 0.21041964657235326,
+    "sd": 0.2039302675663561,
+    "ahead": 9,
+    "of": 10,
+    "range": [
+     -0.29491089767105905,
+     0.43845606062714637
+    ],
+    "groups": {
+     "de_recovery": -0.013928752670040734,
+     "direction": 0.027238838279342314,
+     "distribution": 0.06076456713626055,
+     "covariance": 0.13634499382679177
+    },
+    "behind": 1,
+    "mean_scores": {
+     "ms025_x15": 90.1798809913565,
+     "ms05_x15": 90.39030063792885
+    }
+   },
+   "3": {
+    "change": "ms05_x15",
+    "base": "ms025_x15",
+    "mean": 0.5199181135967919,
+    "sd": 0.16827799585063719,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.30549472222153895,
+     0.8349944724539426
+    ],
+    "groups": {
+     "de_recovery": 0.16726067413335127,
+     "direction": 0.06965871766703768,
+     "distribution": 0.1529963314943532,
+     "covariance": 0.1300023903020493
+    },
+    "behind": 0,
+    "mean_scores": {
+     "ms025_x15": 75.63734724754664,
+     "ms05_x15": 76.15726536114343
+    }
+   }
+  },
+  "identical": {
+   "chamber": [],
+   "whole": [],
+   "1": [],
+   "2": [],
+   "3": []
+  },
+  "j6_range": [
+   0.0,
+   0.5575707290042686
+  ],
+  "beside": [
+   "J6: the momentum's fit spans one day on every practice task and the test's two (horizon ratio 2), so any gain is reported as 0 to the practice value."
+  ],
+  "follows": "What follows: row R58's file T1_s2rcMSBm20 is built twice with one sha256 by experiments/builds/t1_lm_m20_line.sh. Nothing is built or changed by this read."
+ },
+ "tries": 15,
+ "row_commit": "e70c91f2effb2fe18b3ef7fbc51c25757ad634e9",
+ "stamp": {
+  "commit": "e70c91f2effb2fe18b3ef7fbc51c25757ad634e9",
+  "tree_clean": true,
+  "utc": "2026-11-25T03:33:37Z",
+  "inputs": {
+   "experiments/t1_m1/results/t73_m20/tasks/T1_E9.5_E10.5_chamber.json": "61829749ac9eba200623688f595591d6ba8c14d6127d25c0045d763079830622",
+   "experiments/t1_m1/results/t73_m20/tasks/T1_E9.5_E10.5.json": "a6befe581393300e14437dcbbdb44cc82660ea9bd2cc15fadb7b06f5cebde273",
+   "experiments/t1_m1/results/t73_m20/tasks/lib1.json": "b570456943d03d479c83ec047667de2154f34be061450f0296596557539343ce",
+   "experiments/t1_m1/results/t73_m20/tasks/lib2.json": "745c1eba1e23fdc04918dfc392b9ce31671f41e73f19a161f11c050a631e0bc2",
+   "experiments/t1_m1/results/t73_m20/tasks/lib3.json": "4dd213b0ddc2e927fd288139f5d08b7699a9004cff2899e43f19a7a3b65fa20a"
+  }
+ }
+}

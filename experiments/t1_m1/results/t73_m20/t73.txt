@@ -1,0 +1,26 @@
+try T73 (gate G0 of row R58's file T1_s2rcMSBm20), a labelled in-sample diagnostic, never an adoption result: MS's momentum at 0.25, 0.5 and 1.0 of the released day's change per day with the atlas step at 1.5 x the practice fraction, on row T62's five tasks, after the gate arm m1rc_gmom_mom reproduces row T65's; every task scores one truth (E10.5) over one day, the test spans two
+Outcome: T73 PASS (m20's step is AHEAD)
+J6: the momentum's fit spans one day on every practice task and the test's two (horizon ratio 2), so any gain is reported as 0 to the practice value.
+What follows: row R58's file T1_s2rcMSBm20 is built twice with one sha256 by experiments/builds/t1_lm_m20_line.sh. Nothing is built or changed by this read.
+d1 = ms1_x15 - ms05_x15 (the statement's), paired per seed on one draw:
+  chamber: +0.56 points, sd 0.09, ahead 10 behind 0 of 10, per seed +0.42 to +0.72; by group: de_recovery +0.13, direction -0.02, distribution +0.23, covariance +0.22; mean scores ms05_x15 53.61, ms1_x15 54.17
+  whole: +0.61 points, sd 0.11, ahead 10 behind 0 of 10, per seed +0.49 to +0.82; by group: de_recovery +0.13, direction +0.05, distribution +0.22, covariance +0.21; mean scores ms05_x15 47.67, ms1_x15 48.28
+  1: +0.74 points, sd 0.36, ahead 10 behind 0 of 10, per seed +0.19 to +1.36; by group: de_recovery +0.12, direction +0.17, distribution +0.24, covariance +0.21; mean scores ms05_x15 76.78, ms1_x15 77.52
+  2: +0.41 points, sd 0.25, ahead 9 behind 1 of 10, per seed -0.19 to +0.66; by group: de_recovery +0.02, direction +0.02, distribution +0.07, covariance +0.29; mean scores ms05_x15 90.39, ms1_x15 90.80
+  3: +0.66 points, sd 0.23, ahead 10 behind 0 of 10, per seed +0.39 to +1.08; by group: de_recovery +0.19, direction +0.07, distribution +0.24, covariance +0.16; mean scores ms05_x15 76.16, ms1_x15 76.81
+d2 = ms1_x15 - ms025_x15 (the statement reads the chamber cut only):
+  chamber: +0.89 points, sd 0.12, ahead 10 behind 0 of 10, per seed +0.73 to +1.07; by group: de_recovery +0.22, direction -0.00, distribution +0.36, covariance +0.32; mean scores ms025_x15 53.28, ms1_x15 54.17
+  whole: +0.90 points, sd 0.09, ahead 10 behind 0 of 10, per seed +0.81 to +1.06; by group: de_recovery +0.17, direction +0.08, distribution +0.34, covariance +0.31; mean scores ms025_x15 47.38, ms1_x15 48.28
+  1: +1.16 points, sd 0.35, ahead 10 behind 0 of 10, per seed +0.60 to +1.72; by group: de_recovery +0.22, direction +0.26, distribution +0.37, covariance +0.30; mean scores ms025_x15 76.36, ms1_x15 77.52
+  2: +0.62 points, sd 0.33, ahead 10 behind 0 of 10, per seed +0.07 to +1.10; by group: de_recovery +0.01, direction +0.05, distribution +0.13, covariance +0.43; mean scores ms025_x15 90.18, ms1_x15 90.80
+  3: +1.18 points, sd 0.24, ahead 10 behind 0 of 10, per seed +0.70 to +1.49; by group: de_recovery +0.36, direction +0.14, distribution +0.39, covariance +0.29; mean scores ms025_x15 75.64, ms1_x15 76.81
+ms05_x15 - ms025_x15 (reported, deciding nothing):
+  chamber: +0.34 points, sd 0.09, ahead 10 behind 0 of 10, per seed +0.23 to +0.48; by group: de_recovery +0.09, direction +0.02, distribution +0.13, covariance +0.10; mean scores ms025_x15 53.28, ms05_x15 53.61
+  whole: +0.29 points, sd 0.03, ahead 10 behind 0 of 10, per seed +0.24 to +0.34; by group: de_recovery +0.04, direction +0.04, distribution +0.12, covariance +0.10; mean scores ms025_x15 47.38, ms05_x15 47.67
+  1: +0.41 points, sd 0.13, ahead 10 behind 0 of 10, per seed +0.15 to +0.60; by group: de_recovery +0.10, direction +0.09, distribution +0.13, covariance +0.09; mean scores ms025_x15 76.36, ms05_x15 76.78
+  2: +0.21 points, sd 0.20, ahead 9 behind 1 of 10, per seed -0.29 to +0.44; by group: de_recovery -0.01, direction +0.03, distribution +0.06, covariance +0.14; mean scores ms025_x15 90.18, ms05_x15 90.39
+  3: +0.52 points, sd 0.17, ahead 10 behind 0 of 10, per seed +0.31 to +0.83; by group: de_recovery +0.17, direction +0.07, distribution +0.15, covariance +0.13; mean scores ms025_x15 75.64, ms05_x15 76.16
+Valid libraries: 1, 2, 3
+J6 range (0 to the chamber cut's mean of d1): +0.00 to +0.56
+Tries counted: 15
+Commit e70c91f2effb2fe18b3ef7fbc51c25757ad634e9, tree clean True, UTC 2026-11-25T03:33:37Z

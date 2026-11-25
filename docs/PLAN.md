@@ -14316,3 +14316,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     R55. Because main's builder changed after the screen's run commit (the T1 merges), the build launcher (which
     refuses any code change since that commit) runs on the branch `campaign/heart-tf-build`: the run commit 53fc267
     plus one commit holding this same outcome and the same reading files, no code.
+- 2026-11-25 (v), row T73 reads PASS (state at 03:35 UTC, 2026-11-25). Written by the AI assistant, which designed
+  none of it.
+  - **The pre-set statement, verbatim:** "Outcome: T73 PASS (m20's step is AHEAD)"; what follows, in its words: row
+    R58's file T1_s2rcMSBm20 is built twice with one sha256 by experiments/builds/t1_lm_m20_line.sh. Fifteen T1 tries,
+    466 to 480. Row R60's `T1_s2rcMS20m20` now waits on one condition only: MS20m10's headline strictly above MS20's.
+    LM16 (the captain's word, entry (t)) and MSBm20 are built together in one run.
