@@ -14857,3 +14857,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     best about +1.5 (fix text kept in the file if run as a cheap try). P2 STRIKE (row K11a's closed family; it may
     read as composition). Its disclosure: a search printed a few ledger lines directly rather than through the blind
     reader; none held a score.
+- 2026-11-25 (nnn), the T3 new-information moonshot's challenge (state at 17:27 UTC, 2026-11-25). Written by the AI
+  assistant, which gives no view on which genes a T3 file moves.
+  - **The design** (`T3_MOON1_design.md`): P1, "the sibling reference", independent outside wild-type embryos at the
+    reference's somite range to separate the reference run's own deviation from development; needing the captain's
+    word on A15; its price 0.12, best +7. P2, a variance-weighted ranking from the same fetch.
+  - **The challenge** (`T3_MOON1_challenge.md`): both STRIKE. P1 misdescribes its second source (its new samples are
+    E7.25 and E7.5, and its E8.5 part repeats the first source); no outside sample matches the released E8.25 run, so
+    the stage contrast cannot be formed; C2's Gata4 tables already hold the reference's deviation exactly, so P1 would
+    stack a noisy copy on top; its gate tests the outside piece alone, not C2 with it, and passes an arm up to 0.3
+    behind row K7. P2: the released MERFISH pairs measure the same quantity better than three seqFISH embryos. A15
+    odds 0.15, not 0.35 (row X013's precedent). Repriced: about 0.02, best +2, typical 0. T3 has no moonshot left.
+  - **An exposure note:** a search of the challenger's printed five lines of the pinned scorer's module docstring,
+    which agents skip (it may hold example counts bearing on a T3 board); it reports skipping them and using nothing.
+    No value is repeated here, and no T3 file rests on this challenge.
