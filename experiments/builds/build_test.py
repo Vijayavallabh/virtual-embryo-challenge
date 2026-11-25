@@ -2659,6 +2659,8 @@ def _trend_strength_record(s: float, rec: dict, entry: str = "core_trim", ruling
 
 
 def build_heart(a) -> dict:
+    if getattr(a, "run_profile", None) is not None:  # file OXP125 (row R56): its own path; no other command goes there
+        return _build_heart_xpc(a)
     strength = _trend_strength_refusals(a)
     # file D's two further strengths and its strength 1.5: the ruling row's first cell for the record, read once its
     # check has passed
@@ -2817,6 +2819,163 @@ def _trend_record(rec: dict) -> dict:
             "budget_days": rec["budget_days"],
             "lineages": [{k: row[k] for k in TREND_LINEAGE_FIELDS} for row in rec["lineages"]],
             "median_cosine": rec["median_cosine"], "median_norm_ratio": rec["median_norm_ratio"]}
+
+
+# XPC, file OXP125 (row R56 of experiments/harness/TRIES.md, the captain's order of 2026-11-24, ruling, no run: "... and
+# yes to XPC: my named exception on the heart's scope and size for this file and my A15 exception, bound to its
+# read."; decision log 2026-11-24 (www)): OTS125's command (file D at trend strength 1.25, row R49) with E10.5's own run
+# profile removed. OTS125's draw, organ-cut pool, count rule, trend step (row H28's at 1.25, stream [seed, 3]), size
+# procedure and seed; between the trend step and the size step, vec.t2_build.apply_run_profile with the profile row
+# H36's test profile wrote (HEART_XPC_PROFILE, its sha256 given on the command line; stream [seed, 37]); then halve.py
+# at seed 1000001 as for OTS125. Off by default: build_heart hands this path only a command that gives --run-profile,
+# so every other command is exactly as before. Taken only as HEART_XPC_COMMAND on the test board at the default seed,
+# every other heart option at its default, and only while TRIES.md holds exactly one row R56 whose first cell is the
+# captain's order ("ruling, no run") naming `--entry organ_scope`, `--trend-strength 1.25`, `--run-profile` and
+# `--captain-ruling R56` (_captain_order_names), and the profile is the file of that sha256: a passed test profile on
+# the board's panel in its order (experiments/heart_profile/xpc_table.py load_profile).
+HEART_XPC_ROW = "R56"
+HEART_XPC_CHOICE = "1.25"  # the trend strength's literal value, OTS125's
+HEART_XPC_STRENGTH = float(HEART_XPC_CHOICE)
+HEART_XPC_NAMES = (HEART_OTS_ENTRY, f"`--trend-strength {HEART_XPC_CHOICE}`", "`--run-profile`")
+HEART_XPC_FILE = "OXP125"
+HEART_XPC_SHA256 = re.compile(r"[0-9a-f]{64}")
+HEART_XPC_PROFILE = REPO_ROOT / "experiments" / "heart_profile" / "results" / "xpc_profile.json"
+HEART_XPC_COMMAND = (f"heart --entry organ_scope --trend-strength {HEART_XPC_CHOICE} --run-profile {{sha256}} "
+                     f"--z-mode raw --captain-ruling {HEART_XPC_ROW}")  # .format(sha256=...)
+HEART_XPC_GIVEN = ("which", "out", "board", "entry", "trend_strength", "z_mode", "captain_ruling", "run_profile")
+HEART_XPC_ORDER = ("experiments/harness/TRIES.md row R56, the captain's order of 2026-11-24 (ruling, no run: \"... "
+                   "and yes to XPC: my named exception on the heart's scope and size for this file and my A15 "
+                   "exception, bound to its read.\"; decision log 2026-11-24 (www)): file OXP125, OTS125's command "
+                   "with E10.5's run profile removed, bound to row H36's read")
+HEART_XPC_STEP = ("row H28's strength-scaled b0_trend step at 1.25 as OTS125 builds it, then the run-profile step "
+                  "(vec.t2_build.apply_run_profile: exp(-delta) per gene on every drawn cell, keep_depth, stream "
+                  "[seed, 37]), before the size step, on D's draw, organ-cut pool, count rule, size procedure and seed "
+                  "(OTS125's)")
+
+
+def _xpc_refusals(a) -> float:
+    """--run-profile (file OXP125, row R56): its refusals, before anything is read. Refused unless the value is a
+    sha256 (64 lowercase hexadecimal digits), the command is HEART_XPC_COMMAND on the test board at the default seed
+    with every other heart option at its default (any option added later included), --captain-ruling is R56 and
+    TRIES.md holds exactly one row R56 whose first cell is the captain's order naming HEART_XPC_NAMES and
+    `--captain-ruling R56`. Returns the strength, 1.25."""
+    raw = a.run_profile
+    command = HEART_XPC_COMMAND.format(sha256="<sha256>")
+    if not isinstance(raw, str) or HEART_XPC_SHA256.fullmatch(raw) is None:
+        sys.exit(f"--run-profile {raw} is refused: it takes the sha256 (64 lowercase hexadecimal digits) of "
+                 "experiments/heart_profile/results/xpc_profile.json, row H36's test profile")
+    defaults = vars(build_parser().parse_args(["heart", "--entry", "organ_scope", "--out", "x"]))
+    other = sorted(k for k, v in vars(a).items()
+                   if k not in HEART_XPC_GIVEN and (k not in defaults or v != defaults[k]))
+    if (a.entry != "organ_scope" or a.trend_strength != HEART_XPC_CHOICE or a.z_mode != "raw" or other
+            or a.board not in (None, TEST_BOARDS["heart"])):
+        sys.exit(f"--run-profile is refused except as {command}, on the test board at the default seed with every "
+                 "other heart option at its default (file OXP125, row R56)")
+    if a.captain_ruling is None:
+        sys.exit(f"--run-profile is the captain's order of row {HEART_XPC_ROW} alone and needs --captain-ruling "
+                 f"{HEART_XPC_ROW}")
+    if a.captain_ruling != HEART_XPC_ROW:
+        sys.exit(f"--run-profile is refused with --captain-ruling {a.captain_ruling}: only row {HEART_XPC_ROW} orders "
+                 "it")
+    if not all(_captain_order_names(HEART_XPC_ROW, s) for s in HEART_XPC_NAMES):
+        sys.exit(f"--run-profile is refused: experiments/harness/TRIES.md must hold exactly one row {HEART_XPC_ROW} "
+                 f"whose first cell is the captain's order (\"ruling, no run\") naming {', '.join(HEART_XPC_NAMES)} "
+                 f"and `--captain-ruling {HEART_XPC_ROW}`")
+    return HEART_XPC_STRENGTH
+
+
+def _xpc_profile(sha256: str, genes) -> np.ndarray:
+    """The run profile OXP125 applies: HEART_XPC_PROFILE, the file of `sha256`, a passed test profile naming the
+    board's genes in their order (xpc_table.load_profile); refused otherwise, before any stage is read."""
+    sys.path.insert(0, str(REPO_ROOT / "experiments" / "heart_profile"))
+    import xpc_table  # noqa: E402 (only this path reads it)
+
+    if not HEART_XPC_PROFILE.is_file():
+        sys.exit(f"--run-profile {sha256} is refused: {HEART_XPC_PROFILE} does not exist (row H36's test profile "
+                 "writes it)")
+    try:
+        return xpc_table.load_profile(HEART_XPC_PROFILE, sha256, list(genes))
+    except ValueError as e:
+        sys.exit(f"--run-profile {sha256} is refused: {e}")
+
+
+def _run_profile_step(ctx: harness.BuildContext, strength: float, delta: np.ndarray) -> tuple:
+    """OXP125's expression: _trend_strength_step's own lines at `strength` (OTS125's step: the same draw, mapping,
+    damping and stream [seed, 3]), then vec.t2_build.apply_run_profile on the shifted counts in the board's gene order
+    at stream [seed, 37], then harness.finish on the step's own draw and coordinates. A zero profile gives
+    _trend_strength_step's stage bit for bit (tested). Returns the stage and b0_trend_factors' record."""
+    harness._b0_trend_task_check(ctx.task)
+    s = float(strength)
+    pool, rows, _, coords = harness.draw_copy(ctx)
+    start, end = ctx.inputs["start"], pool
+
+    def typed(x, tag: str):
+        m = np.asarray(x.obs["merged"]).astype(str)
+        return harness._shallow(x, b0_type=np.where(m == "Untracked", f"Untracked@{tag}", m))
+
+    like = typed(pool, "end")[rows]
+    logf, rec = harness.b0_trend_factors(ctx, list(like.var_names),
+                                         sorted(set(np.asarray(like.obs["b0_type"]).astype(str))))
+    mapping = {k: s * v for k, v in logf.items()}
+    shifted, _ = t1_scope.momentum_shift(typed(start, "start"), typed(end, "end"), like, harness.B0_DAMPING * s, (),
+                                         key="b0_type", seed=[ctx.seed, 3], logf_by_type=mapping)
+    _, X, _ = t2_build.apply_run_profile(t1_scope.counts_of(shifted, list(ctx.board.genes)), delta,
+                                         [ctx.seed, t2_build.RUN_PROFILE_STREAM])
+    return harness.finish(ctx, pool, X, coords), rec
+
+
+def _build_heart_xpc(a) -> dict:
+    """File OXP125 (row R56): build_heart's organ-cut path at strength 1.25, line by line as OTS125 builds it, with
+    the run-profile step (_run_profile_step) in place of the trend step alone. Its record is OTS125's, with its
+    trend_strength block naming OXP125, row R56 and its first cell, and a run_profile block (the option, the sha256,
+    the file, the rule; no cell number)."""
+    strength = _xpc_refusals(a)
+    order_row = _ruling_first_cell(HEART_XPC_ROW)
+    board, dry = _board("heart", a.board)
+    genes = board.genes
+    delta = _xpc_profile(a.run_profile, genes)
+    ref = load_stage(DATA / "T2/E10.5.h5ad", genes=genes, drop_duplicates=True)
+    start = load_stage(DATA / "T2/E9.5.h5ad", genes=genes, drop_duplicates=True)
+    core = np.asarray(ref.obs["core"], dtype=bool)
+    C = np.asarray(ref.obsm[COORD_KEY], dtype=float)[:, :3]
+    if t2_build.T2_LABEL_KEY not in ref.obs:
+        sys.exit(f"E10.5 has no obs[{t2_build.T2_LABEL_KEY!r}] column: the organ cut needs the released labels")
+    try:
+        keep, trim = t2_build.organ_scope(C, ref.obs[t2_build.T2_LABEL_KEY].to_numpy(), core)
+    except t2_build.UnmappedT2LabelError as e:
+        sys.exit(str(e))
+    organ_ratio = t2_build.organ_core_rms_ratio(C, keep, core)
+    pool = ref[keep].copy()
+    trim.update(pool_rows=int(keep.sum()), pool_rows_of="the released E10.5 after duplicate records are dropped",
+                organ_core_rms_ratio=organ_ratio)
+    roles = {"ref": ("T2/E10.5.h5ad", 10.5), "start": ("T2/E9.5.h5ad", 9.5)}
+    inputs = {"ref": pool, "start": start}
+    for role, (f, day) in HEART_TREND_STAGES.items():
+        inputs[role] = load_stage(DATA / f, genes=genes, drop_duplicates=True)
+        roles[role] = (f, day)
+    view = _view("test:T2h", "T2", "extrap", "heart", board.key, roles, "ref", 12.5)
+    count = _t2_count(board, pool.n_obs)
+    ctx = harness.BuildContext(task=view, board=harness._candidate_board(board), inputs=inputs, seed=a.seed)
+    stage, ts_rec = _run_profile_step(ctx, strength, delta)
+    coords, size = t2_build.size_organ_scope(stage.coords, SIZES["heart"], organ_ratio, source_stage="E10.5",
+                                             reference_cloud=ref, expect_board="heart")
+    _, report = t2_build.build_submission(board, stage.X, coords, genes=list(genes), out=a.out)
+    if not report.ok:
+        raise SystemExit(f"the built file fails its check: {report.errors}")
+    command = HEART_XPC_COMMAND.format(sha256=a.run_profile)
+    return {"entry": f"trend strength {strength:g} organ_scope ({t2_build.SIZE_ORGAN_SCOPE}) run profile",
+            "board": board.key, "dry_run": dry, "n_cells": int(stage.n), "seed": a.seed, "count_decision": count,
+            "trim": trim, "depth_step": False,
+            "trend_strength": {"option": "--trend-strength", "strength": strength, "file": HEART_XPC_FILE,
+                               "captain_ruling": HEART_XPC_ROW, "order": HEART_XPC_ORDER, "order_row": order_row,
+                               "command": command, "step": HEART_XPC_STEP, "budget_days": ts_rec["budget_days"],
+                               "test_budget_days": strength * ts_rec["budget_days"], "trend": _trend_record(ts_rec)},
+            "run_profile": {"option": "--run-profile", "sha256": a.run_profile, "file": HEART_XPC_FILE,
+                            "profile": "experiments/heart_profile/results/xpc_profile.json", "read": "row H36",
+                            "rule": t2_build.RUN_PROFILE_RULE, "stream": t2_build.RUN_PROFILE_STREAM,
+                            "captain_ruling": HEART_XPC_ROW, "command": command},
+            "z_mode": "raw", "scope_option": _organ_option_record(trim),
+            "size": {k: size[k] for k in size if not isinstance(size[k], (dict, list))}}
 
 
 def floor_copy_coords(stage_file: str) -> np.ndarray:
@@ -3453,6 +3612,14 @@ def build_parser() -> argparse.ArgumentParser:
                                 "to that raw mode's own target RMS for the hypothesis (z_modes.raw, not the recorded "
                                 "mode's pre-registered target); refused when the size JSON is not valid (its "
                                 "fallback is already isotropic: build with recorded then)")
+            p.add_argument("--run-profile", default=None, metavar="SHA256",
+                           help="file OXP125 (row R56 of experiments/harness/TRIES.md, the captain's order of "
+                                "2026-11-24; off by default): OTS125's command with E10.5's run profile removed, "
+                                f"{HEART_XPC_COMMAND.format(sha256='<sha256>')}, the sha256 of "
+                                "experiments/heart_profile/results/xpc_profile.json (row H36's test profile). Refused "
+                                "with any other command, seed, board or option, and unless row R56's first cell is "
+                                "the captain's order naming --entry organ_scope, --trend-strength 1.25, --run-profile "
+                                "and --captain-ruling R56")
             p.add_argument("--trend-strength", default=None, metavar="{0.5,1.0,0.75,1.25,1.5}",
                            help="the heart search line (row R28 of experiments/harness/TRIES.md, the captain's order "
                                 "of 2026-11-23, \"start the heart search\"; off by default): the full trim C's command "

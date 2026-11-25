@@ -862,6 +862,37 @@ def organ_core_rms_ratio(coords, keep, core) -> float:
     return rms_radius(C[keep]) / rc
 
 
+# XPC, the heart's run-profile step (row H36 of experiments/harness/TRIES.md; ruling row R56, the captain's named
+# exception for file OXP125; experiments/heart_profile/xpc_table.py measures the profile). Off unless a caller asks for
+# it: no other path calls this function.
+RUN_PROFILE_STREAM = 37  # apply_factors' stream, default_rng([build seed, 37]): apart from every other build stream
+RUN_PROFILE_RULE = ("XPC: every drawn cell re-measured under the other runs' profile, one per-gene factor "
+                    "exp(-delta) on its counts for every cell (one type), each cell's expected depth kept "
+                    "(vec.core.apply_factors, keep_depth, stream [build seed, 37]); after the trend step, before the "
+                    "size step")
+
+
+def apply_run_profile(counts, delta, seed) -> tuple[sparse.csr_matrix, np.ndarray, dict]:
+    """The run-profile step on drawn cells: `counts` (cells x genes, integer) edited by the per-gene factor exp(-delta)
+    (`delta` over the same genes, finite), one type for every cell, each cell's expected total count kept
+    (vec.core.apply_factors with keep_depth and `seed`; the callers pass [build seed, RUN_PROFILE_STREAM]). Returns
+    the new counts (CSR int64), X = their log1p CP10k (dense float32, as the trend step renders its cells) and a
+    record with no cell number in it. delta = 0 returns the counts unchanged and draws nothing."""
+    from vec.core import apply_factors  # imported here so that the module's import block stays as it was
+
+    C = sparse.csr_matrix(counts)
+    d = np.asarray(delta, dtype=np.float64)
+    if d.ndim != 1 or d.shape[0] != C.shape[1]:
+        raise ValueError(f"the run profile has shape {d.shape}; the counts have {C.shape[1]} genes")
+    if not np.all(np.isfinite(d)):
+        raise ValueError("the run profile must be finite")
+    new, scale, _ = apply_factors(C, np.exp(-d)[None, :], np.zeros(C.shape[0], dtype=np.int64), keep_depth=True,
+                                  seed=seed)
+    X = dense(log1p_cp10k(new)).astype(np.float32)
+    return new, X, {"rule": RUN_PROFILE_RULE, "stream": RUN_PROFILE_STREAM,
+                    "median_depth_scale": float(np.median(scale)) if len(scale) else float("nan")}
+
+
 def _repo_relative(path: str) -> str:
     p = Path(path).resolve()
     try:
