@@ -2062,18 +2062,20 @@ T1_R66_TABLE = (
 T1_R66_STEPS = (("--g-mom-damping", "d"), ("--held-momentum", "H"), ("--direction-momentum-damping", "m"))
 
 
-def _r66_values(option: str) -> tuple:
+def _r66_values(option: str, base_option: str = T1_R60_BASE_OPTION, row: str = T1_R66_ROW) -> tuple:
     """A row R66 option string's values in T1_R60_FILES's order and types, as the builder's parser gives them: the
     multiplier, g_mom's damping (floats), Blood's damping and MS's damping (the literal strings), None where the string
     does not give the option. Raises ValueError unless the string is T1_R60_BASE_OPTION followed by one to three of
     T1_R66_STEPS' flags, each once with one value, in d, H, m order."""
-    words, base = option.split(), T1_R60_BASE_OPTION.split()
+    # base_option, row: the strings' head and the row a refusal names (row R73's four strings start from MSB's
+    # pair, row R26's; the defaults are row R66's, whose table reads as before)
+    words, base = option.split(), base_option.split()
     flags = [flag for flag, _ in T1_R66_STEPS]
     tail = words[len(base):]
     given = tail[::2]
     if (words[:len(base)] != base or not tail or len(tail) % 2 or any(f not in flags for f in given)
             or [flags.index(f) for f in given] != sorted({flags.index(f) for f in given})):
-        raise ValueError(f"not a row {T1_R66_ROW} option string: {option}")
+        raise ValueError(f"not a row {row} option string: {option}")
     values = dict(zip(given, tail[1::2], strict=True))
     damping = values.get("--g-mom-damping")
     return (float(base[1]), None if damping is None else float(damping), values.get("--held-momentum"),
@@ -2115,6 +2117,71 @@ def _r66_order(name: str) -> str:
                                blood=T1_R66_BLOOD if T1_R66_FILES[name][3] is not None else "")
 
 
+# Row R73 (the captain's order of 2026-11-25, "All four", ruling, no run): T1's second refinement round, four files,
+# each T1_s2rcMSBm10's command (row R51's file: T1_s2rcMSB's, row R26's, with MS's own damping 1.0) with one further
+# change, g_mom's within-type damping (d) or Blood's own step (H), each taken only with --captain-ruling R73. Row R66's
+# route (_t1_l12) on MSB's pair: _r66_values reads each string with MSB's pair as its head, and _r73_values checks each
+# name against its string (T1_s2rcMSBm10, then the step's tag and its value's digits, the point dropped). This table, in
+# the row's order, is the one the row's first cell is checked against and the one experiments/builds/t1_r73_line.sh's
+# literal case table copies (tests/test_t1_r73_launcher.py holds the two equal).
+T1_R73_ROW = "R73"
+T1_R73_BASE_FILE = T1_R51_M10_FILE  # T1_s2rcMSBm10, row R51's file
+T1_R73_BASE_OPTION = "--feng-fraction-mult 1.5 --direction-momentum all"  # MSB's pair (row R26's), each string's head
+T1_R73_TABLE = (
+    ("T1_s2rcMSBm10d10", f"{T1_R73_BASE_OPTION} --g-mom-damping 1.0 --direction-momentum-damping 1.0"),
+    ("T1_s2rcMSBm10H05", f"{T1_R73_BASE_OPTION} --held-momentum 0.5 --direction-momentum-damping 1.0"),
+    ("T1_s2rcMSBm10d15", f"{T1_R73_BASE_OPTION} --g-mom-damping 1.5 --direction-momentum-damping 1.0"),
+    ("T1_s2rcMSBm10H10", f"{T1_R73_BASE_OPTION} --held-momentum 1.0 --direction-momentum-damping 1.0"),
+)
+T1_R73_STEPS = {"--g-mom-damping": "d", "--held-momentum": "H"}  # the one further step's flag -> its tag in the name
+
+
+def _r73_values(name: str, option: str) -> tuple:
+    """(multiplier, g_mom's damping or None, Blood's damping or None, MS's damping) of one entry of row R73's table, as
+    _r66_values reads them off the string with MSB's pair as its head. Raises ValueError unless the string is MSB's
+    pair, exactly one further step (--g-mom-damping or --held-momentum, its value one digit, a point and one digit) and
+    --direction-momentum-damping 1.0, in that order, and the name is T1_s2rcMSBm10 plus the step's tag and its value's
+    digits with the point dropped (T1_s2rcMSBm10d10 for --g-mom-damping 1.0, T1_s2rcMSBm10H05 for --held-momentum
+    0.5): R66's d, H, m order would name the first T1_s2rcMSBd10m10, which this table does not take."""
+    values = _r66_values(option, T1_R73_BASE_OPTION, T1_R73_ROW)
+    tail = option.split()[len(T1_R73_BASE_OPTION.split()):]
+    if (len(tail) != 4 or tail[0] not in T1_R73_STEPS or not re.fullmatch(r"\d\.\d", tail[1])
+            or tail[2:] != ["--direction-momentum-damping", "1.0"]
+            or name != f"{T1_R73_BASE_FILE}{T1_R73_STEPS[tail[0]]}{tail[1].replace('.', '')}"):
+        raise ValueError(f"row {T1_R73_ROW}'s file {name} does not match its option string {option}")
+    return values
+
+
+T1_R73_FILES = {name: (option, *_r73_values(name, option)) for name, option in T1_R73_TABLE}
+T1_R73_COMMAND = T1_CANDIDATE_COMMAND + " {option} --captain-ruling " + T1_R73_ROW
+# each file's one further step is row R51's single-step file at the same value (T1_s2rcMSB plus the step's suffix): the
+# launcher rebuilds that file, and the file's order repeats its change in row R51's words
+T1_R73_SINGLE = {name: T1_R51_BASE_FILE + name.removeprefix(T1_R73_BASE_FILE) for name in T1_R73_FILES}
+T1_R73_CHANGES = {name: T1_R51_CHANGES[single] for name, single in T1_R73_SINGLE.items()}
+T1_R73_ORDER = ("experiments/harness/TRIES.md row R73, the captain's order of 2026-11-25 (\"All four\", the four files "
+                "sent at once; \"ruling, no run\"; decision log 2026-11-25 (bbbb), T1's second refinement round) "
+                "naming `{option}` ({file}) and `--captain-ruling R73`: file {file}, T1_s2rcMSBm10's command (row "
+                "R51's file: candidate MS's step exactly as row R23 fixes it on candidate B's command, the atlas step "
+                "at 1.5 x the calendar fraction, g_mom's within-type damping 0.5, MS's own damping 1.0 in place of "
+                "harness.B0_DAMPING) with one further change, {change}, the change row R51's file {single} makes to "
+                "T1_s2rcMSB's command; nothing else changed")
+
+
+def _r73_row_names(name: str, path: Path | None = None) -> bool:
+    """True when the ledger holds exactly one row R73 whose first cell starts "R73 (the captain's order", says "ruling,
+    no run" and names the file's option string and `--captain-ruling R73` each as a whole backticked string, the
+    string followed there by " (<file>)" as the row pairs each string with its file (row R67's check)."""
+    lines = [ln for ln in (path or TRIES_FILE).read_text(encoding="utf-8").splitlines()
+             if ln.startswith(f"| {T1_R73_ROW} ")]
+    if len(lines) != 1:
+        return False
+    first = lines[0][2:].split("|", 1)[0]
+    option = T1_R73_FILES[name][0]
+    named = set(re.findall(r"`([^`]*)`", first))
+    return (first.startswith(f"{T1_R73_ROW} (the captain's order") and "ruling, no run" in first and option in named
+            and f"--captain-ruling {T1_R73_ROW}" in named and f"`{option}` ({name})" in first)
+
+
 def _r46_row_names(path: Path | None = None) -> bool:
     """Whether experiments/harness/TRIES.md (TRIES_FILE) holds exactly one row R46 whose first cell starts "R46 (the
     captain's ", says "ruling, no run" and names the file T1_s2rcB25MSH05 as a whole word (the row names the file and
@@ -2138,7 +2205,7 @@ def _l12_hit(a) -> tuple[str, str] | None:
         return None
     given = (getattr(a, "feng_fraction_mult", None), getattr(a, "g_mom_damping", None),
              getattr(a, "held_momentum", None), getattr(a, "direction_momentum_damping", None))
-    for row, files in ((T1_R66_ROW, T1_R66_FILES), (T1_R60_ROW, T1_R60_FILES)):
+    for row, files in ((T1_R73_ROW, T1_R73_FILES), (T1_R66_ROW, T1_R66_FILES), (T1_R60_ROW, T1_R60_FILES)):
         for name, (_, *values) in files.items():
             if given == tuple(values):
                 return row, name
@@ -2152,6 +2219,8 @@ def _l12_row_names(row: str, name: str) -> bool:
         return _captain_order_names(T1_R60_ROW, f"`{T1_R60_FILES[name][0]}`")
     if row == T1_R66_ROW:
         return _captain_order_names(T1_R66_ROW, f"`{T1_R66_FILES[name][0]}`")
+    if row == T1_R73_ROW:
+        return _r73_row_names(name)
     return _r46_row_names()
 
 
@@ -2159,7 +2228,7 @@ def _l12_ordered(a) -> bool:
     """The commands rows R60, R46 and R66 order, as _t1_l12 takes them: a file's option set exactly with its own row's
     --captain-ruling while that row names it, and no released bet's option."""
     ruling = getattr(a, "captain_ruling", None)
-    if ruling not in (T1_R60_ROW, T1_R46_ROW, T1_R66_ROW):
+    if ruling not in (T1_R60_ROW, T1_R46_ROW, T1_R66_ROW, T1_R73_ROW):
         return False
     hit = _l12_hit(a)
     return (hit is not None and hit[0] == ruling and getattr(a, "released_bet", None) is None
@@ -2183,23 +2252,30 @@ def _t1_l12(a) -> dict | None:
     alone, each while row R66's first cell is the captain's order naming its option string and `--captain-ruling R66`
     (_captain_order_names), with R60's refusals; their record also names the slot and lists the file's changes."""
     ruling = getattr(a, "captain_ruling", None)
-    if ruling not in (T1_R60_ROW, T1_R46_ROW, T1_R66_ROW):
+    if ruling not in (T1_R60_ROW, T1_R46_ROW, T1_R66_ROW, T1_R73_ROW):
         return None
     hit = _l12_hit(a)
     if hit is None or hit[0] != ruling:
+        if ruling == T1_R73_ROW:  # row R73 orders its four sets and nothing else
+            sys.exit(f"--captain-ruling {T1_R73_ROW} orders four files, each with exactly its own option string on "
+                     f"{T1_CANDIDATE_COMMAND}: " + "; ".join(f"{f} `{v[0]}`" for f, v in T1_R73_FILES.items()))
         return None
     row, name = hit
-    r60, r66 = row == T1_R60_ROW, row == T1_R66_ROW
-    if r66:
+    r60, r66, r73 = row == T1_R60_ROW, row == T1_R66_ROW, row == T1_R73_ROW
+    if r73:
+        option, mult, damping, held, ms_damping = T1_R73_FILES[name]
+    elif r66:
         option, mult, damping, held, ms_damping = T1_R66_FILES[name]
     else:
         option, mult, damping, held, ms_damping = T1_R60_FILES[name] if r60 else (T1_R46_OPTION, *T1_R46_VALUES)
-    base = T1_R66_BASE_FILE if r66 else T1_R60_BASE_FILE if r60 else T1_R46_BASE_FILE
-    command = (T1_R66_COMMAND.format(option=option) if r66 else T1_R60_COMMAND.format(option=option) if r60
-               else T1_R46_COMMAND)
+    base = T1_R73_BASE_FILE if r73 else T1_R66_BASE_FILE if r66 else T1_R60_BASE_FILE if r60 else T1_R46_BASE_FILE
+    command = (T1_R73_COMMAND.format(option=option) if r73 else T1_R66_COMMAND.format(option=option) if r66
+               else T1_R60_COMMAND.format(option=option) if r60 else T1_R46_COMMAND)
     what = f"row {row}'s file {name}"
     if not _l12_row_names(row, name):
-        named = (f"the captain's order (\"ruling, no run\") naming `{option}` and `--captain-ruling {row}`"
+        named = (f"the captain's order (\"ruling, no run\") naming `{option}` ({name}) and `--captain-ruling {row}`, "
+                 "each as a whole backticked string" if r73 else
+                 f"the captain's order (\"ruling, no run\") naming `{option}` and `--captain-ruling {row}`"
                  if r60 or r66 else
                  f"the captain's (starting \"{row} (the captain's \", \"ruling, no run\") naming {name}")
         sys.exit(f"{what} is refused: experiments/harness/TRIES.md has no single row {row} whose first cell is {named}")
@@ -2212,7 +2288,9 @@ def _t1_l12(a) -> dict | None:
     if (getattr(a, "feng_groups", FENG_GROUPS_DEFAULT) != "recomputed" or a.seed != harness.BUILD_SEED_OFFSET + 1
             or a.board is not None):
         sys.exit(f"{what} changes {base} only: it needs the command {command} at the default seed on the test board")
-    if r66:
+    if r73:
+        order = T1_R73_ORDER.format(option=option, file=name, change=T1_R73_CHANGES[name], single=T1_R73_SINGLE[name])
+    elif r66:
         order = _r66_order(name)
     else:
         order = T1_R60_ORDER.format(option=option, file=name, change=T1_R60_CHANGES[name]) if r60 else T1_R46_ORDER
@@ -2236,6 +2314,8 @@ def _l12_line(r51: dict) -> str:
     if r51.get("captain_ruling") == T1_R66_ROW:
         return (f"row {T1_R66_ROW}'s file {r51['file']}, T1's step-on {T1_R66_SLOTS[r51['file']]}, on "
                 f"{T1_R66_BASE_FILE}'s command")
+    if r51.get("captain_ruling") == T1_R73_ROW:
+        return f"row {T1_R73_ROW}'s file {r51['file']}, T1's second refinement round, on {T1_R73_BASE_FILE}'s command"
     return _r51_line(r51)
 
 
@@ -2244,9 +2324,11 @@ def _l12_momentum(r51: dict, ms_record: dict | None) -> dict | None:
     --direction-momentum-damping, the damping_option text names that file in place of row R51's (MS's step writes row
     R51's); every other record as it is."""
     row = r51.get("captain_ruling")
-    if row not in (T1_R60_ROW, T1_R66_ROW) or not ms_record or "damping_option" not in ms_record:
+    if row not in (T1_R60_ROW, T1_R66_ROW, T1_R73_ROW) or not ms_record or "damping_option" not in ms_record:
         return ms_record
     rest = ("nothing else changed" if row == T1_R60_ROW else
+            f"as row {T1_R51_ROW}'s file {T1_R73_BASE_FILE}, this file's base, has it; the file's one further change "
+            "as its order names it" if row == T1_R73_ROW else
             f"the file's other changes as its order lists them ({T1_R66_COUNT[len(T1_R66_CHANGES[r51['file']])]} in "
             "all)")
     return {**ms_record, "damping_option": (f"--direction-momentum-damping {r51['direction_momentum_damping']:.1f} "
@@ -2673,7 +2755,8 @@ def _t1_ms_step(ref, library: np.ndarray, directions, fraction: float, groups, h
     return step, record
 
 
-def _t1_hm_step(ref, library: np.ndarray, damping: float, held, seed: int, base_file: str | None = None):
+def _t1_hm_step(ref, library: np.ndarray, damping: float, held, seed: int, base_file: str | None = None,
+                row: str | None = None):
     """Blood's released momentum (--held-momentum; files T1_s2rcB25H05, H10 and H20), applied to the drawn population
     after the atlas step and before g_mom: on the drawn cells labelled T1_HM_LABEL only, B0's per-category damped mean
     momentum (`t1_scope.momentum_shift` with _t1_ms_step's constants: eps 0.5, min_cells 20, keep_depth; the held genes
@@ -2728,6 +2811,10 @@ def _t1_hm_step(ref, library: np.ndarray, damping: float, held, seed: int, base_
                                    "after MS's step (its momentum, then the atlas step, on the cells whose group has a "
                                    "direction, never Blood) and before g_mom")
                           .replace("as the banked file has it", f"as {base_file} has it"))
+    if row is not None:  # row R73's H files (row and base_file given together): the row and the base file named
+        record["rule"] = (f"{record['rule']}; Blood's step is row {row}'s one further change to {base_file}'s "
+                          f"command (row {T1_R51_ROW}'s file, MS's own damping 1.0), as row {T1_R51_ROW}'s H files "
+                          "make it to T1_s2rcMSB's")
 
     def step(pop):
         labels = pop.obs[t1_scope.LABEL_KEY].astype(str).to_numpy()
@@ -3147,7 +3234,9 @@ def build_t1(a) -> dict:
         # the banked file's draw and atlas step in build_submission, then Blood's step and g_mom's hook in post_cells.
         # Row R51's H files: the same step after MS's step below (it wraps this hook), on T1_s2rcMSB's command
         hm_step, hm_record = _t1_hm_step(ref, library, hm["held_momentum"], held, a.seed,
-                                         **({} if r51 is None else {"base_file": r51["base_file"]}))
+                                         **({} if r51 is None else {"base_file": r51["base_file"]}),
+                                         **({"row": T1_R73_ROW} if r51 is not None
+                                            and r51["captain_ruling"] == T1_R73_ROW else {}))
         hm_hook = within_type["post_cells"]
         within_type = {"post_cells": lambda pop: hm_hook(hm_step(pop))}
     ms_record = None
@@ -4677,8 +4766,14 @@ def build_parser() -> argparse.ArgumentParser:
                                 f"Blood's step at 2.0; each on {T1_R66_BASE_FILE}'s command), exactly one of these "
                                 "sets: " + "; ".join(f"{f} `{v[0]}`" for f, v in T1_R66_FILES.items())
                                 + f", while row {T1_R66_ROW}'s first cell is the captain's order naming the set's "
-                                f"option string and `--captain-ruling {T1_R66_ROW}`. Each is refused under any "
-                                "other ruling")
+                                f"option string and `--captain-ruling {T1_R66_ROW}`. With --captain-ruling "
+                                f"{T1_R73_ROW} only: row {T1_R73_ROW}'s four files (T1's second refinement round, each "
+                                f"one further change, g_mom's damping or Blood's step, to {T1_R73_BASE_FILE}'s "
+                                "command), exactly one of these sets: "
+                                + "; ".join(f"{f} `{v[0]}`" for f, v in T1_R73_FILES.items())
+                                + f", while row {T1_R73_ROW}'s first cell is the captain's order naming the set's "
+                                f"option string paired with its file and `--captain-ruling {T1_R73_ROW}`. Each is "
+                                "refused under any other ruling")
             p.add_argument("--held-momentum", default=None, metavar="{0.5,1.0,2.0}",
                            help="Blood's released momentum on the banked file (off by default; files "
                                 f"{', '.join(T1_HM_FILES.values())}): on the command {T1_CANDIDATE_COMMAND} "
@@ -4701,7 +4796,10 @@ def build_parser() -> argparse.ArgumentParser:
                                 f"{T1_R46_ROW}'s file {T1_R46_FILE}; with --feng-fraction-mult 2.0 "
                                 f"--direction-momentum all and --captain-ruling {T1_R66_ROW}, 0.5 and 1.0 are in "
                                 f"row {T1_R66_ROW}'s two- and three-change files and 2.0 is its file "
-                                "T1_s2rcMS20H20 (see --direction-momentum)")
+                                "T1_s2rcMS20H20 (see --direction-momentum); with --feng-fraction-mult 1.5 "
+                                "--direction-momentum all --direction-momentum-damping 1.0 and --captain-ruling "
+                                f"{T1_R73_ROW}, 0.5 and 1.0 are row {T1_R73_ROW}'s files T1_s2rcMSBm10H05 and "
+                                "T1_s2rcMSBm10H10 (see --direction-momentum)")
             p.add_argument("--direction-momentum-damping", default=None, metavar="{1.0}",
                            help=f"row {T1_R51_ROW}'s file {T1_R51_M10_FILE} (off by default): MS's own damping (the "
                                 "per-category momentum of --direction-momentum, harness.B0_DAMPING in every other MS "
@@ -4718,7 +4816,9 @@ def build_parser() -> argparse.ArgumentParser:
                                 + ", each only as "
                                 + T1_R67_COMMAND.format(option=T1_R67_PREFIX + "<value>")
                                 + f" at the default seed on the test board, while row {T1_R67_ROW}'s first cell is "
-                                "the captain's order naming that option string paired with the file")
+                                "the captain's order naming that option string paired with the file. Row "
+                                f"{T1_R73_ROW}'s four files: the literal value 1.0 with one further step each, g_mom's "
+                                "damping or Blood's (see --direction-momentum)")
             p.add_argument("--late-mix", choices=LATE_MIX_CHOICES, default=None,
                            help=f"row {T1_R54_ROW}'s file {T1_R54_FILE} (off by default): T1_s2rcMSB's command with "
                                 "library 3's own chamber mix moved to the shares row "
@@ -4770,7 +4870,10 @@ def build_parser() -> argparse.ArgumentParser:
                                 + "; ".join(f"{f} `{v[0]}`" for f, v in T1_R67_FILES.items())
                                 + f"): {T1_R67_ROW}, the captain's order for those three files, while that row's "
                                 "first cell names the set's option string paired with its file and "
-                                f"`--captain-ruling {T1_R67_ROW}`")
+                                f"`--captain-ruling {T1_R67_ROW}`. With exactly one of row {T1_R73_ROW}'s four option "
+                                f"sets on {T1_CANDIDATE_COMMAND} (see --direction-momentum): {T1_R73_ROW}, the "
+                                "captain's order for those four files, while that row's first cell names the set's "
+                                f"option string paired with its file and `--captain-ruling {T1_R73_ROW}`")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim", "core_trim", "organ_scope"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "
