@@ -14769,3 +14769,14 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     other file, R2 the best on a different axis); no practice read; about 1.5 hours of code; its price for the best of
     the three about +0.2 to +0.4 expected, at most about +2. It flags that picking parents by headline strains "scores
     choose, never compute" and needs the captain's ruling. A cold challenger weighs that first.
+- 2026-11-25 (ggg), a seventh design round: moonshots on T3, the heart and the embryo (state at 15:52 UTC,
+  2026-11-25). Written by the AI assistant, which designs no line.
+  - **The captain's words, verbatim:** "go after wild non-mimetic moonshots for T2 Heart, T2 Embryo, T3 as currently
+    our hope for them is low". `TASK_gap7.md` asks two blind designers per board for proposals whose best case is at
+    least +5 board points, honestly priced: one lens finds an information source no round used that the rules allow
+    (outside data past or outside the windows, other genes' knockouts that do not phenocopy, public models whose
+    training data holds no in-window cell), the other a contrarian, first-principles bet the team never tested (any
+    model class, trained on the DGX's eight free GPUs). The organisers' words, the strict form, rows before reads and
+    the closed levers bind; a closed lever moves only in a proposal weighed apart with the exact words of the
+    captain's named exception. Gates by about 02:00 UTC and builds by about 08:00 UTC on 2026-11-26; cold challengers
+    next.
