@@ -474,7 +474,8 @@ def main(argv=None) -> int:
         return 2
     out = a.out.expanduser().resolve()
     repo = Path(__file__).resolve().parents[2]
-    if out == repo or repo in out.parents:
+    in_checkout = (repo / "pyproject.toml").is_file() and (repo / "experiments" / "heart_ext").is_dir()
+    if in_checkout and (out == repo or repo in out.parents):
         print(f"refused: {out} is inside the repository", file=sys.stderr)
         return 2
     try:
