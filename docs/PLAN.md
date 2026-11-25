@@ -14754,3 +14754,18 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     The AI assistant's estimate before this upload, that MSBm10 needed a larger rise than the same step gave on MS20,
     was wrong. The T1 refinement round's designer, briefed with MS20m10 as the banked file, is told the banked file is
     now MSBm10. Standing: 74.75 + 63.94 + (62.45 + 69.9) / 2 = 204.865 (from 204.465).
+- 2026-11-25 (fff), the sixth round's heart and T3 designs (state at 15:48 UTC, 2026-11-25). Written by the AI
+  assistant, recused on the heart's scope and size and giving no view on which genes a T3 file moves.
+  - **Heart** (`HEART_HEDGE_design.md`): first choice, no new heart file. Every file mixable inside the closed
+    settings shares the banked draw, rows, coordinates and scope, so a hedge gains only second-order amounts; its one
+    optional ticket, OMIX125 (OTK125 and OTP125 half-files mixed 50:50, needing the captain's exception on scope and
+    size), is priced at 0.09 to 0.25 to beat the banked file, about +0.003 to +0.011 expected heart points. Unused
+    inputs: the trend already reads E8.25_late, the unlocked E8.5 and E8.75 (transition weights 0.05, 0.11, 0.41,
+    0.43), not only the last interval; the one unused file with a buildable step (E8.0's cardiomyocytes) is about 1%
+    and set aside. Its exposure note: banked-file names across the task files (no value). No challenger is spent; no
+    heart file follows.
+  - **T3** (`T3_HEDGE_design.md`): three mixtures of C2 with built T3 files sharing C2's exact rows (H1 2/3 C2 + 1/3
+    R1, H2 thirds of C2, R1 and R2, H3 2/3 C2 + 1/3 R2), parents picked once by headline order (R1 the best-scoring
+    other file, R2 the best on a different axis); no practice read; about 1.5 hours of code; its price for the best of
+    the three about +0.2 to +0.4 expected, at most about +2. It flags that picking parents by headline strains "scores
+    choose, never compute" and needs the captain's ruling. A cold challenger weighs that first.
