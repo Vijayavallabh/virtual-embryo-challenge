@@ -14283,3 +14283,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **The row.** The score-blind reviewer's text from the cold challenge's row content; code merged at c0406bf (with
     register row X002's amendment of 2026-11-25) after an independent review that found no blocker. Step 0 is
     target-free and not a try; its shares file is committed, and row T72 is placed with its sha256, after the step.
+- 2026-11-25 (q), row N64's step ran: the late-mix shares (state at 02:39 UTC, 2026-11-25). Written by the AI
+  assistant, which designed none of it.
+  - **The step.** Target-free, not a try; `shares.json sha256
+    e07457c6d34ddacb640f777f450669ddc0f85f643e26802a2a4f7c8b6572db78` (files committed at a05039f, the row's outcome
+    cell written here after a script slip stopped it); the file's moved mix cardiomyocytes 0.442019 and blood 0.140914
+    (library 3's own 0.242920 and 0.182300); row T72's bar (c) 0.365178. Rows T72 and T73 follow after T72's smoke
+    test and T73's J7 dry run.
