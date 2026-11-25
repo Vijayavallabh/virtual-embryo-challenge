@@ -970,7 +970,8 @@ def _bet_refusals(a) -> None:
                                    or _pooled_ordered(a)  # and R37; then the rows named on the command line for
                                    or _hm_ordered(a) or _ms25_ordered(a)  # Blood's momentum and MS at 2.5; and
                                    or _r51_ordered(a)  # row R51's seven files; and rows R54's and R58's files
-                                   or _r54_ordered(a) or _r58_ordered(a)):
+                                   or _r54_ordered(a) or _r58_ordered(a)
+                                   or _r67_ordered(a)):  # and row R67's three files
             return  # _t1_candidate, _t1_pooled, _t1_hm, _t1_ms and _t1_r51 refused every other use
         if ruling is not None or getattr(a, "bet_strength", None) is not None:
             sys.exit("--captain-ruling and --bet-strength go with --released-bet only")
@@ -1260,6 +1261,56 @@ T1_R58_NOTE = ("--direction-momentum-damping 2.0 (row R58's file T1_s2rcMSBm20):
 # The options row R58's file never takes beside its own option set: flag -> attribute
 R58_STACKED = (("--g-mom-damping", "g_mom_damping"), ("--held-momentum", "held_momentum"),
                ("--released-bet", "released_bet"), ("--bet-strength", "bet_strength"), ("--late-mix", "late_mix"))
+# Row R67 of experiments/harness/TRIES.md (the captain's order of 2026-11-25, "ruling, no run": "Yes to T1_s2rcMSBm125,
+# T1_s2rcMSBm15 and T1_s2rcMSBm075 under R22, sent at once, in one ruling row: MSB's command with MS's own damping at
+# 1.25, 1.5 and 0.75."; decision log 2026-11-25 (kkk)): three files, each T1_s2rcMSB's command with one change, MS's
+# own damping in place of harness.B0_DAMPING, nothing else changed. Row R58's route over three literals: T1_R67_TABLE
+# is the one table, the row's three (file, option string) pairs in the row's order; each file's value is the literal
+# string its option string ends in (_r67_value, which also holds the name to the value: T1_s2rcMSBm + the value's
+# digits without the point, the first digit the units), and its record's note (T1_R67_NOTES) carries that literal,
+# never a float formatted again. A file is taken only with --captain-ruling R67 while TRIES.md holds exactly one row
+# R67 whose first cell is the captain's order ("ruling, no run") naming the file's option string and
+# `--captain-ruling R67`, each as a whole backticked string, the option string followed there by " (<file>)" as the
+# row pairs each string with its file (_r67_row_names), on T1_CANDIDATE_COMMAND at the default seed on the test board.
+# Its route is tested after row R58's and before row R51's; every other command is routed as before (the three values
+# under any other ruling or none are refused by row R51's guard as before). Built by experiments/builds/t1_r67_line.sh.
+T1_R67_ROW = "R67"
+T1_R67_TABLE = (
+    ("T1_s2rcMSBm125", "--feng-fraction-mult 1.5 --direction-momentum all --direction-momentum-damping 1.25"),
+    ("T1_s2rcMSBm15", "--feng-fraction-mult 1.5 --direction-momentum all --direction-momentum-damping 1.5"),
+    ("T1_s2rcMSBm075", "--feng-fraction-mult 1.5 --direction-momentum all --direction-momentum-damping 0.75"),
+)
+# MSB's option set (row R26's) and the flag every row R67 option string ends in, before its value
+T1_R67_PREFIX = "--feng-fraction-mult 1.5 --direction-momentum all --direction-momentum-damping "
+
+
+def _r67_value(name: str, option: str) -> str:
+    """A row R67 option string's literal value, as the builder's parser gives it to --direction-momentum-damping: the
+    string must be T1_R67_PREFIX followed by one decimal (digits, a point, digits) that is not B0's damping, row R51's
+    1.0 or row R58's 2.0, and the file's name must be T1_s2rcMSBm followed by that decimal's digits without the point;
+    else ValueError."""
+    value = option.removeprefix(T1_R67_PREFIX)
+    if value == option or not re.fullmatch(r"\d+\.\d+", value):
+        raise ValueError(f"not a row {T1_R67_ROW} option string: {option}")
+    if float(value) in (harness.B0_DAMPING, 1.0, 2.0) or name != "T1_s2rcMSBm" + value.replace(".", ""):
+        raise ValueError(f"row {T1_R67_ROW}'s file {name} does not match its option string {option}")
+    return value
+
+
+# file -> (its option string as row R67 names it, the literal value --direction-momentum-damping takes for it)
+T1_R67_FILES = {name: (option, _r67_value(name, option)) for name, option in T1_R67_TABLE}
+T1_R67_COMMAND = T1_CANDIDATE_COMMAND + " {option} --captain-ruling " + T1_R67_ROW
+T1_R67_ORDER = ("experiments/harness/TRIES.md row R67, the captain's order of 2026-11-25 (\"Yes to T1_s2rcMSBm125, "
+                "T1_s2rcMSBm15 and T1_s2rcMSBm075 under R22, sent at once, in one ruling row: MSB's command with MS's "
+                "own damping at 1.25, 1.5 and 0.75.\"; decision log 2026-11-25 (kkk)) naming `{option}` and "
+                "`--captain-ruling R67`: file {file}, T1_s2rcMSB's command with one change, MS's own damping {value} "
+                "in place of harness.B0_DAMPING; nothing else changed")
+# file -> MS's record note for it (the damping_option field), as T1_R58_NOTE is row R58's file's
+T1_R67_NOTES = {name: (f"--direction-momentum-damping {value} (row {T1_R67_ROW}'s file {name}): MS's own damping in "
+                       f"place of harness.B0_DAMPING ({float(harness.B0_DAMPING):g}); nothing else changed")
+                for name, (_, value) in T1_R67_FILES.items()}
+# The options a row R67 file never takes beside its own option set: row R58's, flag -> attribute
+R67_STACKED = R58_STACKED
 # Row R54 of experiments/harness/TRIES.md (the captain's named exception of 2026-11-24, written as his order, "ruling,
 # no run": "Yes, T1_s2rcMSB_LM16, my named exception, bound to T72: ..."; T1's late-mix line, the step-change round's
 # T1 CLOSED design as its cold challenge fixes it, the E14.5 file struck): one file, T1_s2rcMSB_LM16, T1_s2rcMSB's
@@ -2293,6 +2344,85 @@ def _t1_r58(a) -> dict | None:
             "direction_momentum_damping": float(T1_R58_DMD), "order": T1_R58_ORDER, "command": T1_R58_COMMAND}
 
 
+def _r67_row_names(name: str, path: Path | None = None) -> bool:
+    """Whether experiments/harness/TRIES.md (TRIES_FILE) holds exactly one row R67 whose first cell is the captain's
+    order (it starts "R67 (the captain's order" and says "ruling, no run") naming row R67's file `name`'s option
+    string and `--captain-ruling R67`, each as a whole backticked string, the option string followed there by
+    " (<name>)" as the row pairs each string with its file. A backticked string holding the option inside a longer one,
+    a string paired with another file, or a name outside the first cell does not pass."""
+    lines = [ln for ln in (path or TRIES_FILE).read_text(encoding="utf-8").splitlines()
+             if ln.startswith(f"| {T1_R67_ROW} ")]
+    if len(lines) != 1:
+        return False
+    first = lines[0][2:].split("|", 1)[0]
+    option = T1_R67_FILES[name][0]
+    named = set(re.findall(r"`([^`]*)`", first))
+    return (first.startswith(f"{T1_R67_ROW} (the captain's order") and "ruling, no run" in first and option in named
+            and f"--captain-ruling {T1_R67_ROW}" in named and f"`{option}` ({name})" in first)
+
+
+def _r67_file(a) -> str | None:
+    """The row R67 file whose option set the command gives exactly (--feng-fraction-mult 1.5, --direction-momentum all
+    and --direction-momentum-damping at the file's literal value, T1_R67_FILES), whatever --captain-ruling says; else
+    None. Reads nothing."""
+    given = (getattr(a, "feng_fraction_mult", None), getattr(a, "direction_momentum", None),
+             getattr(a, "direction_momentum_damping", None))
+    for name, (_, value) in T1_R67_FILES.items():
+        if given == (T1_MSB_MULT, DIRECTION_MOMENTUM_ARMS[0], value):
+            return name
+    return None
+
+
+def _r67_ordered(a) -> bool:
+    """The commands row R67 orders, as _t1_r67 holds them: one of its three option sets exactly with --captain-ruling
+    R67, none of R67_STACKED's options, and row R67's first cell naming the set paired with its file. Reads nothing
+    unless the command names --captain-ruling R67 and one of the three sets."""
+    if getattr(a, "captain_ruling", None) != T1_R67_ROW:
+        return False
+    name = _r67_file(a)
+    return (name is not None and all(getattr(a, attr, None) is None for _, attr in R67_STACKED)
+            and _r67_row_names(name))
+
+
+def _t1_r67(a) -> dict | None:
+    """Row R67's three files (T1_R67_TABLE: T1_s2rcMSB's command with MS's own damping at 1.25, 1.5 or 0.75), on row
+    R58's route, tested after row R58's and before row R51's. Returns None, reading nothing, unless the command names
+    --captain-ruling R67: every other command is routed as before (the three values under any other ruling or none are
+    refused by row R51's guard). Under R67 it is refused before anything but the ledger is read unless the option set
+    is exactly one of the three (_r67_file), row R67's first cell names that option string paired with its file and
+    `--captain-ruling R67` (_r67_row_names), none of R67_STACKED's options is given, R1's hold stands, and the command
+    is T1_CANDIDATE_COMMAND (whose own refusals then hold the rest) at the default seed on the test board. Returns the
+    record's values as row R58's route returns its file's: the file, the row, its option string, the base file, the
+    multiplier, g_mom's damping, Blood's (None), MS's damping (the file's literal value), the order text and the
+    command."""
+    if getattr(a, "captain_ruling", None) != T1_R67_ROW:
+        return None
+    name = _r67_file(a)
+    if name is None:
+        sys.exit(f"--captain-ruling {T1_R67_ROW} orders three files, each with exactly its own option string on "
+                 f"{T1_CANDIDATE_COMMAND}: " + "; ".join(f"{f} `{v[0]}`" for f, v in T1_R67_FILES.items()))
+    option, value = T1_R67_FILES[name]
+    command = T1_R67_COMMAND.format(option=option)
+    what = f"row {T1_R67_ROW}'s file {name}"
+    if not _r67_row_names(name):
+        sys.exit(f"{what} is refused: experiments/harness/TRIES.md has no single row {T1_R67_ROW} whose first cell is "
+                 f"the captain's order (\"ruling, no run\") naming `{option}` ({name}) and "
+                 f"`--captain-ruling {T1_R67_ROW}`, each as a whole backticked string")
+    stacked = [flag for flag, attr in R67_STACKED if getattr(a, attr, None) is not None]
+    if stacked:
+        sys.exit(f"{what} is refused with {', '.join(stacked)}: it is {T1_R51_BASE_FILE}'s command with one change")
+    if not getattr(a, "hold_unbracketed", True):
+        sys.exit(f"{what} is refused with --no-hold-unbracketed: the cells without a group keep R1's hold")
+    if (getattr(a, "feng_groups", FENG_GROUPS_DEFAULT) != "recomputed" or a.seed != harness.BUILD_SEED_OFFSET + 1
+            or a.board is not None):
+        sys.exit(f"{what} changes {T1_R51_BASE_FILE} only: it needs the command {command} at the default seed on the "
+                 "test board")
+    return {"direction_momentum": a.direction_momentum, "captain_ruling": T1_R67_ROW, "file": name,
+            "base_file": T1_R51_BASE_FILE, "option": f"`{option}`", "feng_fraction_mult": float(T1_MSB_MULT),
+            "g_mom_damping": G_MOM_DAMPINGS[0], "held_momentum": None, "direction_momentum_damping": float(value),
+            "order": T1_R67_ORDER.format(option=option, file=name, value=value), "command": command}
+
+
 def _r54_ordered(a) -> bool:
     """The command row R54 orders, as _t1_r54 holds it (and has already refused every other use of --late-mix by the
     time _bet_refusals asks): --late-mix with --captain-ruling R54, no released bet's option, and row R54's first cell
@@ -2448,8 +2578,8 @@ def _t1_ms_step(ref, library: np.ndarray, directions, fraction: float, groups, h
     damping (row R51's files only; None: harness.B0_DAMPING, the step and record exactly as before): the momentum's
     damping, passed to momentum_shift in place of harness.B0_DAMPING (file T1_s2rcMSBm10's 1.0; every other R51 file
     passes B0's value), nothing else changed; the record's damping field names it and, when it is not B0's, a
-    damping_option field says so: `option_note` where it is given (row R58's file T1_s2rcMSBm20's 2.0, T1_R58_NOTE),
-    else row R51's text as before."""
+    damping_option field says so: `option_note` where it is given (row R58's file T1_s2rcMSBm20's 2.0, T1_R58_NOTE;
+    row R67's three files, T1_R67_NOTES), else row R51's text as before."""
     portions = sorted(set(library.tolist()) - {T1_DISSECTED_LIBRARY})
     if portions != list(T1_MS_FIT_LIBRARIES):
         sys.exit(f"--direction-momentum is refused: E10.5's libraries other than {T1_DISSECTED_LIBRARY} are "
@@ -2493,7 +2623,7 @@ def _t1_ms_step(ref, library: np.ndarray, directions, fraction: float, groups, h
                          f"({sorted(directions)})",
               "practice_arm": "experiments/t1_m1/ms_read.py m1rc_gmom_mom (row T65), whose fit runs on the practice "
                               "task's own stages"}
-    if damping is not None and ms_damping != harness.B0_DAMPING:  # row R51's T1_s2rcMSBm10, row R58's T1_s2rcMSBm20
+    if damping is not None and ms_damping != harness.B0_DAMPING:  # R51's T1_s2rcMSBm10, R58's MSBm20, R67's three
         record["damping_option"] = (option_note if option_note is not None else
                                     f"--direction-momentum-damping {ms_damping:.1f} (row {T1_R51_ROW}'s file "
                                     f"{T1_R51_M10_FILE}): MS's own damping in place of harness.B0_DAMPING "
@@ -2863,10 +2993,14 @@ def build_t1(a) -> dict:
     # R51's route. Their refusals read nothing but the ledger (and, for R54, its committed shares file)
     r54 = _t1_r54(a)
     r58 = None if r54 is not None else _t1_r58(a)
+    # then None unless the command names --captain-ruling R67 (row R67's three files, row R58's route over three
+    # literals), tested after row R58's and before row R51's; its refusals read nothing but the ledger
+    r67 = None if r54 is not None or r58 is not None else _t1_r67(a)
     # None unless the command is one of row R51's seven files (T1's line 10), tested before every route below, none of
     # which then sees it: its values stand in for theirs; its refusals read nothing but the ledger
-    r51 = _t1_r51(a) if r54 is None and r58 is None else None
-    line = r51 if r58 is None else r58  # row R51's or row R58's values, which stand in for the routes below
+    r51 = _t1_r51(a) if r54 is None and r58 is None and r67 is None else None
+    ruled = r58 if r58 is not None else r67  # row R58's or row R67's values: one literal damping on MSB's command
+    line = r51 if ruled is None else ruled  # row R51's, R58's or R67's values, which stand in for the routes below
     if r54 is not None:  # T1_s2rcMSB's steps exactly: MS's step at B0's damping, the multiplier 1.5, g_mom at 0.5
         hm, ms, candidate = None, r54, r54
     elif line is None:
@@ -2978,11 +3112,12 @@ def build_t1(a) -> dict:
     if ms is not None:  # candidate MS (refused above unless the recomputed command with --g-mom): the same draw, then
         # the momentum and the atlas step on the covered cells, then g_mom's hook, all inside post_cells. Under row
         # R26 (the pair) the same calls, with `fraction` and g_mom's damping candidate B's from _t1_candidate above;
-        # under row R51 or R58 the same calls with its values, and MS's own damping passed to the step (row R58's with
-        # its own record text); under row R54 R26's calls exactly, on the moved shares
+        # under row R51, R58 or R67 the same calls with its values, and MS's own damping passed to the step (row R58's
+        # and each row R67 file's with its own record text); under row R54 R26's calls exactly, on the moved shares
+        note = T1_R58_NOTE if r58 is not None else None if r67 is None else T1_R67_NOTES[r67["file"]]
         ms_step, ms_record = _t1_ms_step(ref, library, directions, fraction, groups, held, a.seed,
                                          **({} if line is None else {"damping": line["direction_momentum_damping"]}),
-                                         **({} if r58 is None else {"option_note": T1_R58_NOTE}))
+                                         **({} if note is None else {"option_note": note}))
         g_mom_hook = within_type["post_cells"]
         late_drawn = []
 
@@ -3055,8 +3190,8 @@ def build_t1(a) -> dict:
                                "applied_fraction": fraction}
         if hm_record is not None:
             rec["t1_candidate"]["held_momentum_step"] = hm_record
-    if r58 is not None:  # row R58's file, in place of the fields above: MS's record as in every MS file
-        rec["t1_candidate"] = {**r58, "momentum": ms_record, "calendar_fraction": calendar,
+    if ruled is not None:  # R58's file or an R67 file, in place of the fields above: MS's record as in every MS file
+        rec["t1_candidate"] = {**ruled, "momentum": ms_record, "calendar_fraction": calendar,
                                "applied_fraction": fraction}
     if r54 is not None:  # row R54's file, in place of the fields above; its late mix in a field of its own
         rec["t1_candidate"] = {**{k: v for k, v in r54.items() if k not in ("own_shares", "late_shares")},
@@ -4319,7 +4454,13 @@ def build_parser() -> argparse.ArgumentParser:
                                 "and is refused with every other command. Row "
                                 f"{T1_R58_ROW}'s file {T1_R58_FILE}: the literal value {T1_R58_DMD}, only as "
                                 f"{T1_R58_COMMAND} at the default seed on the test board, while row {T1_R58_ROW}'s "
-                                "first cell is the captain's order naming that option string")
+                                f"first cell is the captain's order naming that option string. Row {T1_R67_ROW}'s "
+                                "three files: "
+                                + "; ".join(f"{f} the literal value {v[1]}" for f, v in T1_R67_FILES.items())
+                                + ", each only as "
+                                + T1_R67_COMMAND.format(option=T1_R67_PREFIX + "<value>")
+                                + f" at the default seed on the test board, while row {T1_R67_ROW}'s first cell is "
+                                "the captain's order naming that option string paired with the file")
             p.add_argument("--late-mix", choices=LATE_MIX_CHOICES, default=None,
                            help=f"row {T1_R54_ROW}'s file {T1_R54_FILE} (off by default): T1_s2rcMSB's command with "
                                 "library 3's own chamber mix moved to the shares row "
@@ -4366,7 +4507,12 @@ def build_parser() -> argparse.ArgumentParser:
                                 f"{LATE_MIX_CHOICES[0]}: {T1_R54_ROW}, the captain's named exception for "
                                 f"{T1_R54_FILE}. With exactly one of row {T1_R66_ROW}'s thirty option sets (see "
                                 f"--direction-momentum): {T1_R66_ROW}, the captain's order for T1's third-round "
-                                "step-on slots")
+                                f"step-on slots. With exactly one of row {T1_R67_ROW}'s three option sets on "
+                                f"{T1_CANDIDATE_COMMAND} ("
+                                + "; ".join(f"{f} `{v[0]}`" for f, v in T1_R67_FILES.items())
+                                + f"): {T1_R67_ROW}, the captain's order for those three files, while that row's "
+                                "first cell names the set's option string paired with its file and "
+                                f"`--captain-ruling {T1_R67_ROW}`")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim", "core_trim", "organ_scope"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "
