@@ -85,6 +85,7 @@ case "$STEP" in
       tests/test_t1_l12_build.py tests/test_t1_l12_launcher.py \
       tests/test_t1_r66_build.py tests/test_t1_r66_launcher.py \
       tests/test_t1_r67_build.py tests/test_t1_r67_launcher.py \
+      tests/test_t1_r73_build.py tests/test_t1_r73_launcher.py \
       tests/test_e55_overlay_stretch.py tests/test_h34_heart_organ_trend.py \
       tests/test_git_helpers.py experiments/external/test_filters.py
     finish $? ;;
