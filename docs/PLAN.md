@@ -14983,3 +14983,23 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     `T2embryo_s2x_ov.h5ad`, 69.9). Row R68 sent the four at once and sets no condition on their headlines: nothing
     follows from them.
   - **Standing unchanged:** 204.865.
+- 2026-11-25 (xxx), the eighth design round (T3 moonshots, at the captain's request "start another T3 moonshot
+  round"): three designs and their cold challenges (state at 19:10 UTC). Written by the AI assistant, which designed
+  none of it and gives no view on which genes a T3 file moves.
+  - **The brief** (`lift8/round_1125_gap/TASK_gap8.md`): three score-blind designers, one lens each (TRANSFER,
+    SIMULATION, BEST-OF-MANY), under the organisers' words, the captain's decline of the pathway route (no database or
+    literature-trained model may pick or weight genes), the strict form and T3's closed levers.
+  - **MOON3 (TRANSFER), struck.** Its designer broke the brief with a reading before any row (row N65, T3 try 85). Its
+    first proposal, a reliability-weighted two-knockout factor, repeats a line whose target-free pre-gate (N19) found
+    it a no-op; the challenger also found that the breach touched both of its gate folds (`T3_MOON3_challenge.md`).
+  - **MOON4 (SIMULATION), struck on both proposals** (`T3_MOON4_challenge.md`): the coupled-embryo intervention
+    double-counts the off-lineage response and its control cannot separate the claimed effect (best about +2, not +8);
+    the mosaic intervention was already read by K14a and K14b.
+  - **MOON5 (BEST-OF-MANY), FIX** (`T3_MOON5_challenge.md`): the sign cube (sign patterns of three axes on C2's log
+    factor, sent at once) goes only with five texts: each label's library held within 1% (the design's 10% would move
+    T3's closed per-label depth), stronger nulls, a gate that sees errors in its new stage tables, the stage axis
+    treated as the pruned timing family it belongs to, and no later T3 file following the winning file. Its price:
+    P(+5 or more) about 0.02 to 0.03, best +10 as a ceiling. A second independent cold check of the fixed set runs
+    before the captain is asked (`T3_MOON5_check2.md`).
+  - **Exposure hygiene.** Ordering statements found in `T3_HEDGE_challenge.md` (four places) and relayed in
+    `T3_MOON5_design.md` (line 3) were redacted from those working files; no value was involved.
