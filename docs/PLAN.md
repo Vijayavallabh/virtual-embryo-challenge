@@ -14744,3 +14744,13 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     MS20's command, with send rules on headlines only, and at most one combination; a cold challenger next; then one
     question to the captain naming the files; then the code on R66's mechanism (a ruling row R67), a review, and
     builds on the DGX.
+- 2026-11-25 (eee), the captain reports two T1 headlines and the rules are applied by their letter (state at 15:48
+  UTC, 2026-11-25). Written by the AI assistant, which records the headlines only.
+  - **The paste:** T1:test `T1_s2rcMSB_LM16.h5ad` 71.86, `T1_s2rcMSBm10.h5ad` 74.75 (shown as submitted 2026-11-25
+    15:41 and 15:44). Each file's sha256 on disk matches its sheet row. The paste's per-metric lines, ranks and file
+    sizes are not recorded or used.
+  - **Each rule by its letter.** MSBm10 (row R51) is strictly above MS20m10 (74.35) and holds the board's best; LM16
+    (row R54) is below it. No rule names a further file on either headline (MSBm10 had no gate; R54 names one file).
+    The AI assistant's estimate before this upload, that MSBm10 needed a larger rise than the same step gave on MS20,
+    was wrong. The T1 refinement round's designer, briefed with MS20m10 as the banked file, is told the banked file is
+    now MSBm10. Standing: 74.75 + 63.94 + (62.45 + 69.9) / 2 = 204.865 (from 204.465).
