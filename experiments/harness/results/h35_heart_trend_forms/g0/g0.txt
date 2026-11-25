@@ -1,0 +1,6 @@
+Row H35's G0 (commit 53fc2674479c2fe18fec91831523ba8d8dc7aab4): target-free and not a try. On the test inputs as the heart builder loads them for row R55's files, each form's applied log factors against OTS125's on the drawn cells. G0 writes each form's word and the condition that set it, and nothing else: its figures are sums over the test board's drawn cells and would give back their number, so none is written.
+G0 category (OTK125): PASS (none: no failing condition).
+G0 contrast (OTX125): PASS (none: no failing condition).
+G0 whole (OTW125): IDLE (idle: its changed share of the step over the drawn cells is under the bar).
+G0 portion (OTP125): PASS (none: no failing condition).
+G0 PASS.

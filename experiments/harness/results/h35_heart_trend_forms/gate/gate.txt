@@ -1,0 +1,7 @@
+Row H35's gate (commit 53fc2674479c2fe18fec91831523ba8d8dc7aab4): first, counting nothing. It builds and scores the copy D_f and nothing else; no counted arm is built or scored in it. G1 and the identities by exact equality, with no tolerance.
+G1: the copy D_f against row H29b's committed D_f, its reading.json of sha256 e86754f7b4ca012886aee9d7fcadf969eda26d57f27eeaf928e469d8788a3784: (R), (D), (M) and (P) as row H34's gate reads them.
+Identities, in every seed's context: the banked step at strength 1 against vec.harness._b0_t2(ctx, trend=True); each form with its change out against the banked step at 1.25.
+(M) found: 18 means compared, 0 unequal.
+(P) found: 270 paired statistics compared, 0 unequal.
+Identities found: 20 contexts, 0 failed.
+GATE PASS: G1 and the identities hold (the copy D_f reproduces row H29b's committed D_f bit for bit; the banked step at strength 1 is the harness's b0_trend and each form with its change out is the banked step, bit for bit); the run may follow at this commit.
