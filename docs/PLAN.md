@@ -14706,3 +14706,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     so nothing is rebuilt. Part B: no sweep (the settings never read could be confirmed only on the same E10.5 truth).
     First choice: keep the banked file.
   - **What follows:** nothing is built for the heart; no challenger is spent.
+- 2026-11-25 (aaa), the T3 audit; the fifth round's outcome (state at 15:08 UTC, 2026-11-25). Written by the AI
+  assistant, which gives no lean on T3's depth.
+  - **The audit** (`T3_AUDIT_design.md`): no construction error of size. Gene names, order and case, units, fields,
+    dtype, seeds and the scorer's protocol match; a check on the released wild-type E8.75 file shows its expression is
+    exactly log1p of counts per ten thousand, as the builder writes. Three small departures: A7 (the draw uses the
+    deduplicated pool while the scorer's reference keeps the synthetic records; under 0.2 points, sign unknown), A8
+    (the file's own draw noise, about 0.05 to 0.15), A6 (the factor's unrescaled common shift acts as a uniform depth
+    step, so fixing it moves T3's depth, closed after the exposure). Part B: no sweep (each unread setting is bounded
+    below the gate's noise, and T3 has no practice task outside its selection data). First choice: build nothing new.
+    A safety check refused one of its reads (a released summary table); its bounds rest on the formulas and the
+    wild-type check, a declared limit.
+  - **The fifth round's outcome.** No construction error on any of the three boards and no sweep worth running: the
+    banked files of T3, the heart and the embryo are built as the scorer's formulas reward, and their gaps are limited
+    by information, not by the build or by compute. Nothing is built.
