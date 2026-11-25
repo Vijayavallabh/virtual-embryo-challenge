@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-25, 00:44 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-25, 01:15 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -16,10 +16,10 @@ decision log 2026-11-24 (pp)), every due file can go now and nothing waits for r
 file, by its rule. Between boards the captain decides; by the challenge's formula a point on T1 or T3 counts twice a
 point on the heart or the embryo board.
 
-**Due now (13), in the order of each board's table below:**
+**Due now (12), in the order of each board's table below:**
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcB25H05.h5ad`,
-  `T1_s2rcB25MS.h5ad`, `T1_s2rcMS20.h5ad`, `T1_s2rcMSBm10.h5ad`, `T1_s2rcMSBd10.h5ad`
+  `T1_s2rcMS20.h5ad`, `T1_s2rcMSBm10.h5ad`, `T1_s2rcMSBd10.h5ad`
 - T3: `T3_c2_s2_dd.h5ad`, `T3_c2_s2_ddh.h5ad`, `T3_c2_s2_dg.h5ad` (together)
 - Embryo: none (every built embryo file is uploaded)
 - Heart: `T2heart_organ_ts15_half.h5ad` (OTS15)
@@ -48,8 +48,9 @@ stopped at step 0 (decision log 2026-11-25 (a)).
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)), and twenty-one on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy), (aaa), (bbb),
-(ddd) and (jjj)). The boards' best headlines stand with `T1_s2rcMSB.h5ad` (the combined-momentum file),
-`T3_c2_s2.h5ad` (C2), `T2heart_organ_ts125_half.h5ad` (OTS125) and `T2embryo_s2x_ov.h5ad` (O).
+(ddd) and (jjj)). One more was uploaded and reported on 2026-11-25 (decision log 2026-11-25 (d)). The boards' best
+headlines stand with `T1_s2rcB25MS.h5ad` (MS at 2.5), `T3_c2_s2.h5ad` (C2), `T2heart_organ_ts125_half.h5ad` (OTS125)
+and `T2embryo_s2x_ov.h5ad` (O).
 
 Four files are skipped by the captain's words of 2026-11-23 and 2026-11-24: they hold no place in any order below and
 stand in a section of their own at the end.
@@ -77,7 +78,6 @@ with no limit they go after T1's due search files (the main session's reading); 
 | eighth search | `T1_s2rcB25H05.h5ad` (Blood's own momentum at 0.5) | `10edc768d5fe44eb3a28d54a3395b61b04fc5ddc5e6b82d7c604e11b8cf49826` | none (row R44) |
 | eighth search | `T1_s2rcB25H10.h5ad` (at 1.0) | `890d2096fc0093c1a3bfca1c017f576579d2bdd9d8f0807955b3d046b1fa138a` | only if H05's headline is strictly above the line's best (the 2.5 file's headline until a file of this line beats it; row R44) |
 | eighth search | `T1_s2rcB25H20.h5ad` (at 2.0) | `8286f1b1707a423493de755feacd7a3d7743593ce2939f15c8323a27557b873f` | only if H10's headline is strictly above H05's (row R44) |
-| ninth search | `T1_s2rcB25MS.h5ad` (MS at 2.5) | `3127a2d9c92aa064e3f0fdf400447a074b7964ceacf2274da8a14ada7425f411` | none (row R45) |
 | tenth search | `T1_s2rcMS20.h5ad` (MS at the atlas multiplier 2.0) | `629d3a1cffa8151f0345a169ba97420e4ee3b43e379bc3bf7d33ab947dcb62ef` | none (row R51) |
 | tenth search | `T1_s2rcMSBm10.h5ad` (MS's own damping 1.0) | `a0c46efac87deb3756b3ca489a215694640707ea8a8053e254b8a86ee9d7d964` | none (row R51) |
 | tenth search | `T1_s2rcMSBd10.h5ad` (g_mom's damping 1.0) | `835e68fb9c390e6271e0ea8ca2ddfb5431f2f6d333b739fe17ef0102a0989ae8` | none: its gate is met (candidate C's file scored above candidate B's; row R51) |

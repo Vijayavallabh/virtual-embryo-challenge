@@ -14192,3 +14192,14 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     uses the mean library size, since the median moves by a whole count from noise at MERFISH depth. Code merged at
     a7e8bef after an independent review that found no blocker; the row placed at 5fad5e5 (its log entry follows here,
     a script slip having stopped it after the row was written).
+- 2026-11-25 (d), the captain reports one headline and the rules are applied by their letter (state at 01:15 UTC,
+  2026-11-25). Written by the AI assistant, which records the headline only.
+  - **The paste (headline, its file named for its board):** T1:test `T1_s2rcB25MS.h5ad` 73.52 (shown as submitted
+    2026-11-25 01:12). Its sha256 on disk matches its sheet row. The paste's per-metric lines, rank and file size are
+    not recorded or used. Row added to `results/manual_uploads.csv`.
+  - **Each rule by its letter.** It is above the combined-momentum file (73.47), so the T1 board's best is now B25MS.
+    Row R46: `T1_s2rcB25MSH05` is coded and built only if B25H05 and B25MS each score strictly above the 2.5 file
+    (72.66); B25MS has, B25H05's headline is still to come. Row R51: MS30 goes up only if MS20 beats MSB and B25MS
+    beats MS20; B25MS's part waits on MS20's headline. Nothing else turns on it.
+  - **Standing:** T1 73.52, T3 63.94, heart 61.97, embryo 69.9; overall 203.395 by the challenge's formula (it was
+    203.345).
