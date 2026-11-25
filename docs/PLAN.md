@@ -14695,3 +14695,14 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     ruled out. Open and unverified: whether E8.0's stored frame is mirrored against E7.5's (its read of the committed
     handedness records was refused by a permission check, a declared limit). Part B: no sweep (STOP).
   - **What follows:** nothing is built for the embryo; no challenger is spent, since nothing is proposed.
+- 2026-11-25 (zz), the heart audit of the fifth round (state at 15:06 UTC, 2026-11-25). Written by the AI assistant,
+  recused on the heart's scope and size.
+  - **The audit** (`HEART_AUDIT_design.md`): no construction error in OTK125's build path. Its 500 genes are the
+    released files' genes in the same order and case; its expression is log1p CP10k over the full panel, as the
+    released files and the scorer read; no duplicate, NaN, negative or empty row reaches the file. Its departures from
+    the scorer sit on closed levers (scope in the DE reference, cell count in the neighbourhood term's density, size
+    in the scale term) or are the scorer's mirror-image coin on the Dice term, which the ledger closed on integrity
+    grounds. halve.py's seed gives the same random stream that drew the rows; a simulation found no measurable bias,
+    so nothing is rebuilt. Part B: no sweep (the settings never read could be confirmed only on the same E10.5 truth).
+    First choice: keep the banked file.
+  - **What follows:** nothing is built for the heart; no challenger is spent.
