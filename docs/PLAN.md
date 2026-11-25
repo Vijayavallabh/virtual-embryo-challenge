@@ -14668,3 +14668,13 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     and that a forbidden-use finding has no stated sanction. **The captain's pick, verbatim:** "Don't build
     (Recommended)". PW1 and PW2 are not coded or built; the fourth round ends with no file on T3, the heart or the
     embryo.
+- 2026-11-25 (ww), a fifth design round on T3, the heart and the embryo (state at 14:50 UTC, 2026-11-25). Written by
+  the AI assistant, which designs no line.
+  - **Why.** The captain asked again for parallel work on these three boards ("work on other tasks [T2 Heart, T2
+    Embryo, T3] parallelly"). The fourth round found no file; this round asks two questions no earlier round asked
+    (`TASK_gap5.md`): an audit of each banked file's construction against the pinned scorer's formulas and the
+    emulator (genes, units and transform, coordinates, fields, halving, sampling, emulator departures), since a
+    construction error is the one fix that can be large without a new model; and one counted DGX sweep of builder
+    settings the ledger never read, with its selection rule written first, a confirmation on a task it was not
+    selected on, and at most two files. Three blind designers; cold challengers next; each board's result goes to the
+    captain as one question.
