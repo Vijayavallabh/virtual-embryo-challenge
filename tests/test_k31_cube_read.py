@@ -221,3 +221,79 @@ def test_the_j7_dry_run_holds_on_k21s_committed_reproduction():
     res = kr.dry_run()
     assert res["passes"] and all(res["k18_pins"].values())
     assert all(v["distance"]["max_abs_diff"] == 0 for v in res["tasks"].values())
+
+
+ST = {"commit": C, "tree_clean": True, "machine": MACH, "utc": "t"}
+
+
+def _part_start(out: str, axes) -> None:
+    """One part's start, as cmd_run makes it: the record written once and read back (an exception exits 1)."""
+    kr.write_started(Path(out), ST, axes)
+
+
+def test_the_four_parts_start_concurrently_without_a_race(tmp_path):
+    """Run k31a's crash: the four parts wrote run_started.json through one shared temporary name, and one part's
+    rename removed it from under another. Four processes start together on each of forty fresh folders; none fails,
+    one record stands and no temporary name is left."""
+    import multiprocessing as mp
+
+    ctx = mp.get_context("fork")
+    for trial in range(40):
+        out = tmp_path / f"run{trial}"
+        out.mkdir()
+        procs = [ctx.Process(target=_part_start, args=(str(out), ("S", "M"))) for _ in range(4)]
+        for p in procs:
+            p.start()
+        for p in procs:
+            p.join(60)
+        assert [p.exitcode for p in procs] == [0, 0, 0, 0], trial
+        rec = json.loads((out / "run_started.json").read_text())
+        assert rec["commit"] == C and rec["axes"] == ["S", "M"] and rec["tries"] == kr.tries_for(("S", "M"))
+        assert not list(out.glob(".run_started.json*"))
+
+
+def test_one_shared_temporary_name_was_the_race_and_a_per_process_name_is_not(tmp_path, monkeypatch):
+    path = tmp_path / "run_started.json"
+    tmp = tmp_path / ".run_started.json.part"
+    tmp.write_bytes(b"a")
+    tmp.write_bytes(b"b")  # two parts wrote the shared name before either renamed it
+    tmp.replace(path)
+    with pytest.raises(FileNotFoundError):
+        tmp.replace(path)  # the second rename has nothing to move: k31a's traceback
+    other = tmp_path / "other"
+    other.mkdir()
+    pid = [101]
+    monkeypatch.setattr(kr.os, "getpid", lambda: pid[0])
+    assert kr.publish_once(other / "run_started.json", b"a") is True
+    pid[0] = 202
+    assert kr.publish_once(other / "run_started.json", b"b") is False  # the second writer finds the record
+    assert (other / "run_started.json").read_bytes() == b"a" and not list(other.glob(".*.part"))
+
+
+def test_the_start_record_is_written_once_and_checked(tmp_path):
+    rec = kr.write_started(tmp_path, ST, ("S",))
+    assert rec["tries"] == ["cube_np", "null_S"] and rec["row"] == "K31"
+    assert kr.write_started(tmp_path, {**ST, "utc": "later"}, ("S",))["utc"] == "t"  # read back, not rewritten
+    for other in ({**ST, "commit": "d" * 40}, {**ST, "machine": "else"}):
+        with pytest.raises(kr.ct.Refused):
+            kr.write_started(tmp_path, other, ("S",))
+    with pytest.raises(kr.ct.Refused):
+        kr.write_started(tmp_path, ST, ("S", "M"))
+
+
+def test_the_start_command_checks_like_run(tmp_path, monkeypatch):
+    monkeypatch.setattr(kr.k18, "stamp", lambda: dict(ST))
+    monkeypatch.setattr(kr, "row_k31", lambda path=None: SHA)
+    out = tmp_path / "R"
+    out.mkdir()
+    (out / "g0.json").write_text(json.dumps(_g0()))
+    assert kr.cmd_start(SimpleNamespace(out=str(out))) == 0
+    assert json.loads((out / "run_started.json").read_text())["axes"] == ["S", "M"]
+    assert kr.cmd_start(SimpleNamespace(out=str(out))) == 0  # already this run's
+    stop = tmp_path / "stop"
+    stop.mkdir()
+    (stop / "g0.json").write_text(json.dumps(_g0("STOP")))
+    assert kr.cmd_start(SimpleNamespace(out=str(stop))) == kr.EXIT_REFUSED
+    assert not (stop / "run_started.json").exists()
+    monkeypatch.setattr(kr.k18, "stamp", lambda: {**ST, "tree_clean": False})
+    assert kr.cmd_start(SimpleNamespace(out=str(tmp_path / "dirty"))) == kr.EXIT_REFUSED

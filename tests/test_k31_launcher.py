@@ -148,6 +148,9 @@ def test_the_launcher_text():
     assert "build_two_knockout.py build \"$DEC\" --form c2-s2 " in sh  # C2's own command
     assert 'names "$first" "--form c2-s2 --vertex $v"' in sh
     assert "build_two_knockout.py build" in sh and "THE TRIES COUNT FROM THE START OF THIS STEP" in sh
+    run = sh.split("begin run dryrun", 1)[1].split("begin read run", 1)[0]
+    start, parts = run.index('"$SCRIPT" start --out "$R"'), run.index('for part in "${PART_SET[@]}"; do\n  (')
+    assert start < parts and "finish 32" in run[start:parts]  # the start record once, before any part starts
 
 
 def test_usage_and_the_run_name(tmp_path):

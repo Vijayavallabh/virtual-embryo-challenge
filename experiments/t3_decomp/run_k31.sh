@@ -36,11 +36,11 @@
 #              reading only when none is there); of another commit 21; unreadable 20
 #   dryrun     row K31's guard dry run on K21's committed reproduction (J7; committed results only, not a try), into
 #              R/dryrun.json: 0 holds; 6 fails (26); other 20
-#   run        44 first when a reading is there (no arm is scored again). THE TRIES COUNT FROM THE START OF THIS STEP
-#              (the script writes R/run_started.json). Four parallel parts, plain g1 and g2 as seeds 0-4 and 5-9, 8
-#              BLAS threads a process; each part's code in R/exit/<part>, its log in R/logs/<part>.log (never
-#              printed); log lines other than the expected kinds are counted, never printed (30 if a part did not
-#              exit 0)
+#   run        44 first when a reading is there (no arm is scored again). THE TRIES COUNT FROM THE START OF THIS STEP.
+#              The script's `start` writes R/run_started.json once, before any part starts (32 when it refuses; its
+#              log in S/start.log); then four parallel parts, plain g1 and g2 as seeds 0-4 and 5-9, 8 BLAS threads a
+#              process; each part's code in R/exit/<part>, its log in R/logs/<part>.log (never printed); log lines
+#              other than the expected kinds are counted, never printed (30 if a part did not exit 0)
 #   read       the fixed reading into experiments/t3_decomp/results/k31_cube_read/ (output to /dev/null): 0 a reading
 #              (whatever it says, VOID included), 43 INCOMPLETE, 44 a reading is there already (never overwritten),
 #              42 refused, 41 a crash (masked traceback)
@@ -206,6 +206,9 @@ passed
 
 begin run dryrun
 if reading_there; then echo "refused: a reading is there already; no arm is scored again" >&2; finish 44; fi
+rc=0
+$PY "$SCRIPT" start --out "$R" > "$S/start.log" 2>&1 || rc=$?
+if [ $rc != 0 ]; then finish 32; fi
 pids=()
 for part in "${PART_SET[@]}"; do
   (
