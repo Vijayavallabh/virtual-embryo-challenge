@@ -938,8 +938,8 @@ def _cosine(x: np.ndarray, y: np.ndarray) -> float:
     return float(x @ y / (nx * ny)) if nx > 0 and ny > 0 else float("nan")
 
 
-def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[str]) -> tuple[dict[str, np.ndarray],
-                                                                                              dict]:
+def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[str],
+                     key: str = T2_LINEAGE_KEY) -> tuple[dict[str, np.ndarray], dict]:
     """b0_trend's log factors (lineage -> damped log factor in `genes` order) and its target-free record. For each
     lineage among `types` (the drawn cells' B0 types; "Untracked" never) that B0 shifts on this task (at least
     min_cells own cells at `start` and at the reference), the usable stages are the input stages (`trend_stages`: day
@@ -950,7 +950,9 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
     transition weights, and the cosine, L2-norm ratio (trend / B0) and mean absolute log factor against B0's own factor
     on the same rows; and the medians of cosine and norm ratio over the shifted lineages. eps and min_cells are
     momentum_shift's defaults, as B0 uses them. (A caller that shows the record for a test board drops the cell
-    numbers: experiments/builds/build_test.py.)"""
+    numbers: experiments/builds/build_test.py.) `key` (default obs["merged"], every caller before row R55's trend
+    forms): the obs column that names each input stage's lineages; vec.trend_forms' category form keys them by its
+    split of the Endothelial lineage. The default leaves every output as it was."""
     from vec.core import counts_of, mean_cp10k
 
     t = ctx.task
@@ -960,7 +962,7 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
     eps, min_cells = float(_momentum_default("eps")), int(_momentum_default("min_cells"))
     budget = B0_DAMPING * (float(t.role_days[ref_role]) - float(t.role_days["start"]))
     C = {r: counts_of(ctx.inputs[r], genes) for r, _ in stages}
-    merged = {r: np.asarray(ctx.inputs[r].obs[T2_LINEAGE_KEY]).astype(str) for r, _ in stages}
+    merged = {r: np.asarray(ctx.inputs[r].obs[key]).astype(str) for r, _ in stages}
     out: dict[str, np.ndarray] = {}
     lineages = []
     for lin in types:

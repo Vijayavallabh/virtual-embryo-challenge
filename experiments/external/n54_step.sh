@@ -59,6 +59,7 @@ case "$STEP" in
       tests/test_embryo_copy_rows_sized_launcher.py tests/test_e52_copy_rows_sized_read.py \
       tests/test_embryo_so_ohi_launcher.py \
       tests/test_embryo_rs_launcher.py tests/test_run_sorted.py \
+      tests/test_heart_trend_line_h.py tests/test_heart_trend_line_h_launcher.py \
       tests/test_h36_heart_run_profile.py tests/test_heart_xpc_build.py \
       tests/test_series_back_build.py tests/test_ovsb_step0.py tests/test_embryo_ovsb_launcher.py \
       tests/test_mix_lean_build.py tests/test_embryo_ot23_launcher.py tests/test_e58_mix_lean_read.py \

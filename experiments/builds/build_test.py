@@ -264,7 +264,20 @@ machine, and an official upload needs the captain's go-ahead.
           `--entry organ_scope`, `--trend-strength 1.5` and `--captain-ruling R52`. The value is the literal 1.5:
           1.50, 1.5e0 and every other value stay refused as before, and rows R28's, R29's and R49's lines are
           unchanged. Its record's trend_strength field names the option, the strength, the file, R52, the order
-          text, the row's first cell as TRIES.md holds it and the command
+          text, the row's first cell as TRIES.md holds it and the command. The trend-form line (row R55 of
+          experiments/harness/TRIES.md, the captain's order of 2026-11-24, ruling, no run: his named exception on the
+          heart's scope and size for OTK125, OTX125, OTW125 and OTP125, bound to their screen, row H35; off by
+          default): heart --entry organ_scope --trend-strength 1.25 --trend-form category | contrast | whole |
+          portion --z-mode raw --captain-ruling R55, files OTK125, OTX125, OTW125 and OTP125, OTS125's command with
+          one change, the direction of the trend step (vec.trend_forms): the Endothelial lineage split by chamber
+          category; each lineage's factor less the whole stage's shared change, its norm held; E10.5's point on the
+          whole stage; the slope over the stages before E10.5, its norm held. OTS125's draw, rows, coordinates,
+          count rule, size procedure, seed and half (halve.py at seed 1000001). Refused before anything is read
+          on every other command, board or seed, without --captain-ruling R55 or with another row, and unless
+          TRIES.md holds exactly one row R55 whose first cell is the captain's order naming `--entry organ_scope`,
+          `--trend-strength 1.25`, the form's `--trend-form <F>` and `--captain-ruling R55` as whole backticked
+          strings. Its record's trend_strength field names the option, the form, the file, R55, the order text, the
+          row's first cell, the command, b0_trend's record and each type's status, and no cell number
   embryo  --method pseudobulk_shift | fgw | fgw_shape0 | fgw_shape1: E7.5 cells moved by the E7.25 -> E7.5 change, or
           the FGW interpolation between E7.5 and E8.0 at t = 1/2 (fgw_shape0, the s2 of docs/S2_RULES.md, keeps the
           mixture in E7.5's geometry); sized by the pre-registered embryo procedure (size_embryo_E7.75.json).
@@ -2555,7 +2568,11 @@ def _trend_strength_refusals(a) -> float | None:
     further strengths under row R49, the ruling row given; file D's strength 1.5 under row R52): its refusals, before
     anything is read. Returns the strength, or None when the option is not given (today's commands exactly;
     --captain-ruling alone is refused). Every value but 0.75, 1.25 and 1.5 (0.25 included) meets the refusals it met
-    before those were added, word for word, and 0.75 and 1.25 meet theirs of before row R52's change."""
+    before those were added, word for word, and 0.75 and 1.25 meet theirs of before row R52's change. With
+    --trend-form (row R55's trend-form line) _trend_form_refusals decides alone, first."""
+    form = getattr(a, "trend_form", None)
+    if form is not None:
+        return _trend_form_refusals(a, form)
     raw = getattr(a, "trend_strength", None)
     ruling = getattr(a, "captain_ruling", None)
     commands = (f"{HEART_TS_COMMANDS[0.5]}, {HEART_TS_COMMANDS[1.0]}, {HEART_OTS_COMMANDS[0.5]} or "
@@ -2604,11 +2621,14 @@ def _trend_strength_refusals(a) -> float | None:
     return s
 
 
-def _trend_strength_step(ctx: harness.BuildContext, strength: float) -> tuple:
+def _trend_strength_step(ctx: harness.BuildContext, strength: float, form: str | None = None, whole=None) -> tuple:
     """Row H28's strength-scaled b0_trend step (experiments/harness/h28_heart_trend_strength.py trend_expression,
     placebo off): `vec.harness._b0_t2(ctx, trend=True)` line by line with the b0_trend_factors mapping times strength
     and momentum_shift's damping (B0's own factor for a lineage the mapping leaves out) times strength. At strength 1
-    it is `_b0_t2(ctx, trend=True)` bit for bit. Returns the stage and b0_trend_factors' record."""
+    it is `_b0_t2(ctx, trend=True)` bit for bit. Returns the stage and b0_trend_factors' record. With `form` (row R55's
+    trend-form line; `whole` the whole E10.5) the step is that form of it (_trend_form_step); without, as before."""
+    if form is not None:
+        return _trend_form_step(ctx, strength, form, whole)
     harness._b0_trend_task_check(ctx.task)
     s = float(strength)
     pool, rows, _, coords = harness.draw_copy(ctx)
@@ -2628,14 +2648,16 @@ def _trend_strength_step(ctx: harness.BuildContext, strength: float) -> tuple:
 
 
 def _trend_strength_record(s: float, rec: dict, entry: str = "core_trim", ruling: str | None = None,
-                           order_row: str | None = None) -> dict:
+                           order_row: str | None = None, form: str | None = None) -> dict:
     """What a heart search line file's record names: the option, the strength, the file, the ruling row and the order
     text, the command, the step, its budgets (B0's and the test budget, 0.5 x the strength day) and b0_trend's record
     without any cell number (_trend_record). On the organ cut (row R29) the file, row, order, command and step are
     file D's line's; on the full trim they are row R28's as before. At file D's two further strengths (0.75, 1.25)
     they are that line's, with `ruling` the row given on the command line, and the record also holds that row's first
     cell as TRIES.md has it (order_row). At file D's strength 1.5 they are row R52's, with R52's first cell
-    (order_row)."""
+    (order_row). With `form` they are row R55's trend-form file's (_trend_form_record)."""
+    if form is not None:
+        return _trend_form_record(form, s, rec, order_row)
     if s in HEART_FURTHER_FILES:
         return {"option": "--trend-strength", "strength": s, "file": HEART_FURTHER_FILES[s], "captain_ruling": ruling,
                 "order": HEART_FURTHER_ORDER.format(row=ruling), "order_row": order_row,
@@ -2658,12 +2680,131 @@ def _trend_strength_record(s: float, rec: dict, entry: str = "core_trim", ruling
             "trend": _trend_record(rec)}
 
 
+# The heart's trend-form line (row R55 of experiments/harness/TRIES.md, the captain's order of 2026-11-24, ruling, no
+# run: "Yes to OTK125, OTX125, OTW125 and OTP125: my named exception on the heart's scope and size for these four files,
+# bound to their screen"; decision log 2026-11-24 (www); the HEART PORTFOLIO design of the step-change round as its
+# cold challenge fixes it, OKS125 struck; the screen is row H35, experiments/harness/h35_heart_trend_forms.py):
+# OTS125's command (file D at strength 1.25, row R49's) with one change, the direction of the trend step
+# (vec.trend_forms): --trend-form category (OTK125), contrast (OTX125), whole (OTW125) or portion (OTP125). Off by
+# default; taken only as heart --entry organ_scope --trend-strength 1.25 --trend-form <F> --z-mode raw --captain-ruling
+# R55 at the default seed on the test board (no dry run), and only while TRIES.md holds exactly one row R55 whose first
+# cell is the captain's order ("ruling, no run") naming `--entry organ_scope`, `--trend-strength 1.25`,
+# `--trend-form <F>` and `--captain-ruling R55`, each as a whole backticked string (_heart_tf_ordered). The rows,
+# coordinates, cell number, size field and half's rows are OTS125's (its draw, organ-cut pool, count rule, size
+# procedure and seed); the counts of every moved cell are drawn afresh. Every command without --trend-form is routed,
+# refused and built as before. The files: T2heart_organ_ts125_<tag>.h5ad, then halve.py at seed 1000001 as for OTS125.
+HEART_TF_ROW = "R55"
+HEART_TF_FORMS = ("category", "contrast", "whole", "portion")  # vec.trend_forms.FORMS, in the design's order
+HEART_TF_FILES = {"category": "OTK125", "contrast": "OTX125", "whole": "OTW125", "portion": "OTP125"}
+HEART_TF_TAGS = {"category": "tk", "contrast": "tx", "whole": "tw", "portion": "tp"}  # the design's file tags
+HEART_TF_STRENGTH_CHOICE = "1.25"  # OTS125's strength, the option's literal value as row R55 names it
+HEART_TF_STRENGTH = float(HEART_TF_STRENGTH_CHOICE)
+HEART_TF_BASE_FILE = "OTS125"
+HEART_TF_COMMANDS = {f: (f"heart --entry organ_scope --trend-strength {HEART_TF_STRENGTH_CHOICE} --trend-form {f} "
+                         f"--z-mode raw --captain-ruling {HEART_TF_ROW}") for f in HEART_TF_FORMS}
+# the whole backticked strings row R55's first cell must hold for a form's file, besides `--trend-form <F>`
+HEART_TF_NAMED = ("--entry organ_scope", f"--trend-strength {HEART_TF_STRENGTH_CHOICE}",
+                  f"--captain-ruling {HEART_TF_ROW}")
+HEART_TF_ORDER = ("experiments/harness/TRIES.md row R55, the captain's order of 2026-11-24 (ruling, no run: \"Yes to "
+                  "OTK125, OTX125, OTW125 and OTP125: my named exception on the heart's scope and size for these four "
+                  "files, bound to their screen\"; decision log 2026-11-24 (www); the screen is row H35): file {file}, "
+                  "OTS125's command (file D at strength 1.25, row R49's) with one change, the trend step's {form} "
+                  "form; nothing else changed")
+HEART_TF_STEP = ("row H28's strength-scaled b0_trend step at strength 1.25 (OTS125's) with each lineage's log factor "
+                 "formed by the form (vec.trend_forms), before the size step, on OTS125's draw, organ-cut pool, count "
+                 "rule, size procedure and seed; the damping and the stream [seed, 3] are OTS125's, and the counts of "
+                 "every moved cell are drawn afresh")
+HEART_TF_RECORD = {  # each form's own record fields, beside the trend (no cell number in any)
+    "category": ("split_lineage", "split_types", "collapsed"),
+    "contrast": ("shared_lineages", "shared_norm", "lineages"),
+    "whole": ("lineages",),
+    "portion": ("lineages", "banked_factor_kept"),
+}
+
+
+def _heart_tf_ordered(form: str, path: Path | None = None) -> bool:
+    """Whether experiments/harness/TRIES.md (TRIES_FILE) holds exactly one row R55 whose first cell is the captain's
+    order (it starts "R55 (the captain's order" and says "ruling, no run") naming `--entry organ_scope`,
+    `--trend-strength 1.25`, `--trend-form <form>` and `--captain-ruling R55`, each as a whole backticked string: a
+    backticked string holding one of them inside a longer one, or one it holds, does not name it, and neither does a
+    name outside the first cell."""
+    lines = [ln for ln in (path or TRIES_FILE).read_text(encoding="utf-8").splitlines()
+             if ln.startswith(f"| {HEART_TF_ROW} ")]
+    if len(lines) != 1:
+        return False
+    first = lines[0][2:].split("|", 1)[0]
+    named = set(re.findall(r"`([^`]*)`", first))
+    return (first.startswith(f"{HEART_TF_ROW} (the captain's order") and "ruling, no run" in first
+            and f"--trend-form {form}" in named and all(s in named for s in HEART_TF_NAMED))
+
+
+def _trend_form_refusals(a, form: str) -> float:
+    """--trend-form (the trend-form line, row R55): its refusals, before anything is read, and before every refusal of
+    --trend-strength (whose values and rows stay as they were for every command without --trend-form). Refused except
+    as heart --entry organ_scope --trend-strength 1.25 --trend-form <F> --z-mode raw --captain-ruling R55 at the default
+    seed on the test board, F one of the four forms, and unless TRIES.md holds exactly one row R55 whose first cell is
+    the captain's order naming the form's file (_heart_tf_ordered). Returns 1.25, OTS125's strength."""
+    if form not in HEART_TF_FORMS:
+        sys.exit(f"--trend-form {form} is refused: it takes {', '.join(HEART_TF_FORMS)} only")
+    command = HEART_TF_COMMANDS[form]
+    if (getattr(a, "trend_strength", None) != HEART_TF_STRENGTH_CHOICE or a.entry != "organ_scope" or a.z_mode != "raw"
+            or a.expression != "b0" or a.trend or a.depth or a.herd or a.cfm):
+        sys.exit(f"--trend-form {form} is refused except as {command}: OTS125's line only (--entry organ_scope, "
+                 "--trend-strength 1.25, --z-mode raw), and with --expression copy, --trend, --depth, --herd and --cfm")
+    if a.board not in (None, TEST_BOARDS["heart"]) or a.seed != harness.BUILD_SEED_OFFSET + 1:
+        sys.exit(f"--trend-form {form} is refused on another board or seed: it builds {command} at the default seed "
+                 "on the test board only (no dry run)")
+    ruling = getattr(a, "captain_ruling", None)
+    if ruling is None:
+        sys.exit(f"--trend-form {form} is the captain's order of row {HEART_TF_ROW} alone and needs --captain-ruling "
+                 f"{HEART_TF_ROW}")
+    if ruling != HEART_TF_ROW:
+        sys.exit(f"--trend-form {form} is refused with --captain-ruling {ruling}: only row {HEART_TF_ROW} orders it")
+    if not _heart_tf_ordered(form):
+        sys.exit(f"--trend-form {form} is refused: experiments/harness/TRIES.md must hold exactly one row "
+                 f"{HEART_TF_ROW} whose first cell is the captain's order (\"ruling, no run\") naming "
+                 + ", ".join(f"`{s}`" for s in (*HEART_TF_NAMED[:2], f"--trend-form {form}"))
+                 + f" and `{HEART_TF_NAMED[2]}`, each as a whole backticked string")
+    return HEART_TF_STRENGTH
+
+
+def _trend_form_step(ctx: harness.BuildContext, strength: float, form: str, whole) -> tuple:
+    """Row R55's trend-form step: vec.trend_forms.form_step on file D's context (the reference input D's pool, `whole`
+    the whole E10.5 as loaded for the organ cut), OTS125's step with the form's one change. An unmapped label refuses,
+    as the organ cut's does. Returns the stage and the form's record."""
+    from vec import trend_forms
+
+    try:
+        stage, _, _, rec = trend_forms.form_step(ctx, strength, form, whole)
+    except t2_build.UnmappedT2LabelError as e:
+        sys.exit(str(e))
+    return stage, rec
+
+
+def _trend_form_record(form: str, s: float, rec: dict, order_row: str | None) -> dict:
+    """What a trend-form file's record names: the option, the form, the strength, the file and its tag, the base file,
+    row R55 with its order text and its first cell as TRIES.md holds it (order_row), the command, the step, the form's
+    rule, the budgets, b0_trend's record (_trend_record: no cell number), the form's own fields and each type's
+    status in momentum_shift (shifted or skipped)."""
+    out = {"option": "--trend-form", "form": form, "strength": s, "file": HEART_TF_FILES[form],
+           "tag": HEART_TF_TAGS[form], "base_file": HEART_TF_BASE_FILE, "captain_ruling": HEART_TF_ROW,
+           "order": HEART_TF_ORDER.format(file=HEART_TF_FILES[form], form=form), "order_row": order_row,
+           "command": HEART_TF_COMMANDS[form], "step": HEART_TF_STEP, "rule": rec["rule"],
+           "budget_days": rec["budget_days"], "test_budget_days": s * rec["budget_days"],
+           "trend": _trend_record(rec["trend"]), **{k: rec[k] for k in HEART_TF_RECORD[form]},
+           "types": rec["types"], "shifted": rec["shifted"]}
+    if form == "whole":
+        out["trend_whole"] = _trend_record(rec["trend_whole"])
+    return out
+
+
 def build_heart(a) -> dict:
     if getattr(a, "run_profile", None) is not None:  # file OXP125 (row R56): its own path; no other command goes there
         return _build_heart_xpc(a)
     strength = _trend_strength_refusals(a)
+    form = getattr(a, "trend_form", None)  # row R55's trend-form line (its refusals passed); None on every other
     # file D's two further strengths and its strength 1.5: the ruling row's first cell for the record, read once its
-    # check has passed
+    # check has passed (and row R55's, whose files take strength 1.25)
     order_row = (_ruling_first_cell(a.captain_ruling)
                  if strength in HEART_FURTHER_FILES or strength == HEART_OTS15_STRENGTH else None)
     board, dry = _board("heart", a.board)
@@ -2741,8 +2882,9 @@ def build_heart(a) -> dict:
     if copy:  # the copy baseline: B0's own draw (draw_copy, same context, seed and count) through finish, no step
         stage = harness._copy(ctx)
     elif strength is not None:  # the heart search line (row R28; rows R29, R49 and R52 on the organ cut): row H28's
-        # step at the strength, before the size step, on this entry's own context (C's or D's)
-        stage, ts_rec = _trend_strength_step(ctx, strength)
+        # step at the strength, before the size step, on this entry's own context (C's or D's); with --trend-form, row
+        # R55's form of OTS125's step (the whole E10.5, `ref`, for the forms that read it)
+        stage, ts_rec = _trend_strength_step(ctx, strength, form, ref)
     elif a.trend:
         stage = harness._b0_t2(ctx, trend=True, trend_record=trend_rec)  # b0_trend, the harness's B0 otherwise
     else:
@@ -2766,11 +2908,14 @@ def build_heart(a) -> dict:
     entry = f"copy {a.entry} ({hyp})" if copy else f"B0 {a.entry} ({hyp})"
     if strength is not None:
         entry = f"trend strength {strength:g} {a.entry} ({hyp})"
+    if form is not None:
+        entry = f"trend strength {strength:g} form {form} {a.entry} ({hyp})"
     return {"entry": entry, "board": board.key, "dry_run": dry, "n_cells": int(stage.n),
             "seed": a.seed, "count_decision": count, "trim": trim, "depth_step": bool(a.depth),
             **({"cfm_step": t2_build.CFM_RULE} if a.cfm else {}),
             **({"trend": _trend_record(trend_rec)} if a.trend else {}),
-            **({"trend_strength": _trend_strength_record(strength, ts_rec, a.entry, a.captain_ruling, order_row)}
+            **({"trend_strength": _trend_strength_record(strength, ts_rec, a.entry, a.captain_ruling, order_row,
+                                                         form)}
                if strength is not None else {}),
             **({"expression": "copy"} if copy else {}),
             **({"z_mode": z_mode} if z_mode is not None else {}),
@@ -3645,6 +3790,16 @@ def build_parser() -> argparse.ArgumentParser:
                                 "with --entry organ_scope, the row that orders it; with --entry organ_scope "
                                 f"--trend-strength 0.75 or 1.25: {HEART_FURTHER_ROW}, the ruling row that orders those "
                                 f"two; with --entry organ_scope --trend-strength 1.5: {HEART_OTS15_ROW}")
+            p.add_argument("--trend-form", default=None, metavar="{" + ",".join(HEART_TF_FORMS) + "}",
+                           help=f"row {HEART_TF_ROW}'s trend-form line (off by default): OTS125's command with one "
+                                "change, the direction of the trend step (vec.trend_forms): category (OTK125, the "
+                                "Endothelial lineage split by chamber category), contrast (OTX125, the shared change "
+                                "out, norms held), whole (OTW125, E10.5's point on the whole stage) or portion "
+                                "(OTP125, the slope before E10.5, norms held); only as "
+                                + HEART_TF_COMMANDS["category"].replace("category", "<F>")
+                                + f" at the default seed on the test board, while row {HEART_TF_ROW}'s first cell is "
+                                "the captain's order naming --entry organ_scope, --trend-strength 1.25, the form and "
+                                f"--captain-ruling {HEART_TF_ROW} as whole backticked strings")
         if name == "embryo":
             p.add_argument("--method", choices=("pseudobulk_shift", *EMBRYO_T_POS), required=True,
                            help="fgw = s1; fgw_shape0 = the s2 of docs/S2_RULES.md (E7.5's geometry)")
