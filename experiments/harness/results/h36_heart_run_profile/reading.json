@@ -1,0 +1,92 @@
+{
+ "row": "H36",
+ "axis": "h36-heart-run-profile",
+ "commit": "aa909e1b52eb22f0c1a1825a16885d51a35997f9",
+ "void": false,
+ "why": [],
+ "diagnostic": "A labelled diagnostic on one truth: a pass is a priced question to the captain, never adoption.",
+ "bars": {
+  "own": {
+   "B1": {
+    "mean": -0.4096337982121135,
+    "above": 0,
+    "holds": false
+   },
+   "B2": {
+    "mean": -0.660114476395513,
+    "above": 0,
+    "need": 0.9973026991880832,
+    "placebo_sd": 0.4986513495940416,
+    "x_mean": 27.500268938011267,
+    "placebo_means": {
+     "P1": 28.153422328321387,
+     "P2": 27.20474980559406,
+     "P3": 28.152209755600627,
+     "P4": 28.33270543735614,
+     "P5": 28.482746913223348,
+     "P6": 28.53868504650878,
+     "P7": 28.9156494317304,
+     "P8": 27.752333507421145,
+     "P9": 27.91094850390515
+    },
+    "holds": false
+   },
+   "B3": {
+    "mean": -0.8412645398876333,
+    "below": 10,
+    "holds": true
+   },
+   "B4": {
+    "de_score": -0.012364163153456943,
+    "de_direction": -0.008715593700354296,
+    "holds": false
+   }
+  },
+  "CLEAN": {
+   "B1": {
+    "mean": -0.9225899066010491,
+    "above": 0,
+    "holds": false
+   },
+   "B2": {
+    "mean": 2.139208987291468,
+    "above": 10,
+    "need": 3.429654212823365,
+    "placebo_sd": 1.7148271064116825,
+    "x_mean": 44.62105647964756,
+    "placebo_means": {
+     "P1": 41.85064327272195,
+     "P2": 39.60353738440507,
+     "P3": 42.717936304845985,
+     "P4": 42.22569976356137,
+     "P5": 44.014700974076504,
+     "P6": 42.951340152622855,
+     "P7": 45.58939026952707,
+     "P8": 42.4806872862596,
+     "P9": 40.90269202318432
+    },
+    "holds": false
+   },
+   "B3": {
+    "mean": -3.8972300200673784,
+    "below": 10,
+    "holds": true
+   },
+   "B4": {
+    "de_score": 0.017267768848841257,
+    "de_direction": 0.0022901618810821423,
+    "holds": true
+   }
+  }
+ },
+ "failed": [
+  "B1 in own",
+  "B2 in own",
+  "B4 in own",
+  "B1 in CLEAN",
+  "B2 in CLEAN"
+ ],
+ "outcome": "NOT PASSED",
+ "line": "Try H36: NOT PASSED (B1 in own, B2 in own, B4 in own, B1 in CLEAN, B2 in CLEAN): OXP125 is not built.",
+ "follows": "A labelled diagnostic on one truth: a pass is a priced question to the captain, never adoption. What follows: nothing is built; no rerun under this row; OXP125 is not built."
+}

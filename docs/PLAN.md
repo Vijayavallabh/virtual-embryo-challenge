@@ -14211,3 +14211,8 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     MS30 (MS20 above MSB and B25MS above MS20): MS20 is above MSB, but B25MS is below MS20, so `T1_s2rcMS30.h5ad` is
     not uploaded; it stands in the sheet as not uploaded by its rule. Nothing else turns on it.
   - **Standing:** T1 73.82, T3 63.94, heart 61.97, embryo 69.9; overall 203.695 (it was 203.395).
+- 2026-11-25 (f), row H36 reads NOT PASSED: the heart XPC line ends with no file (state at 01:22 UTC, 2026-11-25).
+  Written by the AI assistant, which designed none of it and is recused on the heart's scope and size.
+  - **The pre-set statement, verbatim:** "Try H36: NOT PASSED (B1 in own, B2 in own, B4 in own, B1 in CLEAN, B2 in
+    CLEAN): OXP125 is not built." Twelve heart tries, 106 to 117. By ruling row R56, OXP125 is not built; OTS125 stays
+    the heart's best.
