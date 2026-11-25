@@ -3566,3 +3566,21 @@ f11fd10b26dfdb939b1e5362792b580e7aeae3f70e33a36000ce76434fedcccd; `runs/manual_u
 sha256 f06aea68b3c1fda18b1f216bb950ff535420cfa65da00854b9be07e1309d28d0 (build records
 `experiments/builds/results/t1r66_afbf45b_<run>.txt`). Added before any score of either. Data used: released challenge
 data and the outside heart atlas on recomputed groups (GEO GSE193346, register row X002).
+
+## Note of 2026-11-25: row R68's four hedge files are built (decision log 2026-11-25 (ttt))
+
+At the clean commit ccc1c9d, on the DGX, each file's parents and anchor matched their pinned sha256, and the file was
+built twice with one sha256 and passed the format check. **The files:** `runs/manual_upload/T3_c2_s2_mxe2.h5ad` (C2's
+rows; each row's expression whole from C2 (even rows) or K23's xe2 file (odd rows)), sha256
+df5512feff9f9b338445bb1749fea5810808518e6720eeedb49706c402f9f630; `runs/manual_upload/T3_s2_mx_xe2_ck.h5ad` (C2's
+rows; each row's expression whole from K23's xe2 file (even rows) or CK's file (odd rows)), sha256
+9b144c989485d557bca36c28e359a2dd2182db8128fd1bca4fa4931d8146d342; `runs/manual_upload/T2embryo_s2x_ovmxso.h5ad` (O's
+rows and positions; each cell's expression whole from O (even rows) or SO (odd rows)), sha256
+c2737d27c310de44436742829659a089091e82d982e94df5525a3e4b8d423c73; `runs/manual_upload/T2embryo_s2x_ovbkso.h5ad` (O's
+rows and positions; each cell's expression whole from O or SO by spatial blocks), sha256
+f15ff031026191086e927db89904c72fe2cdbf6ee563bd2a21e481e63c838885 (build records
+`experiments/builds/results/hedgefix_ccc1c9d_<run>.txt`). Added before any score of any. Data used: T3 files, released
+challenge data (the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout
+files) and, through its K23 or CK parent's rows, two public single-cell knockout studies of other genes, GEO GSE204906
+(Dnmt3a and Dnmt3b nulls, E8.5; register row X013) and GEO GSE277839 (a Usb1 knockout, E9.5; register row X014);
+embryo files, released challenge data only; no outside data.

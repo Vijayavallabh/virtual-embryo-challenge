@@ -1,0 +1,8 @@
+Row R68's hedge file T2embryo_s2x_ovbkso.h5ad
+==========================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-25 at commit ccc1c9d (main; clean tree) in ~/v/vec-campaign-c with `experiments/builds/hedge_fixed_line.sh ccc1c9d99c1a41c9cd92d925c86abfd556a70e96 e2 T2embryo_s2x_ovbkso.h5ad <anchor> <first> <second>`, after its gate checks were dry-run on the real rows and parents at this commit and its refusal path was traced.
+O's rows and positions; each cell's expression whole from O or SO by spatial blocks. Parents and anchor checked against their pinned sha256 (build records embovsb_20b2381_w1).
+Every exit record is 0. The file, built twice into separate folders with one sha256, format-checked, each stamp of this commit and clean:
+  T2embryo_s2x_ovbkso.h5ad  f15ff031026191086e927db89904c72fe2cdbf6ee563bd2a21e481e63c838885
+The local copy under runs/manual_upload/ is the same bytes. No log, size, shape or sidecar of this build was read. No score of it exists at this record. Data used: released challenge data only; no outside data.

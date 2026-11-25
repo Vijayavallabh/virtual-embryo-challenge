@@ -14945,3 +14945,14 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **What follows.** Nothing is chosen on it. The design's first proposal (the reliability-weighted two-knockout
     factor) goes to a cold challenger whose first question is whether this reading touched data its gate would read; a
     gate that did is struck or moved to untouched data.
+- 2026-11-25 (ttt), row R68's four hedge files are built, before any score (state at 2026-11-25 18:36 UTC). Written by
+  the AI assistant, which designed none of it.
+  - **The builds.** `experiments/builds/hedge_fixed_line.sh ccc1c9d...` once per file on the DGX, clean, after an
+    independent review with no blocker and a gate dry-run on the real rows and parents; each file built twice with one
+    sha256: **`T3_c2_s2_mxe2.h5ad`** df5512feff9f...; **`T3_s2_mx_xe2_ck.h5ad`** 9b144c989485...;
+    **`T2embryo_s2x_ovmxso.h5ad`** c2737d27c310...; **`T2embryo_s2x_ovbkso.h5ad`** f15ff0310261.... All four due now,
+    sent at once (row R68). Data used: T3 files, released challenge data (the wild-type E8.75 cells, the released
+    Mab21l2 knockout and the released Gata4 validation knockout files) and, through its K23 or CK parent's rows, two
+    public single-cell knockout studies of other genes, GEO GSE204906 (Dnmt3a and Dnmt3b nulls, E8.5; register row
+    X013) and GEO GSE277839 (a Usb1 knockout, E9.5; register row X014); embryo files, released challenge data only; no
+    outside data.

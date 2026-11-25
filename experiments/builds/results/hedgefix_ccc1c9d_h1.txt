@@ -1,0 +1,8 @@
+Row R68's hedge file T3_c2_s2_mxe2.h5ad
+==========================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-25 at commit ccc1c9d (main; clean tree) in ~/v/vec-campaign-c with `experiments/builds/hedge_fixed_line.sh ccc1c9d99c1a41c9cd92d925c86abfd556a70e96 h1 T3_c2_s2_mxe2.h5ad <anchor> <first> <second>`, after its gate checks were dry-run on the real rows and parents at this commit and its refusal path was traced.
+C2's rows; each row's expression whole from C2 (even rows) or K23's xe2 file (odd rows). Parents and anchor checked against their pinned sha256 (build records t3two_fb01487 and t3k23_49f3fd5).
+Every exit record is 0. The file, built twice into separate folders with one sha256, format-checked, each stamp of this commit and clean:
+  T3_c2_s2_mxe2.h5ad  df5512feff9f9b338445bb1749fea5810808518e6720eeedb49706c402f9f630
+The local copy under runs/manual_upload/ is the same bytes. No log, size, shape or sidecar of this build was read. No score of it exists at this record. Data used: released challenge data (the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files) and, through its K23 or CK parent's rows, two public single-cell knockout studies of other genes, GEO GSE204906 (Dnmt3a and Dnmt3b nulls, E8.5; register row X013) and GEO GSE277839 (a Usb1 knockout, E9.5; register row X014).
