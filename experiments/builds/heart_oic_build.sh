@@ -6,7 +6,9 @@
 # Test-board builds on a DGX campaign checkout (never the reference checkout), from the root of the checkout or
 # detached worktree it is called in, detached; wait on the exit files with a background poller, never a foreground
 # sleep:
-#   bash experiments/builds/heart_oic_build.sh <COMMIT> <RUN>
+#   bash experiments/builds/heart_oic_build.sh <COMMIT> <RUN> <FETCHED>
+# FETCHED is the fetch's folder: it must pass fetch_oic.py --check, and chords_E10.5.json must name its files at the
+# sha256 it records.
 # The row is fixed (R70; the builder pins it). The chords' sha256 is read by code from row H38's outcome cell (G0's
 # PASS statement, then the read's "OUTCOME H38: PASS.", experiments/harness/h38_row.py passed) and must be the sha256 of
 # the committed experiments/heart_ext/results/chords_E10.5.json. RUN names this run's scratch folder
@@ -30,12 +32,14 @@
 # reference builds. Every builder, halve.py and `vec check` output goes to /dev/null: a test build is read by its exit
 # code, its sha256 and its stamp's commit and clean fields only (AGENTS.md), never its log, size, cell count or
 # sidecar record. Nothing here uploads anything; an upload goes by the line's rule and the captain's own act.
-# Exit codes of the gate: 90 odd arguments, 91 the run folder exists, 92 the chord file is not committed or not the file
+# Exit codes of the gate: 89 FETCHED or the chords fail the manifest check, 90 odd arguments, 91 the run folder
+# exists, 92 the chord file is not committed or not the file
 # of row H38's sha256, 93 the output folder exists, 94 row H38's outcome cell does not say PASS, 95 no row R70 that
 # orders the file, 96 HEAD is not COMMIT, 97 docs/S2_RULES.sha256 fails, 98 tracked tree not clean.
 set -u
-COMMIT=${1:?usage: heart_oic_build.sh COMMIT RUN}
-RUN=${2:?usage: heart_oic_build.sh COMMIT RUN}
+COMMIT=${1:?usage: heart_oic_build.sh COMMIT RUN FETCHED}
+RUN=${2:?usage: heart_oic_build.sh COMMIT RUN FETCHED}
+FETCHED=${3:?usage: heart_oic_build.sh COMMIT RUN FETCHED}
 case "$RUN" in
   *[!A-Za-z0-9_-]*) echo "refused: RUN takes letters, digits, _ and - only" >&2; exit 90 ;;
 esac
@@ -43,7 +47,7 @@ case "$COMMIT" in
   *[!0-9a-f]*) echo "refused: COMMIT must be a full hash" >&2; exit 90 ;;
 esac
 [ "${#COMMIT}" = 40 ] || { echo "refused: COMMIT must be a full hash" >&2; exit 90; }
-[ "$#" = 2 ] || { echo "refused: COMMIT and RUN only (the row, R70, is fixed)" >&2; exit 90; }
+[ "$#" = 3 ] || { echo "refused: COMMIT, RUN and FETCHED only (the row, R70, is fixed)" >&2; exit 90; }
 export PATH=$HOME/.local/bin:$PATH
 S=$HOME/v/scratch/heartoic/$RUN
 mkdir -p "$HOME/v/scratch/heartoic"
@@ -76,7 +80,8 @@ first = rows[0][2:].split("|", 1)[0] if len(rows) == 1 else ""
 need = ("OIC125", "`--captain-ruling R70`", "ruling, no run")
 sys.exit(0 if first.startswith("R70 (the captain\x27s order") and all(s in first for s in need) else 1)' \
   experiments/harness/TRIES.md \
-  || { echo "refused: TRIES.md does not hold exactly one row R70 that is the captain's order naming OIC125" >&2; finish 95; }
+  || { echo "refused: TRIES.md does not hold exactly one row R70 that is the captain's order naming OIC125" >&2
+       finish 95; }
 SHA=$(python3 -I -B experiments/harness/h38_row.py passed experiments/harness/TRIES.md 2> "$S/h38_row.err") \
   || { echo "refused: row H38's outcome cell does not say PASS (its reasons are in $S/h38_row.err)" >&2; finish 94; }
 case "$SHA" in
@@ -87,6 +92,8 @@ esac
 got=$(sha256sum "$CHORDS" | cut -d' ' -f1)
 [ "$got" = "$SHA" ] || { echo "refused: $CHORDS is not the file of row H38's sha256" >&2; finish 92; }
 git ls-files --error-unmatch "$CHORDS" > /dev/null 2>&1 || { echo "refused: $CHORDS is not committed" >&2; finish 92; }
+python3 -I -B experiments/heart_ext/fetch_oic.py --check "$FETCHED" --chords "$CHORDS" > "$S/manifest.out" 2>&1 \
+  || { echo "refused: $FETCHED or $CHORDS fail fetch_oic.py --check (see $S/manifest.out)" >&2; finish 89; }
 OIC125_ARGS="--entry organ_scope --trend-strength 1.25 --trend-form insitu --insitu-chords $SHA --z-mode raw"
 OIC125_ARGS="$OIC125_ARGS --captain-ruling R70"
 echo "$SHA" > "$S/chords_sha256"

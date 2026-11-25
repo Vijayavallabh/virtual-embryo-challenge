@@ -16,14 +16,15 @@
 #   started once, ever: its exit file ~/v/scratch/oic_g0/g0.exit (88 when it exists).
 # Each step writes <S>/<STEP>.exit (running first, then its code); the call ends at the first step that is not 0.
 #   check  HEAD is COMMIT, the tracked tree is clean, the scripts are here, row H38 is in TRIES.md, well formed and
-#          its outcome cell empty (experiments/harness/h38_row.py check), FETCHED holds MANIFEST.json, the virtual
+#          its outcome cell empty (experiments/harness/h38_row.py check), FETCHED passes fetch_oic.py --check
+#          (MANIFEST.json against the pinned sizes and the files on disk), the virtual
 #          environment, the T2 stages and (for the Xenium table) pyarrow are there; for g0 also PREP_RUN's work folder
 #          with its regions step at 0, the reader's file committed, and no G0 result yet
 # OIC_VENV names the virtual environment (default $PWD/.venv, which `uv sync --frozen --inexact --group external`
 # fills); OIC_DATA the competition data folder (default data/raw); OIC_JOBS the units step's processes (default 8).
 # Exit codes of the launcher's own refusals: 84 the work folder of PREP_RUN is not a finished prep, 85 the reader's
 # file is not committed, 86 a G0 result exists, 87 pyarrow is not in the environment, 88 G0 was started before, 90 odd
-# arguments, 91 the run folder exists, 92 no MANIFEST.json in FETCHED, 93 row H38 missing, malformed or with a
+# arguments, 91 the run folder exists, 92 FETCHED fails fetch_oic.py --check, 93 row H38 missing, malformed or with a
 # statement, 94 not the checkout's root, 96 HEAD is not COMMIT, 97 no T2 stages, 98 tracked tree not clean, 99 no
 # virtual environment. Otherwise the failed step's own code (g0: 3 STOP, 5 VOID, 2 refused).
 set -u
@@ -80,9 +81,11 @@ fi
 [ -f "$SCRIPT" ] || { echo "refused: run from the root of the checkout ($SCRIPT is not here)" >&2; finish 94; }
 python3 -I -B experiments/harness/h38_row.py check experiments/harness/TRIES.md 2> "$S/row.err" \
   || { echo "refused: row H38 is missing, malformed or already holds a statement (see $S/row.err)" >&2; finish 93; }
-[ -f "$FETCHED/MANIFEST.json" ] || { echo "refused: no MANIFEST.json in $FETCHED" >&2; finish 92; }
+python3 -I -B experiments/heart_ext/fetch_oic.py --check "$FETCHED" > "$S/manifest.out" 2>&1 \
+  || { echo "refused: $FETCHED is not as its MANIFEST.json and the pins say (see $S/manifest.out)" >&2; finish 92; }
 VENV=${OIC_VENV:-$PWD/.venv}
-[ -x "$VENV/bin/python" ] || { echo "refused: no virtual environment at $VENV (name one with OIC_VENV)" >&2; finish 99; }
+[ -x "$VENV/bin/python" ] \
+  || { echo "refused: no virtual environment at $VENV (name one with OIC_VENV)" >&2; finish 99; }
 DATA=${OIC_DATA:-data/raw}
 [ -d "$DATA/T2" ] || { echo "refused: no T2 stages under $DATA (name the data folder with OIC_DATA)" >&2; finish 97; }
 if grep -q '"study": "X021"' "$FETCHED/MANIFEST.json" || grep -q 'transcripts.parquet' "$FETCHED/MANIFEST.json"; then

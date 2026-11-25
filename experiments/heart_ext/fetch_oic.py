@@ -41,6 +41,7 @@ Behaviour:
   python3 -I -B experiments/heart_ext/fetch_oic.py --out D --only E16.5_E1S3_GEM_bin1.tsv.gz
   python3 -I -B experiments/heart_ext/fetch_oic.py --out D --url <a pinned URL>
   python3 -I -B experiments/heart_ext/fetch_oic.py --list                                 # no network
+  python3 -I -B experiments/heart_ext/fetch_oic.py --check D [--chords F ...]              # no network
 
 Requests carry a generic user agent and nothing that names a team, a person or a challenge. Exit 0 when every
 selected file is complete and recorded, 2 on a refusal, 1 when a download fails after its retries.
@@ -449,6 +450,48 @@ def run(entries: list[dict], out: Path, jobs: int = 4, log=print) -> int:
     return 1 if errors else 0
 
 
+def check_folder(out: Path, chords=()) -> list[str]:
+    """Why a fetched folder is not as its MANIFEST.json and this list pin it (empty when it is): every record pinned
+    (name and URL), a whole file's size the pin, a member's bundle the pinned bundle, the file on disk of the recorded
+    size, a sha256 recorded. With chord files (oic_g0's chords_<ref>.json): every source file a chord file names is
+    recorded here with the same sha256. Standard library only; no file is read beyond the manifest and the chords."""
+    out = Path(out)
+    try:
+        doc = json.loads((out / "MANIFEST.json").read_text())
+    except (OSError, ValueError) as exc:
+        return [f"no readable MANIFEST.json in {out} ({type(exc).__name__})"]
+    pinned = {e["name"]: e for e in PINNED}
+    why, sha = [], {}
+    for r in doc.get("files", []):
+        e = pinned.get(r.get("name"))
+        if e is None or r.get("url") != e["url"]:
+            why.append(f"{r.get('name')!r} from {r.get('url')!r} is not a pinned file")
+            continue
+        if e["bytes"] is not None and r.get("size") != e["bytes"]:
+            why.append(f"{e['name']} is recorded at {r.get('size')} bytes, pinned {e['bytes']}")
+        if e["kind"] == "zip_member" and r.get("archive_bytes") != e["archive_bytes"]:
+            why.append(f"{e['name']} is recorded from a bundle of another size")
+        f = out / e["name"]
+        if not f.is_file() or f.stat().st_size != r.get("size"):
+            why.append(f"{f} is missing or not of its recorded size")
+        if not (isinstance(r.get("sha256"), str) and len(r["sha256"]) == 64):
+            why.append(f"no sha256 recorded for {e['name']}")
+        sha[e["name"]] = r.get("sha256")
+    for c in chords:
+        try:
+            src = json.loads(Path(c).read_text()).get("sources")
+        except (OSError, ValueError) as exc:
+            why.append(f"{c} cannot be read ({type(exc).__name__})")
+            continue
+        if not isinstance(src, dict) or not src:
+            why.append(f"{c} names no source file")
+            continue
+        for name, digest in src.items():
+            if sha.get(name) != digest:
+                why.append(f"{c} was made from {name} at another sha256 than this folder records")
+    return why
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--out", type=Path, help="output folder (outside the repository)")
@@ -456,7 +499,17 @@ def main(argv=None) -> int:
     ap.add_argument("--url", action="append", default=[], help="a pinned URL (repeatable)")
     ap.add_argument("--jobs", type=int, default=4)
     ap.add_argument("--list", action="store_true", help="print the pinned list and exit (no network)")
+    ap.add_argument("--check", type=Path,
+                    help="check a fetched folder against its MANIFEST.json and the pins (no network)")
+    ap.add_argument("--chords", nargs="*", default=[], help="with --check: chord files that must name these files")
     a = ap.parse_args(argv)
+    if a.check is not None:
+        why = check_folder(a.check, a.chords)
+        for w in why:
+            print(f"refused: {w}", file=sys.stderr)
+        if not why:
+            print(f"MANIFEST ok: {a.check}")
+        return 2 if why else 0
     try:
         entries = select(PINNED, a.only, a.url)
     except Refused as exc:

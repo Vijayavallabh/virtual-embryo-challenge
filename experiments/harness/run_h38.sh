@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
-# Row H38 (experiments/harness/TRIES.md): the counted read of heart file OIC125 (experiments/harness/h38_heart_insitu.py),
-# on a DGX campaign checkout or a detached worktree of it (never the reference checkout). Run from the root of a clean
-# checkout or worktree at COMMIT, detached, and wait on done.exit with a background poller; never a foreground sleep.
-# CPU only.
-#   bash experiments/harness/run_h38.sh <COMMIT> <RUN>
+# Row H38 (experiments/harness/TRIES.md): the counted read of heart file OIC125
+# (experiments/harness/h38_heart_insitu.py), on a DGX campaign checkout or a detached worktree of it (never the
+# reference checkout). Run from the root of a clean checkout or worktree at COMMIT, detached, and wait on done.exit
+# with a background poller; never a foreground sleep. CPU only.
+#   bash experiments/harness/run_h38.sh <COMMIT> <RUN> <FETCHED>
+# FETCHED is the fetch's folder: it must pass fetch_oic.py --check (MANIFEST.json against the pinned sizes and the
+# files on disk), and the two practice chord files must name its files at the sha256 it records.
 # COMMIT is the full hash HEAD must be: the run commit, which holds row H38 with G0's PASS statement in its outcome cell
 # (and no read outcome) and the three committed chord files of the sha256 that statement records. RUN names this call's
 # own scratch folder ~/v/scratch/h38/<RUN>, which may not exist: a run folder is never reused and nothing is deleted.
@@ -25,15 +27,17 @@
 # as UV_PROJECT_ENVIRONMENT; the script puts its own checkout's src first); H38_DATA names the data folder (default
 # data/raw). 8 BLAS threads a process, NUMPY_MADVISE_HUGEPAGE=0, TMPDIR under the run's scratch folder. Nothing here
 # deletes or sends anything.
-# Exit codes of the launcher's own refusals: 88 the step was started before, 89 the script refuses the step, 90 odd
+# Exit codes of the launcher's own refusals: 87 FETCHED or the chords fail the manifest check, 88 the step was
+# started before, 89 the script refuses the step, 90 odd
 # arguments, 91 the run folder exists, 92 parts exist that this launcher did not make, 93 row H38 lacks G0's PASS
 # statement or holds a read outcome, 94 not the checkout's root, 95 a reading exists, 96 HEAD is not COMMIT, 97 no T2
 # stages in the data folder, 98 tracked tree not clean, 99 no virtual environment. Otherwise the failed step's own code:
 # tests (pytest's), gate (3 FAIL), run (1: a part failed or wrote no file), read.
 set -u
-COMMIT=${1:?usage: run_h38.sh COMMIT RUN}
-RUN=${2:?usage: run_h38.sh COMMIT RUN}
-[ "$#" = 2 ] || { echo "refused: COMMIT and RUN only" >&2; exit 90; }
+COMMIT=${1:?usage: run_h38.sh COMMIT RUN FETCHED}
+RUN=${2:?usage: run_h38.sh COMMIT RUN FETCHED}
+FETCHED=${3:?usage: run_h38.sh COMMIT RUN FETCHED}
+[ "$#" = 3 ] || { echo "refused: COMMIT, RUN and FETCHED only" >&2; exit 90; }
 case "$RUN" in
   *[!A-Za-z0-9_-]*) echo "refused: RUN takes letters, digits, _ and - only" >&2; exit 90 ;;
 esac
@@ -74,12 +78,17 @@ fi
 [ -f "$SCRIPT" ] || { echo "refused: run from the root of the checkout ($SCRIPT is not here)" >&2; finish 94; }
 python3 -I -B experiments/harness/h38_row.py g0 experiments/harness/TRIES.md > "$S/chords" 2> "$S/row.err" \
   || { echo "refused: row H38 lacks G0's PASS statement or holds a read outcome (see $S/row.err)" >&2; finish 93; }
+python3 -I -B experiments/heart_ext/fetch_oic.py --check "$FETCHED" --chords \
+  experiments/heart_ext/results/chords_E9.5.json experiments/heart_ext/results/chords_E8.75.json \
+  > "$S/manifest.out" 2>&1 \
+  || { echo "refused: $FETCHED or the practice chords fail fetch_oic.py --check (see $S/manifest.out)" >&2; finish 87; }
 if [ -e "$OUT/reading.json" ] || [ -e "$OUT/reading.txt" ]; then
   echo "refused: $OUT already holds a reading" >&2
   finish 95
 fi
 VENV=${H38_VENV:-$PWD/.venv}
-[ -x "$VENV/bin/python" ] || { echo "refused: no virtual environment at $VENV (name one with H38_VENV)" >&2; finish 99; }
+[ -x "$VENV/bin/python" ] \
+  || { echo "refused: no virtual environment at $VENV (name one with H38_VENV)" >&2; finish 99; }
 DATA=${H38_DATA:-data/raw}
 [ -d "$DATA/T2" ] || { echo "refused: no T2 stages under $DATA (name the data folder with H38_DATA)" >&2; finish 97; }
 echo "$head" > "$S/head"

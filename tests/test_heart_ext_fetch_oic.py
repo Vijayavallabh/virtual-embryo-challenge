@@ -246,3 +246,33 @@ def test_cli_list_no_network():
     assert sum(1 for x in lines if x.startswith("X022\t") and x.endswith("_GEM_bin1.tsv.gz")) == 23
     assert sum(1 for x in lines if x.startswith("X021\t") and "transcripts.parquet" in x) == 1
     assert "bin24 = 12.0 um" in p.stdout
+
+
+def test_check_folder_against_the_manifest_and_the_chords(tmp_path):
+    import os
+
+    mod = _load()
+    e = next(x for x in mod.PINNED if x["kind"] == "file")
+    f = tmp_path / e["name"]
+    with open(f, "wb"):
+        pass
+    os.truncate(f, e["bytes"])  # sparse: the pinned size, no disk used
+    rec = {"name": e["name"], "url": e["url"], "size": e["bytes"], "sha256": "a" * 64}
+    (tmp_path / "MANIFEST.json").write_text(json.dumps({"files": [rec]}))
+    assert mod.check_folder(tmp_path) == []
+    ch = tmp_path / "chords.json"
+    ch.write_text(json.dumps({"sources": {e["name"]: "a" * 64}}))
+    assert mod.check_folder(tmp_path, [ch]) == []
+    ch.write_text(json.dumps({"sources": {e["name"]: "b" * 64}}))
+    assert mod.check_folder(tmp_path, [ch])
+    ch.write_text(json.dumps({"sources": {}}))
+    assert mod.check_folder(tmp_path, [ch])
+    for bad in ({**rec, "url": "https://example.org/x"}, {**rec, "size": 5}, {**rec, "sha256": None}):
+        (tmp_path / "MANIFEST.json").write_text(json.dumps({"files": [bad]}))
+        assert mod.check_folder(tmp_path), bad
+    (tmp_path / "MANIFEST.json").write_text(json.dumps({"files": [rec]}))
+    os.truncate(f, 10)
+    assert mod.check_folder(tmp_path)
+    p = subprocess.run([sys.executable, "-I", "-B", str(SCRIPT), "--check", str(tmp_path)], capture_output=True,
+                       text=True, timeout=60)
+    assert p.returncode == 2 and "refused" in p.stderr

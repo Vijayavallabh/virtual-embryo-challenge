@@ -487,6 +487,7 @@ def chord_file(rec: dict, ranks_sha: str, units_doc: dict, reader_sha: str) -> d
             "rule": "oic_core: residual chords (FIX 1), consensus (FIX 2), lineage test (FIX 3), centre set (FIX 5)",
             "rules": oc.RULES, "ranks_sha256": ranks_sha, "reader_sha256": reader_sha,
             "units": {r["section"]: r["npz_sha256"] for r in units_doc["sections"]},
+            "sources": {r["file"]: r["source_sha256"] for r in units_doc["sections"]},
             "code_sha256": code_sha256(), "provenance": provenance()}
 
 

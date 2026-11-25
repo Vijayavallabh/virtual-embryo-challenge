@@ -23,7 +23,34 @@ G0_SH = ROOT / "experiments" / "heart_ext" / "run_oic_g0.sh"
 H38_SH = ROOT / "experiments" / "harness" / "run_h38.sh"
 BUILD_SH = ROOT / "experiments" / "builds" / "heart_oic_build.sh"
 sys.path.insert(0, str(ROOT / "experiments" / "harness"))
+sys.path.insert(0, str(ROOT / "experiments" / "heart_ext"))
+import fetch_oic  # noqa: E402
 import h38_row  # noqa: E402
+
+MOSTA = next(e for e in fetch_oic.PINNED if e["name"] == "E15.5_E2S1_GEM_bin1.tsv.gz")
+XEN = next(e for e in fetch_oic.PINNED if e["kind"] == "zip_member")
+SRC_SHA = "e" * 64
+
+
+def fetched_folder(path: Path, xenium: bool = False) -> Path:
+    """A fetched folder that passes fetch_oic.py --check: a sparse file of the pinned size and its record (and, with
+    xenium, a small transcript member and its record)."""
+    path.mkdir(parents=True, exist_ok=True)
+    f = path / MOSTA["name"]
+    with open(f, "wb"):
+        pass
+    os.truncate(f, MOSTA["bytes"])
+    files = [{"name": MOSTA["name"], "url": MOSTA["url"], "size": MOSTA["bytes"], "sha256": SRC_SHA, "study": "X022"}]
+    if xenium:
+        (path / XEN["name"]).write_bytes(b"x" * 10)
+        files.append({"name": XEN["name"], "url": XEN["url"], "size": 10, "sha256": SRC_SHA, "study": "X021",
+                      "archive_bytes": XEN["archive_bytes"]})
+    (path / "MANIFEST.json").write_text(json.dumps({"files": files}, indent=1))
+    return path
+
+
+def chords_text(ref: str) -> str:
+    return json.dumps({"row": "H38", "ref": ref, "sources": {MOSTA["name"]: SRC_SHA}}) + "\n"
 
 SHA = {"E10.5": "a" * 64, "E9.5": "b" * 64, "E8.75": "c" * 64}
 R70 = ("R70 (the captain's order of 2026-11-25, ruling, no run: \"a synthetic stand-in for OIC125\"; built only with "
@@ -121,6 +148,7 @@ def repo(tmp_path):
     (root / ".venv/bin/python").write_text('#!/bin/sh\ncase "$*" in *pyarrow*) exit 1 ;; esac\nexit 0\n')
     (root / ".venv/bin/python").chmod(0o755)
     (root / "experiments/harness/h38_row.py").write_text((ROOT / "experiments/harness/h38_row.py").read_text())
+    (root / "experiments/heart_ext/fetch_oic.py").write_text((ROOT / "experiments/heart_ext/fetch_oic.py").read_text())
     for s in ("experiments/harness/h38_heart_insitu.py", "experiments/heart_ext/oic_g0.py",
               "experiments/builds/build_test.py", "experiments/builds/halve.py"):
         (root / s).write_text("# a stand-in\n")
@@ -128,10 +156,7 @@ def repo(tmp_path):
     (root / "docs/S2_RULES.sha256").write_text(hashlib.sha256(b"rules\n").hexdigest() + "  docs/S2_RULES.md\n")
     (root / ".gitignore").write_text("runs/\n.venv/\ndata/\n")
     (root / "experiments/harness/TRIES.md").write_text(f"| {R70} | heart | x |\n" + h38_line())
-    fetched = tmp_path / "fetched"
-    fetched.mkdir()
-    (fetched / "MANIFEST.json").write_text(json.dumps({"files": [{"name": "E15.5_E1S1_GEM_bin1.tsv.gz",
-                                                                  "study": "X022"}]}))
+    fetched = fetched_folder(tmp_path / "fetched")
 
     def git(*a):
         return subprocess.run(["git", "-c", "user.name=t", "-c", "user.email=t@t", "-c", "init.defaultBranch=x", *a],
@@ -208,9 +233,10 @@ def test_g0_refusals(repo):
     assert launch(repo, G0_SH, repo.head, "r3", "prep", f)[0] == 93
     commit_change(repo, "experiments/harness/TRIES.md", f"| {R70} | heart | x |\n" + h38_line())
     assert launch(repo, G0_SH, repo.head, "r4", "prep", str(repo.tmp / "nowhere"))[0] == 92
-    (repo.fetched / "MANIFEST.json").write_text(json.dumps({"files": [{"study": "X021",
-                                                                        "name": "x_transcripts.parquet"}]}))
+    fetched_folder(repo.fetched, xenium=True)
     assert launch(repo, G0_SH, repo.head, "r5", "prep", f)[0] == 87  # the stand-in python has no pyarrow
+    (repo.fetched / MOSTA["name"]).write_bytes(b"short")
+    assert launch(repo, G0_SH, repo.head, "r6", "prep", f)[0] == 92  # a file not of its recorded size
     assert not calls(repo)
 
 
@@ -254,69 +280,81 @@ def test_g0_phase_refusals_and_once_only(repo):
 # ---- run_h38.sh ---------------------------------------------------------------------------------------------------
 @pytest.fixture()
 def read_repo(repo):
+    for ref in ("E9.5", "E8.75"):
+        (repo.root / f"experiments/heart_ext/results/chords_{ref}.json").write_text(chords_text(ref))
+        repo.git("add", "-f", f"experiments/heart_ext/results/chords_{ref}.json")
     commit_change(repo, "experiments/harness/TRIES.md", f"| {R70} | heart | x |\n" + h38_line(G0_CELL))
     return repo
 
 
-@pytest.mark.parametrize("args", [(), ("x",), ("abc", "r"), ("a" * 40, "r/1"), ("a" * 40, "r", "extra")])
+def h38(repo, *args, **extra):
+    return launch(repo, H38_SH, *args, str(repo.fetched), **extra)
+
+
+@pytest.mark.parametrize("args", [(), ("x",), ("abc", "r", "f"), ("a" * 40, "r/1", "f"), ("a" * 40, "r"),
+                                  ("a" * 40, "r", "f", "extra")])
 def test_h38_odd_arguments_refuse(read_repo, args):
     assert launch(read_repo, H38_SH, *args)[0] in (1, 90) and not calls(read_repo)
 
 
 def test_h38_refusals(read_repo):
     r = read_repo
-    assert launch(r, H38_SH, "f" * 40, "a")[0] == 96
-    assert launch(r, H38_SH, r.head, "a")[0] == 91
+    assert h38(r, "f" * 40, "a")[0] == 96
+    assert h38(r, r.head, "a")[0] == 91
     commit_change(r, "experiments/harness/TRIES.md", f"| {R70} | heart | x |\n" + h38_line())
-    assert launch(r, H38_SH, r.head, "b")[0] == 93  # no G0 statement
+    assert h38(r, r.head, "b")[0] == 93  # no G0 statement
     commit_change(r, "experiments/harness/TRIES.md",
                   f"| {R70} | heart | x |\n" + h38_line(G0_CELL + " " + h38_row.outcome_statement("STOP")))
-    assert launch(r, H38_SH, r.head, "c")[0] == 93  # a read outcome stands already
+    assert h38(r, r.head, "c")[0] == 93  # a read outcome stands already
     commit_change(r, "experiments/harness/TRIES.md", f"| {R70} | heart | x |\n" + h38_line(G0_CELL))
     out = r.root / "experiments/harness/results/h38_heart_insitu"
     out.mkdir(parents=True)
     (out / "reading.json").write_text("{}")
-    assert launch(r, H38_SH, r.head, "d")[0] == 95
+    assert h38(r, r.head, "d")[0] == 95
     (out / "reading.json").rename(out / "kept.json")
-    assert launch(r, H38_SH, r.head, "e", H38_VENV=str(r.tmp / "novenv"))[0] == 99
-    assert launch(r, H38_SH, r.head, "f", H38_DATA=str(r.tmp / "nodata"))[0] == 97
-    assert not calls(r)
-    assert launch(r, H38_SH, r.head, "g", STUB_REFUSE="gate")[0] == 89
-    assert script_steps(r, "h38_heart_insitu.py") == ["tests", "ask gate"]
+    assert h38(r, r.head, "e", H38_VENV=str(r.tmp / "novenv"))[0] == 99
+    assert h38(r, r.head, "f", H38_DATA=str(r.tmp / "nodata"))[0] == 97
+    good = (r.root / "experiments/heart_ext/results/chords_E8.75.json").read_text()
+    commit_change(r, "experiments/heart_ext/results/chords_E8.75.json", good.replace(SRC_SHA, "9" * 64))
+    assert h38(r, r.head, "i")[0] == 87  # a chord file made from another fetched file
+    commit_change(r, "experiments/heart_ext/results/chords_E8.75.json", good)
+    calls_before = len(calls(r))
+    assert h38(r, r.head, "g", STUB_REFUSE="gate")[0] == 89
+    assert len(calls(r)) == calls_before + 2  # the tests, then the script's own refusals
     assert not (r.home / "v/scratch/h38/gate.exit").exists()
 
 
 def test_h38_runs_its_steps_once_each_in_order(read_repo):
     r = read_repo
-    code, err = launch(r, H38_SH, r.head, "go")
+    code, err = h38(r, r.head, "go")
     assert code == 0, err
     assert script_steps(r, "h38_heart_insitu.py") == ["tests", "ask gate", "gate", "ask run", *["run"] * 10,
                                                        "ask read", "read"]
     base = r.home / "v/scratch/h38"
     assert {p.name: p.read_text().strip() for p in base.glob("*.exit")} == {"gate.exit": "0", "run.exit": "0",
                                                                             "read.exit": "0"}
-    assert launch(r, H38_SH, r.head, "again")[0] in (88, 95)
+    assert h38(r, r.head, "again")[0] in (88, 95)
 
 
 def test_h38_stops_at_a_failing_gate_and_never_restarts_it(read_repo):
     r = read_repo
-    assert launch(r, H38_SH, r.head, "x1", STUB_GATE_EXIT="3")[0] == 3
+    assert h38(r, r.head, "x1", STUB_GATE_EXIT="3")[0] == 3
     assert script_steps(r, "h38_heart_insitu.py")[-1] == "gate"
     assert (r.home / "v/scratch/h38/gate.exit").read_text().strip() == "3"
     (r.root / "experiments/harness/results/h38_heart_insitu/gate/gate.json").rename(r.tmp / "gate.json")
-    assert launch(r, H38_SH, r.head, "x2")[0] == 88
+    assert h38(r, r.head, "x2")[0] == 88
 
 
 def test_h38_a_failing_part_fails_the_run(read_repo):
     r = read_repo
-    assert launch(r, H38_SH, r.head, "y1", STUB_RUN_BAD="4-5")[0] == 1
+    assert h38(r, r.head, "y1", STUB_RUN_BAD="4-5")[0] == 1
     assert "read" not in script_steps(r, "h38_heart_insitu.py")
 
 
 # ---- heart_oic_build.sh -------------------------------------------------------------------------------------------
 @pytest.fixture()
 def build_repo(repo):
-    chords = '{"row": "H38"}\n'
+    chords = chords_text("E10.5")
     sha = hashlib.sha256(chords.encode()).hexdigest()
     cell = h38_row.g0_statement(sha, SHA["E9.5"], SHA["E8.75"]) + " " + h38_row.outcome_statement("PASS")
     (repo.root / "experiments/heart_ext/results/chords_E10.5.json").write_text(chords)
@@ -326,38 +364,42 @@ def build_repo(repo):
     return repo
 
 
-@pytest.mark.parametrize("args", [(), ("x",), ("abc", "r"), ("a" * 40, "r 1"), ("a" * 40, "r", "extra")])
+@pytest.mark.parametrize("args", [(), ("x",), ("abc", "r", "f"), ("a" * 40, "r 1", "f"), ("a" * 40, "r"),
+                                  ("a" * 40, "r", "f", "extra")])
 def test_build_odd_arguments_refuse(build_repo, args):
     assert launch(build_repo, BUILD_SH, *args)[0] in (1, 90) and not calls(build_repo)
 
 
 def test_build_gate_refusals(build_repo):
     r = build_repo
-    assert launch(r, BUILD_SH, "f" * 40, "a")[0] == 96
-    assert launch(r, BUILD_SH, r.head, "a")[0] == 91
+    assert launch(r, BUILD_SH, "f" * 40, "a", str(r.fetched))[0] == 96
+    assert launch(r, BUILD_SH, r.head, "a", str(r.fetched))[0] == 91
     (r.root / "docs/S2_RULES.md").write_text("changed\n")
-    assert launch(r, BUILD_SH, r.head, "b")[0] == 98
+    assert launch(r, BUILD_SH, r.head, "b", str(r.fetched))[0] == 98
     commit_change(r, "docs/S2_RULES.md", "changed\n")
-    assert launch(r, BUILD_SH, r.head, "c")[0] == 97
+    assert launch(r, BUILD_SH, r.head, "c", str(r.fetched))[0] == 97
     commit_change(r, "docs/S2_RULES.md", "rules\n")
     text = (r.root / "experiments/harness/TRIES.md").read_text()
     commit_change(r, "experiments/harness/TRIES.md", text.replace("| R70 (", "| R71 ("))
-    assert launch(r, BUILD_SH, r.head, "d")[0] == 95
+    assert launch(r, BUILD_SH, r.head, "d", str(r.fetched))[0] == 95
     commit_change(r, "experiments/harness/TRIES.md", text.replace("OUTCOME H38: PASS.", "OUTCOME H38: STOP."))
-    assert launch(r, BUILD_SH, r.head, "e")[0] == 94
+    assert launch(r, BUILD_SH, r.head, "e", str(r.fetched))[0] == 94
     commit_change(r, "experiments/harness/TRIES.md", text)
     commit_change(r, "experiments/heart_ext/results/chords_E10.5.json", '{"row": "other"}\n')
-    assert launch(r, BUILD_SH, r.head, "f")[0] == 92
-    commit_change(r, "experiments/heart_ext/results/chords_E10.5.json", '{"row": "H38"}\n')
+    assert launch(r, BUILD_SH, r.head, "f", str(r.fetched))[0] == 92
+    commit_change(r, "experiments/heart_ext/results/chords_E10.5.json", chords_text("E10.5"))
+    (r.fetched / "MANIFEST.json").write_text("{}")
+    assert launch(r, BUILD_SH, r.head, "f2", str(r.fetched))[0] == 89  # the chords name a file the folder lacks
+    fetched_folder(r.fetched)
     (r.root / "runs").mkdir(exist_ok=True)
     (r.root / f"runs/heartoic_{r.head[:7]}_g").mkdir()
-    assert launch(r, BUILD_SH, r.head, "g")[0] == 93
+    assert launch(r, BUILD_SH, r.head, "g", str(r.fetched))[0] == 93
     assert not calls(r)
 
 
 def test_build_identity_step_bites_before_any_oic_build(build_repo):
     r = build_repo
-    code, err = launch(r, BUILD_SH, r.head, "id")
+    code, err = launch(r, BUILD_SH, r.head, "id", str(r.fetched))
     assert code == 20, err
     builds = [c for c in calls(r) if any(w.endswith("build_test.py") for w in c)]
     assert len(builds) == 1 and "category" in builds[0] and "insitu" not in builds[0]
@@ -372,7 +414,7 @@ def test_build_builds_oic125_twice_after_the_identity(build_repo, tmp_path):
     text = text.replace("9835fa5d47d7021760beb2056ce44c2c846ded6fc31dacf64bbb2d9f0f7d1b54", half)
     patched = tmp_path / "heart_oic_build_patched.sh"
     patched.write_text(text)
-    code, err = launch(r, patched, r.head, "ok")
+    code, err = launch(r, patched, r.head, "ok", str(r.fetched))
     assert code == 0, err
     builds = [c for c in calls(r) if any(w.endswith("build_test.py") for w in c)]
     assert len(builds) == 3
@@ -382,5 +424,5 @@ def test_build_builds_oic125_twice_after_the_identity(build_repo, tmp_path):
     s = r.home / "v/scratch/heartoic/ok"
     assert (s / "done.exit").read_text().strip() == "0"
     assert "OIC125a/T2heart_organ_ts125_ti.h5ad" in (s / "SHA256SUMS").read_text()
-    code, _ = launch(r, patched, r.head, "bad", STUB_CHECK_EXIT="1")
+    code, _ = launch(r, patched, r.head, "bad", str(r.fetched), STUB_CHECK_EXIT="1")
     assert code == 13

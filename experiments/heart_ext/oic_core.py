@@ -124,17 +124,22 @@ def typing_genes(markers: dict[str, list[str]]) -> set[str]:
 
 # ---- unit typing and the heart region -----------------------------------------------------------------------------
 def unit_scores(C_units, genes_gs, markers: dict, min_counts: int = MIN_UNIT_COUNTS) -> dict:
-    """Marker scores of every unit: s (units x 4, rows summing to 1; NaN for an untyped unit), argmax and margin."""
+    """Marker scores of every unit: s (units x 4, rows summing to 1; NaN for an untyped unit), argmax and margin.
+    Sparse throughout: only the marker columns are scaled (a whole section's dense CP10k is never formed)."""
     C = sparse.csr_matrix(C_units, dtype=np.float64)
     tot = np.asarray(C.sum(1)).ravel()
-    E = cp10k(C)
-    mu = E.mean(0)
+    scale = sparse.diags(np.divide(1e4, tot, out=np.zeros_like(tot), where=tot > 0))
     idx = {g: i for i, g in enumerate(map(str, genes_gs))}
-    A = np.zeros((E.shape[0], len(CATS)))
+    A = np.zeros((C.shape[0], len(CATS)))
     for j, k in enumerate(CATS):
-        cols = [idx[g] for g in markers[k] if g in idx and mu[idx[g]] > 0]
-        if cols:
-            A[:, j] = (E[:, cols] / mu[cols]).mean(1)
+        cols = [idx[g] for g in markers[k] if g in idx]
+        if not cols:
+            continue
+        E = (scale @ C[:, cols]).tocsc()
+        mu = np.asarray(E.mean(0)).ravel()
+        keep = np.flatnonzero(mu > 0)
+        if len(keep):
+            A[:, j] = np.asarray((E[:, keep] @ sparse.diags(1.0 / mu[keep])).sum(1)).ravel() / len(keep)
     den = A.sum(1)
     ok = (tot >= min_counts) & (den > 0)
     S = np.full_like(A, np.nan)
