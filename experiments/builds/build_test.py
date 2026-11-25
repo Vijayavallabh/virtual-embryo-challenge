@@ -3441,6 +3441,8 @@ def _trend_strength_refusals(a) -> float | None:
     --trend-form (row R55's trend-form line) _trend_form_refusals decides alone, first."""
     form = getattr(a, "trend_form", None)
     if form is not None:
+        if getattr(a, "captain_ruling", None) == HEART_R74_ROW:  # row R74's four files, from its one table
+            return _r74_refusals(a, form)
         return _trend_form_refusals(a, form)
     raw = getattr(a, "trend_strength", None)
     ruling = getattr(a, "captain_ruling", None)
@@ -3517,7 +3519,7 @@ def _trend_strength_step(ctx: harness.BuildContext, strength: float, form: str |
 
 
 def _trend_strength_record(s: float, rec: dict, entry: str = "core_trim", ruling: str | None = None,
-                           order_row: str | None = None, form: str | None = None) -> dict:
+                           order_row: str | None = None, form: str | None = None, r74: str | None = None) -> dict:
     """What a heart search line file's record names: the option, the strength, the file, the ruling row and the order
     text, the command, the step, its budgets (B0's and the test budget, 0.5 x the strength day) and b0_trend's record
     without any cell number (_trend_record). On the organ cut (row R29) the file, row, order, command and step are
@@ -3525,6 +3527,8 @@ def _trend_strength_record(s: float, rec: dict, entry: str = "core_trim", ruling
     they are that line's, with `ruling` the row given on the command line, and the record also holds that row's first
     cell as TRIES.md has it (order_row). At file D's strength 1.5 they are row R52's, with R52's first cell
     (order_row). With `form` they are row R55's trend-form file's (_trend_form_record)."""
+    if r74 is not None:  # row R74's file: its own record, the table's strength string verbatim
+        return _r74_record(r74, s, rec, order_row)
     if form is not None:
         return _trend_form_record(form, s, rec, order_row)
     if s in HEART_FURTHER_FILES:
@@ -3667,6 +3671,117 @@ def _trend_form_record(form: str, s: float, rec: dict, order_row: str | None) ->
     return out
 
 
+# Row R74 (the captain's order of 2026-11-25, ruling, no run; decision log 2026-11-25 (jjjj)): the heart's refinement
+# round on OTK125's command (row R55's category file), four files, each that command with one change, the category
+# form's strength, taken from this one literal table in the row's order: the file and its option string as the row
+# names them (each a whole backticked string followed by " (FILE)"), each only with `--entry organ_scope`,
+# `--z-mode raw` and `--captain-ruling R74`, at the default seed on the test board. The strength is the table's string,
+# matched whole ("1.0", "1.5", "0.75", "1.75"; never R55's constant 1.25, HEART_TF_STRENGTH); the record is the file's
+# own (its name, strength string, command and order). The launcher experiments/builds/heart_r74_line.sh holds its own
+# literal case table, which tests/test_heart_r74_line.py holds equal to this one.
+HEART_R74_ROW = "R74"
+HEART_R74_TABLE = (
+    ("OTK10", "--trend-strength 1.0 --trend-form category"),
+    ("OTK15", "--trend-strength 1.5 --trend-form category"),
+    ("OTK075", "--trend-strength 0.75 --trend-form category"),
+    ("OTK175", "--trend-strength 1.75 --trend-form category"),
+)
+HEART_R74_FORM = "category"
+HEART_R74_BASE_FILE = "OTK125"
+HEART_R74_NAMED = ("--entry organ_scope", "--z-mode raw", f"--captain-ruling {HEART_R74_ROW}")
+
+
+def _r74_strength(name: str, option: str) -> str:
+    """The strength string of row R74's file `name`, read from its option string: refuses (ValueError) unless the
+    string is exactly `--trend-strength <S> --trend-form category`, S a decimal d.d or d.dd other than R55's 1.25, and
+    the name is OTK with S's digits (OTK10 for 1.0, OTK075 for 0.75)."""
+    words = option.split(" ")
+    if (len(words) != 4 or words[0] != "--trend-strength" or words[2:] != ["--trend-form", HEART_R74_FORM]
+            or re.fullmatch(r"[0-9]\.[0-9][0-9]?", words[1]) is None or words[1] == HEART_TF_STRENGTH_CHOICE
+            or name != "OTK" + words[1].replace(".", "")):
+        raise ValueError(f"row {HEART_R74_ROW}'s file {name} does not match its option string {option}")
+    return words[1]
+
+
+HEART_R74_FILES = {name: (option, _r74_strength(name, option)) for name, option in HEART_R74_TABLE}
+HEART_R74_BY_OPTION = {option: name for name, option in HEART_R74_TABLE}
+HEART_R74_STEMS = {name: f"T2heart_organ_ts{s.replace('.', '')}_tk" for name, (_, s) in HEART_R74_FILES.items()}
+HEART_R74_COMMAND = "heart --entry organ_scope {option} --z-mode raw --captain-ruling " + HEART_R74_ROW
+HEART_R74_ORDER = ("experiments/harness/TRIES.md row R74, the captain's order of 2026-11-25 (ruling, no run; decision "
+                   "log 2026-11-25 (jjjj); his named exception on the heart's scope and size for each of the four "
+                   "files) naming `--entry organ_scope`, `--z-mode raw`, `{option}` ({file}) and `--captain-ruling "
+                   "R74`: file {file}, OTK125's command (row R55's category file) with one change, the category "
+                   "form's strength {strength} in place of 1.25, then halved by experiments/builds/halve.py at seed "
+                   "1000001; nothing else changed")
+HEART_R74_STEP = ("row H28's strength-scaled b0_trend step with the category form (vec.trend_forms), OTK125's step, at "
+                  "strength {strength} (row R74's table) in place of 1.25: the form's log factors and momentum_shift's "
+                  "fallback damping (vec.harness.B0_DAMPING) both multiplied by it, before the size step, on OTK125's "
+                  "draw, organ-cut pool, count rule, size procedure, seed and stream [seed, 3]; the counts of every "
+                  "moved cell are drawn afresh")
+
+
+def _heart_r74_ordered(name: str, path: Path | None = None) -> bool:
+    """Whether TRIES.md holds exactly one row R74 whose first cell is the captain's order ("ruling, no run") naming
+    `--entry organ_scope`, `--z-mode raw`, file `name`'s option string and `--captain-ruling R74`, each as a whole
+    backticked string, the option string followed there by " (name)"."""
+    lines = [ln for ln in (path or TRIES_FILE).read_text(encoding="utf-8").splitlines()
+             if ln.startswith(f"| {HEART_R74_ROW} ")]
+    if len(lines) != 1 or name not in HEART_R74_FILES:
+        return False
+    first = lines[0][2:].split("|", 1)[0]
+    named = set(re.findall(r"`([^`]*)`", first))
+    option = HEART_R74_FILES[name][0]
+    return (first.startswith(f"{HEART_R74_ROW} (the captain's order") and "ruling, no run" in first
+            and all(s in named for s in (*HEART_R74_NAMED, option)) and f"`{option}` ({name})" in first)
+
+
+def _r74_refusals(a, form: str) -> float:
+    """--trend-form with --captain-ruling R74: exactly one of row R74's four files, or refused before anything is read.
+    Returns that file's strength, the table's (never R55's HEART_TF_STRENGTH)."""
+    option = f"--trend-strength {getattr(a, 'trend_strength', None)} --trend-form {form}"
+    name = HEART_R74_BY_OPTION.get(option)
+    if name is None:
+        sys.exit(f"--captain-ruling {HEART_R74_ROW} orders four files, each with exactly its own strings on "
+                 f"{HEART_R74_COMMAND.format(option='<OPTION>')}: "
+                 + "; ".join(f"{f} `{v[0]}`" for f, v in HEART_R74_FILES.items()))
+    command = HEART_R74_COMMAND.format(option=option)
+    what = f"row {HEART_R74_ROW}'s file {name}"
+    if (a.entry != "organ_scope" or a.z_mode != "raw" or a.expression != "b0" or a.trend or a.depth or a.herd
+            or a.cfm):
+        sys.exit(f"{what} is refused except as {command}: --entry organ_scope and --z-mode raw only, and with "
+                 "--expression copy, --trend, --depth, --herd and --cfm")
+    if a.board not in (None, TEST_BOARDS["heart"]) or a.seed != harness.BUILD_SEED_OFFSET + 1:
+        sys.exit(f"{what} is refused on another board or seed: it builds {command} at the default seed on the test "
+                 "board only (no dry run)")
+    if not _heart_r74_ordered(name):
+        sys.exit(f"{what} is refused: experiments/harness/TRIES.md must hold exactly one row {HEART_R74_ROW} whose "
+                 "first cell is the captain's order (\"ruling, no run\") naming "
+                 + ", ".join(f"`{s}`" for s in (*HEART_R74_NAMED[:2], option))
+                 + f" and `{HEART_R74_NAMED[2]}`, each as a whole backticked string, `{option}` followed there by "
+                 f"\" ({name})\"")
+    return float(HEART_R74_FILES[name][1])
+
+
+def _r74_file(a) -> str | None:
+    """Row R74's file this call builds (after _r74_refusals), else None (every other heart command)."""
+    if getattr(a, "trend_form", None) is None or getattr(a, "captain_ruling", None) != HEART_R74_ROW:
+        return None
+    return HEART_R74_BY_OPTION[f"--trend-strength {a.trend_strength} --trend-form {a.trend_form}"]
+
+
+def _r74_record(name: str, s: float, rec: dict, order_row: str | None) -> dict:
+    """Row R74's file's record: the category form's fields (R55's) under the file's own name, strength string,
+    command, order and step, and the row's first cell; no cell number."""
+    option, raw = HEART_R74_FILES[name]
+    return {"option": f"`{option}`", "form": HEART_R74_FORM, "strength": s, "strength_option": raw, "file": name,
+            "file_stem": HEART_R74_STEMS[name], "base_file": HEART_R74_BASE_FILE, "captain_ruling": HEART_R74_ROW,
+            "order": HEART_R74_ORDER.format(option=option, file=name, strength=raw), "order_row": order_row,
+            "command": HEART_R74_COMMAND.format(option=option), "step": HEART_R74_STEP.format(strength=raw),
+            "rule": rec["rule"], "budget_days": rec["budget_days"], "test_budget_days": s * rec["budget_days"],
+            "trend": _trend_record(rec["trend"]), **{k: rec[k] for k in HEART_TF_RECORD[HEART_R74_FORM]},
+            "types": rec["types"], "shifted": rec["shifted"]}
+
+
 def build_heart(a) -> dict:
     if getattr(a, "insitu_chords", None) is not None or getattr(a, "trend_form", None) == HEART_OIC_FORM:
         return _build_heart_oic(a)  # file OIC125 (row R70): its own path, refused unless exactly its command
@@ -3674,10 +3789,12 @@ def build_heart(a) -> dict:
         return _build_heart_xpc(a)
     strength = _trend_strength_refusals(a)
     form = getattr(a, "trend_form", None)  # row R55's trend-form line (its refusals passed); None on every other
+    r74 = _r74_file(a)  # row R74's file (its refusals passed), else None
     # file D's two further strengths and its strength 1.5: the ruling row's first cell for the record, read once its
     # check has passed (and row R55's, whose files take strength 1.25)
     order_row = (_ruling_first_cell(a.captain_ruling)
-                 if strength in HEART_FURTHER_FILES or strength == HEART_OTS15_STRENGTH else None)
+                 if r74 is not None or strength in HEART_FURTHER_FILES or strength == HEART_OTS15_STRENGTH
+                 else None)
     board, dry = _board("heart", a.board)
     genes = board.genes
     if a.trend and (a.entry == "s2" or a.depth or a.herd or a.cfm):
@@ -3786,7 +3903,7 @@ def build_heart(a) -> dict:
             **({"cfm_step": t2_build.CFM_RULE} if a.cfm else {}),
             **({"trend": _trend_record(trend_rec)} if a.trend else {}),
             **({"trend_strength": _trend_strength_record(strength, ts_rec, a.entry, a.captain_ruling, order_row,
-                                                         form)}
+                                                         form, r74)}
                if strength is not None else {}),
             **({"expression": "copy"} if copy else {}),
             **({"z_mode": z_mode} if z_mode is not None else {}),
@@ -4958,7 +5075,15 @@ def build_parser() -> argparse.ArgumentParser:
                                 + HEART_TF_COMMANDS["category"].replace("category", "<F>")
                                 + f" at the default seed on the test board, while row {HEART_TF_ROW}'s first cell is "
                                 "the captain's order naming --entry organ_scope, --trend-strength 1.25, the form and "
-                                f"--captain-ruling {HEART_TF_ROW} as whole backticked strings")
+                                f"--captain-ruling {HEART_TF_ROW} as whole backticked strings. Row {HEART_R74_ROW}'s "
+                                "four files (off by default): "
+                                + HEART_R74_COMMAND.format(option="<OPTION>")
+                                + " with <OPTION> one of "
+                                + ", ".join(f"{v[0]} ({f})" for f, v in HEART_R74_FILES.items())
+                                + f" (its table), at the default seed on the test board, while row {HEART_R74_ROW}'s "
+                                "first cell is the captain's order naming --entry organ_scope, --z-mode raw, the "
+                                f"option string followed by its file and --captain-ruling {HEART_R74_ROW} as whole "
+                                "backticked strings")
         if name == "embryo":
             p.add_argument("--method", choices=("pseudobulk_shift", *EMBRYO_T_POS), required=True,
                            help="fgw = s1; fgw_shape0 = the s2 of docs/S2_RULES.md (E7.5's geometry)")
