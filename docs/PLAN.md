@@ -14322,3 +14322,16 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     R58's file T1_s2rcMSBm20 is built twice with one sha256 by experiments/builds/t1_lm_m20_line.sh. Fifteen T1 tries,
     466 to 480. Row R60's `T1_s2rcMS20m20` now waits on one condition only: MS20m10's headline strictly above MS20's.
     LM16 (the captain's word, entry (t)) and MSBm20 are built together in one run.
+- 2026-11-25 (w), the heart trend-form files OTK125 and OTP125 are built, before any score (state at 03:38 UTC,
+  2026-11-25). Written by the AI assistant, which designed none of it and is recused on the heart's scope and size.
+  - **The build.** `experiments/builds/heart_trend_line_h.sh 8a8bc3a... h2` in `~/v/scratch/h29b-wt` on the branch
+    `campaign/heart-tf-build`, clean, after a traced refusal and a dry run of its gate checks on the real records; the
+    identity commands gave the recorded bytes; each file built twice with one sha256; the local copies checked:
+    **`T2heart_organ_ts125_tk_half.h5ad`** (OTK125) 9835fa5d47d7...; **`T2heart_organ_ts125_tp_half.h5ad`** (OTP125)
+    17df759f184d... (full sha256 in the rules note and the record).
+  - **A records-only fix before it.** Run h1 at e17fd4a stopped at its gate (exit 84) before any build: the launcher
+    reads G0's record at `experiments/harness/results/h35_heart_trend_forms/g0.json`, while the screen wrote it to
+    `g0/g0.json`. A byte-identical copy was committed at the path the launcher reads, on the branch (8a8bc3a) and on
+    main (3f41ab3); no code changed.
+  - **Their standing.** Due now (row R55; the board keeps its best headline). Data used: released Task 2 heart stages
+    and the unlocked E10.5 validation file only; no outside data.

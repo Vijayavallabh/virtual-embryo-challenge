@@ -3514,3 +3514,16 @@ twice with one sha256. **The file:** `runs/manual_upload/T2embryo_s2x_ovt23.h5ad
 753900fab42738a8695d8048645cccd953ded07cd15539101964c26259aad22f (build record
 `experiments/builds/results/embot23_045a92e_o2.txt`). Added before any score of it. The AI assistant is recused on the
 embryo's occupancy term and shape forms and gives no view. Data used: released challenge data only; no outside data.
+
+## Note of 2026-11-25: the heart trend-form files OTK125 and OTP125 are built (row R55; screen H35; decision log 2026-11-25 (w))
+
+Screen H35 (run commit 53fc267) kept the category and portion forms and dropped or idled the other two. At the clean
+commit 8a8bc3a (the screen's run commit plus two records-only commits), on `~/v/vec-campaign`'s worktree
+`~/v/scratch/h29b-wt`, the identity commands rebuilt the recorded bytes and each file was built twice with one sha256
+and passed the format check. **The files:** `runs/manual_upload/T2heart_organ_ts125_tk_half.h5ad` (OTK125), sha256
+9835fa5d47d7021760beb2056ce44c2c846ded6fc31dacf64bbb2d9f0f7d1b54;
+`runs/manual_upload/T2heart_organ_ts125_tp_half.h5ad` (OTP125), sha256
+17df759f184d2d95195fd1272f7be166f59687aa6d63e404b2671e737ce697b5 (build record
+`experiments/builds/results/hearth_8a8bc3a_h2.txt`). Added before any score of either. The AI assistant is recused on
+the heart's scope and size and gives no view. Data used: released Task 2 heart stages and the unlocked E10.5
+validation file only; no outside data.

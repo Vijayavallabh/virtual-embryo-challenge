@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-25, 02:16 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-25, 03:38 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -16,13 +16,13 @@ decision log 2026-11-24 (pp)), every due file can go now and nothing waits for r
 file, by its rule. Between boards the captain decides; by the challenge's formula a point on T1 or T3 counts twice a
 point on the heart or the embryo board.
 
-**Due now (11), in the order of each board's table below:**
+**Due now (13), in the order of each board's table below:**
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcMSBm10.h5ad`,
   `T1_s2rcB25H20.h5ad`, `T1_s2rcMSBH10.h5ad`
 - T3: `T3_c2_s2_dd.h5ad`, `T3_c2_s2_ddh.h5ad`, `T3_c2_s2_dg.h5ad` (together)
 - Embryo: none (every built embryo file is uploaded)
-- Heart: `T2heart_organ_ts15_half.h5ad` (OTS15)
+- Heart: `T2heart_organ_ts15_half.h5ad` (OTS15), `T2heart_organ_ts125_tk_half.h5ad` (OTK125), `T2heart_organ_ts125_tp_half.h5ad` (OTP125)
 
 **Waiting on a score (1):** `T1_s2rcA20.h5ad`, in the last-on-T1 list below.
 
@@ -39,11 +39,12 @@ words "yes, T3_c2_s2_g2 ahead of" and a queued file's name (for example `T3_k23_
 `T1_s2rcB25MSH05` is now to be coded and built: `T1_s2rcB25H05` and `T1_s2rcB25MS` each scored strictly above the 2.5
 file (row R46; decision log 2026-11-25 (h)). Heart: The composition files of row R50 are not built: the line ended at
 its screening. Step-change round, second wave (decision log 2026-11-24 (www)), each built only after its gate or read
-passes: T1 `T1_s2rcMSB_LM16` (R54) and `T1_s2rcMSBm20` (R58); heart OTK125, OTX125, OTW125, OTP125 (R55). The embryo
-RS file (row R57) is not built: its read E57 stopped at step 0 (decision log 2026-11-25 (a)). The heart XPC file
-OXP125 (row R56) is not built: its read H36 did not pass (decision log 2026-11-25 (f)). T1 line 12 (row R60, decision
-log 2026-11-25 (i)): `T1_s2rcMS20d10`, `T1_s2rcMS20H05`, `T1_s2rcMS20d20`, `T1_s2rcMS20m10`, `T1_s2rcMS20d15`,
-`T1_s2rcMS20H10`, `T1_s2rcMS20m20`, as gated. The embryo file Ot23 (row R59) is built (decision log 2026-11-25 (l)).
+passes: T1 `T1_s2rcMSB_LM16` (R54) and `T1_s2rcMSBm20` (R58). The embryo RS file (row R57) is not built: its read E57
+stopped at step 0 (decision log 2026-11-25 (a)). The heart XPC file OXP125 (row R56) is not built: its read H36 did
+not pass (decision log 2026-11-25 (f)). T1 line 12 (row R60, decision log 2026-11-25 (i)): `T1_s2rcMS20d10`,
+`T1_s2rcMS20H05`, `T1_s2rcMS20d20`, `T1_s2rcMS20m10`, `T1_s2rcMS20d15`, `T1_s2rcMS20H10`, `T1_s2rcMS20m20`, as gated.
+The embryo file Ot23 (row R59) is built (decision log 2026-11-25 (l)). Heart (row R55): screen H35 kept OTK125 and
+OTP125, now built (decision log 2026-11-25 (w)); OTX125 (DROP) and OTW125 (IDLE) are not built.
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)), and twenty-one on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy), (aaa), (bbb),
@@ -113,12 +114,15 @@ Every built embryo file is uploaded, W and Ot23 included, and O holds the board'
 Data used, for every heart file: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data.
 
 `T2heart_organ_ts125_half.h5ad` (OTS125) holds the board's best; the fourth line is spent.
-`T2heart_organ_ts15_half.h5ad` (OTS15, row R52) is built and due. The full-trim file `T2heart_core_ts10_half.h5ad` is
-skipped by the captain's word of 2026-11-24 and stands in the skipped section.
+`T2heart_organ_ts15_half.h5ad` (OTS15, row R52) is built and due. The trend-form files OTK125 and OTP125 (row R55; its
+screen H35 kept these two of four) are built and due. The full-trim file `T2heart_core_ts10_half.h5ad` is skipped by
+the captain's word of 2026-11-24 and stands in the skipped section.
 
 | Order | File | sha256 | Condition |
 |---|---|---|---|
 | 1 | `T2heart_organ_ts15_half.h5ad` (OTS15: D's command at trend strength 1.5, halved) | `f818931834d08a6906e010e8af9f077ba15be779aba8965cbaa880a9bdf1196c` | none (row R52) |
+| 2 | `T2heart_organ_ts125_tk_half.h5ad` (OTK125: OTS125's command with the trend's direction by category, halved) | `9835fa5d47d7021760beb2056ce44c2c846ded6fc31dacf64bbb2d9f0f7d1b54` | none (row R55; screen H35 kept it) |
+| 3 | `T2heart_organ_ts125_tp_half.h5ad` (OTP125: OTS125's command with the trend's direction by portion, halved) | `17df759f184d2d95195fd1272f7be166f59687aa6d63e404b2671e737ce697b5` | none (row R55; screen H35 kept it) |
 
 ## Skipped by the captain's words: not uploaded unless the captain says otherwise
 
