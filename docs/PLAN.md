@@ -15003,3 +15003,12 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     before the captain is asked (`T3_MOON5_check2.md`).
   - **Exposure hygiene.** Ordering statements found in `T3_HEDGE_challenge.md` (four places) and relayed in
     `T3_MOON5_design.md` (line 3) were redacted from those working files; no value was involved.
+- 2026-11-25 (yyy), the captain reports one T1 headline and the rules are applied by their letter (state at 19:04 UTC,
+  2026-11-25). Written by the AI assistant, which records the headline only.
+  - **The paste:** T1:test `T1_s2rcMSBm15.h5ad` 74.26 (shown as submitted 2026-11-25 19:00). Its sha256 on disk
+    matches its sheet row. The paste's per-metric lines, rank and file size are not recorded or used.
+  - **Each rule by its letter.** Below the board's best (`T1_s2rcMSBm10.h5ad`, 74.75). Row R67 sends its three files
+    at once and sets no condition on their headlines: nothing follows. `T1_s2rcMSBm125.h5ad` and `T1_s2rcMSBm075.h5ad`
+    stay due.
+  - **The sheet's count** of files reported on 2026-11-25 now includes entry (www)'s four, which that entry left out.
+  - **Standing unchanged:** 204.865.
