@@ -2,6 +2,23 @@
 
 ## Current Objective
 
+- **State at 2026-11-25, 21:55 UTC (newest; it supersedes everything below where they differ).** Decision log through
+  2026-11-25 (hhhh); next (iiii), or (a) on 2026-11-26. Ruling rows through R73; next R74. Tries: T3 89 (N65 the
+  round-8 designer's breach, 85; K31, 86 to 89). The last upload is 2026-11-26 11:59 UTC.
+- **STANDING 204.865:** T1 74.75 `T1_s2rcMSBm10.h5ad`; T3 63.94 `T3_c2_s2.h5ad`; heart 62.45
+  `T2heart_organ_ts125_tk_half.h5ad`; embryo 69.9 `T2embryo_s2x_ov.h5ad`. `docs/UPLOAD_SHEET.md`: 11 T1 files due (row
+  R73's four, MSBm075 of R67, and six B2/B25 search files); nothing due on T3, heart or embryo.
+- **CLOSED TODAY, nothing built:** heart WBH (H37, STOP at G0), embryo BF (E59, STOP), heart OIC125 (H38, STOP at G0:
+  2 of 72 heart regions confirmed, both sources dropped), the T3 sign cube (K31, STOP; its first run INCOMPLETE on a
+  start-file race, rerun after a code fix per K18's rule); round 8's MOON3 and MOON4 struck at challenge. Built and
+  handed over: R67's three T1 files, R68's four hedges (all four scored below their boards' bests), R73's four T1
+  files.
+- **DGX state:** `~/v/scratch/t1line-wt` at ead4f34 (T1 builds); `~/v/vec-campaign-c` at b2e0c6d (T3; untracked K31
+  reading files there equal main's); `~/v/vec-campaign` at b282384 (BF's reading files there equal main's);
+  `~/v/scratch/h29b-wt` at 9864866 with pyarrow installed (its G0 records equal main's). Files moved aside, never
+  deleted: `~/v/scratch/bf_moved/`, `~/v/scratch/oic_moved/`. The OIC125 fetch (about 57 GB) sits in
+  `~/v/vec-ext/heart_oic` with its MANIFEST (committed as `experiments/heart_ext/results/fetch_MANIFEST.json`). GPUs 3
+  to 6 run another job's vLLM server; leave it.
 - **State at 2026-11-25, 18:00 UTC (newest; it supersedes everything below where they differ).** Decision log through
   2026-11-25 (qqq); next (rrr). Ruling rows through R71; next R72. Main at c15e09d plus this bullet. The last upload
   is 2026-11-26 11:59 UTC.
