@@ -14161,3 +14161,16 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     de_direction is 1e-4 (the engineer measured float32 summation-order shifts of up to 1.7e-5 under a row
     permutation, so 1e-9 would void every run); the builder takes the captain's ruling R57 instead of a test flag; a
     pass builds the file under R57. Code merged at 21b5ddc after an independent review.
+- 2026-11-24 (yyy), the seven files of T1's line 10 are built, before any score (state at 00:44 UTC, 2026-11-25).
+  Written by the AI assistant, which designed none of it.
+  - **The build.** `experiments/builds/t1_r51_line.sh 0cdcc6f... r1 R51` in `~/v/scratch/t1line-wt`, clean, after a
+    traced refusal; the nineteen identity commands gave the recorded bytes; each new file built twice with one sha256:
+    **`T1_s2rcMS20.h5ad`** 629d3a1cffa8...; **`T1_s2rcMS30.h5ad`** 01fe1eb1956b...; **`T1_s2rcMSBd10.h5ad`**
+    835e68fb9c39...; **`T1_s2rcMSBd15.h5ad`** 7d2745d884db...; **`T1_s2rcMSBH05.h5ad`** f8bbec699035...;
+    **`T1_s2rcMSBH10.h5ad`** 1cfdfc54d838...; **`T1_s2rcMSBm10.h5ad`** a0c46efac87d... (full sha256 in the rules note
+    and the record).
+  - **Their standing (row R51's gates, headline only).** Due now: `T1_s2rcMS20.h5ad`, `T1_s2rcMSBm10.h5ad` and
+    `T1_s2rcMSBd10.h5ad` (its gate met: candidate C's file scored above candidate B's). Waiting: `T1_s2rcMSBH05.h5ad`
+    (not if B25H05 does not beat the 2.5 file), `T1_s2rcMS30.h5ad` (if MS20 beats MSB and B25MS beats MS20),
+    `T1_s2rcMSBd15.h5ad` (if MSBd10 beats MSB), `T1_s2rcMSBH10.h5ad` (if MSBH05 beats MSB). Data used: released
+    challenge data and the outside heart atlas on recomputed groups (GEO GSE193346, register row X002).

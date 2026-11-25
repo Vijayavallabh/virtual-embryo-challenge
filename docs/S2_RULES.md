@@ -3465,3 +3465,20 @@ Embryo: `T2embryo_s2x_ovrs.h5ad` (row R57: "Yes to T2embryo_s2x_ovrs.h5ad (RS), 
 `--neighbourhood run_sorted`; read E57) and `T2embryo_s2x_ovt23.h5ad` (row R59: "Yes to T2embryo_s2x_ovt23.h5ad
 (Ot23): my named exception on the embryo's overlay form for this file, bound to its gate G1."; `--mix-lean later`;
 gate E58). The AI assistant, recused on the embryo's occupancy term and shape forms, gave no view on R59.
+
+## Note of 2026-11-25: the files of T1's line 10 are built (row R51; decision log 2026-11-24 (yyy))
+
+Merged at 85601c3 after an independent review that found no blocker; at the clean commit 0cdcc6f, on
+`~/v/vec-campaign-d`'s worktree, the nineteen identity commands rebuilt the recorded bytes, each new command with its
+one setting at the combined-momentum file's value gave that file's bytes, and each new file was built twice with one
+sha256 and passed the format check. **The files:** `runs/manual_upload/T1_s2rcMS20.h5ad`, sha256
+629d3a1cffa8151f0345a169ba97420e4ee3b43e379bc3bf7d33ab947dcb62ef; `runs/manual_upload/T1_s2rcMS30.h5ad`, sha256
+01fe1eb1956ba9da83116e674a2b06588fb2f1ec494975eba5f1ed1662cdf53c; `runs/manual_upload/T1_s2rcMSBd10.h5ad`, sha256
+835e68fb9c390e6271e0ea8ca2ddfb5431f2f6d333b739fe17ef0102a0989ae8; `runs/manual_upload/T1_s2rcMSBd15.h5ad`, sha256
+7d2745d884dba02d94db6dc01133d9971c52aa63fe5191aca60473a40b7a8c75; `runs/manual_upload/T1_s2rcMSBH05.h5ad`, sha256
+f8bbec6990354d42ed1b754d795a9ff617b2ee6c40a2d5376a274486e2f77c07; `runs/manual_upload/T1_s2rcMSBH10.h5ad`, sha256
+1cfdfc54d838e03294c444dd284c319724519eb731349667e5bf7f4e79f79250; `runs/manual_upload/T1_s2rcMSBm10.h5ad`, sha256
+a0c46efac87deb3756b3ca489a215694640707ea8a8053e254b8a86ee9d7d964 (build record
+`experiments/builds/results/t1r51_0cdcc6f_r1.txt`). Added before any score of any of them; no T1 headline beyond those
+of the decision log through 2026-11-24 (lll) had reached the main session at this note's commit. Data used: released
+challenge data and the outside heart atlas on recomputed groups (GEO GSE193346, register row X002).
