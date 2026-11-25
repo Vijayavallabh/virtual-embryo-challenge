@@ -163,18 +163,95 @@ class Grid:
 
 
 # ---- MOSTA bin1 GEM -----------------------------------------------------------------------------------------------
-def _gem_header(text) -> list[str]:
-    while True:
-        line = text.readline()
-        if not line:
-            raise Refused("a GEM file with no header line")
-        if not line.startswith("#"):
-            return line.rstrip("\r\n").split("\t")
+HEADER_STARTS = tuple(c.encode() + b"\t" for c in GENE_COLS)
+
+
+class _GemFilter(io.RawIOBase):
+    """The decompressed GEM text with every comment line (starting with '#') and every header line (starting with a
+    gene-column name and a tab) removed wherever it occurs, each counted, never an error. The first header's columns
+    are kept; a later header must name the same columns (the UMI-count column may be MIDCount or MIDCounts), else the
+    file is refused. Whole lines only: blocks are cut at their last newline. Anything else that is not a data line is
+    left for the numeric parse to refuse."""
+
+    def __init__(self, gz, block: int = 1 << 24):
+        super().__init__()
+        self.gz, self.block = gz, int(block)
+        self.carry, self.buf, self.pos, self.eof = b"", b"", 0, False
+        self.columns: list[str] | None = None
+        self.comments = self.headers = 0
+
+    def readable(self):
+        return True
+
+    def _same(self, cols: list[str]) -> bool:
+        return len(cols) == len(self.columns) and all(
+            a == b or (a in COUNT_COLS and b in COUNT_COLS) for a, b in zip(cols, self.columns, strict=True))
+
+    def _clean(self, chunk: bytes) -> bytes:
+        special = (chunk.startswith(b"#") or b"\n#" in chunk or chunk.startswith(HEADER_STARTS)
+                   or any(b"\n" + h in chunk for h in HEADER_STARTS))
+        if not special:
+            if self.columns is None and chunk.strip():
+                raise Refused("a data line before the first header line")
+            return chunk
+        keep = []
+        for line in chunk.split(b"\n"):
+            if line.startswith(b"#"):
+                self.comments += 1
+            elif line.startswith(HEADER_STARTS):
+                cols = line.rstrip(b"\r").decode("utf-8", "replace").split("\t")
+                if self.columns is None:
+                    self.columns = cols
+                elif not self._same(cols):
+                    raise Refused(f"a header line names other columns ({cols}) than the first ({self.columns})")
+                self.headers += 1
+            else:
+                if self.columns is None and line.strip():
+                    raise Refused("a data line before the first header line")
+                keep.append(line)
+        return b"\n".join(keep)
+
+    def _fill(self) -> bool:
+        """The next cleaned block into the buffer; False at the end of the file."""
+        while not self.eof:
+            data = self.carry + self.gz.read(self.block)
+            if len(data) == len(self.carry):  # nothing more to read
+                self.eof, chunk, self.carry = True, data, b""
+                if chunk and not chunk.endswith(b"\n"):
+                    chunk += b"\n"
+            else:
+                cut = data.rfind(b"\n") + 1
+                if cut == 0:  # no newline yet: read on
+                    self.carry = data
+                    continue
+                chunk, self.carry = data[:cut], data[cut:]
+            self.buf, self.pos = self._clean(chunk), 0
+            if self.buf:
+                return True
+        return False
+
+    def first_header(self) -> list[str]:
+        """Reads (and keeps) cleaned text until the first header line has been seen; refused if data comes first."""
+        while self.columns is None:
+            if not self._fill():
+                raise Refused("a GEM file with no header line")
+        return self.columns
+
+    def readinto(self, b):
+        while self.pos >= len(self.buf):
+            if not self._fill():
+                return 0
+        n = min(len(b), len(self.buf) - self.pos)
+        b[:n] = self.buf[self.pos: self.pos + n]
+        self.pos += n
+        return n
 
 
 def mosta_units(path: Path, panel: list[str], sha256: str | None = None, chunk_rows: int = 5_000_000,
-                bin_dnb: int = fetch_oic.MOSTA_BIN_DNB) -> dict:
-    """One MOSTA section's units at bin `bin_dnb` (the gene, x, y and count columns only)."""
+                bin_dnb: int = fetch_oic.MOSTA_BIN_DNB, block: int = 1 << 24) -> dict:
+    """One MOSTA section's units at bin `bin_dnb` (the gene, x, y and count columns only). Comment lines and every
+    header line, wherever they occur, are skipped and counted (comment_lines, header_lines); the UMI-count column may
+    be MIDCount or MIDCounts; x, y and the count must be integers on every other line, else the file is refused."""
     import pandas as pd
 
     path = Path(path)
@@ -182,22 +259,32 @@ def mosta_units(path: Path, panel: list[str], sha256: str | None = None, chunk_r
     with open(path, "rb") as raw:
         hr = _Hashing(raw)
         with gzip.GzipFile(fileobj=io.BufferedReader(hr, 1 << 22)) as gz:
-            text = io.TextIOWrapper(gz, encoding="utf-8", newline="")
-            cols = _gem_header(text)
+            flt = _GemFilter(gz, block)
+            try:
+                cols = flt.first_header()
+            except Refused as e:
+                raise Refused(f"{path.name}: {e}") from e
             gene = next((c for c in GENE_COLS if c in cols), None)
             cnt = next((c for c in COUNT_COLS if c in cols), None)
             if gene is None or cnt is None or "x" not in cols or "y" not in cols:
                 raise Refused(f"{path.name}: columns {cols} lack a gene, x, y or UMI-count column")
-            reader = pd.read_csv(text, sep="\t", header=None, names=cols, usecols=[gene, "x", "y", cnt],
-                                 chunksize=chunk_rows, dtype={gene: "category", "x": np.int64, "y": np.int64,
-                                                              cnt: np.int64}, engine="c")
-            for df in reader:
-                cat = df[gene].cat
-                look = np.array([grid.pidx.get(str(c), -1) for c in cat.categories], np.int64)
-                codes = np.asarray(cat.codes, np.int64)
-                gi = np.where(codes >= 0, look[np.maximum(codes, 0)], -1) if len(look) else np.full(len(df), -1)
-                grid.add_indexed(gi, df["x"].to_numpy() // bin_dnb, df["y"].to_numpy() // bin_dnb,
-                                 df[cnt].to_numpy())
+            text = io.TextIOWrapper(io.BufferedReader(flt, 1 << 22), encoding="utf-8", newline="")
+            try:
+                reader = pd.read_csv(text, sep="\t", header=None, names=cols, usecols=[gene, "x", "y", cnt],
+                                     chunksize=chunk_rows, dtype={gene: "category", "x": np.int64, "y": np.int64,
+                                                                  cnt: np.int64}, engine="c")
+                for df in reader:
+                    cat = df[gene].cat
+                    look = np.array([grid.pidx.get(str(c), -1) for c in cat.categories], np.int64)
+                    codes = np.asarray(cat.codes, np.int64)
+                    gi = (np.where(codes >= 0, look[np.maximum(codes, 0)], -1) if len(look)
+                          else np.full(len(df), -1))
+                    grid.add_indexed(gi, df["x"].to_numpy() // bin_dnb, df["y"].to_numpy() // bin_dnb,
+                                     df[cnt].to_numpy())
+            except Refused as e:
+                raise Refused(f"{path.name}: {e}") from e
+            except (ValueError, TypeError, pd.errors.ParserError) as e:
+                raise Refused(f"{path.name}: a line that is not data, a comment or a header ({e})") from e
             while gz.read(1 << 22):  # to the end, so the hash covers every byte
                 pass
         buf = bytearray(1 << 22)
@@ -207,7 +294,8 @@ def mosta_units(path: Path, panel: list[str], sha256: str | None = None, chunk_r
     if sha256 is not None and got != sha256:
         raise Refused(f"{path.name}: sha256 {got} is not the manifest's {sha256}")
     out = grid.finish()
-    out.update(unit_um=fetch_oic.MOSTA_BIN_UM, sha256=got, source="X022")
+    out.update(unit_um=fetch_oic.MOSTA_BIN_UM, sha256=got, source="X022", comment_lines=flt.comments,
+               header_lines=flt.headers)
     return out
 
 
