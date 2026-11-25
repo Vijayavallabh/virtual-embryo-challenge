@@ -14661,3 +14661,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     under the captain's waiver: the pathway-database file, about 0.15 to beat C2, typical +0.4, best +2.5, expected
     about zero, with GO and Reactome at 0.06 and 0.07 odds of an organiser counting the use as forbidden (entry (tt));
     it goes to the captain as one priced question.
+- 2026-11-25 (vv), the captain declines the T3 pathway-database file (state at 14:32 UTC, 2026-11-25). Written by the
+  AI assistant.
+  - **The question** gave the challenged price (about 0.15 to beat C2, typical +0.4, best +2.5, expected about zero),
+    the surviving sources' odds (GO 0.06, Reactome mouse events 0.07), the organisers' ruling of 2026-10-15 quoted,
+    and that a forbidden-use finding has no stated sanction. **The captain's pick, verbatim:** "Don't build
+    (Recommended)". PW1 and PW2 are not coded or built; the fourth round ends with no file on T3, the heart or the
+    embryo.
