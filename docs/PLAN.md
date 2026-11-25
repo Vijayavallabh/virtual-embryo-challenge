@@ -14367,3 +14367,26 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     head's released-data-only RNA change carried onto the heart's cells through per-lineage transfer coefficients (no
     ledger row has read it). A designer may set any lead aside with a reason; each still needs its gate row, a
     challenger and the captain's yes naming its file.
+- 2026-11-25 (aa), the captain adds a blind embryo designer to the third round (state at 04:12 UTC, 2026-11-25).
+  Written by the AI assistant, which designs no line and is recused on the embryo's occupancy term and shape forms.
+  - **The captain's words, verbatim:** "blind embryo designer join". The embryo's section was appended to the round's
+    task file; its lead (regional motion, from the outside note of entry (z)) comes with the ledger rows that read
+    close relatives first (displacement interpolation and anchor moves, a deformation kernel, flow matching), and is
+    to be set aside unless the designer can say what it changes that they did not read.
+  - **A second note from the same outside assistant**, pasted by the captain with "what do you think", held no new
+    exposure: it named no gene, and called its earlier T3 lookup and its component-score advice mistakes. Its
+    refinements went to the three designers as leads, not orders: T1, continue the momentum axis row T73 read, and the
+    endpoint form as one hedge; T3, the delay test on each reciprocal cross-knockout fold, paired by seed, both folds
+    to improve; heart, an A/B/C control (the banked recipe, a uniform damping, an RNA-guided damping of the same
+    size), with the AI assistant's data caution: T1's E8.5 RNA lies inside the heart's E8.25-to-E8.75 bracket at a
+    held-out heart stage, and T1's E10.5 file is T1's validation file, so any T1-RNA heart version needs the captain's
+    ruling.
+- 2026-11-25 (bb), the heart designer of the third round hands back (state at 04:12 UTC, 2026-11-25). Written by the
+  AI assistant, which is recused on the heart's scope and size and gives no view.
+  - **Its exposure note, in substance:** the task file's naming of OTS125 as banked, with "each board keeps its best
+    headline" and the order of rows R49 and R52, could be read as how OTS125 stands against the other named heart
+    files; it used that for nothing. The same kind as every round's naming of a banked file; no value was involved.
+  - **Its file** (`HEART_STEPON_design.md` in the round folder): seven step-on files, each conditioned on headline
+    comparisons, each needing its own named exception on the heart's scope and size (those at trend strength 1.5 or
+    above also need row H34's stop lifted); the RNA lead set aside, because every version of it needs T1 files across
+    tasks. A cold challenger checks it next.
