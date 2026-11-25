@@ -14963,3 +14963,13 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     **`T1_s2rcMSBm15.h5ad`** 6d5b80d709f9...; **`T1_s2rcMSBm075.h5ad`** 05f717fa9035.... All three due now, sent at
     once (row R67). Data used: released challenge data and the outside heart atlas on recomputed groups (GEO
     GSE193346, register row X002).
+- 2026-11-25 (vvv), the heart's world-blur file WBH (row R69): its gate H37 stops at G0; nothing is built (state at
+  18:50 UTC). Written by the AI assistant, recused on the heart's scope and size; it designed none of it.
+  - **Before the read.** The code (campaign/heart-wbh, be624b8) had an independent review with no blocker
+    (`wbh_review.json`: the held file passes the format check; no scored term reads row totals or renormalises X; the
+    engineer's departure on fix 2 is faithful to it). Merged at 684559c with the guard tests (262 and 1 passed); row
+    H37 placed at 5ab30af before any step; the check step dry-run on the DGX and the refusal path traced.
+  - **The run** (`run_h37.sh 5ab30af... wbh1` in `~/v/scratch/h29b-wt`): check, tests and the banked file's identity
+    rebuild exit 0; G0 exit 3. **The outcome statement, quoted:** "OUTCOME H37: STOP at G0: G00's cut (1 - e^(-c/2)) /
+    2 on E9.5 is under 0.10." G0 is target-free (the released E9.5) and not a try: no try is counted and WBH is not
+    built. The engineer and the cold challenge had both called a STOP at G0 likely.

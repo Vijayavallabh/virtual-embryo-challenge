@@ -1,0 +1,17 @@
+Row H37's G0 (commit 5ab30af7a776e790ec7885f1c34da41fecf1f191): target-free and not a try. The world prior from row R69's five files (no E10.5 cell), G00 on the released E9.5, and the blur of the banked half at the file's seed, of which only words are written.
+Prior: pairs used ['E8.75 WT-G4r1', 'E8.75 WT-G4r2', 'E8.75 G4r1-G4r2', 'E9.5 WT-Mab21l2']; groups per pair {'E8.75 WT-G4r1': [np.str_('Ectoderm'), np.str_('Endoderm'), np.str_('NCC'), np.str_('Neural')], 'E8.75 WT-G4r2': [np.str_('Ectoderm'), np.str_('Endoderm'), np.str_('NCC'), np.str_('Neural')], 'E8.75 G4r1-G4r2': [np.str_('Ectoderm'), np.str_('Endoderm'), np.str_('NCC'), np.str_('Neural')], 'E9.5 WT-Mab21l2': [np.str_('Ectoderm'), np.str_('Endoderm'), np.str_('NCC')]}; flagged genes (unexpressed in every used group, given the median spread) 33 of 500; median s 0.3431; KO-against-WT median spread 0.3731 against the replicate pair's 0.1890.
+G00 (E9.5, the scorer's geometry): c 0.0066, cut 0.0016 (bar 0.10).
+G0 pairs: holds.
+G0 median s: holds.
+G0 ko against replicate: holds.
+G0 g00: FAILS: G00's cut (1 - e^(-c/2)) / 2 on E9.5 is under 0.10.
+G0 banked count recovery: holds.
+G0 banked pseudobulk rank: holds.
+G0 banked pseudobulk gap: holds.
+G0 banked dp rank: holds.
+G0 banked library: holds.
+G0 banked changed cells: holds.
+G0 banked antithetic: holds.
+G0 STOP.
+OUTCOME H37: STOP at G0: G00's cut (1 - e^(-c/2)) / 2 on E9.5 is under 0.10.
+A hedge's gate on one truth, not evidence of development. What follows: nothing is built under row R69; the line ends there, with no second read of this blur under this or another row.
