@@ -14343,3 +14343,27 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     expected, not the targets' jumps; no view from the AI assistant on the heart part. **The captain's pick,
     verbatim:** "T1 and heart round" (the option: one blind designer and challenger each for T1 and the heart).
     Nothing is built or changed by this answer; each file still needs the captain's yes naming it.
+- 2026-11-25 (y), the captain adds T3 to the third design round (state at 03:49 UTC, 2026-11-25). Written by the AI
+  assistant, which designs no line.
+  - **The captain's words, verbatim:** "task 3 also included", after a side agent's note that the round's question had
+    not offered T3. The round now has three blind designers (T1, T3, the heart), each with a cold challenger. T3's
+    depth is a lever closed after an exposure: a T3 file that moves it follows the pre-set rule (a change follows from
+    released data alone, or is declined) and needs the captain's named exception; the AI assistant gives no lean on
+    it.
+- 2026-11-25 (z), a note from an outside assistant, pasted by the captain with "what do you think" (state at 03:49
+  UTC, 2026-11-25). Written by the AI assistant, which read all of it.
+  - **What it held (categories only; nothing of it is copied here).** The boards' headlines and the first-place
+    figures; one idea per board with a decision test on practice tasks; a resource plan; and, in its T3 section, a
+    lookup on the challenge site of which genes of the held-out knockout gene's pathway the T3 panel holds.
+  - **Not used.** The T3 lookup: the team's T3 bar (no knowledge of the held-out gene's biology by any route; the
+    pathway tier stays out) stands, no brief or file carries any of it, and from now on the AI assistant gives no view
+    on which genes a T3 file moves. The note's advice to choose by component scores: comparisons stay headline-only
+    (row R22). Its heart tissue-radius step and its embryo regional-motion form: the AI assistant is recused on the
+    heart's scope and size and on the embryo's occupancy term and shape forms, and gives no view.
+  - **Used as unpriced leads for the third round's blind designers, stripped of every score and of the T3 lookup.**
+    T1: an endpoint form (each E10.5 cell moved part of the way toward an E14.5 endpoint built from the released E9.5
+    mean and the outside atlas's change; row T65 argued the opposite of its premise). T3: a developmental-delay form
+    fitted on the released wild-type stages and the released knockouts (no ledger row has read it). Heart: the T1
+    head's released-data-only RNA change carried onto the heart's cells through per-lineage transfer coefficients (no
+    ledger row has read it). A designer may set any lead aside with a reason; each still needs its gate row, a
+    challenger and the captain's yes naming its file.
