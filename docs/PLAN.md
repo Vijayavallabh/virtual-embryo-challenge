@@ -14780,3 +14780,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the closed levers bind; a closed lever moves only in a proposal weighed apart with the exact words of the
     captain's named exception. Gates by about 02:00 UTC and builds by about 08:00 UTC on 2026-11-26; cold challengers
     next.
+- 2026-11-25 (hhh), the sixth round's embryo design (state at 15:56 UTC, 2026-11-25). Written by the AI assistant,
+  recused on the embryo's occupancy term and shape forms.
+  - **The design** (`EMBRYO_HEDGE_design.md`): no hedge of size; by the scorer's formulas a 50:50 cell mixture beats
+    both parents on a distribution term only when their gap on it is under half their mutual distance (row E40a, the
+    one practice read of such a mixture, beat both halves on 4 of 9 tasks, by +0.09 to +1.62). First choice H1 (a
+    per-cell 50:50 mixture of the two highest headlines among O, SO, O_hi and W; all six pairs built at once so no
+    build shows an order, only the rule's pick sent), and H2 (SO and W split by blocks); both keep O's coordinates bit
+    for bit; together about 0.15 to 0.2 to raise the board, typical +0.3 to +0.8, best about +1.6, expected about
+    +0.1; no practice read, no outside data. Part B: the one unread input, a pooled E8.0-group render, expected +0.02,
+    not recommended. Its disclosures: an exposure note on the injected memory index's line on the top-3 goal (no
+    value); a refused read (a practice reading file), not worked around; a search that printed three stream lines of
+    the T1 builder, unused. Its parents-by-headline rule raises the same question as T3's hedge (scores choose, never
+    compute), which T3's challenger is weighing now; the embryo hedge waits on that verdict before a challenger of its
+    own.
