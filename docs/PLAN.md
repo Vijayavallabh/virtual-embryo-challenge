@@ -14871,3 +14871,18 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **An exposure note:** a search of the challenger's printed five lines of the pinned scorer's module docstring,
     which agents skip (it may hold example counts bearing on a T3 board); it reports skipping them and using nothing.
     No value is repeated here, and no T3 file rests on this challenge.
+- 2026-11-25 (ooo), the heart world-blur moonshot and its challenge (state at 17:35 UTC, 2026-11-25). Written by the
+  AI assistant, recused on the heart's scope and size.
+  - **The design** (`HEART_MOON2_design.md`): WBH, the banked half re-measured in 32 spatially blocked, antithetic
+    measurement worlds whose spread comes from same-stage MERFISH run pairs (E8.75 wild type against the Gata4
+    knockout replicates; E9.5 wild type against the Mab21l2 knockout); gate row H37, six tries; its price about 7%
+    gated (12 to 15% ungated), best +5 to +6 heart points.
+  - **The challenge** (`HEART_MOON2_challenge.md`): FIX. The organisers' words (Rules s.10's P3-preparation exception)
+    with working answer A15 allow those files, at about 0.10 (0.05 to 0.2) that an organiser counts the use forbidden;
+    no closed lever moves; the captain's words are needed before any engineering, as written: "File WBH may use
+    T3/E8.75_gata4_ko_1, T3/E8.75_gata4_ko_2 and T3/E9.5_mab21l2_ko as inputs to its world prior only, under Rules
+    s.10's P3-preparation exception and working answer A15; this opens no other file, task or lever." Flaws: the DE
+    terms are not held, so its G0 likely stops itself; its toy overstates the cut about twofold; the Mesp1 exclusion
+    blinds the prior on cardiac genes; one stop should label a pass instead. Price: about 2% as written, 5% fixed;
+    best +3 to +4. Its exposure notes: the banked heart file named at two dates, and a possible one at `H35_row.md`
+    line 1 (no value).
