@@ -14545,3 +14545,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     d15; H05 and H10; m10 and m20), or at the cut-off; a file that its own rule never sends is not a missing headline.
     The captain can overrule this reading.
   - **Standing:** 74.35 + 63.94 + (62.45 + 69.9) / 2 = 204.465 (from 203.935).
+- 2026-11-25 (nn), a fourth design round, big swings on T3, the heart and the embryo; the T3 designer hands back
+  (state at 13:35 UTC, 2026-11-25). Written by the AI assistant, which designs no line.
+  - **Why.** The captain asked that parallel work aim at drastically improving the embryo, the heart and T3 ("I meant
+    for drastically improving T2 Embryo, T2 Heart, T3"). The round's task (`TASK_gap4.md` in the round folder) asks
+    each blind designer for proposals whose best case is at least +3 board points on T3 or +4 on a T2 board, honestly
+    priced, gated on the board's own practice tasks on the DGX, with closed levers weighed apart; it gives them the
+    ledger's headroom section (practice results only) as an extract. The captain also asked to use the DGX more and
+    the local machine less, had leftover agent worktrees cleaned (only unlocked, clean ones whose commits are on the
+    remote), and freed all eight DGX GPUs ("killed all the gpus processes in the dgx. Go ahead").
+  - **T3** (`T3_SWING_design.md`): no swing of that size inside the rules, so no file, gate or DGX time; the largest
+    idea it could price, a stage step as a factor on C2's draw, has a best case under +2 at about 0.05, and it is not
+    proposed. Its exposure note: lines 3 to 5 of the second wave's `T3_PORTFOLIO_challenge.md` relay a test upload's
+    per-metric state (used for nothing; the third round's T3 challenger had flagged the same lines). Those lines are
+    now redacted in the round folder, unread by the main session, with the removed text's sha256 noted in their place.
