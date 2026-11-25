@@ -14263,3 +14263,11 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     matches its sheet row. The paste's per-metric lines, rank and file size are not recorded or used.
   - **Each rule by its letter.** It is below the board's best (MS20, 73.82). Row R51: MSBH05's headline is above MSB's
     (73.47), so `T1_s2rcMSBH10.h5ad` is now due. Standing unchanged: 203.695.
+- 2026-11-25 (n), the captain reports one more headline and the rules are applied by their letter (state at 02:16 UTC,
+  2026-11-25). Written by the AI assistant, which records the headline only and is recused on the embryo's occupancy
+  term and shape forms.
+  - **The paste:** T2:embryo:test_interp `T2embryo_s2x_ovt23.h5ad` 67.57 (shown as submitted 2026-11-25 02:14). Its
+    sha256 on disk matches its sheet row. The paste's per-metric lines (which include the recused terms), rank and
+    file size are not recorded or used.
+  - **Each rule by its letter.** It is below the board's best (O, 69.9), which stays. By the embryo's order rule no
+    score decides another embryo file, and row R59 named one file only. Standing unchanged: 203.695.
