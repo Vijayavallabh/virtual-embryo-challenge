@@ -14572,3 +14572,23 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     least two winners, will hold whatever the d axis gives, and K1's file (and K2's and K3's, which need a d winner
     too) is fixed when MS20d10's and MS20d20's headlines (and MS20d15's, if sent) are in. C1 waits on the same.
   - **Standing unchanged:** 204.465.
+- 2026-11-25 (pp), the captain waives the team's own T3 bar (state at 13:40 UTC, 2026-11-25). Written by the AI
+  assistant, which gives no view on which genes a T3 file moves (entry (z)).
+  - **The captain's words, verbatim:** "Our T3 rule btw is excempted. So go ahead", after the AI assistant reported
+    that the fourth round's T3 designer found no big swing inside the rules and that the one large lever on record,
+    the pathway tier, stays out.
+  - **What the waiver lifts (the team's own rules only):** the bar against knowledge of the held-out gene's biology
+    from memory or literature, and the team's exclusion of the pathway tier (RULES_gap.md's T3 bar; decision log
+    2026-11-23 (f) and (r)).
+  - **What still binds (the organisers' words, which no team waiver touches):** "Forbidden: measured data from a
+    held-out stage/genotype by any route"; the genotype clause (data "from the held-out KOs, from another allele of
+    the same gene at a comparable stage, or from a perturbation that phenocopies them, counts as held out"); and the
+    ruling of 2026-10-15 ("generic pathway and gene-set databases are allowed, except gene sets built from a knockout
+    or perturbation of the held-out gene. Gene-level results of losing the held-out gene in embryos at a comparable
+    stage ... are not allowed, even when read off a paper"). The weighing of entry (f) of 2026-11-23 put using the
+    outside knockout datasets of the held-out gene's pathway at 0.80 to breach the phenocopy limb; those stay out.
+  - **What follows.** One blind T3 designer weighs the route the waiver opens inside the organisers' words: generic
+    pathway and gene-set databases whose documented provenance is not a knockout or perturbation of either held-out
+    gene, used to shape the predicted response; memory of what losing the held-out gene does in embryos is not used. A
+    cold challenger checks every source against those words with odds, and any file goes to the captain as a priced
+    question.
