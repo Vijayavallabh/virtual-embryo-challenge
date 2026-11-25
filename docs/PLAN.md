@@ -14335,3 +14335,11 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     main (3f41ab3); no code changed.
   - **Their standing.** Due now (row R55; the board keeps its best headline). Data used: released Task 2 heart stages
     and the unlocked E10.5 validation file only; no outside data.
+- 2026-11-25 (x), the captain says yes to a third design round, on T1 and the heart (state at 03:45 UTC, 2026-11-25).
+  Written by the AI assistant, which designs no line and is recused on the heart's scope and size.
+  - **The question** offered a round in which blind designers name step-on files now (combinations of the due files'
+    steps and further steps along an axis, each gated on headlines under row R22), cold challengers check them, and
+    one short dialog names the files; about 1 to 2M agent tokens; files built by about 14:00 UTC; small steps
+    expected, not the targets' jumps; no view from the AI assistant on the heart part. **The captain's pick,
+    verbatim:** "T1 and heart round" (the option: one blind designer and challenger each for T1 and the heart).
+    Nothing is built or changed by this answer; each file still needs the captain's yes naming it.
