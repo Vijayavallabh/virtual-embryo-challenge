@@ -1,0 +1,262 @@
+{
+ "constants": {
+  "dnb_pitch_um": 0.5,
+  "mosta_bin_dnb": 24,
+  "mosta_bin_um": 12.0,
+  "xenium_grid_um": 12.0
+ },
+ "files": [
+  {
+   "completed_utc": "2026-11-25T20:12:11Z",
+   "name": "E15.5_E1S1_GEM_bin1.tsv.gz",
+   "section": "E15.5_E1S1",
+   "sha256": "52018d537b45883c41d64879589566958ac210286fd7da23cbd9cf7daba20e98",
+   "size": 2224024877,
+   "stage": "E15.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E15.5_E1S1_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:12:54Z",
+   "name": "E15.5_E1S2_GEM_bin1.tsv.gz",
+   "section": "E15.5_E1S2",
+   "sha256": "1ac7c8b3ef417a90da4f17cf66594f17a0d97fb42c3b65ae9afe4ffac458f7d2",
+   "size": 2001279746,
+   "stage": "E15.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E15.5_E1S2_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:13:33Z",
+   "name": "E15.5_E1S3_GEM_bin1.tsv.gz",
+   "section": "E15.5_E1S3",
+   "sha256": "88e372807f15bdb9499b6d2406dc130ca4851cde4c595707298ae7532663b020",
+   "size": 2884177092,
+   "stage": "E15.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E15.5_E1S3_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:14:27Z",
+   "name": "E15.5_E1S4_GEM_bin1.tsv.gz",
+   "section": "E15.5_E1S4",
+   "sha256": "5f5d03f356e43b65d1cf06138adaecaa677327ef700e0dee3418b52540342ca2",
+   "size": 1785626749,
+   "stage": "E15.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E15.5_E1S4_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:15:01Z",
+   "name": "E15.5_E2S1_GEM_bin1.tsv.gz",
+   "section": "E15.5_E2S1",
+   "sha256": "0966437d8c6e4d2f6b7119bb8213f8867a8ee97128eb9f48fee073db56b5d46a",
+   "size": 1199695752,
+   "stage": "E15.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E15.5_E2S1_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:15:30Z",
+   "name": "E16.5_E1S1_GEM_bin1.tsv.gz",
+   "section": "E16.5_E1S1",
+   "sha256": "521adad648686cd4bb3b20434a04537fef30182031aac19afd0144565ec72279",
+   "size": 2805156097,
+   "stage": "E16.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E16.5_E1S1_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:16:24Z",
+   "name": "E16.5_E1S2_GEM_bin1.tsv.gz",
+   "section": "E16.5_E1S2",
+   "sha256": "a4187870a2d4649a914e4573aaf49d97c37b7a947c60de95e1978d647f8fa61e",
+   "size": 1845184454,
+   "stage": "E16.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E16.5_E1S2_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:17:01Z",
+   "name": "E16.5_E1S3_GEM_bin1.tsv.gz",
+   "section": "E16.5_E1S3",
+   "sha256": "16e0e9f6f3731dbc585a5539fa9382feef5f7c4b2915ae7c8c4a676aa653c321",
+   "size": 4053007636,
+   "stage": "E16.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E16.5_E1S3_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:18:13Z",
+   "name": "E16.5_E1S4_GEM_bin1.tsv.gz",
+   "section": "E16.5_E1S4",
+   "sha256": "ae18753578f234b7f45fa24682b0ede41e0b2cc9154fa3ee22f290f3e5d3777f",
+   "size": 2369817047,
+   "stage": "E16.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E16.5_E1S4_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:18:59Z",
+   "name": "E16.5_E1S5_GEM_bin1.tsv.gz",
+   "section": "E16.5_E1S5",
+   "sha256": "51d8d3214b7a1104433d7d8aea694034c2495f41e998072bbdc0f4019293e2d0",
+   "size": 3715090384,
+   "stage": "E16.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E16.5_E1S5_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:25:29Z",
+   "name": "E16.5_E2S10_GEM_bin1.tsv.gz",
+   "section": "E16.5_E2S10",
+   "sha256": "a6d76d3c422b2600e0d19b5f97217e82124f00485b800076518b409b085654b1",
+   "size": 2100729384,
+   "stage": "E16.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E16.5_E2S10_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:26:07Z",
+   "name": "E16.5_E2S11_GEM_bin1.tsv.gz",
+   "section": "E16.5_E2S11",
+   "sha256": "77a4cfca080d72e34a8571143918bc07dc2d08754cbdccd3b5fb7ed0d24ba666",
+   "size": 1725927936,
+   "stage": "E16.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E16.5_E2S11_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:26:40Z",
+   "name": "E16.5_E2S12_GEM_bin1.tsv.gz",
+   "section": "E16.5_E2S12",
+   "sha256": "436ec22ffd337043816600c381f8b967524f202aca0e168a7a2846bcccc9c459",
+   "size": 1332186011,
+   "stage": "E16.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E16.5_E2S12_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:27:05Z",
+   "name": "E16.5_E2S13_GEM_bin1.tsv.gz",
+   "section": "E16.5_E2S13",
+   "sha256": "0a4d5f1e5bc055ae49f1712f6aa5db1a8c6a800c6f860378a2bba791a91b7dfd",
+   "size": 1357584039,
+   "stage": "E16.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E16.5_E2S13_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:20:04Z",
+   "name": "E16.5_E2S1_GEM_bin1.tsv.gz",
+   "section": "E16.5_E2S1",
+   "sha256": "1861f08afdc316915f31a3b3b9d306cbd2c2093a505aac9e70a72388ea4f716a",
+   "size": 1151553811,
+   "stage": "E16.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E16.5_E2S1_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:20:26Z",
+   "name": "E16.5_E2S2_GEM_bin1.tsv.gz",
+   "section": "E16.5_E2S2",
+   "sha256": "547ca8e6b594174a6e7dfefff893a8fd348eed78b88de554e1e2205c8ceb31a9",
+   "size": 1552138129,
+   "stage": "E16.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E16.5_E2S2_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:20:55Z",
+   "name": "E16.5_E2S3_GEM_bin1.tsv.gz",
+   "section": "E16.5_E2S3",
+   "sha256": "e28189d95220cd0ebfc795e08fccd755b8ac3e4037a6c66c3320e1f059c2b195",
+   "size": 1537519288,
+   "stage": "E16.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E16.5_E2S3_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:21:23Z",
+   "name": "E16.5_E2S4_GEM_bin1.tsv.gz",
+   "section": "E16.5_E2S4",
+   "sha256": "05dccd2ffbe4fb79b5e8c92881dfcbf61aad9b8565a382266511d1357c70f882",
+   "size": 1503472533,
+   "stage": "E16.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E16.5_E2S4_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:21:52Z",
+   "name": "E16.5_E2S5_GEM_bin1.tsv.gz",
+   "section": "E16.5_E2S5",
+   "sha256": "51008c24cc29aeb27b29a3e0e4421359efa87f3f6c81ad1525b103a09be49e33",
+   "size": 2170522623,
+   "stage": "E16.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E16.5_E2S5_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:22:33Z",
+   "name": "E16.5_E2S6_GEM_bin1.tsv.gz",
+   "section": "E16.5_E2S6",
+   "sha256": "d419021af727bc741b96b50bb7e5bcc9996d881671290c2114c289dc3cc91972",
+   "size": 1743904353,
+   "stage": "E16.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E16.5_E2S6_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:23:06Z",
+   "name": "E16.5_E2S7_GEM_bin1.tsv.gz",
+   "section": "E16.5_E2S7",
+   "sha256": "6ce57df376989bdd7e9b575ddc1a2c4ccae4610b0e64823b7bc92adbbf4f4fe7",
+   "size": 2464045197,
+   "stage": "E16.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E16.5_E2S7_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:23:50Z",
+   "name": "E16.5_E2S8_GEM_bin1.tsv.gz",
+   "section": "E16.5_E2S8",
+   "sha256": "3c3fe737e045b5dd06e1b7c576cb3c3efdeb04d48535baf25c0e4ab5bdef6ca2",
+   "size": 2448765042,
+   "stage": "E16.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E16.5_E2S8_GEM_bin1.tsv.gz"
+  },
+  {
+   "completed_utc": "2026-11-25T20:24:35Z",
+   "name": "E16.5_E2S9_GEM_bin1.tsv.gz",
+   "section": "E16.5_E2S9",
+   "sha256": "eee5568022e99ae357958d5803b3f31f3561e7fe9137e494a32efeeadda1d999",
+   "size": 2873449795,
+   "stage": "E16.5",
+   "study": "X022",
+   "url": "https://ftp.cngb.org/pub/SciRAID/stomics/STDS0000058/Bin1_matrix/E16.5_E2S9_GEM_bin1.tsv.gz"
+  },
+  {
+   "archive_bytes": 83505883137,
+   "archive_md5_on_page": "8b2a2da686a7ce369b434f9291d15d2e",
+   "completed_utc": "2026-11-25T18:37:05Z",
+   "compressed_size": 8589125548,
+   "crc32": 3897610800,
+   "data_offset": 71817253288,
+   "header_offset": 71817253191,
+   "member": "transcripts.parquet",
+   "method": 8,
+   "n_members": 25,
+   "name": "X021_Xenium_Prime_Mouse_Pup_FFPE_transcripts.parquet",
+   "section": "pup_P1",
+   "sha256": "021f47aa9423db8900a1a2f4ea0a24da5e375b6e562951c650cbfc84bac6f402",
+   "size": 8595776049,
+   "stage": "P1",
+   "study": "X021",
+   "url": "https://s3-us-west-2.amazonaws.com/10x.files/samples/xenium/3.0.0/Xenium_Prime_Mouse_Pup_FFPE/Xenium_Prime_Mouse_Pup_FFPE_outs.zip"
+  }
+ ],
+ "schema": 1,
+ "script": "experiments/heart_ext/fetch_oic.py",
+ "script_sha256": "23968bee818e0b63a464235869307969c16ee1080ce82a6aa4233da9963cdbaf"
+}

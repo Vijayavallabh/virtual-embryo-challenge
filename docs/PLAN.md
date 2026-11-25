@@ -15097,3 +15097,20 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     read, the run and the read all exit 0.
   - **The outcome statement, quoted:** "GBF: STOP. No file; the handed-over embryo files stand." No BF file is built;
     the embryo keeps `T2embryo_s2x_ov.h5ad`. The reading's two files are committed with this entry.
+- 2026-11-25 (gggg), the heart's in-situ line OIC125 (row R70): its G0 stops; nothing is built (state at 21:45 UTC).
+  Written by the AI assistant, recused on the heart's scope and size; it designed none of it.
+  - **The steps.** prep1 stopped at its units step on one MOSTA file that repeats its header line mid-file; the reader
+    was fixed (618b19c, re-checked with no blocker; merged d6d3eb1), and prep2 at d6d3eb1 ran clean: both sources kept
+    (complete before the 21:30 UTC cut-off), 72 heart-region plots. Three independent score-blind readers, one per
+    reference, checked each plot's sha256 and judged the outline: 2 of 72 confirmed as heart alone (MOSTA E16.5_E2S7
+    and E16.5_E2S10 at E10.5); the other 70 doubts (many outlines on skeletal muscle of the neck, back or body wall,
+    the risk the cold challenge named; others taking in lung, diaphragm or chest wall). The verdicts were committed
+    (9864866) before G0.
+  - **G0** (target-free, not a try; run g0r1 at 9864866): its statement, quoted: "G0 H38: STOP: E10.5 (a) X021 drops
+    (agreement, cm count, shared genes or no confirmed section); E10.5 (a) X022 drops (agreement, cm count, shared
+    genes or no confirmed section); E10.5 (a) fewer than two sources left; E9.5 (a) X021 drops (agreement, cm count,
+    shared genes or no confirmed section); E9.5 (a) X022 drops (agreement, cm count, shared genes or no confirmed
+    section); E9.5 (a) fewer than two sources left; E8.75 (a) X021 drops (agreement, cm count, shared genes or no
+    confirmed section); E8.75 (a) X022 drops (agreement, cm count, shared genes or no confirmed section); E8.75 (a)
+    fewer than two sources left." No read runs, no try is counted, OIC125 is not built. G0's records and the fetch
+    manifest are committed with this entry; register rows X021 and X022 now record the fetch.
