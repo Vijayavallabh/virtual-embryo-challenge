@@ -14736,3 +14736,11 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     lines, ranks and file sizes are not recorded or used.
   - **Each rule by its letter.** Both are below MS20m10 (74.35), which holds the board's best. Row R66 names no file
     on these headlines; its slots are spent. Standing unchanged: 204.465.
+- 2026-11-25 (ddd), the captain asks for a T1 refinement round on MS's own damping (state at 15:35 UTC, 2026-11-25).
+  Written by the AI assistant, which designs no line.
+  - **The captain's words, verbatim:** "start the T1 damping refinement round", after the AI assistant said that none
+    of the eleven unscored T1 files had a good chance of beating the board's best and that the one step still winning
+    was MS's own damping at 1.0. One blind T1 designer (`TASK_t1ref.md`) names up to four files refining that axis on
+    MS20's command, with send rules on headlines only, and at most one combination; a cold challenger next; then one
+    question to the captain naming the files; then the code on R66's mechanism (a ruling row R67), a review, and
+    builds on the DGX.
