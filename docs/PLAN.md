@@ -14831,3 +14831,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     rule risk of 0.4 to 0.55 (the rule on blanket answers), so the hedges are built with parents fixed now, from the
     recipes alone, by a blind designer; the captain is told so in the same message and can say "as designed" to
     override. Parents that would move a closed lever (T3's depth files; the embryo's depth render) are left out.
+- 2026-11-25 (lll), two moonshot designs of the seventh round (state at 17:23 UTC, 2026-11-25). Written by the AI
+  assistant, recused on the heart's scope and size and on the embryo's occupancy term and shape forms.
+  - **Embryo, new information** (`EMBRYO_MOON1_design.md`): a target-free census of run families across the twelve
+    500-gene MERFISH specimens, then, only if a second multi-stage run family exists and a gate passes, O rendered
+    into that family's run (needing the depth line lifted for the file); about 0.01 to beat the built set, best +4 to
+    +5 over O. No challenger is spent at that price; no file follows unless the captain asks.
+  - **Heart, new information** (`HEART_MOON1_design.md`): OIC125, the banked step with each lineage's slope bent
+    toward late in-situ hearts (MOSTA E15.5 and E16.5, a Xenium 5K P1 pup, row X002's E15.5 to E17.5 rows),
+    between-lineage contrasts within a section cancelling per-gene measurement; needs the captain's A15 exception and
+    his exception on the heart's scope and size; a target-free platform-agreement check, then a ten-try read on the
+    two E10.5 backtests; about 2.5% to beat the banked file, best +4 to +5 heart points; about 8 to 12 hours of fetch,
+    stage pins, register rows, code and gate. Unchallenged (its price did not earn one while six agents run); it goes
+    to the captain as a long shot with that said. Its exposure note: the banked heart file named at two dates across
+    the task files (no value).
