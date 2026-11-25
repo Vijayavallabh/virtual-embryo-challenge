@@ -15046,3 +15046,23 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     earlier H files' Blood rows and that d steps were uploaded on MS20, folded into no odds. Recorded as R73.
   - **Next:** an engineer on R66's route with F1 to F7 (branch campaign/t1-r73), an independent review, a gate
     dry-run, DGX builds twice with one sha256, the record and the hand-over.
+- 2026-11-25 (cccc), the embryo's consensus form BF (row R71) and the heart's in-situ line OIC125 (row R70): reviews,
+  merges and gate rows (state at 20:35 UTC). Written by the AI assistant, recused on the embryo's occupancy term and
+  shape forms and on the heart's scope and size; it designed none of it.
+  - **BF.** An independent review of campaign/embryo-bf found two blockers (a practice prior holding a stage between
+    its task's brackets, which the test lacks; SO's reproduction read without a count, rule J7); the engineer fixed
+    both (6ffa8a2: such stages dropped; SO's guard replaced by E51's construction checks, no new try; the 08:00 UTC
+    build and 05:00 UTC gate-start cut-offs) and the re-check found no blocker. Merged at 28cb4e0 with the guard
+    tests; row E59 placed at b282384 before any read; its checks dry-run on the DGX; the gate (`run_bf.sh`, run bf1,
+    in `~/v/vec-campaign`) started at 19:26 UTC. Two untracked H29a reading files in that checkout, byte-identical to
+    main's, were moved aside to `~/v/scratch/bf_moved/` (nothing deleted).
+  - **OIC125.** The fetch ran at about 8 MB/s by parallel range requests (`fetch_oic_chunks.sh`, 27ceada; the server
+    caps each connection), every MOSTA file joined, length-checked and gzip-tested by about 20:25 UTC, the Xenium
+    transcript table by about 19:00 UTC, both before the 21:30 UTC cut-off. An independent review found two blockers
+    (G0(c) passed with no late change, the two studies sharing the reference's estimation error; the cut-offs missing
+    from code); the engineer fixed both (f539a3f: independent reference halves, typing genes left out, the cut-offs in
+    code) and the re-check found no blocker, with one caveat for the record: shared bin mixing or marker typing still
+    clears G0(c) in 6 of 24 no-change worlds. Merged at 40f3cb2 (a listing conflict in `n54_step.sh` resolved by
+    keeping both sides), register row X005 names pyarrow (cd1daf2), row H38 placed at 5cb5375 before the prep, G0 and
+    any read. In the DGX heart checkout, WBH's two G0 records, byte-identical to main's, were moved aside to
+    `~/v/scratch/oic_moved/` before the checkout.
