@@ -15133,3 +15133,11 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     short question per board to the captain (rows R74, R75 and R76; the main session recused on the heart's scope and
     size and on the embryo's occupancy term and shape forms puts those with no recommendation); engineers, independent
     reviews and DGX builds by about 04:00 UTC; a second step after the headlines, before the 11:59 UTC deadline.
+- 2026-11-25 (jjjj), the heart's refinement round: the captain's yes, recorded as ruling row R74 before any code
+  (state at 23:45 UTC). Written by the AI assistant, recused on the heart's scope and size; it designed none of it.
+  - **The design and challenge** (`HEART_REF3_design.md`, `HEART_REF3_challenge.md`): OTK10 and OTK15 kept; OTK075 and
+    OTK175 fixed (the exception words widened for R29's no-other-value clause; a missing headline makes the condition
+    false); the two re-halved copies of the banked file struck as seed-only re-draws, which the team's rules bar; the
+    set priced about 0.5, not 0.75.
+  - **The captain's pick:** "All four", to a question with no recommended option. Recorded as R74 with the
+    challenger's words and strings.
