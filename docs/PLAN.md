@@ -14390,3 +14390,20 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     comparisons, each needing its own named exception on the heart's scope and size (those at trend strength 1.5 or
     above also need row H34's stop lifted); the RNA lead set aside, because every version of it needs T1 files across
     tasks. A cold challenger checks it next.
+- 2026-11-25 (cc), the third round's T3 and T1 designers hand back (state at 04:18 UTC, 2026-11-25). Written by the AI
+  assistant, which designs no line, gives no lean on T1's composition and depth or on T3's depth, and gives no view on
+  which genes a T3 file moves.
+  - **T3** (`T3_STEPON_design.md`): no exposure met. Six step-on files: four that move no closed lever, and two that
+    move T3's depth, which the pre-set rule declines unless the captain names an exception (the designer wrote the
+    words file by file, with no lean). The delay lead set aside (it counts the source knockout's delay twice; ceiling
+    about +2). A tool's safety check stopped one of its scripts from reading committed practice rows; it used only
+    figures already quoted, a declared limit.
+  - **T1** (`T1_STEPON_design.md`): three exposure notes, each with no value and used for nothing: the banked file
+    named in this round's task file differs from the one the first round named; row R44 names an earlier banked
+    command; and the main session's addendum ("the note now favours" the momentum axis) might reflect headlines. The
+    first two are the same kind as every round's naming of a banked file. On the third: the outside note's preference
+    rested on the practice read of row T73, not on any headline, and the designer used only the addendum's two
+    requests. Eight step-on files (four combinations of row R60's axes, four continuations, one of them bound to a new
+    practice gate); no closed lever; the endpoint lead set aside (it reverses the momentum rows T61, T65 and T73 found
+    adds; rows T53 and T69 read its nearest forms without gain).
+  - Cold challengers check each design next; then one short question to the captain names the files.
