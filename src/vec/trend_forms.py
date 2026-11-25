@@ -366,8 +366,9 @@ def insitu_arguments(ctx: harness.BuildContext, strength: float, chords: dict | 
     if not carried:
         return replace(base, record=record)
     start, end, like = base.start, base.end, base.like
-    if "epicardium" in carried:
-        start, end, like = (_epi_typed(x, spec) for x in (start, end, like))
+    if "epicardium" in carried:  # the drawn cells are the typed pool's rows (as the category form draws them)
+        start, end = _epi_typed(start, spec), _epi_typed(end, spec)
+        like = end[base.rows]
     mapping = dict(base.mapping)
     own = None
     for k in carried:
