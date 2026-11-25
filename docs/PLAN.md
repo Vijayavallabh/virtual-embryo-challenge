@@ -14720,3 +14720,12 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **The fifth round's outcome.** No construction error on any of the three boards and no sweep worth running: the
     banked files of T3, the heart and the embryo are built as the scorer's formulas reward, and their gaps are limited
     by information, not by the build or by compute. Nothing is built.
+- 2026-11-25 (bbb), the captain asks for another attempt on T3, the heart and the embryo (state at 15:20 UTC,
+  2026-11-25). Written by the AI assistant, which designs no line.
+  - **The question** offered a T1 refinement round (recommended), another attempt on T3, the heart and the embryo
+    (with the AI assistant's view that it had no new lens with a real chance), or no new round. **The captain's pick,
+    verbatim:** "Another T2/T3 attempt". The sixth round (`TASK_gap6.md`) asks two questions no round asked: hedge
+    files, fixed-weight cell mixtures of two already-built files of the board with the count, halving and closed
+    settings kept (parents chosen by headline order only where they must be the best-scored, never by the size of a
+    score), and inputs the banked pipeline never reads that the rules allow (for the heart, whether its trend uses the
+    unlocked E8.5 file and the released E8.25 and E8.75 stages). Three blind designers; cold challengers next.
