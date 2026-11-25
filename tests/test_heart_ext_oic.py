@@ -419,6 +419,7 @@ def test_regions_and_g0_steps_end_to_end(tmp_path, monkeypatch):
     for v in sheet["verdicts"]:
         assert hashlib.sha256((work / v["plot"]).read_bytes()).hexdigest() == v["plot_sha256"]
     refs = {r: FakeRef(r, world["ref"].C, world["ref"].cats) for r in g0.REFS}
+    monkeypatch.setattr(g0, "utc_now", lambda: g0.G0_CUTOFF_EPOCH - 3600.0)  # never the real clock
     monkeypatch.setattr(g0, "load_refs", lambda data_dir: refs)
     monkeypatch.setattr(g0, "ranks_doc", lambda _refs: json.loads(json.dumps(refs_doc)))
     verdicts = {(v["ref"], v["section"]): ("heart", v["region_sha256"]) for v in sheet["verdicts"]}
@@ -434,13 +435,120 @@ def test_regions_and_g0_steps_end_to_end(tmp_path, monkeypatch):
         assert hashlib.sha256((results / f"chords_{ref}.json").read_bytes()).hexdigest() == sha
         doc = json.loads((results / f"chords_{ref}.json").read_text())
         assert doc["ref"] == ref and doc["sources"] == {f"{n}.gz": "f" * 64 for n in world["units"]}
+        assert set(doc["centre"]) == {"X021", "X022"} and "cm" in doc["lineages_passed"]  # FIX 5: the set reported
     assert json.loads((results / "g0.json").read_text())["verdict"] == "PASS"
     with pytest.raises(FileExistsError):
         g0.run_g0(work, work, None, reader=reader, results=results)
-    # a practice reference whose reader doubted every section: VOID (exit 5), the test's chord alone written
+    # a practice reference whose reader doubted every section: VOID (exit 5), no chord file written
     v2 = {k: (("doubt" if k[0] == "E8.75" else "heart"), s) for k, (_, s) in verdicts.items()}
     monkeypatch.setattr(g0, "reader_verdicts", lambda path: v2)
     r2 = tmp_path / "results2"
     assert g0.run_g0(work, work, None, reader=reader, results=r2) == 5
-    assert (r2 / "chords_E10.5.json").exists() and not (r2 / "chords_E8.75.json").exists()
+    assert not list(r2.glob("chords_*.json"))
     assert (r2 / "g0.txt").read_text().startswith("G0 H38: VOID AT PRACTICE")
+    # the same PASS, ended after 2026-11-26 03:00 UTC: STOP (exit 3), no chord file
+    monkeypatch.setattr(g0, "reader_verdicts", lambda path: verdicts)
+    monkeypatch.setattr(g0, "utc_now", lambda: g0.G0_CUTOFF_EPOCH + 1.0)
+    r3 = tmp_path / "results3"
+    assert g0.run_g0(work, work, None, reader=reader, results=r3) == 3
+    assert not list(r3.glob("chords_*.json"))
+    assert "cut-off" in (r3 / "g0.txt").read_text() and json.loads((r3 / "g0.json").read_text())["verdict"] == "STOP"
+
+
+
+# ---- G0(c) against the review of 38eabe2 (blocker 1): no late change must fail, a shared late change must pass -------
+G3 = 300
+GENES3 = [f"h{i:03d}" for i in range(G3)]
+MARK3 = {"cm": range(0, 20), "endocardium": range(20, 40), "epicardium": range(40, 60),
+         "vascular_endothelium": range(60, 80)}
+
+
+def no_change_world(seed: int, change: float = 0.0, ref_n=(2000, 400, 200, 400)):
+    """The reviewer's control: a sampled reference (2000/400/200/400 cells) and two studies whose units are drawn,
+    with true labels and each study's own per-gene efficiency, from the reference's own profiles; `change` adds one
+    lineage-specific late change shared by both studies (0: no late change at all)."""
+    rng = np.random.default_rng(seed)
+    base = np.exp(rng.normal(0, 0.8, G3)) * 3
+    prof = {}
+    for k, idx in MARK3.items():
+        p = base.copy()
+        p[list(idx)] *= 20
+        p[80:] *= np.exp(rng.normal(0, 0.5, G3 - 80))
+        prof[k] = p
+    rows, cats = [], []
+    for k, n in zip(oc.CATS, ref_n, strict=True):
+        rows.append(rng.poisson(200 * prof[k] / prof[k].sum(), (n, G3)))
+        cats += [k] * n
+    d = {k: np.r_[np.zeros(80), rng.normal(0, 0.5, G3 - 80)] * change for k in oc.CATS}
+
+    def stage_means(eff, n=(3000, 800, 400, 800)):
+        out = {}
+        for k, m in zip(oc.CATS, n, strict=True):
+            p = prof[k] * np.exp(d[k]) * eff
+            out[k] = oc.cp10k(rng.poisson(150 * p / p.sum(), (m, G3))).mean(0)
+        return out
+    studies = [{"name": "X021", "genes": GENES3, "centre": list(oc.CATS),
+                "stages": {"P1": stage_means(np.exp(rng.normal(0, 0.7, G3)))}},
+               {"name": "X022", "genes": GENES3, "centre": list(oc.CATS),
+                "stages": {"E15.5": stage_means(np.exp(rng.normal(0, 0.7, G3))),
+                           "E16.5": stage_means(np.exp(rng.normal(0, 0.7, G3)))}}]
+    return sparse.csr_matrix(np.vstack(rows)), np.array(cats), studies
+
+
+TYPING3 = np.r_[np.ones(80, bool), np.zeros(G3 - 80, bool)]
+
+
+@pytest.mark.parametrize("seed", range(6))
+def test_g0c_fails_with_no_late_change(seed):
+    refC, cats, studies = no_change_world(seed)
+    t = oc.g0c_tests(refC, cats, GENES3, studies, TYPING3, "E10.5", n_perm=200)["tests"]
+    assert not t["cm"]["pass"] and abs(t["cm"]["rho"]) < oc.SPEARMAN_MIN
+    assert not any(v["pass"] for v in t.values())
+
+
+def test_the_shared_reference_alone_made_the_old_test_pass():
+    """The fault the review found, kept as a record: least squares of both studies on one estimated reference
+    contrast agrees with no late change at all."""
+    refC, cats, studies = no_change_world(0)
+    code = np.array([oc.CATS.index(c) for c in cats])
+    whole = oc.category_means(refC, code)
+    cref = oc.contrasts(whole, list(oc.CATS))
+    res = []
+    for st in studies:
+        per = []
+        for m in st["stages"].values():
+            cs = oc.contrasts(m, list(oc.CATS))
+            per.append(oc.residual(cs["cm"], cref["cm"], (m["cm"] >= 5) & (whole["cm"] >= 5))[0])
+        res.append(oc.study_mean(per))
+    assert oc.spearman_test(res[0], res[1], np.log(whole["cm"] + 0.5), "cm", n_perm=200)["pass"]
+
+
+@pytest.mark.parametrize("seed", range(3))
+def test_g0c_passes_a_shared_late_change(seed):
+    refC, cats, studies = no_change_world(seed, change=1.0)
+    t = oc.g0c_tests(refC, cats, GENES3, studies, TYPING3, "E10.5", n_perm=200)["tests"]
+    assert t["cm"]["pass"] and t["cm"]["rho"] >= oc.SPEARMAN_MIN
+
+
+def test_g0c_keeps_the_typing_genes_out_and_its_halves_are_fixed():
+    refC, cats, studies = no_change_world(1, change=1.0)
+    a = oc.g0c_tests(refC, cats, GENES3, studies, TYPING3, "E10.5", n_perm=50)["tests"]["cm"]
+    assert a["n"] <= G3 - 80
+    h1, h2 = oc.ref_halves(cats, "E10.5"), oc.ref_halves(cats, "E10.5")
+    assert np.array_equal(h1, h2) and not np.array_equal(h1, oc.ref_halves(cats, "E9.5"))
+    for k in oc.CATS:
+        m = cats == k
+        assert abs(int(h1[m].sum()) - int((1 - h1[m]).sum())) <= 1
+    r, fit = oc.iv_residual(np.arange(20.0), np.arange(20.0), -np.arange(20.0), np.ones(20, bool))
+    assert fit["weak"] and np.isnan(r).all()  # halves that disagree: no residual, the lineage fails
+
+
+def test_every_g0_step_refuses_without_row_h38_head_and_a_clean_tree(tmp_path):
+    g0 = _g0()
+    why = g0.refusals("0" * 40)
+    assert any("HEAD is not" in w for w in why)
+    text = (REPO / "experiments" / "harness" / "TRIES.md").read_text(encoding="utf-8")
+    if not any(ln.startswith("| H38 ") for ln in text.splitlines()):
+        assert any("no row H38" in w for w in why)
+    assert g0.main(["ranks", "--out", str(tmp_path / "w"), "--commit", "0" * 40]) == 2
+    assert not (tmp_path / "w").exists()

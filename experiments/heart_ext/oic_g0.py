@@ -22,6 +22,10 @@ Steps (each writes into --out; nothing is ever deleted or overwritten):
            drops). Per reference: G0(a) typing agreement and counts, (b) shared genes, (c) the residual test, (d) not
            idle; the chords (chords_<ref>.json); g0.json, g0.txt and the statement line. Exit 0 PASS, 3 STOP (the test
            reference fails), 5 VOID (the test passes, a practice reference fails: no read can be made).
+Cut-offs (the main session's): a source whose files are not all complete on the DGX by 2026-11-25 21:30 UTC (each
+file's own completion time, fetch_oic.source_status) is dropped before the units step; a g0 step that ends after
+2026-11-26 03:00 UTC is STOP. Every step is refused unless row H38 is in TRIES.md, well formed, with no statement in
+its outcome cell, HEAD is --commit and the tracked tree is clean.
 The statement, which the main session copies into row H38's outcome cell before the read:
   G0 H38: PASS. chords sha256: E10.5 <sha256>; E9.5 <sha256>; E8.75 <sha256>.
 """
@@ -59,6 +63,16 @@ RESULTS = HERE / "experiments" / "heart_ext" / "results"
 PASS, STOP, VOID = "PASS", "STOP", "VOID"
 EXIT = {PASS: 0, STOP: 3, VOID: 5}
 STATEMENT = "G0 {row}: PASS. chords sha256: E10.5 {E10_5}; E9.5 {E9_5}; E8.75 {E8_75}."
+# The cut-off adopted by the main session (HEART_MOON1_challenge.md section 4): no G0 PASS by this moment is STOP. The
+# g0 step reads the clock when it ends; ended later, its verdict is STOP and no chord file is written.
+G0_CUTOFF_UTC = "2026-11-26T03:00:00Z"
+G0_CUTOFF_EPOCH = 1795662000
+
+
+def utc_now() -> float:
+    import time
+
+    return time.time()
 
 
 def _load(name: str, path: Path):
@@ -192,6 +206,8 @@ def panel_genes() -> list[str]:
 
 def run_units(out: Path, data_dir: Path, jobs: int = 8) -> int:
     man = ou.manifest_files(data_dir)
+    status = fetch_oic.source_status(data_dir)
+    man = {n: r for n, r in man.items() if status.get(r["study"], {}).get("kept")}
     panel = panel_genes()
     units_dir = Path(out) / "units"
     units_dir.mkdir(parents=True, exist_ok=True)
@@ -202,9 +218,11 @@ def run_units(out: Path, data_dir: Path, jobs: int = 8) -> int:
                                                      "xenium_grid_um": fetch_oic.XENIUM_GRID_UM},
            "code_sha256": code_sha256(), "sections": sorted(recs, key=lambda r: r["section"]),
            "missing": sorted(e["name"] for e in fetch_oic.PINNED if e["name"] not in man),
+           "sources": status, "source_cutoff_utc": fetch_oic.SOURCE_CUTOFF_UTC,
            "provenance": provenance()}
     write_new(Path(out) / "units.json", json.dumps(doc, indent=1, sort_keys=True))
-    print(f"units: {len(recs)} sections; missing from the manifest: {doc['missing']}", flush=True)
+    kept = sorted(k for k, v in status.items() if v["kept"])
+    print(f"units: {len(recs)} sections; sources kept: {kept}", flush=True)
     return 0
 
 
@@ -420,52 +438,47 @@ def chords_at(ref: Ref, units: dict, doc: dict, rk: dict, verdicts: dict) -> dic
         return {**rec, "pass": False, "why": [*why, "(a) fewer than two sources left"]}
     panel = ref.genes
     pidx = {g: i for i, g in enumerate(panel)}
-    r_study, p_study, fits, centres = {}, {}, {}, {}
-    level = {}
+    p_study, fits, centres, stage_means = {}, {}, {}, {}
     for s in live:
         genes = src[s]["genes"]
         centre = [k for k in oc.CATS if ref.ref_cells[k] >= oc.MIN_REF_CELLS and k in src[s]["usable"]]
         centres[s] = centre
         mref = ref_means(ref, genes, centre)
         cref = oc.contrasts(mref, centre) if len(centre) >= 2 else {}
-        r_stage, p_stage = {k: [] for k in centre}, {k: [] for k in centre}
+        p_stage = {k: [] for k in centre}
+        stage_means[s] = {}
         for stage, (C, t) in src[s]["typing"]["stages"].items():
             msrc = oc.category_means(C, t)
             if not all(k in msrc for k in centre) or len(centre) < 2:
                 continue
+            stage_means[s][stage] = {k: msrc[k] for k in centre}
             csrc = oc.contrasts({k: msrc[k] for k in centre}, centre)
             a = oc.a_of(TARGET_DAY[ref.name], REF_DAY[ref.name], STAGE_DAY[stage])
             for k in centre:
                 guard = (msrc[k] >= oc.GUARD_CP10K) & (mref[k] >= oc.GUARD_CP10K)
-                r, fit = oc.residual(csrc[k], cref[k], guard)
+                r, fit = oc.residual(csrc[k], cref[k], guard)  # FIX 1: least squares on the whole reference
                 fits[f"{s}/{stage}/{k}"] = {**fit, "a": a}
-                full_r, full_p = np.full(len(panel), np.nan), np.full(len(panel), np.nan)
-                gi = [pidx[g] for g in genes]
-                full_r[gi], full_p[gi] = r, a * r
-                r_stage[k].append(full_r)
+                full_p = np.full(len(panel), np.nan)
+                full_p[[pidx[g] for g in genes]] = a * r
                 p_stage[k].append(full_p)
-        r_study[s] = {k: oc.study_mean(v) for k, v in r_stage.items() if v}
         p_study[s] = {k: oc.study_mean(v) for k, v in p_stage.items() if v}
-        lv = np.full(len(panel), np.nan)
-        for k in centre:
-            if k not in level:
-                level[k] = lv.copy()
-                level[k][[pidx[g] for g in genes]] = np.log(mref[k] + oc.PSEUDO)
-    tests, P, kept = {}, {}, {}
+    P, kept = {}, {}
     excluded = np.zeros(len(panel), bool)
     for s in live:
         for g in oc.typing_genes(src[s]["markers"]):
             excluded[pidx[g]] = True
-    a, b = live[0], live[1]
+    # G0(c) on independent reference halves, the typing genes out (the review of 38eabe2, blocker 1)
+    g0c = oc.g0c_tests(ref.C, ref.cats, panel, [{"name": s, "genes": src[s]["genes"], "centre": centres[s],
+                                                  "stages": stage_means[s]} for s in live[:2]], excluded, ref.name)
+    tests = g0c["tests"]
     for k in oc.CATS:
-        if not (k in r_study[a] and k in r_study[b]):
-            tests[k] = {"pass": False, "why": "not held by both studies"}
-            continue
-        tests[k] = oc.spearman_test(r_study[a][k], r_study[b][k], level[k], key=k)
         if not tests[k]["pass"]:
             continue
         if ref.start_cells[k] < oc.MIN_START_CELLS:
             tests[k]["no_p"] = "fewer own cells at the start stage than momentum_shift's min_cells"
+            continue
+        if not all(k in p_study[s] for s in live):
+            tests[k]["no_p"] = "not held by both studies' chords"
             continue
         P[k], kept[k] = oc.consensus({s: p_study[s][k] for s in live}, excluded)
     if not tests["cm"]["pass"]:
@@ -473,7 +486,7 @@ def chords_at(ref: Ref, units: dict, doc: dict, rk: dict, verdicts: dict) -> dic
     n_big = int(sum((np.abs(np.nan_to_num(v)) >= oc.P_MIN).sum() for v in P.values()))
     if n_big < oc.N_P_MIN:
         why.append(f"(d) {n_big} entries with |P| >= {oc.P_MIN}, under {oc.N_P_MIN}")
-    rec.update(centre=centres, lineage_tests=tests, fits=fits, consensus=kept, n_big=n_big,
+    rec.update(centre=centres, lineage_tests=tests, fits=fits, g0c_fits=g0c["fits"], consensus=kept, n_big=n_big,
                clipped=int(sum(v["clipped"] for v in kept.values())),
                P={k: [None if not np.isfinite(x) else float(x) for x in v] for k, v in P.items()}, genes=panel,
                a={s: {st: oc.a_of(TARGET_DAY[ref.name], REF_DAY[ref.name], STAGE_DAY[st])
@@ -484,6 +497,9 @@ def chords_at(ref: Ref, units: dict, doc: dict, rk: dict, verdicts: dict) -> dic
 def chord_file(rec: dict, ranks_sha: str, units_doc: dict, reader_sha: str) -> dict:
     return {"row": ROW, "file": FILE, "ruling": RULING_ROW, "ref": rec["ref"],
             "task": PRACTICE_TASK.get(rec["ref"], "test"), "genes": rec["genes"], "P": rec["P"],
+            "centre": rec["centre"], "lineages_passed": sorted(k for k, v in rec["lineage_tests"].items()
+                                                              if v.get("pass")),
+            "a_by_stage": rec["a"], "x021_stage": "P1 (day 20.5; the record's '9 weeks' would give a of about 0.03)",
             "rule": "oic_core: residual chords (FIX 1), consensus (FIX 2), lineage test (FIX 3), centre set (FIX 5)",
             "rules": oc.RULES, "ranks_sha256": ranks_sha, "reader_sha256": reader_sha,
             "units": {r["section"]: r["npz_sha256"] for r in units_doc["sections"]},
@@ -523,30 +539,54 @@ def run_g0(out: Path, units_root: Path, data_dir: Path | None, reader: Path = RE
     verdicts = reader_verdicts(reader)
     reader_sha = sha256_file(reader)
     recs = {r: chords_at(refs[r], units, doc, now["refs"][r], verdicts) for r in REFS}
-    shas = {}
-    for r in REFS:
-        if recs[r]["pass"]:
-            text = json.dumps(chord_file(recs[r], ranks_sha, doc, reader_sha), sort_keys=True)
-            path = Path(results) / f"chords_{r}.json"
-            write_new(path, text)
-            shas[r] = hashlib.sha256(text.encode()).hexdigest()
-    if not recs[TEST_REF]["pass"]:
+    ended = utc_now()
+    late = ended > G0_CUTOFF_EPOCH
+    if late or not recs[TEST_REF]["pass"]:
         verdict = STOP
     elif not all(recs[r]["pass"] for r in REFS[1:]):
         verdict = VOID
     else:
         verdict = PASS
+    shas = {}
+    if verdict == PASS:
+        for r in REFS:
+            text = json.dumps(chord_file(recs[r], ranks_sha, doc, reader_sha), sort_keys=True)
+            write_new(Path(results) / f"chords_{r}.json", text)
+            shas[r] = hashlib.sha256(text.encode()).hexdigest()
+    reasons = [f"{r} {w}" for r in REFS for w in recs[r]["why"]]
+    if late:
+        reasons.insert(0, f"the g0 step ended after the cut-off {G0_CUTOFF_UTC}")
     line = (STATEMENT.format(row=ROW, E10_5=shas["E10.5"], E9_5=shas["E9.5"], E8_75=shas["E8.75"])
             if verdict == PASS else
-            f"G0 {ROW}: {verdict}" + (" AT PRACTICE" if verdict == VOID else "") + ": "
-            + "; ".join(f"{r} {w}" for r in REFS for w in recs[r]["why"]) + ".")
+            f"G0 {ROW}: {verdict}" + (" AT PRACTICE" if verdict == VOID else "") + ": " + "; ".join(reasons) + ".")
+    import time as _t
+
     g0 = {"row": ROW, "axis": "h38-oic:g0", "verdict": verdict, "line": line, "chords_sha256": shas,
+          "ended_utc": _t.strftime("%Y-%m-%dT%H:%M:%SZ", _t.gmtime(ended)), "cutoff_utc": G0_CUTOFF_UTC,
+          "sources": doc.get("sources"),
           "ranks_sha256": ranks_sha, "reader_sha256": reader_sha, "refs": recs, "rules": oc.RULES,
           "provenance": provenance(), "commit": provenance()["commit"]}
     write_new(Path(results) / "g0.json", json.dumps(g0, indent=1, sort_keys=True, default=float))
     write_new(Path(results) / "g0.txt", line + "\n")
     print(line, flush=True)
     return EXIT[verdict]
+
+
+def refusals(commit: str | None) -> list[str]:
+    """Every step's refusals: row H38 in TRIES.md, well formed, its outcome cell empty; HEAD the commit; a clean
+    tree."""
+    row = _load("h38_row_for_oic", HERE / "experiments" / "harness" / "h38_row.py")
+    try:
+        text = (HERE / "experiments" / "harness" / "TRIES.md").read_text(encoding="utf-8")
+    except OSError:
+        text = ""
+    why = list(row.before_g0(text))
+    state = provenance()
+    if state["tree_clean"] is not True:
+        why.append("tracked files differ from the commit")
+    if not commit or state["commit"] != commit:
+        why.append(f"HEAD is not {commit!r}")
+    return why
 
 
 def main(argv=None) -> int:
@@ -557,8 +597,13 @@ def main(argv=None) -> int:
     ap.add_argument("--fetched", type=Path, help="the fetch's folder (MANIFEST.json), for step units")
     ap.add_argument("--units", type=Path, help="the folder that holds units.json (default --out)")
     ap.add_argument("--jobs", type=int, default=8)
+    ap.add_argument("--commit", required=True, help="the full hash HEAD must be")
     a = ap.parse_args(argv)
     data = a.data or (HERE / "data" / "raw")
+    why = refusals(a.commit)
+    if why:
+        print(f"G0 {ROW} is refused: " + "; ".join(why), file=sys.stderr)
+        return 2
     try:
         if a.step == "ranks":
             return run_ranks(a.out, data)

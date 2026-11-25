@@ -27,8 +27,11 @@
 # as UV_PROJECT_ENVIRONMENT; the script puts its own checkout's src first); H38_DATA names the data folder (default
 # data/raw). 8 BLAS threads a process, NUMPY_MADVISE_HUGEPAGE=0, TMPDIR under the run's scratch folder. Nothing here
 # deletes or sends anything.
-# Exit codes of the launcher's own refusals: 87 FETCHED or the chords fail the manifest check, 88 the step was
-# started before, 89 the script refuses the step, 90 odd
+# Cut-off: no completed read by 2026-11-26 05:00 UTC is STOP. The launcher does not start when the gate, the run
+# and the read could not end by then (READ_BUDGET, 86), nor the run step with less than RUN_BUDGET left (86); the
+# read itself writes STOP when it ends after the cut-off.
+# Exit codes of the launcher's own refusals: 86 the read could not end by its cut-off, 87 FETCHED or the chords
+# fail the manifest check, 88 the step was started before, 89 the script refuses the step, 90 odd
 # arguments, 91 the run folder exists, 92 parts exist that this launcher did not make, 93 row H38 lacks G0's PASS
 # statement or holds a read outcome, 94 not the checkout's root, 95 a reading exists, 96 HEAD is not COMMIT, 97 no T2
 # stages in the data folder, 98 tracked tree not clean, 99 no virtual environment. Otherwise the failed step's own code:
@@ -69,6 +72,13 @@ begin
 
 SCRIPT=experiments/harness/h38_heart_insitu.py
 OUT=experiments/harness/results/h38_heart_insitu
+READ_CUTOFF=1795669200  # 2026-11-26 05:00 UTC: no completed read by then is STOP
+READ_BUDGET=5400        # seconds the gate, the run and the read are allowed: a call that could not end by the cut-off
+RUN_BUDGET=4500         # does not start (86), nor does the run step with less than this left
+can_finish() { [ $(( $(date -u +%s) + $1 )) -le "$READ_CUTOFF" ]; }
+can_finish "$READ_BUDGET" \
+  || { echo "refused: the read could not end by 2026-11-26 05:00 UTC, its cut-off (no read by then is STOP)" >&2
+       finish 86; }
 head=$(git rev-parse HEAD)
 [ "$head" = "$COMMIT" ] || { echo "refused: HEAD is not $COMMIT" >&2; finish 96; }
 if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
@@ -139,6 +149,8 @@ step_ok
 
 STEP=run
 begin
+can_finish "$RUN_BUDGET" \
+  || { echo "refused: the run step could not end by 2026-11-26 05:00 UTC; it is not started" >&2; finish 86; }
 start_once
 mkdir -p "$S/logs" "$S/exit"
 pids=()

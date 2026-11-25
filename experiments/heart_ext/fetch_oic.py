@@ -36,6 +36,9 @@ Behaviour:
 - `<out>/MANIFEST.json` records, per file: name, URL, size, sha256 (and, for the transcript member, the bundle's URL
   and size, the member's name, method, offsets, sizes and CRC-32), plus the constants above and this script's sha256.
 - Nothing is ever deleted: no file is removed or truncated; a .part longer than its pin is refused.
+- Each record carries completed_utc, the file's own modification time (when its last byte was written). `--check`
+  and `--sources` drop a source (X021 or X022) unless every one of its pinned files is recorded, on disk at its
+  recorded size and completed by SOURCE_CUTOFF_UTC (2026-11-25 21:30 UTC), the time taken from the file itself.
 
   python3 -I -B experiments/heart_ext/fetch_oic.py --out ~/v/vec-ext/heart_oic            # every pinned file
   python3 -I -B experiments/heart_ext/fetch_oic.py --out D --only E16.5_E1S3_GEM_bin1.tsv.gz
@@ -50,6 +53,7 @@ selected file is complete and recorded, 2 on a refusal, 1 when a download fails 
 from __future__ import annotations
 
 import argparse
+import calendar
 import hashlib
 import io
 import json
@@ -70,6 +74,13 @@ MOSTA_BIN_DNB = 24          # OIC125's MOSTA unit: 24 x 24 DNB
 MOSTA_BIN_UM = MOSTA_BIN_DNB * DNB_PITCH_UM   # = 12.0 um
 XENIUM_GRID_UM = 12.0       # OIC125's Xenium unit: a 12 um square of the transcript table's x, y
 assert MOSTA_BIN_UM == XENIUM_GRID_UM
+
+# The cut-off of HEART_MOON1_challenge.md section 4, adopted by the main session: a source whose files are not all
+# complete on the DGX by this moment is dropped. A file's completion time is its own modification time (the moment its
+# last byte was written), recorded as completed_utc when the file is recorded; never a clock read later.
+SOURCE_CUTOFF_UTC = "2026-11-25T21:30:00Z"
+SOURCE_CUTOFF_EPOCH = 1795642200
+MTIME_SLACK_S = 2.0  # a recorded completion time and the file's own may differ by this much (file-system rounding)
 
 USER_AGENT = "python-urllib (public data download)"
 CHUNK = 8 << 20
@@ -248,6 +259,7 @@ def fetch_file(entry: dict, out: Path, log=print) -> dict:
     if n != size:
         raise Failed(f"{final}: {n} bytes, pinned {size}")
     return {"name": entry["name"], "url": entry["url"], "size": n, "sha256": sha, "study": entry["study"],
+            "completed_utc": completed_utc(final),
             "section": entry["section"], "stage": entry["stage"]}
 
 
@@ -362,6 +374,7 @@ def fetch_member(entry: dict, out: Path, log=print) -> dict:
         raise Failed(f"{final}: size {n} and CRC-32 {crc:08x}, the zip directory says {info['size']} and "
                      f"{info['crc32']:08x} (the file is kept; nothing is deleted)")
     rec = {"name": entry["name"], "url": url, "size": n, "sha256": sha, "study": entry["study"],
+           "completed_utc": completed_utc(final),
            "section": entry["section"], "stage": entry["stage"], "archive_bytes": total,
            "archive_md5_on_page": XENIUM_BUNDLE_MD5 if url == XENIUM_BUNDLE_URL else None}
     rec.update({k: info[k] for k in ("member", "method", "crc32", "compressed_size", "header_offset", "data_offset",
@@ -450,6 +463,51 @@ def run(entries: list[dict], out: Path, jobs: int = 4, log=print) -> int:
     return 1 if errors else 0
 
 
+def completed_utc(path: Path) -> str:
+    """A file's completion time: its own modification time, in UTC (ISO 8601, seconds)."""
+    return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(Path(path).stat().st_mtime))
+
+
+def _epoch(utc: str) -> float:
+    return float(calendar.timegm(time.strptime(utc, "%Y-%m-%dT%H:%M:%SZ")))
+
+
+def source_status(out: Path) -> dict:
+    """Per source (X021, X022): kept or dropped, and why. Kept only when every pinned file of the source is recorded
+    in MANIFEST.json, on disk at its recorded size, and completed (its own modification time, which a recorded
+    completed_utc must match) by SOURCE_CUTOFF_UTC."""
+    out = Path(out)
+    try:
+        doc = json.loads((out / "MANIFEST.json").read_text())
+    except (OSError, ValueError):
+        doc = {"files": []}
+    recs = {r.get("name"): r for r in doc.get("files", [])}
+    status = {}
+    for study in sorted({e["study"] for e in PINNED}):
+        why, last = [], None
+        for e in (x for x in PINNED if x["study"] == study):
+            r = recs.get(e["name"])
+            f = out / e["name"]
+            if r is None or r.get("url") != e["url"]:
+                why.append(f"{e['name']} is not recorded")
+                continue
+            if not f.is_file() or f.stat().st_size != r.get("size"):
+                why.append(f"{e['name']} is not on disk at its recorded size")
+                continue
+            mtime = f.stat().st_mtime
+            rec_t = r.get("completed_utc")
+            if rec_t is not None and abs(_epoch(rec_t) - mtime) > MTIME_SLACK_S:
+                why.append(f"{e['name']} changed after it was recorded")
+                continue
+            if mtime > SOURCE_CUTOFF_EPOCH:
+                why.append(f"{e['name']} completed after {SOURCE_CUTOFF_UTC}")
+            last = mtime if last is None else max(last, mtime)
+        status[study] = {"kept": not why, "why": why[:5], "n_why": len(why),
+                         "last_completed_utc": None if last is None else
+                         time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(last))}
+    return status
+
+
 def check_folder(out: Path, chords=()) -> list[str]:
     """Why a fetched folder is not as its MANIFEST.json and this list pin it (empty when it is): every record pinned
     (name and URL), a whole file's size the pin, a member's bundle the pinned bundle, the file on disk of the recorded
@@ -489,6 +547,18 @@ def check_folder(out: Path, chords=()) -> list[str]:
         for name, digest in src.items():
             if sha.get(name) != digest:
                 why.append(f"{c} was made from {name} at another sha256 than this folder records")
+    if chords:
+        status = source_status(out)
+        study_of = {e["name"]: e["study"] for e in PINNED}
+        for c in chords:
+            try:
+                src = json.loads(Path(c).read_text()).get("sources") or {}
+            except (OSError, ValueError):
+                continue
+            for name in src:
+                st = status.get(study_of.get(name, ""), {})
+                if not st.get("kept"):
+                    why.append(f"{c} uses {name}, whose source is dropped (not complete by {SOURCE_CUTOFF_UTC})")
     return why
 
 
@@ -502,7 +572,11 @@ def main(argv=None) -> int:
     ap.add_argument("--check", type=Path,
                     help="check a fetched folder against its MANIFEST.json and the pins (no network)")
     ap.add_argument("--chords", nargs="*", default=[], help="with --check: chord files that must name these files")
+    ap.add_argument("--sources", type=Path, help="print each source's status against the cut-off (no network)")
     a = ap.parse_args(argv)
+    if a.sources is not None:
+        print(json.dumps(source_status(a.sources), indent=1, sort_keys=True))
+        return 0
     if a.check is not None:
         why = check_folder(a.check, a.chords)
         for w in why:

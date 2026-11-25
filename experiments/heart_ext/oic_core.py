@@ -25,8 +25,13 @@ Fixed here, before any outside matrix is read (the row states the same numbers):
   a_s r_skg; b is printed, never applied; a study's stages are averaged where held.
 - Consensus (FIX 2): P_kg = the median over studies, kept where at least two studies hold it and all share its sign,
   never on the typing genes; clipped at |P| <= log 2 (the clip count is reported).
-- G0(c) (FIX 3): per lineage, Spearman of two independent studies' residuals >= SPEARMAN_MIN and above the 95th
-  percentile of N_PERM permutations within PERM_BINS level bins (seed PERM_SEED); a lineage that fails gets no P.
+- G0(c) (FIX 3, as the review of 38eabe2 fixes it): the two studies are residualised on independent halves of the
+  reference's labelled cells (split per category, seed HALF_SEED with the reference's name), each fitted by the
+  instrumental-variable slope with the other half as the instrument (the reference's estimation error and its
+  attenuation then enter neither residual in common), the typing genes left out; per lineage, Spearman of the two
+  residuals >= SPEARMAN_MIN and above the 95th percentile of N_PERM permutations within PERM_BINS level bins (seeded
+  with PERM_SEED and the lineage's name); halves whose contrasts correlate under MIN_HALF_CORR fail the lineage; a
+  lineage that fails gets no P. P itself stays FIX 1's least-squares residual on the whole reference.
 - G0(d): at least N_P_MIN entries with |P| >= P_MIN (under FIX 1's "add", |P| is the change).
 """
 
@@ -63,6 +68,8 @@ SPEARMAN_MIN = 0.25
 N_PERM = 1000
 PERM_SEED = 20261126
 PERM_BINS = 10
+HALF_SEED = 20261127  # the reference's halves for G0(c)
+MIN_HALF_CORR = 0.3  # the halves' contrasts must agree this well, else the lineage's test fails
 TARGET_DAY = 12.5  # E12.5, the test's target
 P1_DAY = 20.5  # P1: birth at E19.5 is P0
 
@@ -71,7 +78,8 @@ RULES = {"cats": CATS, "n_markers": N_MARKERS, "min_unit_counts": MIN_UNIT_COUNT
          "agree_jaccard": AGREE_JACCARD, "min_typed": MIN_TYPED, "min_shared_genes": MIN_SHARED_GENES,
          "min_ref_cells": MIN_REF_CELLS, "min_start_cells": MIN_START_CELLS, "pseudo": PSEUDO,
          "guard_cp10k": GUARD_CP10K, "clip": CLIP, "p_min": P_MIN, "n_p_min": N_P_MIN, "spearman_min": SPEARMAN_MIN,
-         "n_perm": N_PERM, "perm_seed": PERM_SEED, "perm_bins": PERM_BINS, "target_day": TARGET_DAY, "p1_day": P1_DAY}
+         "n_perm": N_PERM, "perm_seed": PERM_SEED, "perm_bins": PERM_BINS, "half_seed": HALF_SEED,
+         "min_half_corr": MIN_HALF_CORR, "target_day": TARGET_DAY, "p1_day": P1_DAY}
 
 
 def sha256_json(obj) -> str:
@@ -329,3 +337,90 @@ def derange_within_bins(level: np.ndarray, key: str, seed: int, bins: int = PERM
         o = rng.permutation(b)
         perm[o] = np.roll(o, -1)
     return perm
+
+
+# ---- G0(c) on independent reference halves (the review of 38eabe2, blocker 1) ----------------------------------------
+def ref_halves(cats, key: str, seed: int = HALF_SEED) -> np.ndarray:
+    """Each reference cell's half (0 or 1): per category, a seeded shuffle of its cells split in two."""
+    cats = np.asarray(cats).astype(str)
+    half = np.zeros(len(cats), np.int64)
+    rng = np.random.default_rng([seed, zlib.crc32(key.encode())])
+    for c in sorted(set(cats)):
+        idx = np.flatnonzero(cats == c)
+        o = rng.permutation(idx)
+        half[o[len(o) // 2:]] = 1
+    return half
+
+
+def iv_residual(y: np.ndarray, x: np.ndarray, z: np.ndarray, guard: np.ndarray) -> tuple[np.ndarray, dict]:
+    """y = alpha + b x + r over the guarded entries, b the instrumental-variable slope cov(y, z) / cov(x, z) (x and z
+    two independent estimates of one contrast). NaN off the guard, and everywhere when the halves are too weak
+    (corr(x, z) under MIN_HALF_CORR, or fewer than ten entries)."""
+    g = np.asarray(guard, bool) & np.isfinite(y) & np.isfinite(x) & np.isfinite(z)
+    r = np.full(len(y), np.nan)
+    n = int(g.sum())
+    if n < 10:
+        return r, {"b": float("nan"), "alpha": float("nan"), "n": n, "corr_xz": float("nan"), "weak": True}
+    yy, xx, zz = y[g], x[g], z[g]
+    cxz = float(np.cov(xx, zz)[0, 1])
+    corr = float(np.corrcoef(xx, zz)[0, 1])
+    if not (cxz > 0 and corr >= MIN_HALF_CORR):
+        return r, {"b": float("nan"), "alpha": float("nan"), "n": n, "corr_xz": corr, "weak": True}
+    b = float(np.cov(yy, zz)[0, 1]) / cxz
+    alpha = float(yy.mean() - b * xx.mean())
+    r[g] = yy - alpha - b * xx
+    return r, {"b": b, "alpha": alpha, "n": n, "corr_xz": corr, "weak": False}
+
+
+def g0c_tests(ref_C, ref_cats, panel: list[str], studies: list[dict], excluded: np.ndarray, key: str,
+              n_perm: int = N_PERM) -> dict:
+    """G0(c) for every lineage the two studies both hold. `studies`: two dicts {name, genes (the study's G_s), centre
+    (its centre set), stages: stage -> category -> mean CP10k over genes}. The first study is residualised on half 0
+    instrumented by half 1, the second on half 1 instrumented by half 0; the guard is GUARD_CP10K in the source and
+    in the whole reference; the excluded (typing) genes are out; the level is the whole reference's. Returns, per
+    lineage, the Spearman test's record (with the fits)."""
+    if len(studies) != 2:
+        raise ValueError("G0(c) takes one pair of studies")
+    pidx = {g: i for i, g in enumerate(panel)}
+    half = ref_halves(ref_cats, key)
+    code = np.array([CATS.index(c) if c in CATS else -1 for c in np.asarray(ref_cats).astype(str)])
+    C = sparse.csr_matrix(ref_C)
+    resid, level, fits = [], {}, {}
+    for i, st in enumerate(studies):
+        cols = [pidx[g] for g in st["genes"]]
+        Cs = C[:, cols]
+        whole = category_means(Cs, code)
+        hm = [category_means(Cs[half == h], code[half == h]) for h in (0, 1)]
+        centre = [k for k in st["centre"] if k in whole and k in hm[0] and k in hm[1]]
+        out = {}
+        if len(centre) >= 2:
+            cx = contrasts({k: hm[i][k] for k in centre}, centre)
+            cz = contrasts({k: hm[1 - i][k] for k in centre}, centre)
+            per = {k: [] for k in centre}
+            for stage, means in st["stages"].items():
+                if not all(k in means for k in centre):
+                    continue
+                cs = contrasts({k: means[k] for k in centre}, centre)
+                for k in centre:
+                    guard = (means[k] >= GUARD_CP10K) & (whole[k] >= GUARD_CP10K)
+                    r, fit = iv_residual(cs[k], cx[k], cz[k], guard)
+                    fits[f"{st['name']}/{stage}/{k}"] = fit
+                    full = np.full(len(panel), np.nan)
+                    full[cols] = r
+                    per[k].append(full)
+            out = {k: study_mean(v) for k, v in per.items() if v}
+            for k in centre:
+                if k not in level:
+                    level[k] = np.full(len(panel), np.nan)
+                    level[k][cols] = np.log(whole[k] + PSEUDO)
+        resid.append(out)
+    ex = np.asarray(excluded, bool)
+    tests = {}
+    for k in CATS:
+        if k not in resid[0] or k not in resid[1]:
+            tests[k] = {"pass": False, "why": "not held by both studies"}
+            continue
+        a, b = resid[0][k].copy(), resid[1][k].copy()
+        a[ex], b[ex] = np.nan, np.nan
+        tests[k] = spearman_test(a, b, level[k], key=k, n_perm=n_perm)
+    return {"tests": tests, "fits": fits}

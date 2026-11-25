@@ -33,16 +33,21 @@ SRC_SHA = "e" * 64
 
 
 def fetched_folder(path: Path, xenium: bool = False) -> Path:
-    """A fetched folder that passes fetch_oic.py --check: a sparse file of the pinned size and its record (and, with
-    xenium, a small transcript member and its record)."""
+    """A fetched folder that passes fetch_oic.py --check, with source X022 complete before its cut-off: every pinned
+    MOSTA file a sparse file of its pinned size, completed at a fixed time before the cut-off, and its record (and,
+    with xenium, a small transcript member and its record)."""
     path.mkdir(parents=True, exist_ok=True)
-    f = path / MOSTA["name"]
-    with open(f, "wb"):
-        pass
-    os.truncate(f, MOSTA["bytes"])
-    files = [{"name": MOSTA["name"], "url": MOSTA["url"], "size": MOSTA["bytes"], "sha256": SRC_SHA, "study": "X022"}]
+    files = []
+    for e in (x for x in fetch_oic.PINNED if x["study"] == "X022"):
+        f = path / e["name"]
+        with open(f, "wb"):
+            pass
+        os.truncate(f, e["bytes"])
+        os.utime(f, (BEFORE_CUTOFFS, BEFORE_CUTOFFS))
+        files.append({"name": e["name"], "url": e["url"], "size": e["bytes"], "sha256": SRC_SHA, "study": "X022"})
     if xenium:
         (path / XEN["name"]).write_bytes(b"x" * 10)
+        os.utime(path / XEN["name"], (BEFORE_CUTOFFS, BEFORE_CUTOFFS))
         files.append({"name": XEN["name"], "url": XEN["url"], "size": 10, "sha256": SRC_SHA, "study": "X021",
                       "archive_bytes": XEN["archive_bytes"]})
     (path / "MANIFEST.json").write_text(json.dumps({"files": files}, indent=1))
@@ -120,6 +125,24 @@ sys.exit(92)
 '''
 
 
+BEFORE_CUTOFFS = 1795636800  # 2026-11-25 20:00 UTC, before every cut-off: the tests never read the real clock
+STUB_DATE = r'''#!/usr/bin/env python3
+import os, sys
+from pathlib import Path
+if sys.argv[1:] != ["-u", "+%s"]:
+    sys.exit(97)
+seq = os.environ.get("STUB_NOW_SEQ")
+if seq:
+    f = Path(os.environ["HOME"]) / "datecalls"
+    n = int(f.read_text()) if f.exists() else 0
+    f.write_text(str(n + 1))
+    vals = seq.split(",")
+    print(vals[min(n, len(vals) - 1)])
+else:
+    print(os.environ.get("STUB_NOW", "1795636800"))
+'''
+
+
 def h38_line(cell="pending", first=h38_row.FIRST_CELL):
     return f"| {first} | heart | " + " | ".join(["x"] * 8) + f" | {cell} |\n"
 
@@ -145,6 +168,8 @@ def repo(tmp_path):
     (tmp_path / "bin").mkdir()
     (tmp_path / "bin" / "uv").write_text(STUB_UV)
     (tmp_path / "bin" / "uv").chmod(0o755)
+    (tmp_path / "bin" / "date").write_text(STUB_DATE)
+    (tmp_path / "bin" / "date").chmod(0o755)
     (root / ".venv/bin/python").write_text('#!/bin/sh\ncase "$*" in *pyarrow*) exit 1 ;; esac\nexit 0\n')
     (root / ".venv/bin/python").chmod(0o755)
     (root / "experiments/harness/h38_row.py").write_text((ROOT / "experiments/harness/h38_row.py").read_text())
@@ -426,3 +451,45 @@ def test_build_builds_oic125_twice_after_the_identity(build_repo, tmp_path):
     assert "OIC125a/T2heart_organ_ts125_ti.h5ad" in (s / "SHA256SUMS").read_text()
     code, _ = launch(r, patched, r.head, "bad", str(r.fetched), STUB_CHECK_EXIT="1")
     assert code == 13
+
+
+# ---- the cut-offs (the main session's: sources by 2026-11-25 21:30, G0 by 2026-11-26 03:00, the read by 05:00 UTC) --
+G0_CUT, READ_CUT, SOURCE_CUT = 1795662000, 1795669200, 1795642200
+
+
+def test_g0_does_not_start_after_its_cut_off(repo):
+    assert launch(repo, G0_SH, repo.head, "late", "prep", str(repo.fetched), STUB_NOW=str(G0_CUT))[0] == 83
+    assert launch(repo, G0_SH, repo.head, "early", "prep", str(repo.fetched), STUB_NOW=str(G0_CUT - 1))[0] == 0
+    assert script_steps(repo, "oic_g0.py") == ["tests", "ranks", "units", "regions"]
+    assert all("--commit" in c and repo.head in c for c in calls(repo) if any(w.endswith("oic_g0.py") for w in c))
+
+
+def test_the_read_does_not_start_when_it_could_not_end_by_its_cut_off(read_repo):
+    r = read_repo
+    assert h38(r, r.head, "late", STUB_NOW=str(READ_CUT - 5399))[0] == 86 and not calls(r)
+    code, _ = h38(r, r.head, "mid", STUB_NOW_SEQ=f"{READ_CUT - 5400},{READ_CUT - 4499}")
+    assert code == 86
+    assert script_steps(r, "h38_heart_insitu.py") == ["tests", "ask gate", "gate"]  # the gate ran, the run did not
+    assert (r.home / "v/scratch/h38/gate.exit").read_text().strip() == "0"
+    assert not (r.home / "v/scratch/h38/run.exit").exists()
+
+
+def test_a_late_or_incomplete_source_is_dropped_and_its_chords_refused(read_repo):
+    r = read_repo
+    late = r.fetched / "E16.5_E2S13_GEM_bin1.tsv.gz"
+    os.utime(late, (SOURCE_CUT + 60, SOURCE_CUT + 60))
+    st = fetch_oic.source_status(r.fetched)
+    assert not st["X022"]["kept"] and any("completed after" in w for w in st["X022"]["why"])
+    assert h38(r, r.head, "drop")[0] == 87  # the practice chords use files of a dropped source
+    os.utime(late, (SOURCE_CUT, SOURCE_CUT))
+    assert fetch_oic.source_status(r.fetched)["X022"]["kept"]
+    man = json.loads((r.fetched / "MANIFEST.json").read_text())
+    man["files"] = [f for f in man["files"] if f["name"] != late.name]
+    (r.fetched / "MANIFEST.json").write_text(json.dumps(man))
+    assert not fetch_oic.source_status(r.fetched)["X022"]["kept"]  # a file not recorded: incomplete
+
+
+def test_the_build_refuses_chords_of_a_dropped_source(build_repo):
+    r = build_repo
+    os.utime(r.fetched / "E15.5_E1S1_GEM_bin1.tsv.gz", (SOURCE_CUT + 1, SOURCE_CUT + 1))
+    assert launch(r, BUILD_SH, r.head, "drop", str(r.fetched))[0] == 89 and not calls(r)

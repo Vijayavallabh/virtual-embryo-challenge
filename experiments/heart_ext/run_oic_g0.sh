@@ -22,7 +22,10 @@
 #          with its regions step at 0, the reader's file committed, and no G0 result yet
 # OIC_VENV names the virtual environment (default $PWD/.venv, which `uv sync --frozen --inexact --group external`
 # fills); OIC_DATA the competition data folder (default data/raw); OIC_JOBS the units step's processes (default 8).
-# Exit codes of the launcher's own refusals: 84 the work folder of PREP_RUN is not a finished prep, 85 the reader's
+# Cut-offs: neither phase starts after 2026-11-26 03:00 UTC (83); a source not complete by 2026-11-25 21:30 UTC
+# (each file's own completion time) is dropped by the units step (fetch_oic.source_status; <S>/sources.json).
+# Exit codes of the launcher's own refusals: 83 past the G0 cut-off, 84 the work folder of PREP_RUN is not a
+# finished prep, 85 the reader's
 # file is not committed, 86 a G0 result exists, 87 pyarrow is not in the environment, 88 G0 was started before, 90 odd
 # arguments, 91 the run folder exists, 92 FETCHED fails fetch_oic.py --check, 93 row H38 missing, malformed or with a
 # statement, 94 not the checkout's root, 96 HEAD is not COMMIT, 97 no T2 stages, 98 tracked tree not clean, 99 no
@@ -71,6 +74,10 @@ begin
 
 SCRIPT=experiments/heart_ext/oic_g0.py
 RESULTS=experiments/heart_ext/results
+G0_CUTOFF=1795662000  # 2026-11-26 03:00 UTC: no G0 PASS by then is STOP, so neither phase starts after it
+now=$(date -u +%s)
+[ "$now" -lt "$G0_CUTOFF" ] \
+  || { echo "refused: it is past 2026-11-26 03:00 UTC, the G0 cut-off (no G0 PASS by then is STOP)" >&2; finish 83; }
 READER=experiments/heart_ext/oic_reader.json
 head=$(git rev-parse HEAD)
 [ "$head" = "$COMMIT" ] || { echo "refused: HEAD is not $COMMIT" >&2; finish 96; }
@@ -81,6 +88,7 @@ fi
 [ -f "$SCRIPT" ] || { echo "refused: run from the root of the checkout ($SCRIPT is not here)" >&2; finish 94; }
 python3 -I -B experiments/harness/h38_row.py check experiments/harness/TRIES.md 2> "$S/row.err" \
   || { echo "refused: row H38 is missing, malformed or already holds a statement (see $S/row.err)" >&2; finish 93; }
+python3 -I -B experiments/heart_ext/fetch_oic.py --sources "$FETCHED" > "$S/sources.json" 2>&1
 python3 -I -B experiments/heart_ext/fetch_oic.py --check "$FETCHED" > "$S/manifest.out" 2>&1 \
   || { echo "refused: $FETCHED is not as its MANIFEST.json and the pins say (see $S/manifest.out)" >&2; finish 92; }
 VENV=${OIC_VENV:-$PWD/.venv}
@@ -121,16 +129,17 @@ if [ "$PHASE" = prep ]; then
   mkdir "$S/work"
   STEP=ranks
   begin
-  $PY "$SCRIPT" ranks --out "$S/work" --data "$DATA" > "$S/ranks.out" 2>&1 || finish $?
+  $PY "$SCRIPT" ranks --out "$S/work" --data "$DATA" --commit "$COMMIT" > "$S/ranks.out" 2>&1 || finish $?
   step_ok
   STEP=units
   begin
-  $PY "$SCRIPT" units --out "$S/work" --fetched "$FETCHED" --jobs "${OIC_JOBS:-8}" > "$S/units.out" 2>&1 \
+  $PY "$SCRIPT" units --out "$S/work" --fetched "$FETCHED" --jobs "${OIC_JOBS:-8}" --commit "$COMMIT" \
+    > "$S/units.out" 2>&1 \
     || finish $?
   step_ok
   STEP=regions
   begin
-  $PY "$SCRIPT" regions --out "$S/work" > "$S/regions.out" 2>&1 || finish $?
+  $PY "$SCRIPT" regions --out "$S/work" --commit "$COMMIT" > "$S/regions.out" 2>&1 || finish $?
   step_ok
 else
   STEP=g0
@@ -139,7 +148,7 @@ else
     || { echo "refused: G0 was started before ($BASE/g0.exit exists); it is not started twice" >&2; finish 88; }
   OWNED=g0
   echo "$COMMIT $RUN $PREP_RUN" > "$BASE/g0.head"
-  $PY "$SCRIPT" g0 --out "$W" --units "$W" --data "$DATA" > "$S/g0.out" 2>&1 || finish $?
+  $PY "$SCRIPT" g0 --out "$W" --units "$W" --data "$DATA" --commit "$COMMIT" > "$S/g0.out" 2>&1 || finish $?
   step_ok
 fi
 

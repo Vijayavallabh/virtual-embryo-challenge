@@ -122,7 +122,7 @@ build() {  # folder name args: the build, its half, `vec check` on both; exit 11
   shift 2
   mkdir -p "$d"
   $PY experiments/builds/build_test.py heart "$@" --out "$d/$name.h5ad" > /dev/null 2>&1 || return 11
-  $PY experiments/builds/halve.py "$d/$name.h5ad" "$d/${name}_half.h5ad" > /dev/null 2>&1 || return 12
+  $PY experiments/builds/halve.py "$d/$name.h5ad" "$d/${name}_half.h5ad" --seed 1000001 > /dev/null 2>&1 || return 12
   for f in "$d/$name.h5ad" "$d/${name}_half.h5ad"; do
     uv run --frozen --no-sync vec check "$f" --board "$BOARD" > /dev/null 2>&1 || return 13
   done

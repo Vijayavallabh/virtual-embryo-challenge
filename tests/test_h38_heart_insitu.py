@@ -202,11 +202,19 @@ def test_chord_shas_need_the_row_statement_and_the_committed_files(h38, tmp_path
         p.write_text(json.dumps({"ref": ref}))
         shas[ref] = hashlib.sha256(p.read_bytes()).hexdigest()
     monkeypatch.setattr(h38, "CHORDS", chords)
+    monkeypatch.setattr(h38, "G0_RECORD", chords / "g0.json")
     monkeypatch.setattr(h38, "tracked_clean", lambda p: True)
     line = f"| {h38_row.FIRST_CELL} | heart | " + " | ".join(["x"] * 8) + " | {cell} |\n"
     g0 = h38_row.g0_statement(shas["E10.5"], shas["E9.5"], shas["E8.75"])
+    record = {"verdict": "PASS", "chords_sha256": shas, "ended_utc": "2026-11-26T02:59:59Z"}
+    (chords / "g0.json").write_text(json.dumps(record))
     got, why = h38.chord_shas(line.format(cell=g0))
     assert got == shas and not why
+    for bad in ({**record, "ended_utc": "2026-11-26T03:00:01Z"}, {**record, "verdict": "STOP"},
+                {**record, "chords_sha256": {**shas, "E9.5": "0" * 64}}, {**record, "ended_utc": None}):
+        (chords / "g0.json").write_text(json.dumps(bad))
+        assert h38.chord_shas(line.format(cell=g0))[0] is None, bad  # G0 not a timely PASS with these chords
+    (chords / "g0.json").write_text(json.dumps(record))
     assert h38.chord_shas(line.format(cell="pending"))[0] is None
     assert h38.chord_shas(line.format(cell=g0 + " OUTCOME H38: STOP."))[0] is None
     (chords / "chords_E9.5.json").write_text("{}")
@@ -244,3 +252,11 @@ def test_the_outcome_lines_are_the_row_modules(h38):
     for w in ("PASS", "STOP", "STOP (IDLE)", "VOID"):
         assert h38_row.OUTCOME_FORM.fullmatch(h38_row.outcome_statement(w))
         assert w in h38.FOLLOWS
+
+
+def test_a_read_that_ends_after_its_cut_off_is_stop(h38):
+    parts, gate = make(h38, GOOD, DE_UP)
+    assert h38.reading(parts, gate, COMMIT, SHAS, ended=h38.READ_CUTOFF_EPOCH)["outcome"] == "PASS"
+    late = h38.reading(parts, gate, COMMIT, SHAS, ended=h38.READ_CUTOFF_EPOCH + 1.0)
+    assert late["outcome"] == "STOP" and late["line"] == "OUTCOME H38: STOP." and "cut-off" in late["late"]
+    assert late["ended_utc"] == "2026-11-26T05:00:01Z"

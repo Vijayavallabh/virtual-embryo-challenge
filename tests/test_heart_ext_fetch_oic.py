@@ -262,7 +262,8 @@ def test_check_folder_against_the_manifest_and_the_chords(tmp_path):
     assert mod.check_folder(tmp_path) == []
     ch = tmp_path / "chords.json"
     ch.write_text(json.dumps({"sources": {e["name"]: "a" * 64}}))
-    assert mod.check_folder(tmp_path, [ch]) == []
+    why = mod.check_folder(tmp_path, [ch])  # one file of X022's 23: the source is incomplete, so dropped
+    assert len(why) == 1 and "whose source is dropped" in why[0]
     ch.write_text(json.dumps({"sources": {e["name"]: "b" * 64}}))
     assert mod.check_folder(tmp_path, [ch])
     ch.write_text(json.dumps({"sources": {}}))
@@ -276,3 +277,54 @@ def test_check_folder_against_the_manifest_and_the_chords(tmp_path):
     p = subprocess.run([sys.executable, "-I", "-B", str(SCRIPT), "--check", str(tmp_path)], capture_output=True,
                        text=True, timeout=60)
     assert p.returncode == 2 and "refused" in p.stderr
+
+
+def test_records_carry_their_completion_time(server, tmp_path):
+    import os
+    import time
+
+    mod = _load()
+    _, base = server
+    files = {"E15.5_E1S3_GEM_bin1.tsv.gz": b"z" * 999}
+    _Handler.files = {"/" + k: v for k, v in files.items()}
+    ents = _entries(mod, base, files)
+    mod.PINNED = tuple(ents)
+    out = tmp_path / "t"
+    assert mod.run(ents, out, log=lambda *_: None) == 0
+    rec = json.loads((out / "MANIFEST.json").read_text())["files"][0]
+    mtime = os.stat(out / "E15.5_E1S3_GEM_bin1.tsv.gz").st_mtime
+    assert rec["completed_utc"] == time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(mtime))
+
+
+def test_source_status_drops_a_late_or_incomplete_source(tmp_path):
+    import os
+
+    mod = _load()
+    before, cut = mod.SOURCE_CUTOFF_EPOCH - 3600, mod.SOURCE_CUTOFF_EPOCH
+    files = []
+    for e in (x for x in mod.PINNED if x["study"] == "X022"):
+        f = tmp_path / e["name"]
+        with open(f, "wb"):
+            pass
+        os.truncate(f, e["bytes"])
+        os.utime(f, (before, before))
+        files.append({"name": e["name"], "url": e["url"], "size": e["bytes"], "sha256": "a" * 64,
+                      "completed_utc": mod.completed_utc(f)})
+    (tmp_path / "MANIFEST.json").write_text(json.dumps({"files": files}))
+    st = mod.source_status(tmp_path)
+    assert st["X022"]["kept"] and not st["X021"]["kept"]  # X021 not recorded: dropped
+    last = tmp_path / files[-1]["name"]
+    os.utime(last, (cut, cut))  # exactly at the cut-off: still complete by it, but it changed after its record
+    st = mod.source_status(tmp_path)
+    assert not st["X022"]["kept"] and "changed after it was recorded" in st["X022"]["why"][0]
+    files[-1]["completed_utc"] = mod.completed_utc(last)
+    (tmp_path / "MANIFEST.json").write_text(json.dumps({"files": files}))
+    assert mod.source_status(tmp_path)["X022"]["kept"]
+    os.utime(last, (cut + 1, cut + 1))
+    files[-1]["completed_utc"] = mod.completed_utc(last)
+    (tmp_path / "MANIFEST.json").write_text(json.dumps({"files": files}))
+    st = mod.source_status(tmp_path)
+    assert not st["X022"]["kept"] and "completed after" in st["X022"]["why"][0]
+    p = subprocess.run([sys.executable, "-I", "-B", str(SCRIPT), "--sources", str(tmp_path)], capture_output=True,
+                       text=True, timeout=60)
+    assert p.returncode == 0 and json.loads(p.stdout)["X022"]["kept"] is False

@@ -103,6 +103,15 @@ IDLE_BAR = 0.10
 LIB_TOL = 0.01
 J5_MULT = 2.0
 PASS, FAIL, STOP, IDLE, VOID = "PASS", "FAIL", "STOP", "STOP (IDLE)", "VOID"
+# The cut-offs adopted by the main session (HEART_MOON1_challenge.md section 4): G0's PASS must have ended by
+# 2026-11-26 03:00 UTC (g0.json's ended_utc), and a read that ends after 2026-11-26 05:00 UTC is STOP.
+G0_CUTOFF_UTC, READ_CUTOFF_UTC = "2026-11-26T03:00:00Z", "2026-11-26T05:00:00Z"
+READ_CUTOFF_EPOCH = 1795669200
+G0_RECORD = CHORDS / "g0.json"
+
+
+def utc_now() -> float:
+    return time.time()
 GATE_EXIT = {PASS: 0, FAIL: 3}
 
 
@@ -137,6 +146,13 @@ def chord_shas(text: str | None = None) -> tuple[dict | None, list[str]]:
     if shas is None:
         return None, why
     out = dict(zip(("E10.5", "E9.5", "E8.75"), shas, strict=True))
+    g0 = _load_json(G0_RECORD)
+    if g0 is None or not tracked_clean(G0_RECORD):
+        why.append("G0's record (experiments/heart_ext/results/g0.json) is not committed")
+    elif g0.get("verdict") != PASS or g0.get("chords_sha256") != out:
+        why.append("G0's record does not say PASS with the row's chords")
+    elif not (isinstance(g0.get("ended_utc"), str) and g0["ended_utc"] <= G0_CUTOFF_UTC):
+        why.append(f"G0 did not end by its cut-off {G0_CUTOFF_UTC}")
     for ref, sha in out.items():
         p = CHORDS / f"chords_{ref}.json"
         if not p.is_file() or hashlib.sha256(p.read_bytes()).hexdigest() != sha:
@@ -482,7 +498,17 @@ FOLLOWS = {PASS: ("What follows: one priced question to the captain with both wo
                   "the void conditions.")}
 
 
-def reading(parts: dict, gate: dict | None, commit: str | None, shas: dict | None, unreadable=()) -> dict:
+def centre_sets() -> dict:
+    """FIX 5: the centre set of each practice chord file, as G0 wrote it (reported by the read)."""
+    out = {}
+    for ref in ("E9.5", "E8.75"):
+        doc = _load_json(CHORDS / f"chords_{ref}.json") or {}
+        out[ref] = doc.get("centre")
+    return out
+
+
+def reading(parts: dict, gate: dict | None, commit: str | None, shas: dict | None, unreadable=(),
+            ended: float | None = None) -> dict:
     try:
         why = void_reasons(parts, gate, commit, shas, unreadable)
     except (KeyError, TypeError, ValueError, IndexError, AttributeError, ZeroDivisionError) as e:
@@ -499,7 +525,11 @@ def reading(parts: dict, gate: dict | None, commit: str | None, shas: dict | Non
         idle = all(b[w]["idle"] for w, _ in WORLDS)
         outcome = PASS if passed else IDLE if idle else STOP
         res.update(bars=b, tables=tab, s1_bar=s1, s2_bar=s2, j5_floor=gate.get("j5_floor"))
-    res.update(outcome=outcome, line=hrow.outcome_statement(outcome), follows=FOLLOWS[outcome])
+        if ended is not None and ended > READ_CUTOFF_EPOCH:
+            outcome = STOP
+            res["late"] = f"the read ended after its cut-off {READ_CUTOFF_UTC}"
+    res.update(outcome=outcome, line=hrow.outcome_statement(outcome), follows=FOLLOWS[outcome],
+               ended_utc=None if ended is None else time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(ended)))
     return res
 
 
@@ -510,6 +540,7 @@ def text(res: dict) -> str:
     if res["void"]:
         return "\n".join([*lines, "VOID, the conditions found:", *res["why"]]) + "\n"
     lines.append(f"Bars: S1 {res['s1_bar']:.3f}, S2 {res['s2_bar']:.3f} (J5 floor {res['j5_floor']}).")
+    lines.append(f"Centre sets (FIX 5): {res.get('centre')}." + (f" {res['late']}." if res.get("late") else ""))
     for w, _ in WORLDS:
         lines.append(f"{w}: " + ", ".join(f"{k} {v}" for k, v in res["bars"][w].items()))
         for a, b in PAIRS:
@@ -535,7 +566,8 @@ def cmd_read(a) -> None:
     refuse_read(out, a.commit)
     shas, _ = chord_shas()
     parts, bad = load_parts(Path(a.runs))
-    res = reading(parts, _load_json(Path(a.gate) / GATE_JSON), a.commit, shas, bad)
+    res = reading(parts, _load_json(Path(a.gate) / GATE_JSON), a.commit, shas, bad, ended=utc_now())
+    res["centre"] = centre_sets()
     out.mkdir(parents=True, exist_ok=True)
     h35._write_new(out / "reading.json", json.dumps(res, indent=1, default=float))
     h35._write_new(out / "reading.txt", text(res))
