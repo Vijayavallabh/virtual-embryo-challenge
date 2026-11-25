@@ -12,6 +12,7 @@ names R70, OIC125, the command and the sha256; every refusal (another ruling or 
 H38, a missing or other chord file, a chord a type cannot carry), before any file is written. Nothing is read from
 data/ and nothing is scored."""
 
+# ruff: noqa: F811 (the fixtures of tests/test_heart_trend_line_h.py are imported and taken by name)
 from __future__ import annotations
 
 import hashlib
