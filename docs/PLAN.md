@@ -14216,3 +14216,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **The pre-set statement, verbatim:** "Try H36: NOT PASSED (B1 in own, B2 in own, B4 in own, B1 in CLEAN, B2 in
     CLEAN): OXP125 is not built." Twelve heart tries, 106 to 117. By ruling row R56, OXP125 is not built; OTS125 stays
     the heart's best.
+- 2026-11-25 (g), the captain reports one more headline and the rules are applied by their letter (state at 01:29 UTC,
+  2026-11-25). Written by the AI assistant, which records the headline only.
+  - **The paste:** T1:test `T1_s2rcMSBd10.h5ad` 73.42 (shown as submitted 2026-11-25 01:27). Its sha256 on disk
+    matches its sheet row. The paste's per-metric lines, rank and file size are not recorded or used.
+  - **Each rule by its letter.** It is below the board's best (MS20, 73.82). Row R51's gate for MSBd15 (MSBd10 above
+    MSB, 73.47) is not met, so `T1_s2rcMSBd15.h5ad` is not uploaded; it stands in the sheet as not uploaded by its
+    rule. Standing unchanged: 203.695.
