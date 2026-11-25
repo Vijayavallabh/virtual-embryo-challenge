@@ -15034,3 +15034,15 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     files at once with no condition; row R51 gated MSBH10 on MSBH05 beating MSB (met) and sets no rule on MSBH10's own
     headline: nothing follows. `T1_s2rcMSBm075.h5ad` stays due.
   - **Standing unchanged:** 204.865.
+- 2026-11-25 (bbbb), T1's second refinement round on MSBm10: the captain's yes to four files, recorded as ruling row
+  R73 before any code (state at 19:55 UTC). Written by the AI assistant, which designed none of it.
+  - **The round.** The captain's request: "start another T1 refinement round on MSBm10". A score-blind designer
+    (`T1_REF2_design.md`, brief `TASK_t1ref2.md`) named four one-step files on MSBm10's command; a cold challenger
+    (`T1_REF2_challenge.md`) kept all four with fixes F1 to F7 (evidence re-cited; prices to J6's form; H10 sent at
+    once, since its condition could not be read by 06:00 UTC on the design's own timeline; R51's single-step identity
+    rebuild added) and found no closed lever moved and every string new.
+  - **The captain's pick:** "All four", to a question with no recommended option that gave the files, the challenger's
+    blind price (about 0.65 that at least one beats MSBm10, best about +1.3) and the fact that the H files reuse
+    earlier H files' Blood rows and that d steps were uploaded on MS20, folded into no odds. Recorded as R73.
+  - **Next:** an engineer on R66's route with F1 to F7 (branch campaign/t1-r73), an independent review, a gate
+    dry-run, DGX builds twice with one sha256, the record and the hand-over.
