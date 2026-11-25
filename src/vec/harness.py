@@ -56,7 +56,7 @@ import h5py
 import numpy as np
 import yaml
 
-from vec import t2_build
+from vec import run_sort, t2_build
 from vec.adoption import SEEDS, keep_change
 from vec.boards import GROUPS, RANKED_METRICS, REPO_ROOT, VALIDATION_BOARDS, Board, load_boards
 from vec.core import draw_balanced, herd_rows
@@ -2165,6 +2165,65 @@ CANDIDATES.update({
                      "positions": t2_build.POSITIONS[1], "stream": t2_build.FLOOR_EXACT_STREAM, "shape_form": form,
                      "scope": "whole"}, requires=_interp)
     for name, form in OSR_CANDIDATES.items()})
+
+
+# Row E57 (the score-blind ERROR designer's proposal P1 of the embryo design round of 2026-11-24/25, "RS: one run per
+# side", as its cold challenger fixed it): O (fgw_shape0x_ov) with one step on its final coordinates that moves
+# expression rows only (vec.run_sort.sort_rows), and its displacement-matched placebo. Two new names; no existing
+# candidate, option or default changes, and _fgw itself is untouched (it is a registered builder whose bytecode
+# tests/test_e51_so_ohi_read.py pins): _overlay_mixture repeats O's path through _fgw word for word.
+RS_CANDIDATES = {"fgw_shape0x_ov_rs": "run_sorted", "fgw_shape0x_ov_rs_same": "run_sorted_same"}
+
+
+def _overlay_mixture(ctx: BuildContext):
+    """O's build up to finish, as _fgw(ctx, t_pos=0.0, positions="floor_exact", shape_form="overlay") makes it with
+    expression "mixture": (the earlier bracket's stage, the later's, the interpolation, X float32 in the board's gene
+    order)."""
+    t = ctx.task
+    before, after = ctx.inputs["before"], ctx.inputs["after"]
+    lo, hi = t.role_days["before"], t.role_days["after"]
+    g = ctx.board.genes
+    frac = (t.target_day - lo) / (hi - lo)
+    Eb, Ea = dense(before[:, g].X).astype(np.float32), dense(after[:, g].X).astype(np.float32)
+    res = t2_build.interpolate_clouds(np.asarray(before.obsm[COORD_KEY], dtype=float)[:, :3],
+                                      np.asarray(after.obsm[COORD_KEY], dtype=float)[:, :3], Eb, Ea,
+                                      frac, count_for(ctx.board, before.n_obs), ctx.seed,
+                                      target_rms=target_rms(ctx), t_pos=0.0, with_partners=False, herd=False,
+                                      move_coupling=t2_build.MOVE_COUPLINGS[0], draw=t2_build.DRAWS[0],
+                                      log_depth=None, with_coupling=False, t_mix=None,
+                                      positions=t2_build.POSITIONS[1], shape_form="overlay")
+    X = np.empty((len(res.rows), len(g)), dtype=np.float32)
+    X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
+    return before, after, res, X
+
+
+def rs_step(before, after, res, mode: str):
+    """Row E57's step on an interpolation's final cloud: vec.run_sort.sort_rows on its coordinates, brackets, each row's
+    released label (obs celltype) and lineage group (obs group) in its own bracket."""
+    labels = t2_build.drawn_labels(res, before.obs["celltype"], after.obs["celltype"])
+    groups = t2_build.drawn_labels(res, before.obs["group"], after.obs["group"])
+    return run_sort.sort_rows(res.coords, res.stage, labels, groups, mode=mode)
+
+
+def _fgw_shape0x_ov_rs(mode: str) -> Callable[[BuildContext], Stage]:
+    """Embryo candidates E57b (run_sorted) and E57c (run_sorted_same): O's rows and positions, the expression rows
+    re-assigned by the step on the final coordinates (the cloud guard reads coordinates only, so it is O's)."""
+    def build(ctx: BuildContext) -> Stage:
+        before, after, res, X = _overlay_mixture(ctx)
+        step = rs_step(before, after, res, mode)
+        return finish(ctx, before, X[step.src], res.coords, guard_source=res.pool_coords,
+                      guard_weights=res.pool_weights)
+
+    return build
+
+
+CANDIDATES.update({
+    name: Candidate(name, frozenset({"T2"}), (), _fgw_shape0x_ov_rs(mode),
+                    {"what": "fgw_shape0x_ov (the overlay form on the earlier bracket's own positions) with its "
+                             f"expression rows re-assigned by vec.run_sort mode {mode} on the final coordinates",
+                     "rule": run_sort.RULE, "positions": t2_build.POSITIONS[1], "stream": t2_build.FLOOR_EXACT_STREAM,
+                     "shape_form": "overlay", "neighbourhood": mode, "scope": "whole"}, requires=_interp)
+    for name, mode in RS_CANDIDATES.items()})
 
 
 # ------------------------------------------------------------------------------------------------ read guard

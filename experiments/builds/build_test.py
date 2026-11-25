@@ -326,6 +326,18 @@ machine, and an official upload needs the captain's go-ahead.
           without it is refused. Its record gains a series_back block (the option, the file, R48, the order text, the
           command, the rule) and the flat series_back_* fields, no cell number. Its step 0 is row E56
           (experiments/coords/ovsb_step0.py); its test builds, experiments/builds/embryo_ovsb.sh
+          --neighbourhood run_sorted --captain-ruling <ROW> (off by default: as_built; row E57 of
+          experiments/harness/TRIES.md, "RS: one run per side", the file T2embryo_s2x_ovrs.h5ad): O's command with one
+          last step on the final coordinates, after the cloud guard (the place --row-order takes), that re-assigns
+          expression rows only (vec.run_sort.sort_rows: each bracket's rows moved to its own side of the earlier
+          bracket's midline plane, within fixed lineage pools, by linear_sum_assignment on mirror-homologous
+          positions); O's coordinates (bytes and order), count, names and the expression rows as a multiset are
+          unchanged. Refused before anything is read on any other command (the test board, the default seed, nothing
+          else changed), without --captain-ruling, and unless TRIES.md holds exactly one row of the given ID whose
+          first cell is the captain's ruling ("ruling, no run") naming `--neighbourhood run_sorted` and
+          `--captain-ruling <ROW>` (_captain_ruling_row). Its record gains a neighbourhood block (the option, the
+          file, the row, the command, the rule, the plane's normal and contrast), no cell number. Its practice read is
+          row E57 (experiments/coords/e57_rs_read.py); its test builds, experiments/builds/embryo_rs.sh
 
 The board is the test board from boards/ (after the intake, `vec boards update --from-file`); before that, --board
 may name a validation board of the same task for a dry run, and the script refuses a dry run whose output file name
@@ -360,7 +372,7 @@ from pathlib import Path
 
 import numpy as np
 
-from vec import harness, provenance, shape_interp, t1_bets, t1_scope, t2_build
+from vec import harness, provenance, run_sort, shape_interp, t1_bets, t1_scope, t2_build
 from vec.boards import REPO_ROOT, load_boards
 from vec.evaluate import SUBSAMPLE_FRAC, Stage, subsample
 from vec.io import COORD_KEY, dense, read_stage
@@ -574,6 +586,21 @@ EMBRYO_OVSB_ORDER = ("experiments/harness/TRIES.md row R48, the captain's order 
                      "reopened for this one file, an extra file beside O and never in its place; O's command with "
                      "--expression series_back, taken only with --captain-ruling R48")
 EMBRYO_OVSB_STEP0 = "row E56 of experiments/harness/TRIES.md (experiments/coords/ovsb_step0.py)"
+# --neighbourhood run_sorted (row E57 of experiments/harness/TRIES.md, "RS: one run per side": the score-blind ERROR
+# designer's proposal P1 of the embryo design round of 2026-11-24/25 as its cold challenger fixed it; off by default):
+# O's command with one last step on the final coordinates, after the cloud guard (the place --row-order takes), that
+# re-assigns expression rows only (vec.run_sort.sort_rows); O's coordinates, their order, the count and the expression
+# rows as a multiset are unchanged. Taken only on O's command (the test board, the default seed, nothing else changed)
+# with --captain-ruling <ROW>, ROW a ruling row's ID, while TRIES.md holds exactly one row of that ID whose first cell
+# is the captain's ruling ("<ROW> (the captain's ...", "ruling, no run") naming `--neighbourhood run_sorted` and
+# `--captain-ruling <ROW>` (_captain_ruling_row, the builder's existing check). The placebo run_sorted_same is
+# harness-only and never built.
+NEIGHBOURHOODS = run_sort.BUILDABLE  # as_built (the default: every file as built), run_sorted
+EMBRYO_RS_OPTION = "`--neighbourhood run_sorted`"
+EMBRYO_RS_FILE = "T2embryo_s2x_ovrs.h5ad"
+EMBRYO_RS_COMMAND = f"{EMBRYO_O_COMMAND} --neighbourhood run_sorted --captain-ruling {{row}}"
+EMBRYO_RS_READ = ("row E57 of experiments/harness/TRIES.md (experiments/coords/e57_rs_read.py, launcher "
+                  "experiments/coords/run_e57.sh)")
 HEART_HALVING = ("experiments/builds/halve.py <file> <half>: a uniform random half of the rows (halve.DEFAULT_SEED, "
                  "order kept), as for the ruled heart2 file; the halving is a separate step, not this build")
 
@@ -2779,7 +2806,9 @@ def _series_back_refusals(a) -> bool:
     given; without it every command is what it was (embryo --captain-ruling alone is refused)."""
     ruling = getattr(a, "captain_ruling", None)
     if a.expression != "series_back":
-        if ruling is not None:
+        # --neighbourhood run_sorted (row E57's file) takes --captain-ruling too, with its own refusals; without it,
+        # every command and its refusal are what they were
+        if ruling is not None and getattr(a, "neighbourhood", NEIGHBOURHOODS[0]) == NEIGHBOURHOODS[0]:
             sys.exit(f"embryo --captain-ruling goes with --expression series_back only ({EMBRYO_OVSB_COMMAND})")
         return False
     o_command = (a.method == "fgw_shape0" and a.positions == t2_build.POSITIONS[1] and a.shape_interp == "overlay"
@@ -2803,6 +2832,41 @@ def _series_back_refusals(a) -> bool:
                  f"{EMBRYO_OVSB_ROW} whose first cell is the captain's order (\"ruling, no run\") naming "
                  f"{EMBRYO_OVSB_OPTION} and `--captain-ruling {EMBRYO_OVSB_ROW}`")
     return True
+
+
+def _run_sorted_refusals(a) -> str | None:
+    """--neighbourhood run_sorted's refusals (row E57's file), before any board or stage is read. Returns the ruling
+    row when the option is given, else None: without it every command is what it was. Refused on any command but O's
+    with it (so with --expression other than mixture, --herd, --draw midpoint, --move-coupling aligned, --row-order
+    copy_parity, --copy-rows and its flags, another seed or a dry run), without --captain-ruling, and unless
+    experiments/harness/TRIES.md holds exactly one row of the given ID whose first cell is the captain's ruling naming
+    `--neighbourhood run_sorted` and `--captain-ruling <ROW>` (_captain_ruling_row)."""
+    mode = getattr(a, "neighbourhood", NEIGHBOURHOODS[0])
+    if mode == NEIGHBOURHOODS[0]:
+        return None
+    if mode not in NEIGHBOURHOODS:  # argparse's choices hold this already; the placebo is never built
+        sys.exit(f"--neighbourhood {mode} is never built (harness only)")
+    o_command = (a.method == "fgw_shape0" and a.positions == t2_build.POSITIONS[1] and a.expression == "mixture"
+                 and a.shape_interp == "overlay" and a.shape_interp_test_ok and not a.herd
+                 and a.draw == t2_build.DRAWS[0] and a.move_coupling == t2_build.MOVE_COUPLINGS[0]
+                 and a.row_order == t2_build.ROW_ORDERS[0] and not a.row_order_test_ok
+                 and not getattr(a, "copy_rows", False) and not getattr(a, "copy_rows_test_ok", False)
+                 and not getattr(a, "copy_rows_size", False) and not getattr(a, "copy_rows_size_test_ok", False)
+                 and a.seed == harness.BUILD_SEED_OFFSET + 1 and a.board in (None, TEST_BOARDS["embryo"]))
+    if not o_command:
+        sys.exit(f"--neighbourhood run_sorted is refused except on O's command with it, "
+                 f"{EMBRYO_RS_COMMAND.format(row='<ROW>')}: the test board, the default seed and nothing else changed "
+                 "(row E57's file)")
+    ruling = getattr(a, "captain_ruling", None)
+    if ruling is None:
+        sys.exit("--neighbourhood run_sorted is the captain's ruling alone: it needs --captain-ruling <ROW>, the row "
+                 f"of experiments/harness/TRIES.md whose first cell is his ruling naming {EMBRYO_RS_OPTION} and "
+                 "`--captain-ruling <ROW>`")
+    if not _captain_ruling_row(ruling, EMBRYO_RS_OPTION):
+        sys.exit(f"--neighbourhood run_sorted is refused: experiments/harness/TRIES.md has no single row {ruling} "
+                 f"whose first cell is the captain's ruling (\"ruling, no run\") naming {EMBRYO_RS_OPTION} and "
+                 f"`--captain-ruling {ruling}`")
+    return ruling
 
 
 def _copy_rows_refusals(a) -> None:
@@ -2954,6 +3018,7 @@ def _build_copy_rows(a, board, dry: bool, genes, files: dict, inputs: dict, coun
 
 def build_embryo(a) -> dict:
     series_back = _series_back_refusals(a)  # row R48's option (off by default): before anything is read
+    rs_ruling = _run_sorted_refusals(a)  # row E57's file (off by default): before anything is read
     _copy_rows_refusals(a)
     if a.positions != t2_build.POSITIONS[0] and (a.method != "fgw_shape0" or a.herd
                                                  or a.draw != t2_build.DRAWS[0]):
@@ -3046,6 +3111,9 @@ def build_embryo(a) -> dict:
             rec = {**rec, "expression": a.expression,
                    **{f"{prefix}_{k}": v for k, v in expr_rec.items() if not isinstance(v, (dict, list))
                       and (prefix, k) != ("latent", "retried")}}  # a test build's record holds no cell number
+        if rs_ruling is not None:  # row E57's file: the expression rows re-assigned on the final coordinates
+            step = harness.rs_step(before, after, res, a.neighbourhood)
+            X = np.asarray(X)[step.src]
     if a.row_order != t2_build.ROW_ORDERS[0]:  # off by default: the rows re-ordered, nothing else changed
         if not board.truth_cells:
             raise SystemExit("--row-order copy_parity needs the board's truth_cells (read by code)")
@@ -3075,6 +3143,12 @@ def build_embryo(a) -> dict:
                               "captain_ruling": EMBRYO_OVSB_ROW, "order": EMBRYO_OVSB_ORDER,
                               "command": EMBRYO_OVSB_COMMAND, "o_command": EMBRYO_O_COMMAND,
                               "rule": t2_build.SERIES_BACK_RULE, "step0": EMBRYO_OVSB_STEP0}
+    if rs_ruling is not None:  # row E57's file only: what it is, who ordered it and the plane; flat, no cell number
+        out["neighbourhood"] = {"option": "--neighbourhood run_sorted", "file": EMBRYO_RS_FILE,
+                                "captain_ruling": rs_ruling, "command": EMBRYO_RS_COMMAND.format(row=rs_ruling),
+                                "o_command": EMBRYO_O_COMMAND, "rule": run_sort.RULE, "read": EMBRYO_RS_READ,
+                                **{k: step.record[k] for k in ("normal_x", "normal_y", "normal_z",
+                                                               "contrast_earlier")}}
     return out
 
 
@@ -3392,8 +3466,16 @@ def build_parser() -> argparse.ArgumentParser:
                            help="--row-order copy_parity on the test board: the captain's yes (off by default; "
                                 "without it the option refuses on a test board before anything loads, because a "
                                 "refusal or a success there shows one bit of the test count)")
+            p.add_argument("--neighbourhood", choices=NEIGHBOURHOODS, default=NEIGHBOURHOODS[0],
+                           help="as_built (the default, every file as built) or run_sorted (row E57's file "
+                                f"{EMBRYO_RS_FILE}, off by default): O's rows and positions with each bracket's "
+                                "expression rows moved to its own side of the earlier bracket's midline within fixed "
+                                "lineage pools (vec.run_sort), the last step, on the final coordinates. Only as "
+                                f"{EMBRYO_RS_COMMAND.format(row='<ROW>')}, with a ruling row of the captain naming "
+                                f"{EMBRYO_RS_OPTION} and `--captain-ruling <ROW>`")
             p.add_argument("--captain-ruling", default=None,
-                           help=f"with --expression series_back only: {EMBRYO_OVSB_ROW}, the row that orders it")
+                           help=f"with --expression series_back: {EMBRYO_OVSB_ROW}, the row that orders it; with "
+                                "--neighbourhood run_sorted: the captain's ruling row that orders it")
     return ap
 
 

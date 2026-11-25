@@ -112,16 +112,17 @@ def _canon(x):
     return repr(x)
 
 
-LATER_ROWS = ("GEODESIC_CANDIDATES", "OSR_CANDIDATES")  # harness registries of rows merged after this pin was made
+# harness registries of rows merged after this pin was made (row E57's RS names: tests/test_run_sorted.py holds them)
+LATER_ROWS = ("GEODESIC_CANDIDATES", "OSR_CANDIDATES", "RS_CANDIDATES")
 E52_CANDIDATES = ("fgw_copyrows_sized",)  # row E52's arm, merged after this pin was made; vec.harness names no registry
 
 
 def _old_registry_digest() -> tuple[int, str]:
     """Every candidate but the two new ones: name, roles, params, the builder's and the condition's qualified names
     and the builder's bytecode. Pinned on main before the arms were added. Candidates of rows merged into main beside
-    this one (LATER_ROWS: row E53's geodesic pair and row E55's three OSR names, which their own tests hold;
-    E52_CANDIDATES: row E52's sized copy-rows arm, which its own tests hold) are left out too, so the pin still says
-    that no candidate older than this row changed."""
+    this one (LATER_ROWS: row E53's geodesic pair, row E55's three OSR names and row E57's two RS names, which their own
+    tests hold; E52_CANDIDATES: row E52's sized copy-rows arm, which its own tests hold) are left out too, so the pin
+    still says that no candidate older than this row changed."""
     h = hashlib.sha256()
     later = set().union(*(set(getattr(harness, k, {})) for k in ("SO_OHI_CANDIDATES", *LATER_ROWS)), E52_CANDIDATES)
     names = sorted(set(harness.CANDIDATES) - later)
