@@ -14608,3 +14608,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     `EMBRYO_MODEL_challenge.md` (flagged twice, now redacted unread in the round folder, the removed text's sha256
     noted) and a bullet of `docs/DATA_NOTES.md` that names the first embryo upload beside a target-free geometry
     measurement (no score; left as it is).
+- 2026-11-25 (rr), the captain reports two T1 headlines and the rules are applied by their letter (state at 13:49 UTC,
+  2026-11-25). Written by the AI assistant, which records the headlines only.
+  - **The paste:** T1:test `T1_s2rcMS20d20.h5ad` 73.16, `T1_s2rcMS20d10.h5ad` 73.71 (shown as submitted 2026-11-25
+    13:43 and 13:46). Each file's sha256 on disk matches its sheet row. The paste's per-metric lines, ranks and file
+    sizes are not recorded or used.
+  - **Each rule by its letter.** Both are below MS20 (73.82); MS20m10 (74.35) holds the board's best. Row R60:
+    `T1_s2rcMS20d15.h5ad` is sent only if MS20d10 is strictly above MS20, which it is not: it is not sent. Row R66,
+    read now that every file of row R60 that its own rule sends has a headline (entry (mm)'s reading): W(d) none
+    (neither MS20d10 nor MS20d20 is above MS20), W(H) MS20H10, W(m) MS20m10. K1 (at least two winners) holds: its file
+    is `T1_s2rcMS20H10m10` (`--feng-fraction-mult 2.0 --direction-momentum all --held-momentum 1.0
+    --direction-momentum-damping 1.0`, one of row R66's thirty strings). K2 and K3 need all three winners: false. C1
+    needs MS20d20 above MS20: false. C3 (`T1_s2rcMS20H20`) held at entry (oo). Two files to build once R66's code is
+    reviewed and merged: K1 and C3.
+  - **Standing unchanged:** 204.465.
