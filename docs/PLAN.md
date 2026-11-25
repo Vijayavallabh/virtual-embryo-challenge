@@ -14185,3 +14185,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   forms.
   - **The row.** The cold challenger's G1 content; code merged at d5feaf9 after an independent review that found no
     blocker. The gate runs on the DGX embryo worktree at this row's commit.
+- 2026-11-25 (c), row H36 is placed: the heart XPC file's read (row R56) (state at 00:57 UTC, 2026-11-25). Written by
+  the AI assistant, which designed none of it and is recused on the heart's scope and size.
+  - **The row.** The cold challenger's section-8 text, adapted to the reviewed code by the score-blind reviewer
+    (checked by `h36_row.row_reasons`), with the engineer's one deviation the review accepted: the depth VOID clause
+    uses the mean library size, since the median moves by a whole count from noise at MERFISH depth. Code merged at
+    a7e8bef after an independent review that found no blocker; the row placed at 5fad5e5 (its log entry follows here,
+    a script slip having stopped it after the row was written).
