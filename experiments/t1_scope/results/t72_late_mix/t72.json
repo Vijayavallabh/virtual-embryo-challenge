@@ -1,0 +1,281 @@
+{
+ "label": "try T72, a labelled diagnostic on one truth (half of E10.5's library 3) at zero time gap, never an adoption result: row R54's late-mix draw (library 3's other half at row N64's shares) against library 3's own mix over twelve truth mixes",
+ "row": "T72",
+ "reading": {
+  "outcome": "PASS",
+  "failed": [],
+  "bars": {
+   "a": true,
+   "b": true,
+   "c": true
+  },
+  "by_scenario": {
+   "cm own, blood own": {
+    "mean": -14.139191310510785,
+    "sd": 3.994605044053115,
+    "ahead": 0,
+    "behind": 10,
+    "of": 10,
+    "range": [
+     -20.605512057319416,
+     -8.551845656847377
+    ],
+    "mean_scores": {
+     "lib3_base": 99.6938311925389,
+     "lib3_lm16": 85.55463988202811
+    },
+    "repeat_share": 0.1814368117461982,
+    "median_library_over_base": 1.0640763778234787,
+    "truth_cm_of_heart": 0.2372993182318012,
+    "truth_blood_of_chamber": 0.18145814581458145
+   },
+   "cm own, blood lm16": {
+    "mean": -13.202085113479631,
+    "sd": 5.252785031002733,
+    "ahead": 0,
+    "behind": 10,
+    "of": 10,
+    "range": [
+     -20.71775531770193,
+     -5.847529130310676
+    ],
+    "mean_scores": {
+     "lib3_base": 99.65171111442858,
+     "lib3_lm16": 86.44962600094894
+    },
+    "repeat_share": 0.1814368117461982,
+    "median_library_over_base": 1.0640763778234787,
+    "truth_cm_of_heart": 0.23728813559322035,
+    "truth_blood_of_chamber": 0.14088502269288955
+   },
+   "cm 0.30, blood own": {
+    "mean": -2.326169199660525,
+    "sd": 5.853610053647186,
+    "ahead": 4,
+    "behind": 5,
+    "of": 10,
+    "range": [
+     -10.229281619098685,
+     3.5925716911842187
+    ],
+    "mean_scores": {
+     "lib3_base": 98.1297361988072,
+     "lib3_lm16": 95.80356699914667
+    },
+    "repeat_share": 0.1814368117461982,
+    "median_library_over_base": 1.0640763778234787,
+    "truth_cm_of_heart": 0.3000278318953521,
+    "truth_blood_of_chamber": 0.1815489749430524
+   },
+   "cm 0.30, blood lm16": {
+    "mean": -5.239787964948457,
+    "sd": 4.159582602750531,
+    "ahead": 1,
+    "behind": 9,
+    "of": 10,
+    "range": [
+     -13.096765615178342,
+     0.5932818225426217
+    ],
+    "mean_scores": {
+     "lib3_base": 98.93948073001769,
+     "lib3_lm16": 93.69969276506923
+    },
+    "repeat_share": 0.1814368117461982,
+    "median_library_over_base": 1.0640763778234787,
+    "truth_cm_of_heart": 0.3000278318953521,
+    "truth_blood_of_chamber": 0.1408417025346724
+   },
+   "cm 0.33, blood own": {
+    "mean": -0.7070744299941694,
+    "sd": 4.41707651623233,
+    "ahead": 4,
+    "behind": 5,
+    "of": 10,
+    "range": [
+     -6.870524491207803,
+     6.458420109553586
+    ],
+    "mean_scores": {
+     "lib3_base": 97.39898668714174,
+     "lib3_lm16": 96.69191225714758
+    },
+    "repeat_share": 0.1814368117461982,
+    "median_library_over_base": 1.0640763778234787,
+    "truth_cm_of_heart": 0.32996632996632996,
+    "truth_blood_of_chamber": 0.18140816837885243
+   },
+   "cm 0.33, blood lm16": {
+    "mean": -2.3951548665618247,
+    "sd": 4.47963484508615,
+    "ahead": 2,
+    "behind": 7,
+    "of": 10,
+    "range": [
+     -8.386422987041641,
+     5.428658151017004
+    ],
+    "mean_scores": {
+     "lib3_base": 98.87522028313398,
+     "lib3_lm16": 96.48006541657217
+    },
+    "repeat_share": 0.1814368117461982,
+    "median_library_over_base": 1.0640763778234787,
+    "truth_cm_of_heart": 0.32996632996632996,
+    "truth_blood_of_chamber": 0.14094136208256638
+   },
+   "cm lm16, blood own": {
+    "mean": 10.228139547465146,
+    "sd": 5.1000052105266125,
+    "ahead": 9,
+    "behind": 0,
+    "of": 10,
+    "range": [
+     0.0,
+     14.57655568028342
+    ],
+    "mean_scores": {
+     "lib3_base": 89.73015559460634,
+     "lib3_lm16": 99.95829514207149
+    },
+    "repeat_share": 0.1814368117461982,
+    "median_library_over_base": 1.0640763778234787,
+    "truth_cm_of_heart": 0.44198441984419845,
+    "truth_blood_of_chamber": 0.18154362416107384
+   },
+   "cm lm16, blood lm16": {
+    "mean": 11.29242482104247,
+    "sd": 3.966583001037674,
+    "ahead": 10,
+    "behind": 0,
+    "of": 10,
+    "range": [
+     1.4868804664723,
+     15.159432598464335
+    ],
+    "mean_scores": {
+     "lib3_base": 88.46366863092007,
+     "lib3_lm16": 99.75609345196253
+    },
+    "repeat_share": 0.1814368117461982,
+    "median_library_over_base": 1.0640763778234787,
+    "truth_cm_of_heart": 0.44198441984419845,
+    "truth_blood_of_chamber": 0.14089468122578372
+   },
+   "cm 0.45, blood own": {
+    "mean": 10.80922111510233,
+    "sd": 3.6402688706484176,
+    "ahead": 10,
+    "behind": 0,
+    "of": 10,
+    "range": [
+     4.399117252994898,
+     16.25172529947922
+    ],
+    "mean_scores": {
+     "lib3_base": 88.80541604179317,
+     "lib3_lm16": 99.6146371568955
+    },
+    "repeat_share": 0.1814368117461982,
+    "median_library_over_base": 1.0640763778234787,
+    "truth_cm_of_heart": 0.4502923976608187,
+    "truth_blood_of_chamber": 0.18153846153846154
+   },
+   "cm 0.45, blood lm16": {
+    "mean": 11.725294078816312,
+    "sd": 3.1648323191205603,
+    "ahead": 10,
+    "behind": 0,
+    "of": 10,
+    "range": [
+     5.808307311598199,
+     15.76659034399448
+    ],
+    "mean_scores": {
+     "lib3_base": 87.76917891521673,
+     "lib3_lm16": 99.49447299403303
+    },
+    "repeat_share": 0.1814368117461982,
+    "median_library_over_base": 1.0640763778234787,
+    "truth_cm_of_heart": 0.4502923976608187,
+    "truth_blood_of_chamber": 0.14101184068891282
+   },
+   "cm 0.60, blood own": {
+    "mean": 16.889386744387355,
+    "sd": 1.5147596760552318,
+    "ahead": 10,
+    "behind": 0,
+    "of": 10,
+    "range": [
+     13.877350245055027,
+     19.172605736049917
+    ],
+    "mean_scores": {
+     "lib3_base": 80.84959456857985,
+     "lib3_lm16": 97.73898131296721
+    },
+    "repeat_share": 0.1814368117461982,
+    "median_library_over_base": 1.0640763778234787,
+    "truth_cm_of_heart": 0.6005571030640668,
+    "truth_blood_of_chamber": 0.18148654810761514
+   },
+   "cm 0.60, blood lm16": {
+    "mean": 17.558739383577596,
+    "sd": 2.5933051896412938,
+    "ahead": 10,
+    "behind": 0,
+    "of": 10,
+    "range": [
+     11.896161834652716,
+     20.783586111138987
+    ],
+    "mean_scores": {
+     "lib3_base": 79.9744163277443,
+     "lib3_lm16": 97.5331557113219
+    },
+    "repeat_share": 0.1814368117461982,
+    "median_library_over_base": 1.0640763778234787,
+    "truth_cm_of_heart": 0.6005571030640668,
+    "truth_blood_of_chamber": 0.14073719483006222
+   }
+  },
+  "break_even": {
+   "share": 0.3372094554518206,
+   "logit_midpoint": 0.3351784891147517,
+   "threshold": 0.3651784891147517,
+   "points": [
+    [
+     0.2372993182318012,
+     -14.139191310510785
+    ],
+    [
+     0.3000278318953521,
+     -2.326169199660525
+    ],
+    [
+     0.32996632996632996,
+     -0.7070744299941694
+    ],
+    [
+     0.44198441984419845,
+     10.228139547465146
+    ],
+    [
+     0.4502923976608187,
+     10.80922111510233
+    ],
+    [
+     0.6005571030640668,
+     16.889386744387355
+    ]
+   ],
+   "own_cm_share_of_heart": 0.2429198682766191,
+   "lm16_cm_share_of_heart": 0.4420186803717552
+  },
+  "idle": false,
+  "follows": "What follows: a priced question to the captain with both readings (the level reading of row N64's shares and the change transfer it reports); only then is T1_s2rcMSB_LM16 built, twice with one sha256, by experiments/builds/t1_lm_m20_line.sh. Nothing is built or changed by this read."
+ },
+ "tries": 1,
+ "commit": "e70c91f2effb2fe18b3ef7fbc51c25757ad634e9",
+ "shares_sha256": "e07457c6d34ddacb640f777f450669ddc0f85f643e26802a2a4f7c8b6572db78"
+}

@@ -1,0 +1,19 @@
+try T72, a labelled diagnostic on one truth (half of E10.5's library 3) at zero time gap, never an adoption result: row R54's late-mix draw (library 3's other half at row N64's shares) against library 3's own mix over twelve truth mixes
+Outcome: T72 PASS
+What follows: a priced question to the captain with both readings (the level reading of row N64's shares and the change transfer it reports); only then is T1_s2rcMSB_LM16 built, twice with one sha256, by experiments/builds/t1_lm_m20_line.sh. Nothing is built or changed by this read.
+d = lib3_lm16 - lib3_base per seed (bars: (a) True, (b) True, (c) True):
+  cm own, blood own: -14.14 (sd 3.99, ahead 0 behind 10 of 10, per seed -20.61 to -8.55); truth cardiomyocytes 0.237 of heart, blood 0.181 of chamber; mean scores lib3_base 99.69, lib3_lm16 85.55; repeats 0.181; median library over lib3_base's 1.0641
+  cm own, blood lm16: -13.20 (sd 5.25, ahead 0 behind 10 of 10, per seed -20.72 to -5.85); truth cardiomyocytes 0.237 of heart, blood 0.141 of chamber; mean scores lib3_base 99.65, lib3_lm16 86.45; repeats 0.181; median library over lib3_base's 1.0641
+  cm 0.30, blood own: -2.33 (sd 5.85, ahead 4 behind 5 of 10, per seed -10.23 to +3.59); truth cardiomyocytes 0.300 of heart, blood 0.182 of chamber; mean scores lib3_base 98.13, lib3_lm16 95.80; repeats 0.181; median library over lib3_base's 1.0641
+  cm 0.30, blood lm16: -5.24 (sd 4.16, ahead 1 behind 9 of 10, per seed -13.10 to +0.59); truth cardiomyocytes 0.300 of heart, blood 0.141 of chamber; mean scores lib3_base 98.94, lib3_lm16 93.70; repeats 0.181; median library over lib3_base's 1.0641
+  cm 0.33, blood own: -0.71 (sd 4.42, ahead 4 behind 5 of 10, per seed -6.87 to +6.46); truth cardiomyocytes 0.330 of heart, blood 0.181 of chamber; mean scores lib3_base 97.40, lib3_lm16 96.69; repeats 0.181; median library over lib3_base's 1.0641
+  cm 0.33, blood lm16: -2.40 (sd 4.48, ahead 2 behind 7 of 10, per seed -8.39 to +5.43); truth cardiomyocytes 0.330 of heart, blood 0.141 of chamber; mean scores lib3_base 98.88, lib3_lm16 96.48; repeats 0.181; median library over lib3_base's 1.0641
+  cm lm16, blood own: +10.23 (sd 5.10, ahead 9 behind 0 of 10, per seed +0.00 to +14.58); truth cardiomyocytes 0.442 of heart, blood 0.182 of chamber; mean scores lib3_base 89.73, lib3_lm16 99.96; repeats 0.181; median library over lib3_base's 1.0641
+  cm lm16, blood lm16: +11.29 (sd 3.97, ahead 10 behind 0 of 10, per seed +1.49 to +15.16); truth cardiomyocytes 0.442 of heart, blood 0.141 of chamber; mean scores lib3_base 88.46, lib3_lm16 99.76; repeats 0.181; median library over lib3_base's 1.0641
+  cm 0.45, blood own: +10.81 (sd 3.64, ahead 10 behind 0 of 10, per seed +4.40 to +16.25); truth cardiomyocytes 0.450 of heart, blood 0.182 of chamber; mean scores lib3_base 88.81, lib3_lm16 99.61; repeats 0.181; median library over lib3_base's 1.0641
+  cm 0.45, blood lm16: +11.73 (sd 3.16, ahead 10 behind 0 of 10, per seed +5.81 to +15.77); truth cardiomyocytes 0.450 of heart, blood 0.141 of chamber; mean scores lib3_base 87.77, lib3_lm16 99.49; repeats 0.181; median library over lib3_base's 1.0641
+  cm 0.60, blood own: +16.89 (sd 1.51, ahead 10 behind 0 of 10, per seed +13.88 to +19.17); truth cardiomyocytes 0.601 of heart, blood 0.181 of chamber; mean scores lib3_base 80.85, lib3_lm16 97.74; repeats 0.181; median library over lib3_base's 1.0641
+  cm 0.60, blood lm16: +17.56 (sd 2.59, ahead 10 behind 0 of 10, per seed +11.90 to +20.78); truth cardiomyocytes 0.601 of heart, blood 0.141 of chamber; mean scores lib3_base 79.97, lib3_lm16 97.53; repeats 0.181; median library over lib3_base's 1.0641
+break-even cardiomyocyte share at own blood 0.3372; the logit midpoint of 0.2429 and 0.4420 is 0.3352, the bar 0.3652
+Tries counted: 1 (the arm lib3_lm16; lib3_base is a rerun)
+Commit e70c91f2effb2fe18b3ef7fbc51c25757ad634e9

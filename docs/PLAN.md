@@ -14296,3 +14296,8 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     0.365178 from its record, after its smoke test (twelve scenarios formed, exit 0); T73 quotes its J7 dry run
     (largest difference 0 against tolerance 0.02, holds). Code merged at c0406bf after an independent review that
     found no blocker. Their tries count from their run steps' starts.
+- 2026-11-25 (s), row T72 reads PASS (state at 02:49 UTC, 2026-11-25). Written by the AI assistant, which designed
+  none of it and has seen the exposure that bears on T1's composition and depth, so gives no lean.
+  - **The pre-set statement, verbatim:** "Outcome: T72 PASS"; what follows, in its words: a priced question to the
+    captain with both readings (the level reading of row N64's shares and the change transfer it reports); only then
+    is T1_s2rcMSB_LM16 built. Two T1 tries, 464 and 465. The question goes to the captain now.

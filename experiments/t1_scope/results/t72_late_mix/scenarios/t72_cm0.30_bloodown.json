@@ -1,0 +1,435 @@
+{
+ "try": "T72",
+ "label": "try T72, a labelled diagnostic on one truth (half of E10.5's library 3) at zero time gap, never an adoption result: row R54's late-mix draw (library 3's other half at row N64's shares) against library 3's own mix over twelve truth mixes",
+ "commit": "e70c91f2effb2fe18b3ef7fbc51c25757ad634e9",
+ "tree_clean": true,
+ "cm": "0.30",
+ "blood": "own",
+ "truth_cells": 4670,
+ "truth_cm_of_heart": 0.3000278318953521,
+ "truth_blood_of_chamber": 0.1815489749430524,
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "arms": [
+  "lib3_base",
+  "lib3_lm16"
+ ],
+ "protocol": "bake",
+ "build": "main",
+ "frac": 0.1,
+ "library3_chamber_mix": {
+  "cm": 0.20300751879699247,
+  "endocardium": 0.3684210526315789,
+  "epicardium": 0.19781596849266023,
+  "vascular_endothelium": 0.047619047619047616,
+  "blood": 0.18313641245972073
+ },
+ "lm16_mix": {
+  "cm": 0.37973202255433036,
+  "endocardium": 0.28769621202274137,
+  "epicardium": 0.15447245592085967,
+  "vascular_endothelium": 0.03718522468321146,
+  "blood": 0.14091408481885717,
+  "progenitor": 0.0,
+  "pericardium": 0.0,
+  "pharyngeal": 0.0,
+  "surrounding": 0.0
+ },
+ "shares_sha256": "e07457c6d34ddacb640f777f450669ddc0f85f643e26802a2a4f7c8b6572db78",
+ "recomputation": {
+  "largest_difference": 5.551115123125783e-17,
+  "tolerance": 1e-09
+ },
+ "rows": [
+  {
+   "seed": 0,
+   "scores": {
+    "lib3_base": 100.0,
+    "lib3_lm16": 100.0
+   },
+   "skills": {
+    "lib3_base": {
+     "de_score": 1.0,
+     "de_direction": 1.0,
+     "mmd_u": 1.0,
+     "variogram": 1.0
+    },
+    "lib3_lm16": {
+     "de_score": 1.0,
+     "de_direction": 1.0,
+     "mmd_u": 1.0,
+     "variogram": 1.0
+    }
+   },
+   "median_library": {
+    "lib3_base": 10518.0,
+    "lib3_lm16": 11182.0
+   },
+   "repeat_share": {
+    "lib3_base": 0.023597273203985303,
+    "lib3_lm16": 0.1814368117461982
+   },
+   "rows_sha256": {
+    "lib3_base": "d5b7dcb4d841e7935c44db322c8d92a51bbab3af95881b8e1de663aeb14b1548",
+    "lib3_lm16": "c44e28b7408620c5c1e7cc4ad14f0573f3ea7873d4a60d61a8c12b741b5d1b43"
+   },
+   "draws_truth_cell": {
+    "lib3_base": false,
+    "lib3_lm16": false
+   },
+   "seconds": 58.6
+  },
+  {
+   "seed": 1,
+   "scores": {
+    "lib3_base": 96.46364590947994,
+    "lib3_lm16": 99.4645107097858
+   },
+   "skills": {
+    "lib3_base": {
+     "de_score": 0.9194948697711129,
+     "de_direction": 1.0,
+     "mmd_u": 0.9492091388400702,
+     "variogram": 1.0
+    },
+    "lib3_lm16": {
+     "de_score": 0.9785804283914322,
+     "de_direction": 1.0,
+     "mmd_u": 1.0,
+     "variogram": 1.0
+    }
+   },
+   "median_library": {
+    "lib3_base": 10528.0,
+    "lib3_lm16": 11197.0
+   },
+   "repeat_share": {
+    "lib3_base": 0.023597273203985303,
+    "lib3_lm16": 0.1814368117461982
+   },
+   "rows_sha256": {
+    "lib3_base": "548998ac78d1ea880cb3c4eaf0eb568a5a779b194a3b1cde6e55911f01977ba3",
+    "lib3_lm16": "8511c74eb548d14e418dd4aaf6b4ef897909712c3f0992f0d4bed68498d08bfe"
+   },
+   "draws_truth_cell": {
+    "lib3_base": false,
+    "lib3_lm16": false
+   },
+   "seconds": 56.5
+  },
+  {
+   "seed": 2,
+   "scores": {
+    "lib3_base": 99.95912010901304,
+    "lib3_lm16": 99.47503671071954
+   },
+   "skills": {
+    "lib3_base": {
+     "de_score": 1.0,
+     "de_direction": 1.0,
+     "mmd_u": 0.9986373369671014,
+     "variogram": 1.0
+    },
+    "lib3_lm16": {
+     "de_score": 0.9790014684287812,
+     "de_direction": 1.0,
+     "mmd_u": 1.0,
+     "variogram": 1.0
+    }
+   },
+   "median_library": {
+    "lib3_base": 10531.0,
+    "lib3_lm16": 11204.0
+   },
+   "repeat_share": {
+    "lib3_base": 0.023597273203985303,
+    "lib3_lm16": 0.1814368117461982
+   },
+   "rows_sha256": {
+    "lib3_base": "a57e5c5568fff68baa9d0035aac41e1867c7d3dd75c532457715c939f99fb00c",
+    "lib3_lm16": "fbf8c0ddc834ff2e8be0a63d57898542417f39eddcbf94446d181a603770d84e"
+   },
+   "draws_truth_cell": {
+    "lib3_base": false,
+    "lib3_lm16": false
+   },
+   "seconds": 62.4
+  },
+  {
+   "seed": 3,
+   "scores": {
+    "lib3_base": 97.81025824964131,
+    "lib3_lm16": 100.0
+   },
+   "skills": {
+    "lib3_base": {
+     "de_score": 1.0,
+     "de_direction": 1.0,
+     "mmd_u": 0.9270086083213773,
+     "variogram": 1.0
+    },
+    "lib3_lm16": {
+     "de_score": 1.0,
+     "de_direction": 1.0,
+     "mmd_u": 1.0,
+     "variogram": 1.0
+    }
+   },
+   "median_library": {
+    "lib3_base": 10525.0,
+    "lib3_lm16": 11179.0
+   },
+   "repeat_share": {
+    "lib3_base": 0.023597273203985303,
+    "lib3_lm16": 0.1814368117461982
+   },
+   "rows_sha256": {
+    "lib3_base": "c7f7c623c19f4544c5d01e17eff36fc0dc73dacb9cb8b5aa91fb20b3dc589c44",
+    "lib3_lm16": "849b7a623cce906f45206637cf079517006c2edfcb4b3a9f91add5be70d9df19"
+   },
+   "draws_truth_cell": {
+    "lib3_base": false,
+    "lib3_lm16": false
+   },
+   "seconds": 61.1
+  },
+  {
+   "seed": 4,
+   "scores": {
+    "lib3_base": 95.79401889369453,
+    "lib3_lm16": 99.38659058487875
+   },
+   "skills": {
+    "lib3_base": {
+     "de_score": 0.9187172774869111,
+     "de_direction": 1.0,
+     "mmd_u": 0.927536231884058,
+     "variogram": 1.0
+    },
+    "lib3_lm16": {
+     "de_score": 1.0,
+     "de_direction": 1.0,
+     "mmd_u": 1.0,
+     "variogram": 0.9693295292439372
+    }
+   },
+   "median_library": {
+    "lib3_base": 10505.0,
+    "lib3_lm16": 11230.0
+   },
+   "repeat_share": {
+    "lib3_base": 0.023597273203985303,
+    "lib3_lm16": 0.1814368117461982
+   },
+   "rows_sha256": {
+    "lib3_base": "55af07095a40fcfd3ca235e9be6dfc1f136331eee1f12501131808072b5e8473",
+    "lib3_lm16": "891a84d478bc233d5801b509bca760ea0acc5a8b1cd95bdc07112d2b4298e632"
+   },
+   "draws_truth_cell": {
+    "lib3_base": false,
+    "lib3_lm16": false
+   },
+   "seconds": 56.9
+  },
+  {
+   "seed": 5,
+   "scores": {
+    "lib3_base": 100.0,
+    "lib3_lm16": 89.97532128108423
+   },
+   "skills": {
+    "lib3_base": {
+     "de_score": 1.0,
+     "de_direction": 1.0,
+     "mmd_u": 1.0,
+     "variogram": 1.0
+    },
+    "lib3_lm16": {
+     "de_score": 0.7920316812672507,
+     "de_direction": 1.0,
+     "mmd_u": 0.882316442605998,
+     "variogram": 0.9352517985611511
+    }
+   },
+   "median_library": {
+    "lib3_base": 10521.0,
+    "lib3_lm16": 11197.0
+   },
+   "repeat_share": {
+    "lib3_base": 0.023597273203985303,
+    "lib3_lm16": 0.1814368117461982
+   },
+   "rows_sha256": {
+    "lib3_base": "0d66271d5919deceb04c904b041f60004bc3f853ec6202712d94c1090ad88a5e",
+    "lib3_lm16": "aa7624088cd123ccb57e2b39650b9d511aff6420632b9dda996c9c860a73ad40"
+   },
+   "draws_truth_cell": {
+    "lib3_base": false,
+    "lib3_lm16": false
+   },
+   "seconds": 57.3
+  },
+  {
+   "seed": 6,
+   "scores": {
+    "lib3_base": 99.62750716332378,
+    "lib3_lm16": 94.02852720960388
+   },
+   "skills": {
+    "lib3_base": {
+     "de_score": 1.0,
+     "de_direction": 1.0,
+     "mmd_u": 0.9875835721107927,
+     "variogram": 1.0
+    },
+    "lib3_lm16": {
+     "de_score": 0.8366168904504957,
+     "de_direction": 1.0,
+     "mmd_u": 0.9371034982780496,
+     "variogram": 1.0
+    }
+   },
+   "median_library": {
+    "lib3_base": 10521.0,
+    "lib3_lm16": 11193.0
+   },
+   "repeat_share": {
+    "lib3_base": 0.023597273203985303,
+    "lib3_lm16": 0.1814368117461982
+   },
+   "rows_sha256": {
+    "lib3_base": "86124b6671ac8f2cb9e2aed6b49b1070db6518b6b3c56520db4585996918b9d0",
+    "lib3_lm16": "192bbc26071a85c94748c3e15381bc3bcfb46bdfd695724103ab54ae88810507"
+   },
+   "draws_truth_cell": {
+    "lib3_base": false,
+    "lib3_lm16": false
+   },
+   "seconds": 60.6
+  },
+  {
+   "seed": 7,
+   "scores": {
+    "lib3_base": 97.93844856661046,
+    "lib3_lm16": 87.70916694751178
+   },
+   "skills": {
+    "lib3_base": {
+     "de_score": 1.0,
+     "de_direction": 1.0,
+     "mmd_u": 0.9312816188870152,
+     "variogram": 1.0
+    },
+    "lib3_lm16": {
+     "de_score": 0.7944372012168622,
+     "de_direction": 1.0,
+     "mmd_u": 0.7958926319582057,
+     "variogram": 0.9485728979172023
+    }
+   },
+   "median_library": {
+    "lib3_base": 10514.0,
+    "lib3_lm16": 11191.0
+   },
+   "repeat_share": {
+    "lib3_base": 0.023597273203985303,
+    "lib3_lm16": 0.1814368117461982
+   },
+   "rows_sha256": {
+    "lib3_base": "144c633e4fbcbe74ab08f8f531279abeb8aa83cab85c8645c47683bfec9ea97d",
+    "lib3_lm16": "53043ed07409d248dd31ce1b9fcc428c72c23a18256fbbce39e47aee4aa027dc"
+   },
+   "draws_truth_cell": {
+    "lib3_base": false,
+    "lib3_lm16": false
+   },
+   "seconds": 59.5
+  },
+  {
+   "seed": 8,
+   "scores": {
+    "lib3_base": 94.27524796785976,
+    "lib3_lm16": 97.85489300087272
+   },
+   "skills": {
+    "lib3_base": {
+     "de_score": 0.8562113546936481,
+     "de_direction": 1.0,
+     "mmd_u": 0.9289988033506182,
+     "variogram": 1.0
+    },
+    "lib3_lm16": {
+     "de_score": 0.963318998229193,
+     "de_direction": 1.0,
+     "mmd_u": 0.9653886010362694,
+     "variogram": 0.9905130007027406
+    }
+   },
+   "median_library": {
+    "lib3_base": 10520.0,
+    "lib3_lm16": 11191.0
+   },
+   "repeat_share": {
+    "lib3_base": 0.023597273203985303,
+    "lib3_lm16": 0.1814368117461982
+   },
+   "rows_sha256": {
+    "lib3_base": "e27155cbd4d684f02ce670092cca7884edff8bf681b063165a32c88fd0091047",
+    "lib3_lm16": "70cd66ccdca62cafe05f1936ee3be88356ccbb3193799dbff0d7321415409a6a"
+   },
+   "draws_truth_cell": {
+    "lib3_base": false,
+    "lib3_lm16": false
+   },
+   "seconds": 55.1
+  },
+  {
+   "seed": 9,
+   "scores": {
+    "lib3_base": 99.4291151284491,
+    "lib3_lm16": 90.14162354700997
+   },
+   "skills": {
+    "lib3_base": {
+     "de_score": 1.0,
+     "de_direction": 1.0,
+     "mmd_u": 0.9809705042816366,
+     "variogram": 1.0
+    },
+    "lib3_lm16": {
+     "de_score": 0.8692147685907436,
+     "de_direction": 1.0,
+     "mmd_u": 0.8423202614379084,
+     "variogram": 0.9070823244552059
+    }
+   },
+   "median_library": {
+    "lib3_base": 10521.0,
+    "lib3_lm16": 11181.0
+   },
+   "repeat_share": {
+    "lib3_base": 0.023597273203985303,
+    "lib3_lm16": 0.1814368117461982
+   },
+   "rows_sha256": {
+    "lib3_base": "c157f9005762ca4c3bef2199366f45b9e9c2b0159dc1cf7203f58abae946c45d",
+    "lib3_lm16": "8392057c461f0d7d02adfea3f2bdde27214104c3b3e559c403d7daba3d8441e6"
+   },
+   "draws_truth_cell": {
+    "lib3_base": false,
+    "lib3_lm16": false
+   },
+   "seconds": 54.4
+  }
+ ]
+}
