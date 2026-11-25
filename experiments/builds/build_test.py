@@ -1910,6 +1910,116 @@ T1_R46_ORDER = ("experiments/harness/TRIES.md row R46, the captain's order of 20
                 "(row R45's: candidate MS's step exactly as row R23 fixes it, the atlas step at 2.5 x the calendar "
                 "fraction, g_mom's within-type damping 0.5) with row R44's change, " + T1_L12_BLOOD.format(0.5)
                 + "; nothing else changed")
+# Row R66 (the captain's order of 2026-11-25, ruling, no run; decision log 2026-11-25 (hh)): T1's third-round step-on
+# slots on T1_s2rcMS20's command (row R51's file, the base of row R60's), thirty files, each taken only with
+# --captain-ruling R66 while row R66's first cell is the captain's order naming the file's option string
+# (_captain_order_names), as row R60's files are taken: for K1, K2 and K3, two or three of line 12's steps together
+# (g_mom's damping d, Blood's step H, MS's own damping m); for C1, g_mom's damping 2.5; for C3, Blood's step at 2.0.
+# Blood's step goes as in row R60's H files (R1 reversed for Blood and T64's close lifted in each file with
+# --held-momentum). The one table: (file, option string) in the row's own order, each name T1_s2rcMS20 plus the
+# suffixes in d, H, m order; every value the builder routes on is read off the option string (_r66_values), never
+# written a second time, so the row's strings, the names and the routes cannot drift apart.
+T1_R66_ROW = "R66"
+T1_R66_BASE_FILE = T1_R60_BASE_FILE
+T1_R66_TABLE = (
+    ("T1_s2rcMS20d10H05", f"{T1_R60_BASE_OPTION} --g-mom-damping 1.0 --held-momentum 0.5"),
+    ("T1_s2rcMS20d10H10", f"{T1_R60_BASE_OPTION} --g-mom-damping 1.0 --held-momentum 1.0"),
+    ("T1_s2rcMS20d15H05", f"{T1_R60_BASE_OPTION} --g-mom-damping 1.5 --held-momentum 0.5"),
+    ("T1_s2rcMS20d15H10", f"{T1_R60_BASE_OPTION} --g-mom-damping 1.5 --held-momentum 1.0"),
+    ("T1_s2rcMS20d20H05", f"{T1_R60_BASE_OPTION} --g-mom-damping 2.0 --held-momentum 0.5"),
+    ("T1_s2rcMS20d20H10", f"{T1_R60_BASE_OPTION} --g-mom-damping 2.0 --held-momentum 1.0"),
+    ("T1_s2rcMS20d10m10", f"{T1_R60_BASE_OPTION} --g-mom-damping 1.0 --direction-momentum-damping 1.0"),
+    ("T1_s2rcMS20d10m20", f"{T1_R60_BASE_OPTION} --g-mom-damping 1.0 --direction-momentum-damping 2.0"),
+    ("T1_s2rcMS20d15m10", f"{T1_R60_BASE_OPTION} --g-mom-damping 1.5 --direction-momentum-damping 1.0"),
+    ("T1_s2rcMS20d15m20", f"{T1_R60_BASE_OPTION} --g-mom-damping 1.5 --direction-momentum-damping 2.0"),
+    ("T1_s2rcMS20d20m10", f"{T1_R60_BASE_OPTION} --g-mom-damping 2.0 --direction-momentum-damping 1.0"),
+    ("T1_s2rcMS20d20m20", f"{T1_R60_BASE_OPTION} --g-mom-damping 2.0 --direction-momentum-damping 2.0"),
+    ("T1_s2rcMS20H05m10", f"{T1_R60_BASE_OPTION} --held-momentum 0.5 --direction-momentum-damping 1.0"),
+    ("T1_s2rcMS20H05m20", f"{T1_R60_BASE_OPTION} --held-momentum 0.5 --direction-momentum-damping 2.0"),
+    ("T1_s2rcMS20H10m10", f"{T1_R60_BASE_OPTION} --held-momentum 1.0 --direction-momentum-damping 1.0"),
+    ("T1_s2rcMS20H10m20", f"{T1_R60_BASE_OPTION} --held-momentum 1.0 --direction-momentum-damping 2.0"),
+    ("T1_s2rcMS20d10H05m10",
+     f"{T1_R60_BASE_OPTION} --g-mom-damping 1.0 --held-momentum 0.5 --direction-momentum-damping 1.0"),
+    ("T1_s2rcMS20d10H05m20",
+     f"{T1_R60_BASE_OPTION} --g-mom-damping 1.0 --held-momentum 0.5 --direction-momentum-damping 2.0"),
+    ("T1_s2rcMS20d10H10m10",
+     f"{T1_R60_BASE_OPTION} --g-mom-damping 1.0 --held-momentum 1.0 --direction-momentum-damping 1.0"),
+    ("T1_s2rcMS20d10H10m20",
+     f"{T1_R60_BASE_OPTION} --g-mom-damping 1.0 --held-momentum 1.0 --direction-momentum-damping 2.0"),
+    ("T1_s2rcMS20d15H05m10",
+     f"{T1_R60_BASE_OPTION} --g-mom-damping 1.5 --held-momentum 0.5 --direction-momentum-damping 1.0"),
+    ("T1_s2rcMS20d15H05m20",
+     f"{T1_R60_BASE_OPTION} --g-mom-damping 1.5 --held-momentum 0.5 --direction-momentum-damping 2.0"),
+    ("T1_s2rcMS20d15H10m10",
+     f"{T1_R60_BASE_OPTION} --g-mom-damping 1.5 --held-momentum 1.0 --direction-momentum-damping 1.0"),
+    ("T1_s2rcMS20d15H10m20",
+     f"{T1_R60_BASE_OPTION} --g-mom-damping 1.5 --held-momentum 1.0 --direction-momentum-damping 2.0"),
+    ("T1_s2rcMS20d20H05m10",
+     f"{T1_R60_BASE_OPTION} --g-mom-damping 2.0 --held-momentum 0.5 --direction-momentum-damping 1.0"),
+    ("T1_s2rcMS20d20H05m20",
+     f"{T1_R60_BASE_OPTION} --g-mom-damping 2.0 --held-momentum 0.5 --direction-momentum-damping 2.0"),
+    ("T1_s2rcMS20d20H10m10",
+     f"{T1_R60_BASE_OPTION} --g-mom-damping 2.0 --held-momentum 1.0 --direction-momentum-damping 1.0"),
+    ("T1_s2rcMS20d20H10m20",
+     f"{T1_R60_BASE_OPTION} --g-mom-damping 2.0 --held-momentum 1.0 --direction-momentum-damping 2.0"),
+    ("T1_s2rcMS20d25", f"{T1_R60_BASE_OPTION} --g-mom-damping 2.5"),
+    ("T1_s2rcMS20H20", f"{T1_R60_BASE_OPTION} --held-momentum 2.0"),
+)
+# the steps a row R66 file can change, in d, H, m order: (the option's flag, the name's letter)
+T1_R66_STEPS = (("--g-mom-damping", "d"), ("--held-momentum", "H"), ("--direction-momentum-damping", "m"))
+
+
+def _r66_values(option: str) -> tuple:
+    """A row R66 option string's values in T1_R60_FILES's order and types, as the builder's parser gives them: the
+    multiplier, g_mom's damping (floats), Blood's damping and MS's damping (the literal strings), None where the string
+    does not give the option. Raises ValueError unless the string is T1_R60_BASE_OPTION followed by one to three of
+    T1_R66_STEPS' flags, each once with one value, in d, H, m order."""
+    words, base = option.split(), T1_R60_BASE_OPTION.split()
+    flags = [flag for flag, _ in T1_R66_STEPS]
+    tail = words[len(base):]
+    given = tail[::2]
+    if (words[:len(base)] != base or not tail or len(tail) % 2 or any(f not in flags for f in given)
+            or [flags.index(f) for f in given] != sorted({flags.index(f) for f in given})):
+        raise ValueError(f"not a row {T1_R66_ROW} option string: {option}")
+    values = dict(zip(given, tail[1::2], strict=True))
+    damping = values.get("--g-mom-damping")
+    return (float(base[1]), None if damping is None else float(damping), values.get("--held-momentum"),
+            values.get("--direction-momentum-damping"))
+
+
+# file -> its option string, the multiplier, g_mom's damping, Blood's damping, MS's damping (T1_R60_FILES's shape)
+T1_R66_FILES = {name: (option, *_r66_values(option)) for name, option in T1_R66_TABLE}
+T1_R66_COMMAND = T1_CANDIDATE_COMMAND + " {option} --captain-ruling " + T1_R66_ROW
+# file -> its changes to T1_s2rcMS20's command in d, H, m order, each in row R60's words for that step
+T1_R66_CHANGES = {
+    name: tuple(text for value, text in (
+        (damping, None if damping is None else f"g_mom's within-type damping {damping:.1f}"),
+        (held, None if held is None else T1_L12_BLOOD.format(float(held))),
+        (ms_damping, f"MS's own damping {ms_damping} in place of harness.B0_DAMPING")) if value is not None)
+    for name, (_, _, damping, held, ms_damping) in T1_R66_FILES.items()}
+# file -> its slot in the round's design as row R66 groups them: two or three changes are K1, K2 and K3's, the one
+# change of g_mom's damping C1's and the one change of Blood's step C3's
+T1_R66_SLOTS = {name: ("slots K1, K2 and K3" if len(changes) > 1 else
+                       "slot C1" if T1_R66_FILES[name][2] is not None else "slot C3")
+                for name, changes in T1_R66_CHANGES.items()}
+T1_R66_COUNT = {1: "one change", 2: "two changes", 3: "three changes"}
+T1_R66_ORDER = ("experiments/harness/TRIES.md row R66, the captain's order of 2026-11-25 (\"ruling, no run\"; decision "
+                "log 2026-11-25 (hh), T1's third-round step-on {slot}) naming `{option}` and `--captain-ruling R66`: "
+                "file {file}, T1_s2rcMS20's command (row R51's file: candidate MS's step exactly as row R23 fixes it, "
+                "the atlas step at 2.0 x the calendar fraction, g_mom's within-type damping 0.5, MS's damping "
+                "harness.B0_DAMPING) with {changes}; nothing else changed{blood}")
+T1_R66_BLOOD = ("; R1 reversed for Blood and T64's close lifted in this file, as row R66 orders for each file with a "
+                "Blood step and as row R60 did in its H files")
+
+
+def _r66_order(name: str) -> str:
+    """T1_R66_ORDER for a row R66 file: its slot, option string, name, its changes counted and listed, and Blood's
+    ruling where the file has Blood's step."""
+    changes = T1_R66_CHANGES[name]
+    listed = changes[0] if len(changes) == 1 else ", ".join(changes[:-1]) + " and " + changes[-1]
+    return T1_R66_ORDER.format(slot=T1_R66_SLOTS[name], option=T1_R66_FILES[name][0], file=name,
+                               changes=f"{T1_R66_COUNT[len(changes)]}, {listed}",
+                               blood=T1_R66_BLOOD if T1_R66_FILES[name][3] is not None else "")
 
 
 def _r46_row_names(path: Path | None = None) -> bool:
@@ -1926,32 +2036,37 @@ def _r46_row_names(path: Path | None = None) -> bool:
 
 
 def _l12_hit(a) -> tuple[str, str] | None:
-    """(row, file) when the command gives exactly one of row R60's seven option sets or row R46's (--direction-momentum
-    all, and --feng-fraction-mult, --g-mom-damping, --held-momentum and --direction-momentum-damping each at the file's
-    value or not given, as its option string has them), whatever --captain-ruling says; else None. Reads nothing."""
+    """(row, file) when the command gives exactly one of row R66's thirty option sets, row R60's seven or row R46's
+    (--direction-momentum all, and --feng-fraction-mult, --g-mom-damping, --held-momentum and
+    --direction-momentum-damping each at the file's value or not given, as its option string has them), whatever
+    --captain-ruling says; else None. The three rows' sets are disjoint, so the order they are tried in changes
+    nothing. Reads nothing."""
     if getattr(a, "direction_momentum", None) not in DIRECTION_MOMENTUM_ARMS:
         return None
     given = (getattr(a, "feng_fraction_mult", None), getattr(a, "g_mom_damping", None),
              getattr(a, "held_momentum", None), getattr(a, "direction_momentum_damping", None))
-    for name, (_, *values) in T1_R60_FILES.items():
-        if given == tuple(values):
-            return T1_R60_ROW, name
+    for row, files in ((T1_R66_ROW, T1_R66_FILES), (T1_R60_ROW, T1_R60_FILES)):
+        for name, (_, *values) in files.items():
+            if given == tuple(values):
+                return row, name
     return (T1_R46_ROW, T1_R46_FILE) if given == T1_R46_VALUES else None
 
 
 def _l12_row_names(row: str, name: str) -> bool:
-    """Row R60's check for its file (_captain_order_names on the file's backticked option string) or row R46's
-    (_r46_row_names)."""
+    """Row R60's or row R66's check for its file (_captain_order_names on the file's backticked option string) or row
+    R46's (_r46_row_names)."""
     if row == T1_R60_ROW:
         return _captain_order_names(T1_R60_ROW, f"`{T1_R60_FILES[name][0]}`")
+    if row == T1_R66_ROW:
+        return _captain_order_names(T1_R66_ROW, f"`{T1_R66_FILES[name][0]}`")
     return _r46_row_names()
 
 
 def _l12_ordered(a) -> bool:
-    """The commands rows R60 and R46 order, as _t1_l12 takes them: a file's option set exactly with its own row's
+    """The commands rows R60, R46 and R66 order, as _t1_l12 takes them: a file's option set exactly with its own row's
     --captain-ruling while that row names it, and no released bet's option."""
     ruling = getattr(a, "captain_ruling", None)
-    if ruling not in (T1_R60_ROW, T1_R46_ROW):
+    if ruling not in (T1_R60_ROW, T1_R46_ROW, T1_R66_ROW):
         return False
     hit = _l12_hit(a)
     return (hit is not None and hit[0] == ruling and getattr(a, "released_bet", None) is None
@@ -1969,57 +2084,81 @@ def _t1_l12(a) -> dict | None:
     order naming the option string and `--captain-ruling R60`, _captain_order_names; R46: its first cell starting "R46
     (the captain's ", saying "ruling, no run" and naming T1_s2rcB25MSH05, _r46_row_names), no --released-bet or
     --bet-strength is given, R1's hold stands, and the command is T1_CANDIDATE_COMMAND (whose own refusals then hold
-    the rest) at the default seed on the test board (never a dry run)."""
+    the rest) at the default seed on the test board (never a dry run).
+
+    Row R66's thirty files (T1's third-round step-on slots, T1_R66_FILES) go the same way under --captain-ruling R66
+    alone, each while row R66's first cell is the captain's order naming its option string and `--captain-ruling R66`
+    (_captain_order_names), with R60's refusals; their record also names the slot and lists the file's changes."""
     ruling = getattr(a, "captain_ruling", None)
-    if ruling not in (T1_R60_ROW, T1_R46_ROW):
+    if ruling not in (T1_R60_ROW, T1_R46_ROW, T1_R66_ROW):
         return None
     hit = _l12_hit(a)
     if hit is None or hit[0] != ruling:
         return None
     row, name = hit
-    r60 = row == T1_R60_ROW
-    option, mult, damping, held, ms_damping = T1_R60_FILES[name] if r60 else (T1_R46_OPTION, *T1_R46_VALUES)
-    base = T1_R60_BASE_FILE if r60 else T1_R46_BASE_FILE
-    command = T1_R60_COMMAND.format(option=option) if r60 else T1_R46_COMMAND
+    r60, r66 = row == T1_R60_ROW, row == T1_R66_ROW
+    if r66:
+        option, mult, damping, held, ms_damping = T1_R66_FILES[name]
+    else:
+        option, mult, damping, held, ms_damping = T1_R60_FILES[name] if r60 else (T1_R46_OPTION, *T1_R46_VALUES)
+    base = T1_R66_BASE_FILE if r66 else T1_R60_BASE_FILE if r60 else T1_R46_BASE_FILE
+    command = (T1_R66_COMMAND.format(option=option) if r66 else T1_R60_COMMAND.format(option=option) if r60
+               else T1_R46_COMMAND)
     what = f"row {row}'s file {name}"
     if not _l12_row_names(row, name):
-        named = (f"the captain's order (\"ruling, no run\") naming `{option}` and `--captain-ruling {row}`" if r60 else
+        named = (f"the captain's order (\"ruling, no run\") naming `{option}` and `--captain-ruling {row}`"
+                 if r60 or r66 else
                  f"the captain's (starting \"{row} (the captain's \", \"ruling, no run\") naming {name}")
         sys.exit(f"{what} is refused: experiments/harness/TRIES.md has no single row {row} whose first cell is {named}")
     stacked = [flag for flag, attr in R51_STACKED if getattr(a, attr, None) is not None]
     if stacked:
-        sys.exit(f"{what} is refused with {', '.join(stacked)}: it is {base}'s command with one change")
+        count = T1_R66_COUNT[len(T1_R66_CHANGES[name])] if r66 else "one change"
+        sys.exit(f"{what} is refused with {', '.join(stacked)}: it is {base}'s command with {count}")
     if not getattr(a, "hold_unbracketed", True):
         sys.exit(f"{what} is refused with --no-hold-unbracketed: the cells without a group keep R1's hold")
     if (getattr(a, "feng_groups", FENG_GROUPS_DEFAULT) != "recomputed" or a.seed != harness.BUILD_SEED_OFFSET + 1
             or a.board is not None):
         sys.exit(f"{what} changes {base} only: it needs the command {command} at the default seed on the test board")
-    order = T1_R60_ORDER.format(option=option, file=name, change=T1_R60_CHANGES[name]) if r60 else T1_R46_ORDER
-    return {"direction_momentum": a.direction_momentum, "captain_ruling": row, "file": name, "base_file": base,
-            "option": f"`{option}`", "feng_fraction_mult": float(mult),
-            "g_mom_damping": G_MOM_DAMPINGS[0] if damping is None else float(damping),
-            "held_momentum": None if held is None else float(held),
-            "direction_momentum_damping": float(harness.B0_DAMPING) if ms_damping is None else float(ms_damping),
-            "order": order, "command": command}
+    if r66:
+        order = _r66_order(name)
+    else:
+        order = T1_R60_ORDER.format(option=option, file=name, change=T1_R60_CHANGES[name]) if r60 else T1_R46_ORDER
+    out = {"direction_momentum": a.direction_momentum, "captain_ruling": row, "file": name, "base_file": base,
+           "option": f"`{option}`", "feng_fraction_mult": float(mult),
+           "g_mom_damping": G_MOM_DAMPINGS[0] if damping is None else float(damping),
+           "held_momentum": None if held is None else float(held),
+           "direction_momentum_damping": float(harness.B0_DAMPING) if ms_damping is None else float(ms_damping),
+           "order": order, "command": command}
+    if r66:
+        out = {**out, "slot": T1_R66_SLOTS[name], "changes": list(T1_R66_CHANGES[name])}
+    return out
 
 
 def _l12_line(r51: dict) -> str:
     """g_mom's record text for a damping file of row R51's route: row R60's files name row R60, T1's line 12 and
-    T1_s2rcMS20's command; every other file _r51_line's text."""
+    T1_s2rcMS20's command; row R66's name row R66, the file's slot and T1_s2rcMS20's command; every other file
+    _r51_line's text."""
     if r51.get("captain_ruling") == T1_R60_ROW:
         return f"row {T1_R60_ROW}'s file {r51['file']}, T1's line 12, on {T1_R60_BASE_FILE}'s command"
+    if r51.get("captain_ruling") == T1_R66_ROW:
+        return (f"row {T1_R66_ROW}'s file {r51['file']}, T1's step-on {T1_R66_SLOTS[r51['file']]}, on "
+                f"{T1_R66_BASE_FILE}'s command")
     return _r51_line(r51)
 
 
 def _l12_momentum(r51: dict, ms_record: dict | None) -> dict | None:
-    """MS's record for a file of row R51's route: for row R60's files T1_s2rcMS20m10 and m20 the damping_option text
-    names that file in place of row R51's (MS's step writes row R51's); every other record as it is."""
-    if r51.get("captain_ruling") != T1_R60_ROW or not ms_record or "damping_option" not in ms_record:
+    """MS's record for a file of row R51's route: for row R60's files T1_s2rcMS20m10 and m20, and row R66's files with
+    --direction-momentum-damping, the damping_option text names that file in place of row R51's (MS's step writes row
+    R51's); every other record as it is."""
+    row = r51.get("captain_ruling")
+    if row not in (T1_R60_ROW, T1_R66_ROW) or not ms_record or "damping_option" not in ms_record:
         return ms_record
+    rest = ("nothing else changed" if row == T1_R60_ROW else
+            f"the file's other changes as its order lists them ({T1_R66_COUNT[len(T1_R66_CHANGES[r51['file']])]} in "
+            "all)")
     return {**ms_record, "damping_option": (f"--direction-momentum-damping {r51['direction_momentum_damping']:.1f} "
-                                            f"(row {T1_R60_ROW}'s file {r51['file']}): MS's own damping in place of "
-                                            f"harness.B0_DAMPING ({float(harness.B0_DAMPING):g}); nothing else "
-                                            "changed")}
+                                            f"(row {row}'s file {r51['file']}): MS's own damping in place of "
+                                            f"harness.B0_DAMPING ({float(harness.B0_DAMPING):g}); {rest}")}
 
 
 def _r51_row_names(option: str, path: Path | None = None) -> bool:
@@ -4139,7 +4278,14 @@ def build_parser() -> argparse.ArgumentParser:
                                 f"`--captain-ruling {T1_R60_ROW}`. With --captain-ruling {T1_R46_ROW} only: row "
                                 f"{T1_R46_ROW}'s pair {T1_R46_FILE} `{T1_R46_OPTION}` (Blood's step on "
                                 f"{T1_R46_BASE_FILE}'s command), while row {T1_R46_ROW}'s first cell is the captain's "
-                                f"and names {T1_R46_FILE}. Each is refused under any other ruling")
+                                f"and names {T1_R46_FILE}. With --captain-ruling {T1_R66_ROW} only: row "
+                                f"{T1_R66_ROW}'s thirty files (T1's third-round step-on slots: for K1, K2 and K3, "
+                                "two or three of line 12's changes together; for C1, g_mom's damping 2.5; for C3, "
+                                f"Blood's step at 2.0; each on {T1_R66_BASE_FILE}'s command), exactly one of these "
+                                "sets: " + "; ".join(f"{f} `{v[0]}`" for f, v in T1_R66_FILES.items())
+                                + f", while row {T1_R66_ROW}'s first cell is the captain's order naming the set's "
+                                f"option string and `--captain-ruling {T1_R66_ROW}`. Each is refused under any "
+                                "other ruling")
             p.add_argument("--held-momentum", default=None, metavar="{0.5,1.0,2.0}",
                            help="Blood's released momentum on the banked file (off by default; files "
                                 f"{', '.join(T1_HM_FILES.values())}): on the command {T1_CANDIDATE_COMMAND} "
@@ -4159,7 +4305,10 @@ def build_parser() -> argparse.ArgumentParser:
                                 f"--captain-ruling {T1_R60_ROW}, 0.5 and 1.0 are row {T1_R60_ROW}'s files "
                                 "T1_s2rcMS20H05 and T1_s2rcMS20H10, and with --feng-fraction-mult 2.5 "
                                 f"--direction-momentum all and --captain-ruling {T1_R46_ROW}, 0.5 is row "
-                                f"{T1_R46_ROW}'s file {T1_R46_FILE} (see --direction-momentum)")
+                                f"{T1_R46_ROW}'s file {T1_R46_FILE}; with --feng-fraction-mult 2.0 "
+                                f"--direction-momentum all and --captain-ruling {T1_R66_ROW}, 0.5 and 1.0 are in "
+                                f"row {T1_R66_ROW}'s two- and three-change files and 2.0 is its file "
+                                "T1_s2rcMS20H20 (see --direction-momentum)")
             p.add_argument("--direction-momentum-damping", default=None, metavar="{1.0}",
                            help=f"row {T1_R51_ROW}'s file {T1_R51_M10_FILE} (off by default): MS's own damping (the "
                                 "per-category momentum of --direction-momentum, harness.B0_DAMPING in every other MS "
@@ -4215,7 +4364,9 @@ def build_parser() -> argparse.ArgumentParser:
                                 f"{T1_R58_OPTION_STRING}: {T1_R58_ROW}, the captain's order for {T1_R58_FILE}. With "
                                 f"--feng-fraction-mult {T1_MSB_MULT:g} --direction-momentum all --late-mix "
                                 f"{LATE_MIX_CHOICES[0]}: {T1_R54_ROW}, the captain's named exception for "
-                                f"{T1_R54_FILE}")
+                                f"{T1_R54_FILE}. With exactly one of row {T1_R66_ROW}'s thirty option sets (see "
+                                f"--direction-momentum): {T1_R66_ROW}, the captain's order for T1's third-round "
+                                "step-on slots")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim", "core_trim", "organ_scope"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "
