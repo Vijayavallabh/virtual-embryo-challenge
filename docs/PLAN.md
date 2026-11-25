@@ -14416,3 +14416,12 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Their standing.** Both due now: LM16 by row R54, its read T72 and the captain's word; MSBm20 by row R58 and its
     read T73. Data used: released challenge data and the outside heart atlas on recomputed groups (GEO GSE193346,
     register row X002; for LM16 also its late labelling, the amendment of 2026-11-25).
+- 2026-11-25 (ee), the captain gives no ruling on T1's RNA files for the heart (state at 04:27 UTC, 2026-11-25).
+  Written by the AI assistant.
+  - **The question**, after a side agent's note that the heart RNA-transfer test would not run without a ruling:
+    should T1's E8.5, E9.5 and E10.5 RNA files serve that test? It quoted the organisers' rule ("Forbidden: measured
+    data from a held-out stage/genotype by any route"; E8.5 is a held-out heart stage) and the team's line ("Task 1
+    only, because E8.5 lies inside the Task 2 heart window"), with the AI assistant's rough odds of 0.3 to 0.5 that
+    the organisers would object, a possible voiding of the heart entry or more if they did, and a small best case.
+    **The captain's pick, verbatim:** "No ruling (Recommended)": T1's files stay out of heart models and the
+    RNA-transfer test is not run.
