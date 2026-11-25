@@ -1,18 +1,18 @@
 {
  "what": "the T3 sign cube's WT-only tables (row R72; T3_MOON5_design.md 2.2 with fixes F1 to F10): S_M, Y_M = WT E9.5, WT E8.0 over WT E8.75 on transfer_mab21l2_all's den; S_G, Y_G = the same on gata4_pooled's den; t3_decompose.gene_factor (WT-share weights, eps, clip [0.25, 4]), the factor column is phi",
  "script": "experiments/t3_decomp/cube_tables.py",
- "script_sha256": "de5a4c6fc9edf2919c2da2aa9f29905f9ba726537d07de74efbd4ee5f798f838",
+ "script_sha256": "48636aa129ddb0328df4a09f8cca727f538ab793f288fcef81b0f8641be5ac07",
  "code_sha256": {
-  "sign_cube.py": "334271bbae1a214a1b05dad572d7fd63e77fff0e113dc4e7ebb5731fd0fa7347",
+  "sign_cube.py": "c72d04cbedae354b753f5ad243d2f9453d017eaa4161aea95c0dfd8c979c7469",
   "t3_decompose.py": "3e671c3bb5ff57bba5ceec80ea36fcc739b1f111399a1e2854400b5c9f5133d2",
   "rules.yaml": "cd2d94aa6e202529a2eead2a7ad60b312d9a2fd9ff0bd989d9320662de750c13",
   "build_submission.py": "1194a63993a27dde4dedfdb9180de035c5f8f2a57aaa7d97b38e7a15ea9e0c74"
  },
  "provenance": {
-  "commit": "94308d3239b3cf8412bc75deee470cc823807952",
+  "commit": "5870f31dc39317dff5e9f431668d0ede63cc1bf2",
   "tree_clean": true,
   "machine": "cessa-G242-Z11-00",
-  "utc": "2026-11-25 19:35:16"
+  "utc": "2026-11-25 20:35:42"
  },
  "inputs": {
   "E8.75": {
