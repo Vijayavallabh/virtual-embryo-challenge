@@ -14271,3 +14271,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     file size are not recorded or used.
   - **Each rule by its letter.** It is below the board's best (O, 69.9), which stays. By the embryo's order rule no
     score decides another embryo file, and row R59 named one file only. Standing unchanged: 203.695.
+- 2026-11-25 (o), row H35 is placed: the counted screen of the heart's trend forms (row R55) (state at 02:26 UTC,
+  2026-11-25). Written by the AI assistant, which designed none of it and is recused on the heart's scope and size.
+  - **The row.** The score-blind reviewer's adaptation of the cold challenge's text, with G0's record sentence
+    corrected to the fix (G0 writes each form's word and condition, no figure: its figures would give back the hidden
+    draw's count). Code merged at c6146ce after an independent review that found no blocker. The screen runs on
+    `~/v/scratch/h29b-wt`; the heart files are built at the screen's run commit with only ledger and record commits on
+    top (the build launcher refuses any code change since).
