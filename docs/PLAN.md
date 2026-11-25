@@ -14729,3 +14729,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     settings kept (parents chosen by headline order only where they must be the best-scored, never by the size of a
     score), and inputs the banked pipeline never reads that the rules allow (for the heart, whether its trend uses the
     unlocked E8.5 file and the released E8.25 and E8.75 stages). Three blind designers; cold challengers next.
+- 2026-11-25 (ccc), the captain reports two T1 headlines and the rules are applied by their letter (state at 15:29
+  UTC, 2026-11-25). Written by the AI assistant, which records the headlines only.
+  - **The paste:** T1:test `T1_s2rcMS20H10m10.h5ad` (row R66's K1) 74.27, `T1_s2rcMS20H20.h5ad` (C3) 73.82 (shown as
+    submitted 2026-11-25 15:23 and 15:26). Each file's sha256 on disk matches its sheet row. The paste's per-metric
+    lines, ranks and file sizes are not recorded or used.
+  - **Each rule by its letter.** Both are below MS20m10 (74.35), which holds the board's best. Row R66 names no file
+    on these headlines; its slots are spent. Standing unchanged: 204.465.
