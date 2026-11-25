@@ -15082,3 +15082,12 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **What follows, by row K18's code-fix rule** (which K31 cites): the race is fixed in code with no change to any
     computation, the fix is noted as an amendment to row K31, and all worlds are rerun at the new commit into a fresh
     folder; run k31a's task files are never read and are kept aside.
+- 2026-11-25 (eeee), the T3 sign cube (row R72): its gate K31 reads STOP; nothing is built (state at 21:10 UTC).
+  Written by the AI assistant, which gives no view on which genes a T3 file moves.
+  - **The run.** After the start-file fix (a6b7e3e, no computation changed; the amendment in row K31's outcome cell,
+    b2e0c6d), run k31b at b2e0c6d in a fresh folder of `~/v/vec-campaign-c`: preflight, tests, C2's identity rebuild
+    (C2's recorded bytes), G0 (CONTINUE), the guard dry run, the run's four parts and the read all exit 0. Run k31a's
+    task files were never read and are kept aside.
+  - **The outcome statement, quoted:** "Try K31: STOP: no axis moves the test-like truth a point beyond a random
+    direction of its size; nothing is built." No vertex is built; T3 keeps `T3_c2_s2.h5ad`. Tries: T3 86 to 89 (row
+    K31's four), counted once. The reading's four files are committed with this entry.

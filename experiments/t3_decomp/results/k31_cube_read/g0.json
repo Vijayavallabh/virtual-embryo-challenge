@@ -1,0 +1,294 @@
+{
+ "G0a": {
+  "max_abs_ln_diff": {
+   "transfer_mab21l2_all": 0.0,
+   "gata4_pooled": 0.0
+  },
+  "tolerance": 1e-06,
+  "masks_equal_manifest": {
+   "transfer_mab21l2_all": true,
+   "gata4_pooled": true
+  },
+  "stage_cells_in_masked_labels": {
+   "E9.5": {
+    "M": {
+     "Neural Tube": 46,
+     "NCC": 3300,
+     "d-CSE": 1520,
+     "V-CSE": 1153,
+     "Intra-Endoth-1": 3015,
+     "pPHM": 2472,
+     "Endo": 5396,
+     "PAM-3": 1181,
+     "ExEM-1": 1844,
+     "vCM1": 1903,
+     "a-FG": 725,
+     "D-FG": 962,
+     "PAM-4": 1295,
+     "vCM2": 3193,
+     "aPHM": 1473,
+     "OFT/RV-CM": 2950,
+     "aSHF": 1664,
+     "aCM1": 3099,
+     "Peri/BW": 3377,
+     "Intra-Endoth-2": 640,
+     "aCM2": 2420,
+     "Peri": 1034,
+     "pSHF": 1611,
+     "JCF/SV-CM": 1498,
+     "HEM-Endoth": 388,
+     "JCF": 1066,
+     "ExEM-2": 759,
+     "FHF/JCF": 2578
+    },
+    "G": {
+     "Neural Tube": 46,
+     "NCC": 3300,
+     "d-CSE": 1520,
+     "V-CSE": 1153,
+     "a-FG": 725,
+     "D-FG": 962,
+     "Lateral FG": 232,
+     "EXE-Endoderm": 314,
+     "pSE": 85,
+     "Gut Endoderm": 102
+    }
+   },
+   "E8.0": {
+    "M": {
+     "Neural Tube": 2864,
+     "NCC": 744,
+     "d-CSE": 320,
+     "V-CSE": 1461,
+     "Intra-Endoth-1": 894,
+     "pPHM": 105,
+     "Endo": 279,
+     "PAM-3": 6,
+     "ExEM-1": 3593,
+     "vCM1": 38,
+     "a-FG": 557,
+     "D-FG": 601,
+     "PAM-4": 401,
+     "vCM2": 99,
+     "aPHM": 773,
+     "OFT/RV-CM": 202,
+     "aSHF": 435,
+     "aCM1": 105,
+     "Peri/BW": 1529,
+     "Intra-Endoth-2": 153,
+     "aCM2": 60,
+     "Peri": 298,
+     "pSHF": 25,
+     "JCF/SV-CM": 163,
+     "HEM-Endoth": 2414,
+     "JCF": 191,
+     "ExEM-2": 1762,
+     "FHF/JCF": 217
+    },
+    "G": {
+     "Neural Tube": 2864,
+     "NCC": 744,
+     "d-CSE": 320,
+     "V-CSE": 1461,
+     "a-FG": 557,
+     "D-FG": 601,
+     "Lateral FG": 36,
+     "EXE-Endoderm": 5687,
+     "pSE": 160,
+     "Gut Endoderm": 323
+    }
+   }
+  },
+  "passes": true
+ },
+ "G0b": {
+  "max_abs_identity_error": 4.440892098500626e-16,
+  "max_abs_error_against_ln_phi_c2": 4.440892098500626e-16,
+  "tolerance": 1e-12,
+  "genes_at_a_clip": {
+   "l_M": 30,
+   "l_G": 5,
+   "S_M": 31,
+   "Y_M": 24,
+   "S_G": 55,
+   "Y_G": 41
+  },
+  "ppp_k": 1.0,
+  "ppp_is_c2_factor": true,
+  "passes": true
+ },
+ "G0c": {
+  "bar": 0.15,
+  "axes": {
+   "S": {
+    "sd_q_over_sd_ln_phi_c2": 0.4887773154148265,
+    "passes": true
+   },
+   "M": {
+    "sd_q_over_sd_ln_phi_c2": 0.7651872332699287,
+    "passes": true
+   },
+   "G": {
+    "sd_q_over_sd_ln_phi_c2": 0.5958119932058571,
+    "passes": true
+   }
+  }
+ },
+ "G0d": {
+  "band": 0.01,
+  "held_labels": 41,
+  "vertices": {
+   "ppp": {
+    "k": 1.0,
+    "min": 0.10569407798512326,
+    "max": 8.803274103945173,
+    "den_dev": 0.0,
+    "max_abs_library_dev": 0.0,
+    "clipped_low": 0,
+    "clipped_high": 0,
+    "sd_ln_factor": 0.6963983459868952,
+    "factor_sha256": "bd2bfbfbf3777c9d1eb15bc836c12a4398afa291d2e7184b2a434b5d26cfa12f",
+    "hold_rounds": 0,
+    "passes": true
+   },
+   "ppn": {
+    "refused": "no real k holds SD(ln phi) at the base's",
+    "passes": false
+   },
+   "pnp": {
+    "refused": "no real k holds SD(ln phi) at the base's",
+    "passes": false
+   },
+   "pnn": {
+    "refused": "no positive k holds SD(ln phi) at the base's",
+    "passes": false
+   },
+   "npp": {
+    "k": 0.8986870504460129,
+    "min": 0.24978569098126172,
+    "max": 5.1094450368315485,
+    "den_dev": -2.220446049250313e-16,
+    "max_abs_library_dev": 1.1781346054284825e-07,
+    "clipped_low": 10,
+    "clipped_high": 17,
+    "sd_ln_factor": 0.6674858597469978,
+    "factor_sha256": "d76a891ed21a5f73ac84edf17352ec1c48f1fb02e840647c41cc52ae5d1649f3",
+    "hold_rounds": 6,
+    "passes": true
+   },
+   "npn": {
+    "refused": "no real k holds SD(ln phi) at the base's",
+    "passes": false
+   },
+   "nnp": {
+    "refused": "no real k holds SD(ln phi) at the base's",
+    "passes": false
+   },
+   "nnn": {
+    "refused": "no positive k holds SD(ln phi) at the base's",
+    "passes": false
+   }
+  }
+ },
+ "G0e": {
+  "bar": 0.3,
+  "depth_ratios": {
+   "E9.5": 0.5769230769230769,
+   "E8.0": 1.6307692307692307
+  },
+  "axes": {
+   "S": {
+    "directions": {
+     "E9.5": {
+      "spearman": 0.15126838107352428,
+      "pearson": 0.0675693216384451
+     },
+     "E8.0": {
+      "spearman": 0.18847227388909557,
+      "pearson": 0.3171111901116286
+     }
+    },
+    "passes": true
+   },
+   "M": {
+    "passes": false,
+    "why": "vertex pnp not made"
+   },
+   "G": {
+    "passes": false,
+    "why": "vertex ppn not made"
+   }
+  }
+ },
+ "G0f": {
+  "bar": 0.3,
+  "axes": {
+   "S": {
+    "directions": {
+     "R36_composition": {
+      "spearman": 0.01553199812799251,
+      "pearson": 0.044918970507747465
+     },
+     "E8.0_label_shares": {
+      "spearman": 0.021082452329809317,
+      "pearson": 0.09722182575839836
+     },
+     "E9.5_label_shares": {
+      "spearman": -0.0641571526286105,
+      "pearson": -0.03423712170279825
+     }
+    },
+    "passes": true
+   },
+   "M": {
+    "passes": false,
+    "why": "vertex pnp not made"
+   },
+   "G": {
+    "passes": false,
+    "why": "vertex ppn not made"
+   }
+  }
+ },
+ "G0g": {
+  "positions": {
+   "E8.25_late": 0.1234912010477655,
+   "E8.5": 0.31413711924456744,
+   "E8.75": 0.4264314599554427
+  },
+  "passes": true
+ },
+ "c": 0.8175531269240147,
+ "manifest_sha256": "49d10779348a75430aea47287073dd0cac19e9232027d31e2763d7db6192bd50",
+ "harmoniser_depth_keys": {
+  "mab21l2": 95.0,
+  "rep1": 82.0,
+  "rep2": 68.0,
+  "E9.5": 75.0,
+  "E8.0": null,
+  "E8.25_late": null,
+  "E8.5": null
+ },
+ "inputs_sha256": {
+  "decision": "9440ae67625608112666d5235e6ceaa5dd9f47a4b0bbd30e16943f32f35c5a8c",
+  "transfer_mab21l2_all": "64b1e0b8572c7193ed1e1f0b7339a26081e601f1e706e6b08193e1718dc5c7e8",
+  "gata4_pooled": "36f2d65a36d2d4fd5307cddfadb56e9724c362c982795f30428eda752b4734ef"
+ },
+ "outcome": "CONTINUE",
+ "line": "Cube G0: CONTINUE: axes left S; held at '+' M (G0e+G0f), G (G0e+G0f); vertices G0d refuses ppn, pnp, pnn, npn, nnp, nnn; vertices G0 leaves npp.",
+ "axes_left": [
+  "S"
+ ],
+ "vertices_left": [
+  "npp"
+ ],
+ "provenance": {
+  "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+  "tree_clean": true,
+  "machine": "p01r10srv05",
+  "utc": "2026-11-25 21:01:59",
+  "end_commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+  "end_clean": true
+ },
+ "script_sha256": "48636aa129ddb0328df4a09f8cca727f538ab793f288fcef81b0f8641be5ac07"
+}

@@ -1,0 +1,9 @@
+Try K31: STOP: no axis moves the test-like truth a point beyond a random direction of its size; nothing is built.
+G0: Cube G0: CONTINUE: axes left S; held at '+' M (G0e+G0f), G (G0e+G0f); vertices G0d refuses ppn, pnp, pnn, npn, nnp, nnn; vertices G0 leaves npp. (g0.json sha256 24bcbde17265af0ffc1e96fc821d28f11c76990228799e44272c4ba020803003)
+tries counted: cube_np, null_S
+guard plain g1: mean +0.0000, largest seed 0.0000
+guard plain g2: mean +0.0000, largest seed 0.0000
+axis S: mean Delta -1.110, 6 of 10 seeds on its side, second largest |null| 0.000, made True: no pass
+  per seed: -0.46, -2.92, -1.13, -3.01, +0.37, -3.27, +0.00, -1.86, +0.36, +0.82
+  null per seed: +0.00, +0.00, +0.00, +0.00, +0.00, +0.00, +0.00, +0.00, +0.00, +0.00
+build: nothing

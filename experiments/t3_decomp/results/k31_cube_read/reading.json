@@ -1,0 +1,240 @@
+{
+ "g0": {
+  "sha256": "24bcbde17265af0ffc1e96fc821d28f11c76990228799e44272c4ba020803003",
+  "outcome": "CONTINUE",
+  "line": "Cube G0: CONTINUE: axes left S; held at '+' M (G0e+G0f), G (G0e+G0f); vertices G0d refuses ppn, pnp, pnn, npn, nnp, nnn; vertices G0 leaves npp.",
+  "axes_left": [
+   "S"
+  ],
+  "vertices_left": [
+   "npp"
+  ],
+  "provenance": {
+   "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "tree_clean": true,
+   "machine": "p01r10srv05",
+   "utc": "2026-11-25 21:01:59",
+   "end_commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "end_clean": true
+  }
+ },
+ "incomplete": false,
+ "files_sha256": {
+  "plain_g1/seed_0.json": "c097f8716681dc1a391a7dc75e25cb4801c06c58676e195e5918ce291fa62436",
+  "plain_g1/seed_1.json": "5b597de54d46eefab7b61bea7787762f376f95706651be035b1f2439244c6478",
+  "plain_g1/seed_2.json": "c33d4d22e67293915c5d2e5843552c1cf9738c2e49c14799fd33d0d9aaf4bc7e",
+  "plain_g1/seed_3.json": "cc888473940df8d84701fa8f738ceff4b5720076e8416fbc16629df7da57303a",
+  "plain_g1/seed_4.json": "b0f985cdc95b66fd3b4e6d411ad5ff5964c1893a63a87b6f3b7f42dd20c7a09c",
+  "plain_g1/seed_5.json": "dfbba0d377453eb1f0ea184f326d820cee7972f667efda93f95020019dd088c4",
+  "plain_g1/seed_6.json": "1cab2cf2dff08e75a57a39a37237b4a3d38f12ee8de2301dc30e7528c172061d",
+  "plain_g1/seed_7.json": "d173b69ab549bbf4d3bd93722d04aa77cd02e412d1b3e3db96bf7f3bb4bb4780",
+  "plain_g1/seed_8.json": "ff9c5c8036319469b4f4269deefeb09e4e17723de284d83e872cb6dcdb0b371b",
+  "plain_g1/seed_9.json": "cdf79c3a6a95998f068332b8a6594755534211c3cbb689c7b02a5d0f177ee370",
+  "plain_g2/seed_0.json": "d45afb4cfe81afdfaa891c0e81bb1edb6c2c681433848daa0b2a60cf6a80ab35",
+  "plain_g2/seed_1.json": "b7ee85170e0fa31181fccbb7db44f86afb60b0dbf92a8ffc93fa12bde733b309",
+  "plain_g2/seed_2.json": "6bdd19679c109ca7a71aaa19a9bed3c8a27bbccd571bc16039fa5674f4e2528e",
+  "plain_g2/seed_3.json": "afe816468c9750678aec5d74768fceec8c23b87b650c231b890f351b1c82c878",
+  "plain_g2/seed_4.json": "11d233145e9304db1b9fd40783d6a1f0d32d6720865ef2f835476b7d92e5e470",
+  "plain_g2/seed_5.json": "ab120b77f1c717a485d200e4bee7ee11894ff8b8dcb0a1c968539455fca8b289",
+  "plain_g2/seed_6.json": "9a68edfe70dd0b3601285994a8316e8f3779b88f92e18e48e71c9bf6468f1cb6",
+  "plain_g2/seed_7.json": "2c42c7a84bd45272a449ca8bc4cb45376b891888b53eb3f849728fd8a0fbde0f",
+  "plain_g2/seed_8.json": "7e4f3edd4fbd762231bed1107d214393792b5d1454b5c6785b292282d41eb802",
+  "plain_g2/seed_9.json": "142a9e22d77d15fa392748ba5f34dc8c3a37196fdc54047294679fb3c56b8185"
+ },
+ "provenance": {
+  "plain_g1/seed_0.json": {
+   "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "tree_clean": true,
+   "machine": "p01r10srv05"
+  },
+  "plain_g1/seed_1.json": {
+   "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "tree_clean": true,
+   "machine": "p01r10srv05"
+  },
+  "plain_g1/seed_2.json": {
+   "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "tree_clean": true,
+   "machine": "p01r10srv05"
+  },
+  "plain_g1/seed_3.json": {
+   "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "tree_clean": true,
+   "machine": "p01r10srv05"
+  },
+  "plain_g1/seed_4.json": {
+   "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "tree_clean": true,
+   "machine": "p01r10srv05"
+  },
+  "plain_g1/seed_5.json": {
+   "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "tree_clean": true,
+   "machine": "p01r10srv05"
+  },
+  "plain_g1/seed_6.json": {
+   "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "tree_clean": true,
+   "machine": "p01r10srv05"
+  },
+  "plain_g1/seed_7.json": {
+   "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "tree_clean": true,
+   "machine": "p01r10srv05"
+  },
+  "plain_g1/seed_8.json": {
+   "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "tree_clean": true,
+   "machine": "p01r10srv05"
+  },
+  "plain_g1/seed_9.json": {
+   "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "tree_clean": true,
+   "machine": "p01r10srv05"
+  },
+  "plain_g2/seed_0.json": {
+   "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "tree_clean": true,
+   "machine": "p01r10srv05"
+  },
+  "plain_g2/seed_1.json": {
+   "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "tree_clean": true,
+   "machine": "p01r10srv05"
+  },
+  "plain_g2/seed_2.json": {
+   "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "tree_clean": true,
+   "machine": "p01r10srv05"
+  },
+  "plain_g2/seed_3.json": {
+   "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "tree_clean": true,
+   "machine": "p01r10srv05"
+  },
+  "plain_g2/seed_4.json": {
+   "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "tree_clean": true,
+   "machine": "p01r10srv05"
+  },
+  "plain_g2/seed_5.json": {
+   "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "tree_clean": true,
+   "machine": "p01r10srv05"
+  },
+  "plain_g2/seed_6.json": {
+   "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "tree_clean": true,
+   "machine": "p01r10srv05"
+  },
+  "plain_g2/seed_7.json": {
+   "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "tree_clean": true,
+   "machine": "p01r10srv05"
+  },
+  "plain_g2/seed_8.json": {
+   "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "tree_clean": true,
+   "machine": "p01r10srv05"
+  },
+  "plain_g2/seed_9.json": {
+   "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+   "tree_clean": true,
+   "machine": "p01r10srv05"
+  }
+ },
+ "guard": {
+  "g1": {
+   "mean_diff": 0.0,
+   "max_abs_diff": 0.0,
+   "seeds_off": []
+  },
+  "g2": {
+   "mean_diff": 0.0,
+   "max_abs_diff": 0.0,
+   "seeds_off": []
+  }
+ },
+ "axes_read": [
+  "S"
+ ],
+ "run_started": {
+  "commit": "b2e0c6d5230f034db927ef7df479667c8046dc88",
+  "tree_clean": true,
+  "machine": "p01r10srv05",
+  "utc": "2026-11-25 21:04:02",
+  "row": "K31",
+  "axes": [
+   "S"
+  ],
+  "tries": [
+   "cube_np",
+   "null_S"
+  ]
+ },
+ "void": false,
+ "why": [],
+ "axes": {
+  "S": {
+   "mean": -1.1096986049577815,
+   "seeds_on_side": 6,
+   "null_abs": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "null_second_largest": 0.0,
+   "above_null": true,
+   "passes": false,
+   "made": true,
+   "delta": [
+    -0.457561991682514,
+    -2.9238030493595453,
+    -1.1309773743741331,
+    -3.0149487105933126,
+    0.37471896891605994,
+    -3.272572061534756,
+    0.0,
+    -1.8552556192656873,
+    0.36115203060749224,
+    0.8222617577085813
+   ],
+   "delta_null": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "per_task": {
+    "g1": {
+     "arm_mean": -0.6087436629633558,
+     "null_mean": 0.0
+    },
+    "g2": {
+     "arm_mean": -1.6106535469522072,
+     "null_mean": 0.0
+    }
+   }
+  }
+ },
+ "outcome": "STOP",
+ "line": "Try K31: STOP: no axis moves the test-like truth a point beyond a random direction of its size; nothing is built.",
+ "tries_counted": [
+  "cube_np",
+  "null_S"
+ ],
+ "build": []
+}

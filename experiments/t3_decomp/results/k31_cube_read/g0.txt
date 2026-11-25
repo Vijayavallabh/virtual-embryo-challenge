@@ -1,0 +1,26 @@
+Cube G0: CONTINUE: axes left S; held at '+' M (G0e+G0f), G (G0e+G0f); vertices G0d refuses ppn, pnp, pnn, npn, nnp, nnn; vertices G0 leaves npp.
+manifest sha256 49d10779348a75430aea47287073dd0cac19e9232027d31e2763d7db6192bd50; c = 0.817553
+G0a: max |ln recomputed - ln pinned| transfer_mab21l2_all 0, gata4_pooled 0 (bar 1e-06); masks equal the manifest's transfer_mab21l2_all True, gata4_pooled True: pass
+  E9.5 cells in transfer_mab21l2_all's labels: Neural Tube 46, NCC 3300, d-CSE 1520, V-CSE 1153, Intra-Endoth-1 3015, pPHM 2472, Endo 5396, PAM-3 1181, ExEM-1 1844, vCM1 1903, a-FG 725, D-FG 962, PAM-4 1295, vCM2 3193, aPHM 1473, OFT/RV-CM 2950, aSHF 1664, aCM1 3099, Peri/BW 3377, Intra-Endoth-2 640, aCM2 2420, Peri 1034, pSHF 1611, JCF/SV-CM 1498, HEM-Endoth 388, JCF 1066, ExEM-2 759, FHF/JCF 2578
+  E9.5 cells in gata4_pooled's labels: Neural Tube 46, NCC 3300, d-CSE 1520, V-CSE 1153, a-FG 725, D-FG 962, Lateral FG 232, EXE-Endoderm 314, pSE 85, Gut Endoderm 102
+  E8.0 cells in transfer_mab21l2_all's labels: Neural Tube 2864, NCC 744, d-CSE 320, V-CSE 1461, Intra-Endoth-1 894, pPHM 105, Endo 279, PAM-3 6, ExEM-1 3593, vCM1 38, a-FG 557, D-FG 601, PAM-4 401, vCM2 99, aPHM 773, OFT/RV-CM 202, aSHF 435, aCM1 105, Peri/BW 1529, Intra-Endoth-2 153, aCM2 60, Peri 298, pSHF 25, JCF/SV-CM 163, HEM-Endoth 2414, JCF 191, ExEM-2 1762, FHF/JCF 217
+  E8.0 cells in gata4_pooled's labels: Neural Tube 2864, NCC 744, d-CSE 320, V-CSE 1461, a-FG 557, D-FG 601, Lateral FG 36, EXE-Endoderm 5687, pSE 160, Gut Endoderm 323
+G0b: identity error 4.44e-16 (bar 1e-12), against ln phi_C2 4.44e-16; ppp k 1.0, C2's factor exactly True; genes at a clip l_M 30, l_G 5, S_M 31, Y_M 24, S_G 55, Y_G 41: pass
+G0c: SD(Q(X_j)) / SD(ln phi_C2) S 0.489 (pass), M 0.765 (pass), G 0.596 (pass) (bar 0.15)
+G0d: 41 labels held (every label of C2's drawn cells); band 0.01
+  ppp: k 1.0000, range [0.1057, 8.803], den +0.00e+00, largest label library 0.00e+00, rounds 0, SD ln 0.6964: pass
+  ppn: not made (no real k holds SD(ln phi) at the base's)
+  pnp: not made (no real k holds SD(ln phi) at the base's)
+  pnn: not made (no positive k holds SD(ln phi) at the base's)
+  npp: k 0.8987, range [0.2498, 5.109], den -2.22e-16, largest label library 1.18e-07, rounds 6, SD ln 0.6675: pass
+  npn: not made (no real k holds SD(ln phi) at the base's)
+  nnp: not made (no real k holds SD(ln phi) at the base's)
+  nnn: not made (no positive k holds SD(ln phi) at the base's)
+G0e: depth ratios E9.5 0.577, E8.0 1.631
+G0e S: E9.5 rho +0.151 (r +0.068), E8.0 rho +0.188 (r +0.317): pass (bar 0.3)
+G0e M: vertex pnp not made: held
+G0e G: vertex ppn not made: held
+G0f S: R36_composition rho +0.016 (r +0.045), E8.0_label_shares rho +0.021 (r +0.097), E9.5_label_shares rho -0.064 (r -0.034): pass (bar 0.3)
+G0f M: vertex pnp not made: held
+G0f G: vertex ppn not made: held
+G0g: s(E8.25_late) 0.123, s(E8.5) 0.314, s(E8.75) 0.426: pass
