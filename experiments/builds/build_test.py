@@ -326,6 +326,18 @@ machine, and an official upload needs the captain's go-ahead.
           without it is refused. Its record gains a series_back block (the option, the file, R48, the order text, the
           command, the rule) and the flat series_back_* fields, no cell number. Its step 0 is row E56
           (experiments/coords/ovsb_step0.py); its test builds, experiments/builds/embryo_ovsb.sh
+          --mix-lean later --captain-ruling R59 (off by default; row R59 of experiments/harness/TRIES.md, the captain's
+          order of 2026-11-24, "Yes to T2embryo_s2x_ovt23.h5ad (Ot23): my named exception on the embryo's overlay form
+          for this file, bound to its gate G1."): O's command with the later bracket's share of the drawn cells at
+          t_mix = 2/3 exactly, passed to vec.t2_build.interpolate_clouds (t = 1/2 still sets the moves): a third of the
+          rows real E7.5 cells, two thirds real E8.0 cells, so the overlay's union and pool weights lean to E8.0's
+          specimen (it moves the overlay's form). Count, size rule, scope, seed and every stream are O's. Refused
+          before anything is read on any other command (the test board, the default seed, nothing else changed),
+          without --captain-ruling R59 or with another row, and unless TRIES.md holds exactly one row R59 whose first
+          cell is the captain's order ("ruling, no run") naming `--mix-lean later` and `--captain-ruling R59`; embryo
+          --captain-ruling R59 without it is refused. Its record gains a mix_lean block (the option, the file, R59, the
+          order text, the command, t_mix), no cell number. Its gate is G1, row E58
+          (experiments/coords/e58_mix_lean_read.py); its test builds, experiments/builds/embryo_ot23.sh
           --neighbourhood run_sorted --captain-ruling <ROW> (off by default: as_built; row E57 of
           experiments/harness/TRIES.md, "RS: one run per side", the file T2embryo_s2x_ovrs.h5ad): O's command with one
           last step on the final coordinates, after the cloud guard (the place --row-order takes), that re-assigns
@@ -586,6 +598,28 @@ EMBRYO_OVSB_ORDER = ("experiments/harness/TRIES.md row R48, the captain's order 
                      "reopened for this one file, an extra file beside O and never in its place; O's command with "
                      "--expression series_back, taken only with --captain-ruling R48")
 EMBRYO_OVSB_STEP0 = "row E56 of experiments/harness/TRIES.md (experiments/coords/ovsb_step0.py)"
+# --mix-lean later (row R59 of experiments/harness/TRIES.md, the captain's order of 2026-11-24, "Yes to
+# T2embryo_s2x_ovt23.h5ad (Ot23): my named exception on the embryo's overlay form for this file, bound to its gate
+# G1."): O's command with the later bracket's share of the drawn cells at t_mix = 2/3 exactly, passed to
+# t2_build.interpolate_clouds (t = 1/2 still sets the moves). It moves the overlay's form: the union and its pool
+# weights lean to E8.0's specimen. Off by default; taken only on O's command with --captain-ruling R59 (the test board,
+# the default seed, nothing else changed), and only while TRIES.md holds exactly one row R59 whose first cell is the
+# captain's order ("ruling, no run") naming `--mix-lean later` and `--captain-ruling R59`. Its gate is G1, row E58
+# (experiments/coords/e58_mix_lean_read.py: the harness arm takes t_mix = min(1, t + 1/6), which is 2/3 at t = 1/2).
+EMBRYO_OT23_ROW = "R59"
+EMBRYO_OT23_OPTION = "`--mix-lean later`"
+EMBRYO_OT23_FILE = "T2embryo_s2x_ovt23.h5ad"
+MIX_LEANS = ("later",)  # the earlier lean (Ot13) was struck by the cold challenge: no value for it
+EMBRYO_OT23_T_MIX = 2.0 / 3.0  # the nearest double to 2/3, the same float as min(1, 1/2 + 1/6)
+EMBRYO_OT23_COMMAND = f"{EMBRYO_O_COMMAND} --mix-lean later --captain-ruling {EMBRYO_OT23_ROW}"
+EMBRYO_OT23_ORDER = ("experiments/harness/TRIES.md row R59, the captain's order of 2026-11-24 (\"Yes to "
+                     "T2embryo_s2x_ovt23.h5ad (Ot23): my named exception on the embryo's overlay form for this file, "
+                     "bound to its gate G1.\"; decision log 2026-11-24 (www)): O's command with --mix-lean later, "
+                     "taken only with --captain-ruling R59")
+EMBRYO_OT23_GATE = "G1, row E58 of experiments/harness/TRIES.md (experiments/coords/e58_mix_lean_read.py)"
+EMBRYO_OT23_RULE = ("t_mix = 2/3 in vec.t2_build.interpolate_clouds at t = 1/2: round(n / 3) rows real E7.5 cells, the "
+                    "rest real E8.0 cells; the overlay's union and pool weights follow t_mix; count, size rule, scope, "
+                    "seed and every stream as O's")
 # --neighbourhood run_sorted (row E57 of experiments/harness/TRIES.md, "RS: one run per side": the score-blind ERROR
 # designer's proposal P1 of the embryo design round of 2026-11-24/25 as its cold challenger fixed it; off by default):
 # O's command with one last step on the final coordinates, after the cloud guard (the place --row-order takes), that
@@ -2834,6 +2868,49 @@ def _series_back_refusals(a) -> bool:
     return True
 
 
+def _mix_lean_ordered() -> bool:
+    """Whether experiments/harness/TRIES.md holds exactly one row R59 whose first cell is the captain's order ("ruling,
+    no run") naming `--mix-lean later` and `--captain-ruling R59` (_captain_order_names)."""
+    return _captain_order_names(EMBRYO_OT23_ROW, EMBRYO_OT23_OPTION)
+
+
+def _is_ot23_command(a) -> bool:
+    """Whether the parsed command is EMBRYO_OT23_COMMAND (O's command with --mix-lean later --captain-ruling R59) and
+    nothing else: every option the embryo parser knows holds the value that command gives it (the test board, named or
+    left out, and the default seed), --out aside. An option added to the parser later is held at its default too."""
+    want = vars(build_parser().parse_args([*EMBRYO_OT23_COMMAND.split(), "--out", str(a.out)]))
+    got = dict(vars(a))
+    if got.get("board") == TEST_BOARDS["embryo"]:
+        got["board"] = None
+    return got == want
+
+
+def _mix_lean_refusals(a) -> bool:
+    """--mix-lean's refusals (row R59), before any board or stage is read. Returns whether the option is given; without
+    it every command is what it was, and --captain-ruling R59 is refused (it goes with --mix-lean later only)."""
+    lean, ruling = getattr(a, "mix_lean", None), getattr(a, "captain_ruling", None)
+    if lean is None:
+        if ruling == EMBRYO_OT23_ROW:
+            sys.exit(f"embryo --captain-ruling {EMBRYO_OT23_ROW} goes with --mix-lean later only "
+                     f"({EMBRYO_OT23_COMMAND})")
+        return False
+    if lean not in MIX_LEANS:  # the parser's choices refuse it first; kept for a caller that skips the parser
+        sys.exit(f"--mix-lean takes {', '.join(MIX_LEANS)} only (row {EMBRYO_OT23_ROW})")
+    if ruling is None:
+        sys.exit(f"--mix-lean later is the captain's order of row {EMBRYO_OT23_ROW} alone and needs --captain-ruling "
+                 f"{EMBRYO_OT23_ROW}")
+    if ruling != EMBRYO_OT23_ROW:
+        sys.exit(f"--mix-lean later is refused with --captain-ruling {ruling}: only row {EMBRYO_OT23_ROW} orders it")
+    if not _is_ot23_command(a):
+        sys.exit(f"--mix-lean later is refused except on O's command with it, {EMBRYO_OT23_COMMAND}: the test board, "
+                 f"the default seed and nothing else changed (row {EMBRYO_OT23_ROW})")
+    if not _mix_lean_ordered():
+        sys.exit(f"--mix-lean later is refused: experiments/harness/TRIES.md must hold exactly one row "
+                 f"{EMBRYO_OT23_ROW} whose first cell is the captain's order (\"ruling, no run\") naming "
+                 f"{EMBRYO_OT23_OPTION} and `--captain-ruling {EMBRYO_OT23_ROW}`")
+    return True
+
+
 def _run_sorted_refusals(a) -> str | None:
     """--neighbourhood run_sorted's refusals (row E57's file), before any board or stage is read. Returns the ruling
     row when the option is given, else None: without it every command is what it was. Refused on any command but O's
@@ -3017,7 +3094,9 @@ def _build_copy_rows(a, board, dry: bool, genes, files: dict, inputs: dict, coun
 
 
 def build_embryo(a) -> dict:
-    series_back = _series_back_refusals(a)  # row R48's option (off by default): before anything is read
+    mix_lean = _mix_lean_refusals(a)  # row R59's option (off by default): before anything is read
+    # row R48's option (off by default): before anything is read; with --mix-lean the command is O's, mixture included
+    series_back = _series_back_refusals(a) if not mix_lean else False
     rs_ruling = _run_sorted_refusals(a)  # row E57's file (off by default): before anything is read
     _copy_rows_refusals(a)
     if a.positions != t2_build.POSITIONS[0] and (a.method != "fgw_shape0" or a.herd
@@ -3078,7 +3157,9 @@ def build_embryo(a) -> dict:
                                                      else (t2_build.log_panel_counts(before, genes),
                                                            t2_build.log_panel_counts(after, genes))),
                                           with_coupling=a.expression == "latent",
-                                          **({} if shape is None else {"shape_form": shape}), positions=a.positions)
+                                          **({} if shape is None else {"shape_form": shape}),
+                                          **({"t_mix": EMBRYO_OT23_T_MIX} if mix_lean else {}),  # row R59 only
+                                          positions=a.positions)
         if (shape in shape_interp.COMPOSED_FORMS and (not dry or str(board.split).startswith("test"))
                 and res.record.get("shape_interp_blocks") != OSR_TEST_BLOCKS):  # row E55, cell 3: "must be"
             raise SystemExit(f"--shape-interp {shape} on a test board needs the brackets' blocks {OSR_TEST_BLOCKS}; "
@@ -3143,6 +3224,11 @@ def build_embryo(a) -> dict:
                               "captain_ruling": EMBRYO_OVSB_ROW, "order": EMBRYO_OVSB_ORDER,
                               "command": EMBRYO_OVSB_COMMAND, "o_command": EMBRYO_O_COMMAND,
                               "rule": t2_build.SERIES_BACK_RULE, "step0": EMBRYO_OVSB_STEP0}
+    if mix_lean:  # row R59's file only: what it is and who ordered it, flat values, no cell number
+        out["mix_lean"] = {"option": "--mix-lean later", "file": EMBRYO_OT23_FILE, "captain_ruling": EMBRYO_OT23_ROW,
+                           "order": EMBRYO_OT23_ORDER, "command": EMBRYO_OT23_COMMAND, "o_command": EMBRYO_O_COMMAND,
+                           "t_mix": EMBRYO_OT23_T_MIX, "t_mix_exact": "2/3", "rule": EMBRYO_OT23_RULE,
+                           "gate": EMBRYO_OT23_GATE}
     if rs_ruling is not None:  # row E57's file only: what it is, who ordered it and the plane; flat, no cell number
         out["neighbourhood"] = {"option": "--neighbourhood run_sorted", "file": EMBRYO_RS_FILE,
                                 "captain_ruling": rs_ruling, "command": EMBRYO_RS_COMMAND.format(row=rs_ruling),
@@ -3466,6 +3552,12 @@ def build_parser() -> argparse.ArgumentParser:
                            help="--row-order copy_parity on the test board: the captain's yes (off by default; "
                                 "without it the option refuses on a test board before anything loads, because a "
                                 "refusal or a success there shows one bit of the test count)")
+            p.add_argument("--mix-lean", choices=MIX_LEANS, default=None,
+                           help=f"row {EMBRYO_OT23_ROW}'s file {EMBRYO_OT23_FILE} (the captain's order of 2026-11-24; "
+                                "off by default): O's command with the later bracket's share of the drawn cells at "
+                                "t_mix = 2/3 exactly (t = 1/2 still sets the moves), only as "
+                                f"{EMBRYO_OT23_COMMAND}; it moves the overlay's form (the union leans to E8.0's "
+                                "specimen)")
             p.add_argument("--neighbourhood", choices=NEIGHBOURHOODS, default=NEIGHBOURHOODS[0],
                            help="as_built (the default, every file as built) or run_sorted (row E57's file "
                                 f"{EMBRYO_RS_FILE}, off by default): O's rows and positions with each bracket's "
@@ -3475,7 +3567,8 @@ def build_parser() -> argparse.ArgumentParser:
                                 f"{EMBRYO_RS_OPTION} and `--captain-ruling <ROW>`")
             p.add_argument("--captain-ruling", default=None,
                            help=f"with --expression series_back: {EMBRYO_OVSB_ROW}, the row that orders it; with "
-                                "--neighbourhood run_sorted: the captain's ruling row that orders it")
+                                "--neighbourhood run_sorted: the captain's ruling row that orders it; with --mix-lean "
+                                f"later: {EMBRYO_OT23_ROW}, the row that orders it")
     return ap
 
 
