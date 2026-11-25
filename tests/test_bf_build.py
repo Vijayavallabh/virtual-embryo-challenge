@@ -224,6 +224,18 @@ def test_the_mix_lean_with_r71_and_a_dry_run_are_refused(bt, env, tmp_path):
              "T2embryo_s2x_ovbf_dry.h5ad")
 
 
+def test_a_repeated_ruling_is_refused_by_the_parser(bt, env, tmp_path, capsys):
+    """The review's lesser point: argparse would keep the last of two --captain-ruling flags; the embryo command takes
+    the flag once."""
+    out = tmp_path / "r" / BFO
+    for argv in ([*FLOOR, *BF, "--captain-ruling", "R48", "--captain-ruling", "R71"], [*BFO_ARGS, *BFO_ARGS[-2:]],
+                 [*O_ARGS, "--mix-lean", "later", "--captain-ruling", "R59", "--captain-ruling", "R59"]):
+        with pytest.raises(SystemExit) as e:
+            bt.main(["embryo", *argv, "--out", str(out)])
+        assert e.value.code == 2 and "is given once" in capsys.readouterr().err
+    assert not out.exists() and env == []
+
+
 def test_each_command_writes_its_own_file_only(bt, env, tmp_path):
     _refused(bt, env, tmp_path, BFO_ARGS, "--out must name it", BFSO)
     _refused(bt, env, tmp_path, BFSO_ARGS, "--out must name it", BFO)

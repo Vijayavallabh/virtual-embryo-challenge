@@ -15,6 +15,8 @@ with the system python3 before anything else (`python3 -I -B experiments/coords/
                               tree, the text holding the words and no STOP or VOID line): prints the run commit, then
                               the files, one per line, exit 0; exit 1 otherwise
   outcome READING.json        prints the reading's outcome line alone (what the main session reads); exit 1 if none
+  code READING.json           prints the sha256 of vec/shape_interp.py and vec/t2_build.py the reading's code ran with,
+                              on one line (the build launcher pins the BF form's code to the gated one); exit 1 if none
 """
 
 from __future__ import annotations
@@ -135,6 +137,17 @@ def outcome_line(json_path) -> str | None:
     return text if text in OUTCOME_TEXTS.values() else None
 
 
+def reading_code(json_path) -> str | None:
+    """'<shape_interp sha256> <t2_build sha256>' of the code the committed reading ran with, else None."""
+    try:
+        r = json.loads(Path(json_path).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    code = r.get("reading_code") if isinstance(r, dict) and isinstance(r.get("reading_code"), dict) else {}
+    shas = [str(code.get(k, "")) for k in ("shape_interp_sha256", "t2_build_sha256")]
+    return " ".join(shas) if all(re.fullmatch(r"[0-9a-f]{64}", x) for x in shas) else None
+
+
 def main(argv=None) -> int:
     argv = sys.argv[1:] if argv is None else argv
     if len(argv) == 2 and argv[0] == "row":
@@ -151,14 +164,20 @@ def main(argv=None) -> int:
             return 1
         print("\n".join([got[0], *got[1]]))
         return 0
+    if len(argv) == 2 and argv[0] == "code":
+        got = reading_code(argv[1])
+        if got is None:
+            return 1
+        print(got)
+        return 0
     if len(argv) == 2 and argv[0] == "outcome":
         line = outcome_line(argv[1])
         if line is None:
             return 1
         print(line)
         return 0
-    print("usage: bf_row.py row TRIES.md | passed TRIES.md | reading READING.json READING.txt | outcome READING.json",
-          file=sys.stderr)
+    print("usage: bf_row.py row TRIES.md | passed TRIES.md | reading READING.json READING.txt | outcome READING.json "
+          "| code READING.json", file=sys.stderr)
     return 2
 
 

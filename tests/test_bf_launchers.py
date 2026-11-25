@@ -71,12 +71,21 @@ def _cell(key: str) -> str:
     return f"Run at the run commit; in the read's fixed words: \"{br.PASS_TEXTS[key]}\""
 
 
+BEFORE = 1795600000  # 2026-11-25T09:46:40Z: before both launchers' cut-offs
+GATE_LATEST, BUILD_CUTOFF = 1795669200, 1795680000  # 2026-11-26T05:00:00Z and T08:00:00Z
+DATE = ('#!/bin/sh\nif [ "$1" = "-u" ] && [ "$2" = "+%s" ]; then echo "${STUB_NOW:-' + str(BEFORE)
+        + '}"; exit 0; fi\nexec /usr/bin/date "$@"\n')
+
+
 def _home(tmp_path: Path, name: str = "home") -> Path:
+    """A home whose ~/.local/bin (first on the launchers' PATH) holds a stand-in uv and a clock fixed by STUB_NOW."""
     home = tmp_path / name
     fake = home / ".local" / "bin"
     fake.mkdir(parents=True, exist_ok=True)
     (fake / "uv").write_text(STUB)
     (fake / "uv").chmod(0o755)
+    (fake / "date").write_text(DATE)
+    (fake / "date").chmod(0o755)
     return home
 
 
@@ -158,9 +167,20 @@ def test_the_r71_checks_agree_with_the_builders_own(tmp_path):
 
 
 # ------------------------------------------------------------------------------------------------ the build launcher
+CODE = ("src/vec/shape_interp.py", "src/vec/t2_build.py")  # the BF form's code, pinned to the gated one
+
+
+def _sha(rel: str) -> str:
+    import hashlib
+
+    return hashlib.sha256((REPO / rel).read_bytes()).hexdigest()
+
+
 def _reading(commit: str, key="PASS_BOTH", **over) -> dict:
     r = {"void": False, "outcome": key, "outcome_text": br.PASS_TEXTS.get(key, "x"), "commit": commit,
-         "files_passing": list(br.PASS_FILES.get(key, ())), "reading_code": {"head": commit, "clean": True}}
+         "files_passing": list(br.PASS_FILES.get(key, ())),
+         "reading_code": {"head": commit, "clean": True, "shape_interp_sha256": _sha(CODE[0]),
+                          "t2_build_sha256": _sha(CODE[1])}}
     txt = over.pop("_txt", f"Row E59 (run commit {commit}): synthetic\n{br.PASS_TEXTS.get(key, 'x')}\n")
     r.update(over)
     return {"txt": txt, "json": r}
@@ -174,7 +194,7 @@ def _checkout(tmp_path: Path, at_run=None, at_head=None, reading=lambda c: _read
     at_head = (R71, _e59(_cell("PASS_BOTH"))) if at_head is None else at_head
     repo = tmp_path / "checkout"
     sums = sorted({r[0] for r in RECORDS.values()})
-    for rel in (BUILD_REL, ROW_REL, "docs/S2_RULES.md", "docs/S2_RULES.sha256", *sums):
+    for rel in (BUILD_REL, ROW_REL, "docs/S2_RULES.md", "docs/S2_RULES.sha256", *CODE, *sums):
         if not records and rel.endswith(".SHA256SUMS"):
             continue
         (repo / rel).parent.mkdir(parents=True, exist_ok=True)
@@ -342,11 +362,14 @@ def test_the_gate_launchers_steps_with_a_stand_in(tmp_path):
     assert ex["g0"] == "0" and ex["g0read"] == "4" and ex["read"] == "0" and ex["done"] == "4" and "run" not in ex
     calls = _calls(h)
     assert sum(" g0 --seed " in c for c in calls) == 10 and not any(" run --task " in c for c in calls)
-    assert sum(" read --commit " in c for c in calls) == 1
+    reads = [c for c in calls if " read --commit " in c]
+    assert len(reads) == 1 and "--run-started" not in reads[0]  # nothing counted
     h = _home(tmp_path, "runfail")  # a task fails: the read is still called once (a VOID reading)
     assert _run(GATE_REL, repo, h, head, "t3", STUB_RUN=1).returncode == 1
     ex = _exits(h, "t3")
     assert ex["run"] == "1" and ex["read"] == "0" and ex["done"] == "1"
+    reads = [c for c in _calls(h) if " read --commit " in c]
+    assert len(reads) == 1 and reads[0].endswith("--run-started")  # the four tries count from the run's start
     h = _home(tmp_path, "walk")  # every step exits 0
     assert _run(GATE_REL, repo, h, head, "t4").returncode == 0
     ex = _exits(h, "t4")
@@ -354,3 +377,45 @@ def test_the_gate_launchers_steps_with_a_stand_in(tmp_path):
     calls = _calls(h)
     assert sum(" run --task " in c for c in calls) == 9 and sum(" g0 --seed " in c for c in calls) == 10
     assert all(f"--commit {head}" in c for c in calls if "experiments/coords/bf_read.py" in c)
+
+
+def test_the_gate_refuses_to_start_after_05_00_utc_on_2026_11_26(tmp_path):
+    repo = _gate_checkout(tmp_path)
+    head = git(repo, "rev-parse", "HEAD")
+    h = _home(tmp_path, "late")
+    out = _run(GATE_REL, repo, h, head, "l1", STUB_NOW=GATE_LATEST)
+    assert out.returncode == 84 and "05:00 UTC" in out.stderr and _exits(h, "l1") == {"preflight": "84", "done": "84"}
+    assert not _calls(h)
+    h = _home(tmp_path, "early")
+    assert _run(GATE_REL, repo, h, head, "l2", STUB_NOW=GATE_LATEST - 1).returncode == 0
+    sh = (REPO / GATE_REL).read_text()
+    assert f"LATEST_START={GATE_LATEST}" in sh
+
+
+def test_no_bf_file_is_built_after_08_00_utc_on_2026_11_26(tmp_path):
+    repo, _ = _checkout(tmp_path)
+    home = _home(tmp_path)
+    out = _run(BUILD_REL, repo, home, git(repo, "rev-parse", "HEAD"), "k1", STUB_NOW=BUILD_CUTOFF)
+    assert out.returncode == 84 and "08:00 UTC" in out.stderr
+    assert (_scratch(home, "embbf", "k1") / "gate.exit").read_text().strip() == "84" and not _calls(home)
+    sh = (REPO / BUILD_REL).read_text()
+    assert f"CUTOFF={BUILD_CUTOFF}" in sh
+    assert sh.count("before_cutoff || {") == 5  # the gate, and before and after each BF build
+
+
+def test_the_bf_forms_code_must_be_the_gated_one(tmp_path):
+    def other(c):
+        r = _reading(c)
+        r["json"]["reading_code"]["shape_interp_sha256"] = "0" * 64
+        return r
+
+    repo, _ = _checkout(tmp_path / "a", reading=other)
+    _refused(repo, _home(tmp_path, "h1"), "q1", 83, "not the code the gate read")
+
+    def none(c):
+        r = _reading(c)
+        del r["json"]["reading_code"]["t2_build_sha256"]
+        return r
+
+    repo, _ = _checkout(tmp_path / "b", reading=none)
+    _refused(repo, _home(tmp_path, "h2"), "q2", 83, "names no code sha256")

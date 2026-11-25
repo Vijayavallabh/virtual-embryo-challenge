@@ -10,17 +10,17 @@ moves the overlay's form, the occupancy term and the z extent: the main session 
 and occupancy term and reads the outcome line alone (`python3 -I -B experiments/coords/bf_row.py outcome ...`).
 
 Arms (vec.shape_interp, row R71's forms; the prior is loaded here, outside the harness's read guard, and handed to the
-build; on a practice task it is BAYES_PRIOR_STAGES without the task's truth, J2), four counted tries when the run step
-starts:
+build; on every task, as at the test pair, it is the stages of BAYES_PRIOR_STAGES that do not lie strictly between the
+task's brackets, so never the truth, J2), four counted tries when the run step starts:
   BF_O   fgw_shape0x_ov_bf         O's build with shape_form overlay_bayes (the file T2embryo_s2x_ovbf.h5ad's path)
   BF_SO  fgw_shape0x_series_ov_bf  SO's build (expression series) with shape_form overlay_bayes (T2embryo_s2xs_ovbf)
   BF2_O  fgw_shape0x_ov_bf2        overlay_bayes_brackets: the prior is the task's two brackets only (rule 7: without
                                    the five extra specimens)
   BFns_O fgw_shape0x_ov_bfns       overlay_bayes_noflip: no flip copies, each specimen turned onto the union's frame by
                                    the best of the four proper flips (rule 7: without the flip step)
-Rescored, not counted: O fgw_shape0x_ov, SO fgw_shape0x_series_ov, and s2xs fgw_shape0x_series (main only, for SO's
-guard). Every file is built once per task-seed under build main; O, SO, BF_O and BF_SO are scored again under build
-prefix from the same in-memory files (clause (d)).
+Rescored, not counted: O fgw_shape0x_ov, SO fgw_shape0x_series_ov, and s2xs fgw_shape0x_series (main only, for its
+guard against E47 and SO's construction checks). Every file is built once per task-seed under build main; O, SO,
+BF_O and BF_SO are scored again under build prefix from the same in-memory files (clause (d)).
 
 Steps (each refuses unless TRIES.md holds exactly one well-formed row E59 (bf_row), the tree is clean, HEAD is the run
 commit and the committed reference records are the ones named below):
@@ -92,12 +92,13 @@ TEST_LIKE = ("half", "late", "new1", "new2")
 E80_TASKS = ("half", "late")  # the truth collected like E7.75 (clause (f)), chosen by its protocol, by no score
 E80_TRUTH = "T2/E8.0.h5ad"
 EXPR_METRICS = ("de_score", "de_direction", "mmd_u", "variogram")
+POS_METRICS = ("d2_shape", "occupancy_dice", "scale_log_ratio")
 SHAPE_TERMS = ("d2_shape", "occupancy_dice")
 NBHD = "neighborhood_mmd"
 OTHER_GROUPS = ("expression_change", "cell_state", "local_organisation")
 BAR_A, AHEAD, BAR_B, TRUTHS_B = 0.5, 8, 0.06, 4
 NB_MERGED, NB_TRUTH, PREFIX_TOL, IDLE = -0.01, -0.02, 0.3, 0.3
-EXPR_TOL, RMS_TOL, GUARD_TOL = 1e-9, 1e-6, 0.01
+EXPR_TOL, POS_TOL, RMS_TOL, GUARD_TOL = 1e-9, 1e-6, 1e-6, 0.01
 G0_SEEDS = tuple(harness.BUILD_SEED_OFFSET + 1 + i for i in range(10))
 G0_SHARE, G0_IDLE_DICE = 0.7, 0.9
 G0_BOARD = "T2:embryo:val_interp"
@@ -160,16 +161,19 @@ VOID_CONDITIONS = (
     "variogram) off its base's by more than 1e-9 in skill",
     "an arm's size target off its base's, or its RMS radius off that target by more than 1e-6 relative where it did "
     "not jitter",
-    "an arm's recorded form or prior off its specification (the task's truth in its prior)",
-    "the guard (J7): the floor off E47's committed per-seed scores by more than 0.01 (per seed or ten-seed mean); O's "
-    "ten-seed mean minus the floor's off E55's committed per-task figure by more than 0.01; s2xs off E47's committed "
-    "per-seed scores by more than 0.01 (per seed or ten-seed mean); SO's ten-seed mean minus s2xs's off E51's "
-    "committed per-task figure by more than 0.01",
+    "an arm's recorded form or prior off its specification (the prior holds every stage of BAYES_PRIOR_STAGES that "
+    "does not lie strictly between the task's brackets, and so never the truth)",
+    "SO's guard, row E51's own void checks: SO's de_score, de_direction, mmd_u or variogram skill off s2xs's by more "
+    "than 1e-9, or its d2_shape, occupancy_dice or scale_log_ratio skill off O's by more than 1e-6, in any task, seed "
+    "or build",
+    "the guard (J7): O's ten-seed mean minus the floor's off E55's committed per-task figure by more than 0.01; s2xs "
+    "off E47's committed per-seed scores by more than 0.01 (per seed or ten-seed mean). The floor is not checked: the "
+    "harness holds it at 50 on every seed or raises",
 )
 PRICE_LINES = (
     "J1: the run applies each file's own build path end to end except the size step (the harness's task size rule; the "
-    "file takes the pre-registered size, which the form never moves) and the prior, which on a practice task leaves "
-    "out the task's truth (J2) and can hold a stage between the task's brackets, which the test's prior cannot.",
+    "file takes the pre-registered size, which the form never moves); the prior holds, on every task as at the test "
+    "pair, the released stages that do not lie strictly between the brackets (so never the truth, J2).",
     "J4: five truths at equal weight; clause (f) reads the one truth collected like E7.75.",
     "J5: a diagnostic; the noise floor 6.54 exceeds twice any predicted gain. J6: no time quantity sets a step "
     "(the union's mix follows each task's own t).",
@@ -243,13 +247,30 @@ def _is_test_board(board) -> bool:
 
 
 # ------------------------------------------------------------------------------------------------ the prior
-def prior_stages(truth: str | None) -> tuple[str, ...]:
-    """BAYES_PRIOR_STAGES without the truth's stage (a target file such as T2/E8.0.h5ad; None at the test pair)."""
-    stage = None if truth is None else harness.stem(truth)
-    out = tuple(s for s in si.BAYES_PRIOR_STAGES if s != stage)
-    if stage is not None and stage in out:
-        raise harness.LeakageError(f"{stage}: the truth entered its prior")
+def stage_day(stage: str) -> float:
+    return float(harness.STAGE_DAYS[f"T2/{stage}.h5ad"])
+
+
+def prior_stages(lo: float, hi: float, truth: str | None = None) -> tuple[str, ...]:
+    """The stages of BAYES_PRIOR_STAGES that do not lie strictly between the brackets' days lo and hi (the review's fix
+    B1): at the test pair (E7.5, E8.0) all seven, since no released stage lies between them; on a practice task the
+    truth, which lies between its brackets, leaves with every other stage there, so no practice prior holds a stage the
+    test's cannot. `truth` (a target file such as T2/E8.0.h5ad) is checked to be out (J2)."""
+    lo, hi = float(lo), float(hi)
+    out = tuple(s for s in si.BAYES_PRIOR_STAGES if not lo < stage_day(s) < hi)
+    if truth is not None and harness.stem(truth) in out:
+        raise harness.LeakageError(f"{harness.stem(truth)}: the truth entered its prior")
     return out
+
+
+def task_prior_stages(t) -> tuple[str, ...]:
+    """A practice task's prior stages: prior_stages at its brackets' days, its truth checked out."""
+    return prior_stages(harness.STAGE_DAYS[t.inputs["before"]], harness.STAGE_DAYS[t.inputs["after"]], t.target)
+
+
+def pair_prior_stages() -> tuple[str, ...]:
+    """The test pair's prior stages (G0 and the builder): all seven."""
+    return prior_stages(harness.STAGE_DAYS[G0_PAIR["before"]], harness.STAGE_DAYS[G0_PAIR["after"]])
 
 
 def load_prior(stages, data: Path) -> si.BayesPrior:
@@ -334,7 +355,7 @@ def cmd_g0(a) -> int:
     rec = {"seed": seed, "commit": a.commit, "script": SCRIPT}
     try:
         p = g0_inputs(Path(a.data))
-        rec.update(g0_seed(p, seed, load_prior(prior_stages(None), Path(a.data))))
+        rec.update(g0_seed(p, seed, load_prior(pair_prior_stages(), Path(a.data))))
     except Exception as e:  # recorded: a refusal or an error at G0 is a STOP
         rec["error"] = f"{type(e).__name__}: {e}"
         rec["traceback"] = traceback.format_exc(limit=5)
@@ -560,7 +581,7 @@ def one_seed(t, s: int, data: Path, prior: si.BayesPrior) -> dict:
 
 
 def task_prior(t, data: Path) -> si.BayesPrior:
-    return load_prior(prior_stages(t.target), data)
+    return load_prior(task_prior_stages(t), data)
 
 
 def cmd_run(a) -> None:
@@ -720,35 +741,39 @@ def committed_figures() -> tuple[dict, list[str]]:
     return ref, why
 
 
-def guard_problems(recs, ref: dict, tasks: dict | None = None) -> tuple[list[str], dict]:
-    """The guard (J7) on the run's main pass, per task: the floor and s2xs against E47 per seed and ten-seed mean, O
-    minus the floor against E55, SO minus s2xs against E51 (each within GUARD_TOL board points)."""
+def guard_problems(recs, ref: dict, tasks: dict | None = None) -> tuple[list[str], dict, dict]:
+    """The guard (J7) on the run's main pass, per task, each within GUARD_TOL board points: s2xs against E47's committed
+    per-seed scores (per seed and ten-seed mean) and O's ten-seed mean minus the floor's against E55's committed
+    per-task figure. The floor is not checked: harness.score_seeds holds it at 50 on every seed or raises, so a check
+    could not fail. SO's guard is row E51's construction checks (check_run); SO's ten-seed mean minus s2xs's against
+    E51's committed per-task figure is returned third, reported and deciding nothing (the review's closure B)."""
     tasks = nt.all_tasks() if tasks is None else tasks
-    why, worst = [], {}
+    why, worst, so_report = [], {}, {}
     for name in TASKS:
         key = tasks[name].key
         old = ref["e47"].get(key)
         fl, o, so, s2 = (series(recs[name], n, "board") for n in (harness.FLOOR, O, SO, S2XS))
         devs = {}
-        if old is None or harness.FLOOR not in old or S2XS not in old:
+        if old is None or S2XS not in old:
             why.append(f"{name}: no committed E47 scores")
         else:
-            for n, x in ((harness.FLOOR, fl), (S2XS, s2)):
-                ref_n = np.asarray(old[n], float)
-                if ref_n.shape != x.shape:
-                    why.append(f"{name}: E47's {n} is of another length")
-                    continue
-                devs[f"{n}_seed"] = float(np.abs(x - ref_n).max())
-                devs[f"{n}_mean"] = abs(float(x.mean() - ref_n.mean()))
+            ref_n = np.asarray(old[S2XS], float)
+            if ref_n.shape != s2.shape:
+                why.append(f"{name}: E47's {S2XS} is of another length")
+            else:
+                devs[f"{S2XS}_seed"] = float(np.abs(s2 - ref_n).max())
+                devs[f"{S2XS}_mean"] = abs(float(s2.mean() - ref_n.mean()))
         if name in ref["o"]:
             devs["o_minus_floor"] = abs(float(np.mean(o - fl)) - ref["o"][name])
-        if name in ref["so"]:
-            devs["so_minus_s2xs"] = abs(float(np.mean(so - s2)) - ref["so"][name])
+        else:
+            why.append(f"{name}: no committed E55 figure for O")
         for k, v in devs.items():
             if not v <= GUARD_TOL:
                 why.append(f"{name}: the guard's {k} is {v:.4f} off its committed figure (tolerance {GUARD_TOL})")
         worst[name] = devs
-    return why, worst
+        if name in ref.get("so", {}):
+            so_report[name] = abs(float(np.mean(so - s2)) - ref["so"][name])
+    return why, worst, so_report
 
 
 def check_run(recs: dict[str, list[dict]], why_in: list[str], commit: str) -> list[str]:
@@ -760,7 +785,7 @@ def check_run(recs: dict[str, list[dict]], why_in: list[str], commit: str) -> li
         if [r.get("seed") for r in rs] != list(SEEDS):
             why.append(f"{task}: seeds are not {list(SEEDS)}")
             continue
-        want_prior = "|".join(prior_stages(tasks[task].target))
+        want_prior = "|".join(task_prior_stages(tasks[task]))
         for r in rs:
             tag = f"{task} seed {r['seed']}"
             if r.get("run_commit") != commit:
@@ -812,12 +837,33 @@ def check_run(recs: dict[str, list[dict]], why_in: list[str], commit: str) -> li
                         x, y = row["skills"].get(n, {}).get(m), row["skills"].get(base, {}).get(m)
                         if x is None or y is None or not abs(float(x) - float(y)) <= EXPR_TOL:
                             why.append(f"{tag}: {LABEL[n]}'s {m} is off its base's")
+            why += so_construction_problems(r, tag)
+    return why
+
+
+def so_construction_problems(r: dict, tag: str) -> list[str]:
+    """SO's guard, row E51's own void checks (which E51's committed run at d0f0d6e applied on all nine tasks and passed,
+    not void): SO's de_score, de_direction, mmd_u and variogram skills within 1e-9 of s2xs's under build main, and its
+    d2_shape, occupancy_dice and scale_log_ratio skills within 1e-6 of O's under each build."""
+    why = []
+    for b, pairs in (("main", ((EXPR_METRICS, S2XS, EXPR_TOL), (POS_METRICS, O, POS_TOL))),
+                     ("prefix", ((POS_METRICS, O, POS_TOL),))):
+        res = (r.get("builds") or {}).get(b)
+        if res is None:
+            continue
+        skills = res["rows"][0]["skills"]
+        for metrics, other, tol in pairs:
+            for m in metrics:
+                x, y = skills.get(SO, {}).get(m), skills.get(other, {}).get(m)
+                if x is None or y is None or not abs(float(x) - float(y)) <= tol:
+                    why.append(f"{tag}: SO's {m} is off {LABEL[other]}'s under {b} (row E51's construction check)")
     return why
 
 
 def reading(recs: dict[str, list[dict]], why_in: list[str], commit: str, g0: dict | None,
-            ref: tuple[dict, list[str]] | None = None) -> dict:
-    """The reading: G0's STOP, VOID, or the per-arm verdicts and the fixed outcome."""
+            ref: tuple[dict, list[str]] | None = None, run_started: bool = False) -> dict:
+    """The reading: G0's STOP, VOID, or the per-arm verdicts and the fixed outcome. The four tries count from the run
+    step's start (rule 4): `run_started` (the launcher's run step began) or any seed record."""
     if g0 is not None and g0.get("verdict") == "STOP" and g0.get("commit") == commit:
         return {"void": False, "why": list(g0.get("why", [])), "commit": commit, "row": TRY_ID, "g0": g0,
                 "outcome": "G0_STOP", "outcome_text": br.G0_STOP_TEXT, "passes": False, "files_passing": [],
@@ -826,12 +872,12 @@ def reading(recs: dict[str, list[dict]], why_in: list[str], commit: str, g0: dic
     if g0 is None or g0.get("verdict") != "PASS" or g0.get("commit") != commit:
         why.append("G0's record is missing or not PASS at the run commit")
     ref_figs, ref_why = committed_figures() if ref is None else ref
-    worst = {}
+    worst, so_report = {}, {}
     if not why:
-        gw, worst = guard_problems(recs, ref_figs)
+        gw, worst, so_report = guard_problems(recs, ref_figs)
         why += [*ref_why, *gw]
+    started = bool(run_started) or any(recs.get(t) for t in TASKS)
     if why:
-        started = any(recs.get(t) for t in TASKS)  # the tries count from the run step's start (rule 4)
         return {"void": True, "why": why, "commit": commit, "row": TRY_ID, "outcome": "VOID",
                 "outcome_text": br.VOID_TEXT, "passes": False, "files_passing": [],
                 "tries_counted": len(ARMS) if started else 0, "guard": worst}
@@ -865,13 +911,14 @@ def reading(recs: dict[str, list[dict]], why_in: list[str], commit: str, g0: dic
     report["controls"] = {LABEL[c]: {"board_vs_O": _stat(merged_D(recs, m["five"], c, O, "board")),
                                      "shape_sum_vs_O": _stat(merged_D(recs, m["five"], c, O, "shape_sum"))}
                           for c in CONTROLS_E}
-    report["bases_against_floor"] = {LABEL[b]: _stat(merged_D(recs, m["five"], b, harness.FLOOR, "board"))
-                                     for b in (O, SO)}
+    report["against_floor"] = {LABEL[n]: _stat(merged_D(recs, m["five"], n, harness.FLOOR, "board"))
+                               for n in (O, SO, *ARMS)}
+    report["so_minus_s2xs_off_e51"] = so_report  # per task, deciding nothing (SO's guard is E51's construction checks)
     return {"void": False, "why": [], "commit": commit, "row": TRY_ID, "truths": m,
             "clause_text": CLAUSES, "pass_rule": PASS_RULE, "void_conditions": list(VOID_CONDITIONS),
             "arms": {LABEL[a]: arms[a] for a in FILE_ARMS}, "clause_e": {LABEL[c]: v for c, v in e["controls"].items()},
             "outcome": key, "outcome_text": br.OUTCOME_TEXTS[key], "passes": bool(files), "files_passing": files,
-            "tries_counted": len(ARMS), "reported_deciding_nothing": report, "per_task": per_task,
+            "tries_counted": len(ARMS) if started else 0, "reported_deciding_nothing": report, "per_task": per_task,
             "price_lines": list(PRICE_LINES), "g0": g0, "guard": worst}
 
 
@@ -943,7 +990,7 @@ def cmd_read(a) -> None:
         why.append("the tree is not clean at the read")
     if why:  # a read on another commit or tree reads nothing
         g0 = None if g0 is None or g0.get("verdict") != "STOP" else {**g0, "verdict": "UNREAD"}
-    res = {**reading(load_runs(runs), why, a.commit, g0), "reading_code": provenance()}
+    res = {**reading(load_runs(runs), why, a.commit, g0, run_started=a.run_started), "reading_code": provenance()}
     out.mkdir(parents=True, exist_ok=True)
     files[0].write_text(json.dumps(res, indent=1, default=float))
     files[1].write_text(text(res))
@@ -1009,6 +1056,8 @@ def main(argv=None) -> None:
     r.add_argument("--commit", required=True)
     r.add_argument("--runs", default=str(RUNS))
     r.add_argument("--out", default=str(RESULTS))
+    r.add_argument("--run-started", action="store_true",
+                   help="the launcher's run step began (the four tries count from its start, rule 4)")
     j = sub.add_parser("j7")
     j.add_argument("--out", default=None, help="a JSON file for the dry run's per-task deviations")
     a = ap.parse_args(argv)

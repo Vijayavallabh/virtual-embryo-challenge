@@ -37,7 +37,10 @@ def _record(task: str, s: int, gains: dict, prefix_gains: dict | None = None, **
     tasks = bf.nt.all_tasks()
     noise = 0.01 * np.sin(7 * s + len(task))
     scores = {"floor": 50.0, bf.O: 55.0 + noise, bf.SO: 56.0 + noise, bf.S2XS: 54.0 + noise}
-    skills = {"floor": _skills(0.5), bf.O: _skills(0.6), bf.SO: _skills(0.62), bf.S2XS: _skills(0.58)}
+    skills = {"floor": _skills(0.5), bf.O: _skills(0.6), bf.S2XS: _skills(0.58)}
+    # SO is O's positions with s2xs's expression (row E51's construction): its own neighbourhood term only
+    skills[bf.SO] = {**{m: skills[bf.S2XS][m] for m in bf.EXPR_METRICS},
+                     **{m: skills[bf.O][m] for m in bf.POS_METRICS}, "neighborhood_mmd": 0.65}
     for arm in bf.ARMS:
         b, sh, nb = gains.get(arm, lambda t, s: (0.0, 0.0, 0.0))(task, s)
         base = bf.BASE_OF[arm]
@@ -55,7 +58,7 @@ def _record(task: str, s: int, gains: dict, prefix_gains: dict | None = None, **
                 "board": {"split": "pseudo"}}
 
     pg = {} if prefix_gains is None else {a: f(task, s) for a, f in prefix_gains.items()}
-    prior = "|".join(bf.prior_stages(tasks[task].target))
+    prior = "|".join(bf.task_prior_stages(tasks[task]))
     recs = {n: {"target_rms": 6.0, "n_jittered": 0, "shape_interp": "overlay"} for n in (bf.O, bf.SO)}
     recs[bf.S2XS] = {"target_rms": 6.0, "n_jittered": 0}
     for arm in bf.ARMS:
@@ -190,18 +193,54 @@ def test_a_missing_seed_build_or_file_and_another_commit_are_void():
     assert res["void"] and any("mmd_u" in w for w in res["why"])
 
 
-def test_the_guard_voids_a_base_off_its_committed_figures():
+def test_the_guard_voids_o_or_s2xs_off_their_committed_figures_and_reports_so_against_e51():
     recs = _recs(GOOD)
     ref, _ = _ref(recs)
-    for key, nudge in (("o", 0.02), ("so", -0.02)):
-        bad = {**ref, key: {**ref[key], "new1": ref[key]["new1"] + nudge}}
-        res = bf.reading(recs, [], C, G0_PASS, ref=(bad, []))
-        assert res["void"] and any("new1" in w and "guard" in w for w in res["why"])
+    bad = {**ref, "o": {**ref["o"], "new1": ref["o"]["new1"] + 0.02}}
+    res = bf.reading(recs, [], C, G0_PASS, ref=(bad, []))
+    assert res["void"] and any("new1" in w and "guard" in w for w in res["why"])
     k = bf.nt.all_tasks()["x2"].key
     bad = {**ref, "e47": {**ref["e47"], k: {**ref["e47"][k], bf.S2XS: ref["e47"][k][bf.S2XS] + 0.02}}}
     assert bf.reading(recs, [], C, G0_PASS, ref=(bad, []))["void"]
     ok = {**ref, "o": {**ref["o"], "new1": ref["o"]["new1"] + 0.009}}
     assert not bf.reading(recs, [], C, G0_PASS, ref=(ok, []))["void"]
+    # the review's closure B: SO minus s2xs against E51 is reported and decides nothing
+    so_off = {**ref, "so": {**ref["so"], "new1": ref["so"]["new1"] - 0.05}}
+    res = bf.reading(recs, [], C, G0_PASS, ref=(so_off, []))
+    assert not res["void"] and res["outcome"] == "PASS_BOTH"
+    assert res["reported_deciding_nothing"]["so_minus_s2xs_off_e51"]["new1"] == pytest.approx(0.05)
+    # the floor is held at 50 by the harness: a committed floor figure is not read
+    floor_off = {**ref, "e47": {**ref["e47"], k: {**ref["e47"][k], "floor": ref["e47"][k]["floor"] + 1.0}}}
+    assert not bf.reading(recs, [], C, G0_PASS, ref=(floor_off, []))["void"]
+
+
+@pytest.mark.parametrize("build, metric, other, nudge", [
+    ("main", "mmd_u", bf.S2XS, 1e-8), ("main", "de_score", bf.S2XS, 1e-8),
+    ("main", "d2_shape", bf.O, 2e-6), ("main", "scale_log_ratio", bf.O, 2e-6),
+    ("prefix", "occupancy_dice", bf.O, 2e-6),
+])
+def test_sos_guard_is_row_e51s_construction_checks(build, metric, other, nudge):
+    recs = _recs(GOOD)
+    ref = _ref(recs)
+    recs["x3"][4]["builds"][build]["rows"][0]["skills"][bf.SO] = {
+        **recs["x3"][4]["builds"][build]["rows"][0]["skills"][bf.SO]}
+    recs["x3"][4]["builds"][build]["rows"][0]["skills"][bf.SO][metric] += nudge
+    res = bf.reading(recs, [], C, G0_PASS, ref=ref)
+    assert res["void"] and any(f"SO's {metric}" in w and "construction check" in w for w in res["why"])
+    within = _recs(GOOD)
+    tol = bf.EXPR_TOL if metric in bf.EXPR_METRICS else bf.POS_TOL
+    within["x3"][4]["builds"][build]["rows"][0]["skills"][bf.SO] = {
+        **within["x3"][4]["builds"][build]["rows"][0]["skills"][bf.SO]}
+    within["x3"][4]["builds"][build]["rows"][0]["skills"][bf.SO][metric] += tol / 2
+    assert not bf.reading(within, [], C, G0_PASS, ref=_ref(within))["void"]
+
+
+def test_the_tries_count_from_the_run_steps_start():
+    empty = {t: [] for t in bf.TASKS}
+    assert bf.reading(empty, [], C, G0_PASS, ref=({"e47": {}, "o": {}, "so": {}}, []))["tries_counted"] == 0
+    res = bf.reading(empty, [], C, G0_PASS, ref=({"e47": {}, "o": {}, "so": {}}, []), run_started=True)
+    assert res["void"] and res["tries_counted"] == 4
+    assert _read()["tries_counted"] == 4
 
 
 def test_without_g0_passed_at_the_run_commit_the_read_is_void_and_a_g0_stop_counts_nothing():

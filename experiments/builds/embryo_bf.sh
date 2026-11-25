@@ -19,12 +19,16 @@
 #            names the files), and the gate's reading is committed (89: READING_DIR's reading.txt and reading.json
 #            tracked at this commit) and says the same PASS on a clean tree at its run commit (88), an ancestor of HEAD
 #            (87) whose TRIES.md holds a well-formed row E59 (86). The identity pins of O and SO are read from their
-#            committed SHA256SUMS lists (85; never from a .txt record) and must equal the ones written here
+#            committed SHA256SUMS lists (85; never from a .txt record) and must equal the ones written here. The BF
+#            form's code must be the gated one: the sha256 of src/vec/shape_interp.py and src/vec/t2_build.py at HEAD
+#            equal those the committed reading's code ran with (83). The clock must be before CUTOFF (84)
 #   tests    the builder's, the gate's and this launcher's targeted tests (synthetic stages only), 8 BLAS threads
 #   O        the identity file O by its committed command; it must give O_SHA or everything stops (21)
 #   SO       the identity file SO by its committed command; it must give SO_SHA or everything stops (22)
 #   BFOa BFOb    T2embryo_s2x_ovbf.h5ad by its command, twice, into separate folders (when the gate passed it)
 #   BFSOa BFSOb  T2embryo_s2xs_ovbf.h5ad by its command, twice, into separate folders (when the gate passed it)
+#            The challenge's fix 9: no BF file is built after 08:00 UTC on 2026-11-26 (CUTOFF): each BF build must
+#            start and end before it, else everything stops (84)
 #   done     one sha256 list over every built file; each pair compared byte for byte (31)
 # Where the identity pins and their commands come from:
 #   O   1cfc91be3a20...: experiments/builds/results/embov_3b813b5.SHA256SUMS, OVa/T2embryo_s2x_ov.h5ad (built by
@@ -71,10 +75,13 @@ BFO_ARGS="--method fgw_shape0 --positions floor_exact --shape-interp overlay_bay
 BFSO_ARGS="--method fgw_shape0 --positions floor_exact --expression series --shape-interp overlay_bayes --shape-interp-test-ok --captain-ruling R71"
 BFO_FILE=T2embryo_s2x_ovbf
 BFSO_FILE=T2embryo_s2xs_ovbf
+CUTOFF=1795680000  # 2026-11-26T08:00:00Z: no BF file is built after it (EMBRYO_MOON2_challenge.md, fix 9)
 STEP=gate
 finish() { echo "$1" > "$S/$STEP.exit"; exit "$1"; }
 step_ok() { echo 0 > "$S/$STEP.exit"; }
+before_cutoff() { [ "$(date -u +%s)" -lt "$CUTOFF" ]; }
 echo running > "$S/$STEP.exit"
+before_cutoff || { echo "refused: no BF file is built after 08:00 UTC on 2026-11-26 (fix 9)" >&2; finish 84; }
 
 head=$(git rev-parse HEAD)
 [ "$head" = "$COMMIT" ] || { echo "refused: HEAD is not $COMMIT" >&2; finish 96; }
@@ -82,7 +89,8 @@ if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
   echo "refused: tracked files differ from the commit (the build stamps must say clean)" >&2
   finish 98
 fi
-sha256sum -c docs/S2_RULES.sha256 > /dev/null 2>&1 || finish 97
+sha256sum -c docs/S2_RULES.sha256 > /dev/null 2>&1 \
+  || { echo "refused: docs/S2_RULES.md does not match docs/S2_RULES.sha256" >&2; finish 97; }
 python3 -I -B -c 'import sys
 rows = [ln for ln in open(sys.argv[1], encoding="utf-8").read().splitlines() if ln.startswith("| R71 ")]
 first = rows[0][2:].split("|", 1)[0] if len(rows) == 1 else ""
@@ -115,6 +123,11 @@ for rec in "O_SHA $O_SUMS $O_ENTRY" "SO_SHA $SO_SUMS $SO_ENTRY"; do
   got=$(awk -v e="$entry" '$2 == e {print $1}' "$sums" 2> /dev/null)
   [ "$got" = "${!var}" ] || { echo "refused: $sums does not give $var for $entry" >&2; finish 85; }
 done
+GATED=$(python3 -I -B "$ROWCHECK" code "$READING_DIR/reading.json" 2> /dev/null) \
+  || { echo "refused: the committed reading names no code sha256" >&2; finish 83; }
+NOW=$(sha256sum src/vec/shape_interp.py src/vec/t2_build.py | cut -d' ' -f1 | tr '\n' ' ' | sed 's/ $//')
+[ "$NOW" = "$GATED" ] \
+  || { echo "refused: the BF form's code at HEAD is not the code the gate read" >&2; finish 83; }
 BUILD_O=0
 BUILD_SO=0
 while read -r f; do
@@ -177,7 +190,9 @@ LIST="O/*.h5ad SO/*.h5ad"
 if [ "$BUILD_O" = 1 ]; then
   for STEP in BFOa BFOb; do
     echo running > "$S/$STEP.exit"
+    before_cutoff || { echo "stopped: 08:00 UTC on 2026-11-26 has passed (fix 9)" >&2; finish 84; }
     build "$STEP" "$BFO_FILE" $BFO_ARGS || finish $?
+    before_cutoff || { echo "stopped: the build ended after 08:00 UTC on 2026-11-26 (fix 9)" >&2; finish 84; }
     step_ok
   done
   LIST="$LIST BFOa/*.h5ad BFOb/*.h5ad"
@@ -185,7 +200,9 @@ fi
 if [ "$BUILD_SO" = 1 ]; then
   for STEP in BFSOa BFSOb; do
     echo running > "$S/$STEP.exit"
+    before_cutoff || { echo "stopped: 08:00 UTC on 2026-11-26 has passed (fix 9)" >&2; finish 84; }
     build "$STEP" "$BFSO_FILE" $BFSO_ARGS || finish $?
+    before_cutoff || { echo "stopped: the build ended after 08:00 UTC on 2026-11-26 (fix 9)" >&2; finish 84; }
     step_ok
   done
   LIST="$LIST BFSOa/*.h5ad BFSOb/*.h5ad"

@@ -164,16 +164,30 @@ def test_the_prior_takes_released_stages_once_each_in_day_order():
     assert si.BAYES_PRIOR_STAGES == ("E6.75", "E7.25", "E7.5", "E8.0", "E8.25_late", "E8.75", "E9.5")
 
 
-def test_the_truth_never_enters_a_practice_tasks_prior():
+def test_no_prior_holds_a_stage_between_its_brackets_so_never_the_truth():
+    """The review's fix B1: on every task, as at the test pair, the prior is the released stages that do not lie
+    strictly between the brackets; the truth lies there, so it leaves with them (J2)."""
     sys.path.insert(0, str(REPO / "experiments" / "coords"))
     import bf_read
 
-    assert bf_read.prior_stages(None) == si.BAYES_PRIOR_STAGES
-    for truth, stage in (("T2/E8.0.h5ad", "E8.0"), ("T2/E7.5.h5ad", "E7.5"), ("T2/E7.25.h5ad", "E7.25"),
-                         ("T2/E8.25_late.h5ad", "E8.25_late")):
-        got = bf_read.prior_stages(truth)
-        assert stage not in got and len(got) == 6
-    assert bf_read.prior_stages("T2/E8.5.h5ad") == si.BAYES_PRIOR_STAGES  # E8.5 is never in the prior
+    from vec import harness
+
+    assert bf_read.pair_prior_stages() == si.BAYES_PRIOR_STAGES  # E7.5 and E8.0: no released stage between them
+    all7 = set(si.BAYES_PRIOR_STAGES)
+    dropped = {"half": {"E8.0", "E8.25_late"}, "late": {"E8.0"}, "new1": {"E8.0", "E8.25_late"},
+               "new2": {"E8.0", "E8.25_late"}, "x1": {"E8.25_late"}, "x2": {"E8.25_late"}, "x3": set(),
+               "e75": {"E7.5"}, "e725": {"E7.25"}}
+    tasks = bf_read.nt.all_tasks()
+    assert set(tasks) == set(dropped)
+    for name, t in tasks.items():
+        got = bf_read.task_prior_stages(t)
+        assert set(got) == all7 - dropped[name], name
+        assert harness.stem(t.target) not in got
+        lo, hi = (harness.STAGE_DAYS[t.inputs[r]] for r in ("before", "after"))
+        assert not any(lo < bf_read.stage_day(s) < hi for s in got)
+        assert {harness.stem(t.inputs["before"]), harness.stem(t.inputs["after"])} & all7 <= set(got)
+    with pytest.raises(harness.LeakageError):
+        bf_read.prior_stages(7.0, 7.4, "T2/E7.5.h5ad")  # a truth outside the brackets would stay: refused
 
 
 def _interp(shape_form, prior=None, n=500, seed=1000001):

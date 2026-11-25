@@ -12,16 +12,19 @@
 # then the call's code (0 when all exited 0). The call stops at the first step that does not exit 0; when that step is
 # g0read (4: G0 said STOP, nothing is counted) or run, the read step is still called once (so the G0 STOP or VOID
 # reading, with its reasons, is written) and the call exits with the failing step's code:
-#   preflight  HEAD = COMMIT (else 96), the tracked tree clean (else 98), TRIES.md holds exactly one well-formed row E59
-#              (experiments/coords/bf_row.py row: eleven cells, its first cell opening with the gate's fixed words;
-#              else 95) and exactly one row R71 that is the captain's order naming BF on O and on SO only and
-#              `--captain-ruling R71` (else 94); nothing else runs before these checks
+#   preflight  the clock before 05:00 UTC on 2026-11-26 (else 84: the gate's budget is about 3 hours, 2.5 to 3.5, and the
+#              challenge's fix 9 builds no BF file after 08:00 UTC, so a later start could spend the four tries on files
+#              that cannot be built), HEAD = COMMIT (else 96), the tracked tree clean (else 98), TRIES.md holds
+#              exactly one well-formed row E59 (experiments/coords/bf_row.py row: eleven cells, its first cell opening
+#              with the gate's fixed words; else 95) and exactly one row R71 that is the captain's order naming BF on
+#              O and on SO only and `--captain-ruling R71` (else 94); nothing else runs before these checks
 #   tests      the unit tests of the form, the read, the row check, the builder option and the launchers (synthetic
 #              arrays only)
 #   g0         G0 at the ten build seeds, one process each (target-free: the test pair's inputs, never a target)
 #   g0read     G0's verdict: 0 PASS, 4 STOP (the run never starts and nothing is counted)
 #   run        the nine tasks, one process each (the four tries count from this step's start)
-#   read       the reading into experiments/coords/results/bf_gate/ (never overwritten: 95)
+#   read       the reading into experiments/coords/results/bf_gate/ (never overwritten: 95); --run-started when the run
+#              step began, so the reading counts the four tries from the run step's start (rule 4)
 # BLAS threads: 4 for the tests, 8 a process for g0, run and read (nine at once), as run_e55.sh and run_e58.sh, since
 # the 0.01 guard compares with E55's run made at 8. NUMPY_MADVISE_HUGEPAGE=0; TMPDIR under RUN. Every process's output
 # goes to /dev/null; per-process exit codes are RUN/rc/<step>-<task or seed>. Nothing is deleted or uploaded.
@@ -48,6 +51,11 @@ STEP=preflight
 finish() { echo "$1" > "$S/$STEP.exit"; echo "$1" > "$S/done.exit"; exit "$1"; }
 begin() { STEP="$1"; echo running > "$S/$STEP.exit"; }
 begin preflight
+LATEST_START=1795669200  # 2026-11-26T05:00:00Z: 08:00 UTC (fix 9's last build) minus the gate's 3-hour budget
+if [ "$(date -u +%s)" -ge "$LATEST_START" ]; then
+  echo "refused: after 05:00 UTC on 2026-11-26 the gate's files could not be built by 08:00 UTC (fix 9)" >&2
+  finish 84
+fi
 HEAD=$(git rev-parse HEAD 2>/dev/null) || finish 96
 if [ "$HEAD" != "$COMMIT" ]; then
   echo "refused: HEAD is not $COMMIT" >&2
@@ -90,7 +98,9 @@ call_read() {  # the read step: writes reading.json and reading.txt (never overw
     echo 95 > "$S/read.exit"
     return 95
   fi
-  $PY "$SCRIPT" read --commit "$COMMIT" --runs "$R" --out "$OUT" > /dev/null 2>&1
+  local started=()
+  if [ -e "$S/run.exit" ]; then started=(--run-started); fi
+  $PY "$SCRIPT" read --commit "$COMMIT" --runs "$R" --out "$OUT" ${started[@]+"${started[@]}"} > /dev/null 2>&1
   local e=$?
   echo "$e" > "$S/read.exit"
   return "$e"

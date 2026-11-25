@@ -667,6 +667,17 @@ HEART_HALVING = ("experiments/builds/halve.py <file> <half>: a uniform random ha
 # BF on O and on SO only (vec.shape_interp.BAYES_FORMS), each taken only on its base's command with --shape-interp
 # overlay_bayes --captain-ruling R71, and built (experiments/builds/embryo_bf.sh) only after its gate row reads PASS.
 BUILDABLE_SHAPES = (*shape_interp.FORMS, *shape_interp.COMPOSED_FORMS, *shape_interp.BAYES_FORMS)
+
+
+class _OnceAction(argparse.Action):
+    """The embryo command's --captain-ruling, taken once: argparse would keep the last of two, so a second refuses."""
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        if getattr(namespace, self.dest, None) is not None:
+            parser.error(f"{option_string} is given once")
+        setattr(namespace, self.dest, values)
+
+
 EMBRYO_BF_ROW = "R71"
 EMBRYO_BF_GATE_ROW = "E59"
 EMBRYO_BF_WORDS = "BF on O and on SO only"  # words of row R71's first cell that the builder's check requires
@@ -4630,10 +4641,11 @@ def build_parser() -> argparse.ArgumentParser:
                                 "lineage pools (vec.run_sort), the last step, on the final coordinates. Only as "
                                 f"{EMBRYO_RS_COMMAND.format(row='<ROW>')}, with a ruling row of the captain naming "
                                 f"{EMBRYO_RS_OPTION} and `--captain-ruling <ROW>`")
-            p.add_argument("--captain-ruling", default=None,
+            p.add_argument("--captain-ruling", default=None, action=_OnceAction,
                            help=f"with --expression series_back: {EMBRYO_OVSB_ROW}, the row that orders it; with "
                                 "--neighbourhood run_sorted: the captain's ruling row that orders it; with --mix-lean "
-                                f"later: {EMBRYO_OT23_ROW}, the row that orders it")
+                                f"later: {EMBRYO_OT23_ROW}, the row that orders it; with --shape-interp overlay_bayes: "
+                                f"{EMBRYO_BF_ROW}, the row that orders it; given once")
     return ap
 
 
