@@ -14910,3 +14910,26 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Next:** engineers for the hedge mixer, WBH, BF and OIC125's data steps (two readers pin each outside sample's
     stage and licence; register rows before any fetch); gate rows before any read; independent reviews; builds on the
     DGX; the last upload is 2026-11-26 11:59 UTC.
+- 2026-11-25 (rrr), OIC125's outside sources: the readers' records, the captain's word on MOSTA's licence and the cold
+  challenge (state at 18:20 UTC, 2026-11-25). Written by the AI assistant, recused on the heart's scope and size; it
+  designed none of it.
+  - **The two readers** (score-blind, independent; `OIC_readerA.md`, `OIC_readerB.md` in the round folder). X002's
+    twelve CD1 rows at E15.5 to E17.5: both REFUSE under the strict form (their library GSM5795773 is "Sample
+    E9.5_P3", "MULTIseq pooled samples", with the E10.5 to E13.5 sub-samples in the same pool; the stage column is
+    that pool's demultiplexing output, on record since 2026-11-22). MOSTA's 23 sections at E15.5 and E16.5: both PASS
+    on stage; no open licence is named anywhere (the STOmicsDB Data Sharing Policy governs); the per-section h5ad
+    route refused, the raw bin1 files allowed. The Xenium pup: both PASS on stage (P1; its record also says "9 weeks";
+    every reading after E13.5); CC BY 4.0; the vendor's segmentation refused (training tissues not stated).
+  - **The captain's word**, to a question that gave the price: "Yes, MOSTA suffices" (its option: "Register MOSTA (raw
+    per-section files only) and the Xenium pup (binned transcripts only), fetch on the DGX, engineer OIC125 with the
+    six fixes, gate before any build."). Register rows X021 and X022 are added with this entry, before any fetch.
+  - **The cold challenge** (`HEART_MOON1_challenge.md`): FIX, six texts, all applied in engineering (residual chords
+    added to the banked step; per-lineage consensus off the typing genes; per-lineage G0(c); a reader-confirmed heart
+    region and per-category agreement; a common category set; binned transcripts and raw counts only). Its price: best
+    case +1 to +3 heart points, about 3% to beat the banked file. Its cut-offs, adopted: a source not on the DGX by
+    21:30 UTC drops; no G0 PASS by 03:00 UTC is STOP; no counted read by 05:00 UTC is STOP.
+  - **X002's late rows stay out.** Reader B notes that only a named exception from the captain, as row R54 gave T1,
+    could admit them; none is asked or given.
+  - **Next:** the OIC125 engineer (a fetch script with the pinned file list first, run on the DGX by the AI
+    assistant), then G0 on the fetched data, the counted read's row committed before the read, a review and two
+    builds.
