@@ -14794,3 +14794,11 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the T1 builder, unused. Its parents-by-headline rule raises the same question as T3's hedge (scores choose, never
     compute), which T3's challenger is weighing now; the embryo hedge waits on that verdict before a challenger of its
     own.
+- 2026-11-25 (iii), the captain reports two T1 headlines and the rules are applied by their letter (state at 17:12
+  UTC, 2026-11-25). Written by the AI assistant, which records the headlines only.
+  - **The paste:** T1:test `T1_s2rcMSBm20.h5ad` 72.05 (shown as submitted 2026-11-25 16:05). Its sha256 on disk
+    matches its sheet row. The paste's per-metric lines, rank and file size are not recorded or used.
+  - **Each rule by its letter.** It is below MSB (73.47) and below MSBm10 (74.75), which holds the board's best. Row
+    R58 names one file; no rule in force names a further file on it. It bears on two send rules of the T1 refinement
+    design, not yet a ruling row (its F2 and F4 depend on MSBm20's headline against MSB's). Standing unchanged:
+    204.865.
