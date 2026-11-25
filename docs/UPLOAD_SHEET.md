@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-25, 02:12 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-25, 02:14 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -19,13 +19,12 @@ point on the heart or the embryo board.
 **Due now (12), in the order of each board's table below:**
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcMSBm10.h5ad`,
-  `T1_s2rcB25H20.h5ad`, `T1_s2rcMSBH05.h5ad`
+  `T1_s2rcB25H20.h5ad`, `T1_s2rcMSBH10.h5ad`
 - T3: `T3_c2_s2_dd.h5ad`, `T3_c2_s2_ddh.h5ad`, `T3_c2_s2_dg.h5ad` (together)
 - Embryo: `T2embryo_s2x_ovt23.h5ad` (Ot23)
 - Heart: `T2heart_organ_ts15_half.h5ad` (OTS15)
 
-**Waiting on a score (2):** `T1_s2rcA20.h5ad`, in the last-on-T1 list below; row R51's `T1_s2rcMSBH10.h5ad` (on
-MSBH05's headline), in T1's table.
+**Waiting on a score (1):** `T1_s2rcA20.h5ad`, in the last-on-T1 list below.
 
 **Last on T1 (2):** `T1_s2rcA15.h5ad`, then `T1_s2rcA20.h5ad` only if A15 scores strictly above A. With no limit A15
 is reached and can go with the due files (the main session's reading of the captain's words that kept it; the captain
@@ -48,9 +47,9 @@ log 2026-11-25 (i)): `T1_s2rcMS20d10`, `T1_s2rcMS20H05`, `T1_s2rcMS20d20`, `T1_s
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)), and twenty-one on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy), (aaa), (bbb),
-(ddd) and (jjj)). Five more were uploaded and reported on 2026-11-25 (decision log 2026-11-25 (d), (e), (g), (h) and
-(k)). The boards' best headlines stand with `T1_s2rcMS20.h5ad` (MS at the atlas multiplier 2.0), `T3_c2_s2.h5ad` (C2),
-`T2heart_organ_ts125_half.h5ad` (OTS125) and `T2embryo_s2x_ov.h5ad` (O).
+(ddd) and (jjj)). Six more were uploaded and reported on 2026-11-25 (decision log 2026-11-25 (d), (e), (g), (h), (k)
+and (m)). The boards' best headlines stand with `T1_s2rcMS20.h5ad` (MS at the atlas multiplier 2.0), `T3_c2_s2.h5ad`
+(C2), `T2heart_organ_ts125_half.h5ad` (OTS125) and `T2embryo_s2x_ov.h5ad` (O).
 
 Four files are skipped by the captain's words of 2026-11-23 and 2026-11-24: they hold no place in any order below and
 stand in a section of their own at the end.
@@ -77,8 +76,7 @@ with no limit they go after T1's due search files (the main session's reading); 
 | sixth search | `T1_s2rcB25d20.h5ad` | `e6520dbee0fdc3f1336bc3f9de1e99e8a501de2d440b3f9085c88b5c7ecfb3f6` | none (the captain dropped its condition: row R43) |
 | eighth search | `T1_s2rcB25H20.h5ad` (at 2.0) | `8286f1b1707a423493de755feacd7a3d7743593ce2939f15c8323a27557b873f` | none: its gate is met (H10's headline is above H05's; row R44) |
 | tenth search | `T1_s2rcMSBm10.h5ad` (MS's own damping 1.0) | `a0c46efac87deb3756b3ca489a215694640707ea8a8053e254b8a86ee9d7d964` | none (row R51) |
-| tenth search | `T1_s2rcMSBH05.h5ad` (Blood's own momentum at 0.5) | `f8bbec6990354d42ed1b754d795a9ff617b2ee6c40a2d5376a274486e2f77c07` | none: its gate is met (B25H05's headline is above the 2.5 file's; row R51) |
-| tenth search | `T1_s2rcMSBH10.h5ad` (Blood's own momentum at 1.0) | `1cfdfc54d838e03294c444dd284c319724519eb731349667e5bf7f4e79f79250` | only if MSBH05's headline is strictly above MSB's (row R51) |
+| tenth search | `T1_s2rcMSBH10.h5ad` (Blood's own momentum at 1.0) | `1cfdfc54d838e03294c444dd284c319724519eb731349667e5bf7f4e79f79250` | none: its gate is met (MSBH05's headline is above MSB's; row R51) |
 | kept, last | `T1_s2rcA15.h5ad` (the second search's file) | `e2334137b54d98b04e9dece90213987e61fe9aa15a3fb8d85e6c262d8fb5ba75` | none (its condition is met); last on T1; with no limit on uploads, after T1's due search files |
 | kept, last | `T1_s2rcA20.h5ad` | `372713686782be273a52427140eab652517e35b679f54fc2a969484dee730218` | only if A15 scores strictly above A |
 

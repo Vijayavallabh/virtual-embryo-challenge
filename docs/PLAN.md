@@ -14257,3 +14257,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     refusal; O's and W's recorded bytes rebuilt; **`T2embryo_s2x_ovt23.h5ad`** 753900fab427... built twice with one
     sha256. Run o1 stopped at its test step (a literal guard the XPC merge broke, fixed at 045a92e) before any build.
     Due now (row R59). Data used: released challenge data only; no outside data.
+- 2026-11-25 (m), the captain reports one more headline and the rules are applied by their letter (state at 02:14 UTC,
+  2026-11-25). Written by the AI assistant, which records the headline only.
+  - **The paste:** T1:test `T1_s2rcMSBH05.h5ad` 73.52 (shown as submitted 2026-11-25 02:10). Its sha256 on disk
+    matches its sheet row. The paste's per-metric lines, rank and file size are not recorded or used.
+  - **Each rule by its letter.** It is below the board's best (MS20, 73.82). Row R51: MSBH05's headline is above MSB's
+    (73.47), so `T1_s2rcMSBH10.h5ad` is now due. Standing unchanged: 203.695.
