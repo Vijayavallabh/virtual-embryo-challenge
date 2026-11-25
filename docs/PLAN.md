@@ -14278,3 +14278,8 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     draw's count). Code merged at c6146ce after an independent review that found no blocker. The screen runs on
     `~/v/scratch/h29b-wt`; the heart files are built at the screen's run commit with only ledger and record commits on
     top (the build launcher refuses any code change since).
+- 2026-11-25 (p), row N64 is placed: step 0 of T1's late-mix line (row R54) (state at 02:35 UTC, 2026-11-25). Written
+  by the AI assistant, which designed none of it.
+  - **The row.** The score-blind reviewer's text from the cold challenge's row content; code merged at c0406bf (with
+    register row X002's amendment of 2026-11-25) after an independent review that found no blocker. Step 0 is
+    target-free and not a try; its shares file is committed, and row T72 is placed with its sha256, after the step.
