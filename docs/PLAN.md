@@ -14817,3 +14817,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     T1 refinement design's X1.
   - **The price:** a lottery on near-copies of the banked file; expected rise +0.15 to +0.2, of which skill 0 to +0.1;
     best case about +1.5. The embryo's hedge shares the question and waits on the captain with it.
+- 2026-11-25 (kkk), the captain answers on T1's refinement and on the hedges; row R67 is placed (state at 17:21 UTC,
+  2026-11-25). Written by the AI assistant, which designs no line.
+  - **T1's refinement.** The captain's pick, verbatim: "Yes to the three (Recommended)"; its words: "Yes to
+    T1_s2rcMSBm125, T1_s2rcMSBm15 and T1_s2rcMSBm075 under R22, sent at once, in one ruling row: MSB's command with
+    MS's own damping at 1.25, 1.5 and 0.75." Recorded as row R67. The T1 refinement challenge (`T1_REF_challenge.md`)
+    kept MSBm125, sent MSBm15 and MSBm075 at once, struck MS175m10 and X1, and set the build on row R58's route.
+    MSBm20's headline (entry (iii)) no longer gates anything here.
+  - **The hedges (T3 and the embryo).** The question offered three options (do not build, recommended; parents fixed
+    now without reference to any score, odds about 0.1 that an organiser counts the files as computed from scores; as
+    designed, parents by headline order, odds 0.4 to 0.55). **The captain's answer, verbatim:** "yes". **The AI
+    assistant's reading (its own):** "yes" is to building, and a bare yes is not the say-so to take an organisers'
+    rule risk of 0.4 to 0.55 (the rule on blanket answers), so the hedges are built with parents fixed now, from the
+    recipes alone, by a blind designer; the captain is told so in the same message and can say "as designed" to
+    override. Parents that would move a closed lever (T3's depth files; the embryo's depth render) are left out.
