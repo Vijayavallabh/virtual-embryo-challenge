@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-25 18:44 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-25 18:56 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -15,12 +15,12 @@ decision log 2026-11-24 (pp)), every due file can go now and nothing waits for r
 are listed below. Between boards the captain decides; by the challenge's formula a point on T1 or T3 counts twice a
 point on the heart or the embryo board.
 
-**Due now (14), in the order of each board's table below:**
+**Due now (10), in the order of each board's table below:**
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcB25H20.h5ad`,
   `T1_s2rcMSBH10.h5ad`, `T1_s2rcB25MSH05.h5ad`, `T1_s2rcMSBm125.h5ad`, `T1_s2rcMSBm15.h5ad`, `T1_s2rcMSBm075.h5ad`
-- T3: `T3_c2_s2_mxe2.h5ad`, `T3_s2_mx_xe2_ck.h5ad`
-- Embryo: `T2embryo_s2x_ovmxso.h5ad`, `T2embryo_s2x_ovbkso.h5ad`
+- T3: none (every built T3 file is uploaded)
+- Embryo: none (every built embryo file is uploaded)
 - Heart: none (every built heart file is uploaded)
 
 **Waiting on a score (1):** `T1_s2rcA20.h5ad`, in the last-on-T1 list below. Row R60's `T1_s2rcMS20d15.h5ad` is not
@@ -98,19 +98,15 @@ Never uploaded: `builds/T1_s2.h5ad`.
 
 | Order | File | sha256 | Condition | Data used |
 |---|---|---|---|---|
-| hedge (row R68) | `T3_c2_s2_mxe2.h5ad` (C2's rows; each row's expression whole from C2 (even rows) or K23's xe2 file (odd rows)) | `df5512feff9f9b338445bb1749fea5810808518e6720eeedb49706c402f9f630` | none (row R68: sent at once) | released challenge data (the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files) and, through its K23 or CK parent's rows, two public single-cell knockout studies of other genes, GEO GSE204906 (Dnmt3a and Dnmt3b nulls, E8.5; register row X013) and GEO GSE277839 (a Usb1 knockout, E9.5; register row X014) |
-| hedge (row R68) | `T3_s2_mx_xe2_ck.h5ad` (C2's rows; each row's expression whole from K23's xe2 file (even rows) or CK's file (odd rows)) | `9b144c989485d557bca36c28e359a2dd2182db8128fd1bca4fa4931d8146d342` | none (row R68: sent at once) | released challenge data (the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files) and, through its K23 or CK parent's rows, two public single-cell knockout studies of other genes, GEO GSE204906 (Dnmt3a and Dnmt3b nulls, E8.5; register row X013) and GEO GSE277839 (a Usb1 knockout, E9.5; register row X014) |
 
 ## Task 2, embryo
 
 Data used, for every embryo file: released challenge data only; no outside data.
 
-Every embryo file built before row R68 is uploaded, W and Ot23 included, and O holds the board's best. Row R68's two hedge files are due.
+Every built embryo file is uploaded, W, Ot23 and row R68's two hedge files included, and O holds the board's best.
 
 | Order | File | sha256 | Condition | Data used |
 |---|---|---|---|---|
-| hedge (row R68) | `T2embryo_s2x_ovmxso.h5ad` (O's rows and positions; each cell's expression whole from O (even rows) or SO (odd rows)) | `c2737d27c310de44436742829659a089091e82d982e94df5525a3e4b8d423c73` | none (row R68: sent at once) | as the paragraph above |
-| hedge (row R68) | `T2embryo_s2x_ovbkso.h5ad` (O's rows and positions; each cell's expression whole from O or SO by spatial blocks) | `f15ff031026191086e927db89904c72fe2cdbf6ee563bd2a21e481e63c838885` | none (row R68: sent at once) | as the paragraph above |
 
 ## Task 2, heart
 

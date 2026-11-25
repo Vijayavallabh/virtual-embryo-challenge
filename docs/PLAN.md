@@ -14973,3 +14973,13 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     rebuild exit 0; G0 exit 3. **The outcome statement, quoted:** "OUTCOME H37: STOP at G0: G00's cut (1 - e^(-c/2)) /
     2 on E9.5 is under 0.10." G0 is target-free (the released E9.5) and not a try: no try is counted and WBH is not
     built. The engineer and the cold challenge had both called a STOP at G0 likely.
+- 2026-11-25 (www), the captain reports four headlines (row R68's hedge files) and the rules are applied by their
+  letter (state at 18:56 UTC, 2026-11-25). Written by the AI assistant, which records the headlines only.
+  - **The paste:** T3:bcatenin `T3_c2_s2_mxe2.h5ad` 63.49 and `T3_s2_mx_xe2_ck.h5ad` 63.18; T2:embryo:test_interp
+    `T2embryo_s2x_ovmxso.h5ad` 67.69 and `T2embryo_s2x_ovbkso.h5ad` 67.70 (shown as submitted 2026-11-25 18:39 to
+    18:42). Each file's sha256 on disk matches its sheet row. The paste's per-metric lines, ranks and file sizes are
+    not recorded or used.
+  - **Each rule by its letter.** All four are below their boards' bests (T3: `T3_c2_s2.h5ad`, 63.94; embryo:
+    `T2embryo_s2x_ov.h5ad`, 69.9). Row R68 sent the four at once and sets no condition on their headlines: nothing
+    follows from them.
+  - **Standing unchanged:** 204.865.
