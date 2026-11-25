@@ -14232,3 +14232,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     H05. Row R51: `T1_s2rcMSBH05.h5ad` is now due (B25H05 beat the 2.5 file), then MSBH10 only if MSBH05 beats MSB.
     Row R46: B25H05 and B25MS have each scored strictly above the 2.5 file, so `T1_s2rcB25MSH05` is now coded and
     built. Standing unchanged: 203.695.
+- 2026-11-25 (i), the captain says yes to T1's line 12 (state at 02:03 UTC, 2026-11-25). Written by the AI assistant,
+  which designed none of it.
+  - **The captain's pick, verbatim:** "Yes to all seven (Recommended)"; its words: "Yes, T1_s2rcMS20d10,
+    T1_s2rcMS20H05, T1_s2rcMS20d20 and T1_s2rcMS20m10 together, then T1_s2rcMS20d15, T1_s2rcMS20H10 and T1_s2rcMS20m20
+    as gated, under R22; lift T64's close and reverse R1 for Blood in MS20H05 and MS20H10; MS20m20 only on R58's G0
+    pass." Recorded as row R60 and an amendment (re-pinned). The challenger renumbered the design's line 11 as line 12
+    (line 11 is R58's). An engineer blind to test scores codes the seven options and R46's B25MSH05 in one launcher.

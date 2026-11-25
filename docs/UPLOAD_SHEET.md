@@ -43,7 +43,8 @@ its screening. Step-change round, second wave (decision log 2026-11-24 (www)), e
 passes: T1 `T1_s2rcMSB_LM16` (R54) and `T1_s2rcMSBm20` (R58); heart OTK125, OTX125, OTW125, OTP125 (R55); embryo
 `T2embryo_s2x_ovt23.h5ad` (R59). The embryo RS file (row R57) is not built: its read E57 stopped at step 0 (decision
 log 2026-11-25 (a)). The heart XPC file OXP125 (row R56) is not built: its read H36 did not pass (decision log
-2026-11-25 (f)).
+2026-11-25 (f)). T1 line 12 (row R60, decision log 2026-11-25 (i)): `T1_s2rcMS20d10`, `T1_s2rcMS20H05`,
+`T1_s2rcMS20d20`, `T1_s2rcMS20m10`, `T1_s2rcMS20d15`, `T1_s2rcMS20H10`, `T1_s2rcMS20m20`, as gated.
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)), and twenty-one on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy), (aaa), (bbb),

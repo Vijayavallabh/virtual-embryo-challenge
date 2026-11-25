@@ -3482,3 +3482,26 @@ a0c46efac87deb3756b3ca489a215694640707ea8a8053e254b8a86ee9d7d964 (build record
 `experiments/builds/results/t1r51_0cdcc6f_r1.txt`). Added before any score of any of them; no T1 headline beyond those
 of the decision log through 2026-11-24 (lll) had reached the main session at this note's commit. Data used: released
 challenge data and the outside heart atlas on recomputed groups (GEO GSE193346, register row X002).
+
+## Amendment of 2026-11-25: T1's line 12, seven files around MS20 (row R60; decision log 2026-11-25 (i))
+
+In force since this amendment's commit at 02:03 UTC on 2026-11-25, on the captain's words: "Yes, T1_s2rcMS20d10,
+T1_s2rcMS20H05, T1_s2rcMS20d20 and T1_s2rcMS20m10 together, then T1_s2rcMS20d15, T1_s2rcMS20H10 and T1_s2rcMS20m20 as
+gated, under R22; lift T64's close and reverse R1 for Blood in MS20H05 and MS20H10; MS20m20 only on R58's G0 pass."
+
+Files: `T1_s2rcMS20d10.h5ad` (`build_test.py t1 --g-mom --base lib3 --feng-groups recomputed --feng-fraction-mult 2.0
+--direction-momentum all --g-mom-damping 1.0 --captain-ruling R60`); `T1_s2rcMS20H05.h5ad` (`build_test.py t1 --g-mom
+--base lib3 --feng-groups recomputed --feng-fraction-mult 2.0 --direction-momentum all --held-momentum 0.5
+--captain-ruling R60`); `T1_s2rcMS20d20.h5ad` (`build_test.py t1 --g-mom --base lib3 --feng-groups recomputed
+--feng-fraction-mult 2.0 --direction-momentum all --g-mom-damping 2.0 --captain-ruling R60`); `T1_s2rcMS20m10.h5ad`
+(`build_test.py t1 --g-mom --base lib3 --feng-groups recomputed --feng-fraction-mult 2.0 --direction-momentum all
+--direction-momentum-damping 1.0 --captain-ruling R60`); `T1_s2rcMS20d15.h5ad` (`build_test.py t1 --g-mom --base lib3
+--feng-groups recomputed --feng-fraction-mult 2.0 --direction-momentum all --g-mom-damping 1.5 --captain-ruling R60`);
+`T1_s2rcMS20H10.h5ad` (`build_test.py t1 --g-mom --base lib3 --feng-groups recomputed --feng-fraction-mult 2.0
+--direction-momentum all --held-momentum 1.0 --captain-ruling R60`); `T1_s2rcMS20m20.h5ad` (`build_test.py t1 --g-mom
+--base lib3 --feng-groups recomputed --feng-fraction-mult 2.0 --direction-momentum all --direction-momentum-damping
+2.0 --captain-ruling R60`). Order and gates as row R60 words them. Also built in the same run, by row R46's rule now
+met: `T1_s2rcB25MSH05.h5ad`, MS at 2.5 with Blood's own momentum at 0.5.
+
+Data used: released challenge data and the outside heart atlas on recomputed groups (GEO GSE193346, register row
+X002).
