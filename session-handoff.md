@@ -2,6 +2,23 @@
 
 ## Current Objective
 
+- **State at 2026-11-25, 18:00 UTC (newest; it supersedes everything below where they differ).** Decision log through
+  2026-11-25 (qqq); next (rrr). Ruling rows through R71; next R72. Main at c15e09d plus this bullet. The last upload
+  is 2026-11-26 11:59 UTC.
+- **STANDING 204.865:** T1 74.75 `T1_s2rcMSBm10.h5ad`; T3 63.94 `T3_c2_s2.h5ad`; heart 62.45
+  `T2heart_organ_ts125_tk_half.h5ad`; embryo 69.9 `T2embryo_s2x_ov.h5ad`. `docs/UPLOAD_SHEET.md` holds every due file.
+- **IN FLIGHT (blind agents, each in its own worktree under `.cache/vec-tmp/`, branched from c15e09d):** R67, T1's
+  damping refinement (`campaign/t1-r67`: MSBm125, MSBm15, MSBm075); R68, the four hedge files (`campaign/hedge-fixed`,
+  `experiments/builds/hedge_fixed.py`); R69, the heart's world-blur file WBH (`campaign/heart-wbh`; its gate row H37
+  is drafted to `lift8/round_1125_gap/H37_row.md` and goes into TRIES.md before any read); R71, the embryo's consensus
+  form BF on O and SO only (`campaign/embryo-bf`; gate row drafted to `EBF_row.md`, placed before any read); R70, the
+  heart's OIC125: two independent readers pin each outside sample's stage and licence (`OIC_readerA.md`,
+  `OIC_readerB.md`), then register rows before any fetch; a cold challenge of its design (`HEART_MOON1_challenge.md`)
+  runs beside them. Each branch then gets an independent review, a merge with the guard tests, a gate dry-run on the
+  real records, DGX builds twice with one sha256, a record and a hand-over.
+- **OPEN WITH THE CAPTAIN:** "depth line too" would add BF on O_hi and W (R71's words do not cover the depth line).
+- **COMPUTE:** DGX GPUs 3 to 6 run another job's vLLM server (not ours; leave it alone); ours are 0 to 2 and 7. The
+  DGX root disk is full, so TMPDIR stays under `~/v/scratch`. Local: / 28 GB free, /mnt/md0 176 GB free.
 - **State at 2026-11-25, 13:55 UTC (newest; it supersedes everything below where they differ).** Decision log through 2026-11-25 (rr); next (ss). Ruling rows through R66; next R67. Gate rows done today: N64, T72, T73, H35, H36, E57, E58, K30. Tries: T1 480, heart 127, embryo 95, T3 84. The last upload is 2026-11-26 11:59 UTC.
 - **STANDING 204.465:** T1 74.35 `T1_s2rcMS20m10.h5ad`; T3 63.94 `T3_c2_s2.h5ad`; heart 62.45 `T2heart_organ_ts125_tk_half.h5ad`; embryo 69.9 `T2embryo_s2x_ov.h5ad`. Uploads unlimited (R42); headlines only (R22); `docs/UPLOAD_SHEET.md` holds every due file (T1 only now: ten files, then A15 last; heart, T3 and embryo fully uploaded).
 - **NEXT, T1 round 3 (row R66):** K1 `T1_s2rcMS20H10m10` and C3 `T1_s2rcMS20H20` hold. Code on branch `campaign/t1-r66` (1c30ad5), under independent review (result to `lift8/round_1125_gap/r66_review.json`); then merge with the guard tests (t2_build literals, n54 listing, s2_rules), deliver by bundle, build each with `experiments/builds/t1_r66_line.sh <COMMIT> <RUN> <FILE>` (gate dry-run passed at 1c30ad5 on `~/v/scratch/t1line-wt`; the second build on `~/v/vec-campaign-d`), record with `lift8/record_t1r66.py`, hand over.
