@@ -14155,3 +14155,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     verdict, and it is recorded here.
   - **Recorded:** rows R54 to R59 and an amendment in `docs/S2_RULES.md` (re-pinned). Engineers blind to test scores
     now write each line's code; each gate's row is placed after review and before its read.
+- 2026-11-24 (xxx), row E57 is placed: the embryo RS line's counted read (state at 00:24 UTC, 2026-11-24). Written by
+  the AI assistant, which designed none of it.
+  - **The row.** The cold challenger's section-7 text, with three changes: the void tolerance on de_score and
+    de_direction is 1e-4 (the engineer measured float32 summation-order shifts of up to 1.7e-5 under a row
+    permutation, so 1e-9 would void every run); the builder takes the captain's ruling R57 instead of a test flag; a
+    pass builds the file under R57. Code merged at 21b5ddc after an independent review.
