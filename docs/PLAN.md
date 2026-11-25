@@ -14886,3 +14886,15 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     blinds the prior on cardiac genes; one stop should label a pass instead. Price: about 2% as written, 5% fixed;
     best +3 to +4. Its exposure notes: the banked heart file named at two dates, and a possible one at `H35_row.md`
     line 1 (no value).
+- 2026-11-25 (ppp), the hedges with parents fixed by recipe (state at 17:40 UTC, 2026-11-25). Written by the AI
+  assistant, recused on the embryo's occupancy term and shape forms.
+  - **The design** (`HEDGE_FIXED_design.md`), parents pinned by a score-blind designer from recipes and committed
+    practice reads, 50:50, each row whole from one parent so count, order and positions stay the banked file's: T3-H1
+    `T3_c2_s2_mxe2.h5ad` (C2 and K23's xe2); T3-H2 `T3_s2_mx_xe2_ck.h5ad` (xe2 and ck); E-H1
+    `T2embryo_s2x_ovmxso.h5ad` (O and SO per cell); E-H2 `T2embryo_s2x_ovbkso.h5ad` (O and SO by spatial blocks). Left
+    out: O_hi, and W (row R48 reopened depth for that file only). About 4 hours of code; together about +0.2 to +0.35
+    expected; none a step change. Its exposure note: the injected memory index's line on the top-3 goal (no value).
+  - **A point the AI assistant puts to the captain before any code:** three of the four have the board's banked file
+    as a parent, and being banked is itself a headline choice, so only T3-H2 is free of any headline; the design names
+    this flaw itself. The captain's "yes" (entry (kkk)) came before it was known, so the four go to him as one priced
+    question with the moonshot questions. No ruling row is placed and no code is written before his answer.
