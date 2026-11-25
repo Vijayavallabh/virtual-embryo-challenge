@@ -15114,3 +15114,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     confirmed section); E8.75 (a) X022 drops (agreement, cm count, shared genes or no confirmed section); E8.75 (a)
     fewer than two sources left." No read runs, no try is counted, OIC125 is not built. G0's records and the fetch
     manifest are committed with this entry; register rows X021 and X022 now record the fetch.
+- 2026-11-25 (hhhh), T1's second refinement round's files (row R73) are built, before any score (state at 2026-11-25
+  22:04 UTC). Written by the AI assistant, which designed none of it.
+  - **The builds.** `experiments/builds/t1_r73_line.sh ead4f34...` once per file on the DGX, clean; identity and base
+    checks gave the recorded bytes; each file built twice with one sha256: **`T1_s2rcMSBm10d10.h5ad`**
+    ea59b9dc59af...; **`T1_s2rcMSBm10H05.h5ad`** 58c1d94f7050...; **`T1_s2rcMSBm10d15.h5ad`** d3098c20fd98...;
+    **`T1_s2rcMSBm10H10.h5ad`** 7e2b3964e33f.... All four due now, sent at once (row R73). Data used: released
+    challenge data and the outside heart atlas on recomputed groups (GEO GSE193346, register row X002).

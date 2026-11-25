@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-25 19:18 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-25 22:04 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -15,10 +15,11 @@ decision log 2026-11-24 (pp)), every due file can go now and nothing waits for r
 are listed below. Between boards the captain decides; by the challenge's formula a point on T1 or T3 counts twice a
 point on the heart or the embryo board.
 
-**Due now (7), in the order of each board's table below:**
+**Due now (11), in the order of each board's table below:**
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcB25H20.h5ad`,
-  `T1_s2rcB25MSH05.h5ad`, `T1_s2rcMSBm075.h5ad`
+  `T1_s2rcB25MSH05.h5ad`, `T1_s2rcMSBm075.h5ad`, `T1_s2rcMSBm10d10.h5ad`, `T1_s2rcMSBm10H05.h5ad`,
+  `T1_s2rcMSBm10d15.h5ad`, `T1_s2rcMSBm10H10.h5ad`
 - T3: none (every built T3 file is uploaded)
 - Embryo: none (every built embryo file is uploaded)
 - Heart: none (every built heart file is uploaded)
@@ -43,7 +44,8 @@ passed) are built (decision log 2026-11-25 (dd)). T1 line 12 (row R60) and row R
 (decision log 2026-11-25 (gg)). T1's third-round slots (row R66): K1, `T1_s2rcMS20H10m10`, and C3, `T1_s2rcMS20H20`,
 are built (decision log 2026-11-25 (xx)) (decision log 2026-11-25 (oo) and (rr)); K2, K3 and C1 are not built (their
 conditions did not hold). T1's damping refinement (row R67): `T1_s2rcMSBm125`, `T1_s2rcMSBm15` and `T1_s2rcMSBm075`
-are built (decision log 2026-11-25 (uuu)).
+are built (decision log 2026-11-25 (uuu)). T1's second refinement round (row R73): `T1_s2rcMSBm10d10`,
+`T1_s2rcMSBm10H05`, `T1_s2rcMSBm10d15`, `T1_s2rcMSBm10H10` are built (decision log 2026-11-25 (hhhh)).
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)), and twenty-one on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy), (aaa), (bbb),
@@ -78,6 +80,10 @@ with no limit they go after T1's due search files (the main session's reading); 
 | eighth search | `T1_s2rcB25H20.h5ad` (at 2.0) | `8286f1b1707a423493de755feacd7a3d7743593ce2939f15c8323a27557b873f` | none: its gate is met (H10's headline is above H05's; row R44) |
 | eighth and ninth, pair | `T1_s2rcB25MSH05.h5ad` (Blood's own momentum at 0.5 on B25MS: the pair of lines 8 and 9) | `7924f1f55624eb9e56df639f6ba3ceab0464acc3ad9f3eb91449380293b7e2d2` | none (row R46: B25H05 and B25MS each scored strictly above the 2.5 file) |
 | damping refinement (row R67) | `T1_s2rcMSBm075.h5ad` (MSB's command with MS's own damping 0.75) | `05f717fa903520ccbee0b9c8c19c7a40bc819ba8dd827edae4f0e5f49ad3bee1` | none (row R67: sent at once) |
+| refinement round 2 (row R73) | `T1_s2rcMSBm10d10.h5ad` (MSBm10's command with g_mom's damping 1.0) | `ea59b9dc59af25d98b3095e117d78a97212b3a3952dbb762e3e332719822a47c` | none (row R73: sent at once) |
+| refinement round 2 (row R73) | `T1_s2rcMSBm10H05.h5ad` (MSBm10's command with Blood's own momentum 0.5) | `58c1d94f7050a8ce382094466d009c1eb966d5ba2f2afe36a75c393d3f55e413` | none (row R73: sent at once) |
+| refinement round 2 (row R73) | `T1_s2rcMSBm10d15.h5ad` (MSBm10's command with g_mom's damping 1.5) | `d3098c20fd98c3725b5865c0fe7294710f1063ad204b9cfadec6c13b7008570a` | none (row R73: sent at once) |
+| refinement round 2 (row R73) | `T1_s2rcMSBm10H10.h5ad` (MSBm10's command with Blood's own momentum 1.0) | `7e2b3964e33fbe4bf240f618502bcc65bba4ce8a6d58249a88692ab1a65e82fe` | none (row R73: sent at once) |
 | kept, last | `T1_s2rcA15.h5ad` (the second search's file) | `e2334137b54d98b04e9dece90213987e61fe9aa15a3fb8d85e6c262d8fb5ba75` | none (its condition is met); last on T1; with no limit on uploads, after T1's due search files |
 | kept, last | `T1_s2rcA20.h5ad` | `372713686782be273a52427140eab652517e35b679f54fc2a969484dee730218` | only if A15 scores strictly above A |
 

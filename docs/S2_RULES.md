@@ -3596,3 +3596,16 @@ damping 1.5), sha256 6d5b80d709f9642d43ae33071bd2c19b24bd86fc711c6b7abcd44c4612c
 05f717fa903520ccbee0b9c8c19c7a40bc819ba8dd827edae4f0e5f49ad3bee1 (build records
 `experiments/builds/results/t1r67_7482bb1_<run>.txt`). Added before any score of any. Data used: released challenge
 data and the outside heart atlas on recomputed groups (GEO GSE193346, register row X002).
+
+## Note of 2026-11-25: T1's second refinement round's files are built (row R73; decision log 2026-11-25 (hhhh))
+
+At the clean commit ead4f34, on the DGX, each file's identity rebuilds gave their recorded bytes, its command with its
+one further step put back gave T1_s2rcMSBm10's bytes, and the file was built twice with one sha256 and passed the
+format check. **The files:** `runs/manual_upload/T1_s2rcMSBm10d10.h5ad` (g_mom's damping 1.0 on MSBm10), sha256
+ea59b9dc59af25d98b3095e117d78a97212b3a3952dbb762e3e332719822a47c; `runs/manual_upload/T1_s2rcMSBm10H05.h5ad` (Blood's
+own momentum 0.5 on MSBm10), sha256 58c1d94f7050a8ce382094466d009c1eb966d5ba2f2afe36a75c393d3f55e413;
+`runs/manual_upload/T1_s2rcMSBm10d15.h5ad` (g_mom's damping 1.5 on MSBm10), sha256
+d3098c20fd98c3725b5865c0fe7294710f1063ad204b9cfadec6c13b7008570a; `runs/manual_upload/T1_s2rcMSBm10H10.h5ad` (Blood's
+own momentum 1.0 on MSBm10), sha256 7e2b3964e33fbe4bf240f618502bcc65bba4ce8a6d58249a88692ab1a65e82fe (build records
+`experiments/builds/results/t1r73_ead4f34_<run>.txt`). Added before any score of any. Data used: released challenge
+data and the outside heart atlas on recomputed groups (GEO GSE193346, register row X002).

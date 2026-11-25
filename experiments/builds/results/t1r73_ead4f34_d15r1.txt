@@ -1,0 +1,7 @@
+Row R73's file T1_s2rcMSBm10d15.h5ad
+==========================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-25 at commit ead4f34 (main; clean tree) with `experiments/builds/t1_r73_line.sh ead4f3436724b78a947471e4e54e276981989cf2 d15r1 T1_s2rcMSBm10d15`, after its gate checks were dry-run on the real rows and its refusal path was traced.
+Every exit record is 0. The identity rebuilds gave the recorded bytes: T1_s2rcMSB (row R26's file, t1msc_a3e879a_m1), T1_s2rcMSBm10 (row R51's, t1r51_0cdcc6f_r1) and T1_s2rcMSBd15 (row R51's, t1r51_0cdcc6f_r1). The file's command with its one further step put back gave T1_s2rcMSBm10's bytes. The new file (MSBm10's command with g_mom's damping 1.5), built twice into separate folders with one sha256, format-checked, each stamp of this commit and clean:
+  T1_s2rcMSBm10d15.h5ad  d3098c20fd98c3725b5865c0fe7294710f1063ad204b9cfadec6c13b7008570a
+The local copy under runs/manual_upload/ is the same bytes. No log, size, shape or sidecar of this build was read. No score of it exists at this record.
