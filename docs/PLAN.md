@@ -15141,3 +15141,16 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     set priced about 0.5, not 0.75.
   - **The captain's pick:** "All four", to a question with no recommended option. Recorded as R74 with the
     challenger's words and strings.
+- 2026-11-26 (a), the embryo's and T3's refinement rounds: the captain's yes to both, recorded as ruling rows R75 and
+  R76 before any code (state at 00:00 UTC). Written by the AI assistant, recused on the embryo's occupancy term and
+  shape forms, and giving no lean on T3's depth.
+  - **Embryo** (`EMBRYO_REF3_design.md`, `EMBRYO_REF3_challenge.md`): five files kept with fixes, the design's 1/3
+    file struck as already struck in an earlier round; the 5/12 file reopens the lean-early line declined on
+    2026-11-06 (e) (the embryo s2 at fraction 1/4); the depth file needs the depth line reopened for it alone. The
+    captain's pick: "All five", to a question with no recommended option. Recorded as R75.
+  - **T3** (`T3_REF3_design.md`, `T3_REF3_challenge.md`): five files kept with fixes, s11 struck; every file moves
+    T3's depth, closed after an exposure, so the question gave the pre-set rule's outcome (declined) and no lean;
+    R41's words cover the Gata4 weight only. The captain's pick: "All five, with exceptions", his named exception on
+    T3's depth for each. Recorded as R76.
+  - **Next:** two engineers (the embryo on R59's route with R73's table; T3 on the two-knockout builder with four
+    identity gates), independent reviews, DGX builds, records and hand-overs before the 11:59 UTC deadline.
