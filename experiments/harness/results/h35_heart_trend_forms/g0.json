@@ -1,0 +1,34 @@
+{
+ "row": "H35",
+ "axis": "h35-heart-trend-forms:g0",
+ "commit": "53fc2674479c2fe18fec91831523ba8d8dc7aab4",
+ "provenance": {
+  "commit": "53fc2674479c2fe18fec91831523ba8d8dc7aab4",
+  "tree_clean": true,
+  "utc": "2026-11-25 02:28:33"
+ },
+ "label": "G0 of row H35: target-free, not a try; the test inputs as the builder loads them, no target, no score; each form's word and the condition that set it, and no figure",
+ "verdict": "PASS",
+ "forms": {
+  "category": {
+   "verdict": "PASS",
+   "condition": "none"
+  },
+  "contrast": {
+   "verdict": "PASS",
+   "condition": "none"
+  },
+  "whole": {
+   "verdict": "IDLE",
+   "condition": "idle"
+  },
+  "portion": {
+   "verdict": "PASS",
+   "condition": "none"
+  }
+ },
+ "why": [],
+ "line": null,
+ "follows": null,
+ "source": "experiments/harness/h35_heart_trend_forms.py (row H35)"
+}
