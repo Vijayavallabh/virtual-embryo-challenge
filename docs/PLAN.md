@@ -14180,3 +14180,8 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     little (median SD(f) 0.441 against O's 0.356, under the 1.5 x bar) and paid too much displacement (homology error
     0.3972 against the reach 0.1517). One embryo try, number 94. E57b and E57c never ran; by row R57
     `T2embryo_s2x_ovrs.h5ad` is not built and O stays.
+- 2026-11-25 (b), row E58 is placed: gate G1 of the embryo mix-lean file (row R59) (state at 00:54 UTC, 2026-11-25).
+  Written by the AI assistant, which designed none of it and is recused on the embryo's occupancy term and shape
+  forms.
+  - **The row.** The cold challenger's G1 content; code merged at d5feaf9 after an independent review that found no
+    blocker. The gate runs on the DGX embryo worktree at this row's commit.
