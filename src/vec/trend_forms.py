@@ -312,3 +312,122 @@ def g0_statistics(form: dict, banked: dict) -> dict:
     share = num / den if den > 0 else (0.0 if num == 0 else float("inf"))
     wild = mean_f / mean_b if mean_b > 0 else (0.0 if mean_f == 0 else float("inf"))
     return {"changed_share": share, "mean_abs_logf": mean_f, "mean_abs_logf_banked": mean_b, "wild_ratio": wild}
+
+
+# ------------------------------------------------------------------------------------------------ OIC125 (row R70)
+# The in-situ late contrast form (HEART_MOON1_design.md P1 with HEART_MOON1_challenge.md's FIX 1 and FIX 6; experiments/
+# heart_ext/): OTK125's step (the category form at strength 1.25) with each chamber category's chord P_k added to its
+# log factor where P exists: the new mapping is L_k + P_k there and L_k elsewhere, L_k the category form's applied log
+# factor of the category's B0 type. Epicardium (Untracked in OTK125, so unmoved) keeps its OTK125 factor, 0, and adds
+# P_epi where P exists, under its own key EPI_KEY at every stage (its cells' chamber category, by label). A chord of
+# all NaN (or zero=True) gives the category form bit for bit. Nothing here reads a file, a target or a score.
+INSITU = "insitu"
+INSITU_FILE, INSITU_TAG = "OIC125", "ti"
+EPI_KEY = "Epicardium"
+INSITU_TYPES = {"cm": "CM", "endocardium": f"{SPLIT_LINEAGE}/endocardium",
+                "vascular_endothelium": f"{SPLIT_LINEAGE}/vascular_endothelium", "epicardium": EPI_KEY}
+INSITU_RULE = ("OTK125's step (the category form at the strength) with each chamber category's in-situ chord P_k "
+               "added to its B0 type's applied log factor where P exists (L_k + P_k), L_k elsewhere; epicardium under "
+               "its own key with 0 + P_epi where P exists; one momentum_shift pass, the stream [seed, 3], depth kept")
+OFF_P_TOL = 1e-12  # FIX 6: an applied log factor off P's entries more than this from OTK125's is a fault
+
+
+def _has(p) -> bool:
+    return p is not None and bool(np.isfinite(np.asarray(p, dtype=np.float64)).any())
+
+
+def _epi_typed(a: ad.AnnData, spec: t2_build.T2ChamberSpec) -> ad.AnnData:
+    """`a` (typed) with each Untracked cell of chamber category epicardium typed EPI_KEY."""
+    t = np.asarray(a.obs["b0_type"]).astype(str).astype(object)
+    cats = t2_build.t2_chamber_categories(np.asarray(a.obs[t2_build.T2_LABEL_KEY]).astype(str), spec)
+    m = (cats == "epicardium") & np.array([x.startswith(harness.T2_UNTRACKED) for x in t.astype(str)], bool)
+    t[m] = EPI_KEY
+    return _typed(a, t.astype(str))
+
+
+def insitu_arguments(ctx: harness.BuildContext, strength: float, chords: dict | None,
+                     spec: t2_build.T2ChamberSpec | None = None, zero: bool = False) -> StepArgs:
+    """What the in-situ step hands momentum_shift: the category form's arguments with P added. `chords`: category ->
+    P over the drawn cells' genes (`like.var_names` order; NaN where P does not exist). Raises when a P-carrying
+    category's type is not one the category form shifts (its chord would be idle) or a chord has the wrong length."""
+    spec = spec or t2_build.load_t2_chamber_spec()
+    base = form_arguments(ctx, strength, "category", spec=spec)
+    genes = list(base.like.var_names)
+    chords = {} if (zero or not chords) else {k: np.asarray(v, dtype=np.float64) for k, v in chords.items()}
+    unknown = sorted(set(chords) - set(INSITU_TYPES))
+    if unknown:
+        raise ValueError(f"chords for categories {unknown}: only {sorted(INSITU_TYPES)}")
+    for k, v in chords.items():
+        if v.shape != (len(genes),):
+            raise ValueError(f"the chord of {k} has shape {v.shape}, expected ({len(genes)},)")
+    carried = [k for k in INSITU_TYPES if _has(chords.get(k))]
+    record = {**base.record, "form": INSITU, "base_form": "category", "zero": bool(zero), "rule": INSITU_RULE,
+              "carried": carried, "entries": {k: int(np.isfinite(chords[k]).sum()) for k in carried}}
+    if not carried:
+        return replace(base, record=record)
+    start, end, like = base.start, base.end, base.like
+    if "epicardium" in carried:
+        start, end, like = (_epi_typed(x, spec) for x in (start, end, like))
+    mapping = dict(base.mapping)
+    own = None
+    for k in carried:
+        t = INSITU_TYPES[k]
+        if k == "epicardium":
+            L = np.zeros(len(genes))
+        elif t in mapping:
+            L = np.asarray(mapping[t], dtype=np.float64)
+        else:  # a type the trend mapping leaves out: its own factor, as momentum_shift applies it under OTK125
+            own = own or applied(ctx, base)
+            st = {r["type"]: r["status"] for r in own["statuses"]}
+            if t not in own["types"] or st.get(t) != "shifted":
+                raise ValueError(f"category {k}: type {t} is not shifted by the category form, so its chord would "
+                                 "be idle")
+            L = own["logF"][own["types"].index(t)]
+        mapping[t] = L + np.nan_to_num(chords[k], nan=0.0)
+    return StepArgs(base.pool, base.rows, base.coords, start, end, like, base.damping, mapping, record)
+
+
+def insitu_checks(ctx: harness.BuildContext, args: StepArgs, base: StepArgs, chords: dict) -> list[str]:
+    """FIX 6's faults: a P-carrying type reported skipped by momentum_shift, or an applied log factor off P's entries
+    more than OFF_P_TOL from OTK125's (the category form's), or one on P's entries not OTK125's plus P (same
+    tolerance), cell by cell over the drawn cells. Empty when none."""
+    new, old = applied(ctx, args), applied(ctx, base)
+    why = []
+    st = {r["type"]: r["status"] for r in new["statuses"]}
+    cats = t2_build.t2_chamber_categories(np.asarray(base.like.obs[t2_build.T2_LABEL_KEY]).astype(str))
+    for k in INSITU_TYPES:
+        if _has(chords.get(k)) and st.get(INSITU_TYPES[k]) != "shifted":
+            why.append(f"the P-carrying type {INSITU_TYPES[k]} is reported {st.get(INSITU_TYPES[k])!r}")
+    if len(new["tidx"]) != len(old["tidx"]):
+        return [*why, "the in-situ step and OTK125's drew different cells"]
+    combos = np.unique(np.stack([np.asarray(new["tidx"]), np.asarray(old["tidx"]),
+                                 np.unique(cats, return_inverse=True)[1].ravel()], axis=1), axis=0)
+    names = np.unique(cats)
+    for ti, to, ci in combos:
+        a, b = new["logF"][ti], old["logF"][to]
+        cat, tname = str(names[ci]), str(new["types"][ti])
+        p = chords.get(cat) if INSITU_TYPES.get(cat) == tname else None
+        has = np.isfinite(p) if p is not None else np.zeros(len(a), bool)
+        if np.any(np.abs(a[~has] - b[~has]) > OFF_P_TOL):
+            why.append(f"drawn cells of type {tname}: an applied log factor off P's entries is not OTK125's")
+        if has.any() and np.any(np.abs(a[has] - (b[has] + p[has])) > OFF_P_TOL):
+            why.append(f"drawn cells of type {tname}: an applied log factor on P's entries is not OTK125's plus P")
+    return why
+
+
+def insitu_step(ctx: harness.BuildContext, strength: float, chords: dict | None,
+                spec: t2_build.T2ChamberSpec | None = None, zero: bool = False, check: bool = True) -> tuple:
+    """The in-situ step through `harness.finish`, as form_step: (stage, shifted counts, rows, record). With `check`,
+    FIX 6's faults (insitu_checks) raise: a file with an idle or misplaced chord is never built."""
+    spec = spec or t2_build.load_t2_chamber_spec()
+    args = insitu_arguments(ctx, strength, chords, spec, zero)
+    if check and args.record["carried"]:
+        base = form_arguments(ctx, strength, "category", spec=spec)
+        why = insitu_checks(ctx, args, base, {k: np.asarray(v, dtype=np.float64) for k, v in (chords or {}).items()})
+        if why:
+            raise ValueError("the in-situ step is faulty (FIX 6): " + "; ".join(why))
+    shifted, report = shift(ctx, args)
+    stage = harness.finish(ctx, args.pool, dense(shifted[:, ctx.board.genes].X), args.coords)
+    record = {**args.record, "types": statuses(report),
+              "shifted": sorted(r["type"] for r in report.rows if r["status"] == "shifted")}
+    return stage, counts_of(shifted, list(ctx.board.genes)), args.rows, record

@@ -3402,6 +3402,8 @@ def _trend_form_record(form: str, s: float, rec: dict, order_row: str | None) ->
 
 
 def build_heart(a) -> dict:
+    if getattr(a, "insitu_chords", None) is not None or getattr(a, "trend_form", None) == HEART_OIC_FORM:
+        return _build_heart_oic(a)  # file OIC125 (row R70): its own path, refused unless exactly its command
     if getattr(a, "run_profile", None) is not None:  # file OXP125 (row R56): its own path; no other command goes there
         return _build_heart_xpc(a)
     strength = _trend_strength_refusals(a)
@@ -3722,6 +3724,152 @@ def _build_heart_xpc(a) -> dict:
                             "profile": "experiments/heart_profile/results/xpc_profile.json", "read": "row H36",
                             "rule": t2_build.RUN_PROFILE_RULE, "stream": t2_build.RUN_PROFILE_STREAM,
                             "captain_ruling": HEART_XPC_ROW, "command": command},
+            "z_mode": "raw", "scope_option": _organ_option_record(trim),
+            "size": {k: size[k] for k in size if not isinstance(size[k], (dict, list))}}
+
+
+# File OIC125 (row R70 of experiments/harness/TRIES.md, the captain's order of 2026-11-25, ruling, no run: his A15
+# exception for OIC125's outside sources and his named exception on the heart's scope and size for OIC125; read by row
+# H38). OTK125's command (the category form at strength 1.25 on file D's organ cut) with each chamber category's in-situ
+# chord added where it exists (vec.trend_forms.insitu_step; HEART_MOON1_design.md P1 with HEART_MOON1_challenge.md's
+# fixes). Expression only: draw, rows, coordinates, count, size step and half are OTK125's. FIX 6's faults (a P-carrying
+# type skipped, an applied log factor off P's entries not OTK125's) refuse the build.
+HEART_OIC_ROW = "R70"
+HEART_OIC_FORM = "insitu"
+HEART_OIC_CHOICE = "1.25"
+HEART_OIC_STRENGTH = float(HEART_OIC_CHOICE)
+HEART_OIC_FILE = "OIC125"
+HEART_OIC_CHORDS = REPO_ROOT / "experiments" / "heart_ext" / "results" / "chords_E10.5.json"
+HEART_OIC_COMMAND = (f"heart --entry organ_scope --trend-strength {HEART_OIC_CHOICE} --trend-form {HEART_OIC_FORM} "
+                     f"--insitu-chords {{sha256}} --z-mode raw --captain-ruling {HEART_OIC_ROW}")
+HEART_OIC_GIVEN = ("which", "out", "board", "entry", "trend_strength", "z_mode", "captain_ruling", "insitu_chords",
+                   "trend_form")
+HEART_OIC_ORDER = ("experiments/harness/TRIES.md row R70, the captain's order of 2026-11-25 (ruling, no run: \"my A15 "
+                   "exception for OIC125's outside sources and my named exception on the heart's scope and size for "
+                   "OIC125\"; decision log 2026-11-25 (qqq)): file OIC125, OTK125's command with the in-situ chords "
+                   "of row H38's G0 added; nothing else changed")
+
+
+def _oic_read_passed(sha256: str, path: Path | None = None) -> list[str]:
+    """Why row H38's outcome cell does not allow OIC125 with this chord file (empty when it does)."""
+    sys.path.insert(0, str(REPO_ROOT / "experiments" / "harness"))
+    import h38_row
+
+    try:
+        text = (path or TRIES_FILE).read_text(encoding="utf-8")
+    except OSError:
+        return ["TRIES.md cannot be read"]
+    got, why = h38_row.passed_sha256(text)
+    if not why and got != sha256:
+        why = ["row H38's G0 statement records another sha256 for chords_E10.5.json"]
+    return why
+
+
+def _oic_refusals(a) -> float:
+    """The refusals of OIC125's command: exactly HEART_OIC_COMMAND, row R70's order, row H38's PASS."""
+    raw = getattr(a, "insitu_chords", None)
+    command = HEART_OIC_COMMAND.format(sha256="<sha256>")
+    if not isinstance(raw, str) or HEART_XPC_SHA256.fullmatch(raw) is None:
+        sys.exit(f"--insitu-chords {raw} is refused: it takes the sha256 (64 lowercase hexadecimal digits) of "
+                 "experiments/heart_ext/results/chords_E10.5.json, row H38's G0 chords at the test")
+    defaults = vars(build_parser().parse_args(["heart", "--entry", "organ_scope", "--out", "x"]))
+    other = sorted(k for k, v in vars(a).items()
+                   if k not in HEART_OIC_GIVEN and (k not in defaults or v != defaults[k]))
+    if (getattr(a, "trend_form", None) != HEART_OIC_FORM or a.entry != "organ_scope"
+            or a.trend_strength != HEART_OIC_CHOICE or a.z_mode != "raw" or other
+            or a.board not in (None, TEST_BOARDS["heart"])):
+        sys.exit(f"--insitu-chords and --trend-form {HEART_OIC_FORM} are refused except as {command}, on the test "
+                 "board at the default seed with every other heart option at its default (file OIC125, row R70)")
+    if a.captain_ruling is None:
+        sys.exit(f"file {HEART_OIC_FILE} is the captain's order of row {HEART_OIC_ROW} alone and needs "
+                 f"--captain-ruling {HEART_OIC_ROW}")
+    if a.captain_ruling != HEART_OIC_ROW:
+        sys.exit(f"file {HEART_OIC_FILE} is refused with --captain-ruling {a.captain_ruling}: only row "
+                 f"{HEART_OIC_ROW} orders it")
+    if not _captain_order_names(HEART_OIC_ROW, HEART_OIC_FILE):
+        sys.exit(f"file {HEART_OIC_FILE} is refused: experiments/harness/TRIES.md must hold exactly one row "
+                 f"{HEART_OIC_ROW} whose first cell is the captain's order (\"ruling, no run\") naming "
+                 f"{HEART_OIC_FILE} and `--captain-ruling {HEART_OIC_ROW}`")
+    why = _oic_read_passed(raw)
+    if why:
+        sys.exit(f"file {HEART_OIC_FILE} is refused: its gates have not read PASS ({'; '.join(why)})")
+    return HEART_OIC_STRENGTH
+
+
+def _oic_chords(sha256: str, genes) -> dict:
+    """chords_E10.5.json as category -> P over `genes` (NaN where none); refused unless it is the file of `sha256`
+    and G0's test chords for OIC125."""
+    if not HEART_OIC_CHORDS.is_file():
+        sys.exit(f"--insitu-chords {sha256} is refused: {HEART_OIC_CHORDS} does not exist (row H38's G0 writes it)")
+    raw = HEART_OIC_CHORDS.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != sha256:
+        sys.exit(f"--insitu-chords {sha256} is refused: {HEART_OIC_CHORDS} is not the file of that sha256")
+    doc = json.loads(raw)
+    if doc.get("row") != "H38" or doc.get("ref") != "E10.5" or doc.get("file") != HEART_OIC_FILE:
+        sys.exit(f"--insitu-chords {sha256} is refused: the file is not row H38's test chords for {HEART_OIC_FILE}")
+    idx = {g: i for i, g in enumerate(doc["genes"])}
+    out = {}
+    for k, v in doc["P"].items():
+        if len(v) != len(idx):
+            sys.exit(f"--insitu-chords {sha256} is refused: the chord of {k} does not cover the file's genes")
+        out[k] = np.array([np.nan if g not in idx or v[idx[g]] is None else float(v[idx[g]]) for g in genes])
+    return out
+
+
+def _build_heart_oic(a) -> dict:
+    """File OIC125: file D's organ cut of E10.5, OTK125's draw and category step with the in-situ chords added, then
+    file D's size step (the half is halve.py's, as every heart file)."""
+    from vec import trend_forms
+
+    strength = _oic_refusals(a)
+    order_row = _ruling_first_cell(HEART_OIC_ROW)
+    board, dry = _board("heart", a.board)
+    genes = board.genes
+    ref = load_stage(DATA / "T2/E10.5.h5ad", genes=genes, drop_duplicates=True)
+    start = load_stage(DATA / "T2/E9.5.h5ad", genes=genes, drop_duplicates=True)
+    core = np.asarray(ref.obs["core"], dtype=bool)
+    C = np.asarray(ref.obsm[COORD_KEY], dtype=float)[:, :3]
+    if t2_build.T2_LABEL_KEY not in ref.obs:
+        sys.exit(f"E10.5 has no obs[{t2_build.T2_LABEL_KEY!r}] column: the organ cut needs the released labels")
+    try:
+        keep, trim = t2_build.organ_scope(C, ref.obs[t2_build.T2_LABEL_KEY].to_numpy(), core)
+    except t2_build.UnmappedT2LabelError as e:
+        sys.exit(str(e))
+    organ_ratio = t2_build.organ_core_rms_ratio(C, keep, core)
+    pool = ref[keep].copy()
+    trim.update(pool_rows=int(keep.sum()), pool_rows_of="the released E10.5 after duplicate records are dropped",
+                organ_core_rms_ratio=organ_ratio)
+    roles = {"ref": ("T2/E10.5.h5ad", 10.5), "start": ("T2/E9.5.h5ad", 9.5)}
+    inputs = {"ref": pool, "start": start}
+    for role, (f, day) in HEART_TREND_STAGES.items():
+        inputs[role] = load_stage(DATA / f, genes=genes, drop_duplicates=True)
+        roles[role] = (f, day)
+    view = _view("test:T2h", "T2", "extrap", "heart", board.key, roles, "ref", 12.5)
+    count = _t2_count(board, pool.n_obs)
+    ctx = harness.BuildContext(task=view, board=harness._candidate_board(board), inputs=inputs, seed=a.seed)
+    chords = _oic_chords(a.insitu_chords, list(pool.var_names))
+    try:
+        stage, _, _, rec = trend_forms.insitu_step(ctx, strength, chords)
+    except (ValueError, t2_build.UnmappedT2LabelError) as e:
+        sys.exit(f"file {HEART_OIC_FILE} is refused: {e}")
+    coords, size = t2_build.size_organ_scope(stage.coords, SIZES["heart"], organ_ratio, source_stage="E10.5",
+                                             reference_cloud=ref, expect_board="heart")
+    _, report = t2_build.build_submission(board, stage.X, coords, genes=list(genes), out=a.out)
+    if not report.ok:
+        raise SystemExit(f"the built file fails its check: {report.errors}")
+    command = HEART_OIC_COMMAND.format(sha256=a.insitu_chords)
+    return {"entry": f"trend strength {strength:g} form {HEART_OIC_FORM} organ_scope ({t2_build.SIZE_ORGAN_SCOPE})",
+            "board": board.key, "dry_run": dry, "n_cells": int(stage.n), "seed": a.seed, "count_decision": count,
+            "trim": trim, "depth_step": False,
+            "trend_strength": {"option": "--trend-form", "form": HEART_OIC_FORM, "strength": strength,
+                               "file": HEART_OIC_FILE, "base_file": "OTK125", "captain_ruling": HEART_OIC_ROW,
+                               "order": HEART_OIC_ORDER, "order_row": order_row, "command": command,
+                               "step": trend_forms.INSITU_RULE, "budget_days": rec["budget_days"],
+                               "test_budget_days": strength * rec["budget_days"], "trend": _trend_record(rec["trend"]),
+                               "types": rec["types"], "shifted": rec["shifted"], "carried": rec["carried"]},
+            "insitu_chords": {"option": "--insitu-chords", "sha256": a.insitu_chords, "file": HEART_OIC_FILE,
+                              "chords": "experiments/heart_ext/results/chords_E10.5.json", "read": "row H38",
+                              "captain_ruling": HEART_OIC_ROW, "command": command},
             "z_mode": "raw", "scope_option": _organ_option_record(trim),
             "size": {k: size[k] for k in size if not isinstance(size[k], (dict, list))}}
 
@@ -4434,6 +4582,14 @@ def build_parser() -> argparse.ArgumentParser:
                                 "with --entry organ_scope, the row that orders it; with --entry organ_scope "
                                 f"--trend-strength 0.75 or 1.25: {HEART_FURTHER_ROW}, the ruling row that orders those "
                                 f"two; with --entry organ_scope --trend-strength 1.5: {HEART_OTS15_ROW}")
+            p.add_argument("--insitu-chords", default=None, metavar="SHA256",
+                           help="file OIC125 (row R70 of experiments/harness/TRIES.md, the captain's order of "
+                                "2026-11-25; off by default): OTK125's command with the in-situ chords added, "
+                                f"{HEART_OIC_COMMAND.format(sha256='<sha256>')}, the sha256 of "
+                                "experiments/heart_ext/results/chords_E10.5.json (row H38's G0). Refused with any "
+                                "other command, seed, board or option, unless row R70's first cell is the captain's "
+                                "order naming OIC125 and --captain-ruling R70, and unless row H38's outcome cell "
+                                "holds G0's PASS statement with this sha256 and then the read's PASS")
             p.add_argument("--trend-form", default=None, metavar="{" + ",".join(HEART_TF_FORMS) + "}",
                            help=f"row {HEART_TF_ROW}'s trend-form line (off by default): OTS125's command with one "
                                 "change, the direction of the trend step (vec.trend_forms): category (OTK125, the "
