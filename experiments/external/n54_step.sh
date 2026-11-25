@@ -74,6 +74,8 @@ case "$STEP" in
       tests/test_t1_l67pb_build.py tests/test_t1_l67pb_launcher.py \
       tests/test_t1_hm_build.py tests/test_t1_hm_launcher.py \
       tests/test_t1_r51_build.py tests/test_t1_r51_launcher.py \
+      tests/test_t1_lm_m20_build.py tests/test_t1_lm_m20_launchers.py tests/test_t1_late_mix.py \
+      tests/test_t73_m20_read.py \
       tests/test_heart_trend_line.py tests/test_heart_trend_line_launcher.py \
       tests/test_heart_trend_line_d.py tests/test_heart_trend_line_d_launcher.py \
       tests/test_heart_trend_line_f.py tests/test_heart_trend_line_f_launcher.py \

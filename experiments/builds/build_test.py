@@ -384,6 +384,17 @@ files carry --trend: the captain's ruling of 2026-11-13, docs/PLAN.md decision l
   uv run python experiments/builds/build_test.py embryo --method fgw_shape0 --out runs/builds/T2embryo_s2.h5ad
 Without --trend the heart builder gives the heart file as it was before that ruling (B0's E9.5 -> E10.5 step alone),
 kept for reproducing the earlier reference set (builds_38616fe).
+
+Rows R54 and R58 of experiments/harness/TRIES.md (the step-change round of 2026-11-24/25, T1 lines LM16 and m20):
+`t1 --g-mom --base lib3 --feng-groups recomputed --feng-fraction-mult 1.5 --direction-momentum all --late-mix e15_17
+--captain-ruling R54` (T1_s2rcMSB_LM16) is T1_s2rcMSB's command with library 3's own chamber mix moved to the shares
+row N64's step commits (experiments/t1_scope/late_mix.py; cardiomyocytes of heart cells, then blood of chamber cells,
+by vec.t1_scope.with_share), taken only while row R54's first cell is the captain's ruling naming `--late-mix e15_17`
+and `--captain-ruling R54` and the shares file committed at HEAD has the sha256 row N64 names; `t1 --g-mom --base lib3
+--feng-groups recomputed --feng-fraction-mult 1.5 --direction-momentum all --direction-momentum-damping 2.0
+--captain-ruling R58` (T1_s2rcMSBm20) is T1_s2rcMSB's command with MS's own damping 2.0, taken only while row R58's
+first cell is the captain's order naming that option string. Both routes are tested before row R51's; without
+--late-mix or --captain-ruling R58 every command is taken or refused exactly as before.
 """
 
 from __future__ import annotations
@@ -956,7 +967,8 @@ def _bet_refusals(a) -> None:
                                    or _msb_ordered(a) or _ruled_line6_ordered(a) or _ruled_line7_ordered(a)
                                    or _pooled_ordered(a)  # and R37; then the rows named on the command line for
                                    or _hm_ordered(a) or _ms25_ordered(a)  # Blood's momentum and MS at 2.5; and
-                                   or _r51_ordered(a)):  # row R51's seven files
+                                   or _r51_ordered(a)  # row R51's seven files; and rows R54's and R58's files
+                                   or _r54_ordered(a) or _r58_ordered(a)):
             return  # _t1_candidate, _t1_pooled, _t1_hm, _t1_ms and _t1_r51 refused every other use
         if ruling is not None or getattr(a, "bet_strength", None) is not None:
             sys.exit("--captain-ruling and --bet-strength go with --released-bet only")
@@ -1222,6 +1234,65 @@ T1_R51_ORDER = ("experiments/harness/TRIES.md row R51, the captain's order of 20
                 "harness.B0_DAMPING) with one change, {change}; nothing else changed")
 # The options a row R51 file never takes beside its own option set: flag -> attribute
 R51_STACKED = (("--released-bet", "released_bet"), ("--bet-strength", "bet_strength"))
+# Row R58 of experiments/harness/TRIES.md (the captain's order of 2026-11-24, "ruling, no run": "Yes, T1_s2rcMSBm20
+# under R22, bound to its gate G0."; T1's line 11, the step-change round's T1 PORTFOLIO design as its cold challenge
+# fixes it): one file, T1_s2rcMSBm20, T1_s2rcMSB's command with MS's own damping 2.0 in place of harness.B0_DAMPING
+# (--direction-momentum-damping 2.0: the released day's per-category change at full pace on both days), nothing else
+# changed. Taken only with --captain-ruling R58 while TRIES.md holds exactly one row R58 whose first cell is the
+# captain's order ("ruling, no run") naming T1_R58_OPTION and `--captain-ruling R58` (_captain_order_names), on
+# T1_CANDIDATE_COMMAND at the default seed on the test board. Its route is tested before row R51's; row R51's value 1.0
+# (T1_s2rcMSBm10) and its refusals stay as they are, so --direction-momentum-damping 2.0 under any other ruling is
+# refused by row R51's guard as before. Its build is gated on row T73's read (experiments/builds/t1_lm_m20_line.sh).
+T1_R58_ROW = "R58"
+T1_R58_FILE = "T1_s2rcMSBm20"
+T1_R58_DMD = "2.0"  # --direction-momentum-damping's literal value under row R58
+T1_R58_OPTION_STRING = "--feng-fraction-mult 1.5 --direction-momentum all --direction-momentum-damping 2.0"
+T1_R58_OPTION = f"`{T1_R58_OPTION_STRING}`"
+T1_R58_COMMAND = f"{T1_CANDIDATE_COMMAND} {T1_R58_OPTION_STRING} --captain-ruling {T1_R58_ROW}"
+T1_R58_ORDER = ("experiments/harness/TRIES.md row R58, the captain's order of 2026-11-24 (\"Yes, T1_s2rcMSBm20 under "
+                "R22, bound to its gate G0.\"; T1's line 11) naming " + T1_R58_OPTION + " and `--captain-ruling R58`: "
+                "file T1_s2rcMSBm20, T1_s2rcMSB's command with one change, MS's own damping 2.0 in place of "
+                "harness.B0_DAMPING; nothing else changed")
+T1_R58_NOTE = ("--direction-momentum-damping 2.0 (row R58's file T1_s2rcMSBm20): MS's own damping in place of "
+               "harness.B0_DAMPING (0.5); nothing else changed")
+# The options row R58's file never takes beside its own option set: flag -> attribute
+R58_STACKED = (("--g-mom-damping", "g_mom_damping"), ("--held-momentum", "held_momentum"),
+               ("--released-bet", "released_bet"), ("--bet-strength", "bet_strength"), ("--late-mix", "late_mix"))
+# Row R54 of experiments/harness/TRIES.md (the captain's named exception of 2026-11-24, written as his order, "ruling,
+# no run": "Yes, T1_s2rcMSB_LM16, my named exception, bound to T72: ..."; T1's late-mix line, the step-change round's
+# T1 CLOSED design as its cold challenge fixes it, the E14.5 file struck): one file, T1_s2rcMSB_LM16, T1_s2rcMSB's
+# command with library 3's own chamber mix moved to the shares row N64's step commits
+# (experiments/t1_scope/late_mix.py, LATE_MIX_SHARES): cardiomyocytes of heart cells, then blood of chamber cells, by
+# vec.t1_scope.with_share in --cm-share's and --blood-share's order, the other categories in proportion; quotas at the
+# count rule, never weights; every step after the draw is T1_s2rcMSB's. Taken only with --captain-ruling R54 while
+# TRIES.md holds exactly one row R54 whose first cell is the captain's order ("ruling, no run") naming T1_R54_OPTION and
+# `--captain-ruling R54` (_captain_order_names), on T1_s2rcMSB's command at the default seed on the test board, and
+# only while the shares file committed at HEAD (the tree's copy the same bytes) has the sha256 row N64 names as
+# `shares.json sha256 <hex>` (exactly one such string in that row) and records the pool's own mix it was computed
+# from. Its route is tested before every other, row R51's included; for this one file it takes the place of row R6's
+# refusal of moved shares on --base lib3 (--cm-share and --blood-share stay refused there). Its build is gated on row
+# T72's read (experiments/builds/t1_lm_m20_line.sh).
+T1_R54_ROW = "R54"
+LATE_MIX_CHOICES = ("e15_17",)  # the anchor row R54 rules: Feng's permitted CD1 cells at E15.5 to E17.5 (row N57)
+T1_R54_OPTION = "`--late-mix e15_17`"
+T1_R54_FILE = "T1_s2rcMSB_LM16"
+T1_R54_COMMAND = (f"{T1_CANDIDATE_COMMAND} --feng-fraction-mult 1.5 --direction-momentum all --late-mix e15_17 "
+                  f"--captain-ruling {T1_R54_ROW}")
+LATE_MIX_ROW = "N64"  # the step-0 row whose cells name the shares file's sha256
+LATE_MIX_SHARES_PATH = "experiments/t1_scope/results/n64_late_mix/shares.json"  # row N64's output, as committed
+LATE_MIX_SHARES = REPO_ROOT / LATE_MIX_SHARES_PATH
+LATE_MIX_SHA_NAMED = re.compile(r"`shares\.json sha256 ([0-9a-f]{64})`")  # how row N64 names it
+LATE_MIX_TOL = 1e-12  # the pool's own mix against the recorded one; the moved shares against the recorded ones
+T1_R54_ORDER = ("experiments/harness/TRIES.md row R54, the captain's named exception of 2026-11-24 (\"ruling, no "
+                "run\"; T1's late-mix line) naming `--late-mix e15_17` and `--captain-ruling R54`: file "
+                "T1_s2rcMSB_LM16, T1_s2rcMSB's command with library 3's own chamber mix moved to row N64's shares "
+                "(cardiomyocytes of heart cells, then blood of chamber cells, the other categories in proportion); "
+                "nothing else changed")
+# The options row R54's file never takes beside T1_s2rcMSB's own: flag -> attribute (and the three switches below)
+R54_STACKED = (("--g-mom-damping", "g_mom_damping"), ("--held-momentum", "held_momentum"),
+               ("--direction-momentum-damping", "direction_momentum_damping"), ("--released-bet", "released_bet"),
+               ("--bet-strength", "bet_strength"), ("--cm-share", "cm_share"), ("--blood-share", "blood_share"))
+R54_SWITCHES = (("--lib3-pair", "lib3_pair"), ("--herd", "herd"), ("--strong-null", "strong_null"))
 
 
 def _captain_order_names(row: str, option: str, path: Path | None = None, kind: str = "order") -> bool:
@@ -1876,8 +1947,193 @@ def _r51_line(r51: dict) -> str:
     return f"row {T1_R51_ROW}'s file {r51['file']}, T1's line 10, on {T1_R51_BASE_FILE}'s command"
 
 
+def _r58_ordered(a) -> bool:
+    """The command row R58 orders, as _t1_r58 holds it: its option set exactly with --captain-ruling R58, none of
+    R58_STACKED's options, and row R58's first cell the captain's order naming the option string."""
+    return (getattr(a, "captain_ruling", None) == T1_R58_ROW
+            and getattr(a, "direction_momentum_damping", None) == T1_R58_DMD
+            and getattr(a, "feng_fraction_mult", None) == T1_MSB_MULT
+            and getattr(a, "direction_momentum", None) in DIRECTION_MOMENTUM_ARMS
+            and all(getattr(a, attr, None) is None for _, attr in R58_STACKED)
+            and _captain_order_names(T1_R58_ROW, T1_R58_OPTION))
+
+
+def _t1_r58(a) -> dict | None:
+    """Row R58's file T1_s2rcMSBm20 (T1's line 11), tested before row R51's route. Returns None unless the command
+    names --captain-ruling R58: every other command is routed as before (--direction-momentum-damping 2.0 under any
+    other ruling is refused by row R51's guard). Under R58 it is refused before anything but the ledger is read unless
+    row R58's first cell is the captain's order naming T1_R58_OPTION and `--captain-ruling R58`, the option set is
+    exactly T1_R58_OPTION_STRING's, none of R58_STACKED's options is given, R1's hold stands, and the command is
+    T1_CANDIDATE_COMMAND (whose own refusals then hold the rest) at the default seed on the test board. Returns the
+    record's values as row R51's route returns its files': the file, the row, its option string, the base file, the
+    multiplier, g_mom's damping, Blood's (None), MS's damping 2.0, the order text and the command."""
+    if getattr(a, "captain_ruling", None) != T1_R58_ROW:
+        return None
+    what = f"row {T1_R58_ROW}'s file {T1_R58_FILE}"
+    if not _captain_order_names(T1_R58_ROW, T1_R58_OPTION):
+        sys.exit(f"{what} is refused: experiments/harness/TRIES.md has no single row {T1_R58_ROW} whose first cell is "
+                 f"the captain's order (\"ruling, no run\") naming {T1_R58_OPTION} and `--captain-ruling {T1_R58_ROW}`")
+    given = (getattr(a, "feng_fraction_mult", None), getattr(a, "direction_momentum", None),
+             getattr(a, "direction_momentum_damping", None))
+    if given != (T1_MSB_MULT, DIRECTION_MOMENTUM_ARMS[0], T1_R58_DMD):
+        sys.exit(f"--captain-ruling {T1_R58_ROW} orders one file, {T1_R58_FILE}: it needs exactly "
+                 f"{T1_R58_OPTION_STRING} on {T1_CANDIDATE_COMMAND}")
+    stacked = [flag for flag, attr in R58_STACKED if getattr(a, attr, None) is not None]
+    if stacked:
+        sys.exit(f"{what} is refused with {', '.join(stacked)}: it is {T1_R51_BASE_FILE}'s command with one change")
+    if not getattr(a, "hold_unbracketed", True):
+        sys.exit(f"{what} is refused with --no-hold-unbracketed: the cells without a group keep R1's hold")
+    if (getattr(a, "feng_groups", FENG_GROUPS_DEFAULT) != "recomputed" or a.seed != harness.BUILD_SEED_OFFSET + 1
+            or a.board is not None):
+        sys.exit(f"{what} changes {T1_R51_BASE_FILE} only: it needs the command {T1_R58_COMMAND} at the default seed "
+                 "on the test board")
+    return {"direction_momentum": a.direction_momentum, "captain_ruling": T1_R58_ROW, "file": T1_R58_FILE,
+            "base_file": T1_R51_BASE_FILE, "option": T1_R58_OPTION, "feng_fraction_mult": float(T1_MSB_MULT),
+            "g_mom_damping": G_MOM_DAMPINGS[0], "held_momentum": None,
+            "direction_momentum_damping": float(T1_R58_DMD), "order": T1_R58_ORDER, "command": T1_R58_COMMAND}
+
+
+def _r54_ordered(a) -> bool:
+    """The command row R54 orders, as _t1_r54 holds it (and has already refused every other use of --late-mix by the
+    time _bet_refusals asks): --late-mix with --captain-ruling R54, no released bet's option, and row R54's first cell
+    the captain's order naming the option."""
+    return (getattr(a, "late_mix", None) in LATE_MIX_CHOICES and getattr(a, "captain_ruling", None) == T1_R54_ROW
+            and getattr(a, "released_bet", None) is None and getattr(a, "bet_strength", None) is None
+            and _captain_order_names(T1_R54_ROW, T1_R54_OPTION))
+
+
+def _late_mix_named_sha(path: Path | None = None) -> str | None:
+    """The sha256 row N64 names for the shares file: the one `shares.json sha256 <hex>` string (LATE_MIX_SHA_NAMED) in
+    the one row N64 of experiments/harness/TRIES.md (TRIES_FILE), in any of its cells (its outcome cell carries it once
+    the step has run). None unless there is exactly one row N64 and exactly one distinct such string in it."""
+    lines = [ln for ln in (path or TRIES_FILE).read_text(encoding="utf-8").splitlines()
+             if ln.startswith(f"| {LATE_MIX_ROW} ")]
+    if len(lines) != 1:
+        return None
+    named = set(LATE_MIX_SHA_NAMED.findall(lines[0]))
+    return next(iter(named)) if len(named) == 1 else None
+
+
+def _late_mix_bytes() -> tuple[bytes | None, str]:
+    """The shares file's bytes as committed at HEAD (feng_relabel.committed_at_head, a `git show`), or None and why:
+    not committed, or the tree's copy missing or not the same bytes."""
+    import feng_relabel
+
+    raw = feng_relabel.committed_at_head(LATE_MIX_SHARES)
+    if raw is None:
+        return None, f"the shares file {LATE_MIX_SHARES.name} of row {LATE_MIX_ROW} is not committed at HEAD"
+    if not LATE_MIX_SHARES.is_file() or LATE_MIX_SHARES.read_bytes() != raw:
+        return None, f"the tree's copy of the shares file {LATE_MIX_SHARES.name} is not the one committed at HEAD"
+    return raw, ""
+
+
+def _late_mix_values(raw: bytes, mix: str) -> dict:
+    """The shares file's fields the build takes, checked: the row (N64), the anchor (--late-mix's value), the pool's
+    own chamber mix it was computed from, the two moved shares (each strictly between 0 and 1) and the moved mix (every
+    category of the chamber config, summing to 1). Refused otherwise."""
+    try:
+        rec = json.loads(raw)
+        own = {str(k): float(v) for k, v in rec["own_shares"].items()}
+        late = {str(k): float(v) for k, v in rec["shares"].items()}
+        cm, blood = float(rec["cm_share_of_heart"]), float(rec["blood_share_of_chamber"])
+        ok = (rec.get("row") == LATE_MIX_ROW and rec.get("late_mix") == mix and own and late
+              and 0.0 < cm < 1.0 and 0.0 < blood < 1.0 and abs(sum(late.values()) - 1.0) <= 1e-9
+              and abs(sum(own.values()) - 1.0) <= 1e-9)
+    except (ValueError, KeyError, TypeError, AttributeError):
+        ok = False
+    if not ok:
+        sys.exit(f"--late-mix {mix} is refused: the shares file is not row {LATE_MIX_ROW}'s step output for {mix} "
+                 "(row, anchor, own mix, the two moved shares and the moved mix)")
+    return {"own_shares": own, "cm_share_of_heart": cm, "blood_share_of_chamber": blood, "late_shares": late}
+
+
+def _t1_r54(a) -> dict | None:
+    """Row R54's file T1_s2rcMSB_LM16 (T1's late-mix line), tested before every other route. Returns None when
+    --late-mix is not given (every command as before). Refused before anything but the ledger and the shares file is
+    read: without --captain-ruling R54 or with any other row; unless row R54's first cell is the captain's order naming
+    T1_R54_OPTION and `--captain-ruling R54`; on any command but T1_s2rcMSB's (--feng-fraction-mult 1.5
+    --direction-momentum all on `t1 --g-mom --base lib3 --feng-groups recomputed`) with one of R54_STACKED's options
+    or R54_SWITCHES, without R1's hold or R2, with --feng-none-ruling, at another seed or on a dry run; unless row N64
+    names exactly one `shares.json sha256 <hex>`, the shares file committed at HEAD (the tree's copy the same bytes)
+    has that sha256 and its fields are the step's. Returns the record's values: MSB's settings, the file, the row, the
+    option, the base file, the shares file's path and sha256, the recorded own mix and the moved shares, the order
+    text and the command."""
+    mix = getattr(a, "late_mix", None)
+    if mix is None:
+        return None
+    what = f"--late-mix {mix}"
+    ruling = getattr(a, "captain_ruling", None)
+    if ruling != T1_R54_ROW:
+        sys.exit(f"{what} is row {T1_R54_ROW}'s file {T1_R54_FILE} alone and needs --captain-ruling {T1_R54_ROW}"
+                 + ("" if ruling is None else f", not {ruling}"))
+    if not _captain_order_names(T1_R54_ROW, T1_R54_OPTION):
+        sys.exit(f"{what} is refused: experiments/harness/TRIES.md has no single row {T1_R54_ROW} whose first cell is "
+                 f"the captain's ruling (\"ruling, no run\") naming {T1_R54_OPTION} and "
+                 f"`--captain-ruling {T1_R54_ROW}`")
+    stacked = [flag for flag, attr in R54_STACKED if getattr(a, attr, None) is not None]
+    stacked += [flag for flag, attr in R54_SWITCHES if getattr(a, attr, False)]
+    if stacked:
+        sys.exit(f"{what} is refused with {', '.join(stacked)}: row {T1_R54_ROW}'s file is {T1_R51_BASE_FILE}'s "
+                 "command with its chamber mix moved, nothing else changed")
+    if (not getattr(a, "hold_unbracketed", True) or getattr(a, "feng_hygiene", None) is False
+            or getattr(a, "feng_none_ruling", None) is not None):
+        sys.exit(f"{what} is refused with --no-hold-unbracketed, --no-feng-hygiene or --feng-none-ruling: R1 and R2 "
+                 f"stand as in {T1_R51_BASE_FILE}")
+    if (getattr(a, "feng_fraction_mult", None) != T1_MSB_MULT
+            or getattr(a, "direction_momentum", None) not in DIRECTION_MOMENTUM_ARMS or not getattr(a, "g_mom", False)
+            or getattr(a, "base", None) != "lib3" or getattr(a, "feng_groups", FENG_GROUPS_DEFAULT) != "recomputed"
+            or a.seed != harness.BUILD_SEED_OFFSET + 1 or a.board is not None):
+        sys.exit(f"{what} moves {T1_R51_BASE_FILE}'s chamber mix only: it needs the command {T1_R54_COMMAND} at the "
+                 "default seed on the test board")
+    sha = _late_mix_named_sha()
+    if sha is None:
+        sys.exit(f"{what} is refused: experiments/harness/TRIES.md has no single row {LATE_MIX_ROW} naming exactly one "
+                 "`shares.json sha256 <hex>`")
+    raw, why = _late_mix_bytes()
+    if raw is None:
+        sys.exit(f"{what} is refused: {why}")
+    if hashlib.sha256(raw).hexdigest() != sha:
+        sys.exit(f"{what} is refused: the committed shares file's sha256 is not the one row {LATE_MIX_ROW} names")
+    try:
+        shares_file = LATE_MIX_SHARES.resolve().relative_to(REPO_ROOT.resolve()).as_posix()
+    except ValueError:
+        shares_file = str(LATE_MIX_SHARES)
+    return {"direction_momentum": a.direction_momentum, "captain_ruling": T1_R54_ROW, "file": T1_R54_FILE,
+            "base_file": T1_R51_BASE_FILE, "option": T1_R54_OPTION, "late_mix": mix,
+            "feng_fraction_mult": float(T1_MSB_MULT), "g_mom_damping": G_MOM_DAMPINGS[0], "held_momentum": None,
+            "direction_momentum_damping": float(harness.B0_DAMPING), "shares_file": shares_file,
+            "shares_sha256": sha, "shares_row": LATE_MIX_ROW, **_late_mix_values(raw, mix), "order": T1_R54_ORDER,
+            "command": T1_R54_COMMAND}
+
+
+def _t1_late_mix_shares(own: dict, r54: dict) -> tuple[dict, dict]:
+    """Row R54's shares in place of the pool's own: the pool's own chamber mix (`own`, harness.t1_chamber_shares as
+    every lib3 file takes it) must be the one row N64's step recorded (LATE_MIX_TOL); it is then moved by
+    t1_scope.with_share exactly as --cm-share and --blood-share move a mix (cardiomyocytes of heart cells, then blood
+    of chamber cells, the other categories in proportion), and the result must be the step's recorded shares
+    (LATE_MIX_TOL). Returns the shares and the record's late-mix part (shares and the file's hash; no count)."""
+    rec_own = r54["own_shares"]
+    if set(own) != set(rec_own) or any(abs(float(own[c]) - rec_own[c]) > LATE_MIX_TOL for c in own):
+        sys.exit(f"--late-mix is refused: the pool's own chamber mix is not the one row {LATE_MIX_ROW}'s step recorded")
+    moved = t1_scope.with_share(own, "cm", r54["cm_share_of_heart"])
+    moved = t1_scope.with_share(moved, "blood", r54["blood_share_of_chamber"], within=list(moved))
+    want = r54["late_shares"]
+    if set(moved) != set(want) or any(abs(moved[c] - want[c]) > LATE_MIX_TOL for c in moved):
+        sys.exit(f"--late-mix is refused: the moved shares are not row {LATE_MIX_ROW}'s recorded shares")
+    heart = t1_scope.load_spec().heart
+    return moved, {"row": LATE_MIX_ROW, "anchor": r54["late_mix"], "shares_file": r54["shares_file"],
+                   "shares_sha256": r54["shares_sha256"], "own_shares": dict(own),
+                   "own_cm_share_of_heart": t1_scope.share_of(own, "cm", heart),
+                   "own_blood_share_of_chamber": float(own.get("blood", 0.0)),
+                   "cm_share_of_heart": r54["cm_share_of_heart"],
+                   "blood_share_of_chamber": r54["blood_share_of_chamber"],
+                   "rule": "library 3's own chamber mix moved by vec.t1_scope.with_share, cardiomyocytes of heart "
+                           "cells first, then blood of chamber cells, the other categories in proportion (the order "
+                           "--cm-share and --blood-share take); quotas at the count rule, never weights"}
+
+
 def _t1_ms_step(ref, library: np.ndarray, directions, fraction: float, groups, held, seed: int,
-                damping: float | None = None):
+                damping: float | None = None, option_note: str | None = None):
     """Candidate MS's step on the drawn population, before g_mom: on the cells whose label's group has a direction
     (build_submission's covered test, `groups.get(label) in directions`), B0's per-category damped mean momentum
     (`t1_scope.momentum_shift` at harness.B0_DAMPING with its defaults: eps 0.5, min_cells 20, keep_depth; the held
@@ -1892,7 +2148,8 @@ def _t1_ms_step(ref, library: np.ndarray, directions, fraction: float, groups, h
     damping (row R51's files only; None: harness.B0_DAMPING, the step and record exactly as before): the momentum's
     damping, passed to momentum_shift in place of harness.B0_DAMPING (file T1_s2rcMSBm10's 1.0; every other R51 file
     passes B0's value), nothing else changed; the record's damping field names it and, when it is not B0's, a
-    damping_option field says so."""
+    damping_option field says so: `option_note` where it is given (row R58's file T1_s2rcMSBm20's 2.0, T1_R58_NOTE),
+    else row R51's text as before."""
     portions = sorted(set(library.tolist()) - {T1_DISSECTED_LIBRARY})
     if portions != list(T1_MS_FIT_LIBRARIES):
         sys.exit(f"--direction-momentum is refused: E10.5's libraries other than {T1_DISSECTED_LIBRARY} are "
@@ -1936,8 +2193,9 @@ def _t1_ms_step(ref, library: np.ndarray, directions, fraction: float, groups, h
                          f"({sorted(directions)})",
               "practice_arm": "experiments/t1_m1/ms_read.py m1rc_gmom_mom (row T65), whose fit runs on the practice "
                               "task's own stages"}
-    if damping is not None and ms_damping != harness.B0_DAMPING:  # row R51's T1_s2rcMSBm10 only
-        record["damping_option"] = (f"--direction-momentum-damping {ms_damping:.1f} (row {T1_R51_ROW}'s file "
+    if damping is not None and ms_damping != harness.B0_DAMPING:  # row R51's T1_s2rcMSBm10, row R58's T1_s2rcMSBm20
+        record["damping_option"] = (option_note if option_note is not None else
+                                    f"--direction-momentum-damping {ms_damping:.1f} (row {T1_R51_ROW}'s file "
                                     f"{T1_R51_M10_FILE}): MS's own damping in place of harness.B0_DAMPING "
                                     f"({float(harness.B0_DAMPING):g}); nothing else changed")
     return step, record
@@ -2284,17 +2542,39 @@ def _bet_median_library(pool, base_shares: dict, bet_pop, n: int, seed: int) -> 
             "against": "the none file's draw at the same seed (library 3's cells at their own chamber mix)"}
 
 
+def _late_mix_median_library(pool, own_shares: dict, drawn: list, n: int, seed: int) -> dict:
+    """docs/DATA_POLICY.md 2026-11-04 (f)(3) for row R54's file: the median library of the cells its build drew (taken
+    in its post_cells, once) over that of T1_s2rcMSB's draw at the same seed (`reweight` on the same pool at the pool's
+    own chamber mix, the call build_submission makes on that file's path). A ratio of two medians of released cells,
+    no count; a shift beyond 5% goes to the captain by (f)(3), which row R54's named exception covers."""
+    if len(drawn) != 1:
+        raise ValueError("row R54's build drew its cells more or less than once")
+    spec = t1_scope.load_spec()
+    t1_scope.classify(pool, source="E10.5_RNA", spec=spec)  # in place and idempotent, as build_submission does
+    base, _ = t1_scope.reweight(pool, own_shares, n, seed, fallback=spec.fallbacks("E10.5_RNA"), spec=spec)
+    return {"median_library_over_msb_draw": float(drawn[0]) / t1_bets.median_library(base),
+            "median_library_against": "T1_s2rcMSB's draw at the same seed (library 3's cells at their own chamber mix)"}
+
+
 def build_t1(a) -> dict:
     feng_groups = getattr(a, "feng_groups", FENG_GROUPS_DEFAULT)
+    # None unless --late-mix is given (row R54's file), tested before every route below, row R51's included, none of
+    # which then sees it; then None unless the command names --captain-ruling R58 (row R58's file), tested before row
+    # R51's route. Their refusals read nothing but the ledger (and, for R54, its committed shares file)
+    r54 = _t1_r54(a)
+    r58 = None if r54 is not None else _t1_r58(a)
     # None unless the command is one of row R51's seven files (T1's line 10), tested before every route below, none of
     # which then sees it: its values stand in for theirs; its refusals read nothing but the ledger
-    r51 = _t1_r51(a)
-    if r51 is None:
+    r51 = _t1_r51(a) if r54 is None and r58 is None else None
+    line = r51 if r58 is None else r58  # row R51's or row R58's values, which stand in for the routes below
+    if r54 is not None:  # T1_s2rcMSB's steps exactly: MS's step at B0's damping, the multiplier 1.5, g_mom at 0.5
+        hm, ms, candidate = None, r54, r54
+    elif line is None:
         hm = _t1_hm(a)  # None unless --held-momentum is given (Blood's momentum); its refusals read only the ledger
         ms = _t1_ms(a)  # None unless --direction-momentum is given (candidate MS, row R23); its refusals read nothing
         candidate = _t1_candidate(a)  # None unless --g-mom-damping or --feng-fraction-mult is given; reads nothing
-    else:  # MS's step always; Blood's in the two H files; the multiplier and g_mom's damping from row R51's values
-        hm, ms, candidate = (None if r51["held_momentum"] is None else r51), r51, r51
+    else:  # MS's step always; Blood's in the two H files; the multiplier and g_mom's damping from the row's values
+        hm, ms, candidate = (None if line["held_momentum"] is None else line), line, line
     pooled = _t1_pooled(a)  # None unless --base pooled --feng-groups recomputed --captain-ruling R37; likewise
     _bet_refusals(a)  # nothing at all unless --released-bet (or one of its two companions) is given
     if feng_groups == "none":
@@ -2351,6 +2631,11 @@ def build_t1(a) -> dict:
             rows, mid_record = _t1_mid_rows(ref, in3, a.seed)
             pool = ref[rows].copy()
         shares = harness.t1_chamber_shares(harness._shallow(pool), "E10.5_RNA")  # the pool's own chamber mix
+    late_own = late_record = None
+    if r54 is not None:  # row R54's file: the pool's own mix moved to row N64's shares (its route refused --cm-share
+        # and --blood-share, so row R6's refusal of those on --base lib3 is not met and stays as it is)
+        late_own = shares
+        shares, late_record = _t1_late_mix_shares(late_own, r54)
     if a.cm_share is not None:
         shares = t1_scope.with_share(shares, "cm", a.cm_share)
     if a.blood_share is not None:  # blood's share of all chamber cells, the other categories in proportion
@@ -2393,12 +2678,23 @@ def build_t1(a) -> dict:
     if ms is not None:  # candidate MS (refused above unless the recomputed command with --g-mom): the same draw, then
         # the momentum and the atlas step on the covered cells, then g_mom's hook, all inside post_cells. Under row
         # R26 (the pair) the same calls, with `fraction` and g_mom's damping candidate B's from _t1_candidate above;
-        # under row R51 the same calls with its values, and MS's own damping passed to the step
+        # under row R51 or R58 the same calls with its values, and MS's own damping passed to the step (row R58's with
+        # its own record text); under row R54 R26's calls exactly, on the moved shares
         ms_step, ms_record = _t1_ms_step(ref, library, directions, fraction, groups, held, a.seed,
-                                         **({} if r51 is None else {"damping": r51["direction_momentum_damping"]}))
+                                         **({} if line is None else {"damping": line["direction_momentum_damping"]}),
+                                         **({} if r58 is None else {"option_note": T1_R58_NOTE}))
         g_mom_hook = within_type["post_cells"]
+        late_drawn = []
+
+        def ms_post(pop):
+            if r54 is not None:  # row R54's file: the drawn cells' median library, for its (f)(3) record
+                late_drawn.append(t1_bets.median_library(pop))
+            return g_mom_hook(ms_step(pop))
+
         sub, rep = t1_scope.build_submission(pool, board, shares, n, a.seed, held_flat=held, ref_source="E10.5_RNA",
-                                             herd=a.herd, post_cells=lambda pop: g_mom_hook(ms_step(pop)))
+                                             herd=a.herd, post_cells=ms_post)
+        if r54 is not None:  # docs/DATA_POLICY.md 2026-11-04 (f)(3): the draw's median library over T1_s2rcMSB's draw
+            late_record = {**late_record, **_late_mix_median_library(pool, late_own, late_drawn, n, a.seed)}
     elif bet == "advance":
         sub, rep, bet_record, bet_pop = _t1_advance(ref, pool, library != T1_DISSECTED_LIBRARY, shares, n, a.seed,
                                                     held, board, within_type["post_cells"], a.bet_strength)
@@ -2459,6 +2755,13 @@ def build_t1(a) -> dict:
                                "applied_fraction": fraction}
         if hm_record is not None:
             rec["t1_candidate"]["held_momentum_step"] = hm_record
+    if r58 is not None:  # row R58's file, in place of the fields above: MS's record as in every MS file
+        rec["t1_candidate"] = {**r58, "momentum": ms_record, "calendar_fraction": calendar,
+                               "applied_fraction": fraction}
+    if r54 is not None:  # row R54's file, in place of the fields above; its late mix in a field of its own
+        rec["t1_candidate"] = {**{k: v for k, v in r54.items() if k not in ("own_shares", "late_shares")},
+                               "momentum": ms_record, "calendar_fraction": calendar, "applied_fraction": fraction}
+        rec["late_mix"] = late_record
     if pooled is not None:  # written only for row R37's file, so every other file's record is as before
         rec["base_exception"] = pooled
     if mid_record is not None:  # likewise: shares only, no cell number
@@ -3690,7 +3993,19 @@ def build_parser() -> argparse.ArgumentParser:
                                 + T1_R51_COMMAND.format(option=T1_R51_FILES[T1_R51_M10_FILE][0])
                                 + f" at the default seed on the test board only, while row {T1_R51_ROW}'s first cell "
                                 "is the captain's ruling naming that option string; takes the literal value 1.0 only, "
-                                "and is refused with every other command")
+                                "and is refused with every other command. Row "
+                                f"{T1_R58_ROW}'s file {T1_R58_FILE}: the literal value {T1_R58_DMD}, only as "
+                                f"{T1_R58_COMMAND} at the default seed on the test board, while row {T1_R58_ROW}'s "
+                                "first cell is the captain's order naming that option string")
+            p.add_argument("--late-mix", choices=LATE_MIX_CHOICES, default=None,
+                           help=f"row {T1_R54_ROW}'s file {T1_R54_FILE} (off by default): T1_s2rcMSB's command with "
+                                "library 3's own chamber mix moved to the shares row "
+                                f"{LATE_MIX_ROW}'s step commits ({LATE_MIX_SHARES_PATH}: "
+                                "cardiomyocytes of heart cells, then blood of chamber cells, the other categories in "
+                                f"proportion), only as {T1_R54_COMMAND} at the default seed on the test board, while "
+                                f"row {T1_R54_ROW}'s first cell is the captain's ruling naming "
+                                f"{T1_R54_OPTION} and the shares file committed at HEAD has the sha256 row "
+                                f"{LATE_MIX_ROW} names (`shares.json sha256 <hex>`); refused with every other command")
             p.add_argument("--bet-strength", type=float, default=None,
                            help="with --released-bet: lambda (share_trend) or tau (advance), one of row T61's values")
             p.add_argument("--captain-ruling", default=None,
@@ -3722,7 +4037,11 @@ def build_parser() -> argparse.ArgumentParser:
                                 f"{T1_CANDIDATE_COMMAND} (T1's line 10, each one change to {T1_R51_BASE_FILE}: "
                                 + "; ".join(f"{f} `{v[0]}`" for f, v in T1_R51_FILES.items())
                                 + f"), while that row's first cell is the captain's ruling naming the set's option "
-                                f"string and `--captain-ruling {T1_R51_ROW}` as whole backticked strings")
+                                f"string and `--captain-ruling {T1_R51_ROW}` as whole backticked strings. With "
+                                f"{T1_R58_OPTION_STRING}: {T1_R58_ROW}, the captain's order for {T1_R58_FILE}. With "
+                                f"--feng-fraction-mult {T1_MSB_MULT:g} --direction-momentum all --late-mix "
+                                f"{LATE_MIX_CHOICES[0]}: {T1_R54_ROW}, the captain's named exception for "
+                                f"{T1_R54_FILE}")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim", "core_trim", "organ_scope"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "
