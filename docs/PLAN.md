@@ -14425,3 +14425,30 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the organisers would object, a possible voiding of the heart entry or more if they did, and a small best case.
     **The captain's pick, verbatim:** "No ruling (Recommended)": T1's files stay out of heart models and the
     RNA-transfer test is not run.
+- 2026-11-25 (ff), the heart challenge, the embryo design, and a correction to entry (ee) (state at 04:35 UTC,
+  2026-11-25). Written by the AI assistant, recused on the heart's scope and size and on the embryo's occupancy term
+  and shape forms.
+  - **Heart challenge** (`HEART_STEPON_challenge.md`): five of the seven files kept with fixes (OTS175, OTKP125,
+    OTP15, OTP10, OTS20), two struck (OTK15, OTK10: about +0.007 together). Every condition is read once, at the first
+    moment all its files have headlines or at a cut-off fixed now (2026-11-26 06:00 UTC; for OTKP125, coded only after
+    its condition holds, 01:00 UTC), and a condition read false is not read again; one ruling row per file, since a
+    shared row would let the builder take form and strength pairs no one said yes to (the one blocker-class point);
+    the exception for files at a new strength names H34's stop, R29's cap at OTS10 and its no-other-value clause, and
+    the caps of R49 and R52. Its price for the five: about +0.06 heart points expected (+0.03 overall), best case
+    about +0.3. Setting the RNA lead aside stays right; the design's window reason for it was wrong.
+  - **A correction to the AI assistant's question of entry (ee).** Its rule quote ("Task 1 only, because E8.5 lies
+    inside the Task 2 heart window") belongs to the outside-atlas line. The record's working answer A15
+    (`docs/ORGANIZER_QUESTIONS.md`) reads released and unlocked official files as usable across tasks, the windows
+    binding outside data (odds on record 0.75 to 0.8), under the team's own bar of no new cross-modal input unless the
+    organisers answer; the captain lifted that bar for XPC (row R56: the organisers' RNA at E8.5, E9.5 and E10.5 as
+    input to a heart file). So its odds of 0.3 to 0.5 overstated the risk on record (about 0.2 to 0.25). It also gave
+    a recommended option, where heart files on this line rest on the captain's exception on the heart's scope and size
+    and the AI assistant gives no view. The question goes to the captain again, corrected, without one.
+  - **Embryo design** (`EMBRYO_STEPON_design.md`): three exposure notes with no value (lines 13 and 14 of an earlier
+    embryo challenge file; rows E47a and E48 as the blind ledger prints them, which give upload history of 18 to 20
+    November; the memory index line injected into agents, whose stale list of 20 November candidates is now removed).
+    Five files, each needing the captain's exception on the overlay's form, each conditioned on Ot23's headline
+    strictly above O's (rows 4 and 5 on rows 2 and 3). Applied to the headline on record (entry (n)), no condition
+    holds: none of the five would be sent, so none is built and no challenger is spent on them. The regional-motion
+    lead set aside: its parts were read before (rows E11, E36, E41b, E42 and E45), and its one unread part failed its
+    premise at row E53's gate.
