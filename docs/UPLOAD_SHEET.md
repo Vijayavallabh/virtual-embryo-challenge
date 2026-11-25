@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-25, 12:41 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-25, 12:45 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -12,15 +12,15 @@ order. This sheet holds no score: where a file waits on a condition, the conditi
 Twenty-one uploads were used on 2026-11-24: four before the limit was lifted (decision log 2026-11-24 (nn)) and
 seventeen after (decision log 2026-11-24 (rr), (vv), (yy), (aaa), (bbb), (ddd) and (jjj)). With no limit (row R42,
 decision log 2026-11-24 (pp)), every due file can go now and nothing waits for room. The files that wait on a score
-are listed below. `T3_c2_s2_g2.h5ad` keeps its place after every queued file, by its rule. Between boards the captain
-decides; by the challenge's formula a point on T1 or T3 counts twice a point on the heart or the embryo board.
+are listed below. Between boards the captain decides; by the challenge's formula a point on T1 or T3 counts twice a
+point on the heart or the embryo board.
 
 **Due now (14), in the order of each board's table below:**
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcMSBm10.h5ad`,
   `T1_s2rcB25H20.h5ad`, `T1_s2rcMSBH10.h5ad`, `T1_s2rcMSB_LM16.h5ad`, `T1_s2rcMSBm20.h5ad`, `T1_s2rcMS20d10.h5ad`,
   `T1_s2rcMS20H05.h5ad`, `T1_s2rcMS20d20.h5ad`, `T1_s2rcMS20m10.h5ad` (together), `T1_s2rcB25MSH05.h5ad`
-- T3: none (every built T3 file is uploaded but `T3_c2_s2_g2.h5ad`, last of all)
+- T3: none (every built T3 file is uploaded)
 - Embryo: none (every built embryo file is uploaded)
 - Heart: none (every built heart file is uploaded)
 
@@ -32,10 +32,8 @@ T1's table: `T1_s2rcMS20d15.h5ad` (on MS20d10's and MS20d20's headlines), `T1_s2
 is reached and can go with the due files (the main session's reading of the captain's words that kept it; the captain
 may place it anywhere).
 
-**Last of all (1):** `T3_c2_s2_g2.h5ad`. By its rule (`docs/S2_RULES.md`, amendment of 2026-11-24 on T3's third search
-line, "Place and cost"; row R41) and the captain's default-place words "yes, T3_c2_s2_g2", it goes after every file
-queued at that yes, across boards. With no limit on uploads that place takes nothing from another file; the captain's
-words "yes, T3_c2_s2_g2 ahead of" and a queued file's name (for example `T3_k23_s2_e4`) would send it with the due files.
+**Last of all (0):** none. `T3_c2_s2_g2.h5ad` went up on 2026-11-25, ahead of the queued T1 files, by the captain's
+own placing (decision log 2026-11-25 (kk)).
 
 **In work, not built (by the captain's yes of 2026-11-24; T1 rows R44 to R46, decision log 2026-11-24 (ss)):** Heart:
 The composition files of row R50 are not built: the line ended at its screening. The embryo RS file (row R57) is not
@@ -48,9 +46,9 @@ passed) are built (decision log 2026-11-25 (dd)). T1 line 12 (row R60) and row R
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)), and twenty-one on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy), (aaa), (bbb),
-(ddd) and (jjj)). Thirteen more were uploaded and reported on 2026-11-25 (decision log 2026-11-25 (d), (e), (g), (h),
-(k), (m), (n), (ii) and (jj)). The boards' best headlines stand with `T1_s2rcMS20.h5ad` (MS at the atlas multiplier
-2.0), `T3_c2_s2.h5ad` (C2), `T2heart_organ_ts125_tk_half.h5ad` (OTK125) and `T2embryo_s2x_ov.h5ad` (O).
+(ddd) and (jjj)). Fourteen more were uploaded and reported on 2026-11-25 (decision log 2026-11-25 (d), (e), (g), (h),
+(k), (m), (n), (ii), (jj) and (kk)). The boards' best headlines stand with `T1_s2rcMS20.h5ad` (MS at the atlas
+multiplier 2.0), `T3_c2_s2.h5ad` (C2), `T2heart_organ_ts125_tk_half.h5ad` (OTK125) and `T2embryo_s2x_ov.h5ad` (O).
 
 Four files are skipped by the captain's words of 2026-11-23 and 2026-11-24: they hold no place in any order below and
 stand in a section of their own at the end.
@@ -105,7 +103,6 @@ Never uploaded: `builds/T1_s2.h5ad`.
 
 | Order | File | sha256 | Condition | Data used |
 |---|---|---|---|---|
-| last of all | `T3_c2_s2_g2.h5ad` (the third search's one file: C2 with the Gata4 table at weight 2) | `014d2bf9d8ba7fdc56dcfba2a3b8aa77f0ea20bb806ebc2c1193e483d62712ac` | none; by its rule (row R41) it goes after every other file in this sheet, across boards (see 'Last of all' above), unless the captain places it ahead of a named file | released challenge data only: wild-type E8.75 cells and the released knockout tables transfer_mab21l2_all and gata4_pooled, in C2's size-held product, gata4_pooled at weight 2 (applied powers 0.6159 and 1.2318; C2: c on both). No outside data, no gene set. |
 
 ## Task 2, embryo
 

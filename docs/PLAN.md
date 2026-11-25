@@ -14512,3 +14512,12 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the board's best. No rule names a further file on these headlines (the third round's T3 files were read false at
     placement, entry (hh)). Every built T3 file is uploaded but `T3_c2_s2_g2.h5ad`, which goes last of all by its
     rule. Standing unchanged: 203.935.
+- 2026-11-25 (kk), the captain reports one more T3 headline and the rule is applied by its letter (state at 12:45 UTC,
+  2026-11-25). Written by the AI assistant, which records the headline only.
+  - **The paste:** T3:bcatenin `T3_c2_s2_g2.h5ad` 63.79 (shown as submitted 2026-11-25 12:43). Its sha256 on disk
+    matches its sheet row. The paste's per-metric lines, rank and file size are not recorded or used. It went up ahead
+    of the queued T1 files, the captain's own placing; with no limit on uploads that place took nothing from another
+    file.
+  - **Its line's rule by its letter** (`docs/S2_RULES.md`, T3's third search line): its headline is not strictly above
+    C2's (63.94), so C2 holds the line's best and the line ends there. No rule names a further T3 file. Every built T3
+    file is uploaded. Standing unchanged: 203.935.
