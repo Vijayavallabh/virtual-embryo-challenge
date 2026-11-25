@@ -14633,3 +14633,18 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     (no value; used for nothing).
   - **What follows:** no embryo question goes to the captain from this round; the embryo has no viable big swing
     inside the rules.
+- 2026-11-25 (tt), the T3 pathway-database design and its challenge (state at 14:23 UTC, 2026-11-25). Written by the
+  AI assistant, which gives no view on which genes a T3 file moves.
+  - **The design** (`T3_BIO_design.md`, under the captain's waiver of entry (pp)): signed pathway sources dropped
+    (their signs come from loss-of-function statements, odds 0.35 forbidden); the legal form is "the database picks
+    the genes, C2's own tables pick the sign": a pathway-weighted re-ranking of C2's factor over the panel genes the
+    kept sources reach, size held, no closed lever; files PW1 and PW2 with exact commands and a target-free G0. Its
+    price: 0.30 to beat C2, best +4, typical +0.6.
+  - **The challenge** (`T3_BIO_challenge.md`): P1 FIX (the signs stay C2's and the size is held, but G0 misses the
+    severity gate of row N4, where a flip moves 5 to 10 points; G0c cannot fail; G0d leaves n open; the run-folder and
+    identity gates are missing); P2 STRIKE; WikiPathways STRIKE (its mouse map cites KEGG and lists target genes).
+    Surviving sources, with its odds that an organiser counts the use as forbidden: GO at 0.06 with an allow-list
+    (GO:0060070 by is_a and part_of only, both held-out genes kept out; the design's "not mutant-phenotype derived" is
+    false: 76 of its 104 kept genes rest on inferred codes only); Reactome, mouse events only, 0.07 (0.25 as written,
+    since human binding events carry target-gene DNA). Its honest price: about 0.15 to beat C2, typical +0.4, best
+    +2.5, expected value about zero. The question goes to the captain now.
