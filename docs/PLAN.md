@@ -15121,3 +15121,15 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     ea59b9dc59af...; **`T1_s2rcMSBm10H05.h5ad`** 58c1d94f7050...; **`T1_s2rcMSBm10d15.h5ad`** d3098c20fd98...;
     **`T1_s2rcMSBm10H10.h5ad`** 7e2b3964e33f.... All four due now, sent at once (row R73). Data used: released
     challenge data and the outside heart atlas on recomputed groups (GEO GSE193346, register row X002).
+- 2026-11-25 (iiii), refinement round 3 on the T2 heart, the T2 embryo and T3 begins (state at 22:05 UTC). Written by
+  the AI assistant, which designs none of it.
+  - **The captain's words:** "I definitely want improvements in T2 Heart, T2 Embryo, T3 at all costs." The AI
+    assistant's reading, told to the captain: it widens effort and compute, not permissions; no organisers' rule is
+    lifted, scores still choose and never compute, and a closed lever moves only with the captain's named exception,
+    file by file.
+  - **The round** (`lift8/round_1125_gap/TASK_ref3.md`): one score-blind designer per board names up to six one-step
+    refinements around the board's banked file, spread for the chance that at least one beats it (row R22's
+    hill-climb), each with its send rule, evidence, closed-lever status and price; a cold challenger per board; one
+    short question per board to the captain (rows R74, R75 and R76; the main session recused on the heart's scope and
+    size and on the embryo's occupancy term and shape forms puts those with no recommendation); engineers, independent
+    reviews and DGX builds by about 04:00 UTC; a second step after the headlines, before the 11:59 UTC deadline.
