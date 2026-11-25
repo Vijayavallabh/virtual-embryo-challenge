@@ -1,0 +1,178 @@
+{
+ "row": "N64",
+ "commit": "adc86b1ff12ffa1691eeb2870b58ec9d05b66eb0",
+ "shares_json": {
+  "row": "N64",
+  "late_mix": "e15_17",
+  "file": "T1_s2rcMSB_LM16",
+  "own_shares": {
+   "blood": 0.18229961403823713,
+   "cm": 0.19863567004757204,
+   "endocardium": 0.368099811507046,
+   "epicardium": 0.20114890943362354,
+   "vascular_endothelium": 0.04981599497352123
+  },
+  "own_cm_share_of_heart": 0.2429198682766191,
+  "own_blood_share_of_chamber": 0.18229961403823713,
+  "cm_share_of_heart": 0.4420186803717552,
+  "blood_share_of_chamber": 0.14091408481885717,
+  "shares": {
+   "cm": 0.3797320225543304,
+   "endocardium": 0.28502686873460314,
+   "epicardium": 0.1557535266603867,
+   "vascular_endothelium": 0.03857349723182267,
+   "blood": 0.14091408481885717,
+   "progenitor": 0.0,
+   "pericardium": 0.0,
+   "pharyngeal": 0.0,
+   "surrounding": 0.0
+  },
+  "anchor": {
+   "stages": [
+    "E15.5",
+    "E16.5",
+    "E17.5"
+   ],
+   "cm_share_of_heart": 0.8255215388783528,
+   "blood_share_of_chamber": 0.0820691370305894,
+   "mean_day": 16.454986321810495
+  },
+  "weight": 0.3358529964501984,
+  "reference_day": 10.5,
+  "test_day": 12.5,
+  "formula": "logit s(12.5) = logit s_lib3 + 2 / (t_A - 10.5) x (logit s_A - logit s_lib3), for s = cardiomyocytes of heart cells and s = blood of chamber cells; s_A the anchor's pooled share, t_A its cell-weighted mean day over its chamber cells; then t1_scope.with_share(own, 'cm', s_cm) and with_share(that, 'blood', s_blood, within=list(that))",
+  "map": {
+   "heart": [
+    "r_cm",
+    "r_endocardial_ec",
+    "r_vascular_ec",
+    "r_ec_ambiguous",
+    "r_lymphatic",
+    "r_epicardial"
+   ],
+   "blood": [
+    "r_blood",
+    "r_immune"
+   ],
+   "out": [
+    "r_mesenchyme",
+    "r_mural",
+    "r_neural_crest",
+    "r_hepatic",
+    "r_epithelial"
+   ],
+   "dropped": [
+    "r_unassigned"
+   ],
+   "rule": "configs/t1_chamber_classes.yaml rule 3: r_mesenchyme and r_mural carry names that do not say they are chamber tissue and their evidence is split (the relabeller defines r_mesenchyme by aSHF, pSHF, aPHM, pPHM, ST and Pericardium markers, outside T1's chamber, and through its late genes E14.5 fibroblasts), so rule 3's default, surrounding, holds; r_blood and r_immune are T1's blood category; r_unassigned is dropped"
+  },
+  "inputs": {
+   "E10.5": {
+    "file": "T1/E10.5_RNA.h5ad",
+    "sha256": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c"
+   },
+   "chamber_config": {
+    "file": "configs/t1_chamber_classes.yaml",
+    "sha256": "fa627bb9d6f29f4b6ac9eac8f7897cfb2de66b39b4967df0c7465c7ed6664970"
+   },
+   "late_manifest": {
+    "file": "experiments/external/results/feng_relabel_late/MANIFEST.json",
+    "row": "N57",
+    "sha256": "0ef7edf43e113c84ff892a8e5f49f97ccae58d876c8fae8ba50d87468e4a6d1a"
+   },
+   "early_manifest": {
+    "file": "experiments/external/results/feng_relabel/MANIFEST.json",
+    "row": "N54",
+    "sha256": "2a3e7200299bf2da05223a60bb910bbda8fcd1785375548e28aafdd006c93cad",
+    "use": "the change transfer, reported only"
+   },
+   "script": {
+    "file": "experiments/t1_scope/late_mix.py",
+    "sha256": "87f373382be45440077f04c934d9e4c4a93f942f52605b93e9d51b7be484413c"
+   }
+  },
+  "commit": "adc86b1ff12ffa1691eeb2870b58ec9d05b66eb0",
+  "tree_clean": true
+ },
+ "shares_sha256": "e07457c6d34ddacb640f777f450669ddc0f85f643e26802a2a4f7c8b6572db78",
+ "design_map": {
+  "anchor": {
+   "cm_share_of_heart": 0.6947104423164615,
+   "blood_share_of_chamber": 0.06997455470737914,
+   "mean_day": 16.48261238337574,
+   "heart_cells": 4386,
+   "blood_cells": 330,
+   "chamber_cells_by_stage": {
+    "E15.5": 1689,
+    "E16.5": 1420,
+    "E17.5": 1607
+   }
+  },
+  "weight": 0.3343021195151344,
+  "cm_share_of_heart": 0.38181560292065836,
+  "blood_share_of_chamber": 0.1342403622503573
+ },
+ "change_transfer": {
+  "rule3_map": {
+   "feng_cm_share_of_heart": {
+    "E9.5": 0.9079118028534371,
+    "E14.5": 0.9136504653567735
+   },
+   "feng_blood_share_of_chamber": {
+    "E9.5": 0.10867052023121387,
+    "E14.5": 0.03396603396603397
+   },
+   "cm_share_of_heart": 0.2481544108236918,
+   "blood_share_of_chamber": 0.11938970806935693
+  },
+  "design_map": {
+   "feng_cm_share_of_heart": {
+    "E9.5": 0.9020618556701031,
+    "E14.5": 0.8017241379310345
+   },
+   "feng_blood_share_of_chamber": {
+    "E9.5": 0.10804597701149425,
+    "E14.5": 0.02992957746478873
+   },
+   "cm_share_of_heart": 0.1875461505697704,
+   "blood_share_of_chamber": 0.11426374269972275
+  }
+ },
+ "t72_bar_c": {
+  "own_cm_share_of_heart": 0.2429198682766191,
+  "moved_cm_share_of_heart": 0.4420186803717552,
+  "logit_midpoint": 0.3351784891147517,
+  "margin": 0.03,
+  "threshold": 0.3651784891147517
+ },
+ "recomputation": {
+  "largest_difference": 5.551115123125783e-17,
+  "tolerance": 1e-09,
+  "values": {
+   "own_shares": {
+    "cm": 0.19863567004757204,
+    "endocardium": 0.36809981150704607,
+    "epicardium": 0.20114890943362354,
+    "vascular_endothelium": 0.04981599497352123,
+    "blood": 0.18229961403823713
+   },
+   "anchor_cm": 0.8255215388783528,
+   "anchor_blood": 0.0820691370305894,
+   "mean_day": 16.454986321810495,
+   "weight": 0.3358529964501984,
+   "cm_share_of_heart": 0.44201868037175523,
+   "blood_share_of_chamber": 0.14091408481885717,
+   "shares": {
+    "cm": 0.3797320225543304,
+    "endocardium": 0.28502686873460314,
+    "epicardium": 0.15575352666038667,
+    "vascular_endothelium": 0.038573497231822663,
+    "blood": 0.14091408481885717,
+    "progenitor": 0.0,
+    "pericardium": 0.0,
+    "pharyngeal": 0.0,
+    "surrounding": 0.0
+   }
+  }
+ }
+}

@@ -1,0 +1,11 @@
+Row N64 (step 0 of row R54's late-mix line; target-free, not a try), commit adc86b1ff12ffa1691eeb2870b58ec9d05b66eb0
+shares.json sha256 e07457c6d34ddacb640f777f450669ddc0f85f643e26802a2a4f7c8b6572db78  (row N64 names it as `shares.json sha256 <hex>`)
+library 3's own mix: cardiomyocytes 0.242920 of heart cells, blood 0.182300 of chamber cells
+anchor (Feng permitted CD1, E15.5 to E17.5, rule-3 map): cardiomyocytes 0.825522, blood 0.082069, mean day 16.4550; weight 0.335853
+moved (the file's): cardiomyocytes 0.442019 of heart cells, blood 0.140914 of chamber cells
+moved mix: cm 0.379732, endocardium 0.285027, epicardium 0.155754, vascular_endothelium 0.038573, blood 0.140914
+reported, deciding nothing: the design's map (r_mesenchyme and r_mural in heart) gives cardiomyocytes 0.381816 and blood 0.134240
+reported, deciding nothing: the change transfer (Feng E9.5 -> E14.5 at 2/5, rule3_map) gives cardiomyocytes 0.248154 and blood 0.119390
+reported, deciding nothing: the change transfer (Feng E9.5 -> E14.5 at 2/5, design_map) gives cardiomyocytes 0.187546 and blood 0.114264
+row T72's bar (c): the logit midpoint of 0.242920 and 0.442019 is 0.335178; plus 0.03: 0.365178
+independent recomputation: largest difference 5.55e-17 (tolerance 1e-09)

@@ -1,0 +1,93 @@
+{
+ "anchor": {
+  "blood_share_of_chamber": 0.0820691370305894,
+  "cm_share_of_heart": 0.8255215388783528,
+  "mean_day": 16.454986321810495,
+  "stages": [
+   "E15.5",
+   "E16.5",
+   "E17.5"
+  ]
+ },
+ "blood_share_of_chamber": 0.14091408481885717,
+ "cm_share_of_heart": 0.4420186803717552,
+ "commit": "adc86b1ff12ffa1691eeb2870b58ec9d05b66eb0",
+ "file": "T1_s2rcMSB_LM16",
+ "formula": "logit s(12.5) = logit s_lib3 + 2 / (t_A - 10.5) x (logit s_A - logit s_lib3), for s = cardiomyocytes of heart cells and s = blood of chamber cells; s_A the anchor's pooled share, t_A its cell-weighted mean day over its chamber cells; then t1_scope.with_share(own, 'cm', s_cm) and with_share(that, 'blood', s_blood, within=list(that))",
+ "inputs": {
+  "E10.5": {
+   "file": "T1/E10.5_RNA.h5ad",
+   "sha256": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c"
+  },
+  "chamber_config": {
+   "file": "configs/t1_chamber_classes.yaml",
+   "sha256": "fa627bb9d6f29f4b6ac9eac8f7897cfb2de66b39b4967df0c7465c7ed6664970"
+  },
+  "early_manifest": {
+   "file": "experiments/external/results/feng_relabel/MANIFEST.json",
+   "row": "N54",
+   "sha256": "2a3e7200299bf2da05223a60bb910bbda8fcd1785375548e28aafdd006c93cad",
+   "use": "the change transfer, reported only"
+  },
+  "late_manifest": {
+   "file": "experiments/external/results/feng_relabel_late/MANIFEST.json",
+   "row": "N57",
+   "sha256": "0ef7edf43e113c84ff892a8e5f49f97ccae58d876c8fae8ba50d87468e4a6d1a"
+  },
+  "script": {
+   "file": "experiments/t1_scope/late_mix.py",
+   "sha256": "87f373382be45440077f04c934d9e4c4a93f942f52605b93e9d51b7be484413c"
+  }
+ },
+ "late_mix": "e15_17",
+ "map": {
+  "blood": [
+   "r_blood",
+   "r_immune"
+  ],
+  "dropped": [
+   "r_unassigned"
+  ],
+  "heart": [
+   "r_cm",
+   "r_endocardial_ec",
+   "r_vascular_ec",
+   "r_ec_ambiguous",
+   "r_lymphatic",
+   "r_epicardial"
+  ],
+  "out": [
+   "r_mesenchyme",
+   "r_mural",
+   "r_neural_crest",
+   "r_hepatic",
+   "r_epithelial"
+  ],
+  "rule": "configs/t1_chamber_classes.yaml rule 3: r_mesenchyme and r_mural carry names that do not say they are chamber tissue and their evidence is split (the relabeller defines r_mesenchyme by aSHF, pSHF, aPHM, pPHM, ST and Pericardium markers, outside T1's chamber, and through its late genes E14.5 fibroblasts), so rule 3's default, surrounding, holds; r_blood and r_immune are T1's blood category; r_unassigned is dropped"
+ },
+ "own_blood_share_of_chamber": 0.18229961403823713,
+ "own_cm_share_of_heart": 0.2429198682766191,
+ "own_shares": {
+  "blood": 0.18229961403823713,
+  "cm": 0.19863567004757204,
+  "endocardium": 0.368099811507046,
+  "epicardium": 0.20114890943362354,
+  "vascular_endothelium": 0.04981599497352123
+ },
+ "reference_day": 10.5,
+ "row": "N64",
+ "shares": {
+  "blood": 0.14091408481885717,
+  "cm": 0.3797320225543304,
+  "endocardium": 0.28502686873460314,
+  "epicardium": 0.1557535266603867,
+  "pericardium": 0.0,
+  "pharyngeal": 0.0,
+  "progenitor": 0.0,
+  "surrounding": 0.0,
+  "vascular_endothelium": 0.03857349723182267
+ },
+ "test_day": 12.5,
+ "tree_clean": true,
+ "weight": 0.3358529964501984
+}
