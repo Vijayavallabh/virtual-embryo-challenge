@@ -14845,3 +14845,15 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     stage pins, register rows, code and gate. Unchallenged (its price did not earn one while six agents run); it goes
     to the captain as a long shot with that said. Its exposure note: the banked heart file named at two dates across
     the task files (no value).
+- 2026-11-25 (mmm), the T3 contrarian moonshot and its challenge (state at 17:26 UTC, 2026-11-25). Written by the AI
+  assistant, which gives no view on which genes a T3 file moves.
+  - **The design** (`T3_MOON2_design.md`): P1 `T3_c2_s2_ldelay`, C2 with each Mesp1-lineage label moved a quarter day
+    back along the wild-type stage ladder, each label's total held, a law built from wild-type data alone and tested
+    on both released knockouts; four counted tries; its price 0.07, best +6.5. P2, identity attenuation.
+  - **The challenge** (`T3_MOON2_challenge.md`): P1 STRIKE as a moonshot: it is the ledger's pruned Mesp1-lineage
+    timing shift on a wild-type-ladder basis, which the design does not cite; the known-lag check failed (row N9) and
+    the oracle gave +0.17, +1.42 and -0.76; depth is not held as written; its "+15" branch breaks J8; the gate could
+    pass through a severity flip or a one-draw control; its dilution under C2 is unchecked. Honest price about 0.015,
+    best about +1.5 (fix text kept in the file if run as a cheap try). P2 STRIKE (row K11a's closed family; it may
+    read as composition). Its disclosure: a search printed a few ledger lines directly rather than through the blind
+    reader; none held a score.
