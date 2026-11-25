@@ -14911,7 +14911,7 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     stage and licence; register rows before any fetch); gate rows before any read; independent reviews; builds on the
     DGX; the last upload is 2026-11-26 11:59 UTC.
 - 2026-11-25 (rrr), OIC125's outside sources: the readers' records, the captain's word on MOSTA's licence and the cold
-  challenge (state at 18:20 UTC, 2026-11-25). Written by the AI assistant, recused on the heart's scope and size; it
+  challenge (state at 18:08 UTC, 2026-11-25). Written by the AI assistant, recused on the heart's scope and size; it
   designed none of it.
   - **The two readers** (score-blind, independent; `OIC_readerA.md`, `OIC_readerB.md` in the round folder). X002's
     twelve CD1 rows at E15.5 to E17.5: both REFUSE under the strict form (their library GSM5795773 is "Sample
