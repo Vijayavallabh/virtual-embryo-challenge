@@ -14452,3 +14452,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     holds: none of the five would be sent, so none is built and no challenger is spent on them. The regional-motion
     lead set aside: its parts were read before (rows E11, E36, E41b, E42 and E45), and its one unread part failed its
     premise at row E53's gate.
+- 2026-11-25 (gg), the eight files of T1's line 12 and row R46's pair are built, before any score (state at 12:08 UTC,
+  2026-11-25). Written by the AI assistant, which designed none of it.
+  - **The build.** `experiments/builds/t1_l12_line.sh 128dfa1... b1` in `~/v/scratch/t1line-wt`, clean, after a traced
+    refusal; the twenty-one identity commands gave the recorded bytes; each new file built twice with one sha256:
+    **`T1_s2rcMS20d10.h5ad`** 16f35132bb96...; **`T1_s2rcMS20H05.h5ad`** 97589938a95e...; **`T1_s2rcMS20d20.h5ad`**
+    c5340b1505e4...; **`T1_s2rcMS20m10.h5ad`** 316b67b44df2...; **`T1_s2rcMS20d15.h5ad`** cfea3b689696...;
+    **`T1_s2rcMS20H10.h5ad`** 5888b0f4da01...; **`T1_s2rcMS20m20.h5ad`** 961df1c7b4b8...; **`T1_s2rcB25MSH05.h5ad`**
+    7924f1f55624... (full sha256 in the rules note and the record).
+  - **Their standing (rows R60 and R46, headline only).** Due now: `T1_s2rcMS20d10.h5ad`, `T1_s2rcMS20H05.h5ad`,
+    `T1_s2rcMS20d20.h5ad` and `T1_s2rcMS20m10.h5ad` together (wave 1), and `T1_s2rcB25MSH05.h5ad` (row R46's condition
+    met). Waiting: `T1_s2rcMS20d15.h5ad` (if MS20d10 beats MS20 and MS20d20 does not beat MS20d10),
+    `T1_s2rcMS20H10.h5ad` (if MS20H05 beats MS20), `T1_s2rcMS20m20.h5ad` (if MS20m10 beats MS20; row T73 has passed).
+    Data used: released challenge data and the outside heart atlas on recomputed groups (GEO GSE193346, register row
+    X002).

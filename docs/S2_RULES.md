@@ -3539,3 +3539,20 @@ each new file was built twice with one sha256 and passed the format check. **The
 (build record `experiments/builds/results/t1lmm20_89700ef_lm1.txt`). Added before any score of either. Data used:
 released challenge data and the outside heart atlas on recomputed groups (GEO GSE193346, register row X002; for LM16
 also its late labelling, the amendment of 2026-11-25).
+
+## Note of 2026-11-25: the files of T1's line 12 and row R46's pair are built (rows R60 and R46; decision log 2026-11-25 (gg))
+
+Merged at d9874b7 after an independent review that found no blocker; at the clean commit 128dfa1, on
+`~/v/vec-campaign-d`'s worktree, the twenty-one identity commands rebuilt the recorded bytes, each new command with
+its one setting at its base file's value gave that file's bytes, and each new file was built twice with one sha256 and
+passed the format check. **The files:** `runs/manual_upload/T1_s2rcMS20d10.h5ad`, sha256
+16f35132bb96919f1dcc89ace1dd12f5a3ced88749e889086904e189ab9fd2a8; `runs/manual_upload/T1_s2rcMS20H05.h5ad`, sha256
+97589938a95ef957d2aed1117f84147cd027f2a0c3d1c48fbcaf3c67570a87cc; `runs/manual_upload/T1_s2rcMS20d20.h5ad`, sha256
+c5340b1505e4e032e764465d69973910b7071cedbd266487866606c0dafb8cd9; `runs/manual_upload/T1_s2rcMS20m10.h5ad`, sha256
+316b67b44df2501db6f5d43ea099bec107ba9422498ed90f1861fc32d70cc1c5; `runs/manual_upload/T1_s2rcMS20d15.h5ad`, sha256
+cfea3b689696bd2e08abe04ad607ab5a826b300ad6d841c3f2d8fc475f536f63; `runs/manual_upload/T1_s2rcMS20H10.h5ad`, sha256
+5888b0f4da0124e7561d17a002006d79b26efe48c14e346cf3e45faf1222be3e; `runs/manual_upload/T1_s2rcMS20m20.h5ad`, sha256
+961df1c7b4b8cce40006729f8439701313cb5d2b41b159763e20d1dbd5097000; `runs/manual_upload/T1_s2rcB25MSH05.h5ad`, sha256
+7924f1f55624eb9e56df639f6ba3ceab0464acc3ad9f3eb91449380293b7e2d2 (build record
+`experiments/builds/results/t1l12_128dfa1_b1.txt`). Added before any score of any of them. Data used: released
+challenge data and the outside heart atlas on recomputed groups (GEO GSE193346, register row X002).
