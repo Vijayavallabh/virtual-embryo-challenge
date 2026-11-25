@@ -14521,3 +14521,13 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Its line's rule by its letter** (`docs/S2_RULES.md`, T3's third search line): its headline is not strictly above
     C2's (63.94), so C2 holds the line's best and the line ends there. No rule names a further T3 file. Every built T3
     file is uploaded. Standing unchanged: 203.935.
+- 2026-11-25 (ll), row R66's option strings are written out, before any code (state at 13:03 UTC, 2026-11-25). Written
+  by the AI assistant.
+  - **Why.** The T1 builder admits a ruled command only when its whole option string stands backticked in the row's
+    first cell; R66 named its thirty commands as a pattern (two or three of three steps, and two single steps), which
+    the builder would refuse. Its first cell now lists the thirty strings in row R60's order (`--feng-fraction-mult
+    2.0 --direction-momentum all`, then g_mom's damping, Blood's step, MS's damping), each beside its file's name,
+    generated from one source as the T1 challenger asked. Nothing else in the row changed: the captain's words, the
+    slots, their conditions and the values are as placed at cbbf40b. The captain asked meanwhile that work go on in
+    parallel while the line-12 headlines are gathered ("work on other tasks by then parallelly"); the R66 engineer
+    starts now.
