@@ -1,0 +1,656 @@
+{
+ "reader": "three independent score-blind reader agents, one per reference (E10.5, E9.5, E8.75), each checking every plot's sha256 against the sheet before viewing it",
+ "read_at_utc": "2026-11-25T21:20Z to 2026-11-25T21:45Z",
+ "regions_commit": "d6d3eb16d160fdc62ed19b3232029a60347840d2",
+ "instructions": "For each plot: 'heart' if the outlined region is the heart alone (no lung, diaphragm or other skeletal muscle), else 'doubt'. A doubt drops that section at that reference.",
+ "verdicts": [
+  {
+   "ref": "E10.5",
+   "section": "E15.5_E1S1",
+   "plot": "plots/E10.5/E15.5_E1S1.png",
+   "plot_sha256": "e79347585a19cc6ad5bc36b75ba24b6999b4761c62ab0fe3c82c602daddea1a2",
+   "region_sha256": "50be6428a31146f3b1957ba121bb673ae85350e2a43aae9e8d4b87a0a42dcb34",
+   "verdict": "doubt",
+   "note": "Dark ventricle-like blob plus thin band draped over lung lobes toward liver; lung or diaphragm likely inside."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E15.5_E1S2",
+   "plot": "plots/E10.5/E15.5_E1S2.png",
+   "plot_sha256": "063e2f08996bb37508c8d666381bd12bcb0b82d05d3a21a4e77254166adb0712",
+   "region_sha256": "000c41f1b06826ce54cebff59cc8b733c957cbc2956750c26679276b215433c2",
+   "verdict": "doubt",
+   "note": "Ventricle-shaped region by liver, but dorsal top includes black tissue continuous with lung-like region outside."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E15.5_E1S3",
+   "plot": "plots/E10.5/E15.5_E1S3.png",
+   "plot_sha256": "dae3e21b268791e48e92602394bbb96805ef97cd2c7a19b52a1157724dc9bccc",
+   "region_sha256": "66b6c66e1563cbf116f746583821f0781cdeb9c4480593cd1fab3b3921f3023a",
+   "verdict": "doubt",
+   "note": "Curved band hugging liver's cranial surface with fingers between rib cartilages; diaphragm or lung-like, not heart."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E15.5_E1S4",
+   "plot": "plots/E10.5/E15.5_E1S4.png",
+   "plot_sha256": "661ce0c903e54bf18f4ec330b94e607ab236b5b18ce81a0161fb4cdf7ad19935",
+   "region_sha256": "a86feaa19af3cef65ce008562d99190b2ecfa3e5bf0dfbb4ee099fc51d29237a",
+   "verdict": "doubt",
+   "note": "Thin strip under dorsal skin at neck level, far from thorax; back muscle or fat, not heart."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E15.5_E2S1",
+   "plot": "plots/E10.5/E15.5_E2S1.png",
+   "plot_sha256": "3cec5c5f634cf9a4fb4db55d9138d87c2e1373866a67c18e9566bd6c4df5cf65",
+   "region_sha256": "a6f579629809ad575afdb6058a5dd8ba61eb203b37e99a1f681de5928b4bf47a",
+   "verdict": "doubt",
+   "note": "Patch in ventral thorax cranial to liver; no heart contour visible, spans two textures, edge on artifact line."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E16.5_E1S1",
+   "plot": "plots/E10.5/E16.5_E1S1.png",
+   "plot_sha256": "b9bde7d09273b46059c4feeca91b8efb53ab98509802c0df87360b9a94df565e",
+   "region_sha256": "1df6e96a0c592fc9d415e1a971ab8bed834b47ee31e93fc597e77b885fdb36e5",
+   "verdict": "doubt",
+   "note": "Caudal body wall beside cartilage elements, far from heart; fibrous dark tissue, likely skeletal muscle."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E16.5_E1S2",
+   "plot": "plots/E10.5/E16.5_E1S2.png",
+   "plot_sha256": "1281eac66734f7b1c983a546f4a282e059cb750971625bd2d9527c63f1bb2f4e",
+   "region_sha256": "6eed3bc5f4ada2dc5101eb19d930c690684589aa1361915158f17c83fe41d225",
+   "verdict": "doubt",
+   "note": "Dark blob just ventral to vertebral column at neck level; the heart (oval organ by liver) lies outside."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E16.5_E1S3",
+   "plot": "plots/E10.5/E16.5_E1S3.png",
+   "plot_sha256": "58f6a17d682d59151c5b404d3068a98818f13a4cb7fc6631a4f27c9cbceedd63",
+   "region_sha256": "74968741ea5090a53b46c87955c844da7396ee932953bc0e72d765fbb25993b9",
+   "verdict": "doubt",
+   "note": "Heart ventricle included, but dorsal part takes in dark lobulated lung-like tissue continuing outside along liver."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E16.5_E1S4",
+   "plot": "plots/E10.5/E16.5_E1S4.png",
+   "plot_sha256": "8dbf79aacd929a417f5880a4becf9b678b5a9c7e0d4c588fdefa2179b449d7ee",
+   "region_sha256": "132509f037ff0369f7cee6791dfd56c8881b650c03d3c59110670a4e89aec0b1",
+   "verdict": "doubt",
+   "note": "Caudal trunk wall beside pelvic-level cartilage, far from heart; dark muscle-like tissue."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E16.5_E1S5",
+   "plot": "plots/E10.5/E16.5_E1S5.png",
+   "plot_sha256": "4cbe241677fc61c4c362b0d093465ba4847a3ba7211af31913bbee64ad6cac2c",
+   "region_sha256": "4a545f593a011451b951f1a0d2ce23057bea7a1f05dfe24f1244a9ab8b468804",
+   "verdict": "doubt",
+   "note": "Ventricle between liver and sternum plus thin strip running dorsally along lung edge to ring structure near spine."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E16.5_E2S1",
+   "plot": "plots/E10.5/E16.5_E2S1.png",
+   "plot_sha256": "f053c60294366b4d3882a37685274d942ff08b6f628c030b6a599f60a0bc370f",
+   "region_sha256": "a9d2f221e45c6b98f3d55006700dd3bdcfe2a7b18169e187450100273d9cb2fb",
+   "verdict": "doubt",
+   "note": "Lateral section; mottled patch at neck/shoulder between head and forelimb base; no heart there."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E16.5_E2S10",
+   "plot": "plots/E10.5/E16.5_E2S10.png",
+   "plot_sha256": "732ebb2d094973b2dc2068e1930654b78a389060011d95339dae44e38b0e70ea",
+   "region_sha256": "3342bdd1be56f31382571542c31eddfd4b08aa53d611058029261e3db908b9de",
+   "verdict": "heart",
+   "note": "Within heart silhouette between sternum and liver: dark ventricle plus ventral band, likely right ventricle; crack artifact; no lung."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E16.5_E2S11",
+   "plot": "plots/E10.5/E16.5_E2S11.png",
+   "plot_sha256": "2600d3a1592c27e757493c3ca9a5f0a600e44813c0cdd62849b314fe89cbd2c1",
+   "region_sha256": "aab4ede2fcbd0236886fa76521e927daccf4c125bd09f7b89a9b10349053631b",
+   "verdict": "doubt",
+   "note": "Ring inside light organ cranial to liver, but outline extends into dark band beside sternal cartilage, beyond organ."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E16.5_E2S12",
+   "plot": "plots/E10.5/E16.5_E2S12.png",
+   "plot_sha256": "5699d0f63045e0b390a93f78332d53adcb7f2dbfdfdbf8721691beba4544ea6b",
+   "region_sha256": "1f85b2d67588411c3beac3d0f1db34b7a551929e7b65d0d79533f0510be38021",
+   "verdict": "doubt",
+   "note": "Dark wedge at dorsal shoulder level beside large cartilage plate; streaky muscle-like tissue, not heart."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E16.5_E2S13",
+   "plot": "plots/E10.5/E16.5_E2S13.png",
+   "plot_sha256": "397d6a9c42a08c8de71790e6794b2e84dcc6e8e76d747deb54a8c82daaef4b25",
+   "region_sha256": "b6400ad6eddc6a46970af281c9b97edb5f64a4888d41af92fdae43b1f9515164",
+   "verdict": "doubt",
+   "note": "Lateral section; patch at body edge below converging muscle bands near shoulder; not heart."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E16.5_E2S2",
+   "plot": "plots/E10.5/E16.5_E2S2.png",
+   "plot_sha256": "98ad4a1679def3d2da851a5be8d3d799c79e66b0f770ffdfedd152bb17b1759d",
+   "region_sha256": "38caf4753708fef68ada672a33210177e6fb5e80a03b3fdf0e4b35206ead2d6a",
+   "verdict": "doubt",
+   "note": "Lateral section; dark band in dorsal head/neck above a cartilage element, near eye; not thorax."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E16.5_E2S3",
+   "plot": "plots/E10.5/E16.5_E2S3.png",
+   "plot_sha256": "bac05e5134ef73b00514157a720971b8999cfc4a1441bcc065507846636edc5d",
+   "region_sha256": "e669f17026389b3972b16c5b693fc1a28a5046d10a5afa35127ea7125e9ad5d4",
+   "verdict": "doubt",
+   "note": "Dark band under dorsal skin of neck/occiput near head; not thorax, likely muscle."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E16.5_E2S4",
+   "plot": "plots/E10.5/E16.5_E2S4.png",
+   "plot_sha256": "328a464d30f08d1e00be6ca8eae882b4a52cbcab0037b3dcecb9bb46e26d786c",
+   "region_sha256": "3f248ce48d5ef526cce952666d16b3562cdcbaf1147ec55ff4d4044a4b16e501",
+   "verdict": "doubt",
+   "note": "Elongated dark band under dorsal skin at back of neck; muscle-like, far from heart."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E16.5_E2S5",
+   "plot": "plots/E10.5/E16.5_E2S5.png",
+   "plot_sha256": "1d44651a8fea87be9a1fbf5cf911edcdb91602eb798740e0c83738049ad00619",
+   "region_sha256": "a8d4948598b3597bafc00017611934d82cdfc9837c9fd3c52f935c95e7ac6f9d",
+   "verdict": "doubt",
+   "note": "Ventricle plus rims wrapping the black lung, taking in lung edge and lung-liver interface (diaphragm)."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E16.5_E2S6",
+   "plot": "plots/E10.5/E16.5_E2S6.png",
+   "plot_sha256": "5448b2e5e970d85ee740f70bb38551b0b6b3be530ba3030e37f33c4b2cf5842e",
+   "region_sha256": "758560f89d920c6f41d717412e1a410aa7a6ee192229084ddd2034c15acc8adb",
+   "verdict": "doubt",
+   "note": "Myocardium-like arch cranial to liver; liver-side limb ends in dark band extending outside, possibly lung or diaphragm."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E16.5_E2S7",
+   "plot": "plots/E10.5/E16.5_E2S7.png",
+   "plot_sha256": "63091092b969dfea4218d239363e4e73da76c89892524903af480f4e9485e15d",
+   "region_sha256": "dc789cb319c8cd8aebe09d829d1ebdb290f094f2667960f4242aff27232a2fc0",
+   "verdict": "heart",
+   "note": "Triangular organ between liver and sternum (ventricles); small base extension by a tear; no lung, diaphragm or muscle seen."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E16.5_E2S8",
+   "plot": "plots/E10.5/E16.5_E2S8.png",
+   "plot_sha256": "6ee4f3fb32c958cc72efdaed30cbb93b09fc30e88ac7e079984138f035cd447c",
+   "region_sha256": "6969338ce512ff17c8995abdd54f70dda1c7204c4348c6f16de1c88ae57b87fb",
+   "verdict": "doubt",
+   "note": "Ventricle included, but outline reaches toward sternal cartilages and wraps a dark lung-like oval dorsally."
+  },
+  {
+   "ref": "E10.5",
+   "section": "E16.5_E2S9",
+   "plot": "plots/E10.5/E16.5_E2S9.png",
+   "plot_sha256": "9372581351be26a4ba899940fb0bac29cde43346ff3234b91a60983d2c1692a7",
+   "region_sha256": "ad5d3a3584a5e441c391185eebfdd317dd07eb772a28d9367430433392391a9b",
+   "verdict": "doubt",
+   "note": "Ventricle with lumen, but base extension borders lung and its tip enters dark dorsal tissue."
+  },
+  {
+   "ref": "E10.5",
+   "section": "pup_P1",
+   "plot": "plots/E10.5/pup_P1.png",
+   "plot_sha256": "c35ff4f734e3621e60ba6057a59226b9c68a1f06ab8aeeb81c594a3f01dac267",
+   "region_sha256": "d85e60b16a25a9c244e7938d93f742a0da906c7ab4b440b16a860db62386fe83",
+   "verdict": "doubt",
+   "note": "Outline lies in the head beside the eye, far from thorax; not heart."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E15.5_E1S1",
+   "plot": "plots/E9.5/E15.5_E1S1.png",
+   "plot_sha256": "3d92f40d5299bce285ad79fa5532c1879512a0ef48db54f515f30fad973aab0c",
+   "region_sha256": "54e79ef3bb708706657a1004b6fd034d069eea839ab7e99e5049e21e9756430c",
+   "verdict": "doubt",
+   "note": "Dark dome in thorax beside liver, plus thin basal strip running along lung-like tissue dorsally; strip not clearly heart."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E15.5_E1S2",
+   "plot": "plots/E9.5/E15.5_E1S2.png",
+   "plot_sha256": "77185e822961ec6ed50fa25d81c705e6b942eed9878ea7cb1a90816f4bdd913b",
+   "region_sha256": "12df92db5c8e1211cf359cb8ffc7fdbbc42d75e883276735bb6a8c1d8f46221a",
+   "verdict": "doubt",
+   "note": "Ventricle-like teardrop plus part of a dark curled structure dorsally, possibly atrium or airway; cannot exclude lung."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E15.5_E1S3",
+   "plot": "plots/E9.5/E15.5_E1S3.png",
+   "plot_sha256": "c57b36079b06425c665d8f32fe8aa4923b540644ba658974c151ecb3adcc95d7",
+   "region_sha256": "a8cc586ec4d478dc9e75999c65c92d2ee74746ae7e205d4f2bd050cf74653626",
+   "verdict": "doubt",
+   "note": "Long strip between vertebral column and dorsal skin; back musculature, not heart."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E15.5_E1S4",
+   "plot": "plots/E9.5/E15.5_E1S4.png",
+   "plot_sha256": "7d211cdd6a9ab537a89f524c5b5acb79b4b7eb7cd80459237e16c449c2d70d06",
+   "region_sha256": "e30ae6a0b1f89aef1a4fe45ebfe649324b39ef4a8893c2c97ba4ee5449ac4187",
+   "verdict": "doubt",
+   "note": "Strip in dorsal body wall between vertebral column and skin; back musculature, far from thorax, not heart."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E15.5_E2S1",
+   "plot": "plots/E9.5/E15.5_E2S1.png",
+   "plot_sha256": "fb4312ca34cee41e39709e49e1a9035dccffca22abd527b3a6e31eea1cd4ea08",
+   "region_sha256": "bebc8835d2d4dc211b53d664f2b312db44d4a1a082fd0f364dfa3917e250fc92",
+   "verdict": "doubt",
+   "note": "Subcutaneous strip in dorsal body wall above liver; skeletal muscle region, not heart."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E16.5_E1S1",
+   "plot": "plots/E9.5/E16.5_E1S1.png",
+   "plot_sha256": "f4e862c5dbc9694d779427a8756ed2a11972a3ad6291801df479864f4914d64b",
+   "region_sha256": "239061f14da78ddd598e24a997b4666b8c1ff8311872c4c6d2c5671bbf141897",
+   "verdict": "doubt",
+   "note": "Y-shaped strip along caudal body wall near pelvic/vertebral bones, beyond liver; body-wall muscle, not heart."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E16.5_E1S2",
+   "plot": "plots/E9.5/E16.5_E1S2.png",
+   "plot_sha256": "88611951ce2b86cfae3def7e7711c88ba69fe3bd3655f24376a3122d026f9b16",
+   "region_sha256": "8ec426b69e32982a317405b2099659bfc95fe8a80d5e5bd8eed4edcc856742f0",
+   "verdict": "doubt",
+   "note": "Dark wedge with longitudinal striations near ribs, outside the rounded heart-like organ; likely skeletal muscle."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E16.5_E1S3",
+   "plot": "plots/E9.5/E16.5_E1S3.png",
+   "plot_sha256": "c75a22191c867b872e93a313488950ed030fe2b683f95e8b44d6b2c7c68c6ab0",
+   "region_sha256": "ab3d8596900b6156f537d79c4fc93c1a7b79ccafbd102f759a801dcccfc5b7aa",
+   "verdict": "doubt",
+   "note": "Ventricle-like mass plus surrounding lighter band, bronchus-like oval, liver-side band and dark cavities; possible lung inside."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E16.5_E1S4",
+   "plot": "plots/E9.5/E16.5_E1S4.png",
+   "plot_sha256": "5ffaa80c8f9a15513c6da1a201acdad2aaa4557184b2127ce4272ffb33dc6cdb",
+   "region_sha256": "5b5cfd13beb25e7c4d78fdfec18b4410a64ad6dbe05825d78d4a5248a62909b7",
+   "verdict": "doubt",
+   "note": "Patch along caudal body wall near pelvic bones, far from thorax; body-wall muscle, not heart."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E16.5_E1S5",
+   "plot": "plots/E9.5/E16.5_E1S5.png",
+   "plot_sha256": "e7c879b36812ac12db05a99139818d92d53f89a1158b1703ad48225e1ea59775",
+   "region_sha256": "913426849bea3d72c468153a424886d7ca5ab7440ac458a3eb524dfdea4f3abb",
+   "verdict": "doubt",
+   "note": "Ventricle-like mass, but outline adds thin strip under spine and ventral tail between ribs (intercostal/diaphragm possible)."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E16.5_E2S1",
+   "plot": "plots/E9.5/E16.5_E2S1.png",
+   "plot_sha256": "ef80352d058394dd47264368255d240e95de72e56f89a95db9d6745547ec1f28",
+   "region_sha256": "305720f8de6b93458c8957bfac7b88fc97705265a9eaeda14749a14dece0446e",
+   "verdict": "doubt",
+   "note": "Irregular patch at forelimb base around a limb/shoulder bone; shoulder skeletal muscle, not heart."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E16.5_E2S10",
+   "plot": "plots/E9.5/E16.5_E2S10.png",
+   "plot_sha256": "2924eb58c0cab6490b8d73c129dc5a91618382cf880bec04462372705c301c28",
+   "region_sha256": "f2dd3f8d993fdd3c115a9e0f4a1b5021bc19ea33aa3349bcec38fecf1870d912",
+   "verdict": "doubt",
+   "note": "Heart included, but outline adds a strip along the ribs (body wall) and a lower arm outside the heart."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E16.5_E2S11",
+   "plot": "plots/E9.5/E16.5_E2S11.png",
+   "plot_sha256": "fa3152b0f096d4be4819c5dced77a9e81e4522e5aaa150833a6033698bc8ac95",
+   "region_sha256": "7e19b7de20340a2c0e9cc3b142a4a8402c5ebe34a1c606e7ccaea360e78e0116",
+   "verdict": "doubt",
+   "note": "Patch under dorsal skin of neck, striated texture; neck/back skeletal muscle, not heart."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E16.5_E2S12",
+   "plot": "plots/E9.5/E16.5_E2S12.png",
+   "plot_sha256": "520ba463f4da08aa31584c0ac0113f8e3a65ba3171a4fa68224cfdc7603af466",
+   "region_sha256": "3e933126d6d0347bc0ab45b64b014295b984ae33d5dfd98de03713935fa6bc63",
+   "verdict": "doubt",
+   "note": "Triangular striated patch at dorsal neck surface; skeletal muscle, not heart."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E16.5_E2S13",
+   "plot": "plots/E9.5/E16.5_E2S13.png",
+   "plot_sha256": "2a4df59a863740f31e2fe343f3a976d7a06f9388651776eb21fc59532f658329",
+   "region_sha256": "cfc273f9cb633d2990c49e89c34da9ceba1be5918cab705bfe868cba8026475e",
+   "verdict": "doubt",
+   "note": "Patch of banded muscle groups below forelimb at dorsal surface; skeletal muscle, not heart."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E16.5_E2S2",
+   "plot": "plots/E9.5/E16.5_E2S2.png",
+   "plot_sha256": "3fb5f1a8f62d865498e7e0cca3d503ad18a48ec7ff77ba6c5e9fd13d7563fcbe",
+   "region_sha256": "560e9b6eb96cbc7afd5836f5cdaca9966307e0cee4258c5331dc3097a9c83a44",
+   "verdict": "doubt",
+   "note": "Narrow patch in dorsal shoulder region beside scapula-like bone; skeletal muscle, not heart."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E16.5_E2S3",
+   "plot": "plots/E9.5/E16.5_E2S3.png",
+   "plot_sha256": "1897c3137a3e76fc36c027f6e07160d78c172590e2a104c45bc9cdebd9f49d22",
+   "region_sha256": "f46a4f56cfa192f5f7ce6b8d741362ab195187d9b1fbcc8c87ddd0bb0dc35e81",
+   "verdict": "doubt",
+   "note": "Vertical strip in dorsal neck/shoulder beside scapula-like bone; skeletal muscle, not heart."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E16.5_E2S4",
+   "plot": "plots/E9.5/E16.5_E2S4.png",
+   "plot_sha256": "ac5259bb6c3ae40052ad095f63540e1559649aa77a7e410a7d89fbbccab357a0",
+   "region_sha256": "756612a73855516939627c7ad6621728922e2986b4db107c031581d4924ffa7a",
+   "verdict": "doubt",
+   "note": "Triangular striated patch at dorsal neck behind skull; skeletal muscle, not heart."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E16.5_E2S5",
+   "plot": "plots/E9.5/E16.5_E2S5.png",
+   "plot_sha256": "4f51027414c62fd1ff179eb03d2d8e676886bc6bd94905d00b9b185b2d2e5f44",
+   "region_sha256": "1b65fcacc0b86985a6a0ec550283d45653cd42aa69b4735573ff82c4759e455d",
+   "verdict": "doubt",
+   "note": "Trabeculated ventricle, but outline extends into dark cavities, a lower zone and liver-side band; diaphragm/lung not excluded."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E16.5_E2S6",
+   "plot": "plots/E9.5/E16.5_E2S6.png",
+   "plot_sha256": "f558932459e35723199d05c747f683abe2bdd833d79267f51ea0dcf5a4defa8b",
+   "region_sha256": "c8ebf14b6dc9945bc1a6f37b10856ca19be0dcc256341498e2bf1f8241938b7f",
+   "verdict": "doubt",
+   "note": "Elongated forked band ventral to cervical spine near jaw, cranial to thorax; neck muscle, not heart."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E16.5_E2S7",
+   "plot": "plots/E9.5/E16.5_E2S7.png",
+   "plot_sha256": "9a183997d7c8c3586ba0a271c5697b62ee0c56bdaf5f13e7752047e4ba2dd36b",
+   "region_sha256": "598b9e1a6f347f3aff284e6f4970c23bc6c4cb0e4b3f4cde79b456ab3a1c6a71",
+   "verdict": "doubt",
+   "note": "Mostly heart-like dark oval, but edge takes part of a lighter ventral band and a dorsal lobe; lung possible."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E16.5_E2S8",
+   "plot": "plots/E9.5/E16.5_E2S8.png",
+   "plot_sha256": "db10ab04b610295bb6af576365e9b1b2ca78f940af7f0e24340d77728395e93a",
+   "region_sha256": "b1886c7737fe4c921b530557d62aa85d346e5296394dcebd33630ad1dbe6206c",
+   "verdict": "doubt",
+   "note": "Heart included, but outline adds part of lighter band between heart and ribs and a dark cavity below."
+  },
+  {
+   "ref": "E9.5",
+   "section": "E16.5_E2S9",
+   "plot": "plots/E9.5/E16.5_E2S9.png",
+   "plot_sha256": "3669fa41afaae0b0a2d797846537d92e3770b3f9428048453056bed8f6de4e7d",
+   "region_sha256": "c25c84613bf6c6244bce63daa7a5184b8eab478361ebd7792eee8fd8bd035ab1",
+   "verdict": "doubt",
+   "note": "Covers upper heart, but a narrow protrusion runs dorsally beyond the heart's rim into adjacent tissue."
+  },
+  {
+   "ref": "E9.5",
+   "section": "pup_P1",
+   "plot": "plots/E9.5/pup_P1.png",
+   "plot_sha256": "e133aa30f4a81ffd8d4ba56d9340122f38b575dda22f94298b60929bb873e524",
+   "region_sha256": "48cf3cb45d47d8a24b38d3d8dc709b12003100c6bc1776ced0c22ab84eb2bd9c",
+   "verdict": "doubt",
+   "note": "Striated skeletal muscle fibres beside a limb bone, above the lungs; not heart."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E15.5_E1S1",
+   "plot": "plots/E8.75/E15.5_E1S1.png",
+   "plot_sha256": "0d843d36598484cb702bd08797bdaf12dfa94bb10bf58efd8e90b90c7249a77e",
+   "region_sha256": "1b3bdec51ad7d92c3e8ec6ff42981c88b4ea285c42b589242f47cda74bd3df4e",
+   "verdict": "doubt",
+   "note": "Elongated curved band without chambers, cranial to liver; identity unclear (possibly muscle or thymus), not recognisable heart."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E15.5_E1S2",
+   "plot": "plots/E8.75/E15.5_E1S2.png",
+   "plot_sha256": "d37995cf70997bf590fb6b1f13612dc1292cf63976f62867c1b42ddb304e62ab",
+   "region_sha256": "09ea356ed8e3975b96360c520e9ed9d186339f7217de6cdd6bdb9f66d86715cd",
+   "verdict": "doubt",
+   "note": "Ventricles and atria clearly heart, but a dorsal arm and crescent extend toward the spine; possible lung or vessel."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E15.5_E1S3",
+   "plot": "plots/E8.75/E15.5_E1S3.png",
+   "plot_sha256": "4e780d170cd413ee3ff1801a772e62475d86a0c91fff8eaddf36c730ec2f327a",
+   "region_sha256": "4c1f8d81658fb85758ae762d88598bcf3b95731995df587a5355c86fe5f7695a",
+   "verdict": "doubt",
+   "note": "Triangular ring near ribs and spine around slit-like lumens; looks lung-like, arm runs along rib ovals."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E15.5_E1S4",
+   "plot": "plots/E8.75/E15.5_E1S4.png",
+   "plot_sha256": "43ff933abaaab4c76007e350cfbc73680d6c8b4f15636fdc8fb729ae7e4ef945",
+   "region_sha256": "ee7d85ee14ac86a3ea0caa2108e0218c378284efdd42b33a161a085ad19ecf97",
+   "verdict": "doubt",
+   "note": "Thin band near dorsal body wall above vertebral column, cranial to liver; not the heart."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E15.5_E2S1",
+   "plot": "plots/E8.75/E15.5_E2S1.png",
+   "plot_sha256": "21458860cf829021a1eb38a6a5164d4e7e1f1af6c6500d432a8d56937b74106c",
+   "region_sha256": "599d3b4bd312ba71dfa5e54849ebb902fc0955d1506f0b4786b1e62ad523bf86",
+   "verdict": "doubt",
+   "note": "Irregular thoracic patch without clear chambers; lower lobe reaches past sternal/rib ovals toward ventral body wall."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E16.5_E1S1",
+   "plot": "plots/E8.75/E16.5_E1S1.png",
+   "plot_sha256": "e37f7bfd04c23ccfad2fa6e33a08094f50968bf4aefcff9501f8e4593d790b3d",
+   "region_sha256": "11bd5bdc07ab6dbdd8c0b108a0111e7e7bc8c8b7b9600fc8712f604a81d4a5ab",
+   "verdict": "doubt",
+   "note": "Region at caudal end beyond the liver, under the body wall; not the heart."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E16.5_E1S2",
+   "plot": "plots/E8.75/E16.5_E1S2.png",
+   "plot_sha256": "bc765bce68cb58cde908b21b72393abd9331ac71eaa1dfb05fef8a125bc79db2",
+   "region_sha256": "e3dad2aa73f815ba6478e1a731d0df5965831e3c10a27f942ebc4e8744179a00",
+   "verdict": "doubt",
+   "note": "Elongated fibre-textured band near ventral surface cranial to liver; looks like skeletal muscle, not heart."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E16.5_E1S3",
+   "plot": "plots/E8.75/E16.5_E1S3.png",
+   "plot_sha256": "34eef33dc9ee78639fbb5a2cf52858313dc85a304aa70092df95e235a948a4c7",
+   "region_sha256": "28818f7d4111d8b6ec02e3a2b5cf3f2dd554e31a0a0833907f94e59c951e66d0",
+   "verdict": "doubt",
+   "note": "Contains a heart chamber, but adds a separate cranial lobe and dorsal tissue reaching toward the spine."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E16.5_E1S4",
+   "plot": "plots/E8.75/E16.5_E1S4.png",
+   "plot_sha256": "6e7a5a22884d0b9aa685da9294383a3470bd8fb183f49e7b12a7c9e08c355a38",
+   "region_sha256": "ca7d874079d7fd07759ec972257aec558004184f5ec27123ace799d463dac2fb",
+   "verdict": "doubt",
+   "note": "Region at the caudal body wall beyond the liver; not the heart."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E16.5_E1S5",
+   "plot": "plots/E8.75/E16.5_E1S5.png",
+   "plot_sha256": "228df9551f52d73705fe46db208e946745bcf70dfa59bdb34898ea70988d11ba",
+   "region_sha256": "213f1b5b171a71109049a99d9aaf38cedf7836123e1151b18ad23a9ee98a1e87",
+   "verdict": "doubt",
+   "note": "Ventricle is heart; arm along atrium and a tail along the sternum toward liver/diaphragm junction raise doubt."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E16.5_E2S1",
+   "plot": "plots/E8.75/E16.5_E2S1.png",
+   "plot_sha256": "0cfffbca11557cb631eec2384b3d18da6c991c6caec3fa6c99434b58228216f1",
+   "region_sha256": "0a0649accde06d6335fab56519b1527f73877368020f3e4f274cecc4a9bef4c0",
+   "verdict": "doubt",
+   "note": "Small irregular patch in ventral neck/upper chest among muscle bundles; no heart features."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E16.5_E2S10",
+   "plot": "plots/E8.75/E16.5_E2S10.png",
+   "plot_sha256": "b50f2d653e8be5798cc1fdd023fee29c4d90dc3eeb9daeb636ebd19b4384f496",
+   "region_sha256": "0dd7519d629007978808e5ae13a05a02a8205fa3b012eaa7368c454c403249ea",
+   "verdict": "doubt",
+   "note": "Mostly heart behind sternum, but a lower-left extension leaves the heart contour into speckled non-cardiac-looking tissue."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E16.5_E2S11",
+   "plot": "plots/E8.75/E16.5_E2S11.png",
+   "plot_sha256": "612e77d5ad31a8d158dd3c3530ddc47575d1f5cb7a40e6a565d914586d841457",
+   "region_sha256": "5f48318201a610a3909549a8d825bea51244074c30bcb6f9484ecfaf462bb4a8",
+   "verdict": "doubt",
+   "note": "Dorsal neck region under the skin with streaky fibre texture; looks like skeletal muscle, not heart."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E16.5_E2S12",
+   "plot": "plots/E8.75/E16.5_E2S12.png",
+   "plot_sha256": "a2dbc80c92a5bedbbba7a906c11c8cd878358511d35da11bdee0db297fb17eac",
+   "region_sha256": "791e5c8355b1ea63842551fcaac312f09a6d3aaacddc5fc1fe00d2461aa243b8",
+   "verdict": "doubt",
+   "note": "Elongated dark region reaching the dorsal body wall cranial to liver; no chambers; possibly lung or muscle."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E16.5_E2S13",
+   "plot": "plots/E8.75/E16.5_E2S13.png",
+   "plot_sha256": "270a4ebb587a4e5519bf49efb28a24706b3860830010d661c58c081feef1ccc1",
+   "region_sha256": "889473403cb376abbcd0ef4cfb2d0c74d617e6dabb84c8b03c062e9668a78420",
+   "verdict": "doubt",
+   "note": "Banded dark tissue near the lower body edge between head and liver; muscle-like, no heart chambers."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E16.5_E2S2",
+   "plot": "plots/E8.75/E16.5_E2S2.png",
+   "plot_sha256": "a46b728f978cb791abab3e3ff4ca401428123a89f2cdb5db04d51d08ec389572",
+   "region_sha256": "00498bfd9d5d7e457412f7871f85618aedfc5610c1c423f69ad59e766e10e210",
+   "verdict": "doubt",
+   "note": "Tiny blob among shoulder muscle bundles in a lateral section near ribs; no heart features."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E16.5_E2S3",
+   "plot": "plots/E8.75/E16.5_E2S3.png",
+   "plot_sha256": "3ebfd9e91b11a50ea8900445a9bb2e36e1a5b303fa48dbe93cdc0942168b7ee7",
+   "region_sha256": "feb8221204229a708f4dcc5291b052514e5a0a4afc53bcd2df0ee6497d8e58a3",
+   "verdict": "doubt",
+   "note": "Runs along the dorsal skin surface of the neck/upper back; not the heart."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E16.5_E2S4",
+   "plot": "plots/E8.75/E16.5_E2S4.png",
+   "plot_sha256": "a76ecfbfa8a11a20ffb5a4ff0db718f31503d6148fbe0e66704a450bfe1aaf2e",
+   "region_sha256": "4fb75e0971d3e0e28ce3395843f78581ef38eb7ba8ab82db618759d4da7d835b",
+   "verdict": "doubt",
+   "note": "Along the lower body edge beneath the head/neck, far from the thorax; not the heart."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E16.5_E2S5",
+   "plot": "plots/E8.75/E16.5_E2S5.png",
+   "plot_sha256": "8fb78c841fafc08b2139c8d90046fc2eea6354d19e20d66671fe571ccae86771",
+   "region_sha256": "4dca1f715b9124147ab514ef193a5853308e9623dbe2fca640869b9340250946",
+   "verdict": "doubt",
+   "note": "Ventricle is heart; arms wrap the dark atrium, one reaching the liver side (possible diaphragm), other unclear."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E16.5_E2S6",
+   "plot": "plots/E8.75/E16.5_E2S6.png",
+   "plot_sha256": "1e3db8fea092baac49d5b6ad5108f2d7171188f7236d2a84694f699ca45ca7e1",
+   "region_sha256": "3d51a0e2eef2daf90d9464728e44f433575ae27b68d93d5e7bef85dddc52ff83",
+   "verdict": "doubt",
+   "note": "Long narrow band beside the head/neck, cranial to the thorax; muscle-like, not heart."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E16.5_E2S7",
+   "plot": "plots/E8.75/E16.5_E2S7.png",
+   "plot_sha256": "e634a8fc8a55b6188587a24bbef685b8046e2e29d46976bc19a5d99fc07e4963",
+   "region_sha256": "7bd21c3cc96bbf94d3f25b3126c0ba71e89e2a1e0dc7d89f39073276dae5f497",
+   "verdict": "doubt",
+   "note": "Ventricle is heart; a dorsal loop around a lighter oval structure extends toward the spine; identity unclear."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E16.5_E2S8",
+   "plot": "plots/E8.75/E16.5_E2S8.png",
+   "plot_sha256": "5c4ef3bbc783f866cc8bcd340dda1a4e345972a06ccc38e2509bd3688ba19ad9",
+   "region_sha256": "875641d2b2baa5283cda9f963b3afe87e2014ad1e2a7025ab853d23763ffd499",
+   "verdict": "doubt",
+   "note": "Heart outline fairly tight, but lobes dip below the atrium into dorsal tissue with small lumens (possible lung)."
+  },
+  {
+   "ref": "E8.75",
+   "section": "E16.5_E2S9",
+   "plot": "plots/E8.75/E16.5_E2S9.png",
+   "plot_sha256": "890dbf11c10e7cac3b187908663b8d8bdc3c91ca276b64962e2d45ae6eccfd87",
+   "region_sha256": "8104c53272d6d4dbf9035dabfb842b2278bf70501419e5c41190def58fd6e2e0",
+   "verdict": "doubt",
+   "note": "Rounded heart with chambers, but a dorsal arm leaves the heart contour toward tubes near the spine."
+  },
+  {
+   "ref": "E8.75",
+   "section": "pup_P1",
+   "plot": "plots/E8.75/pup_P1.png",
+   "plot_sha256": "3ab66d23b56216b163b3bf9097f3b0345b44ad055228dfa6e544a376f4cfbded",
+   "region_sha256": "fe7f20a18d767782544230661dcf3a16811160f578a9b88c87dc8bff4fb05eb7",
+   "verdict": "doubt",
+   "note": "Outline is in the head beside the eye (brain region), not in the thorax; not the heart."
+  }
+ ]
+}
