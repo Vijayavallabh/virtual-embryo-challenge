@@ -1397,7 +1397,10 @@ RULE_LITERALS = {"COUNT_RULE_SEEDS": {10.0}, "COUNT_RULE_MIN_GAIN": {0.3}, "COUN
                  "COPY_PARITY_STREAM": {48.0}, "COPY_PARITY_MAX_TRIES": {200.0},
                  # 2026-11-22, file D (the organ cut; row R21, the captain's order): the link length's percentile,
                  # the one constant the score-blind specification fixed before any code, not a value of a stage
-                 "ORGAN_LINK_PERCENTILE": {99.0}}
+                 "ORGAN_LINK_PERCENTILE": {99.0},
+                 # 2026-11-25, the heart's XPC step (row H36; ruling row R56): a random-stream id, not a value of a
+                 # stage, as COPY_PARITY_STREAM above
+                 "RUN_PROFILE_STREAM": {37.0}}
 
 
 def _stray_literals(src: str) -> tuple[list[tuple[int, str]], set[str]]:
