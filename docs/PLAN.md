@@ -14245,3 +14245,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     one clean commit; a diagnostic (J5, noise floor 6.54)." One embryo try, number 95. The main session gives no view
     beyond that statement. By ruling row R59, `T2embryo_s2x_ovt23.h5ad` is now built twice by
     `experiments/builds/embryo_ot23.sh` and handed over.
+- 2026-11-25 (k), the captain reports one more headline and the rules are applied by their letter (state at 02:10 UTC,
+  2026-11-25). Written by the AI assistant, which records the headline only.
+  - **The paste:** T1:test `T1_s2rcB25H10.h5ad` 72.81 (shown as submitted 2026-11-25 02:06). Its sha256 on disk
+    matches its sheet row. The paste's per-metric lines, rank and file size are not recorded or used.
+  - **Each rule by its letter.** It is below the board's best (MS20, 73.82). Row R44: H10's headline is above H05's
+    (72.78), so `T1_s2rcB25H20.h5ad` is now due. Standing unchanged: 203.695.
