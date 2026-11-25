@@ -1,0 +1,2757 @@
+{
+ "label": "row H35: the control (OTS125's practice form) and the trend forms G0 passed on row H29b's D_f form; a screen on one truth, not an adoption result",
+ "axis": "h35-heart-trend-forms",
+ "task": "T2h/<=E9.5->E10.5",
+ "forms": [
+  "category",
+  "contrast",
+  "portion"
+ ],
+ "arms": [
+  "copy",
+  "control",
+  "category",
+  "contrast",
+  "portion"
+ ],
+ "truth_values": [
+  "own",
+  "radial_0",
+  "thin_0.5",
+  "thin_0"
+ ],
+ "truth_info": {
+  "own": {
+   "cells": 167864,
+   "core_share": 0.2306748320068627,
+   "xy_scope": 0.20989552277802517
+  },
+  "radial_0": {
+   "cells": 96544,
+   "core_share": 0.40108137222406365,
+   "xy_scope": -2.170625565868641e-06
+  },
+  "thin_0.5": {
+   "cells": 45788,
+   "core_share": 0.8456800908534987,
+   "xy_scope": 0.10493046043228518
+  },
+  "thin_0": {
+   "cells": 38722,
+   "core_share": 1.0,
+   "xy_scope": 0.0
+  }
+ },
+ "pred_info": {
+  "organ": {
+   "pool_cells": 25765,
+   "core_share": 0.771589365418203,
+   "xy_scope": 0.07250912372400115
+  }
+ },
+ "organ_record": {
+  "reference": {
+   "rule": "organ cut: chamber-category cells (configs/t2_chamber_classes.yaml, T1's chamber scope) in a connected component that holds core cells, two chamber-category cells linked when closer than L (3D, stored units); L = the 99th percentile of each core cell's distance to its nearest other core cell on the same stage; core cells (CM plus endocardium) always kept",
+   "label_config": "configs/t2_chamber_classes.yaml",
+   "label_config_sha256": "c4c750c1b6dac08b056684e4157afbf5683ee046919dd7302f2ec6632ecc1b6c",
+   "kept_categories": [
+    "cm",
+    "endocardium",
+    "epicardium",
+    "vascular_endothelium",
+    "blood"
+   ],
+   "link_percentile": 99.0,
+   "link_length": 25.996365624683808,
+   "kept_share": 0.47942019277287784,
+   "chamber_share": 0.4844814111867813,
+   "core_share_of_kept": 0.771589365418203,
+   "components_kept": 88,
+   "components_total": 225
+  }
+ },
+ "ratios": {
+  "organ": 1.0819975589700042,
+  "label": 1.0891041878833045
+ },
+ "d_targets": {
+  "organ:f": {
+   "target": 566.9479655638804,
+   "base": 523.9826660085818,
+   "ratio": 1.0819975589700042,
+   "source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage"
+  }
+ },
+ "forecast_targets": {
+  "full_iso_half": 568.6940113806332,
+  "half_iso_half": 574.6407571684713,
+  "core_iso_half": 523.9826660085818
+ },
+ "size_result": {
+  "board": "heart",
+  "valid": true,
+  "target_t": 10.5,
+  "timestamp": "try H27 analogue (in memory, never a size file)",
+  "preregistered": {
+   "target_t": 10.5,
+   "z_mode_requested": "raw",
+   "z_mode": "raw",
+   "rules": [
+    "latest_rate",
+    "half_rate",
+    "power_t"
+   ],
+   "min_start_t": -Infinity,
+   "tie_tol": Infinity,
+   "reference": "E9.5",
+   "stages": [
+    {
+     "name": "E8.25_late",
+     "t": 8.25,
+     "n_cells": 54431,
+     "n_core": 2036,
+     "n_levels": 38,
+     "z_step": 15.0,
+     "z_range": 555.0,
+     "rms_full": 353.4964257628457,
+     "rms_core": 152.17958425737348,
+     "rms_xy_full": 321.70018435371907,
+     "sd_z_full": 146.52206118496372,
+     "rms_xy_core": 125.45807745419077,
+     "sd_z_core": 86.13301728283587,
+     "core_thin_axis_cos_z": 0.7354854035259737,
+     "log_scope": 0.8428120754583706,
+     "log_scope_xy": 0.9416483487288667,
+     "core_thin_axis_angle_deg": 42.65175200533025
+    },
+    {
+     "name": "E8.5",
+     "t": 8.5,
+     "n_cells": 23710,
+     "n_core": 2431,
+     "n_levels": 25,
+     "z_step": 15.0,
+     "z_range": 360.0000000000001,
+     "rms_full": 255.22353488610761,
+     "rms_core": 134.07526158422002,
+     "rms_xy_full": 231.62806165620404,
+     "sd_z_full": 107.17972668909886,
+     "rms_xy_core": 107.75796844638313,
+     "sd_z_core": 79.77716468504832,
+     "core_thin_axis_cos_z": 0.2736455051050436,
+     "log_scope": 0.6437384726629188,
+     "log_scope_xy": 0.7652452233295622,
+     "core_thin_axis_angle_deg": 74.11868863245238
+    },
+    {
+     "name": "E8.75",
+     "t": 8.75,
+     "n_cells": 23377,
+     "n_core": 3914,
+     "n_levels": 35,
+     "z_step": 14.0,
+     "z_range": 476.0,
+     "rms_full": 216.9416140719822,
+     "rms_core": 154.4831472408458,
+     "rms_xy_full": 169.4958000360066,
+     "sd_z_full": 135.40619515484116,
+     "rms_xy_core": 119.36506828412158,
+     "sd_z_core": 98.06642266833148,
+     "core_thin_axis_cos_z": 0.42628193988806146,
+     "log_scope": 0.3395432467203799,
+     "log_scope_xy": 0.3506415502450217,
+     "core_thin_axis_angle_deg": 64.76816696175234
+    },
+    {
+     "name": "E9.5",
+     "t": 9.5,
+     "n_cells": 53742,
+     "n_core": 19880,
+     "n_levels": 40,
+     "z_step": 15.0,
+     "z_range": 585.0,
+     "rms_full": 334.9661603604817,
+     "rms_core": 278.5107252333298,
+     "rms_xy_full": 286.8812998466944,
+     "sd_z_full": 172.92035272030571,
+     "rms_xy_core": 247.5256310010816,
+     "sd_z_core": 127.66865734201056,
+     "core_thin_axis_cos_z": 0.9277759576927032,
+     "log_scope": 0.1845729435355595,
+     "log_scope_xy": 0.1475544045764524,
+     "core_thin_axis_angle_deg": 21.909260420744427
+    }
+   ],
+   "growth": {
+    "core": {
+     "valid": true,
+     "applicable": [
+      "latest_rate",
+      "half_rate",
+      "power_t"
+     ],
+     "chosen": [
+      "latest_rate",
+      "half_rate",
+      "power_t"
+     ],
+     "mae_common": {
+      "latest_rate": 0.5567864720410949,
+      "half_rate": 0.5220783271678204,
+      "power_t": 0.5516824544345807
+     },
+     "common_pseudo_targets": [
+      "E8.75:next",
+      "E9.5:next",
+      "E9.5:skip"
+     ],
+     "pseudo_targets": [
+      {
+       "target": "E8.75",
+       "t_target": 8.75,
+       "kind": "next",
+       "train": "E8.25_late,E8.5",
+       "rule": "copy_last",
+       "pred": 4.898401295896137,
+       "obs": 5.040085011040939,
+       "error": -0.1416837151448025,
+       "eligible": true
+      },
+      {
+       "target": "E8.75",
+       "t_target": 8.75,
+       "kind": "next",
+       "train": "E8.25_late,E8.5",
+       "rule": "latest_rate",
+       "pred": 4.771741292961326,
+       "obs": 5.040085011040939,
+       "error": -0.2683437180796133,
+       "eligible": true
+      },
+      {
+       "target": "E8.75",
+       "t_target": 8.75,
+       "kind": "next",
+       "train": "E8.25_late,E8.5",
+       "rule": "half_rate",
+       "pred": 4.835071294428731,
+       "obs": 5.040085011040939,
+       "error": -0.2050137166122079,
+       "eligible": true
+      },
+      {
+       "target": "E8.75",
+       "t_target": 8.75,
+       "kind": "next",
+       "train": "E8.25_late,E8.5",
+       "rule": "power_t",
+       "pred": 4.7754131192441225,
+       "obs": 5.040085011040939,
+       "error": -0.2646718917968167,
+       "eligible": true
+      },
+      {
+       "target": "E8.75",
+       "t_target": 8.75,
+       "kind": "next",
+       "train": "E8.25_late,E8.5",
+       "rule": "decaying_rate",
+       "pred": 4.771741292961326,
+       "obs": 5.040085011040939,
+       "error": -0.2683437180796133,
+       "eligible": false
+      },
+      {
+       "target": "E9.5",
+       "t_target": 9.5,
+       "kind": "next",
+       "train": "E8.25_late,E8.5,E8.75",
+       "rule": "copy_last",
+       "pred": 5.040085011040939,
+       "obs": 5.629456569337956,
+       "error": -0.5893715582970165,
+       "eligible": true
+      },
+      {
+       "target": "E9.5",
+       "t_target": 9.5,
+       "kind": "next",
+       "train": "E8.25_late,E8.5,E8.75",
+       "rule": "latest_rate",
+       "pred": 5.465136156475347,
+       "obs": 5.629456569337956,
+       "error": -0.164320412862609,
+       "eligible": true
+      },
+      {
+       "target": "E9.5",
+       "t_target": 9.5,
+       "kind": "next",
+       "train": "E8.25_late,E8.5,E8.75",
+       "rule": "half_rate",
+       "pred": 5.252610583758143,
+       "obs": 5.629456569337956,
+       "error": -0.37684598557981275,
+       "eligible": true
+      },
+      {
+       "target": "E9.5",
+       "t_target": 9.5,
+       "kind": "next",
+       "train": "E8.25_late,E8.5,E8.75",
+       "rule": "power_t",
+       "pred": 5.442043940342341,
+       "obs": 5.629456569337956,
+       "error": -0.18741262899561484,
+       "eligible": true
+      },
+      {
+       "target": "E9.5",
+       "t_target": 9.5,
+       "kind": "next",
+       "train": "E8.25_late,E8.5,E8.75",
+       "rule": "decaying_rate",
+       "pred": 5.465136156475347,
+       "obs": 5.629456569337956,
+       "error": -0.164320412862609,
+       "eligible": true
+      },
+      {
+       "target": "E9.5",
+       "t_target": 9.5,
+       "kind": "skip",
+       "train": "E8.25_late,E8.5",
+       "rule": "copy_last",
+       "pred": 4.898401295896137,
+       "obs": 5.629456569337956,
+       "error": -0.731055273441819,
+       "eligible": true
+      },
+      {
+       "target": "E9.5",
+       "t_target": 9.5,
+       "kind": "skip",
+       "train": "E8.25_late,E8.5",
+       "rule": "latest_rate",
+       "pred": 4.391761284156893,
+       "obs": 5.629456569337956,
+       "error": -1.2376952851810623,
+       "eligible": true
+      },
+      {
+       "target": "E9.5",
+       "t_target": 9.5,
+       "kind": "skip",
+       "train": "E8.25_late,E8.5",
+       "rule": "half_rate",
+       "pred": 4.645081290026515,
+       "obs": 5.629456569337956,
+       "error": -0.9843752793114406,
+       "eligible": true
+      },
+      {
+       "target": "E9.5",
+       "t_target": 9.5,
+       "kind": "skip",
+       "train": "E8.25_late,E8.5",
+       "rule": "power_t",
+       "pred": 4.426493726826645,
+       "obs": 5.629456569337956,
+       "error": -1.2029628425113108,
+       "eligible": true
+      },
+      {
+       "target": "E9.5",
+       "t_target": 9.5,
+       "kind": "skip",
+       "train": "E8.25_late,E8.5",
+       "rule": "decaying_rate",
+       "pred": 4.391761284156893,
+       "obs": 5.629456569337956,
+       "error": -1.2376952851810623,
+       "eligible": false
+      }
+     ],
+     "all_rule_predictions": {
+      "copy_last": 5.629456569337956,
+      "latest_rate": 6.415285313733977,
+      "half_rate": 6.022370941535967,
+      "power_t": 6.346719555642821,
+      "decaying_rate": 6.415285313733977
+     },
+     "pred_log_target": 6.261458603637588
+    }
+   },
+   "scope": {
+    "H1": {
+     "pred_log_scope": 0.08188392025332984,
+     "pred_rms_full": 568.6940113806332,
+     "scale_vs_reference_full": 1.697765561657392
+    },
+    "H0": {
+     "pred_log_scope": 0.1845729435355595,
+     "pred_rms_full": 630.1964191192268,
+     "scale_vs_reference_full": 1.8813733854220562
+    },
+    "H2": {
+     "pred_log_scope": 0.09228647176777975,
+     "pred_rms_full": 574.6407571684713,
+     "scale_vs_reference_full": 1.7155188349475605
+    }
+   },
+   "valid": true,
+   "pred_rms_core": 523.9826660085818,
+   "pred_log_growth_core": 0.632002034299632
+  },
+  "z_modes": {
+   "raw": {
+    "target_t": 10.5,
+    "z_mode_requested": "raw",
+    "z_mode": "raw",
+    "rules": [
+     "latest_rate",
+     "half_rate",
+     "power_t"
+    ],
+    "min_start_t": -Infinity,
+    "tie_tol": Infinity,
+    "reference": "E9.5",
+    "stages": [
+     {
+      "name": "E8.25_late",
+      "t": 8.25,
+      "n_cells": 54431,
+      "n_core": 2036,
+      "n_levels": 38,
+      "z_step": 15.0,
+      "z_range": 555.0,
+      "rms_full": 353.4964257628457,
+      "rms_core": 152.17958425737348,
+      "rms_xy_full": 321.70018435371907,
+      "sd_z_full": 146.52206118496372,
+      "rms_xy_core": 125.45807745419077,
+      "sd_z_core": 86.13301728283587,
+      "core_thin_axis_cos_z": 0.7354854035259737,
+      "log_scope": 0.8428120754583706,
+      "log_scope_xy": 0.9416483487288667,
+      "core_thin_axis_angle_deg": 42.65175200533025
+     },
+     {
+      "name": "E8.5",
+      "t": 8.5,
+      "n_cells": 23710,
+      "n_core": 2431,
+      "n_levels": 25,
+      "z_step": 15.0,
+      "z_range": 360.0000000000001,
+      "rms_full": 255.22353488610761,
+      "rms_core": 134.07526158422002,
+      "rms_xy_full": 231.62806165620404,
+      "sd_z_full": 107.17972668909886,
+      "rms_xy_core": 107.75796844638313,
+      "sd_z_core": 79.77716468504832,
+      "core_thin_axis_cos_z": 0.2736455051050436,
+      "log_scope": 0.6437384726629188,
+      "log_scope_xy": 0.7652452233295622,
+      "core_thin_axis_angle_deg": 74.11868863245238
+     },
+     {
+      "name": "E8.75",
+      "t": 8.75,
+      "n_cells": 23377,
+      "n_core": 3914,
+      "n_levels": 35,
+      "z_step": 14.0,
+      "z_range": 476.0,
+      "rms_full": 216.9416140719822,
+      "rms_core": 154.4831472408458,
+      "rms_xy_full": 169.4958000360066,
+      "sd_z_full": 135.40619515484116,
+      "rms_xy_core": 119.36506828412158,
+      "sd_z_core": 98.06642266833148,
+      "core_thin_axis_cos_z": 0.42628193988806146,
+      "log_scope": 0.3395432467203799,
+      "log_scope_xy": 0.3506415502450217,
+      "core_thin_axis_angle_deg": 64.76816696175234
+     },
+     {
+      "name": "E9.5",
+      "t": 9.5,
+      "n_cells": 53742,
+      "n_core": 19880,
+      "n_levels": 40,
+      "z_step": 15.0,
+      "z_range": 585.0,
+      "rms_full": 334.9661603604817,
+      "rms_core": 278.5107252333298,
+      "rms_xy_full": 286.8812998466944,
+      "sd_z_full": 172.92035272030571,
+      "rms_xy_core": 247.5256310010816,
+      "sd_z_core": 127.66865734201056,
+      "core_thin_axis_cos_z": 0.9277759576927032,
+      "log_scope": 0.1845729435355595,
+      "log_scope_xy": 0.1475544045764524,
+      "core_thin_axis_angle_deg": 21.909260420744427
+     }
+    ],
+    "growth": {
+     "core": {
+      "valid": true,
+      "applicable": [
+       "latest_rate",
+       "half_rate",
+       "power_t"
+      ],
+      "chosen": [
+       "latest_rate",
+       "half_rate",
+       "power_t"
+      ],
+      "mae_common": {
+       "latest_rate": 0.5567864720410949,
+       "half_rate": 0.5220783271678204,
+       "power_t": 0.5516824544345807
+      },
+      "common_pseudo_targets": [
+       "E8.75:next",
+       "E9.5:next",
+       "E9.5:skip"
+      ],
+      "pseudo_targets": [
+       {
+        "target": "E8.75",
+        "t_target": 8.75,
+        "kind": "next",
+        "train": "E8.25_late,E8.5",
+        "rule": "copy_last",
+        "pred": 4.898401295896137,
+        "obs": 5.040085011040939,
+        "error": -0.1416837151448025,
+        "eligible": true
+       },
+       {
+        "target": "E8.75",
+        "t_target": 8.75,
+        "kind": "next",
+        "train": "E8.25_late,E8.5",
+        "rule": "latest_rate",
+        "pred": 4.771741292961326,
+        "obs": 5.040085011040939,
+        "error": -0.2683437180796133,
+        "eligible": true
+       },
+       {
+        "target": "E8.75",
+        "t_target": 8.75,
+        "kind": "next",
+        "train": "E8.25_late,E8.5",
+        "rule": "half_rate",
+        "pred": 4.835071294428731,
+        "obs": 5.040085011040939,
+        "error": -0.2050137166122079,
+        "eligible": true
+       },
+       {
+        "target": "E8.75",
+        "t_target": 8.75,
+        "kind": "next",
+        "train": "E8.25_late,E8.5",
+        "rule": "power_t",
+        "pred": 4.7754131192441225,
+        "obs": 5.040085011040939,
+        "error": -0.2646718917968167,
+        "eligible": true
+       },
+       {
+        "target": "E8.75",
+        "t_target": 8.75,
+        "kind": "next",
+        "train": "E8.25_late,E8.5",
+        "rule": "decaying_rate",
+        "pred": 4.771741292961326,
+        "obs": 5.040085011040939,
+        "error": -0.2683437180796133,
+        "eligible": false
+       },
+       {
+        "target": "E9.5",
+        "t_target": 9.5,
+        "kind": "next",
+        "train": "E8.25_late,E8.5,E8.75",
+        "rule": "copy_last",
+        "pred": 5.040085011040939,
+        "obs": 5.629456569337956,
+        "error": -0.5893715582970165,
+        "eligible": true
+       },
+       {
+        "target": "E9.5",
+        "t_target": 9.5,
+        "kind": "next",
+        "train": "E8.25_late,E8.5,E8.75",
+        "rule": "latest_rate",
+        "pred": 5.465136156475347,
+        "obs": 5.629456569337956,
+        "error": -0.164320412862609,
+        "eligible": true
+       },
+       {
+        "target": "E9.5",
+        "t_target": 9.5,
+        "kind": "next",
+        "train": "E8.25_late,E8.5,E8.75",
+        "rule": "half_rate",
+        "pred": 5.252610583758143,
+        "obs": 5.629456569337956,
+        "error": -0.37684598557981275,
+        "eligible": true
+       },
+       {
+        "target": "E9.5",
+        "t_target": 9.5,
+        "kind": "next",
+        "train": "E8.25_late,E8.5,E8.75",
+        "rule": "power_t",
+        "pred": 5.442043940342341,
+        "obs": 5.629456569337956,
+        "error": -0.18741262899561484,
+        "eligible": true
+       },
+       {
+        "target": "E9.5",
+        "t_target": 9.5,
+        "kind": "next",
+        "train": "E8.25_late,E8.5,E8.75",
+        "rule": "decaying_rate",
+        "pred": 5.465136156475347,
+        "obs": 5.629456569337956,
+        "error": -0.164320412862609,
+        "eligible": true
+       },
+       {
+        "target": "E9.5",
+        "t_target": 9.5,
+        "kind": "skip",
+        "train": "E8.25_late,E8.5",
+        "rule": "copy_last",
+        "pred": 4.898401295896137,
+        "obs": 5.629456569337956,
+        "error": -0.731055273441819,
+        "eligible": true
+       },
+       {
+        "target": "E9.5",
+        "t_target": 9.5,
+        "kind": "skip",
+        "train": "E8.25_late,E8.5",
+        "rule": "latest_rate",
+        "pred": 4.391761284156893,
+        "obs": 5.629456569337956,
+        "error": -1.2376952851810623,
+        "eligible": true
+       },
+       {
+        "target": "E9.5",
+        "t_target": 9.5,
+        "kind": "skip",
+        "train": "E8.25_late,E8.5",
+        "rule": "half_rate",
+        "pred": 4.645081290026515,
+        "obs": 5.629456569337956,
+        "error": -0.9843752793114406,
+        "eligible": true
+       },
+       {
+        "target": "E9.5",
+        "t_target": 9.5,
+        "kind": "skip",
+        "train": "E8.25_late,E8.5",
+        "rule": "power_t",
+        "pred": 4.426493726826645,
+        "obs": 5.629456569337956,
+        "error": -1.2029628425113108,
+        "eligible": true
+       },
+       {
+        "target": "E9.5",
+        "t_target": 9.5,
+        "kind": "skip",
+        "train": "E8.25_late,E8.5",
+        "rule": "decaying_rate",
+        "pred": 4.391761284156893,
+        "obs": 5.629456569337956,
+        "error": -1.2376952851810623,
+        "eligible": false
+       }
+      ],
+      "all_rule_predictions": {
+       "copy_last": 5.629456569337956,
+       "latest_rate": 6.415285313733977,
+       "half_rate": 6.022370941535967,
+       "power_t": 6.346719555642821,
+       "decaying_rate": 6.415285313733977
+      },
+      "pred_log_target": 6.261458603637588
+     }
+    },
+    "scope": {
+     "H1": {
+      "pred_log_scope": 0.08188392025332984,
+      "pred_rms_full": 568.6940113806332,
+      "scale_vs_reference_full": 1.697765561657392
+     },
+     "H0": {
+      "pred_log_scope": 0.1845729435355595,
+      "pred_rms_full": 630.1964191192268,
+      "scale_vs_reference_full": 1.8813733854220562
+     },
+     "H2": {
+      "pred_log_scope": 0.09228647176777975,
+      "pred_rms_full": 574.6407571684713,
+      "scale_vs_reference_full": 1.7155188349475605
+     }
+    },
+    "valid": true,
+    "pred_rms_core": 523.9826660085818,
+    "pred_log_growth_core": 0.632002034299632
+   }
+  },
+  "provenance": {
+   "analogue": "size procedure, E9.0 cut-off lifted, all three rules averaged",
+   "git_commit": null,
+   "size_procedure_sha256": null,
+   "departures": [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f"
+   ]
+  }
+ },
+ "v7": {
+  "reference": "E9.5",
+  "loaded_rms_full": 334.9661603604817,
+  "size_rms_full": 334.9661603604817,
+  "log_diff": 0.0,
+  "ok": true
+ },
+ "strength": 1.25,
+ "truth_seed": 20261102,
+ "half_seed_base": 2000000,
+ "departures": {
+  "a": "the E9.0 rate cut-off is lifted (min_start_t = -inf): every practice rate interval starts before E9.0, so the pre-registered settings give valid=False and no figure (row H25)",
+  "b": "rule selection is forced to all three pre-registered rules (tie_tol = inf), the test's outcome, reached at the test by no eligible pseudo-target",
+  "c": "copy_last on E8.25_late -> E8.5, the one transition with one input stage",
+  "d": "an in-memory size result applied through apply_size_procedure; size_or_hold's crosscheck (hardwired to E10.5) is redone by guard V7 on each transition's untrimmed reference stage",
+  "e": "the practice board's count rule sets the cell number, not the test board's",
+  "f": "the preregistered field holds the raw result; the builder passes --z-mode raw, so the recorded mode never enters"
+ },
+ "seeds": [
+  2,
+  3
+ ],
+ "rows": [
+  {
+   "seed": 2,
+   "build_seed": 1000002,
+   "n_cells": {
+    "copy": 12589,
+    "control": 12589,
+    "category": 12589,
+    "contrast": 12589,
+    "portion": 12589
+   },
+   "checks": {
+    "same_draw": true,
+    "pre_size_coords_equal": true,
+    "changed_counts": {
+     "control": 364915,
+     "category": 367697,
+     "contrast": 330775,
+     "portion": 324805
+    },
+    "post_size_coords_equal": true,
+    "n_cells": {
+     "copy": 12589,
+     "control": 12589,
+     "category": 12589,
+     "contrast": 12589,
+     "portion": 12589
+    }
+   },
+   "records": {
+    "copy": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 566.9479655638804,
+      "base_rms": 523.9826660085818,
+      "ratio": 1.0819975589700042,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 301.4411449564559,
+      "rms_after": 566.9479655638804,
+      "log_rms_after_vs_target": 0.0
+     },
+     "trend": {
+      "form": null,
+      "strength": null
+     }
+    },
+    "control": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 566.9479655638804,
+      "base_rms": 523.9826660085818,
+      "ratio": 1.0819975589700042,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 301.4411449564559,
+      "rms_after": 566.9479655638804,
+      "log_rms_after_vs_target": 0.0
+     },
+     "trend": {
+      "form": "banked",
+      "strength": 1.25,
+      "budget_days": 0.375,
+      "effective_budget_days": 0.46875,
+      "ref_cells": 25765,
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "types": [
+       {
+        "type": "CM",
+        "status": "shifted"
+       },
+       {
+        "type": "Endothelial",
+        "status": "shifted"
+       },
+       {
+        "type": "Untracked@end",
+        "status": "skipped: fewer than 20 cells at a stage"
+       }
+      ],
+      "trend": {
+       "stages": [
+        "earliest",
+        "earlier",
+        "start",
+        "ref"
+       ],
+       "days": [
+        8.3,
+        8.5,
+        8.75,
+        9.5
+       ],
+       "budget_days": 0.375,
+       "lineages": [
+        {
+         "lineage": "CM",
+         "stages": [
+          "earliest",
+          "earlier",
+          "start",
+          "ref"
+         ],
+         "days": [
+          8.3,
+          8.5,
+          8.75,
+          9.5
+         ],
+         "own_factor": false,
+         "weights": [
+          0.1118669690098255,
+          0.21919879062736158,
+          0.6689342403628098
+         ],
+         "cosine": 0.8011924964195043,
+         "norm_ratio": 0.6765220310718135,
+         "mean_abs_logf_trend": 0.17395852333413692,
+         "mean_abs_logf_b0": 0.2610787159694998
+        },
+        {
+         "lineage": "Endothelial",
+         "stages": [
+          "earliest",
+          "earlier",
+          "start",
+          "ref"
+         ],
+         "days": [
+          8.3,
+          8.5,
+          8.75,
+          9.5
+         ],
+         "own_factor": false,
+         "weights": [
+          0.1118669690098255,
+          0.21919879062736158,
+          0.6689342403628098
+         ],
+         "cosine": 0.6355391432578954,
+         "norm_ratio": 0.8255603771550468,
+         "mean_abs_logf_trend": 0.21008165492419315,
+         "mean_abs_logf_b0": 0.2651647469765749
+        }
+       ],
+       "median_cosine": 0.7183658198386998,
+       "median_norm_ratio": 0.7510412041134302
+      }
+     }
+    },
+    "category": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 566.9479655638804,
+      "base_rms": 523.9826660085818,
+      "ratio": 1.0819975589700042,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 301.4411449564559,
+      "rms_after": 566.9479655638804,
+      "log_rms_after_vs_target": 0.0
+     },
+     "trend": {
+      "form": "category",
+      "strength": 1.25,
+      "budget_days": 0.375,
+      "effective_budget_days": 0.46875,
+      "ref_cells": 25765,
+      "shifted": [
+       "CM",
+       "Endothelial/endocardium",
+       "Endothelial/vascular_endothelium"
+      ],
+      "types": [
+       {
+        "type": "CM",
+        "status": "shifted"
+       },
+       {
+        "type": "Endothelial/endocardium",
+        "status": "shifted"
+       },
+       {
+        "type": "Endothelial/vascular_endothelium",
+        "status": "shifted"
+       },
+       {
+        "type": "Untracked@end",
+        "status": "skipped: fewer than 20 cells at a stage"
+       }
+      ],
+      "trend": {
+       "stages": [
+        "earliest",
+        "earlier",
+        "start",
+        "ref"
+       ],
+       "days": [
+        8.3,
+        8.5,
+        8.75,
+        9.5
+       ],
+       "budget_days": 0.375,
+       "lineages": [
+        {
+         "lineage": "CM",
+         "stages": [
+          "earliest",
+          "earlier",
+          "start",
+          "ref"
+         ],
+         "days": [
+          8.3,
+          8.5,
+          8.75,
+          9.5
+         ],
+         "own_factor": false,
+         "weights": [
+          0.1118669690098255,
+          0.21919879062736158,
+          0.6689342403628098
+         ],
+         "cosine": 0.8011924964195043,
+         "norm_ratio": 0.6765220310718135,
+         "mean_abs_logf_trend": 0.17395852333413692,
+         "mean_abs_logf_b0": 0.2610787159694998
+        },
+        {
+         "lineage": "Endothelial/endocardium",
+         "stages": [
+          "earliest",
+          "earlier",
+          "start",
+          "ref"
+         ],
+         "days": [
+          8.3,
+          8.5,
+          8.75,
+          9.5
+         ],
+         "own_factor": false,
+         "weights": [
+          0.1118669690098255,
+          0.21919879062736158,
+          0.6689342403628098
+         ],
+         "cosine": 0.7290586027317625,
+         "norm_ratio": 0.7555980961234866,
+         "mean_abs_logf_trend": 0.18250167635084955,
+         "mean_abs_logf_b0": 0.2476684471498396
+        },
+        {
+         "lineage": "Endothelial/vascular_endothelium",
+         "stages": [
+          "earliest",
+          "earlier",
+          "start",
+          "ref"
+         ],
+         "days": [
+          8.3,
+          8.5,
+          8.75,
+          9.5
+         ],
+         "own_factor": false,
+         "weights": [
+          0.1118669690098255,
+          0.21919879062736158,
+          0.6689342403628098
+         ],
+         "cosine": 0.6386681661776484,
+         "norm_ratio": 0.8048121219620905,
+         "mean_abs_logf_trend": 0.22427943748563836,
+         "mean_abs_logf_b0": 0.2943108194130084
+        }
+       ],
+       "median_cosine": 0.7290586027317625,
+       "median_norm_ratio": 0.7555980961234866
+      },
+      "split_types": [
+       "Endothelial/endocardium",
+       "Endothelial/vascular_endothelium"
+      ],
+      "collapsed": {
+       "ref": false,
+       "start": false,
+       "earlier": false,
+       "earliest": false,
+       "draw": false
+      }
+     }
+    },
+    "contrast": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 566.9479655638804,
+      "base_rms": 523.9826660085818,
+      "ratio": 1.0819975589700042,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 301.4411449564559,
+      "rms_after": 566.9479655638804,
+      "log_rms_after_vs_target": 0.0
+     },
+     "trend": {
+      "form": "contrast",
+      "strength": 1.25,
+      "budget_days": 0.375,
+      "effective_budget_days": 0.46875,
+      "ref_cells": 25765,
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "types": [
+       {
+        "type": "CM",
+        "status": "shifted"
+       },
+       {
+        "type": "Endothelial",
+        "status": "shifted"
+       },
+       {
+        "type": "Untracked@end",
+        "status": "skipped: fewer than 20 cells at a stage"
+       }
+      ],
+      "trend": {
+       "stages": [
+        "earliest",
+        "earlier",
+        "start",
+        "ref"
+       ],
+       "days": [
+        8.3,
+        8.5,
+        8.75,
+        9.5
+       ],
+       "budget_days": 0.375,
+       "lineages": [
+        {
+         "lineage": "CM",
+         "stages": [
+          "earliest",
+          "earlier",
+          "start",
+          "ref"
+         ],
+         "days": [
+          8.3,
+          8.5,
+          8.75,
+          9.5
+         ],
+         "own_factor": false,
+         "weights": [
+          0.1118669690098255,
+          0.21919879062736158,
+          0.6689342403628098
+         ],
+         "cosine": 0.8011924964195043,
+         "norm_ratio": 0.6765220310718135,
+         "mean_abs_logf_trend": 0.17395852333413692,
+         "mean_abs_logf_b0": 0.2610787159694998
+        },
+        {
+         "lineage": "Endothelial",
+         "stages": [
+          "earliest",
+          "earlier",
+          "start",
+          "ref"
+         ],
+         "days": [
+          8.3,
+          8.5,
+          8.75,
+          9.5
+         ],
+         "own_factor": false,
+         "weights": [
+          0.1118669690098255,
+          0.21919879062736158,
+          0.6689342403628098
+         ],
+         "cosine": 0.6355391432578954,
+         "norm_ratio": 0.8255603771550468,
+         "mean_abs_logf_trend": 0.21008165492419315,
+         "mean_abs_logf_b0": 0.2651647469765749
+        }
+       ],
+       "median_cosine": 0.7183658198386998,
+       "median_norm_ratio": 0.7510412041134302
+      },
+      "shared_lineages": [
+       "CM",
+       "CranialMesoderm",
+       "Ectoderm",
+       "Endoderm",
+       "Endothelial",
+       "NCC"
+      ],
+      "shared_norm": 5.023479415042211,
+      "lineages": {
+       "CM": {
+        "cosine": 0.46100937527511415,
+        "norm_ratio_before_hold": 0.8357468796389642
+       },
+       "Endothelial": {
+        "cosine": 0.6420037828814747,
+        "norm_ratio_before_hold": 0.6175361621551537
+       }
+      }
+     }
+    },
+    "portion": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 566.9479655638804,
+      "base_rms": 523.9826660085818,
+      "ratio": 1.0819975589700042,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 301.4411449564559,
+      "rms_after": 566.9479655638804,
+      "log_rms_after_vs_target": 0.0
+     },
+     "trend": {
+      "form": "portion",
+      "strength": 1.25,
+      "budget_days": 0.375,
+      "effective_budget_days": 0.46875,
+      "ref_cells": 25765,
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "types": [
+       {
+        "type": "CM",
+        "status": "shifted"
+       },
+       {
+        "type": "Endothelial",
+        "status": "shifted"
+       },
+       {
+        "type": "Untracked@end",
+        "status": "skipped: fewer than 20 cells at a stage"
+       }
+      ],
+      "trend": {
+       "stages": [
+        "earliest",
+        "earlier",
+        "start",
+        "ref"
+       ],
+       "days": [
+        8.3,
+        8.5,
+        8.75,
+        9.5
+       ],
+       "budget_days": 0.375,
+       "lineages": [
+        {
+         "lineage": "CM",
+         "stages": [
+          "earliest",
+          "earlier",
+          "start",
+          "ref"
+         ],
+         "days": [
+          8.3,
+          8.5,
+          8.75,
+          9.5
+         ],
+         "own_factor": false,
+         "weights": [
+          0.1118669690098255,
+          0.21919879062736158,
+          0.6689342403628098
+         ],
+         "cosine": 0.8011924964195043,
+         "norm_ratio": 0.6765220310718135,
+         "mean_abs_logf_trend": 0.17395852333413692,
+         "mean_abs_logf_b0": 0.2610787159694998
+        },
+        {
+         "lineage": "Endothelial",
+         "stages": [
+          "earliest",
+          "earlier",
+          "start",
+          "ref"
+         ],
+         "days": [
+          8.3,
+          8.5,
+          8.75,
+          9.5
+         ],
+         "own_factor": false,
+         "weights": [
+          0.1118669690098255,
+          0.21919879062736158,
+          0.6689342403628098
+         ],
+         "cosine": 0.6355391432578954,
+         "norm_ratio": 0.8255603771550468,
+         "mean_abs_logf_trend": 0.21008165492419315,
+         "mean_abs_logf_b0": 0.2651647469765749
+        }
+       ],
+       "median_cosine": 0.7183658198386998,
+       "median_norm_ratio": 0.7510412041134302
+      },
+      "lineages": {
+       "CM": {
+        "stages": [
+         "earliest",
+         "earlier",
+         "start"
+        ],
+        "cosine": 0.3859761078637571,
+        "norm_ratio_before_hold": 1.6415853597739742
+       },
+       "Endothelial": {
+        "stages": [
+         "earliest",
+         "earlier",
+         "start"
+        ],
+        "cosine": 0.6295332248541439,
+        "norm_ratio_before_hold": 2.352157369834616
+       }
+      },
+      "banked_factor_kept": []
+     }
+    }
+   },
+   "draw": {
+    "pool_cells": 25765,
+    "drawn": 25179,
+    "short": false,
+    "repeated_rows_at_least": 0
+   },
+   "scores": {
+    "own": {
+     "floor": 50.0,
+     "copy": 27.29318316991103,
+     "control": 28.086781754007173,
+     "category": 28.220584721779414,
+     "contrast": 27.667661834736414,
+     "portion": 28.143419755355463
+    },
+    "radial_0": {
+     "floor": 50.0,
+     "copy": 28.535944644258564,
+     "control": 28.96186549436296,
+     "category": 29.147240588270684,
+     "contrast": 28.915622857750563,
+     "portion": 29.25454697535377
+    },
+    "thin_0.5": {
+     "floor": 50.0,
+     "copy": 52.74795529948274,
+     "control": 53.29676579249566,
+     "category": 53.7640054438196,
+     "contrast": 53.78381969424576,
+     "portion": 54.27311007361026
+    },
+    "thin_0": {
+     "floor": 50.0,
+     "copy": 54.212042143013036,
+     "control": 54.041626227951014,
+     "category": 54.179110866751145,
+     "contrast": 55.45385247788418,
+     "portion": 55.93867844407387
+    }
+   },
+   "skills": {
+    "own": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "copy": {
+      "de_score": 0.4388590133270984,
+      "de_direction": 0.4466006303466907,
+      "mmd_u": 0.19022913964548205,
+      "variogram": 0.25473448320199843,
+      "d2_shape": 0.29719853836784405,
+      "occupancy_dice": 0.4393132030787448,
+      "scale_log_ratio": 0.5196322543574029,
+      "neighborhood_mmd": 0.2356369416205835
+     },
+     "control": {
+      "de_score": 0.4586550679307986,
+      "de_direction": 0.45520881138136754,
+      "mmd_u": 0.19001007629192457,
+      "variogram": 0.2723300637230355,
+      "d2_shape": 0.29719853836784405,
+      "occupancy_dice": 0.4393132030787448,
+      "scale_log_ratio": 0.5196322543574029,
+      "neighborhood_mmd": 0.24142493638676843
+     },
+     "category": {
+      "de_score": 0.4586550679307986,
+      "de_direction": 0.454520460065069,
+      "mmd_u": 0.1920419000509202,
+      "variogram": 0.2750686779129848,
+      "d2_shape": 0.29719853836784405,
+      "occupancy_dice": 0.4393132030787448,
+      "scale_log_ratio": 0.5196322543574029,
+      "neighborhood_mmd": 0.24326541774921373
+     },
+     "contrast": {
+      "de_score": 0.4420214770158251,
+      "de_direction": 0.4556060814845436,
+      "mmd_u": 0.19123505976095617,
+      "variogram": 0.26661027376191937,
+      "d2_shape": 0.29719853836784405,
+      "occupancy_dice": 0.4393132030787448,
+      "scale_log_ratio": 0.5196322543574029,
+      "neighborhood_mmd": 0.23756426520665017
+     },
+     "portion": {
+      "de_score": 0.4728674358845165,
+      "de_direction": 0.4579409048938135,
+      "mmd_u": 0.18994172242607382,
+      "variogram": 0.2710314164264426,
+      "d2_shape": 0.29719853836784405,
+      "occupancy_dice": 0.4393132030787448,
+      "scale_log_ratio": 0.5196322543574029,
+      "neighborhood_mmd": 0.23835203483503603
+     }
+    },
+    "radial_0": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "copy": {
+      "de_score": 0.49178977428744025,
+      "de_direction": 0.4885928724091655,
+      "mmd_u": 0.1715821044738815,
+      "variogram": 0.2911977491961415,
+      "d2_shape": 0.36168091168091165,
+      "occupancy_dice": 0.42659176029962537,
+      "scale_log_ratio": 0.18434093161546086,
+      "neighborhood_mmd": 0.2619605219136835
+     },
+     "control": {
+      "de_score": 0.508489012548975,
+      "de_direction": 0.4914262860570914,
+      "mmd_u": 0.16950617283950614,
+      "variogram": 0.3086042879454778,
+      "d2_shape": 0.36168091168091165,
+      "occupancy_dice": 0.42659176029962537,
+      "scale_log_ratio": 0.18434093161546086,
+      "neighborhood_mmd": 0.26290291634689184
+     },
+     "category": {
+      "de_score": 0.508489012548975,
+      "de_direction": 0.490837369551106,
+      "mmd_u": 0.17162499999999994,
+      "variogram": 0.312028941814893,
+      "d2_shape": 0.36168091168091165,
+      "occupancy_dice": 0.42659176029962537,
+      "scale_log_ratio": 0.18434093161546086,
+      "neighborhood_mmd": 0.2659775804338332
+     },
+     "contrast": {
+      "de_score": 0.49178977428744025,
+      "de_direction": 0.49656496261871086,
+      "mmd_u": 0.17368753953194177,
+      "variogram": 0.3052025556413677,
+      "d2_shape": 0.36168091168091165,
+      "occupancy_dice": 0.42659176029962537,
+      "scale_log_ratio": 0.18434093161546086,
+      "neighborhood_mmd": 0.2645908761766836
+     },
+     "portion": {
+      "de_score": 0.5263312566122017,
+      "de_direction": 0.4977971337418342,
+      "mmd_u": 0.17087741132545112,
+      "variogram": 0.31128711169671885,
+      "d2_shape": 0.36168091168091165,
+      "occupancy_dice": 0.42659176029962537,
+      "scale_log_ratio": 0.18434093161546086,
+      "neighborhood_mmd": 0.2615105682523021
+     }
+    },
+    "thin_0.5": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "copy": {
+      "de_score": 0.6078560168155543,
+      "de_direction": 0.6176264715240217,
+      "mmd_u": 0.43969434118133,
+      "variogram": 0.48855286222710126,
+      "d2_shape": 0.8217576187101346,
+      "occupancy_dice": 0.5032051282051281,
+      "scale_log_ratio": 0.25519699069491186,
+      "neighborhood_mmd": 0.5112193056731583
+     },
+     "control": {
+      "de_score": 0.6078560168155543,
+      "de_direction": 0.6256284646126079,
+      "mmd_u": 0.426055633380028,
+      "variogram": 0.5247423072534327,
+      "d2_shape": 0.8217576187101346,
+      "occupancy_dice": 0.5032051282051281,
+      "scale_log_ratio": 0.25519699069491186,
+      "neighborhood_mmd": 0.5228781755196306
+     },
+     "category": {
+      "de_score": 0.6262434864992894,
+      "de_direction": 0.624782748632121,
+      "mmd_u": 0.43001413855786713,
+      "variogram": 0.5281372023581655,
+      "d2_shape": 0.8217576187101346,
+      "occupancy_dice": 0.5032051282051281,
+      "scale_log_ratio": 0.25519699069491186,
+      "neighborhood_mmd": 0.5290638235723675
+     },
+     "contrast": {
+      "de_score": 0.6078560168155543,
+      "de_direction": 0.6370856580242863,
+      "mmd_u": 0.44614417435037723,
+      "variogram": 0.5196820733039516,
+      "d2_shape": 0.8217576187101346,
+      "occupancy_dice": 0.5032051282051281,
+      "scale_log_ratio": 0.25519699069491186,
+      "neighborhood_mmd": 0.5266027038813782
+     },
+     "portion": {
+      "de_score": 0.6326656183769741,
+      "de_direction": 0.6327661516396115,
+      "mmd_u": 0.44972539079002954,
+      "variogram": 0.5397284926254841,
+      "d2_shape": 0.8217576187101346,
+      "occupancy_dice": 0.5032051282051281,
+      "scale_log_ratio": 0.25519699069491186,
+      "neighborhood_mmd": 0.5257619738751815
+     }
+    },
+    "thin_0": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "copy": {
+      "de_score": 0.6732636014749042,
+      "de_direction": 0.6678450033990483,
+      "mmd_u": 0.5879899916597164,
+      "variogram": 0.6095304501624123,
+      "d2_shape": 0.4748711340206186,
+      "occupancy_dice": 0.3582309582309584,
+      "scale_log_ratio": 0.005348652931854201,
+      "neighborhood_mmd": 0.6218376264949402
+     },
+     "control": {
+      "de_score": 0.6868570551205282,
+      "de_direction": 0.6774705192745328,
+      "mmd_u": 0.555380494721916,
+      "variogram": 0.636924225191925,
+      "d2_shape": 0.4748711340206186,
+      "occupancy_dice": 0.3582309582309584,
+      "scale_log_ratio": 0.005348652931854201,
+      "neighborhood_mmd": 0.6120196932827797
+     },
+     "category": {
+      "de_score": 0.6868570551205282,
+      "de_direction": 0.6760718463973574,
+      "mmd_u": 0.557753164556962,
+      "variogram": 0.6387517599044751,
+      "d2_shape": 0.4748711340206186,
+      "occupancy_dice": 0.3582309582309584,
+      "scale_log_ratio": 0.005348652931854201,
+      "neighborhood_mmd": 0.6160637994873256
+     },
+     "contrast": {
+      "de_score": 0.6868570551205282,
+      "de_direction": 0.6878588432992577,
+      "mmd_u": 0.5933344554788756,
+      "variogram": 0.6391846343159809,
+      "d2_shape": 0.4748711340206186,
+      "occupancy_dice": 0.3582309582309584,
+      "scale_log_ratio": 0.005348652931854201,
+      "neighborhood_mmd": 0.639638041163946
+     },
+     "portion": {
+      "de_score": 0.7083366320956377,
+      "de_direction": 0.6850289380099016,
+      "mmd_u": 0.5932346011443959,
+      "variogram": 0.66023763470572,
+      "d2_shape": 0.4748711340206186,
+      "occupancy_dice": 0.3582309582309584,
+      "scale_log_ratio": 0.005348652931854201,
+      "neighborhood_mmd": 0.6413449564134496
+     }
+    }
+   },
+   "groups": {
+    "own": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "copy": {
+      "expression_change": 0.4427298218368946,
+      "cell_state": 0.2160312770680886,
+      "shape_growth": 0.1973292862708744,
+      "local_organisation": 0.2356369416205835
+     },
+     "control": {
+      "expression_change": 0.45693193965608303,
+      "cell_state": 0.22293807126436893,
+      "shape_growth": 0.2021763228530665,
+      "local_organisation": 0.24142493638676843
+     },
+     "category": {
+      "expression_change": 0.45658776399793377,
+      "cell_state": 0.22525261119574602,
+      "shape_growth": 0.20371759592828304,
+      "local_organisation": 0.24326541774921373
+     },
+     "contrast": {
+      "expression_change": 0.4488137792501844,
+      "cell_state": 0.22138514536134146,
+      "shape_growth": 0.19894328357128047,
+      "local_organisation": 0.23756426520665017
+     },
+     "portion": {
+      "expression_change": 0.46540417038916504,
+      "cell_state": 0.2223776000262213,
+      "shape_growth": 0.19960298496379622,
+      "local_organisation": 0.23835203483503603
+     }
+    },
+    "radial_0": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "copy": {
+      "expression_change": 0.49019132334830284,
+      "cell_state": 0.2194283623627855,
+      "shape_growth": 0.16985757814557073,
+      "local_organisation": 0.2619605219136835
+     },
+     "control": {
+      "expression_change": 0.4999576493030332,
+      "cell_state": 0.22514541888189482,
+      "shape_growth": 0.17046863524269842,
+      "local_organisation": 0.26290291634689184
+     },
+     "category": {
+      "expression_change": 0.49966319105004053,
+      "cell_state": 0.22778657672595717,
+      "shape_growth": 0.17246227532099656,
+      "local_organisation": 0.2659775804338332
+     },
+     "contrast": {
+      "expression_change": 0.4941773684530756,
+      "cell_state": 0.22629354597571216,
+      "shape_growth": 0.17156312370455112,
+      "local_organisation": 0.2645908761766836
+     },
+     "portion": {
+      "expression_change": 0.512064195177018,
+      "cell_state": 0.2270412914739582,
+      "shape_growth": 0.16956582411087248,
+      "local_organisation": 0.2615105682523021
+     }
+    },
+    "thin_0.5": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "copy": {
+      "expression_change": 0.612741244169788,
+      "cell_state": 0.4592377495996385,
+      "shape_growth": 0.5267199125367248,
+      "local_organisation": 0.5112193056731583
+     },
+     "control": {
+      "expression_change": 0.6167422407140811,
+      "cell_state": 0.4655303029293899,
+      "shape_growth": 0.5267199125367248,
+      "local_organisation": 0.5228781755196306
+     },
+     "category": {
+      "expression_change": 0.6255131175657052,
+      "cell_state": 0.46926336407798647,
+      "shape_growth": 0.5267199125367248,
+      "local_organisation": 0.5290638235723675
+     },
+     "contrast": {
+      "expression_change": 0.6224708374199204,
+      "cell_state": 0.47555933393180694,
+      "shape_growth": 0.5267199125367248,
+      "local_organisation": 0.5266027038813782
+     },
+     "portion": {
+      "expression_change": 0.6327158850082928,
+      "cell_state": 0.48572663152421136,
+      "shape_growth": 0.5267199125367248,
+      "local_organisation": 0.5257619738751815
+     }
+    },
+    "thin_0": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "copy": {
+      "expression_change": 0.6705543024369762,
+      "cell_state": 0.5966061750607947,
+      "shape_growth": 0.27948358172781035,
+      "local_organisation": 0.6218376264949402
+     },
+     "control": {
+      "expression_change": 0.6821637871975306,
+      "cell_state": 0.5879979869099197,
+      "shape_growth": 0.27948358172781035,
+      "local_organisation": 0.6120196932827797
+     },
+     "category": {
+      "expression_change": 0.6814644507589428,
+      "cell_state": 0.5901526026959671,
+      "shape_growth": 0.27948358172781035,
+      "local_organisation": 0.6160637994873256
+     },
+     "contrast": {
+      "expression_change": 0.6873579492098929,
+      "cell_state": 0.6116745270137178,
+      "shape_growth": 0.27948358172781035,
+      "local_organisation": 0.639638041163946
+     },
+     "portion": {
+      "expression_change": 0.6966827850527697,
+      "cell_state": 0.6200358145689255,
+      "shape_growth": 0.27948358172781035,
+      "local_organisation": 0.6413449564134496
+     }
+    }
+   },
+   "seconds": 119.7
+  },
+  {
+   "seed": 3,
+   "build_seed": 1000003,
+   "n_cells": {
+    "copy": 12589,
+    "control": 12589,
+    "category": 12589,
+    "contrast": 12589,
+    "portion": 12589
+   },
+   "checks": {
+    "same_draw": true,
+    "pre_size_coords_equal": true,
+    "changed_counts": {
+     "control": 365440,
+     "category": 367626,
+     "contrast": 330198,
+     "portion": 324190
+    },
+    "post_size_coords_equal": true,
+    "n_cells": {
+     "copy": 12589,
+     "control": 12589,
+     "category": 12589,
+     "contrast": 12589,
+     "portion": 12589
+    }
+   },
+   "records": {
+    "copy": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 566.9479655638804,
+      "base_rms": 523.9826660085818,
+      "ratio": 1.0819975589700042,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 301.3514804901873,
+      "rms_after": 566.9479655638803,
+      "log_rms_after_vs_target": -2.220446049250313e-16
+     },
+     "trend": {
+      "form": null,
+      "strength": null
+     }
+    },
+    "control": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 566.9479655638804,
+      "base_rms": 523.9826660085818,
+      "ratio": 1.0819975589700042,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 301.3514804901873,
+      "rms_after": 566.9479655638803,
+      "log_rms_after_vs_target": -2.220446049250313e-16
+     },
+     "trend": {
+      "form": "banked",
+      "strength": 1.25,
+      "budget_days": 0.375,
+      "effective_budget_days": 0.46875,
+      "ref_cells": 25765,
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "types": [
+       {
+        "type": "CM",
+        "status": "shifted"
+       },
+       {
+        "type": "Endothelial",
+        "status": "shifted"
+       },
+       {
+        "type": "Untracked@end",
+        "status": "skipped: fewer than 20 cells at a stage"
+       }
+      ],
+      "trend": {
+       "stages": [
+        "earliest",
+        "earlier",
+        "start",
+        "ref"
+       ],
+       "days": [
+        8.3,
+        8.5,
+        8.75,
+        9.5
+       ],
+       "budget_days": 0.375,
+       "lineages": [
+        {
+         "lineage": "CM",
+         "stages": [
+          "earliest",
+          "earlier",
+          "start",
+          "ref"
+         ],
+         "days": [
+          8.3,
+          8.5,
+          8.75,
+          9.5
+         ],
+         "own_factor": false,
+         "weights": [
+          0.1118669690098255,
+          0.21919879062736158,
+          0.6689342403628098
+         ],
+         "cosine": 0.8011924964195043,
+         "norm_ratio": 0.6765220310718135,
+         "mean_abs_logf_trend": 0.17395852333413692,
+         "mean_abs_logf_b0": 0.2610787159694998
+        },
+        {
+         "lineage": "Endothelial",
+         "stages": [
+          "earliest",
+          "earlier",
+          "start",
+          "ref"
+         ],
+         "days": [
+          8.3,
+          8.5,
+          8.75,
+          9.5
+         ],
+         "own_factor": false,
+         "weights": [
+          0.1118669690098255,
+          0.21919879062736158,
+          0.6689342403628098
+         ],
+         "cosine": 0.6355391432578954,
+         "norm_ratio": 0.8255603771550468,
+         "mean_abs_logf_trend": 0.21008165492419315,
+         "mean_abs_logf_b0": 0.2651647469765749
+        }
+       ],
+       "median_cosine": 0.7183658198386998,
+       "median_norm_ratio": 0.7510412041134302
+      }
+     }
+    },
+    "category": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 566.9479655638804,
+      "base_rms": 523.9826660085818,
+      "ratio": 1.0819975589700042,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 301.3514804901873,
+      "rms_after": 566.9479655638803,
+      "log_rms_after_vs_target": -2.220446049250313e-16
+     },
+     "trend": {
+      "form": "category",
+      "strength": 1.25,
+      "budget_days": 0.375,
+      "effective_budget_days": 0.46875,
+      "ref_cells": 25765,
+      "shifted": [
+       "CM",
+       "Endothelial/endocardium",
+       "Endothelial/vascular_endothelium"
+      ],
+      "types": [
+       {
+        "type": "CM",
+        "status": "shifted"
+       },
+       {
+        "type": "Endothelial/endocardium",
+        "status": "shifted"
+       },
+       {
+        "type": "Endothelial/vascular_endothelium",
+        "status": "shifted"
+       },
+       {
+        "type": "Untracked@end",
+        "status": "skipped: fewer than 20 cells at a stage"
+       }
+      ],
+      "trend": {
+       "stages": [
+        "earliest",
+        "earlier",
+        "start",
+        "ref"
+       ],
+       "days": [
+        8.3,
+        8.5,
+        8.75,
+        9.5
+       ],
+       "budget_days": 0.375,
+       "lineages": [
+        {
+         "lineage": "CM",
+         "stages": [
+          "earliest",
+          "earlier",
+          "start",
+          "ref"
+         ],
+         "days": [
+          8.3,
+          8.5,
+          8.75,
+          9.5
+         ],
+         "own_factor": false,
+         "weights": [
+          0.1118669690098255,
+          0.21919879062736158,
+          0.6689342403628098
+         ],
+         "cosine": 0.8011924964195043,
+         "norm_ratio": 0.6765220310718135,
+         "mean_abs_logf_trend": 0.17395852333413692,
+         "mean_abs_logf_b0": 0.2610787159694998
+        },
+        {
+         "lineage": "Endothelial/endocardium",
+         "stages": [
+          "earliest",
+          "earlier",
+          "start",
+          "ref"
+         ],
+         "days": [
+          8.3,
+          8.5,
+          8.75,
+          9.5
+         ],
+         "own_factor": false,
+         "weights": [
+          0.1118669690098255,
+          0.21919879062736158,
+          0.6689342403628098
+         ],
+         "cosine": 0.7290586027317625,
+         "norm_ratio": 0.7555980961234866,
+         "mean_abs_logf_trend": 0.18250167635084955,
+         "mean_abs_logf_b0": 0.2476684471498396
+        },
+        {
+         "lineage": "Endothelial/vascular_endothelium",
+         "stages": [
+          "earliest",
+          "earlier",
+          "start",
+          "ref"
+         ],
+         "days": [
+          8.3,
+          8.5,
+          8.75,
+          9.5
+         ],
+         "own_factor": false,
+         "weights": [
+          0.1118669690098255,
+          0.21919879062736158,
+          0.6689342403628098
+         ],
+         "cosine": 0.6386681661776484,
+         "norm_ratio": 0.8048121219620905,
+         "mean_abs_logf_trend": 0.22427943748563836,
+         "mean_abs_logf_b0": 0.2943108194130084
+        }
+       ],
+       "median_cosine": 0.7290586027317625,
+       "median_norm_ratio": 0.7555980961234866
+      },
+      "split_types": [
+       "Endothelial/endocardium",
+       "Endothelial/vascular_endothelium"
+      ],
+      "collapsed": {
+       "ref": false,
+       "start": false,
+       "earlier": false,
+       "earliest": false,
+       "draw": false
+      }
+     }
+    },
+    "contrast": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 566.9479655638804,
+      "base_rms": 523.9826660085818,
+      "ratio": 1.0819975589700042,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 301.3514804901873,
+      "rms_after": 566.9479655638803,
+      "log_rms_after_vs_target": -2.220446049250313e-16
+     },
+     "trend": {
+      "form": "contrast",
+      "strength": 1.25,
+      "budget_days": 0.375,
+      "effective_budget_days": 0.46875,
+      "ref_cells": 25765,
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "types": [
+       {
+        "type": "CM",
+        "status": "shifted"
+       },
+       {
+        "type": "Endothelial",
+        "status": "shifted"
+       },
+       {
+        "type": "Untracked@end",
+        "status": "skipped: fewer than 20 cells at a stage"
+       }
+      ],
+      "trend": {
+       "stages": [
+        "earliest",
+        "earlier",
+        "start",
+        "ref"
+       ],
+       "days": [
+        8.3,
+        8.5,
+        8.75,
+        9.5
+       ],
+       "budget_days": 0.375,
+       "lineages": [
+        {
+         "lineage": "CM",
+         "stages": [
+          "earliest",
+          "earlier",
+          "start",
+          "ref"
+         ],
+         "days": [
+          8.3,
+          8.5,
+          8.75,
+          9.5
+         ],
+         "own_factor": false,
+         "weights": [
+          0.1118669690098255,
+          0.21919879062736158,
+          0.6689342403628098
+         ],
+         "cosine": 0.8011924964195043,
+         "norm_ratio": 0.6765220310718135,
+         "mean_abs_logf_trend": 0.17395852333413692,
+         "mean_abs_logf_b0": 0.2610787159694998
+        },
+        {
+         "lineage": "Endothelial",
+         "stages": [
+          "earliest",
+          "earlier",
+          "start",
+          "ref"
+         ],
+         "days": [
+          8.3,
+          8.5,
+          8.75,
+          9.5
+         ],
+         "own_factor": false,
+         "weights": [
+          0.1118669690098255,
+          0.21919879062736158,
+          0.6689342403628098
+         ],
+         "cosine": 0.6355391432578954,
+         "norm_ratio": 0.8255603771550468,
+         "mean_abs_logf_trend": 0.21008165492419315,
+         "mean_abs_logf_b0": 0.2651647469765749
+        }
+       ],
+       "median_cosine": 0.7183658198386998,
+       "median_norm_ratio": 0.7510412041134302
+      },
+      "shared_lineages": [
+       "CM",
+       "CranialMesoderm",
+       "Ectoderm",
+       "Endoderm",
+       "Endothelial",
+       "NCC"
+      ],
+      "shared_norm": 5.023479415042211,
+      "lineages": {
+       "CM": {
+        "cosine": 0.46100937527511415,
+        "norm_ratio_before_hold": 0.8357468796389642
+       },
+       "Endothelial": {
+        "cosine": 0.6420037828814747,
+        "norm_ratio_before_hold": 0.6175361621551537
+       }
+      }
+     }
+    },
+    "portion": {
+     "size": {
+      "sizing": "f",
+      "target_rms_full": 566.9479655638804,
+      "base_rms": 523.9826660085818,
+      "ratio": 1.0819975589700042,
+      "target_source": "z_modes.raw.pred_rms_core of row H27's in-memory size result x rms(pool) / rms(core) on the reference stage",
+      "rms_before": 301.3514804901873,
+      "rms_after": 566.9479655638803,
+      "log_rms_after_vs_target": -2.220446049250313e-16
+     },
+     "trend": {
+      "form": "portion",
+      "strength": 1.25,
+      "budget_days": 0.375,
+      "effective_budget_days": 0.46875,
+      "ref_cells": 25765,
+      "shifted": [
+       "CM",
+       "Endothelial"
+      ],
+      "types": [
+       {
+        "type": "CM",
+        "status": "shifted"
+       },
+       {
+        "type": "Endothelial",
+        "status": "shifted"
+       },
+       {
+        "type": "Untracked@end",
+        "status": "skipped: fewer than 20 cells at a stage"
+       }
+      ],
+      "trend": {
+       "stages": [
+        "earliest",
+        "earlier",
+        "start",
+        "ref"
+       ],
+       "days": [
+        8.3,
+        8.5,
+        8.75,
+        9.5
+       ],
+       "budget_days": 0.375,
+       "lineages": [
+        {
+         "lineage": "CM",
+         "stages": [
+          "earliest",
+          "earlier",
+          "start",
+          "ref"
+         ],
+         "days": [
+          8.3,
+          8.5,
+          8.75,
+          9.5
+         ],
+         "own_factor": false,
+         "weights": [
+          0.1118669690098255,
+          0.21919879062736158,
+          0.6689342403628098
+         ],
+         "cosine": 0.8011924964195043,
+         "norm_ratio": 0.6765220310718135,
+         "mean_abs_logf_trend": 0.17395852333413692,
+         "mean_abs_logf_b0": 0.2610787159694998
+        },
+        {
+         "lineage": "Endothelial",
+         "stages": [
+          "earliest",
+          "earlier",
+          "start",
+          "ref"
+         ],
+         "days": [
+          8.3,
+          8.5,
+          8.75,
+          9.5
+         ],
+         "own_factor": false,
+         "weights": [
+          0.1118669690098255,
+          0.21919879062736158,
+          0.6689342403628098
+         ],
+         "cosine": 0.6355391432578954,
+         "norm_ratio": 0.8255603771550468,
+         "mean_abs_logf_trend": 0.21008165492419315,
+         "mean_abs_logf_b0": 0.2651647469765749
+        }
+       ],
+       "median_cosine": 0.7183658198386998,
+       "median_norm_ratio": 0.7510412041134302
+      },
+      "lineages": {
+       "CM": {
+        "stages": [
+         "earliest",
+         "earlier",
+         "start"
+        ],
+        "cosine": 0.3859761078637571,
+        "norm_ratio_before_hold": 1.6415853597739742
+       },
+       "Endothelial": {
+        "stages": [
+         "earliest",
+         "earlier",
+         "start"
+        ],
+        "cosine": 0.6295332248541439,
+        "norm_ratio_before_hold": 2.352157369834616
+       }
+      },
+      "banked_factor_kept": []
+     }
+    }
+   },
+   "draw": {
+    "pool_cells": 25765,
+    "drawn": 25179,
+    "short": false,
+    "repeated_rows_at_least": 0
+   },
+   "scores": {
+    "own": {
+     "floor": 50.0,
+     "copy": 27.154012437334927,
+     "control": 27.838069921033636,
+     "category": 28.05355263816716,
+     "contrast": 27.562661216552627,
+     "portion": 27.851578089941132
+    },
+    "radial_0": {
+     "floor": 50.0,
+     "copy": 27.59197755999015,
+     "control": 28.25652217888605,
+     "category": 28.445612718789782,
+     "contrast": 28.106427557222453,
+     "portion": 28.21726134475823
+    },
+    "thin_0.5": {
+     "floor": 50.0,
+     "copy": 51.89405503303455,
+     "control": 52.05570499199494,
+     "category": 52.50191872368024,
+     "contrast": 52.90150803647238,
+     "portion": 53.07746853647948
+    },
+    "thin_0": {
+     "floor": 50.0,
+     "copy": 52.58341682210741,
+     "control": 52.03802295136195,
+     "category": 52.279680929114335,
+     "contrast": 53.80845529962139,
+     "portion": 54.12004473899407
+    }
+   },
+   "skills": {
+    "own": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "copy": {
+      "de_score": 0.4459415357359317,
+      "de_direction": 0.44471369592532756,
+      "mmd_u": 0.1705284701410716,
+      "variogram": 0.2524182686420962,
+      "d2_shape": 0.2666425470332851,
+      "occupancy_dice": 0.4630206857466706,
+      "scale_log_ratio": 0.5166504381694255,
+      "neighborhood_mmd": 0.23898316682633092
+     },
+     "control": {
+      "de_score": 0.4615421733256128,
+      "de_direction": 0.45400403151914975,
+      "mmd_u": 0.17248262605352654,
+      "variogram": 0.266188908257473,
+      "d2_shape": 0.2666425470332851,
+      "occupancy_dice": 0.4630206857466706,
+      "scale_log_ratio": 0.5166504381694255,
+      "neighborhood_mmd": 0.24348159509202455
+     },
+     "category": {
+      "de_score": 0.4647942076874484,
+      "de_direction": 0.4539208501282521,
+      "mmd_u": 0.1756115920210764,
+      "variogram": 0.2692458392417344,
+      "d2_shape": 0.2666425470332851,
+      "occupancy_dice": 0.4630206857466706,
+      "scale_log_ratio": 0.5166504381694255,
+      "neighborhood_mmd": 0.24563069240777863
+     },
+     "contrast": {
+      "de_score": 0.4520534996928022,
+      "de_direction": 0.45294574706339413,
+      "mmd_u": 0.1720120917201209,
+      "variogram": 0.2626616550933299,
+      "d2_shape": 0.2666425470332851,
+      "occupancy_dice": 0.4630206857466706,
+      "scale_log_ratio": 0.5166504381694255,
+      "neighborhood_mmd": 0.2412697316154883
+     },
+     "portion": {
+      "de_score": 0.4714377248755483,
+      "de_direction": 0.4570190001844678,
+      "mmd_u": 0.17097838035910592,
+      "variogram": 0.26549592478796014,
+      "d2_shape": 0.2666425470332851,
+      "occupancy_dice": 0.4630206857466706,
+      "scale_log_ratio": 0.5166504381694255,
+      "neighborhood_mmd": 0.2408952959028832
+     }
+    },
+    "radial_0": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "copy": {
+      "de_score": 0.4921879028515444,
+      "de_direction": 0.4818315377081293,
+      "mmd_u": 0.15187052890817404,
+      "variogram": 0.28184961434704964,
+      "d2_shape": 0.3969427390051372,
+      "occupancy_dice": 0.4814231738035264,
+      "scale_log_ratio": 0.1807465618860511,
+      "neighborhood_mmd": 0.24196311599314724
+     },
+     "control": {
+      "de_score": 0.5080640868685793,
+      "de_direction": 0.48590053829818763,
+      "mmd_u": 0.15249646726330665,
+      "variogram": 0.29461058818856983,
+      "d2_shape": 0.3969427390051372,
+      "occupancy_dice": 0.4814231738035264,
+      "scale_log_ratio": 0.1807465618860511,
+      "neighborhood_mmd": 0.24848641655886158
+     },
+     "category": {
+      "de_score": 0.5040130953638188,
+      "de_direction": 0.4858285601422082,
+      "mmd_u": 0.15628771421675114,
+      "variogram": 0.2982510219124841,
+      "d2_shape": 0.3969427390051372,
+      "occupancy_dice": 0.4814231738035264,
+      "scale_log_ratio": 0.1807465618860511,
+      "neighborhood_mmd": 0.2519412381951731
+     },
+     "contrast": {
+      "de_score": 0.4960503066209334,
+      "de_direction": 0.4894050935137287,
+      "mmd_u": 0.1545530492898914,
+      "variogram": 0.29315137064797864,
+      "d2_shape": 0.3969427390051372,
+      "occupancy_dice": 0.4814231738035264,
+      "scale_log_ratio": 0.1807465618860511,
+      "neighborhood_mmd": 0.24708001029071264
+     },
+     "portion": {
+      "de_score": 0.5163925557238693,
+      "de_direction": 0.49084559740583683,
+      "mmd_u": 0.15229918852169821,
+      "variogram": 0.29745769508380787,
+      "d2_shape": 0.3969427390051372,
+      "occupancy_dice": 0.4814231738035264,
+      "scale_log_ratio": 0.1807465618860511,
+      "neighborhood_mmd": 0.2430777018476335
+     }
+    },
+    "thin_0.5": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "copy": {
+      "de_score": 0.6039733368187165,
+      "de_direction": 0.6123030187962787,
+      "mmd_u": 0.44401401955358794,
+      "variogram": 0.4902126892573901,
+      "d2_shape": 0.7580278949075575,
+      "occupancy_dice": 0.54,
+      "scale_log_ratio": 0.20758483033932137,
+      "neighborhood_mmd": 0.5032596276631494
+     },
+     "control": {
+      "de_score": 0.6099927397531517,
+      "de_direction": 0.6162027896312336,
+      "mmd_u": 0.43763636363636366,
+      "variogram": 0.5140335292672324,
+      "d2_shape": 0.7580278949075575,
+      "occupancy_dice": 0.54,
+      "scale_log_ratio": 0.20758483033932137,
+      "neighborhood_mmd": 0.4995330220146764
+     },
+     "category": {
+      "de_score": 0.6161744116274418,
+      "de_direction": 0.617579471466871,
+      "mmd_u": 0.4456582114423255,
+      "variogram": 0.5183441651260745,
+      "d2_shape": 0.7580278949075575,
+      "occupancy_dice": 0.54,
+      "scale_log_ratio": 0.20758483033932137,
+      "neighborhood_mmd": 0.5065963060686016
+     },
+     "contrast": {
+      "de_score": 0.6039733368187165,
+      "de_direction": 0.6287775394813804,
+      "mmd_u": 0.45882577201677466,
+      "variogram": 0.515172753447492,
+      "d2_shape": 0.7580278949075575,
+      "occupancy_dice": 0.54,
+      "scale_log_ratio": 0.20758483033932137,
+      "neighborhood_mmd": 0.5164494103041589
+     },
+     "portion": {
+      "de_score": 0.6288786064235166,
+      "de_direction": 0.626619170984456,
+      "mmd_u": 0.45159474671669797,
+      "variogram": 0.5344797091480791,
+      "d2_shape": 0.7580278949075575,
+      "occupancy_dice": 0.54,
+      "scale_log_ratio": 0.20758483033932137,
+      "neighborhood_mmd": 0.5087302126503159
+     }
+    },
+    "thin_0": {
+     "floor": {
+      "de_score": 0.5,
+      "de_direction": 0.5,
+      "mmd_u": 0.5,
+      "variogram": 0.5,
+      "d2_shape": 0.5,
+      "occupancy_dice": 0.5,
+      "scale_log_ratio": 0.5,
+      "neighborhood_mmd": 0.5
+     },
+     "copy": {
+      "de_score": 0.6442510178295662,
+      "de_direction": 0.6741611898996888,
+      "mmd_u": 0.5993690851735016,
+      "variogram": 0.5994457761683752,
+      "d2_shape": 0.37590014402304367,
+      "occupancy_dice": 0.3703041144901609,
+      "scale_log_ratio": 0.01101061738104601,
+      "neighborhood_mmd": 0.5923258488168008
+     },
+     "control": {
+      "de_score": 0.65050676872918,
+      "de_direction": 0.6798995325472685,
+      "mmd_u": 0.5735621226564983,
+      "variogram": 0.6164120135659592,
+      "d2_shape": 0.37590014402304367,
+      "occupancy_dice": 0.3703041144901609,
+      "scale_log_ratio": 0.01101061738104601,
+      "neighborhood_mmd": 0.5732107297645543
+     },
+     "category": {
+      "de_score": 0.65050676872918,
+      "de_direction": 0.6809447278317379,
+      "mmd_u": 0.5802925574666452,
+      "variogram": 0.6191178536311279,
+      "d2_shape": 0.37590014402304367,
+      "occupancy_dice": 0.3703041144901609,
+      "scale_log_ratio": 0.01101061738104601,
+      "neighborhood_mmd": 0.5772338543202594
+     },
+     "contrast": {
+      "de_score": 0.6442510178295662,
+      "de_direction": 0.693643675706456,
+      "mmd_u": 0.610209601081812,
+      "variogram": 0.6225392397464644,
+      "d2_shape": 0.37590014402304367,
+      "occupancy_dice": 0.3703041144901609,
+      "scale_log_ratio": 0.01101061738104601,
+      "neighborhood_mmd": 0.6158444500377549
+     },
+     "portion": {
+      "de_score": 0.6767937467738367,
+      "de_direction": 0.6901558073654391,
+      "mmd_u": 0.6051969823973178,
+      "variogram": 0.6433719551135846,
+      "d2_shape": 0.37590014402304367,
+      "occupancy_dice": 0.3703041144901609,
+      "scale_log_ratio": 0.01101061738104601,
+      "neighborhood_mmd": 0.6084550823748834
+     }
+    }
+   },
+   "groups": {
+    "own": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "copy": {
+      "expression_change": 0.44532761583062963,
+      "cell_state": 0.20328438954148143,
+      "shape_growth": 0.19856532529495524,
+      "local_organisation": 0.23898316682633092
+     },
+     "control": {
+      "expression_change": 0.4577731024223813,
+      "cell_state": 0.20996513893510513,
+      "shape_growth": 0.20230296039183462,
+      "local_organisation": 0.24348159509202455
+     },
+     "category": {
+      "expression_change": 0.45935752890785025,
+      "cell_state": 0.21306529090933962,
+      "shape_growth": 0.2040885933017179,
+      "local_organisation": 0.24563069240777863
+     },
+     "contrast": {
+      "expression_change": 0.4524996233780981,
+      "cell_state": 0.2082719170694045,
+      "shape_growth": 0.20046517659911411,
+      "local_organisation": 0.2412697316154883
+     },
+     "portion": {
+      "expression_change": 0.46422836253000804,
+      "cell_state": 0.20878539813064761,
+      "shape_growth": 0.20015406703410651,
+      "local_organisation": 0.2408952959028832
+     }
+    },
+    "radial_0": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "copy": {
+      "expression_change": 0.48700972027983686,
+      "cell_state": 0.2038621630837243,
+      "shape_growth": 0.17084410304289763,
+      "local_organisation": 0.24196311599314724
+     },
+     "control": {
+      "expression_change": 0.49698231258338343,
+      "cell_state": 0.20934211563341193,
+      "shape_growth": 0.17545004237978507,
+      "local_organisation": 0.24848641655886158
+     },
+     "category": {
+      "expression_change": 0.4949208277530135,
+      "cell_state": 0.21307303729504434,
+      "shape_growth": 0.17788940550836024,
+      "local_organisation": 0.2519412381951731
+     },
+     "contrast": {
+      "expression_change": 0.492727700067331,
+      "cell_state": 0.2099923778331263,
+      "shape_growth": 0.17445701409772815,
+      "local_organisation": 0.24708001029071264
+     },
+     "portion": {
+      "expression_change": 0.503619076564853,
+      "cell_state": 0.21036259114654207,
+      "shape_growth": 0.17163108423130075,
+      "local_organisation": 0.2430777018476335
+     }
+    },
+    "thin_0.5": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "copy": {
+      "expression_change": 0.6081381778074976,
+      "cell_state": 0.46249348743510876,
+      "shape_growth": 0.5018709084156263,
+      "local_organisation": 0.5032596276631494
+     },
+     "control": {
+      "expression_change": 0.6130977646921927,
+      "cell_state": 0.4681952298887112,
+      "shape_growth": 0.5014021830842175,
+      "local_organisation": 0.4995330220146764
+     },
+     "category": {
+      "expression_change": 0.6168769415471564,
+      "cell_state": 0.4747325929158251,
+      "shape_growth": 0.5018709084156263,
+      "local_organisation": 0.5065963060686016
+     },
+     "contrast": {
+      "expression_change": 0.6163754381500484,
+      "cell_state": 0.48136456458906157,
+      "shape_growth": 0.5018709084156263,
+      "local_organisation": 0.5164494103041589
+     },
+     "portion": {
+      "expression_change": 0.6277488887039863,
+      "cell_state": 0.4847487316892504,
+      "shape_growth": 0.5018709084156263,
+      "local_organisation": 0.5087302126503159
+     }
+    },
+    "thin_0": {
+     "floor": {
+      "expression_change": 0.5,
+      "cell_state": 0.5,
+      "shape_growth": 0.5,
+      "local_organisation": 0.5
+     },
+     "copy": {
+      "expression_change": 0.6592061038646275,
+      "cell_state": 0.599399761571451,
+      "shape_growth": 0.2524049586314168,
+      "local_organisation": 0.5923258488168008
+     },
+     "control": {
+      "expression_change": 0.6652031506382243,
+      "cell_state": 0.5907020790202826,
+      "shape_growth": 0.2524049586314168,
+      "local_organisation": 0.5732107297645543
+     },
+     "category": {
+      "expression_change": 0.6657257482804589,
+      "cell_state": 0.5958226759324383,
+      "shape_growth": 0.2524049586314168,
+      "local_organisation": 0.5772338543202594
+     },
+     "contrast": {
+      "expression_change": 0.6689473467680112,
+      "cell_state": 0.6151414565476729,
+      "shape_growth": 0.2524049586314168,
+      "local_organisation": 0.6158444500377549
+     },
+     "portion": {
+      "expression_change": 0.6834747770696379,
+      "cell_state": 0.6204669714838245,
+      "shape_growth": 0.2524049586314168,
+      "local_organisation": 0.6084550823748834
+     }
+    }
+   },
+   "seconds": 118.3
+  }
+ ],
+ "source": "experiments/harness/h35_heart_trend_forms.py (row H35)",
+ "provenance": {
+  "commit": "53fc2674479c2fe18fec91831523ba8d8dc7aab4",
+  "tree_clean": true,
+  "utc": "2026-11-25 02:52:43"
+ }
+}

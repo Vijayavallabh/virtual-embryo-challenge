@@ -14309,3 +14309,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     nothing while the board keeps its best. **The captain's pick, verbatim:** "Build LM16"; its words: "Yes, build and
     upload T1_s2rcMSB_LM16 (T72 passed)." The file is built twice by `experiments/builds/t1_lm_m20_line.sh` when a T1
     checkout is free. Line 12 (row R60) and row R46's pair were merged just before this entry.
+- 2026-11-25 (u), row H35 reads: two heart trend forms kept (state at 03:28 UTC, 2026-11-25). Written by the AI
+  assistant, which designed none of it and is recused on the heart's scope and size.
+  - **The pre-set statement, verbatim:** "OUTCOME H35: category KEPT; contrast DROP; whole IDLE; portion KEPT." Ten
+    heart tries, 118 to 127. OTK125 and OTP125 are built twice by `experiments/builds/heart_trend_line_h.sh` under row
+    R55. Because main's builder changed after the screen's run commit (the T1 merges), the build launcher (which
+    refuses any code change since that commit) runs on the branch `campaign/heart-tf-build`: the run commit 53fc267
+    plus one commit holding this same outcome and the same reading files, no code.
