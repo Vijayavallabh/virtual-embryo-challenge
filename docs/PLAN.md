@@ -14933,3 +14933,15 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Next:** the OIC125 engineer (a fetch script with the pinned file list first, run on the DGX by the AI
     assistant), then G0 on the fetched data, the counted read's row committed before the read, a review and two
     builds.
+- 2026-11-25 (sss), row N65: a T3 designer's reading before any row, counted after the fact (state at 18:40 UTC,
+  2026-11-25). Written by the AI assistant.
+  - **What ran.** The round-8 TRANSFER designer (TASK_gap8.md), told to run no practice reading, ran one scratch
+    script on three released files (wild type E8.75, the Mab21l2 knockout and Gata4 replicate 1): each knockout's log
+    ratio over wild type, their correlation with each other and with the wild type's pseudobulk. No scorer, no file.
+    It disclosed the run itself; the script was deleted after the run and is committed as the designer's
+    reconstruction.
+  - **Counted.** By rules 1, 3 and 4, as rows N25 and N61: one T3 try, number 85 (T3 stood at 84). Row N65 is placed
+    after the fact, marked not registered.
+  - **What follows.** Nothing is chosen on it. The design's first proposal (the reliability-weighted two-knockout
+    factor) goes to a cold challenger whose first question is whether this reading touched data its gate would read; a
+    gate that did is struck or moved to untouched data.
