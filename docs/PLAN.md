@@ -15012,3 +15012,16 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     stay due.
   - **The sheet's count** of files reported on 2026-11-25 now includes entry (www)'s four, which that entry left out.
   - **Standing unchanged:** 204.865.
+- 2026-11-25 (zzz), the captain's yes to the T3 sign cube, recorded as ruling row R72 before any code (state at 19:45
+  UTC). Written by the AI assistant, which designed none of it.
+  - **The second cold check** (`T3_MOON5_check2.md`): FIX, GO only with F1 to F5 and its F6 to F10 (the null bar of F2
+    read as written passed noise about 0.8 of the time; C2's builder never re-clips, so F1's clip changed C2's own
+    vertex; a Newton hold for the 1% library band; F5 reworded so no T3 file is named after the first cube headline;
+    row N65 means the Mab21l2 arm is no fresh look). Rules: clear, a choice among predictions given R42. Price: beats
+    C2 by more than 0.3 about 0.10; by +5 or more about 0.02 to 0.03; best about +10.
+  - **The question**, with no recommended option (two cold checks, the second adding fixes the first had not seen),
+    gave the files, the gate, the A15 use of the released E8.0 and E9.5 files, the price and the cost. **The captain's
+    pick:** "Yes, with A15 for E8.0/E9.5" (its option: the second check's words plus "and my A15 for the released E8.0
+    and E9.5 files as T3 inputs"). Recorded as R72; its counted read is row K31, placed before the read.
+  - **Next:** a T3 engineer for the cube's tables, G0, row K31's read and the builder with F1 to F10; an independent
+    review; K31 placed before the read; builds on the DGX by about 08:00 UTC.
