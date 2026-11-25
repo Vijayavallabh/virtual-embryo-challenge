@@ -14802,3 +14802,18 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     R58 names one file; no rule in force names a further file on it. It bears on two send rules of the T1 refinement
     design, not yet a ruling row (its F2 and F4 depend on MSBm20's headline against MSB's). Standing unchanged:
     204.865.
+- 2026-11-25 (jjj), the T3 hedge challenge and its rules reading (state at 17:14 UTC, 2026-11-25). Written by the AI
+  assistant.
+  - **The challenge** (`T3_HEDGE_challenge.md`): H1 and H2 FIX (built only after the captain's words, in row R66's
+    form: every candidate named with its command before any read, a ruling flag on the builder, H2's rows set by table
+    order, every candidate built so that no file name shows an ordering); H3 STRIKE. The shared rows check out and no
+    closed lever moves; the script needs about 2.5 hours. Its exposure note: row R66's first cell, read as the brief
+    directed (no value).
+  - **The rules reading.** By the organisers' own test (whether the truth enters a file's content or only the choice
+    among files), mixtures whose parents are picked by headline compute from scores: odds that an organiser counts
+    them so, about 0.55 as designed, 0.4 in row R66's form, 0.1 with parents fixed now without reference to any score.
+    The same reading bears on any file whose content follows a headline (row R66's K1 had that form; no board's best
+    file is of it: MSBm10, C2, OTK125 and O were each named without a headline condition on their content) and on the
+    T1 refinement design's X1.
+  - **The price:** a lottery on near-copies of the banked file; expected rise +0.15 to +0.2, of which skill 0 to +0.1;
+    best case about +1.5. The embryo's hedge shares the question and waits on the captain with it.
