@@ -15091,3 +15091,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **The outcome statement, quoted:** "Try K31: STOP: no axis moves the test-like truth a point beyond a random
     direction of its size; nothing is built." No vertex is built; T3 keeps `T3_c2_s2.h5ad`. Tries: T3 86 to 89 (row
     K31's four), counted once. The reading's four files are committed with this entry.
+- 2026-11-25 (ffff), the embryo's consensus form BF (row R71): its gate E59 reads STOP; nothing is built (state at
+  21:40 UTC). Written by the AI assistant, recused on the embryo's occupancy term and shape forms.
+  - **The run** (`run_bf.sh b282384... bf1` in `~/v/vec-campaign`, started 19:26 UTC): preflight, tests, G0, the G0
+    read, the run and the read all exit 0.
+  - **The outcome statement, quoted:** "GBF: STOP. No file; the handed-over embryo files stand." No BF file is built;
+    the embryo keeps `T2embryo_s2x_ov.h5ad`. The reading's two files are committed with this entry.

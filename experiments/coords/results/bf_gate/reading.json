@@ -1,0 +1,719 @@
+{
+ "void": false,
+ "why": [],
+ "commit": "b282384e998ac6d9e50d0a0e5dfc9f963ef8169a",
+ "row": "E59",
+ "truths": {
+  "five": {
+   "T2/E8.0.h5ad": [
+    "half",
+    "late"
+   ],
+   "T2/E8.25_late.h5ad": [
+    "new1",
+    "x1"
+   ],
+   "T2/E8.5.h5ad": [
+    "new2",
+    "x2",
+    "x3"
+   ],
+   "T2/E7.5.h5ad": [
+    "e75"
+   ],
+   "T2/E7.25.h5ad": [
+    "e725"
+   ]
+  },
+  "e80": {
+   "T2/E8.0.h5ad": [
+    "half",
+    "late"
+   ]
+  },
+  "test_like": {
+   "T2/E8.0.h5ad": [
+    "half",
+    "late"
+   ],
+   "T2/E8.25_late.h5ad": [
+    "new1"
+   ],
+   "T2/E8.5.h5ad": [
+    "new2"
+   ]
+  },
+  "four": {
+   "T2/E8.0.h5ad": [
+    "half",
+    "late"
+   ],
+   "T2/E8.25_late.h5ad": [
+    "new1",
+    "x1"
+   ],
+   "T2/E8.5.h5ad": [
+    "new2",
+    "x2",
+    "x3"
+   ],
+   "T2/E7.5.h5ad": [
+    "e75"
+   ]
+  }
+ },
+ "clause_text": {
+  "a": "(a) the five-truth merged gated board gain against its base is at least +0.5, with D_s above 0 in at least 8 of 10 seeds.",
+  "b": "(b) the ungated d2_shape plus occupancy_dice skill (their sum) gains at least +0.06 merged, and above 0 on at least 4 of the 5 truths (the genericity claim).",
+  "c": "(c) neighborhood_mmd's skill changes by at least -0.01 merged, and by no less than -0.02 on any truth.",
+  "d": "(d) under build prefix the five-truth merged board gain is within 0.3 of (a)'s (the coin does not carry it).",
+  "e": "(e) BF_O's ungated d2_shape plus occupancy_dice is above each control's (BF2_O, BFns_O) on the five-truth merge, with at least 8 of 10 D_s ahead (rule 7: the five extra specimens and the flip step each earn their place); a failed (e) is STOP for every arm.",
+  "f": "(f) on the E8.0 truth (half and late merged; chosen by its collection protocol, by no score) the ungated d2_shape plus occupancy_dice and the gated board are both above 0."
+ },
+ "pass_rule": "Per file arm against its own base (BF_O against O, BF_SO against SO), under build main unless named, on the J4 merge of the nine tasks into five truths at equal weight (E8.0 = half, late; E8.25_late = new1, x1; E8.5 = new2, x2, x3; E7.5 = e75; E7.25 = e725), D_s the mean over truths of each truth's task-mean difference at seed s. An arm passes only if all of (a) the five-truth merged gated board gain against its base is at least +0.5, with D_s above 0 in at least 8 of 10 seeds. (b) the ungated d2_shape plus occupancy_dice skill (their sum) gains at least +0.06 merged, and above 0 on at least 4 of the 5 truths (the genericity claim). (c) neighborhood_mmd's skill changes by at least -0.01 merged, and by no less than -0.02 on any truth. (d) under build prefix the five-truth merged board gain is within 0.3 of (a)'s (the coin does not carry it). (e) BF_O's ungated d2_shape plus occupancy_dice is above each control's (BF2_O, BFns_O) on the five-truth merge, with at least 8 of 10 D_s ahead (rule 7: the five extra specimens and the flip step each earn their place); a failed (e) is STOP for every arm. (f) on the E8.0 truth (half and late merged; chosen by its collection protocol, by no score) the ungated d2_shape plus occupancy_dice and the gated board are both above 0. hold and its merged board gain is not idle (below 0.3 in size: STOP). Its file is built only if it passes; neither file if (e) fails.",
+ "void_conditions": [
+  "a missing task, seed or file (the floor and every name of the main pass, the floor and O, SO, BF_O, BF_SO under prefix)",
+  "a result from another run commit or an unclean tree, not the bake protocol, or a test board",
+  "G0's record missing or not PASS at the run commit",
+  "any refusal (an arm, a control or a base)",
+  "an arm's count or expression matrix off its base's, or an expression term (de_score, de_direction, mmd_u, variogram) off its base's by more than 1e-9 in skill",
+  "an arm's size target off its base's, or its RMS radius off that target by more than 1e-6 relative where it did not jitter",
+  "an arm's recorded form or prior off its specification (the prior holds every stage of BAYES_PRIOR_STAGES that does not lie strictly between the task's brackets, and so never the truth)",
+  "SO's guard, row E51's own void checks: SO's de_score, de_direction, mmd_u or variogram skill off s2xs's by more than 1e-9, or its d2_shape, occupancy_dice or scale_log_ratio skill off O's by more than 1e-6, in any task, seed or build",
+  "the guard (J7): O's ten-seed mean minus the floor's off E55's committed per-task figure by more than 0.01; s2xs off E47's committed per-seed scores by more than 0.01 (per seed or ten-seed mean). The floor is not checked: the harness holds it at 50 on every seed or raises"
+ ],
+ "arms": {
+  "BF_O": {
+   "clauses": {
+    "a": false,
+    "b": true,
+    "c": true,
+    "d": true,
+    "e": false,
+    "f": true
+   },
+   "idle": false,
+   "passes": false
+  },
+  "BF_SO": {
+   "clauses": {
+    "a": false,
+    "b": true,
+    "c": true,
+    "d": true,
+    "e": false,
+    "f": true
+   },
+   "idle": false,
+   "passes": false
+  }
+ },
+ "clause_e": {
+  "BF2_O": {
+   "mean": 0.039347761829876045,
+   "se": 0.0057557428912211085,
+   "ahead": 10,
+   "behind": 0,
+   "holds": true
+  },
+  "BFns_O": {
+   "mean": -0.01408523920869286,
+   "se": 0.0074101982329025,
+   "ahead": 3,
+   "behind": 7,
+   "holds": false
+  }
+ },
+ "outcome": "STOP",
+ "outcome_text": "GBF: STOP. No file; the handed-over embryo files stand.",
+ "passes": false,
+ "files_passing": [],
+ "tries_counted": 4,
+ "reported_deciding_nothing": {
+  "BF_O": {
+   "merged_board": {
+    "mean": 0.44324218330551657,
+    "se": 0.06463423062030633,
+    "ahead": 10,
+    "behind": 0
+   },
+   "prefix_board": {
+    "mean": 0.651008857039878,
+    "se": 0.09070797369368266,
+    "ahead": 10,
+    "behind": 0
+   },
+   "shape_sum": {
+    "mean": 0.06083873200318194,
+    "se": 0.007659203109712906,
+    "ahead": 10,
+    "behind": 0
+   },
+   "shape_sum_truths": {
+    "T2/E8.0.h5ad": 0.01470645579028006,
+    "T2/E8.25_late.h5ad": 0.029152774091453858,
+    "T2/E8.5.h5ad": 0.14490586406040906,
+    "T2/E7.5.h5ad": -0.020955528306239556,
+    "T2/E7.25.h5ad": 0.1363840943800063
+   },
+   "nbhd": {
+    "mean": -0.0007089593008049071,
+    "se": 0.00024033848701425248,
+    "ahead": 1,
+    "behind": 9
+   },
+   "nbhd_truths": {
+    "T2/E8.0.h5ad": -0.001356614543926876,
+    "T2/E8.25_late.h5ad": -0.007096081918315847,
+    "T2/E8.5.h5ad": -0.006421835544316246,
+    "T2/E7.5.h5ad": 0.002595724751413964,
+    "T2/E7.25.h5ad": 0.008734010751120468
+   },
+   "e80_board": 0.08863843465416466,
+   "e80_shape_sum": 0.01470645579028006,
+   "board_truths": {
+    "T2/E8.0.h5ad": 0.08863843465416466,
+    "T2/E8.25_late.h5ad": -0.16457860153350268,
+    "T2/E8.5.h5ad": 1.047002978562171,
+    "T2/E7.5.h5ad": -0.10973628376664664,
+    "T2/E7.25.h5ad": 1.3548843886113964
+   },
+   "groups": {
+    "expression_change": {
+     "mean": 0.0,
+     "se": 0.0,
+     "ahead": 0,
+     "behind": 0
+    },
+    "cell_state": {
+     "mean": 0.0,
+     "se": 0.0,
+     "ahead": 0,
+     "behind": 0
+    },
+    "local_organisation": {
+     "mean": -0.0007089593008049071,
+     "se": 0.00024033848701425248,
+     "ahead": 1,
+     "behind": 9
+    },
+    "shape_growth": {
+     "mean": 0.01843864663302553,
+     "se": 0.002495901729891582,
+     "ahead": 10,
+     "behind": 0
+    }
+   },
+   "test_like_board": {
+    "mean": 0.3449584478270107,
+    "se": 0.04861761288035384,
+    "ahead": 10,
+    "behind": 0
+   },
+   "four_truth_board": {
+    "mean": 0.21533163197904664,
+    "se": 0.06722621197380099,
+    "ahead": 9,
+    "behind": 1
+   },
+   "against_floor": {
+    "mean": 14.6792258335025,
+    "se": 0.1477051016543094,
+    "ahead": 10,
+    "behind": 0
+   }
+  },
+  "BF_SO": {
+   "merged_board": {
+    "mean": 0.45358931141238956,
+    "se": 0.06655311589342251,
+    "ahead": 10,
+    "behind": 0
+   },
+   "prefix_board": {
+    "mean": 0.6645475851843401,
+    "se": 0.09204118334080948,
+    "ahead": 10,
+    "behind": 0
+   },
+   "shape_sum": {
+    "mean": 0.06083873200318194,
+    "se": 0.007659203109712906,
+    "ahead": 10,
+    "behind": 0
+   },
+   "shape_sum_truths": {
+    "T2/E8.0.h5ad": 0.01470645579028006,
+    "T2/E8.25_late.h5ad": 0.029152774091453858,
+    "T2/E8.5.h5ad": 0.14490586406040906,
+    "T2/E7.5.h5ad": -0.020955528306239556,
+    "T2/E7.25.h5ad": 0.1363840943800063
+   },
+   "nbhd": {
+    "mean": -0.0009883398442736275,
+    "se": 0.00017390463655715386,
+    "ahead": 0,
+    "behind": 10
+   },
+   "nbhd_truths": {
+    "T2/E8.0.h5ad": -0.00026175363233589267,
+    "T2/E8.25_late.h5ad": -0.007695615111048482,
+    "T2/E8.5.h5ad": -0.005126970790069755,
+    "T2/E7.5.h5ad": 0.002874132121665851,
+    "T2/E7.25.h5ad": 0.0052685081904201405
+   },
+   "e80_board": 0.11600995744393713,
+   "e80_shape_sum": 0.01470645579028006,
+   "board_truths": {
+    "T2/E8.0.h5ad": 0.11600995744393713,
+    "T2/E8.25_late.h5ad": -0.15673452626816414,
+    "T2/E8.5.h5ad": 1.079374597418333,
+    "T2/E7.5.h5ad": -0.10277609951035345,
+    "T2/E7.25.h5ad": 1.3320726279781951
+   },
+   "groups": {
+    "expression_change": {
+     "mean": 0.0,
+     "se": 0.0,
+     "ahead": 0,
+     "behind": 0
+    },
+    "cell_state": {
+     "mean": 0.0,
+     "se": 0.0,
+     "ahead": 0,
+     "behind": 0
+    },
+    "local_organisation": {
+     "mean": -0.0009883398442736275,
+     "se": 0.00017390463655715386,
+     "ahead": 0,
+     "behind": 10
+    },
+    "shape_growth": {
+     "mean": 0.019131912300769254,
+     "se": 0.0025589657099189026,
+     "ahead": 10,
+     "behind": 0
+    }
+   },
+   "test_like_board": {
+    "mean": 0.36083339058719166,
+    "se": 0.04766455509476453,
+    "ahead": 10,
+    "behind": 0
+   },
+   "four_truth_board": {
+    "mean": 0.23396848227093817,
+    "se": 0.07087540519139915,
+    "ahead": 9,
+    "behind": 1
+   },
+   "against_floor": {
+    "mean": 14.646851052820285,
+    "se": 0.1811527799523798,
+    "ahead": 10,
+    "behind": 0
+   }
+  },
+  "controls": {
+   "BF2_O": {
+    "board_vs_O": {
+     "mean": 0.11503857650591656,
+     "se": 0.05697385114364755,
+     "ahead": 8,
+     "behind": 2
+    },
+    "shape_sum_vs_O": {
+     "mean": 0.021490970173305896,
+     "se": 0.0067868163526172524,
+     "ahead": 9,
+     "behind": 1
+    }
+   },
+   "BFns_O": {
+    "board_vs_O": {
+     "mean": 0.5777637300557766,
+     "se": 0.06594269038977751,
+     "ahead": 10,
+     "behind": 0
+    },
+    "shape_sum_vs_O": {
+     "mean": 0.0749239712118748,
+     "se": 0.00810076226963632,
+     "ahead": 10,
+     "behind": 0
+    }
+   }
+  },
+  "against_floor": {
+   "O": {
+    "mean": 14.235983650196982,
+    "se": 0.13339934784165394,
+    "ahead": 10,
+    "behind": 0
+   },
+   "SO": {
+    "mean": 14.193261741407895,
+    "se": 0.18283273849326775,
+    "ahead": 10,
+    "behind": 0
+   },
+   "BF_O": {
+    "mean": 14.6792258335025,
+    "se": 0.1477051016543094,
+    "ahead": 10,
+    "behind": 0
+   },
+   "BF_SO": {
+    "mean": 14.646851052820285,
+    "se": 0.1811527799523798,
+    "ahead": 10,
+    "behind": 0
+   },
+   "BF2_O": {
+    "mean": 14.351022226702895,
+    "se": 0.12723225097612956,
+    "ahead": 10,
+    "behind": 0
+   },
+   "BFns_O": {
+    "mean": 14.81374738025276,
+    "se": 0.1510251265356478,
+    "ahead": 10,
+    "behind": 0
+   }
+  },
+  "so_minus_s2xs_off_e51": {
+   "half": 0.0,
+   "late": 0.0,
+   "new1": 0.0,
+   "new2": 0.0,
+   "e75": 0.0,
+   "e725": 0.0,
+   "x1": 0.0,
+   "x2": 0.0,
+   "x3": 0.0
+  }
+ },
+ "per_task": {
+  "half": {
+   "BF_O": {
+    "board": 0.3196707031628733,
+    "shape_sum": 0.0356867536563231
+   },
+   "BF_SO": {
+    "board": 0.31485102404239595,
+    "shape_sum": 0.0356867536563231
+   },
+   "BF2_O": {
+    "board": -0.048509186990553135,
+    "shape_sum": -0.009258687294041067
+   },
+   "BFns_O": {
+    "board": 0.36703674030469957,
+    "shape_sum": 0.04202994801749234
+   }
+  },
+  "late": {
+   "BF_O": {
+    "board": -0.14239383385454402,
+    "shape_sum": -0.006273842075762981
+   },
+   "BF_SO": {
+    "board": -0.0828311091545217,
+    "shape_sum": -0.006273842075762981
+   },
+   "BF2_O": {
+    "board": -0.21222624787382358,
+    "shape_sum": -0.014108469855354078
+   },
+   "BFns_O": {
+    "board": -0.13354750276326682,
+    "shape_sum": -0.005850134924717332
+   }
+  },
+  "new1": {
+   "BF_O": {
+    "board": -0.38325850319583027,
+    "shape_sum": -0.03628656470395453
+   },
+   "BF_SO": {
+    "board": -0.37356114787210404,
+    "shape_sum": -0.03628656470395453
+   },
+   "BF2_O": {
+    "board": -0.7048258622508385,
+    "shape_sum": -0.07540041973076164
+   },
+   "BFns_O": {
+    "board": -0.3502021549585265,
+    "shape_sum": -0.03299793874191814
+   }
+  },
+  "new2": {
+   "BF_O": {
+    "board": 1.3294954120226976,
+    "shape_sum": 0.16987766078642624
+   },
+   "BF_SO": {
+    "board": 1.3400513621897416,
+    "shape_sum": 0.16987766078642624
+   },
+   "BF2_O": {
+    "board": 0.03744095864834236,
+    "shape_sum": 0.013496937526044661
+   },
+   "BFns_O": {
+    "board": 1.3712609144925423,
+    "shape_sum": 0.17568430824038056
+   }
+  },
+  "e75": {
+   "BF_O": {
+    "board": -0.10973628376664664,
+    "shape_sum": -0.020955528306239556
+   },
+   "BF_SO": {
+    "board": -0.10277609951035345,
+    "shape_sum": -0.020955528306239556
+   },
+   "BF2_O": {
+    "board": -0.5476494563155591,
+    "shape_sum": -0.0713459749442733
+   },
+   "BFns_O": {
+    "board": 0.100207743351271,
+    "shape_sum": 0.001722965521577391
+   }
+  },
+  "e725": {
+   "BF_O": {
+    "board": 1.3548843886113964,
+    "shape_sum": 0.1363840943800063
+   },
+   "BF_SO": {
+    "board": 1.3320726279781951,
+    "shape_sum": 0.1363840943800063
+   },
+   "BF2_O": {
+    "board": 1.4867371964056126,
+    "shape_sum": 0.15196495708168223
+   },
+   "BFns_O": {
+    "board": 1.6297241089536747,
+    "shape_sum": 0.16954913567079904
+   }
+  },
+  "x1": {
+   "BF_O": {
+    "board": 0.0541013001288249,
+    "shape_sum": 0.09459211288686224
+   },
+   "BF_SO": {
+    "board": 0.06009209533577575,
+    "shape_sum": 0.09459211288686224
+   },
+   "BF2_O": {
+    "board": -0.12564660479405773,
+    "shape_sum": 0.07372672903806228
+   },
+   "BFns_O": {
+    "board": 0.21333482127162,
+    "shape_sum": 0.10063087487431581
+   }
+  },
+  "x2": {
+   "BF_O": {
+    "board": 1.019695834329849,
+    "shape_sum": 0.1394695136856205
+   },
+   "BF_SO": {
+    "board": 1.0612517673429864,
+    "shape_sum": 0.1394695136856205
+   },
+   "BF2_O": {
+    "board": 0.2965325232547585,
+    "shape_sum": 0.04976954183947725
+   },
+   "BFns_O": {
+    "board": 1.0564557629522042,
+    "shape_sum": 0.14429689249426525
+   }
+  },
+  "x3": {
+   "BF_O": {
+    "board": 0.791817689333967,
+    "shape_sum": 0.12537041770918045
+   },
+   "BF_SO": {
+    "board": 0.8368206627222712,
+    "shape_sum": 0.12537041770918045
+   },
+   "BF2_O": {
+    "board": 0.2111537982793962,
+    "shape_sum": 0.05480239858498157
+   },
+   "BFns_O": {
+    "board": 0.904010860695277,
+    "shape_sum": 0.13434294002858796
+   }
+  }
+ },
+ "price_lines": [
+  "J1: the run applies each file's own build path end to end except the size step (the harness's task size rule; the file takes the pre-registered size, which the form never moves); the prior holds, on every task as at the test pair, the released stages that do not lie strictly between the brackets (so never the truth, J2).",
+  "J4: five truths at equal weight; clause (f) reads the one truth collected like E7.75.",
+  "J5: a diagnostic; the noise floor 6.54 exceeds twice any predicted gain. J6: no time quantity sets a step (the union's mix follows each task's own t)."
+ ],
+ "g0": {
+  "verdict": "PASS",
+  "why": [],
+  "commit": "b282384e998ac6d9e50d0a0e5dfc9f963ef8169a",
+  "idle": false,
+  "per_seed": {
+   "1000001": {
+    "share": 0.8,
+    "guard_ok": true,
+    "guard_flags": [],
+    "idle_dice": 0.8798283261802575,
+    "z_extent_ratio": 1.1107126004097334,
+    "angle_thin_axis_z_deg": 70.67906352585253
+   },
+   "1000002": {
+    "share": 0.8,
+    "guard_ok": true,
+    "guard_flags": [],
+    "idle_dice": 0.8577235772357723,
+    "z_extent_ratio": 1.1262767010448285,
+    "angle_thin_axis_z_deg": 63.49866886990419
+   },
+   "1000003": {
+    "share": 0.8,
+    "guard_ok": true,
+    "guard_flags": [],
+    "idle_dice": 0.8841201716738197,
+    "z_extent_ratio": 1.1349395389864558,
+    "angle_thin_axis_z_deg": 72.61788622471786
+   },
+   "1000004": {
+    "share": 0.8,
+    "guard_ok": true,
+    "guard_flags": [],
+    "idle_dice": 0.8695652173913043,
+    "z_extent_ratio": 1.1179463643311118,
+    "angle_thin_axis_z_deg": 72.67683752266478
+   },
+   "1000005": {
+    "share": 0.8,
+    "guard_ok": true,
+    "guard_flags": [],
+    "idle_dice": 0.8617886178861789,
+    "z_extent_ratio": 1.1136031509929682,
+    "angle_thin_axis_z_deg": 63.16234266962771
+   },
+   "1000006": {
+    "share": 0.8,
+    "guard_ok": true,
+    "guard_flags": [],
+    "idle_dice": 0.8826086956521739,
+    "z_extent_ratio": 1.1138597265682677,
+    "angle_thin_axis_z_deg": 73.84560589282113
+   },
+   "1000007": {
+    "share": 0.8,
+    "guard_ok": true,
+    "guard_flags": [],
+    "idle_dice": 0.8884297520661157,
+    "z_extent_ratio": 1.1091552296559162,
+    "angle_thin_axis_z_deg": 75.78031628962933
+   },
+   "1000008": {
+    "share": 0.8,
+    "guard_ok": true,
+    "guard_flags": [],
+    "idle_dice": 0.8669527896995708,
+    "z_extent_ratio": 1.123004065929661,
+    "angle_thin_axis_z_deg": 65.39226426789338
+   },
+   "1000009": {
+    "share": 0.8,
+    "guard_ok": true,
+    "guard_flags": [],
+    "idle_dice": 0.8813559322033898,
+    "z_extent_ratio": 1.1185564760509588,
+    "angle_thin_axis_z_deg": 70.6680591040727
+   },
+   "1000010": {
+    "share": 0.8,
+    "guard_ok": true,
+    "guard_flags": [],
+    "idle_dice": 0.8467741935483871,
+    "z_extent_ratio": 1.0919745108458287,
+    "angle_thin_axis_z_deg": 57.61401553314343
+   }
+  },
+  "median_share": 0.8,
+  "median_idle_dice": 0.874696771785781,
+  "reported_deciding_nothing": {
+   "median_z_extent_ratio": 1.1159030454496897,
+   "median_angle_thin_axis_z_deg": 70.67356131496261
+  },
+  "prior": "E6.75|E7.25|E7.5|E8.0|E8.25_late|E8.75|E9.5"
+ },
+ "guard": {
+  "half": {
+   "fgw_shape0x_series_seed": 0.0,
+   "fgw_shape0x_series_mean": 0.0,
+   "o_minus_floor": 0.0
+  },
+  "late": {
+   "fgw_shape0x_series_seed": 0.0,
+   "fgw_shape0x_series_mean": 0.0,
+   "o_minus_floor": 0.0
+  },
+  "new1": {
+   "fgw_shape0x_series_seed": 0.0,
+   "fgw_shape0x_series_mean": 0.0,
+   "o_minus_floor": 0.0
+  },
+  "new2": {
+   "fgw_shape0x_series_seed": 0.0,
+   "fgw_shape0x_series_mean": 0.0,
+   "o_minus_floor": 0.0
+  },
+  "e75": {
+   "fgw_shape0x_series_seed": 0.0,
+   "fgw_shape0x_series_mean": 0.0,
+   "o_minus_floor": 0.0
+  },
+  "e725": {
+   "fgw_shape0x_series_seed": 0.0,
+   "fgw_shape0x_series_mean": 0.0,
+   "o_minus_floor": 0.0
+  },
+  "x1": {
+   "fgw_shape0x_series_seed": 0.0,
+   "fgw_shape0x_series_mean": 0.0,
+   "o_minus_floor": 0.0
+  },
+  "x2": {
+   "fgw_shape0x_series_seed": 0.0,
+   "fgw_shape0x_series_mean": 0.0,
+   "o_minus_floor": 0.0
+  },
+  "x3": {
+   "fgw_shape0x_series_seed": 0.0,
+   "fgw_shape0x_series_mean": 0.0,
+   "o_minus_floor": 0.0
+  }
+ },
+ "reading_code": {
+  "head": "b282384e998ac6d9e50d0a0e5dfc9f963ef8169a",
+  "clean": true,
+  "script_sha256": "a8af36fc6f62771588b7b82bfc592f2f7cfc1630496964244326e87b2feafb88",
+  "row_sha256": "952d9db8f31ba8e6e4162a66d00945df29976dd2734cd157823d0e112cf271ac",
+  "harness_sha256": "55aa63e0d3152679bc83ba23a976c2b607ef65a6749dc89a59c5bb804d9f1020",
+  "t2_build_sha256": "3122dedca674f228e3315c735d8eca38583b6bff45c4ff7d84e94f875a77e5be",
+  "shape_interp_sha256": "d602d01e97461a6750b5db300a4926b672f1f69fd5bbd6b9e2a0486c1e9a1d21"
+ }
+}
