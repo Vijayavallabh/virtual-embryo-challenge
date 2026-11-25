@@ -58,6 +58,7 @@ case "$STEP" in
       tests/test_e50_copy_rows_read.py tests/test_embryo_overlay.py tests/test_embryo_copy_rows_launcher.py \
       tests/test_embryo_copy_rows_sized_launcher.py tests/test_e52_copy_rows_sized_read.py \
       tests/test_embryo_so_ohi_launcher.py \
+      tests/test_embryo_rs_launcher.py tests/test_run_sorted.py \
       tests/test_series_back_build.py tests/test_ovsb_step0.py tests/test_embryo_ovsb_launcher.py \
       tests/test_t1_fraction2_build.py tests/test_t1_fraction2_launcher.py \
       tests/test_t1_fraction_line_build.py tests/test_t1_fraction_line_launcher.py tests/test_t1_timing.py \
