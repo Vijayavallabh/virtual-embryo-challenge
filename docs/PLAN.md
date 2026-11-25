@@ -14648,3 +14648,16 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     false: 76 of its 104 kept genes rest on inferred codes only); Reactome, mouse events only, 0.07 (0.25 as written,
     since human binding events carry target-gene DNA). Its honest price: about 0.15 to beat C2, typical +0.4, best
     +2.5, expected value about zero. The question goes to the captain now.
+- 2026-11-25 (uu), the heart big-swing challenge; the fourth round's outcome (state at 14:24 UTC, 2026-11-25). Written
+  by the AI assistant, recused on the heart's scope and size.
+  - **The challenge** (`HEART_SWING_challenge.md`): P1 (OMR25 and OMR50, real E9.5 cells mixed into the banked file)
+    STRIKE: by the committed readings E10.5's own run measurement is too small for the mixture to gain at test; a
+    practice pass comes 2.3 to 2.8 times more easily than a gain at test; half its practice arms cannot be built; it
+    also moves the heart's composition, closed by the captain's ruling. Its first choice becomes "none". Honest price:
+    about 1% to beat the banked file for a tail of +1 to +2; expected about +0.005 heart point for 12 to 16 hours of
+    agent work. Its exposure notes (no value): row R66's first cell, and `docs/DATA_POLICY.md` lines 414 to 415 (a
+    screened public-leaderboard range for a top-3 place, of 2026-11-04; no figure of the team's files).
+  - **The fourth round's outcome.** Heart: no file. Embryo: no file (entry (ss)). T3 inside the team's bar: no file;
+    under the captain's waiver: the pathway-database file, about 0.15 to beat C2, typical +0.4, best +2.5, expected
+    about zero, with GO and Reactome at 0.06 and 0.07 odds of an organiser counting the use as forbidden (entry (tt));
+    it goes to the captain as one priced question.
