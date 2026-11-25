@@ -14203,3 +14203,11 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     beats MS20; B25MS's part waits on MS20's headline. Nothing else turns on it.
   - **Standing:** T1 73.52, T3 63.94, heart 61.97, embryo 69.9; overall 203.395 by the challenge's formula (it was
     203.345).
+- 2026-11-25 (e), the captain reports one more headline and the rules are applied by their letter (state at 01:19 UTC,
+  2026-11-25). Written by the AI assistant, which records the headline only.
+  - **The paste:** T1:test `T1_s2rcMS20.h5ad` 73.82 (shown as submitted 2026-11-25 01:16). Its sha256 on disk matches
+    its sheet row. The paste's per-metric lines, rank and file size are not recorded or used.
+  - **Each rule by its letter.** It is above B25MS (73.52), so the T1 board's best is now MS20. Row R51's gate for
+    MS30 (MS20 above MSB and B25MS above MS20): MS20 is above MSB, but B25MS is below MS20, so `T1_s2rcMS30.h5ad` is
+    not uploaded; it stands in the sheet as not uploaded by its rule. Nothing else turns on it.
+  - **Standing:** T1 73.82, T3 63.94, heart 61.97, embryo 69.9; overall 203.695 (it was 203.395).
