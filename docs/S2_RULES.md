@@ -3584,3 +3584,15 @@ challenge data (the wild-type E8.75 cells, the released Mab21l2 knockout and the
 files) and, through its K23 or CK parent's rows, two public single-cell knockout studies of other genes, GEO GSE204906
 (Dnmt3a and Dnmt3b nulls, E8.5; register row X013) and GEO GSE277839 (a Usb1 knockout, E9.5; register row X014);
 embryo files, released challenge data only; no outside data.
+
+## Note of 2026-11-25: T1's damping refinement files are built (row R67; decision log 2026-11-25 (uuu))
+
+At the clean commit 7482bb1, on the DGX, each file's identity rebuilds gave their recorded bytes, its command with
+MS's own damping at its default gave T1_s2rcMSB's bytes, and the file was built twice with one sha256 and passed the
+format check. **The files:** `runs/manual_upload/T1_s2rcMSBm125.h5ad` (MS's own damping 1.25), sha256
+0e98b6c9e104e6cbdc685a55ba27cddf581e3d6e0cf1c93cf93a7669fb199d25; `runs/manual_upload/T1_s2rcMSBm15.h5ad` (MS's own
+damping 1.5), sha256 6d5b80d709f9642d43ae33071bd2c19b24bd86fc711c6b7abcd44c4612c71954;
+`runs/manual_upload/T1_s2rcMSBm075.h5ad` (MS's own damping 0.75), sha256
+05f717fa903520ccbee0b9c8c19c7a40bc819ba8dd827edae4f0e5f49ad3bee1 (build records
+`experiments/builds/results/t1r67_7482bb1_<run>.txt`). Added before any score of any. Data used: released challenge
+data and the outside heart atlas on recomputed groups (GEO GSE193346, register row X002).

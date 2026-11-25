@@ -1,0 +1,7 @@
+Row R67's file T1_s2rcMSBm125.h5ad
+==========================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-25 at commit 7482bb1 (main; clean tree) with `experiments/builds/t1_r67_line.sh 7482bb1c175ab978cf269501b90e99ebb9d65a6c m125r1 T1_s2rcMSBm125`, after its gate checks were dry-run on the real rows at the reviewed branch commit (43b13f8) and its refusal path was traced.
+Every exit record is 0. The identity rebuilds gave the recorded bytes: T1_s2rcMSB (row R26's file, t1msc_a3e879a_m1), T1_s2rcMSBm10 (row R51's, t1r51_0cdcc6f_r1) and T1_s2rcMSBm20 (row R58's, t1lmm20_89700ef_lm1). The file's command with MS's own damping put back at its default gave T1_s2rcMSB's bytes. The new file (MSB's command with MS's own damping 1.25), built twice into separate folders with one sha256, format-checked, each stamp of this commit and clean:
+  T1_s2rcMSBm125.h5ad  0e98b6c9e104e6cbdc685a55ba27cddf581e3d6e0cf1c93cf93a7669fb199d25
+The local copy under runs/manual_upload/ is the same bytes. No log, size, shape or sidecar of this build was read. No score of it exists at this record.

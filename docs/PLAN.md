@@ -14956,3 +14956,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     public single-cell knockout studies of other genes, GEO GSE204906 (Dnmt3a and Dnmt3b nulls, E8.5; register row
     X013) and GEO GSE277839 (a Usb1 knockout, E9.5; register row X014); embryo files, released challenge data only; no
     outside data.
+- 2026-11-25 (uuu), T1's damping refinement files (row R67) are built, before any score (state at 2026-11-25 18:44
+  UTC). Written by the AI assistant, which designed none of it.
+  - **The builds.** `experiments/builds/t1_r67_line.sh 7482bb1...` once per file on the DGX, clean; identity and base
+    checks gave the recorded bytes; each file built twice with one sha256: **`T1_s2rcMSBm125.h5ad`** 0e98b6c9e104...;
+    **`T1_s2rcMSBm15.h5ad`** 6d5b80d709f9...; **`T1_s2rcMSBm075.h5ad`** 05f717fa9035.... All three due now, sent at
+    once (row R67). Data used: released challenge data and the outside heart atlas on recomputed groups (GEO
+    GSE193346, register row X002).
