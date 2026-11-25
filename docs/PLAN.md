@@ -14684,3 +14684,14 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     checks gave the recorded bytes; each file built twice with one sha256: **`T1_s2rcMS20H10m10.h5ad`** (K1)
     f11fd10b26df...; **`T1_s2rcMS20H20.h5ad`** (C3) f06aea68b3c1.... Both due now (row R66). Data used: released
     challenge data and the outside heart atlas on recomputed groups (GEO GSE193346, register row X002).
+- 2026-11-25 (yy), the embryo audit of the fifth round (state at 15:02 UTC, 2026-11-25). Written by the AI assistant,
+  recused on the embryo's occupancy term and shape forms.
+  - **The audit** (`EMBRYO_AUDIT_design.md`): no construction error in the banked file. Clean against the scorer's
+    formulas: the gene panel and its order, the transform, the coordinates, the fields, the dtype, the seeds, the
+    alignment of rows, expression and positions, and the overlay rotation's direction (local checks on released data
+    only). Its one gap, E1, concerns the occupancy-overlap term and the row order; the option it names, `--row-order
+    copy_parity`, cannot be built for the test board (it needs the board's truth count, which the builder never gets;
+    entries of 2026-11-20 on it), and choosing between two row orders by headline would be the parity hedge the team
+    ruled out. Open and unverified: whether E8.0's stored frame is mirrored against E7.5's (its read of the committed
+    handedness records was refused by a permission check, a declared limit). Part B: no sweep (STOP).
+  - **What follows:** nothing is built for the embryo; no challenger is spent, since nothing is proposed.
