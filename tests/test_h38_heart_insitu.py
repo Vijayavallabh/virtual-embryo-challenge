@@ -22,7 +22,8 @@ import h38_row  # noqa: E402
 
 @pytest.fixture(scope="module")
 def h38():
-    spec = importlib.util.spec_from_file_location("h38_heart_insitu_t", REPO / "experiments/harness/h38_heart_insitu.py")
+    spec = importlib.util.spec_from_file_location("h38_heart_insitu_t",
+                                                  REPO / "experiments/harness/h38_heart_insitu.py")
     mod = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = mod
     spec.loader.exec_module(mod)

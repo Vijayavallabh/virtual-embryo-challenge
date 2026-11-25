@@ -314,7 +314,7 @@ def run_regions(out: Path, units_root: Path) -> int:
     doc = load_units_doc(units_root)
     units = {r["section"]: ou.load_units(Path(units_root) / "units" / r["npz"]) for r in doc["sections"]}
     ref_genes = {r: ranks["refs"][r]["genes"] for r in REFS}
-    reg = regions_doc({r: ranks["refs"][r] for r in REFS}, units, doc, ref_genes, plots=out)
+    reg = regions_doc({r: ranks["refs"][r] for r in REFS}, units, doc, ref_genes, plots=out / "plots")
     write_new(out / "regions.json", json.dumps({"row": ROW, "regions": reg, "provenance": provenance()}, indent=1,
                                               sort_keys=True))
     sheet = {"reader": None, "read_at_utc": None, "regions_commit": provenance()["commit"],

@@ -103,11 +103,15 @@ def late_profiles(prof, d, shared):
 
 @pytest.fixture(scope="module")
 def world():
-    rng = np.random.default_rng(7)
+    return build_world()
+
+
+def build_world(d_sigma: float = 0.6, seed: int = 7) -> dict:
+    rng = np.random.default_rng(seed)
     prof = profiles()
     C, cats = ref_cells(prof, rng)
     ref = FakeRef("E10.5", C, cats)
-    d = {k: np.r_[np.zeros(90), rng.normal(0, 0.6, G - 90)] for k in oc.CATS}  # the lineage-specific late change
+    d = {k: np.r_[np.zeros(90), rng.normal(0, d_sigma, G - 90)] for k in oc.CATS}  # the lineage-specific change
     shared = rng.normal(0, 0.3, G)
     late = late_profiles(prof, d, shared)
     eff = {s: np.exp(rng.normal(0, 0.7, G)) for s in ("X021", "X022")}
@@ -388,3 +392,55 @@ def test_plot_has_no_text_and_is_new(world, tmp_path):
     assert sha == hashlib.sha256((tmp_path / "p.png").read_bytes()).hexdigest()
     with pytest.raises(ou.Refused):
         g0.plot_region(u, region, tmp_path / "p.png")
+
+
+def test_regions_and_g0_steps_end_to_end(tmp_path, monkeypatch):
+    """The regions step's plots and reader sheet, then the g0 step with the references and the reader's file stood in:
+    the chord files, g0.json, g0.txt and the statement row H38's module reads; nothing is overwritten."""
+    sys.path.insert(0, str(REPO / "experiments" / "harness"))
+    import h38_row
+
+    g0 = _g0()
+    world = build_world(d_sigma=1.5)  # a change large enough to clear (d) at the practice strengths too
+    work = tmp_path / "work"
+    (work / "units").mkdir(parents=True)
+    stage = {"pup_P1": "P1", "E15.5_E1S1": "E15.5", "E16.5_E1S1": "E16.5"}
+    secs = []
+    for name, u in world["units"].items():
+        sha = ou.save_units({**u, "sha256": "f" * 64, "source": "X"}, work / "units" / f"{name}.npz")
+        secs.append({"section": name, "study": "X021" if name == "pup_P1" else "X022", "stage": stage[name],
+                     "file": f"{name}.gz", "source_sha256": "f" * 64, "npz": f"{name}.npz", "npz_sha256": sha})
+    (work / "units.json").write_text(json.dumps({"code_sha256": g0.code_sha256(), "sections": secs}))
+    refs_doc = {"refs": {r: world["rk"] for r in g0.REFS}}
+    (work / "ranks.json").write_text(json.dumps(refs_doc))
+    assert g0.run_regions(work, work) == 0
+    sheet = json.loads((work / "reader_sheet.json").read_text())
+    assert len(sheet["verdicts"]) == 3 * len(world["units"]) and all(v["verdict"] is None for v in sheet["verdicts"])
+    for v in sheet["verdicts"]:
+        assert hashlib.sha256((work / v["plot"]).read_bytes()).hexdigest() == v["plot_sha256"]
+    refs = {r: FakeRef(r, world["ref"].C, world["ref"].cats) for r in g0.REFS}
+    monkeypatch.setattr(g0, "load_refs", lambda data_dir: refs)
+    monkeypatch.setattr(g0, "ranks_doc", lambda _refs: json.loads(json.dumps(refs_doc)))
+    verdicts = {(v["ref"], v["section"]): ("heart", v["region_sha256"]) for v in sheet["verdicts"]}
+    monkeypatch.setattr(g0, "reader_verdicts", lambda path: verdicts)
+    reader = tmp_path / "reader.json"
+    reader.write_text("{}")
+    results = tmp_path / "results"
+    assert g0.run_g0(work, work, None, reader=reader, results=results) == 0
+    line = (results / "g0.txt").read_text().strip()
+    m = h38_row.G0_FORM.fullmatch(line)
+    assert m
+    for ref, sha in zip(g0.REFS, m.groups(), strict=True):
+        assert hashlib.sha256((results / f"chords_{ref}.json").read_bytes()).hexdigest() == sha
+        doc = json.loads((results / f"chords_{ref}.json").read_text())
+        assert doc["ref"] == ref and doc["sources"] == {f"{n}.gz": "f" * 64 for n in world["units"]}
+    assert json.loads((results / "g0.json").read_text())["verdict"] == "PASS"
+    with pytest.raises(FileExistsError):
+        g0.run_g0(work, work, None, reader=reader, results=results)
+    # a practice reference whose reader doubted every section: VOID (exit 5), the test's chord alone written
+    v2 = {k: (("doubt" if k[0] == "E8.75" else "heart"), s) for k, (_, s) in verdicts.items()}
+    monkeypatch.setattr(g0, "reader_verdicts", lambda path: v2)
+    r2 = tmp_path / "results2"
+    assert g0.run_g0(work, work, None, reader=reader, results=r2) == 5
+    assert (r2 / "chords_E10.5.json").exists() and not (r2 / "chords_E8.75.json").exists()
+    assert (r2 / "g0.txt").read_text().startswith("G0 H38: VOID AT PRACTICE")
