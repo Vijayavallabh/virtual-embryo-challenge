@@ -14466,3 +14466,24 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     `T1_s2rcMS20H10.h5ad` (if MS20H05 beats MS20), `T1_s2rcMS20m20.h5ad` (if MS20m10 beats MS20; row T73 has passed).
     Data used: released challenge data and the outside heart atlas on recomputed groups (GEO GSE193346, register row
     X002).
+- 2026-11-25 (hh), the captain answers the third round's questions; rows R61 to R66 are placed (state at 12:09 UTC,
+  2026-11-25). Written by the AI assistant, which designs no line, is recused on the heart's scope and size and on the
+  embryo's occupancy term and shape forms, and gives no lean on T3's depth.
+  - **The captain's picks, verbatim.** On the corrected heart RNA question: "Keep No ruling" (T1's files stay out of
+    heart models). On the heart's step-on files: "Yes to all five"; its words: "Yes to OTS175, OTKP125, OTP15, OTP10
+    and OTS20 as gated, read once by the cut-off: my named exception on the heart's scope and size for each, one
+    ruling row per file; for OTS175, OTP15 and OTS20, H34's stop, R29's cap at OTS10 and its no-other-value clause,
+    and the caps of R49 and R52 lifted." On T1's step-on slots: "Yes to the five (Recommended)"; its words: "Yes to
+    K1, K2, K3, C1 and C3 of the round's T1 step-on design under R22, as gated (headlines only, read once by 26 Nov
+    06:00 UTC), in one ruling row; R1 reversed for Blood and T64's close lifted in the files with a Blood step, as in
+    R60."
+  - **The rows.** R61 to R65, one per heart file (OTS175, OTKP125, OTP15, OTP10, OTS20), and R66 for T1's five slots,
+    each with its conditions as headline comparisons, read once (cut-off 2026-11-26 06:00 UTC; OTKP125's 01:00 UTC).
+  - **Conditions already decided by headlines on record** (read once now, so not read again): heart OTP10 needs
+    OTS10's headline strictly above OTS125's, and it is not; T1's K4 needs a file of the multiplier axis above MS20's,
+    and none is (MS30 is not sent by its own rule); the three T3 files the challenger kept need T3_c2_s2_s067's or
+    T3_c2_s2_gonly_s067's headline strictly above C2's, and neither is, so no T3 file of the round is named or asked
+    about; the embryo's five need Ot23's headline above O's (entry (ff)). None of these is coded or built.
+  - **Next.** Engineers blind to test scores code the live heart files (OTS175, OTS20, OTP15 now; OTKP125 only after
+    its condition holds) and T1's five slots, each with a launcher that builds one named file twice after identity
+    checks; independent reviews; then builds as the conditions are read.
