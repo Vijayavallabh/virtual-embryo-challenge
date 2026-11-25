@@ -1,0 +1,250 @@
+{
+ "what": "the T3 sign cube's WT-only tables (row R72; T3_MOON5_design.md 2.2 with fixes F1 to F10): S_M, Y_M = WT E9.5, WT E8.0 over WT E8.75 on transfer_mab21l2_all's den; S_G, Y_G = the same on gata4_pooled's den; t3_decompose.gene_factor (WT-share weights, eps, clip [0.25, 4]), the factor column is phi",
+ "script": "experiments/t3_decomp/cube_tables.py",
+ "script_sha256": "48636aa129ddb0328df4a09f8cca727f538ab793f288fcef81b0f8641be5ac07",
+ "code_sha256": {
+  "sign_cube.py": "c72d04cbedae354b753f5ad243d2f9453d017eaa4161aea95c0dfd8c979c7469",
+  "t3_decompose.py": "3e671c3bb5ff57bba5ceec80ea36fcc739b1f111399a1e2854400b5c9f5133d2",
+  "rules.yaml": "cd2d94aa6e202529a2eead2a7ad60b312d9a2fd9ff0bd989d9320662de750c13",
+  "build_submission.py": "1194a63993a27dde4dedfdb9180de035c5f8f2a57aaa7d97b38e7a15ea9e0c74"
+ },
+ "provenance": {
+  "commit": "5870f31dc39317dff5e9f431668d0ede63cc1bf2",
+  "tree_clean": true,
+  "machine": "cessa-G242-Z11-00",
+  "utc": "2026-11-25 20:35:42"
+ },
+ "inputs": {
+  "E8.75": {
+   "path": "data/raw/T2/E8.75.h5ad",
+   "sha256": "149ab6df7c99ad85046c8aebebcf0c43689b3720c59ffb7cc550edcf2f13a83c"
+  },
+  "E9.5": {
+   "path": "data/raw/T2/E9.5.h5ad",
+   "sha256": "371ca6530e084de2b6cd6703b49d95f4bb59546c9291659809575382a630ee9a"
+  },
+  "E8.0": {
+   "path": "data/raw/T2/E8.0.h5ad",
+   "sha256": "17530e23fbfa6a139ff68d0353a489d83790f5b60f036b7d2f58303a1ff8a810"
+  },
+  "mab21l2": {
+   "path": "data/raw/T3/E9.5_mab21l2_ko.h5ad",
+   "sha256": "5b1668ab982e64f7683fbf5f905218fab311c63548de5f5bc18a74f9d4d357e0"
+  },
+  "rep1": {
+   "path": "data/raw/T3/E8.75_gata4_ko_1.h5ad",
+   "sha256": "3805715d25c85873a8c51c86be44e8e42affaec0557e1b05f9d99db2ef976cad"
+  },
+  "rep2": {
+   "path": "data/raw/T3/E8.75_gata4_ko_2.h5ad",
+   "sha256": "1760657da7c477c4bf986352fdf1a066bb6a5fe995f1b9deca8ee859722074e4"
+  }
+ },
+ "genes_sha256": "a9a553108e19acb6cbf4323aa692e6bdc51b7192f7a7866307bc058a1573e1d6",
+ "n_genes": 500,
+ "vocabulary_sha256": "0b82598e8955fa674189c37cd922277e85eb38dfdea7a44e78e831499b769c8f",
+ "tables": {
+  "S_M": {
+   "file": "S_M.csv",
+   "sha256": "f518dff3bea43ff9f44a064b8b3bffd0c01601f893420da980d659c1615e065a",
+   "stage": "E9.5",
+   "den_of": "transfer_mab21l2_all",
+   "fallback_labels": [],
+   "den_sha256": "ba4a35f7955c7894b7eb3380005d5f86b30506b31056753b4fb33404f08b996b",
+   "genes_at_clip": 31
+  },
+  "Y_M": {
+   "file": "Y_M.csv",
+   "sha256": "a7182ddb885558aca161205f8afaaf6f585781eef6c3edea42cd6b88a56acfef",
+   "stage": "E8.0",
+   "den_of": "transfer_mab21l2_all",
+   "fallback_labels": [
+    "PAM-3",
+    "pSHF"
+   ],
+   "den_sha256": "ba4a35f7955c7894b7eb3380005d5f86b30506b31056753b4fb33404f08b996b",
+   "genes_at_clip": 24
+  },
+  "S_G": {
+   "file": "S_G.csv",
+   "sha256": "f9506a9283a1332b8da982bae6f928c7d3dd207c6caa64a109d8426d61703154",
+   "stage": "E9.5",
+   "den_of": "gata4_pooled",
+   "fallback_labels": [],
+   "den_sha256": "4499c232af7c5d0b1ece33091cad350903fc996415577029595420eb07e9aa94",
+   "genes_at_clip": 55
+  },
+  "Y_G": {
+   "file": "Y_G.csv",
+   "sha256": "a5eb40664ff99c52aee1bbb3da54cc1ac7a815495080c9f7ef4e8523ec1ee5de",
+   "stage": "E8.0",
+   "den_of": "gata4_pooled",
+   "fallback_labels": [],
+   "den_sha256": "4499c232af7c5d0b1ece33091cad350903fc996415577029595420eb07e9aa94",
+   "genes_at_clip": 41
+  }
+ },
+ "masks": {
+  "M": {
+   "table": "transfer_mab21l2_all",
+   "labels": [
+    "Neural Tube",
+    "NCC",
+    "d-CSE",
+    "V-CSE",
+    "Intra-Endoth-1",
+    "pPHM",
+    "Endo",
+    "PAM-3",
+    "ExEM-1",
+    "vCM1",
+    "a-FG",
+    "D-FG",
+    "PAM-4",
+    "vCM2",
+    "aPHM",
+    "OFT/RV-CM",
+    "aSHF",
+    "aCM1",
+    "Peri/BW",
+    "Intra-Endoth-2",
+    "aCM2",
+    "Peri",
+    "pSHF",
+    "JCF/SV-CM",
+    "HEM-Endoth",
+    "JCF",
+    "ExEM-2",
+    "FHF/JCF"
+   ],
+   "den_sha256": "ba4a35f7955c7894b7eb3380005d5f86b30506b31056753b4fb33404f08b996b"
+  },
+  "G": {
+   "table": "gata4_pooled",
+   "labels": [
+    "Neural Tube",
+    "NCC",
+    "d-CSE",
+    "V-CSE",
+    "a-FG",
+    "D-FG",
+    "Lateral FG",
+    "EXE-Endoderm",
+    "pSE",
+    "Gut Endoderm"
+   ],
+   "den_sha256": "4499c232af7c5d0b1ece33091cad350903fc996415577029595420eb07e9aa94"
+  }
+ },
+ "mask_rules": {
+  "M": "labels with >= 100 Mab21l2 cells and >= 100 WT E8.75 cells (transfer_factors)",
+  "G": "strict non-Mesp1 labels with >= 20 cells in the two Gata4 replicates pooled and in WT E8.75 (submission_parameters; littermates split off)"
+ },
+ "stage_cells_in_masked_labels": {
+  "E9.5": {
+   "M": {
+    "Neural Tube": 48,
+    "NCC": 3299,
+    "d-CSE": 1520,
+    "V-CSE": 1158,
+    "Intra-Endoth-1": 3012,
+    "pPHM": 2471,
+    "Endo": 5351,
+    "PAM-3": 1185,
+    "ExEM-1": 1819,
+    "vCM1": 1892,
+    "a-FG": 731,
+    "D-FG": 960,
+    "PAM-4": 1293,
+    "vCM2": 3177,
+    "aPHM": 1483,
+    "OFT/RV-CM": 2964,
+    "aSHF": 1660,
+    "aCM1": 3108,
+    "Peri/BW": 3402,
+    "Intra-Endoth-2": 650,
+    "aCM2": 2400,
+    "Peri": 1044,
+    "pSHF": 1603,
+    "JCF/SV-CM": 1508,
+    "HEM-Endoth": 392,
+    "JCF": 1078,
+    "ExEM-2": 771,
+    "FHF/JCF": 2572
+   },
+   "G": {
+    "Neural Tube": 48,
+    "NCC": 3299,
+    "d-CSE": 1520,
+    "V-CSE": 1158,
+    "a-FG": 731,
+    "D-FG": 960,
+    "Lateral FG": 229,
+    "EXE-Endoderm": 312,
+    "pSE": 90,
+    "Gut Endoderm": 98
+   }
+  },
+  "E8.0": {
+   "M": {
+    "Neural Tube": 2860,
+    "NCC": 742,
+    "d-CSE": 323,
+    "V-CSE": 1455,
+    "Intra-Endoth-1": 888,
+    "pPHM": 109,
+    "Endo": 286,
+    "PAM-3": 6,
+    "ExEM-1": 3608,
+    "vCM1": 39,
+    "a-FG": 561,
+    "D-FG": 600,
+    "PAM-4": 398,
+    "vCM2": 101,
+    "aPHM": 775,
+    "OFT/RV-CM": 201,
+    "aSHF": 429,
+    "aCM1": 102,
+    "Peri/BW": 1483,
+    "Intra-Endoth-2": 146,
+    "aCM2": 58,
+    "Peri": 296,
+    "pSHF": 25,
+    "JCF/SV-CM": 168,
+    "HEM-Endoth": 2410,
+    "JCF": 194,
+    "ExEM-2": 1750,
+    "FHF/JCF": 219
+   },
+   "G": {
+    "Neural Tube": 2860,
+    "NCC": 742,
+    "d-CSE": 323,
+    "V-CSE": 1455,
+    "a-FG": 561,
+    "D-FG": 600,
+    "Lateral FG": 35,
+    "EXE-Endoderm": 5691,
+    "pSE": 159,
+    "Gut Endoderm": 324
+   }
+  }
+ },
+ "harmoniser_depth_keys": {
+  "E9.5": 75.0,
+  "E8.0": null,
+  "mab21l2": 95.0,
+  "rep1": 82.0,
+  "rep2": 68.0
+ },
+ "constants": {
+  "eps": 1e-05,
+  "clip": [
+   0.25,
+   4.0
+  ],
+  "stage_min_cells": 30,
+  "transfer_min_cells": 100,
+  "factor_min_cells": 20
+ }
+}
