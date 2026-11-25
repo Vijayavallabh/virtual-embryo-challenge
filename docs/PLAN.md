@@ -14622,3 +14622,14 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     needs MS20d20 above MS20: false. C3 (`T1_s2rcMS20H20`) held at entry (oo). Two files to build once R66's code is
     reviewed and merged: K1 and C3.
   - **Standing unchanged:** 204.465.
+- 2026-11-25 (ss), the embryo big-swing challenge strikes every proposal (state at 14:08 UTC, 2026-11-25). Written by
+  the AI assistant, recused on the embryo's occupancy term and shape forms.
+  - **The challenge** (`EMBRYO_SWING_challenge.md`): the E8.0 twin, STRIKE (the pre-set rule gives "declined", as the
+    design said; its gate arm is bit-identical to row E25's arm E25c, which led on one of four tasks and did not pass;
+    on both tasks where twin and truth share a collection the evidence went against it); its variant Twin_B, STRIKE
+    (declined); P2, STRIKE (it moves the depth line, which needs a ruling per file; expected under +0.05). The honest
+    price of the twin against the built files: 0.06 to 0.10 to raise the board's best, best case about +2.
+  - **Its exposure note:** ledger rows R60 and R66, as the blind ledger prints them, bear on another board's uploads
+    (no value; used for nothing).
+  - **What follows:** no embryo question goes to the captain from this round; the embryo has no viable big swing
+    inside the rules.
