@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-25, 03:38 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-25, 04:23 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -16,10 +16,10 @@ decision log 2026-11-24 (pp)), every due file can go now and nothing waits for r
 file, by its rule. Between boards the captain decides; by the challenge's formula a point on T1 or T3 counts twice a
 point on the heart or the embryo board.
 
-**Due now (13), in the order of each board's table below:**
+**Due now (15), in the order of each board's table below:**
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcMSBm10.h5ad`,
-  `T1_s2rcB25H20.h5ad`, `T1_s2rcMSBH10.h5ad`
+  `T1_s2rcB25H20.h5ad`, `T1_s2rcMSBH10.h5ad`, `T1_s2rcMSB_LM16.h5ad`, `T1_s2rcMSBm20.h5ad`
 - T3: `T3_c2_s2_dd.h5ad`, `T3_c2_s2_ddh.h5ad`, `T3_c2_s2_dg.h5ad` (together)
 - Embryo: none (every built embryo file is uploaded)
 - Heart: `T2heart_organ_ts15_half.h5ad` (OTS15), `T2heart_organ_ts125_tk_half.h5ad` (OTK125), `T2heart_organ_ts125_tp_half.h5ad` (OTP125)
@@ -38,13 +38,13 @@ words "yes, T3_c2_s2_g2 ahead of" and a queued file's name (for example `T3_k23_
 **In work, not built (by the captain's yes of 2026-11-24; T1 rows R44 to R46, decision log 2026-11-24 (ss)):**
 `T1_s2rcB25MSH05` is now to be coded and built: `T1_s2rcB25H05` and `T1_s2rcB25MS` each scored strictly above the 2.5
 file (row R46; decision log 2026-11-25 (h)). Heart: The composition files of row R50 are not built: the line ended at
-its screening. Step-change round, second wave (decision log 2026-11-24 (www)), each built only after its gate or read
-passes: T1 `T1_s2rcMSB_LM16` (R54) and `T1_s2rcMSBm20` (R58). The embryo RS file (row R57) is not built: its read E57
-stopped at step 0 (decision log 2026-11-25 (a)). The heart XPC file OXP125 (row R56) is not built: its read H36 did
-not pass (decision log 2026-11-25 (f)). T1 line 12 (row R60, decision log 2026-11-25 (i)): `T1_s2rcMS20d10`,
-`T1_s2rcMS20H05`, `T1_s2rcMS20d20`, `T1_s2rcMS20m10`, `T1_s2rcMS20d15`, `T1_s2rcMS20H10`, `T1_s2rcMS20m20`, as gated.
-The embryo file Ot23 (row R59) is built (decision log 2026-11-25 (l)). Heart (row R55): screen H35 kept OTK125 and
-OTP125, now built (decision log 2026-11-25 (w)); OTX125 (DROP) and OTW125 (IDLE) are not built.
+its screening. The embryo RS file (row R57) is not built: its read E57 stopped at step 0 (decision log 2026-11-25
+(a)). The heart XPC file OXP125 (row R56) is not built: its read H36 did not pass (decision log 2026-11-25 (f)). T1
+line 12 (row R60, decision log 2026-11-25 (i)): `T1_s2rcMS20d10`, `T1_s2rcMS20H05`, `T1_s2rcMS20d20`,
+`T1_s2rcMS20m10`, `T1_s2rcMS20d15`, `T1_s2rcMS20H10`, `T1_s2rcMS20m20`, as gated. The embryo file Ot23 (row R59) is
+built (decision log 2026-11-25 (l)). Heart (row R55): screen H35 kept OTK125 and OTP125, now built (decision log
+2026-11-25 (w)); OTX125 (DROP) and OTW125 (IDLE) are not built. T1 `T1_s2rcMSB_LM16` (R54; read T72 passed) and
+`T1_s2rcMSBm20` (R58; read T73 passed) are built (decision log 2026-11-25 (dd)).
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)), and twenty-one on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy), (aaa), (bbb),
@@ -78,6 +78,8 @@ with no limit they go after T1's due search files (the main session's reading); 
 | eighth search | `T1_s2rcB25H20.h5ad` (at 2.0) | `8286f1b1707a423493de755feacd7a3d7743593ce2939f15c8323a27557b873f` | none: its gate is met (H10's headline is above H05's; row R44) |
 | tenth search | `T1_s2rcMSBm10.h5ad` (MS's own damping 1.0) | `a0c46efac87deb3756b3ca489a215694640707ea8a8053e254b8a86ee9d7d964` | none (row R51) |
 | tenth search | `T1_s2rcMSBH10.h5ad` (Blood's own momentum at 1.0) | `1cfdfc54d838e03294c444dd284c319724519eb731349667e5bf7f4e79f79250` | none: its gate is met (MSBH05's headline is above MSB's; row R51) |
+| late mix | `T1_s2rcMSB_LM16.h5ad` (MSB with library 3's chamber mix moved to row N64's late shares) | `106d5ccfb924794f92c02aac3dc60332be5da9a231d6facc0d585a79d46b694b` | none (row R54; its read T72 passed; the captain's word, decision log 2026-11-25 (t)) |
+| eleventh search | `T1_s2rcMSBm20.h5ad` (MS's own damping 2.0 on MSB) | `d82c3db2e5f43a3abeefe32a04e4d58d2da41cefa8fa979eb642de884c435401` | none (row R58; its read T73 passed) |
 | kept, last | `T1_s2rcA15.h5ad` (the second search's file) | `e2334137b54d98b04e9dece90213987e61fe9aa15a3fb8d85e6c262d8fb5ba75` | none (its condition is met); last on T1; with no limit on uploads, after T1's due search files |
 | kept, last | `T1_s2rcA20.h5ad` | `372713686782be273a52427140eab652517e35b679f54fc2a969484dee730218` | only if A15 scores strictly above A |
 

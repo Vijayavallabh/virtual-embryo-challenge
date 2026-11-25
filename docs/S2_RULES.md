@@ -3527,3 +3527,15 @@ and passed the format check. **The files:** `runs/manual_upload/T2heart_organ_ts
 `experiments/builds/results/hearth_8a8bc3a_h2.txt`). Added before any score of either. The AI assistant is recused on
 the heart's scope and size and gives no view. Data used: released Task 2 heart stages and the unlocked E10.5
 validation file only; no outside data.
+
+## Note of 2026-11-25: T1's late-mix file LM16 and MSBm20 are built (rows R54 and R58; decision log 2026-11-25 (dd))
+
+Merged at c0406bf after an independent review that found no blocker; reads T72 and T73 passed; the captain's word for
+LM16 is decision log 2026-11-25 (t). At the clean commit 89700ef, on `~/v/vec-campaign-d`, the four identity commands
+rebuilt the recorded bytes, each new command with its one setting at T1_s2rcMSB's value gave T1_s2rcMSB's bytes, and
+each new file was built twice with one sha256 and passed the format check. **The files:**
+`runs/manual_upload/T1_s2rcMSB_LM16.h5ad`, sha256 106d5ccfb924794f92c02aac3dc60332be5da9a231d6facc0d585a79d46b694b;
+`runs/manual_upload/T1_s2rcMSBm20.h5ad`, sha256 d82c3db2e5f43a3abeefe32a04e4d58d2da41cefa8fa979eb642de884c435401
+(build record `experiments/builds/results/t1lmm20_89700ef_lm1.txt`). Added before any score of either. Data used:
+released challenge data and the outside heart atlas on recomputed groups (GEO GSE193346, register row X002; for LM16
+also its late labelling, the amendment of 2026-11-25).

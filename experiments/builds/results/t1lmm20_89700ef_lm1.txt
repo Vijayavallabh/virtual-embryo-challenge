@@ -1,0 +1,13 @@
+T1's late-mix file LM16 (row R54) and MSBm20 (row R58)
+==========================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-25 in the checkout ~/v/vec-campaign-d at commit 89700ef (main; clean tree) with `experiments/builds/t1_lm_m20_line.sh 89700efa9fa4ee8d73391b0bc32d364eb0d3ea45 lm1 R54 R58`, after its refusal path was traced (exit 96) and its gate checks were dry-run on the real rows.
+Every exit record is 0. The four identity commands rebuilt the recorded bytes:
+  T1_s2rc.h5ad  ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f
+  T1_s2rcB.h5ad  c7240cb6a7f7ee93d037f437832efbaad004f1fbe608d80072f8efd5d20a0062
+  T1_s2rc_MS.h5ad  6103d10535665634ee0cad3390590a5df132d1805682fb1d309bb19581fdaa5e
+  T1_s2rcMSB.h5ad  78bb17eea5721e590cfd2c9f707e9cd6f2f496e081acede4f697dc4035871da2
+Each new command with its one setting put back at T1_s2rcMSB's value gave T1_s2rcMSB's bytes (LM16own, m20msb). The new files, each built twice into separate folders with one sha256, format-checked, each stamp of this commit and clean, distinct from each other and from every file on record:
+  T1_s2rcMSB_LM16.h5ad  106d5ccfb924794f92c02aac3dc60332be5da9a231d6facc0d585a79d46b694b
+  T1_s2rcMSBm20.h5ad  d82c3db2e5f43a3abeefe32a04e4d58d2da41cefa8fa979eb642de884c435401
+The local copies under runs/manual_upload/ are the same bytes. No log, size, shape or sidecar of these builds was read. No score of either exists at this record.

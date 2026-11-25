@@ -14407,3 +14407,12 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     practice gate); no closed lever; the endpoint lead set aside (it reverses the momentum rows T61, T65 and T73 found
     adds; rows T53 and T69 read its nearest forms without gain).
   - Cold challengers check each design next; then one short question to the captain names the files.
+- 2026-11-25 (dd), T1's late-mix file LM16 and MSBm20 are built, before any score (state at 04:23 UTC, 2026-11-25).
+  Written by the AI assistant, which designed none of it and gives no lean on T1's composition.
+  - **The build.** `experiments/builds/t1_lm_m20_line.sh 89700ef... lm1 R54 R58` in `~/v/vec-campaign-d`, clean, after
+    a traced refusal and a dry run of its gate checks; the four identity commands gave the recorded bytes; each new
+    file built twice with one sha256: **`T1_s2rcMSB_LM16.h5ad`** 106d5ccfb924...; **`T1_s2rcMSBm20.h5ad`**
+    d82c3db2e5f4... (full sha256 in the rules note and the record).
+  - **Their standing.** Both due now: LM16 by row R54, its read T72 and the captain's word; MSBm20 by row R58 and its
+    read T73. Data used: released challenge data and the outside heart atlas on recomputed groups (GEO GSE193346,
+    register row X002; for LM16 also its late labelling, the amendment of 2026-11-25).
