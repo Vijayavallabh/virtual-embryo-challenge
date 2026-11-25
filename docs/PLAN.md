@@ -14223,3 +14223,12 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Each rule by its letter.** It is below the board's best (MS20, 73.82). Row R51's gate for MSBd15 (MSBd10 above
     MSB, 73.47) is not met, so `T1_s2rcMSBd15.h5ad` is not uploaded; it stands in the sheet as not uploaded by its
     rule. Standing unchanged: 203.695.
+- 2026-11-25 (h), the captain reports one more headline and the rules are applied by their letter (state at 01:40 UTC,
+  2026-11-25). Written by the AI assistant, which records the headline only.
+  - **The paste:** T1:test `T1_s2rcB25H05.h5ad` 72.78 (shown as submitted 2026-11-25 01:32). Its sha256 on disk
+    matches its sheet row. The paste's per-metric lines, rank and file size are not recorded or used.
+  - **Each rule by its letter.** It is below the board's best (MS20, 73.82) and above the 2.5 file (72.66). Row R44:
+    `T1_s2rcB25H10.h5ad` is now due (H05 above the line's best, the 2.5 file's headline), then H20 only if H10 beats
+    H05. Row R51: `T1_s2rcMSBH05.h5ad` is now due (B25H05 beat the 2.5 file), then MSBH10 only if MSBH05 beats MSB.
+    Row R46: B25H05 and B25MS have each scored strictly above the 2.5 file, so `T1_s2rcB25MSH05` is now coded and
+    built. Standing unchanged: 203.695.
