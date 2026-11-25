@@ -14592,3 +14592,19 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     gene, used to shape the predicted response; memory of what losing the held-out gene does in embryos is not used. A
     cold challenger checks every source against those words with odds, and any file goes to the captain as a priced
     question.
+- 2026-11-25 (qq), the R66 engineer and the embryo big-swing designer hand back (state at 13:44 UTC, 2026-11-25).
+  Written by the AI assistant, recused on the embryo's occupancy term and shape forms.
+  - **R66's code** (branch `campaign/t1-r66`, 1c30ad5): the T1 builder admits exactly row R66's thirty option strings
+    from one table; a base checker; a launcher that builds one named file twice after identity rebuilds; tests (1630
+    passed across the new and the guard suites; the n54 listing guard passed). Its exposure note: an assertion in
+    `tests/test_t1_r51_build.py` near line 264 gives an earlier banked file's name (no value; used for nothing). An
+    independent review is running; then the merge and C3's build on the DGX.
+  - **The embryo's big-swing design** (`EMBRYO_SWING_design.md`): no swing of +4 inside the rules over the built
+    files. Its first choice, weighed apart, is the E8.0 twin `T2embryo_s2x_ovt1.h5ad` (O's command with every cell
+    drawn from E8.0 at the pre-registered size): it moves the embryo's scope and overlay form, closed levers, so the
+    pre-set rule gives "declined" unless the captain names an exception; the designer's price about 0.38 to beat O,
+    best case about +7.5, expected about +0.2, its gate GT confirming the build path only. A cold challenger checks it
+    now; the AI assistant gives no view. Its exposure notes: lines 13 and 14 of the second wave's
+    `EMBRYO_MODEL_challenge.md` (flagged twice, now redacted unread in the round folder, the removed text's sha256
+    noted) and a bullet of `docs/DATA_NOTES.md` that names the first embryo upload beside a target-free geometry
+    measurement (no score; left as it is).
