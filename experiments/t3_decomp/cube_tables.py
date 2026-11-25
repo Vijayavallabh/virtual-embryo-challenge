@@ -28,8 +28,8 @@ T3_MOON5_challenge.md and T3_MOON5_check2.md): its four WT-only tables and the t
            identity is the launcher's rebuild of C2's bytes 47111ac1...); else STOP
       G0c  SD(Q(X_j)) / SD(ln phi_C2) >= 0.15 for each axis, else that axis is held at '+'
       G0d  every vertex's k_v, range, den total and each held label's expected library against C2's: the builder's
-           guards (k_v in [0.5, 2], the hold converged) and every label holding >= 1% of C2's drawn cells within +-1%
-           of C2's library, else the vertex is not built
+           guards (k_v in [0.5, 2], the hold converged) and every label with a cell in C2's draw (row R72's every
+           label) within +-1% of C2's library, else the vertex is not built
       G0e  per axis, the rank correlation (Spearman) over the board's panel of dp(C2 with the axis alone reflected) -
            dp(C2) against the dp change of a uniform depth change of C2's cells to WT E9.5's and to WT E8.0's median
            depth over WT E8.75's: |rho| <= 0.3 on both, else held at '+' (depth by another route); Pearson reported
@@ -581,7 +581,7 @@ def g0_text(res: dict) -> str:
     L.append("G0c: SD(Q(X_j)) / SD(ln phi_C2) " + ", ".join(
         f"{j} {v['sd_q_over_sd_ln_phi_c2']:.3f} ({'pass' if v['passes'] else 'held'})"
         for j, v in res["G0c"]["axes"].items()) + " (bar 0.15)")
-    L.append(f"G0d: {res['G0d']['held_labels']} labels held (>= 1% of C2's drawn cells); band {sc.LIB_BAND:g}")
+    L.append(f"G0d: {res['G0d']['held_labels']} labels held (every label of C2's drawn cells); band {sc.LIB_BAND:g}")
     for v, r in res["G0d"]["vertices"].items():
         if "refused" in r:
             L.append(f"  {v}: not made ({r['refused']})")

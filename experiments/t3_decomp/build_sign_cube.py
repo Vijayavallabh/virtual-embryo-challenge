@@ -10,9 +10,9 @@ change: the factor the frozen loader returns is replaced, for this process only,
   ln phi_v = ln phi_C2 + sum_j (k_v s_j - 1) Q(X_j),   j = S (stage), M (Mab21l2), G (Gata4)
 
 on C2's factor phi_C2 = combine('c2', 1.0) of the two pinned tables, with the axes of the four committed WT-only tables
-(`cube_tables.py tables`; MANIFEST.json) and Q projecting off B's columns m_L * phi_C2 for every label holding >= 1%
-of C2's drawn cells (the rows C2's own draw takes, counts as drawn, computed here on a fresh generator before the
-build); then sign_cube.flip_factor's SD hold, clip, den constant (WT E8.75's mean within-cell proportions,
+(`cube_tables.py tables`; MANIFEST.json) and Q projecting off B's columns m_L * phi_C2 for every label with a cell in
+C2's draw (the rows C2's own draw takes, counts as drawn, computed here on a fresh generator before the build; row
+R72's every label); then sign_cube.flip_factor's SD hold, clip, den constant (WT E8.75's mean within-cell proportions,
 build_outside_form.wt_den) and Newton hold. The board's own writer writes the file (bs.build_submission:
 vec.io.write_submission), and its stamp follows.
 
@@ -73,9 +73,9 @@ FILES = {v: f"T3_cube_{v}.h5ad" for v in sc.NAMED}
 EXIT_REFUSED, EXIT_FACTOR_MISMATCH, EXIT_GUARD, EXIT_NOTHING = 2, 5, 6, 3
 LINE = ("row R72's sign cube on C2: ln phi_v = ln phi_C2 + sum_j (k_v s_j - 1) Q(X_j), the axes "
         "X_S = c (S_M - Y_M) / 2, X_M = c (l_M - S_M), X_G = c (l_G - (S_G + Y_G) / 2) from the committed WT-only "
-        "tables, Q off B's columns m_L * phi_C2 (labels holding >= 1% of C2's drawn cells), k_v for SD(ln phi_C2), "
-        "the clip to [min(0.25, phi_C2), max(4, phi_C2)], the den constant and the Newton hold of each held label's "
-        "expected library")
+        "tables, Q off B's columns m_L * phi_C2 (every label with a cell in C2's draw), k_v for SD(ln phi_C2), the "
+        "clip to [min(0.25, phi_C2), max(4, phi_C2)], the den constant and the Newton hold of every label's expected "
+        "library, each within 1% of C2's")
 
 Refused = bs.Refused
 

@@ -21,7 +21,7 @@ LN4 = np.log(4.0)
 def _world(seed: int = 0, G: int = 400, L: int = 10, N: int = 2500):
     rng = np.random.default_rng(seed)
     lab = rng.integers(0, L, N)
-    lab[:4] = L  # a label under 1% of the cells: never held
+    lab[:4] = L  # a label under 1% of the cells: held like every other drawn label (row R72's every label)
     prof = rng.dirichlet(np.ones(G) * 0.3, size=L + 1)
     C = np.vstack([rng.poisson(prof[t] * 150) for t in lab])
     # tables shaped like the record's: l_M mostly a stage offset (N8, K18 [9]), the WT poles around it
@@ -100,12 +100,65 @@ def test_the_projection_is_off_b_and_idempotent():
         assert np.abs(w["Q"](q) - q).max() <= 1e-12
 
 
-def test_label_rows_hold_labels_with_one_percent_of_the_cells():
+def test_label_rows_hold_every_drawn_label_by_default():
     C = np.array([[1, 3], [2, 2], [0, 4]] + [[5, 5]] * 197)
     lab = np.array([0, 0, 1] + [2] * 197)
     held, M = sc.label_rows(C, lab)
-    assert list(held) == [0, 2]  # label 1 holds 1 of 200 cells, under 1%
-    assert np.allclose(M[0], [3 / 8, 5 / 8]) and np.allclose(M.sum(1), 1)
+    assert list(held) == [0, 1, 2]  # label 1 holds 1 of 200 cells and is held (row R72: every label)
+    assert np.allclose(M[0], [3 / 8, 5 / 8]) and np.allclose(M[1], [0, 1]) and np.allclose(M.sum(1), 1)
+    held, _ = sc.label_rows(C, lab, share=0.01)  # F1's own share, kept as a parameter only
+    assert list(held) == [0, 2]
+
+
+def _small_label_world(rng, G: int = 300):
+    """The independent review's case (B1): five larger labels and three of 9, 8 and 8 of 1000 drawn cells, the den
+    from a separate pool's mean within-cell proportions, axes N(0, 0.12), phi_C2 = exp(N(0, 0.3) + sum X)."""
+    sizes = [195] * 5 + [9, 8, 8]
+    lab = np.repeat(np.arange(len(sizes)), sizes)
+    prof = rng.dirichlet(np.ones(G) * 0.3, size=len(sizes))
+    C = np.vstack([rng.poisson(prof[t] * 150) for t in lab])
+    pool = np.vstack([rng.poisson(prof[t] * 150) for t in rng.integers(0, len(sizes), 800)])
+    den = (pool / np.maximum(pool.sum(1, keepdims=True), 1)).mean(0)
+    X = {j: rng.normal(0, 0.12, G) for j in sc.AXES}
+    phi_c2 = np.exp(rng.normal(0, 0.3, G) + sum(X.values()))
+    return C, lab, den, X, phi_c2
+
+
+def test_every_label_under_one_percent_is_held_or_the_vertex_is_refused():
+    """B1 of the independent review: with labels under 1% of the drawn cells unheld (F1's 1%), every vertex passed the
+    held labels' band while the small labels' libraries moved by a median 2.5% and up to 13.4%. Held as row R72 says
+    (every drawn label), no vertex passes with any label more than 1% (indeed 1e-6) off C2's library."""
+    rng = np.random.default_rng(20261125)
+    made = refused = 0
+    old_off = []
+    for _ in range(25):
+        C, lab, den, X, phi_c2 = _small_label_world(rng)
+        held, M = sc.label_rows(C, lab)
+        assert len(held) == 8  # the three small labels are held
+        B = sc.basis(M, phi_c2)
+        Q = sc.projector(B)
+        q = {j: Q(X[j]) for j in sc.AXES}
+        for v in sc.NAMED:
+            try:
+                phi, rec = sc.vertex_factor(phi_c2, q, v, M, den, B)
+            except sc.CubeRefused:
+                refused += 1
+                continue
+            made += 1
+            dev = np.abs((M @ phi) / (M @ phi_c2) - 1)
+            assert dev.max() <= sc.LIB_TOL and sc.within_band(rec)
+        # the rule the review struck: only the labels with >= 1% of the cells held; the small ones then move
+        held1, M1 = sc.label_rows(C, lab, share=0.01)
+        B1 = sc.basis(M1, phi_c2)
+        Q1 = sc.projector(B1)
+        q1 = {j: Q1(X[j]) for j in sc.AXES}
+        try:
+            phi1, _ = sc.vertex_factor(phi_c2, q1, "nnn", M1, den, B1)
+            old_off.append(float(np.abs((M @ phi1) / (M @ phi_c2) - 1).max()))
+        except sc.CubeRefused:
+            pass
+    assert made > 0 and made + refused == 25 * len(sc.NAMED)
+    assert old_off and max(old_off) > sc.LIB_BAND  # the case does catch the struck rule
 
 
 def test_ppp_is_c2s_own_array_with_k_one():
@@ -151,6 +204,12 @@ def test_k_is_the_positive_root_nearest_one_and_refused_outside_the_range():
         sc.solve_k(b, q, (-1, 1), k_range=(k + 0.01, k + 1.0))
     with pytest.raises(sc.CubeRefused):
         sc.solve_k(b, [np.zeros(300), np.zeros(300)], (-1, 1))
+    q2 = [-0.1 * b + rng.normal(0, 0.01, 300), -0.1 * b + rng.normal(0, 0.01, 300)]
+    k_near, rec2 = sc.solve_k(b, q2, (1, 1))  # roots 1 and about 11: the admissible one nearest 1
+    far = max(r for r in rec2["roots"] if r > 0)
+    assert k_near == 1.0 and far > 5
+    k_far, _ = sc.solve_k(b, q2, (1, 1), k_range=(far - 1e-6, far + 1e-6))  # only the far root is admissible
+    assert k_far == pytest.approx(far)
     with pytest.raises(sc.CubeRefused, match="no real k"):  # axes orthogonal to the base and too large to hold
         sc.solve_k(b, [rng.normal(0, 0.5, 300), rng.normal(0, 0.5, 300)], (-1, 1))
 

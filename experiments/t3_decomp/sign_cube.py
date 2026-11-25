@@ -12,17 +12,21 @@ Axes (design 2.2; c is C2's, SD(l_M) / SD(l_M + l_G)):
   A   = c [(S_M + Y_M) / 2 + (S_G + Y_G) / 2],  A + X_S + X_M + X_G = c (l_M + l_G) = ln phi_C2
 A vertex v = (s_S, s_M, s_G), letters p (C2's sign) or n (reflected), F1 and F7:
   ln phi_v = ln phi_C2 + sum_j (k_v s_j - 1) Q(X_j),  Q(X) = X - B (B'B)^-1 B'X,
-  B's columns m_L * phi_C2 for every label L holding >= 1% of the drawn cells (m_L: L's count-weighted mean
-  within-cell proportions there, the counts as drawn, before the factor step); k_v > 0 holds SD(ln phi_v) at
-  SD(ln phi_C2) (the positive root nearest 1; refused outside [0.5, 2]; |k_v - 1| <= 1e-9 is taken as k_v = 1);
+  B's columns m_L * phi_C2 for every label L with a cell in the draw (m_L: L's count-weighted mean within-cell
+  proportions there, the counts as drawn, before the factor step; row R72's words, "every label's expected library
+  is held within 1% of C2's", bind: F1 named the labels holding >= 1% of the drawn cells, which left the smaller
+  labels free to move once there are two of them or the den is not the drawn cells' mean); k_v > 0 holds SD(ln phi_v) at
+  SD(ln phi_C2) (the root in [0.5, 2] nearest 1; refused when there is none; |k_v - 1| <= 1e-9 is taken as
+  k_v = 1);
   the clip gene by gene to [min(0.25, phi_C2), max(4, phi_C2)] (C2's builder never re-clips its combined factor);
   one constant so that den . phi_v = den . phi_C2; then rounds of a Newton correction within B's span, taken jointly
-  with the den constant, each followed by the clip and the exact den constant, until every held label's expected
-  library m_L . phi is C2's to 1e-6 and the den total C2's to 1e-9, at most 20 rounds; else the vertex is not built.
+  with the den constant, each followed by the clip and the exact den constant, until every label's expected library
+  m_L . phi is C2's to 1e-6 and the den total C2's to 1e-9, at most 20 rounds; else the vertex is not built (a label
+  too small to be held is refused, never passed). Every label's library is then checked within 1% (LIB_BAND).
 The identity vertex ppp is C2's own array by construction (every coefficient k s_j - 1 is exactly 0, so the factor is
 phi_C2 times exp(0); the clip, the den constant and the hold then leave it unchanged), with no special case.
 G1's analogue (row K31) uses the same function with the base phi_M, the axes X_S' = (S_M - Y_M) / 2 and
-X_M' = l_M - S_M, and B's columns m_L * phi_M from K18's drawn cells.
+X_M' = l_M - S_M, and B's columns m_L * phi_M for every label of K18's drawn cells.
 """
 
 from __future__ import annotations
@@ -41,8 +45,8 @@ K_SNAP = 1e-9  # F3: |k - 1| <= 1e-9 is taken as k = 1
 LIB_TOL = 1e-6  # F7: each held label's expected library at C2's to 1e-6
 DEN_TOL = 1e-9  # F1: den . phi_v = den . phi_C2 within 1e-9
 MAX_ROUNDS = 20  # F7
-LABEL_SHARE = 0.01  # F1: the labels holding >= 1% of the drawn cells
-LIB_BAND = 0.01  # F1's G0d bar and row R72: every held label's expected library within 1% of C2's
+LABEL_SHARE = 0.0  # every label with a drawn cell is held (row R72's "every label"; F1's 1% left smaller ones free)
+LIB_BAND = 0.01  # F1's G0d bar and row R72: every label's expected library within 1% of C2's
 RANK_TOL = 1e-12  # B's rank: singular values above this share of the largest
 
 
@@ -81,8 +85,9 @@ def analogue_axes(l_m, s_m, y_m) -> dict[str, np.ndarray]:
 
 
 def label_rows(counts, lab, share: float = LABEL_SHARE) -> tuple[np.ndarray, np.ndarray]:
-    """The labels holding >= `share` of the drawn cells and their rows m_L: the label's counts summed over its cells
-    over its total count (the count-weighted mean within-cell proportions). Returns (labels, M), M labels x genes."""
+    """The labels holding >= `share` of the drawn cells (by default every label with a drawn cell) and their rows m_L:
+    the label's counts summed over its cells over its total count (the count-weighted mean within-cell proportions).
+    Returns (labels, M), M labels x genes."""
     C = np.asarray(counts, dtype=np.float64)
     lab = np.asarray(lab)
     if C.ndim != 2 or lab.shape != (C.shape[0],) or C.shape[0] == 0:
@@ -123,8 +128,8 @@ def projector(B):
 
 def solve_k(b, qs, sg, k_range=K_RANGE) -> tuple[float, dict]:
     """k > 0 with SD(b + sum_j (k s_j - 1) q_j) = SD(b): ln phi(k) = u + k w, u = b - sum q_j, w = sum s_j q_j, a
-    quadratic in k. The positive root nearest 1 (|k - 1| <= K_SNAP is taken as 1); CubeRefused when there is none
-    or it lies outside k_range."""
+    quadratic in k. The positive root inside k_range nearest 1 (|k - 1| <= K_SNAP is taken as 1); CubeRefused when
+    no positive root lies inside k_range."""
     b = np.asarray(b, dtype=np.float64)
     qs = [np.asarray(q, dtype=np.float64) for q in qs]
     u = b - np.sum(qs, axis=0)
@@ -140,16 +145,16 @@ def solve_k(b, qs, sg, k_range=K_RANGE) -> tuple[float, dict]:
     if disc < 0:
         raise CubeRefused("no real k holds SD(ln phi) at the base's")
     roots = sorted({(-cuw + q * np.sqrt(disc)) / vw for q in (1.0, -1.0)})
-    pos = [float(r) for r in roots if r > 0]
+    pos = [1.0 if abs(r - 1.0) <= K_SNAP else float(r) for r in roots if r > 0]
     rec["roots"] = [float(r) for r in roots]
     if not pos:
         raise CubeRefused("no positive k holds SD(ln phi) at the base's")
-    k = min(pos, key=lambda r: (abs(r - 1.0), r))
-    if abs(k - 1.0) <= K_SNAP:
-        k = 1.0
-    rec["k"] = k
-    if not (k_range[0] <= k <= k_range[1]):
+    inside = [r for r in pos if k_range[0] <= r <= k_range[1]]
+    if not inside:
+        k = min(pos, key=lambda r: (abs(r - 1.0), r))
         raise CubeRefused(f"k = {k:.6g} lies outside [{k_range[0]}, {k_range[1]}]")
+    k = min(inside, key=lambda r: (abs(r - 1.0), r))  # the admissible root nearest 1
+    rec["k"] = k
     return k, rec
 
 
@@ -161,8 +166,9 @@ def libraries(M, phi) -> np.ndarray:
 def hold(phi, phi_ref, M, den, B, lo, hi, rounds: int = MAX_ROUNDS) -> tuple[np.ndarray, dict]:
     """F7's hold: until every held label's m_L . phi is phi_ref's to LIB_TOL and den . phi is phi_ref's to DEN_TOL,
     rounds of one Newton step in log space within B's span with the den constant as one more unknown (a uniform
-    scale, solved jointly so that the den step does not undo the labels), then the clip to [lo, hi], then the exact
-    den constant; at most `rounds` rounds. A factor already held is returned unchanged (round 0)."""
+    scale, solved jointly so that the den step does not undo the labels; the Jacobian over the genes strictly inside
+    their clip bounds, since the clip holds the others), then the clip to [lo, hi], then the exact den constant; at
+    most `rounds` rounds. A factor already held is returned unchanged (round 0)."""
     phi = np.asarray(phi, dtype=np.float64).copy()
     M = np.asarray(M, dtype=np.float64)
     den = np.asarray(den, dtype=np.float64)
@@ -175,11 +181,14 @@ def hold(phi, phi_ref, M, den, B, lo, hi, rounds: int = MAX_ROUNDS) -> tuple[np.
             return phi, {"rounds": r, "converged": True, "max_lib_dev": float(np.abs(lib).max()), "den_dev": dd}
         if r == rounds:
             break
+        # the genes the clip holds at a bound do not move under the step (an active set): the Jacobian counts only
+        # the genes strictly inside their bounds, so a step is not undone by the clip that follows it
+        free = phi * ((phi > lo * (1.0 + 1e-12)) & (phi < hi * (1.0 - 1e-12)))
         J = np.empty((L + 1, L + 1))
-        J[:L, :L] = (M * phi[None, :]) @ B / e0[:, None]
-        J[:L, L] = libraries(M, phi) / e0
-        J[L, :L] = ((den * phi) @ B) / d0
-        J[L, L] = float(den @ phi) / d0
+        J[:L, :L] = (M * free[None, :]) @ B / e0[:, None]
+        J[:L, L] = libraries(M, free) / e0
+        J[L, :L] = ((den * free) @ B) / d0
+        J[L, L] = float(den @ free) / d0
         sol = np.linalg.lstsq(J, -np.concatenate([lib, [dd]]), rcond=None)[0]
         phi = phi * np.exp(B @ sol[:L] + sol[L])
         phi = np.clip(phi, lo, hi)
@@ -238,7 +247,8 @@ def vertex_factor(phi_c2, q_axes: dict, v: str, M, den, B=None) -> tuple[np.ndar
 
 
 def within_band(rec: dict, band: float = LIB_BAND) -> bool:
-    """G0d's bar (F1) and row R72: every held label's expected library within `band` of the base's."""
+    """G0d's bar (F1) and row R72: every held label's expected library (every label with a drawn cell, label_rows'
+    default) within `band` of the base's."""
     return bool(rec["max_abs_library_dev"] <= band)
 
 

@@ -11,14 +11,18 @@ as released), K18's stream `t3_s2_form` and cells, seeds 0-9, tasks g1 and g2 (W
 merged as one truth (J4: each seed's difference is the mean of the two tasks'). Every arm goes through K18's
 barred_form path (build_submission.prediction_inputs with the barred s1's spec, construct, assemble) with its own
 factor in place of phi_M, so every arm holds the same drawn rows. Per seed, B's columns are m_L * phi_M for every
-label holding >= 1% of that seed's drawn cells (F1: "G1 uses phi_lM and K18's cells"), Q projects off B, and every arm
+label with a cell in that seed's draw (F1: "G1 uses phi_lM and K18's cells"; every label, as row R72 holds the cube's
+files), Q projects off B, and every arm
 is held as a cube vertex is (sign_cube.flip_factor: k for the SD of ln phi_M, the clip, the den constant over WT
 E8.75's mean within-cell proportions, the Newton hold of each label's expected library):
   barred_form   phi_M itself: the guard arm, not counted while inside its guard
-  cube_np       the stage axis reflected: base - 2 Q(X_S') at k = 1, held (try)
-  cube_pn       the Mab21l2 axis reflected: base - 2 Q(X_M') at k = 1, held (try)
-  null_S        base - 2 Q(perm_s(Q(X_S'))), held as cube_np is (try; ten permutations, one counted arm)
-  null_M        base - 2 Q(perm_s(Q(X_M'))), held as cube_pn is (try)
+  cube_np       the analogue vertex np, the stage axis reflected: base - (1 + k) Q(X_S') + (k - 1) Q(X_M'), k solved
+                for SD(ln phi_M) (at k = 1 it is base - 2 Q(X_S')), held (try)
+  cube_pn       the analogue vertex pn, the Mab21l2 axis reflected: base + (k - 1) Q(X_S') - (1 + k) Q(X_M'), k
+                solved for SD(ln phi_M) (at k = 1 it is base - 2 Q(X_M')), held (try)
+  null_S        cube_np with Q(perm_s(Q(X_S'))) in place of Q(X_S'), k solved and held as cube_np is (at k = 1 it is
+                base - 2 Q(perm_s(Q(X_S')))) (try; ten permutations, one counted arm)
+  null_M        cube_pn with Q(perm_s(Q(X_M'))) in place of Q(X_M'), k solved and held as cube_pn is (try)
 perm_s is vec.harness.t3_decile_permutation within deciles of the reference's mean expression (K18's basis) seeded
 20261113 + s at draw seed s. An axis that G0 held at '+' is not read: its arm and null are not run and not counted.
 An arm whose factor cannot be made at a seed (sign_cube.CubeRefused) is recorded as not made, and its axis cannot pass.
@@ -202,7 +206,8 @@ def null_axes(j: str, q: dict, Q, basis, seed: int) -> list[np.ndarray]:
 
 def seed_factors(ref, n: int, seed: int, F: dict, axes) -> dict:
     """One seed's arms: the rows barred_form draws (construct with no factor on a fresh stable_rng(seed, STREAM)), the
-    labels holding >= 1% of them and their rows m_L, B and Q, then every arm through sign_cube.flip_factor."""
+    labels of them (every label with a drawn cell) and their rows m_L, B and Q, then every arm through
+    sign_cube.flip_factor."""
     hit = _FOLD["seeds"].get(int(seed))
     if hit is not None:
         return hit
