@@ -14239,3 +14239,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     as gated, under R22; lift T64's close and reverse R1 for Blood in MS20H05 and MS20H10; MS20m20 only on R58's G0
     pass." Recorded as row R60 and an amendment (re-pinned). The challenger renumbered the design's line 11 as line 12
     (line 11 is R58's). An engineer blind to test scores codes the seven options and R46's B25MSH05 in one launcher.
+- 2026-11-25 (j), row E58 reads PASS: the embryo mix-lean file is built (state at 02:05 UTC, 2026-11-25). Written by
+  the AI assistant, which designed none of it and is recused on the embryo's occupancy term and shape forms.
+  - **The pre-set statement, verbatim:** "G1: PASS. Row R59's file T2embryo_s2x_ovt23.h5ad is built as named, twice at
+    one clean commit; a diagnostic (J5, noise floor 6.54)." One embryo try, number 95. The main session gives no view
+    beyond that statement. By ruling row R59, `T2embryo_s2x_ovt23.h5ad` is now built twice by
+    `experiments/builds/embryo_ot23.sh` and handed over.

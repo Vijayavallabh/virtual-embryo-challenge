@@ -1,0 +1,289 @@
+{
+ "void": false,
+ "why": [],
+ "commit": "0a6d4ce8afd43bef2af5e43820ccd22e93cf8596",
+ "row": "E58",
+ "arm": "fgw_shape0x_ov_t23",
+ "control": "fgw_shape0x_ov",
+ "truths": {
+  "counted": {
+   "T2/E8.0.h5ad": [
+    "half",
+    "late"
+   ],
+   "T2/E8.25_late.h5ad": [
+    "new1"
+   ]
+  },
+  "reported": {
+   "T2/E8.5.h5ad": [
+    "new2",
+    "x2",
+    "x3"
+   ],
+   "T2/E8.25_late.h5ad": [
+    "x1"
+   ]
+  },
+  "all_seven": {
+   "T2/E8.0.h5ad": [
+    "half",
+    "late"
+   ],
+   "T2/E8.25_late.h5ad": [
+    "new1",
+    "x1"
+   ],
+   "T2/E8.5.h5ad": [
+    "new2",
+    "x2",
+    "x3"
+   ]
+  }
+ },
+ "clauses": {
+  "P1": true,
+  "P2": true,
+  "P3": true
+ },
+ "clause_text": {
+  "P1": "P1 the two-truth merged board gain against O is at least +0.3, with D_s above 0 in at least 8 of 10 seeds.",
+  "P2": "P2 no group (expression_change, cell_state, local_organisation) is behind O on that merge by E49's definition (merged mean below 0 with at least 8 of 10 D_s below 0), with no tolerance.",
+  "P3": "P3 the arm refused on no task-seed (a refusal makes it unreadable: STOP, not void)."
+ },
+ "pass_rule": "All under build main, against O (fgw_shape0x_ov), on the two-truth merge of the counted tasks (E8.0 = half and late, one truth; E8.25_late = new1; equal weight, J4), D_s the mean over the two truths of each truth's task-mean difference at seed s. P1 the two-truth merged board gain against O is at least +0.3, with D_s above 0 in at least 8 of 10 seeds. P2 no group (expression_change, cell_state, local_organisation) is behind O on that merge by E49's definition (merged mean below 0 with at least 8 of 10 D_s below 0), with no tolerance. P3 the arm refused on no task-seed (a refusal makes it unreadable: STOP, not void). A merged gain below 0.3 in size is the idle case: STOP. shape_growth's merged change is reported beside it for the captain (recused) and decides nothing; new2, x1, x2 and x3 are reported and decide nothing; e75 and e725 are not run (barred for any change to the mixing fraction).",
+ "idle": false,
+ "passes": true,
+ "outcome": "PASS",
+ "outcome_text": "G1: PASS. Row R59's file T2embryo_s2x_ovt23.h5ad is built as named, twice at one clean commit; a diagnostic (J5, noise floor 6.54).",
+ "arm_refused_task_seeds": 0,
+ "merged": {
+  "board": {
+   "mean": 1.6960092403035272,
+   "se": 0.0683757312748282,
+   "ahead": 10,
+   "behind": 0
+  },
+  "groups": {
+   "expression_change": {
+    "mean": 0.0022182283321911995,
+    "se": 0.0010957502388347093,
+    "ahead": 8,
+    "behind": 2,
+    "is_behind": false
+   },
+   "cell_state": {
+    "mean": 0.03758537846128547,
+    "se": 0.0009040308139141015,
+    "ahead": 10,
+    "behind": 0,
+    "is_behind": false
+   },
+   "local_organisation": {
+    "mean": 0.04848188358429031,
+    "se": 0.0011385286677500176,
+    "ahead": 10,
+    "behind": 0,
+    "is_behind": false
+   }
+  }
+ },
+ "reported_deciding_nothing": {
+  "shape_growth_counted_merge_recused": {
+   "mean": -0.0204451207656259,
+   "se": 0.0012869752936428421,
+   "ahead": 0,
+   "behind": 10
+  },
+  "skills_counted_merge": {
+   "d2_shape": {
+    "mean": -0.04471347837079017,
+    "se": 0.004054527656055218,
+    "ahead": 0,
+    "behind": 10
+   },
+   "occupancy_dice": {
+    "mean": -0.016621883926087534,
+    "se": 0.0032553588306984856,
+    "ahead": 0,
+    "behind": 10
+   }
+  },
+  "reported_tasks_merge": {
+   "mean": -4.425143551579487,
+   "se": 0.09810645941793782,
+   "ahead": 0,
+   "behind": 10
+  },
+  "all_seven_merge": {
+   "mean": -0.6791722672630007,
+   "se": 0.06800814675303654,
+   "ahead": 0,
+   "behind": 10
+  },
+  "against_floor_counted": {
+   "fgw_shape0x_ov": {
+    "mean": 25.799651993322176,
+    "se": 0.10578159835439004,
+    "ahead": 10,
+    "behind": 0
+   },
+   "fgw_shape0x_ov_t23": {
+    "mean": 27.495661233625707,
+    "se": 0.08384574365908334,
+    "ahead": 10,
+    "behind": 0
+   }
+  }
+ },
+ "price": {
+  "per_truth": {
+   "T2/E8.0.h5ad": 3.029956420480402,
+   "T2/E8.25_late.h5ad": 0.3620620601266523
+  },
+  "gains": {
+   "T2/E8.0.h5ad": 3.029956420480402,
+   "T2/E8.25_late.h5ad": 0.3620620601266523
+  },
+  "losses": {}
+ },
+ "price_lines": [
+  "J1: the run applies the file's own build path, O's command with the drawn cells' mix leaned a sixth toward the later bracket (t_mix = 2/3 at the test pair's t = 1/2), except the size step, which is the harness's task size rule (the file takes the pre-registered size; the shape terms ignore scale). The test's world (which run imaged E7.75) is not hosted by any counted task: a gain here prices only the world where the truth shares the later bracket's run, and nothing here prices the other worlds.",
+  "J4: the counted merge weighs its two truths equally (half and late are one truth, E8.0); a world weight, where the captain's question uses one, takes the least favourable value of N23's range for the claim argued (0.4 for the later bracket's world).",
+  "J5: diagnostic; the noise floor 6.54 exceeds twice any predicted gain."
+ ],
+ "tasks": {
+  "half": {
+   "board": {
+    "mean": 2.2350478867524317,
+    "ahead": 10,
+    "sd": 0.2394004223364342
+   },
+   "board_minus_floor": {
+    "fgw_shape0x_ov": 16.030990418773676,
+    "fgw_shape0x_ov_t23": 18.266038305526106
+   },
+   "t_mix": {
+    "O": 0.5,
+    "arm": 0.6666666666666666
+   },
+   "counted": true
+  },
+  "late": {
+   "board": {
+    "mean": 3.8248649542083726,
+    "ahead": 10,
+    "sd": 0.29230309688961753
+   },
+   "board_minus_floor": {
+    "fgw_shape0x_ov": 30.80127217334915,
+    "fgw_shape0x_ov_t23": 34.62613712755752
+   },
+   "t_mix": {
+    "O": 0.6249999999999994,
+    "arm": 0.7916666666666661
+   },
+   "counted": true
+  },
+  "new1": {
+   "board": {
+    "mean": 0.3620620601266523,
+    "ahead": 7,
+    "sd": 0.3329866066373923
+   },
+   "board_minus_floor": {
+    "fgw_shape0x_ov": 28.183172690582943,
+    "fgw_shape0x_ov_t23": 28.545234750709596
+   },
+   "t_mix": {
+    "O": 0.8000000000000007,
+    "arm": 0.9666666666666673
+   },
+   "counted": true
+  },
+  "new2": {
+   "board": {
+    "mean": 0.8932217955804844,
+    "ahead": 10,
+    "sd": 0.30626287156680954
+   },
+   "board_minus_floor": {
+    "fgw_shape0x_ov": 21.249262221202855,
+    "fgw_shape0x_ov_t23": 22.14248401678334
+   },
+   "t_mix": {
+    "O": 0.8,
+    "arm": 0.9666666666666667
+   },
+   "counted": false
+  },
+  "x1": {
+   "board": {
+    "mean": -7.203565701652488,
+    "ahead": 0,
+    "sd": 0.45047615416827985
+   },
+   "board_minus_floor": {
+    "fgw_shape0x_ov": -8.049613430069034,
+    "fgw_shape0x_ov_t23": -15.25317913172152
+   },
+   "t_mix": {
+    "O": 0.40000000000000097,
+    "arm": 0.5666666666666677
+   },
+   "counted": false
+  },
+  "x2": {
+   "board": {
+    "mean": -2.6368854956167906,
+    "ahead": 0,
+    "sd": 0.30958370563919535
+   },
+   "board_minus_floor": {
+    "fgw_shape0x_ov": 15.474180077159179,
+    "fgw_shape0x_ov_t23": 12.837294581542386
+   },
+   "t_mix": {
+    "O": 0.6666666666666666,
+    "arm": 0.8333333333333333
+   },
+   "counted": false
+  },
+  "x3": {
+   "board": {
+    "mean": -3.1965005044831534,
+    "ahead": 0,
+    "sd": 0.6196382407058383
+   },
+   "board_minus_floor": {
+    "fgw_shape0x_ov": 10.793765899746596,
+    "fgw_shape0x_ov_t23": 7.597265395263442
+   },
+   "t_mix": {
+    "O": 0.4444444444444436,
+    "arm": 0.6111111111111103
+   },
+   "counted": false
+  }
+ },
+ "barred_not_run": [
+  "e75",
+  "e725"
+ ],
+ "gate": {
+  "e47_run_commit": "9967cf1",
+  "tolerance": 0.01,
+  "e55_run_commit": "4535f98c98ae1a2a8488185e8a99e4a2e8d92d86",
+  "e55_reading_sha256": "e500c9fa4161720191562598af76f8fb28bc12b0c3b0dfa9fdd3e38a38153ab5",
+  "o_tolerance": 0.01
+ },
+ "reading_code": {
+  "head": "0a6d4ce8afd43bef2af5e43820ccd22e93cf8596",
+  "clean": true,
+  "script_sha256": "ac75ac2bef6e2eabc04880d1cdc6345b0cd3b2068a3b7cb960d156ea3e5970ed",
+  "row_sha256": "1873ae6d61dbfd11fe4acf4c6421df6d0336000efa4d4a35d2bcf36fba96e03f",
+  "harness_sha256": "88ee8fb90ce5c7fa0781c038edc15b306eb1436bfeb3ff4040a8b72473a912f0",
+  "t2_build_sha256": "d060b4bff3beaa4cba10d36c8d52454fffeb57985c727878dd25c16692c6fba8",
+  "shape_interp_sha256": "86b808d19c8a3a0ada8c11fbae596afda70deed94dd3334625a576e05835eb22"
+ }
+}
