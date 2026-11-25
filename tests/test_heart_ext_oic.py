@@ -552,3 +552,63 @@ def test_every_g0_step_refuses_without_row_h38_head_and_a_clean_tree(tmp_path):
         assert any("no row H38" in w for w in why)
     assert g0.main(["ranks", "--out", str(tmp_path / "w"), "--commit", "0" * 40]) == 2
     assert not (tmp_path / "w").exists()
+
+
+# ---- the GEM files' forms on the DGX (2026-11-25): headers repeated mid-file, comment lines, MIDCount or MIDCounts --
+GEM_ROWS = [("g001", 0, 0, 2), ("g001", 23, 23, 1), ("g002", 24, 0, 5), ("Other", 47, 1, 7), ("g001", 50, 30, 1),
+            ("g002", 51, 31, 3), ("g003", 100, 3, 4)]
+COMMENTS = ["#FileFormat=GEMv0.1", "#SortedBy=None", "#BinType=Bin", "#BinSize=1", "#OffsetX=0", "#OffsetY=0"]
+
+
+def _gem_lines(path: Path, lines: list[str]) -> str:
+    with gzip.open(path, "wt") as fh:
+        fh.write("\n".join(lines) + "\n")
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _data(rows=GEM_ROWS):
+    return [f"{g}\t{x}\t{y}\t{c}" for g, x, y, c in rows]
+
+
+def _units_of(u):
+    M = u["panel"].toarray()
+    return {(int(a), int(b)): (int(t), tuple(int(v) for v in M[i]))
+            for i, (a, b, t) in enumerate(zip(u["bx"], u["by"], u["total"], strict=True))}
+
+
+@pytest.mark.parametrize("block", [7, 64, 1 << 24])
+@pytest.mark.parametrize("form", ["plain_midcounts", "comments_midcount", "plain_midcount", "repeated"])
+def test_gem_forms_all_give_the_same_units(tmp_path, form, block):
+    panel = ["g001", "g002", "g003"]
+    ref_path = tmp_path / "ref.tsv.gz"
+    _gem_lines(ref_path, ["geneID\tx\ty\tMIDCounts", *_data()])
+    want = _units_of(ou.mosta_units(ref_path, panel, chunk_rows=3))
+    d = _data()
+    lines = {"plain_midcounts": ["geneID\tx\ty\tMIDCounts", *d],
+             "comments_midcount": [*COMMENTS, "geneID\tx\ty\tMIDCount", *d],
+             "plain_midcount": ["geneID\tx\ty\tMIDCount", *d],
+             "repeated": ["geneID\tx\ty\tMIDCounts", *d[:3], "geneID\tx\ty\tMIDCounts", *d[3:5], "#a comment",
+                          "geneID\tx\ty\tMIDCount", *d[5:]]}[form]
+    p = tmp_path / f"{form}.tsv.gz"
+    sha = _gem_lines(p, lines)
+    u = ou.mosta_units(p, panel, sha256=sha, chunk_rows=2, block=block)
+    assert _units_of(u) == want and u["held"] == ["g001", "g002", "g003"]
+    n_comments = {"plain_midcounts": 0, "comments_midcount": 6, "plain_midcount": 0, "repeated": 1}[form]
+    n_headers = 3 if form == "repeated" else 1
+    assert u["comment_lines"] == n_comments and u["header_lines"] == n_headers
+
+
+@pytest.mark.parametrize("lines,why", [
+    (["geneID\tx\ty\tMIDCounts", "g001\t1\t2\t3", "g001\tabc\t2\t3"], "not data"),          # a non-numeric field
+    (["geneID\tx\ty\tMIDCounts", "g001\t1\t2\t3", "g001\t1\t2"], "not data"),               # a missing field
+    (["geneID\tx\ty\tMIDCounts", "g001\t1\t2\t3", "geneID\tx\ty\tExonCount"], "other columns"),  # another header
+    (["g001\t1\t2\t3", "geneID\tx\ty\tMIDCounts"], "before the first header"),              # data first
+    (["#only a comment"], "no header"),
+    (["geneID\tx\ty\tUMI", "g001\t1\t2\t3"], "lack"),                                       # no count column
+])
+@pytest.mark.parametrize("block", [5, 1 << 24])
+def test_gem_refuses_anything_else(tmp_path, lines, why, block):
+    p = tmp_path / "bad.tsv.gz"
+    _gem_lines(p, lines)
+    with pytest.raises(ou.Refused, match=why):
+        ou.mosta_units(p, ["g001"], chunk_rows=2, block=block)

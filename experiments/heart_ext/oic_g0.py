@@ -195,6 +195,7 @@ def _one_units(args) -> dict:
     sha = ou.save_units(u, npz)
     return {"section": rec["section"], "study": rec["study"], "stage": rec["stage"], "file": rec["name"],
             "source_sha256": u["sha256"], "npz": npz.name, "npz_sha256": sha, "n_units": int(len(u["bx"])),
+            "comment_lines": int(u.get("comment_lines", 0)), "header_lines": int(u.get("header_lines", 0)),
             "n_held": len(u["held"]), "n_rows": int(u["n_rows"]), "unit_um": float(u["unit_um"])}
 
 
