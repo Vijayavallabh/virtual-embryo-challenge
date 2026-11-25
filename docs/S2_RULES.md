@@ -3556,3 +3556,13 @@ cfea3b689696bd2e08abe04ad607ab5a826b300ad6d841c3f2d8fc475f536f63; `runs/manual_u
 7924f1f55624eb9e56df639f6ba3ceab0464acc3ad9f3eb91449380293b7e2d2 (build record
 `experiments/builds/results/t1l12_128dfa1_b1.txt`). Added before any score of any of them. Data used: released
 challenge data and the outside heart atlas on recomputed groups (GEO GSE193346, register row X002).
+
+## Note of 2026-11-25: T1's third-round files K1 and C3 are built (row R66; decision log 2026-11-25 (xx))
+
+At the clean commit afbf45b, on the DGX, each file's identity rebuilds gave their recorded bytes, its command with
+every step at T1_s2rcMS20's value gave T1_s2rcMS20's bytes, and the file was built twice with one sha256 and passed
+the format check. **The files:** `runs/manual_upload/T1_s2rcMS20H10m10.h5ad` (K1), sha256
+f11fd10b26dfdb939b1e5362792b580e7aeae3f70e33a36000ce76434fedcccd; `runs/manual_upload/T1_s2rcMS20H20.h5ad` (C3),
+sha256 f06aea68b3c1fda18b1f216bb950ff535420cfa65da00854b9be07e1309d28d0 (build records
+`experiments/builds/results/t1r66_afbf45b_<run>.txt`). Added before any score of either. Data used: released challenge
+data and the outside heart atlas on recomputed groups (GEO GSE193346, register row X002).

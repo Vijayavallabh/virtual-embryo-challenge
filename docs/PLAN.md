@@ -14678,3 +14678,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     settings the ledger never read, with its selection rule written first, a confirmation on a task it was not
     selected on, and at most two files. Three blind designers; cold challengers next; each board's result goes to the
     captain as one question.
+- 2026-11-25 (xx), T1's third-round files K1 and C3 are built, before any score (state at 14:55 UTC, 2026-11-25).
+  Written by the AI assistant, which designed none of it.
+  - **The builds.** `experiments/builds/t1_r66_line.sh afbf45b...` once per file on the DGX, clean; identity and base
+    checks gave the recorded bytes; each file built twice with one sha256: **`T1_s2rcMS20H10m10.h5ad`** (K1)
+    f11fd10b26df...; **`T1_s2rcMS20H20.h5ad`** (C3) f06aea68b3c1.... Both due now (row R66). Data used: released
+    challenge data and the outside heart atlas on recomputed groups (GEO GSE193346, register row X002).

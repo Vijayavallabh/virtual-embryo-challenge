@@ -1,0 +1,7 @@
+Row R66's slot K1: T1_s2rcMS20H10m10.h5ad
+==========================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-25 at commit afbf45b (main; clean tree) with `experiments/builds/t1_r66_line.sh afbf45ba39d6e0baf39cb69b7fa9816f8b628d62 k1 T1_s2rcMS20H10m10`, after its gate checks were dry-run on the real rows at the reviewed branch commit and its refusal path was traced.
+Every exit record is 0. The identity rebuilds gave the recorded bytes: T1_s2rcMS20 (row R51's file) and T1_s2rcMS20H10, T1_s2rcMS20m10 (line 12's, t1l12_128dfa1_b1). The command with every step at T1_s2rcMS20's value gave T1_s2rcMS20's bytes. The new file, built twice into separate folders with one sha256, format-checked, each stamp of this commit and clean:
+  T1_s2rcMS20H10m10.h5ad  f11fd10b26dfdb939b1e5362792b580e7aeae3f70e33a36000ce76434fedcccd
+The local copy under runs/manual_upload/ is the same bytes. No log, size, shape or sidecar of this build was read. No score of it exists at this record.
