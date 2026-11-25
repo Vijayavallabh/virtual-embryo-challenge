@@ -1,0 +1,18 @@
+E57a step 0: STOP (ii, iii)
+Row E57, step 0 (E57a; build seeds 1000000 to 1000009; the test pair E7.5 + E8.0 at t = 1/2 on T2:embryo:val_interp's panel and count rule decides; medians over the seeds):
+  i holds: (i) contrast (best score over median) at most 0.70 for the earlier bracket's rows and 0.85 for the later's at that plane
+  ii fails: (ii) median SD(f) of E57b at least 1.5 x O's (N15's f) and its mean own-run share at least 0.85
+  iii fails: (iii) E57b's median homology error at most 1 x the median 15-nearest-cell reach, and E57c's at most E57b's
+Per pair (the test pair decides; the nine practice pairs are reported, deciding nothing): contrast earlier/later; SD(f) O/RS/placebo; own-run share O/RS/placebo; homology error RS/placebo; reach
+  test  0.399/0.784; 0.356/0.441/0.356; 0.776/0.898/0.776; 0.3972/0.1387; 0.1517
+  half  0.394/0.538; 0.342/0.417/0.342; 0.757/0.859/0.757; 0.3639/0.1118; 0.1642
+  late  0.406/0.583; 0.323/0.396/0.323; 0.761/0.864/0.761; 0.3504/0.1259; 0.1650
+  new1  0.428/0.518; 0.244/0.274/0.244; 0.827/0.851/0.827; 0.2891/0.1070; 0.1601
+  new2  0.429/0.714; 0.206/0.273/0.206; 0.788/0.844/0.788; 0.2584/0.1158; 0.1699
+  e75   0.397/0.494; 0.292/0.377/0.292; 0.750/0.854/0.750; 0.2816/0.1028; 0.1580
+  e725  0.417/0.651; 0.307/0.363/0.307; 0.774/0.832/0.774; 0.2374/0.1017; 0.1548
+  x1    0.314/0.860; 0.338/0.399/0.338; 0.780/0.851/0.780; 0.3862/0.1260; 0.1210
+  x2    0.339/0.858; 0.311/0.376/0.311; 0.770/0.852/0.770; 0.2641/0.1042; 0.1350
+  x3    0.210/0.933; 0.334/0.428/0.334; 0.749/0.886/0.749; 0.3599/0.0895; 0.1110
+Any fail: STOP; E57b and E57c never run.
+Code: commit ffb2d65776f56973f03f1740430ba5de51f7c9dc, clean True, script sha256 b984d869a9fd6f21560febb47316718d383f952a85dde0d7174acc5be7137791, run_sort sha256 4789a6bd05e78e1d47cae812b7c942e3cfeca21fd80360f9656d08279c261b9e

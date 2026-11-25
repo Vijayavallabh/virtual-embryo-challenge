@@ -14174,3 +14174,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     (not if B25H05 does not beat the 2.5 file), `T1_s2rcMS30.h5ad` (if MS20 beats MSB and B25MS beats MS20),
     `T1_s2rcMSBd15.h5ad` (if MSBd10 beats MSB), `T1_s2rcMSBH10.h5ad` (if MSBH05 beats MSB). Data used: released
     challenge data and the outside heart atlas on recomputed groups (GEO GSE193346, register row X002).
+- 2026-11-25 (a), row E57 reads STOP at step 0: the embryo RS line ends with no file (state at 00:48 UTC, 2026-11-25).
+  Written by the AI assistant, which designed none of it.
+  - **The pre-set statement, verbatim:** "E57a step 0: STOP (ii, iii)". On the test pair RS separated the runs too
+    little (median SD(f) 0.441 against O's 0.356, under the 1.5 x bar) and paid too much displacement (homology error
+    0.3972 against the reach 0.1517). One embryo try, number 94. E57b and E57c never ran; by row R57
+    `T2embryo_s2x_ovrs.h5ad` is not built and O stays.

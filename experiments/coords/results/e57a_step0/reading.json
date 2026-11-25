@@ -1,0 +1,274 @@
+{
+ "outcome": "E57a step 0: STOP (ii, iii)",
+ "pass": false,
+ "clauses": {
+  "i": true,
+  "ii": false,
+  "iii": false
+ },
+ "clause_text": {
+  "i": "(i) contrast (best score over median) at most 0.70 for the earlier bracket's rows and 0.85 for the later's at that plane",
+  "ii": "(ii) median SD(f) of E57b at least 1.5 x O's (N15's f) and its mean own-run share at least 0.85",
+  "iii": "(iii) E57b's median homology error at most 1 x the median 15-nearest-cell reach, and E57c's at most E57b's"
+ },
+ "test_pair": {
+  "complete": true,
+  "contrast_earlier": 0.3994080240171507,
+  "contrast_later": 0.783607048875974,
+  "sd_f": {
+   "O": 0.35558640135749925,
+   "RS": 0.4414324128189399,
+   "placebo": 0.35558640135749925
+  },
+  "own_run_share": {
+   "O": 0.7763853333333334,
+   "RS": 0.8984693333333335,
+   "placebo": 0.7763853333333334
+  },
+  "mean_own_run_share_rs": 0.8984693333333335,
+  "homology_error": {
+   "RS": 0.397181717768188,
+   "placebo": 0.13869615873686242
+  },
+  "reach": 0.15166207840229728,
+  "placebo_matches_swaps": true,
+  "errors": []
+ },
+ "practice_pairs_reported": {
+  "half": {
+   "complete": true,
+   "contrast_earlier": 0.3938335493141786,
+   "contrast_later": 0.5378221938237606,
+   "sd_f": {
+    "O": 0.3422753351559704,
+    "RS": 0.4167039363073728,
+    "placebo": 0.3422753351559704
+   },
+   "own_run_share": {
+    "O": 0.7572333333333333,
+    "RS": 0.8592906666666666,
+    "placebo": 0.7572333333333333
+   },
+   "mean_own_run_share_rs": 0.8592906666666666,
+   "homology_error": {
+    "RS": 0.36387656832691995,
+    "placebo": 0.11179387807452403
+   },
+   "reach": 0.1642431252092887,
+   "placebo_matches_swaps": true,
+   "errors": []
+  },
+  "late": {
+   "complete": true,
+   "contrast_earlier": 0.4059754165387405,
+   "contrast_later": 0.5830155704084852,
+   "sd_f": {
+    "O": 0.32289155638723577,
+    "RS": 0.39584876624724663,
+    "placebo": 0.32289155638723577
+   },
+   "own_run_share": {
+    "O": 0.760772,
+    "RS": 0.8640640000000002,
+    "placebo": 0.760772
+   },
+   "mean_own_run_share_rs": 0.8640640000000002,
+   "homology_error": {
+    "RS": 0.3503562555951228,
+    "placebo": 0.12585594900110975
+   },
+   "reach": 0.16504223388733064,
+   "placebo_matches_swaps": true,
+   "errors": []
+  },
+  "new1": {
+   "complete": true,
+   "contrast_earlier": 0.4278437703785645,
+   "contrast_later": 0.5175120727829288,
+   "sd_f": {
+    "O": 0.24357260778856188,
+    "RS": 0.27422199409311065,
+    "placebo": 0.24357260778856188
+   },
+   "own_run_share": {
+    "O": 0.8269706666666667,
+    "RS": 0.8506106666666667,
+    "placebo": 0.8269706666666667
+   },
+   "mean_own_run_share_rs": 0.8506106666666667,
+   "homology_error": {
+    "RS": 0.2891412329159407,
+    "placebo": 0.10700551773154457
+   },
+   "reach": 0.16009687906506534,
+   "placebo_matches_swaps": true,
+   "errors": []
+  },
+  "new2": {
+   "complete": true,
+   "contrast_earlier": 0.42852272039309014,
+   "contrast_later": 0.7139162980787319,
+   "sd_f": {
+    "O": 0.20641759742356686,
+    "RS": 0.27286091729872075,
+    "placebo": 0.20641759742356686
+   },
+   "own_run_share": {
+    "O": 0.7884333333333333,
+    "RS": 0.8438293333333334,
+    "placebo": 0.7884333333333333
+   },
+   "mean_own_run_share_rs": 0.8438293333333334,
+   "homology_error": {
+    "RS": 0.2583517724069026,
+    "placebo": 0.11583404942452907
+   },
+   "reach": 0.16991901719563618,
+   "placebo_matches_swaps": true,
+   "errors": []
+  },
+  "e75": {
+   "complete": true,
+   "contrast_earlier": 0.3973216270740487,
+   "contrast_later": 0.49370022570441907,
+   "sd_f": {
+    "O": 0.29170425072896855,
+    "RS": 0.37687123918262766,
+    "placebo": 0.29170425072896855
+   },
+   "own_run_share": {
+    "O": 0.7497480000000001,
+    "RS": 0.8537946666666667,
+    "placebo": 0.7497480000000001
+   },
+   "mean_own_run_share_rs": 0.8537946666666667,
+   "homology_error": {
+    "RS": 0.2816040293478854,
+    "placebo": 0.10281313460882122
+   },
+   "reach": 0.15796264213954475,
+   "placebo_matches_swaps": true,
+   "errors": []
+  },
+  "e725": {
+   "complete": true,
+   "contrast_earlier": 0.4167891713918233,
+   "contrast_later": 0.6511724500862551,
+   "sd_f": {
+    "O": 0.3066104005012252,
+    "RS": 0.3633485445108926,
+    "placebo": 0.3066104005012252
+   },
+   "own_run_share": {
+    "O": 0.773828,
+    "RS": 0.8319653333333333,
+    "placebo": 0.773828
+   },
+   "mean_own_run_share_rs": 0.8319653333333333,
+   "homology_error": {
+    "RS": 0.23735133192532928,
+    "placebo": 0.1016712361166846
+   },
+   "reach": 0.15481823092112432,
+   "placebo_matches_swaps": true,
+   "errors": []
+  },
+  "x1": {
+   "complete": true,
+   "contrast_earlier": 0.3138822883140614,
+   "contrast_later": 0.8603364111424936,
+   "sd_f": {
+    "O": 0.3383185735258837,
+    "RS": 0.39934252750551086,
+    "placebo": 0.3383185735258837
+   },
+   "own_run_share": {
+    "O": 0.7799270252254149,
+    "RS": 0.8509918254218855,
+    "placebo": 0.7799270252254149
+   },
+   "mean_own_run_share_rs": 0.8509918254218855,
+   "homology_error": {
+    "RS": 0.3862270801423267,
+    "placebo": 0.12600892749909579
+   },
+   "reach": 0.12099153434614648,
+   "placebo_matches_swaps": true,
+   "errors": []
+  },
+  "x2": {
+   "complete": true,
+   "contrast_earlier": 0.33875802389336573,
+   "contrast_later": 0.8582146557413829,
+   "sd_f": {
+    "O": 0.31143696327040304,
+    "RS": 0.3760038896049013,
+    "placebo": 0.31143696327040304
+   },
+   "own_run_share": {
+    "O": 0.7703097919517243,
+    "RS": 0.8522197663403853,
+    "placebo": 0.7703097919517243
+   },
+   "mean_own_run_share_rs": 0.8522197663403853,
+   "homology_error": {
+    "RS": 0.2641009680407246,
+    "placebo": 0.10417647235329586
+   },
+   "reach": 0.13497810050529307,
+   "placebo_matches_swaps": true,
+   "errors": []
+  },
+  "x3": {
+   "complete": true,
+   "contrast_earlier": 0.20980712018172787,
+   "contrast_later": 0.9325852889843751,
+   "sd_f": {
+    "O": 0.334078046716888,
+    "RS": 0.42849422697068756,
+    "placebo": 0.334078046716888
+   },
+   "own_run_share": {
+    "O": 0.74928625491977,
+    "RS": 0.8859608689070543,
+    "placebo": 0.74928625491977
+   },
+   "mean_own_run_share_rs": 0.8859608689070543,
+   "homology_error": {
+    "RS": 0.35990452879728946,
+    "placebo": 0.08953680445273896
+   },
+   "reach": 0.11100219176476342,
+   "placebo_matches_swaps": true,
+   "errors": []
+  }
+ },
+ "unreadable": [],
+ "notes": [],
+ "pair_commits": [
+  "ffb2d65776f56973f03f1740430ba5de51f7c9dc"
+ ],
+ "seeds": [
+  1000000,
+  1000001,
+  1000002,
+  1000003,
+  1000004,
+  1000005,
+  1000006,
+  1000007,
+  1000008,
+  1000009
+ ],
+ "test_pair_board": "T2:embryo:val_interp",
+ "script": "experiments/coords/e57_rs_read.py",
+ "provenance": {
+  "commit": "ffb2d65776f56973f03f1740430ba5de51f7c9dc",
+  "clean": true,
+  "script_sha256": "b984d869a9fd6f21560febb47316718d383f952a85dde0d7174acc5be7137791",
+  "run_sort_sha256": "4789a6bd05e78e1d47cae812b7c942e3cfeca21fd80360f9656d08279c261b9e",
+  "harness_sha256": "88ee8fb90ce5c7fa0781c038edc15b306eb1436bfeb3ff4040a8b72473a912f0",
+  "t2_build_sha256": "d060b4bff3beaa4cba10d36c8d52454fffeb57985c727878dd25c16692c6fba8"
+ },
+ "row": "E57"
+}

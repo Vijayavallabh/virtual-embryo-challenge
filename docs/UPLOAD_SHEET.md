@@ -43,7 +43,8 @@ words "yes, T3_c2_s2_g2 ahead of" and a queued file's name (for example `T3_k23_
 file `T1_s2rcB25.h5ad` (row R46); both parts are built. Heart: The composition files of row R50 are not built: the
 line ended at its screening. Step-change round, second wave (decision log 2026-11-24 (www)), each built only after its
 gate or read passes: T1 `T1_s2rcMSB_LM16` (R54) and `T1_s2rcMSBm20` (R58); heart OTK125, OTX125, OTW125, OTP125 (R55)
-and OXP125 (R56); embryo `T2embryo_s2x_ovrs.h5ad` (R57) and `T2embryo_s2x_ovt23.h5ad` (R59).
+and OXP125 (R56); embryo `T2embryo_s2x_ovt23.h5ad` (R59). The embryo RS file (row R57) is not built: its read E57
+stopped at step 0 (decision log 2026-11-25 (a)).
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)), and twenty-one on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy), (aaa), (bbb),
