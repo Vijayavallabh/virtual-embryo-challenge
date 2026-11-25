@@ -663,6 +663,48 @@ HEART_HALVING = ("experiments/builds/halve.py <file> <half>: a uniform random ha
                  "order kept), as for the ruled heart2 file; the halving is a separate step, not this build")
 
 
+# Row R71's files (the captain's order of 2026-11-25, decision log 2026-11-25 (qqq)): the embryo's consensus-form files
+# BF on O and on SO only (vec.shape_interp.BAYES_FORMS), each taken only on its base's command with --shape-interp
+# overlay_bayes --captain-ruling R71, and built (experiments/builds/embryo_bf.sh) only after its gate row reads PASS.
+BUILDABLE_SHAPES = (*shape_interp.FORMS, *shape_interp.COMPOSED_FORMS, *shape_interp.BAYES_FORMS)
+
+
+class _OnceAction(argparse.Action):
+    """The embryo command's --captain-ruling, taken once: argparse would keep the last of two, so a second refuses."""
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        if getattr(namespace, self.dest, None) is not None:
+            parser.error(f"{option_string} is given once")
+        setattr(namespace, self.dest, values)
+
+
+EMBRYO_BF_ROW = "R71"
+EMBRYO_BF_GATE_ROW = "E59"
+EMBRYO_BF_WORDS = "BF on O and on SO only"  # words of row R71's first cell that the builder's check requires
+EMBRYO_BF_COMMANDS = {  # file -> its command (O's or SO's command with the form and the ruling)
+    "T2embryo_s2x_ovbf.h5ad": ("embryo --method fgw_shape0 --positions floor_exact --shape-interp overlay_bayes "
+                               "--shape-interp-test-ok --captain-ruling R71"),
+    "T2embryo_s2xs_ovbf.h5ad": ("embryo --method fgw_shape0 --positions floor_exact --expression series --shape-interp "
+                                "overlay_bayes --shape-interp-test-ok --captain-ruling R71"),
+}
+EMBRYO_BF_BASES = {"T2embryo_s2x_ovbf.h5ad": "T2embryo_s2x_ov.h5ad (O)",
+                   "T2embryo_s2xs_ovbf.h5ad": "T2embryo_s2xs_ov.h5ad (SO)"}
+EMBRYO_BF_ORDER = ("experiments/harness/TRIES.md row R71, the captain's order of 2026-11-25 (\"My named exception on the "
+                   "embryo's overlay form and the z-extent frozen rule for each BF file, as R59, with the challenger's "
+                   "fixes.\"; decision log 2026-11-25 (qqq)): the consensus-form files BF on O and on SO only, an extra "
+                   "file beside each base, taken only with --captain-ruling R71")
+EMBRYO_BF_GATE = (f"row {EMBRYO_BF_GATE_ROW} of experiments/harness/TRIES.md (experiments/coords/bf_read.py, launcher "
+                  "experiments/coords/run_bf.sh); a file is built only after the row's outcome cell reads PASS for it "
+                  "(experiments/builds/embryo_bf.sh)")
+EMBRYO_BF_RULE = ("vec.shape_interp.overlay_bayes on the base's overlay union at t = 1/2: q is the equal-weight mean of "
+                  "the canonical densities of the released specimens " + ", ".join(shape_interp.BAYES_PRIOR_STAGES)
+                  + " (duplicates dropped, eight flip copies, 48-cube over [-3, 3], Gaussian SD 0.1875); 4,000 rows of "
+                  "the union and 4,000 draws from q at every count (streams [seed, 62] and [seed, 61]), the exact "
+                  "assignment, each row the displacement of its nearest drawn row, the Gaussian 30-nearest-cell "
+                  "average; the pool moved alike; rows, order, count, expression, size rule, scope, seed and every "
+                  "other stream as the base's")
+
+
 def _view(key: str, task: str, kind: str, setting: str | None, test_board: str, roles: dict[str, tuple[str, float]],
           reference_role: str, target_day: float) -> harness.TaskView:
     """A TaskView for the test geometry (the harness's view of a pseudo-task, with the test's stages)."""
@@ -3953,6 +3995,63 @@ def _mix_lean_refusals(a) -> bool:
     return True
 
 
+def _bayes_ordered() -> bool:
+    """Row R71's first cell is the captain's order ("ruling, no run") naming BF on O and on SO only and
+    `--captain-ruling R71`, in exactly one row."""
+    return _captain_order_names(EMBRYO_BF_ROW, EMBRYO_BF_WORDS)
+
+
+def _bf_file(a) -> str | None:
+    """The file of row R71 whose command the arguments are exactly (the test board may be named), else None."""
+    got = dict(vars(a))
+    if got.get("board") == TEST_BOARDS["embryo"]:
+        got["board"] = None
+    for name, command in EMBRYO_BF_COMMANDS.items():
+        if got == vars(build_parser().parse_args([*command.split(), "--out", str(a.out)])):
+            return name
+    return None
+
+
+def _bayes_refusals(a) -> bool:
+    """Row R71's option --shape-interp overlay_bayes: taken only as one of the two files' commands, with
+    --captain-ruling R71, while row R71's first cell orders it, and written under that file's name; every refusal comes
+    before anything is read. --captain-ruling R71 without the option is refused. True when the option is taken."""
+    shape, ruling = getattr(a, "shape_interp", SHAPE_INTERP_OFF), getattr(a, "captain_ruling", None)
+    if shape not in shape_interp.BAYES_FORMS:
+        if ruling == EMBRYO_BF_ROW:
+            sys.exit(f"embryo --captain-ruling {EMBRYO_BF_ROW} goes with --shape-interp overlay_bayes only (row "
+                     f"{EMBRYO_BF_ROW}'s files: " + "; ".join(EMBRYO_BF_COMMANDS.values()) + ")")
+        return False
+    if ruling is None:
+        sys.exit(f"--shape-interp overlay_bayes is the captain's order of row {EMBRYO_BF_ROW} alone and needs "
+                 f"--captain-ruling {EMBRYO_BF_ROW}")
+    if ruling != EMBRYO_BF_ROW:
+        sys.exit(f"--shape-interp overlay_bayes is refused with --captain-ruling {ruling}: only row {EMBRYO_BF_ROW} "
+                 "orders it")
+    name = _bf_file(a)
+    if name is None:
+        sys.exit("--shape-interp overlay_bayes is refused except on O's or SO's command with it, "
+                 + " or ".join(EMBRYO_BF_COMMANDS.values()) + f": the test board, the default seed and nothing else "
+                 f"changed (row {EMBRYO_BF_ROW}: BF on O and on SO only)")
+    if Path(a.out).name != name:
+        sys.exit(f"this command writes row {EMBRYO_BF_ROW}'s file {name} only: --out must name it")
+    if not _bayes_ordered():
+        sys.exit(f"--shape-interp overlay_bayes is refused: experiments/harness/TRIES.md must hold exactly one row "
+                 f"{EMBRYO_BF_ROW} whose first cell is the captain's order (\"ruling, no run\") naming "
+                 f"{EMBRYO_BF_WORDS} and `--captain-ruling {EMBRYO_BF_ROW}`")
+    return True
+
+
+def _bf_prior():
+    """Row R71's prior at test: the released embryo specimens of vec.shape_interp.BAYES_PRIOR_STAGES, each loaded as a
+    prediction input is (synthetic records dropped), coordinates only."""
+    coords = {}
+    for stage in shape_interp.BAYES_PRIOR_STAGES:
+        a = load_stage(DATA / "T2" / f"{stage}.h5ad", lineage=False, drop_duplicates=True)
+        coords[stage] = np.asarray(a.obsm[COORD_KEY], dtype=float)[:, :3]
+    return shape_interp.bayes_prior(coords)
+
+
 def _run_sorted_refusals(a) -> str | None:
     """--neighbourhood run_sorted's refusals (row E57's file), before any board or stage is read. Returns the ruling
     row when the option is given, else None: without it every command is what it was. Refused on any command but O's
@@ -4138,7 +4237,8 @@ def _build_copy_rows(a, board, dry: bool, genes, files: dict, inputs: dict, coun
 def build_embryo(a) -> dict:
     mix_lean = _mix_lean_refusals(a)  # row R59's option (off by default): before anything is read
     # row R48's option (off by default): before anything is read; with --mix-lean the command is O's, mixture included
-    series_back = _series_back_refusals(a) if not mix_lean else False
+    bayes = _bayes_refusals(a)  # row R71's option, before the series_back check refuses its ruling
+    series_back = _series_back_refusals(a) if not (mix_lean or bayes) else False
     rs_ruling = _run_sorted_refusals(a)  # row E57's file (off by default): before anything is read
     _copy_rows_refusals(a)
     if a.positions != t2_build.POSITIONS[0] and (a.method != "fgw_shape0" or a.herd
@@ -4147,7 +4247,7 @@ def build_embryo(a) -> dict:
     if a.row_order_test_ok and a.row_order != t2_build.ROW_ORDERS[1]:
         raise SystemExit("--row-order-test-ok is for --row-order copy_parity only")
     shape = None if a.shape_interp == SHAPE_INTERP_OFF else a.shape_interp
-    if shape is not None and shape not in (*shape_interp.FORMS, *shape_interp.COMPOSED_FORMS):  # by name: no control
+    if shape is not None and shape not in BUILDABLE_SHAPES:  # by name: no control
         raise SystemExit(f"--shape-interp {shape}: a harness-only control or an unknown form is never built")
     if a.shape_interp_test_ok and shape is None:
         raise SystemExit("--shape-interp-test-ok is for --shape-interp with a form only")
@@ -4188,6 +4288,7 @@ def build_embryo(a) -> dict:
         X = stage.X
     else:
         before, after = inputs["before"], inputs["after"]
+        bf_prior = _bf_prior() if bayes else None  # row R71: the released specimens, after every refusal
         Eb, Ea = dense(before[:, genes].X).astype(np.float32), dense(after[:, genes].X).astype(np.float32)
         res = t2_build.interpolate_clouds(np.asarray(before.obsm[COORD_KEY], float)[:, :3],
                                           np.asarray(after.obsm[COORD_KEY], float)[:, :3], Eb, Ea, 0.5,
@@ -4200,6 +4301,7 @@ def build_embryo(a) -> dict:
                                                            t2_build.log_panel_counts(after, genes))),
                                           with_coupling=a.expression == "latent",
                                           **({} if shape is None else {"shape_form": shape}),
+                                          **({} if bf_prior is None else {"shape_prior": bf_prior}),
                                           **({"t_mix": EMBRYO_OT23_T_MIX} if mix_lean else {}),  # row R59 only
                                           positions=a.positions)
         if (shape in shape_interp.COMPOSED_FORMS and (not dry or str(board.split).startswith("test"))
@@ -4277,6 +4379,14 @@ def build_embryo(a) -> dict:
                                 "o_command": EMBRYO_O_COMMAND, "rule": run_sort.RULE, "read": EMBRYO_RS_READ,
                                 **{k: step.record[k] for k in ("normal_x", "normal_y", "normal_z",
                                                                "contrast_earlier")}}
+    if bayes:  # row R71's file: what it is and where its order and gate stand
+        name = _bf_file(a)
+        out["shape_interp"]["ruling"] = EMBRYO_BF_ROW
+        out["shape_interp"]["row"] = f"{EMBRYO_BF_ROW} (the captain's order); gate row {EMBRYO_BF_GATE_ROW}"
+        out["bayes"] = {"option": "--shape-interp overlay_bayes", "file": name, "base": EMBRYO_BF_BASES[name],
+                        "captain_ruling": EMBRYO_BF_ROW, "order": EMBRYO_BF_ORDER, "command": EMBRYO_BF_COMMANDS[name],
+                        "gate": EMBRYO_BF_GATE, "rule": EMBRYO_BF_RULE,
+                        "prior": "|".join(shape_interp.BAYES_PRIOR_STAGES)}
     return out
 
 
@@ -4628,7 +4738,7 @@ def build_parser() -> argparse.ArgumentParser:
                                 "them (file order, full count, no subsample or sort); score_h5ad's _prediction does "
                                 "this in the pinned copy, but the live server's handling is not shown")
             p.add_argument("--shape-interp",
-                           choices=(SHAPE_INTERP_OFF, *shape_interp.FORMS, *shape_interp.COMPOSED_FORMS),
+                           choices=(SHAPE_INTERP_OFF, *BUILDABLE_SHAPES),
                            default=SHAPE_INTERP_OFF,
                            help="--method fgw_shape0 --positions floor_exact only: none (the default, every file as "
                                 "built) or one shape form of vec.shape_interp between E7.5 and E8.0 at t = 1/2 on the "
@@ -4677,10 +4787,11 @@ def build_parser() -> argparse.ArgumentParser:
                                 "lineage pools (vec.run_sort), the last step, on the final coordinates. Only as "
                                 f"{EMBRYO_RS_COMMAND.format(row='<ROW>')}, with a ruling row of the captain naming "
                                 f"{EMBRYO_RS_OPTION} and `--captain-ruling <ROW>`")
-            p.add_argument("--captain-ruling", default=None,
+            p.add_argument("--captain-ruling", default=None, action=_OnceAction,
                            help=f"with --expression series_back: {EMBRYO_OVSB_ROW}, the row that orders it; with "
                                 "--neighbourhood run_sorted: the captain's ruling row that orders it; with --mix-lean "
-                                f"later: {EMBRYO_OT23_ROW}, the row that orders it")
+                                f"later: {EMBRYO_OT23_ROW}, the row that orders it; with --shape-interp overlay_bayes: "
+                                f"{EMBRYO_BF_ROW}, the row that orders it; given once")
     return ap
 
 

@@ -1923,7 +1923,7 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
                        with_coupling: bool = False, draw: str = DRAWS[0],
                        log_depth: tuple[np.ndarray, np.ndarray] | None = None,
                        t_mix: float | None = None, positions: str = POSITIONS[0],
-                       shape_form: str | None = None) -> Interpolation:
+                       shape_form: str | None = None, shape_prior=None) -> Interpolation:
     """Displacement interpolation between two stages at time fraction t (0 = before, 1 = after).
 
     1. Each cloud is centred and divided by its RMS radius (no PCA axes, so no sign choice).
@@ -1987,6 +1987,10 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     forms `vec.shape_interp.GEODESIC_FORMS`, which also take every cell's joint PCs (`_joint_pc_loadings` of the
     coupling's anchors). Row E55 (as specified) adds `vec.shape_interp.COMPOSED_FORMS` and its harness-only placebos
     `vec.shape_interp.COMPOSED_CONTROLS` (the overlay's union stretched; the pool is the overlay's, mapped alike).
+    Row R71 adds `vec.shape_interp.BAYES_FORMS` and its gate's controls `vec.shape_interp.BAYES_CONTROLS` (the
+    overlay's union carried onto a consensus density; the pool is the overlay's, moved alike); shape_prior (those forms
+    only, and not overlay_bayes_brackets, whose prior is the two brackets) is the `vec.shape_interp.BayesPrior` of
+    released specimens the caller loaded. Left at None, nothing changes.
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -2017,10 +2021,14 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         from vec import shape_interp
 
         if (shape_form not in shape_interp.ALL_FORMS and shape_form not in shape_interp.GEODESIC_FORMS
-                and shape_form not in shape_interp.COMPOSED_FORMS and shape_form not in shape_interp.COMPOSED_CONTROLS):
+                and shape_form not in shape_interp.COMPOSED_FORMS and shape_form not in shape_interp.COMPOSED_CONTROLS
+                and shape_form not in shape_interp.BAYES_FORMS and shape_form not in shape_interp.BAYES_CONTROLS):
             raise ValueError(f"shape_form must be one of {shape_interp.ALL_FORMS}, got {shape_form!r}")
         if positions != POSITIONS[1]:
             raise ValueError("shape_form acts on the exact-position cloud: pass positions='floor_exact'")
+    if shape_prior is not None and (shape_form is None or shape_form not in (*shape_interp.BAYES_FORMS,
+                                                                             *shape_interp.BAYES_CONTROLS)):
+        raise ValueError("shape_prior goes with row R71's overlay_bayes forms only")
     if draw != DRAWS[0]:
         if herd:
             raise ValueError(f"draw={draw!r} and herd both choose the rows; use one of them")
@@ -2084,6 +2092,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         if shape_form in shape_interp.GEODESIC_FORMS:  # row E53: every cell's joint PCs, for the fit's data term
             centre, loadings = _joint_pc_loadings(Eb[ib], Ea[ia], n_pc)
             extra = {"features": ((Eb - centre) @ loadings, (Ea - centre) @ loadings)}
+        if shape_prior is not None:  # row R71: the released specimens' prior, loaded by the caller
+            extra = {"prior": shape_prior}
         shaped = shape_interp.apply_form(shape_form, Z=Z, Zb=Zb, Za=Za, t=float(t), R=R, seed=seed, rows_b=rows_b,
                                          rows_a=rows_a, perm=perm, t_mix=tm, **extra)
         Z = shaped.Z

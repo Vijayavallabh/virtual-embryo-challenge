@@ -64,6 +64,7 @@ case "$STEP" in
       tests/test_run_h37_launcher.py tests/test_heart_wbh_build.py \
       tests/test_series_back_build.py tests/test_ovsb_step0.py tests/test_embryo_ovsb_launcher.py \
       tests/test_mix_lean_build.py tests/test_embryo_ot23_launcher.py tests/test_e58_mix_lean_read.py \
+      tests/test_bf_build.py tests/test_bf_launchers.py \
       tests/test_t1_fraction2_build.py tests/test_t1_fraction2_launcher.py \
       tests/test_t1_fraction_line_build.py tests/test_t1_fraction_line_launcher.py tests/test_t1_timing.py \
       tests/test_t1_rc18.py tests/test_jaxblood_read.py tests/test_jax_blood.py tests/test_k25_dispersion.py \

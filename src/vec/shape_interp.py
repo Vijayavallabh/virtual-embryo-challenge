@@ -32,6 +32,12 @@ vec.lddmm) and its placebo geodesic_overlay_rot (the fit started from Q in place
 Row E55 (as specified; branch campaign/emb-osr) adds COMPOSED_FORMS (overlay_stretch, F3 then F1's stretch on the
 overlay's union) and its harness-only placebos COMPOSED_CONTROLS (overlay_stretch_anti, overlay_stretch_axes), also
 outside ALL_FORMS; the builder offers overlay_stretch only.
+Row R71 (the captain's order of 2026-11-25; branch campaign/embryo-bf) adds BAYES_FORMS (overlay_bayes, BF: the
+overlay's union carried by a smoothed optimal-transport map onto a consensus canonical density of released specimens,
+EMBRYO_MOON2_design.md's P1 with its cold challenge's fixes) and its harness-only controls BAYES_CONTROLS
+(overlay_bayes_brackets: the prior is the task's two brackets only; overlay_bayes_noflip: no flip copies, each specimen
+turned onto the union's canonical frame by the best of the four proper flips), outside ALL_FORMS; the builder offers
+overlay_bayes only, and only under row R71. No step of BF branches on the cell count.
 
 Fixed constants (protocol, not tuned): IDENT_DRAWS draws of IDENT_FRAC of a bracket's cells (the emulator's 10 percent
 subsample halved, the truth half's share), from the seed-free streams default_rng([IDENT_STREAM, h]), so a pair of
@@ -409,11 +415,265 @@ def overlay_stretch(Zb, Za, rows_b, rows_a, perm, R, t_mix: float, *, t: float, 
     return ShapeResult(Z=Zn, pool=_affine(ov.pool, m, M), pool_weights=ov.pool_weights, record=rec)
 
 
+# Row R71 (the captain's order of 2026-11-25: the embryo's consensus-form files BF on O and on SO only) and its gate row
+# (experiments/coords/bf_read.py), as EMBRYO_MOON2_design.md's P1 specifies BF with the cold challenge's fixes 3, 4 and
+# 7: the union's rows are carried by a smoothed optimal-transport map onto q, the equal-weight mean of the released
+# specimens' canonical densities. Constants fixed before any read, none tuned. Streams 61 and 62 are used by no other
+# build step (47 to 56 above and in vec.t2_build, vec.lddmm and vec.t2_mmflow).
+BAYES_FORMS = ("overlay_bayes",)  # BF, buildable only under row R71
+BAYES_CONTROLS = ("overlay_bayes_brackets", "overlay_bayes_noflip")  # BF2 and BFns, the gate's rule-7 controls
+BAYES_CONTROL_OF = {"overlay_bayes": BAYES_CONTROLS}
+BAYES_VARIANT = {"overlay_bayes": "arm", "overlay_bayes_brackets": "brackets", "overlay_bayes_noflip": "noflip"}
+BAYES_PRIOR_STAGES = ("E6.75", "E7.25", "E7.5", "E8.0", "E8.25_late", "E8.75", "E9.5")  # the test's prior, in day order
+BAYES_GRID_N = 48  # the density's cube over [-BAYES_EXTENT, BAYES_EXTENT] (canonical units)
+BAYES_EXTENT = 3.0
+BAYES_SIGMA = 0.1875  # the Gaussian smoothing's SD in canonical units (1.5 voxels of the 48-cube)
+BAYES_ANCHORS = 4000  # rows of the union and draws from q in the exact assignment, at every cell count
+BAYES_SMOOTH_K = 30  # each displacement is averaged over the cell's 30 nearest cells
+BAYES_Y_STREAM = 61  # the draws from q
+BAYES_X_STREAM = 62  # the union's drawn rows
+NB_SHARE_K = 15  # G0's neighbour share: each cell's 15 nearest cells
+OCC_GRID_N = 16  # the scorer's occupancy_dice grid (vec.t2_build.GRID_N)
+OCC_EXTENT = 3.0
+OCC_EDGE_EPS = 1e-9  # the scorer's clip below the upper edge
+AXIS_SIGNS = tuple((a, b, c) for a in (1, -1) for b in (1, -1) for c in (1, -1))  # eight sign copies, identity first
+PROPER_FLIPS = ((1, 1, 1), (1, -1, -1), (-1, 1, -1), (-1, -1, 1))  # the scorer's _PROPER_FLIPS (det +1), in its order
+
+
+@dataclass(frozen=True)
+class BayesPrior:
+    """The released specimens a BF form pools, each as its canonical cloud (`canonical_frame`), in BAYES_PRIOR_STAGES
+    order, equal weight. Built by `bayes_prior` from coordinates the caller loaded (the harness's read guard keeps
+    every stage file from a candidate; the caller leaves the task's truth out, J2)."""
+
+    names: tuple[str, ...]
+    clouds: tuple[np.ndarray, ...]
+
+
+def canonical_frame(C) -> tuple[np.ndarray, np.ndarray, np.ndarray, float]:
+    """veckit main's `_canonicalise` (centre, PCA basis from np.linalg.svd of the centred cloud made right-handed,
+    divide by the RMS radius), with the frame kept for the way back: (Z, mu, Vt, rms) with Z = (C - mu) @ Vt.T / rms,
+    so C = mu + rms * Z @ Vt (`from_canonical`)."""
+    C = _check_cloud(C, "cloud")
+    mu = C.mean(0)
+    X = C - mu
+    rms = float(np.sqrt((X ** 2).sum(1).mean()))
+    if not rms > 1e-12:
+        raise ShapeRefused("a cloud with no spread has no canonical frame")
+    _, _, Vt = np.linalg.svd(X - X.mean(0), full_matrices=False)
+    if np.linalg.det(Vt) < 0:
+        Vt[-1] *= -1
+    return (X @ Vt.T) / rms, mu, Vt, rms
+
+
+def from_canonical(Z, mu, Vt, rms: float) -> np.ndarray:
+    """The inverse of `canonical_frame`'s map."""
+    return np.asarray(mu, np.float64) + float(rms) * (np.asarray(Z, np.float64) @ np.asarray(Vt, np.float64))
+
+
+def bayes_prior(coords: dict) -> BayesPrior:
+    """A BayesPrior from {stage: coordinates (rows, 3)}: every key one of BAYES_PRIOR_STAGES, at least one, each
+    canonicalised. The order is BAYES_PRIOR_STAGES', whatever the dict's."""
+    names = [str(k) for k in coords]
+    unknown = sorted(set(names) - set(BAYES_PRIOR_STAGES))
+    if unknown or not names or len(set(names)) != len(names):
+        raise ValueError(f"a BF prior takes stages of {BAYES_PRIOR_STAGES} once each, got {names}")
+    order = tuple(s for s in BAYES_PRIOR_STAGES if s in coords)
+    return BayesPrior(names=order, clouds=tuple(canonical_frame(np.asarray(coords[s], np.float64)[:, :3])[0]
+                                                for s in order))
+
+
+def _cells(Z, n_grid: int, extent: float) -> np.ndarray:
+    """Integer cell indices of points on an n_grid cube over [-extent, extent], clipped into it as the scorer's
+    occupancy_dice bins them."""
+    return np.floor((np.clip(np.asarray(Z, np.float64), -extent, extent - OCC_EDGE_EPS) + extent) / (2 * extent)
+                    * n_grid).astype(np.int64)
+
+
+def specimen_density(Z, signs=AXIS_SIGNS) -> np.ndarray:
+    """One canonical specimen's density on the 48-cube: the cloud stacked in each axis-sign copy of `signs` (all eight:
+    flip-symmetric; a single sign triple: no flip copies), binned as the scorer bins (clipped into the cube),
+    Gaussian-smoothed at SD BAYES_SIGMA (scipy.ndimage.gaussian_filter, zero outside the cube) and normalised to mass
+    1."""
+    from scipy.ndimage import gaussian_filter
+
+    Z = _check_cloud(Z, "specimen")
+    G = BAYES_GRID_N
+    H = np.zeros(G ** 3)
+    for s in signs:
+        v = _cells(Z * np.asarray(s, np.float64), G, BAYES_EXTENT)
+        H += np.bincount((v[:, 0] * G + v[:, 1]) * G + v[:, 2], minlength=G ** 3)
+    H = gaussian_filter(H.reshape(G, G, G), sigma=BAYES_SIGMA / (2 * BAYES_EXTENT / G), mode="constant", cval=0.0)
+    H = np.clip(H, 0.0, None)
+    return H / float(H.sum())
+
+
+def occupancy(Z) -> np.ndarray:
+    """Occupied voxels of canonical coordinates on the scorer's 16-cube over [-3, 3], as sorted unique ids."""
+    v = _cells(Z, OCC_GRID_N, OCC_EXTENT)
+    return np.unique((v[:, 0] * OCC_GRID_N + v[:, 1]) * OCC_GRID_N + v[:, 2])
+
+
+def dice(a, b) -> float:
+    """2 |a & b| / (|a| + |b|) of two sorted unique id arrays."""
+    a, b = np.asarray(a), np.asarray(b)
+    return 2.0 * len(np.intersect1d(a, b, assume_unique=True)) / max(len(a) + len(b), 1)
+
+
+def best_proper_flip(S, X) -> tuple[tuple[int, int, int], float]:
+    """The proper flip f of the scorer's four (first best in their order) that maximises the 16-cube occupancy Dice of
+    S * f against X (two canonical clouds, all their rows), and that Dice."""
+    ox = occupancy(X)
+    best, flip = -1.0, PROPER_FLIPS[0]
+    for f in PROPER_FLIPS:
+        d = dice(occupancy(np.asarray(S, np.float64) * np.asarray(f, np.float64)), ox)
+        if d > best:
+            best, flip = d, f
+    return flip, float(best)
+
+
+def consensus_density(prior: BayesPrior, variant: str = "arm", X=None) -> tuple[np.ndarray, tuple]:
+    """q, the equal-weight mean of the prior's specimen densities: with their eight flip copies ("arm", "brackets"), or
+    ("noflip") each specimen without flip copies, turned onto X's canonical frame by its best proper flip. Returns
+    (q, the flips used: () unless "noflip")."""
+    if variant == "noflip":
+        if X is None:
+            raise ValueError("the no-flip density needs the union's canonical cloud X")
+        flips = tuple(best_proper_flip(S, X)[0] for S in prior.clouds)
+        dens = [specimen_density(np.asarray(S) * np.asarray(f, np.float64), signs=((1, 1, 1),))
+                for S, f in zip(prior.clouds, flips, strict=True)]
+        return np.mean(dens, axis=0), flips
+    return np.mean([specimen_density(S) for S in prior.clouds], axis=0), ()
+
+
+def density_draws(q, k: int, rng: np.random.Generator) -> np.ndarray:
+    """k points from q: a cell with probability its mass (a multinomial draw over the cells), then uniform within it."""
+    q = np.asarray(q, np.float64)
+    G = q.shape[0]
+    edge = 2 * BAYES_EXTENT / G
+    cells = rng.choice(q.size, size=int(k), p=q.ravel())
+    ijk = np.stack(np.unravel_index(cells, q.shape), axis=1).astype(np.float64)
+    return -BAYES_EXTENT + (ijk + rng.random((int(k), 3))) * edge
+
+
+def transport_displacements(X, q, seed: int) -> np.ndarray:
+    """Step 4 as the challenge's fix 3 sets it, with no branch on the cell count: BAYES_ANCHORS rows of X drawn with
+    replacement (stream [seed, BAYES_X_STREAM]) and BAYES_ANCHORS points drawn from q (stream [seed, BAYES_Y_STREAM]);
+    the exact assignment on squared distance (scipy linear_sum_assignment on float64 costs summed coordinate by
+    coordinate, no BLAS); a drawn row's displacement is the mean over its draws of partner minus row; every row of X
+    takes the displacement of its nearest drawn row (cKDTree). Returns the raw displacements, one per row of X."""
+    from scipy.optimize import linear_sum_assignment
+    from scipy.spatial import cKDTree
+
+    X = _check_cloud(X, "X")
+    K = BAYES_ANCHORS
+    Y = density_draws(q, K, np.random.default_rng([int(seed), BAYES_Y_STREAM]))
+    rows = np.random.default_rng([int(seed), BAYES_X_STREAM]).integers(0, len(X), K)
+    A = X[rows]
+    cost = (A[:, 0, None] - Y[None, :, 0]) ** 2
+    cost += (A[:, 1, None] - Y[None, :, 1]) ** 2
+    cost += (A[:, 2, None] - Y[None, :, 2]) ** 2
+    r, c = linear_sum_assignment(cost)
+    d = Y[c] - A[r]
+    drawn, inv = np.unique(rows[r], return_inverse=True)
+    D = np.zeros((len(drawn), 3))
+    np.add.at(D, inv, d)
+    D /= np.bincount(inv, minlength=len(drawn))[:, None]
+    near = cKDTree(X[drawn]).query(X, k=1)[1]
+    return D[near]
+
+
+def smoothed(X, d, at=None) -> np.ndarray:
+    """The Gaussian average of X's displacements d over the BAYES_SMOOTH_K nearest rows of X: at X's own rows (`at`
+    None; each row's own first) or at the points `at` (the pool), with weights exp(-r^2 / (2 h^2)), h the median over
+    X's rows of the distance to their BAYES_SMOOTH_K-th nearest row."""
+    from scipy.spatial import cKDTree
+
+    X = _check_cloud(X, "X")
+    if len(X) < BAYES_SMOOTH_K:
+        raise ValueError(f"the smoothing needs at least {BAYES_SMOOTH_K} cells")
+    tree = cKDTree(X)
+    r, idx = tree.query(X, k=BAYES_SMOOTH_K)
+    h = float(np.median(r[:, -1]))
+    if not h > 0:
+        raise ShapeRefused("the 30-nearest-cell reach is zero: no smoothing scale")
+    if at is not None:
+        r, idx = tree.query(np.asarray(at, np.float64), k=BAYES_SMOOTH_K)
+    w = np.exp(-0.5 * (r / h) ** 2)
+    return (w[..., None] * np.asarray(d, np.float64)[idx]).sum(1) / w.sum(1)[:, None]
+
+
+def knn_sets(P, k: int = NB_SHARE_K) -> np.ndarray:
+    """Each row's k nearest rows of P, itself left out (a coincident row may stand first; then the k + 1-th drops)."""
+    from scipy.spatial import cKDTree
+
+    P = np.asarray(P, np.float64)
+    idx = cKDTree(P).query(P, k=k + 1)[1]
+    own = idx == np.arange(len(P))[:, None]
+    return np.take_along_axis(idx, np.argsort(own, axis=1, kind="stable"), axis=1)[:, :k]
+
+
+def neighbour_share(P, P2, k: int = NB_SHARE_K) -> float:
+    """G0's statistic: the median over rows of the share of each row's k nearest rows in P that stay among its k
+    nearest in P2 (the same rows, moved)."""
+    A, B = knn_sets(P, k), knn_sets(P2, k)
+    return float(np.median((A[:, :, None] == B[:, None, :]).any(2).sum(1) / k))
+
+
+def overlay_bayes(Zb, Za, rows_b, rows_a, perm, R, t_mix: float, *, seed: int, prior: BayesPrior | None = None,
+                  variant: str = "arm") -> ShapeResult:
+    """Row R71's BF (variant "arm") and the gate's controls ("brackets": the prior is the task's two brackets, Zb and
+    Za, with flip copies; "noflip": the prior's specimens without flip copies, each turned onto the union's frame by its
+    best proper flip). U = overlay(...).Z; X = U canonicalised (`canonical_frame`); q = `consensus_density`; raw
+    displacements by `transport_displacements`; X' = X + `smoothed`(X, d); Z' = X' taken back to U's frame. The pool is
+    overlay's pool moved by the same smoothed field (each pool cell takes the Gaussian 30-nearest-cell average
+    displacement of X's rows), with overlay's pool weights (the challenge's fix 7). The caller applies the size rule,
+    the jitter and the cloud guard after it, unchanged. Rows, order, count and expression are overlay's. Record (flat,
+    no count): the variant, the prior's stages, the flips (noflip), the constants and the thin SDs of Z' and U."""
+    if variant not in ("arm", "brackets", "noflip"):
+        raise ValueError(f"unknown variant {variant!r}")
+    if variant == "brackets":
+        if prior is not None:
+            raise ValueError("overlay_bayes_brackets takes no prior: its prior is the task's two brackets")
+        prior = BayesPrior(names=("before", "after"),
+                           clouds=(canonical_frame(Zb)[0], canonical_frame(Za)[0]))
+    elif not isinstance(prior, BayesPrior) or not prior.clouds or len(prior.clouds) != len(prior.names):
+        raise ValueError(f"overlay_bayes ({variant}) needs a BayesPrior")
+    ov = overlay(Zb, Za, rows_b, rows_a, perm, R, t_mix)
+    U = _check_cloud(ov.Z, "U")
+    X, mu, Vt, rms = canonical_frame(U)
+    q, flips = consensus_density(prior, "noflip" if variant == "noflip" else "arm", X)
+    d = transport_displacements(X, q, seed)
+    Xn = X + smoothed(X, d)
+    P = (np.asarray(ov.pool, np.float64) - mu) @ Vt.T / rms
+    Pn = P + smoothed(X, d, at=P)
+    Zn = from_canonical(Xn, mu, Vt, rms)
+    if not (np.isfinite(Zn).all() and np.isfinite(Pn).all()):
+        raise ShapeRefused("overlay_bayes: a moved position is not finite")
+    rec = {"variant": variant, "prior": "|".join(prior.names), "flip_copies": 1 if variant == "noflip" else 8,
+           "anchors": BAYES_ANCHORS, "y_stream": BAYES_Y_STREAM, "x_stream": BAYES_X_STREAM, "grid": BAYES_GRID_N,
+           "sigma": BAYES_SIGMA, "smooth_k": BAYES_SMOOTH_K, "thin_sd": float(normalised_sds(Zn)[-1]),
+           "thin_sd_union": float(normalised_sds(U)[-1])}
+    if variant == "noflip":
+        rec["flips"] = "|".join(",".join(str(int(v)) for v in f) for f in flips)
+    return ShapeResult(Z=Zn, pool=from_canonical(Pn, mu, Vt, rms), pool_weights=ov.pool_weights, record=rec)
+
+
 def apply_form(form: str, *, Z, Zb, Za, t: float, R, seed: int, rows_b, rows_a, perm, t_mix: float,
-               features=None) -> ShapeResult:
+               features=None, prior: BayesPrior | None = None) -> ShapeResult:
     """One named form or control on the exact-position cloud Z (Zb, Za: the brackets in the earlier frame before R;
     R: the build's coupling rotation; seed: the build seed, used by the controls' Q only). features (row E53's
-    geodesic forms only): (Fb, Fa), every cell's joint PCs of each bracket."""
+    geodesic forms only): (Fb, Fa), every cell's joint PCs of each bracket. prior (row R71's overlay_bayes and its
+    no-flip control only): the BayesPrior of released specimens the caller loaded."""
+    if form in BAYES_FORMS or form in BAYES_CONTROLS:  # row R71: dispatched before every other branch
+        if features is not None:
+            raise ValueError(f"{form} takes no features")
+        out = overlay_bayes(Zb, Za, rows_b, rows_a, perm, R, t_mix, seed=seed, prior=prior,
+                            variant=BAYES_VARIANT[form])
+        out.record = {"form": form, **out.record}
+        return out
+    if prior is not None:
+        raise ValueError(f"{form} takes no prior")
     if form in GEODESIC_FORMS:
         if features is None:
             raise ValueError(f"{form} needs features=(Fb, Fa)")
