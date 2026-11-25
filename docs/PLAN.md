@@ -14898,3 +14898,15 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     as a parent, and being banked is itself a headline choice, so only T3-H2 is free of any headline; the design names
     this flaw itself. The captain's "yes" (entry (kkk)) came before it was known, so the four go to him as one priced
     question with the moonshot questions. No ruling row is placed and no code is written before his answer.
+- 2026-11-25 (qqq), the captain answers on the hedges and the heart and embryo moonshots; rows R68 to R71 are placed
+  (state at 17:43 UTC, 2026-11-25). Written by the AI assistant, recused on the heart's scope and size and on the
+  embryo's occupancy term and shape forms.
+  - **The captain's picks, verbatim:** hedges "All four"; heart moonshots "Both"; embryo moonshot "Build BF (fixed)".
+    Recorded as rows R68 (the four hedge files), R69 (WBH, with the cross-task words), R70 (OIC125, with the A15
+    exception and the strict form for its outside sources) and R71 (BF).
+  - **One reading of the AI assistant's, stated to the captain in the same message:** BF's words name the overlay's
+    form and the z-extent frozen rule, not the depth line; the BF variants on O_hi and W also move the depth line, so
+    R71 builds BF on O and SO only; the captain can say "depth line too" to add the other two.
+  - **Next:** engineers for the hedge mixer, WBH, BF and OIC125's data steps (two readers pin each outside sample's
+    stage and licence; register rows before any fetch); gate rows before any read; independent reviews; builds on the
+    DGX; the last upload is 2026-11-26 11:59 UTC.
