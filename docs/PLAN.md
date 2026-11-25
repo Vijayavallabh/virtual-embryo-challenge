@@ -14290,3 +14290,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     cell written here after a script slip stopped it); the file's moved mix cardiomyocytes 0.442019 and blood 0.140914
     (library 3's own 0.242920 and 0.182300); row T72's bar (c) 0.365178. Rows T72 and T73 follow after T72's smoke
     test and T73's J7 dry run.
+- 2026-11-25 (r), rows T72 and T73 are placed (state at 02:40 UTC, 2026-11-25). Written by the AI assistant, which
+  designed none of it.
+  - **The rows.** The score-blind reviewer's texts, filled in: T72 names the shares file row N64 committed and bar (c)
+    0.365178 from its record, after its smoke test (twelve scenarios formed, exit 0); T73 quotes its J7 dry run
+    (largest difference 0 against tolerance 0.02, holds). Code merged at c0406bf after an independent review that
+    found no blocker. Their tries count from their run steps' starts.
