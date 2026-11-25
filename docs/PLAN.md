@@ -14301,3 +14301,11 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **The pre-set statement, verbatim:** "Outcome: T72 PASS"; what follows, in its words: a priced question to the
     captain with both readings (the level reading of row N64's shares and the change transfer it reports); only then
     is T1_s2rcMSB_LM16 built. Two T1 tries, 464 and 465. The question goes to the captain now.
+- 2026-11-25 (t), the captain answers row T72's priced question (state at 03:26 UTC, 2026-11-25). Written by the AI
+  assistant, which gave both readings and no lean.
+  - **The question** gave both readings (the late-anchor level of row N64, cardiomyocytes 0.24 to 0.44 of heart cells;
+    the change transfer it reports, about 0.25) and T72's practice ranges (about +10 to +12 where the truth's mix is
+    near 0.44, about -13 to -14 where it stays at 0.24, -1 to -5 at 0.30 to 0.33), and that a losing upload costs
+    nothing while the board keeps its best. **The captain's pick, verbatim:** "Build LM16"; its words: "Yes, build and
+    upload T1_s2rcMSB_LM16 (T72 passed)." The file is built twice by `experiments/builds/t1_lm_m20_line.sh` when a T1
+    checkout is free. Line 12 (row R60) and row R46's pair were merged just before this entry.
