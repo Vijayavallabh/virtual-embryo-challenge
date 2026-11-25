@@ -1,0 +1,10 @@
+The embryo mix-lean file Ot23 (row R59; gate E58 PASS): T2embryo_s2x_ovt23.h5ad
+==========================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-25 in the worktree ~/v/scratch/e52b-wt of ~/v/vec-campaign at commit 045a92e (main; clean tree) with `experiments/builds/embryo_ot23.sh 045a92e63cc5272767e34f701abe29ef7e60f5fd o2`, after its refusal path was traced (exit 96). Run o1 at eceaeaf stopped at its test step (a literal guard in tests/test_t2_build.py that the XPC merge broke; fixed at 045a92e) before any build.
+Every exit record is 0. The identity commands rebuilt the recorded bytes:
+  T2embryo_s2x_ov.h5ad  1cfc91be3a20bfdd1a4f7bcfebd7316e1143c6d4048e578c1f30bcfbe1e0e1ea
+  T2embryo_s2x_ovsb.h5ad  f576b64b8b93d79b1269b580df31bd5c6e58246cd4f3eda12cba7d77387087ab
+The new file, built twice into separate folders with one sha256, format-checked, each stamp of this commit and clean:
+  T2embryo_s2x_ovt23.h5ad  753900fab42738a8695d8048645cccd953ded07cd15539101964c26259aad22f
+The local copy under runs/manual_upload/ is the same bytes. No log, size, shape or sidecar of this build was read. No score of it exists at this record.

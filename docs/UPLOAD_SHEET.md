@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-25, 02:10 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-25, 02:12 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -16,12 +16,12 @@ decision log 2026-11-24 (pp)), every due file can go now and nothing waits for r
 file, by its rule. Between boards the captain decides; by the challenge's formula a point on T1 or T3 counts twice a
 point on the heart or the embryo board.
 
-**Due now (11), in the order of each board's table below:**
+**Due now (12), in the order of each board's table below:**
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcMSBm10.h5ad`,
   `T1_s2rcB25H20.h5ad`, `T1_s2rcMSBH05.h5ad`
 - T3: `T3_c2_s2_dd.h5ad`, `T3_c2_s2_ddh.h5ad`, `T3_c2_s2_dg.h5ad` (together)
-- Embryo: none (every built embryo file is uploaded)
+- Embryo: `T2embryo_s2x_ovt23.h5ad` (Ot23)
 - Heart: `T2heart_organ_ts15_half.h5ad` (OTS15)
 
 **Waiting on a score (2):** `T1_s2rcA20.h5ad`, in the last-on-T1 list below; row R51's `T1_s2rcMSBH10.h5ad` (on
@@ -40,11 +40,11 @@ words "yes, T3_c2_s2_g2 ahead of" and a queued file's name (for example `T3_k23_
 `T1_s2rcB25MSH05` is now to be coded and built: `T1_s2rcB25H05` and `T1_s2rcB25MS` each scored strictly above the 2.5
 file (row R46; decision log 2026-11-25 (h)). Heart: The composition files of row R50 are not built: the line ended at
 its screening. Step-change round, second wave (decision log 2026-11-24 (www)), each built only after its gate or read
-passes: T1 `T1_s2rcMSB_LM16` (R54) and `T1_s2rcMSBm20` (R58); heart OTK125, OTX125, OTW125, OTP125 (R55); embryo
-`T2embryo_s2x_ovt23.h5ad` (R59). The embryo RS file (row R57) is not built: its read E57 stopped at step 0 (decision
-log 2026-11-25 (a)). The heart XPC file OXP125 (row R56) is not built: its read H36 did not pass (decision log
-2026-11-25 (f)). T1 line 12 (row R60, decision log 2026-11-25 (i)): `T1_s2rcMS20d10`, `T1_s2rcMS20H05`,
-`T1_s2rcMS20d20`, `T1_s2rcMS20m10`, `T1_s2rcMS20d15`, `T1_s2rcMS20H10`, `T1_s2rcMS20m20`, as gated.
+passes: T1 `T1_s2rcMSB_LM16` (R54) and `T1_s2rcMSBm20` (R58); heart OTK125, OTX125, OTW125, OTP125 (R55). The embryo
+RS file (row R57) is not built: its read E57 stopped at step 0 (decision log 2026-11-25 (a)). The heart XPC file
+OXP125 (row R56) is not built: its read H36 did not pass (decision log 2026-11-25 (f)). T1 line 12 (row R60, decision
+log 2026-11-25 (i)): `T1_s2rcMS20d10`, `T1_s2rcMS20H05`, `T1_s2rcMS20d20`, `T1_s2rcMS20m10`, `T1_s2rcMS20d15`,
+`T1_s2rcMS20H10`, `T1_s2rcMS20m20`, as gated. The embryo file Ot23 (row R59) is built (decision log 2026-11-25 (l)).
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)), and twenty-one on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy), (aaa), (bbb),
@@ -105,10 +105,11 @@ Never uploaded: `builds/T1_s2.h5ad`.
 
 Data used, for every embryo file: released challenge data only; no outside data.
 
-Every built embryo file is uploaded, W included, and O holds the board's best.
+Every earlier embryo file is uploaded, W included, and O holds the board's best. `T2embryo_s2x_ovt23.h5ad` (Ot23, row R59) is built and due; its gate E58 passed.
 
 | Order | File | sha256 | Condition | Data used |
 |---|---|---|---|---|
+| 1 | `T2embryo_s2x_ovt23.h5ad` (O's command with two thirds of its cells from E8.0) | `753900fab42738a8695d8048645cccd953ded07cd15539101964c26259aad22f` | none (row R59; gate E58 passed) | released challenge data only; no outside data |
 
 ## Task 2, heart
 

@@ -14251,3 +14251,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     matches its sheet row. The paste's per-metric lines, rank and file size are not recorded or used.
   - **Each rule by its letter.** It is below the board's best (MS20, 73.82). Row R44: H10's headline is above H05's
     (72.78), so `T1_s2rcB25H20.h5ad` is now due. Standing unchanged: 203.695.
+- 2026-11-25 (l), the embryo file Ot23 is built, before any score (state at 02:12 UTC, 2026-11-25). Written by the AI
+  assistant, which designed none of it and is recused on the embryo's occupancy term and shape forms.
+  - **The build.** `experiments/builds/embryo_ot23.sh 045a92e... o2` on `~/v/scratch/e52b-wt`, clean, after a traced
+    refusal; O's and W's recorded bytes rebuilt; **`T2embryo_s2x_ovt23.h5ad`** 753900fab427... built twice with one
+    sha256. Run o1 stopped at its test step (a literal guard the XPC merge broke, fixed at 045a92e) before any build.
+    Due now (row R59). Data used: released challenge data only; no outside data.

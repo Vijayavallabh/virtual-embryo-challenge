@@ -3505,3 +3505,12 @@ met: `T1_s2rcB25MSH05.h5ad`, MS at 2.5 with Blood's own momentum at 0.5.
 
 Data used: released challenge data and the outside heart atlas on recomputed groups (GEO GSE193346, register row
 X002).
+
+## Note of 2026-11-25: the embryo file Ot23 is built (row R59; gate E58; decision log 2026-11-25 (l))
+
+Merged at d5feaf9 after an independent review that found no blocker; row E58 read PASS at 0a6d4ce; at the clean commit
+045a92e, on `~/v/scratch/e52b-wt`, the identity commands rebuilt O's and W's recorded bytes and the file was built
+twice with one sha256. **The file:** `runs/manual_upload/T2embryo_s2x_ovt23.h5ad`, sha256
+753900fab42738a8695d8048645cccd953ded07cd15539101964c26259aad22f (build record
+`experiments/builds/results/embot23_045a92e_o2.txt`). Added before any score of it. The AI assistant is recused on the
+embryo's occupancy term and shape forms and gives no view. Data used: released challenge data only; no outside data.
