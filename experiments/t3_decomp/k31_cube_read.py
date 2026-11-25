@@ -43,9 +43,12 @@ The reading (fixed in row K31 before any score):
   row                      prints the manifest sha256 row K31 records (2 when it holds none or several)
   dryrun --out FILE        J7: the guard applied to K21's committed reproduction of barred_form (reading.json's plain
                            guard distances against K18's committed rows); exit 0 holds, 6 fails
+  start --out R             R/run_started.json, written once before the parts start (the launcher's run step), after
+                           run's own checks: exit 0 written or already this run's, 2 refused
   run --task g1|g2 --seeds A-B --out R --data D --run-dir RUN --manifest M
                            one plain task, seed by seed, into R/plain_<task>/seed_<s>.json (needs R/g0.json, G0's
-                           CONTINUE at this commit and machine; writes R/run_started.json once)
+                           CONTINUE at this commit and machine; R/run_started.json is checked, and written once
+                           through a per-process temporary name when it is absent)
   read --runs R --out OUT  the fixed reading into OUT/reading.json and OUT/reading.txt (and G0's reading copied there):
                            exit 0 a reading, 3 INCOMPLETE, 4 a reading already there (never overwritten), 2 refused,
                            1 a crash (masked)
@@ -58,6 +61,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import shutil
 import sys
@@ -287,6 +291,81 @@ def parse_seeds(text_: str | None) -> list[int]:
     return sorted(out)
 
 
+def checked_axes(out: Path, st: dict) -> tuple[str, tuple[str, ...]]:
+    """The run's checks before anything is scored: row K31's manifest sha256, G0's CONTINUE at this commit and machine
+    on that manifest, and an axis left to read. Returns (the sha256, the axes); ct.Refused otherwise."""
+    sha = row_k31()
+    g0 = read_g0(Path(out) / "g0.json", st)
+    if g0["outcome"] != "CONTINUE" or g0.get("manifest_sha256") != sha:
+        raise ct.Refused("G0 said STOP, or read another manifest: nothing is scored")
+    axes = axes_read(g0)
+    if not axes:
+        raise ct.Refused("G0 left neither S nor M: nothing is scored")
+    return sha, axes
+
+
+def started_record(st: dict, axes) -> dict:
+    return {**st, "row": ROW, "axes": list(axes), "tries": tries_for(axes)}
+
+
+def publish_once(path: Path, raw: bytes) -> bool:
+    """`raw` written to `path` only when `path` does not exist, atomically and safely against parallel writers: a
+    temporary file named for this process (its pid), then os.link to the final name, which fails when the name exists
+    (exclusive creation where the file system has no hard links); this process's temporary name is then removed. True
+    when this call wrote the file. Run k31a's four parts wrote one shared temporary name, and one part's rename
+    removed it from under another."""
+    path = Path(path)
+    tmp = path.parent / f".{path.name}.{os.getpid()}.part"
+    tmp.write_bytes(raw)
+    try:
+        os.link(tmp, path)
+        return True
+    except FileExistsError:
+        return False
+    except OSError:  # no hard links here: exclusive creation, then the bytes
+        try:
+            with open(path, "xb") as fh:
+                fh.write(raw)
+            return True
+        except FileExistsError:
+            return False
+    finally:
+        tmp.unlink(missing_ok=True)
+
+
+def write_started(out: Path, st: dict, axes) -> dict:
+    """run_started.json once per run folder (publish_once), then read back: ct.Refused unless it is of this commit and
+    machine, from a clean tree, row K31 and these axes. Returns the record read."""
+    path = Path(out) / "run_started.json"
+    if not path.exists():
+        publish_once(path, (json.dumps(started_record(st, axes), indent=1) + "\n").encode())
+    rec = json.loads(path.read_text())
+    if (rec.get("commit") != st["commit"] or rec.get("machine") != st["machine"] or rec.get("tree_clean") is not True
+            or rec.get("row") != ROW or rec.get("axes") != list(axes)):
+        raise ct.Refused("run_started.json is of another commit, machine or axes: a fresh run folder is needed")
+    return rec
+
+
+def cmd_start(a) -> int:
+    """The run step's start record, written once by the launcher before the parts start (run_k31.sh): run's own checks
+    (a clean tree, row K31, G0's CONTINUE at this commit and machine, an axis left), then write_started. Exit 0
+    written or already this run's, 2 refused."""
+    st = k18.stamp()
+    if not st["tree_clean"]:
+        print(k18.DIRTY, file=sys.stderr)
+        return EXIT_REFUSED
+    try:
+        _, axes = checked_axes(Path(a.out), st)
+        Path(a.out).mkdir(parents=True, exist_ok=True)
+        rec = write_started(Path(a.out), st, axes)
+    except ct.Refused as e:
+        print(f"refused: {e}", file=sys.stderr)
+        return EXIT_REFUSED
+    print(f"run_started.json: commit {rec['commit']}, machine {rec['machine']}, axes {', '.join(rec['axes'])}",
+          flush=True)
+    return 0
+
+
 def cmd_run(a) -> int:
     st = k18.stamp()
     if not st["tree_clean"]:
@@ -294,26 +373,17 @@ def cmd_run(a) -> int:
         return EXIT_REFUSED
     out = Path(a.out)
     try:
-        sha = row_k31()
-        g0 = read_g0(out / "g0.json", st)
-        if g0["outcome"] != "CONTINUE" or g0.get("manifest_sha256") != sha:
-            raise ct.Refused("G0 said STOP, or read another manifest: nothing is scored")
-        axes = axes_read(g0)
-        if not axes:
-            raise ct.Refused("G0 left neither S nor M: nothing is scored")
+        sha, axes = checked_axes(out, st)
         seeds = parse_seeds(a.seeds)
         if a.task not in TASKS:
             raise ct.Refused("--task takes g1 or g2")
+        folder = out / f"plain_{a.task}"
+        folder.mkdir(parents=True, exist_ok=True)
+        k18.check_folder(folder, st)
+        write_started(out, st, axes)  # the launcher's start step wrote it; written here only when run alone
     except ct.Refused as e:
         print(f"refused: {e}", file=sys.stderr)
         return EXIT_REFUSED
-    folder = out / f"plain_{a.task}"
-    folder.mkdir(parents=True, exist_ok=True)
-    k18.check_folder(folder, st)
-    started = out / "run_started.json"
-    if not started.exists():
-        k18._write_by_rename(started, (json.dumps({**st, "row": ROW, "axes": list(axes), "tries": tries_for(axes)},
-                                                  indent=1) + "\n").encode())
     try:
         rec = load_cube(Path(a.data), Path(a.run_dir), Path(a.decision), Path(a.manifest), sha, axes)
         for s in seeds:
@@ -571,6 +641,8 @@ def main(argv=None) -> int:
     sub.add_parser("row")
     d = sub.add_parser("dryrun")
     d.add_argument("--out", required=True)
+    t = sub.add_parser("start")
+    t.add_argument("--out", required=True)
     r = sub.add_parser("run")
     r.add_argument("--task", required=True)
     r.add_argument("--seeds", default=None)
@@ -583,7 +655,7 @@ def main(argv=None) -> int:
     e.add_argument("--runs", required=True)
     e.add_argument("--out", default=str(RESULTS))
     a = ap.parse_args(argv)
-    return {"row": cmd_row, "dryrun": cmd_dryrun, "run": cmd_run, "read": cmd_read}[a.cmd](a)
+    return {"row": cmd_row, "dryrun": cmd_dryrun, "start": cmd_start, "run": cmd_run, "read": cmd_read}[a.cmd](a)
 
 
 if __name__ == "__main__":
