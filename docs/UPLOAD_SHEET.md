@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-25 19:04 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-25 19:18 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -15,10 +15,10 @@ decision log 2026-11-24 (pp)), every due file can go now and nothing waits for r
 are listed below. Between boards the captain decides; by the challenge's formula a point on T1 or T3 counts twice a
 point on the heart or the embryo board.
 
-**Due now (9), in the order of each board's table below:**
+**Due now (7), in the order of each board's table below:**
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcB25H20.h5ad`,
-  `T1_s2rcMSBH10.h5ad`, `T1_s2rcB25MSH05.h5ad`, `T1_s2rcMSBm125.h5ad`, `T1_s2rcMSBm075.h5ad`
+  `T1_s2rcB25MSH05.h5ad`, `T1_s2rcMSBm075.h5ad`
 - T3: none (every built T3 file is uploaded)
 - Embryo: none (every built embryo file is uploaded)
 - Heart: none (every built heart file is uploaded)
@@ -47,9 +47,9 @@ are built (decision log 2026-11-25 (uuu)).
 
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)), and twenty-one on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy), (aaa), (bbb),
-(ddd) and (jjj)). Thirty more were uploaded and reported on 2026-11-25 (decision log 2026-11-25 (d), (e), (g), (h),
-(k), (m), (n), (ii), (jj), (kk), (mm), (oo), (rr), (ccc), (eee), (iii), (www) and (yyy)). The boards' best headlines
-stand with `T1_s2rcMSBm10.h5ad` (MS's own damping 1.0 on MSB), `T3_c2_s2.h5ad` (C2),
+(ddd) and (jjj)). Thirty-two more were uploaded and reported on 2026-11-25 (decision log 2026-11-25 (d), (e), (g),
+(h), (k), (m), (n), (ii), (jj), (kk), (mm), (oo), (rr), (ccc), (eee), (iii), (www), (yyy) and (aaaa)). The boards'
+best headlines stand with `T1_s2rcMSBm10.h5ad` (MS's own damping 1.0 on MSB), `T3_c2_s2.h5ad` (C2),
 `T2heart_organ_ts125_tk_half.h5ad` (OTK125) and `T2embryo_s2x_ov.h5ad` (O).
 
 Four files are skipped by the captain's words of 2026-11-23 and 2026-11-24: they hold no place in any order below and
@@ -76,9 +76,7 @@ with no limit they go after T1's due search files (the main session's reading); 
 | sixth search | `T1_s2rcB25d15.h5ad` | `5bc2b32e4688439f29c54c1b1203325595d996c37df30ba2b9ff26f27a60f4c6` | none (the captain dropped its condition: row R43) |
 | sixth search | `T1_s2rcB25d20.h5ad` | `e6520dbee0fdc3f1336bc3f9de1e99e8a501de2d440b3f9085c88b5c7ecfb3f6` | none (the captain dropped its condition: row R43) |
 | eighth search | `T1_s2rcB25H20.h5ad` (at 2.0) | `8286f1b1707a423493de755feacd7a3d7743593ce2939f15c8323a27557b873f` | none: its gate is met (H10's headline is above H05's; row R44) |
-| tenth search | `T1_s2rcMSBH10.h5ad` (Blood's own momentum at 1.0) | `1cfdfc54d838e03294c444dd284c319724519eb731349667e5bf7f4e79f79250` | none: its gate is met (MSBH05's headline is above MSB's; row R51) |
 | eighth and ninth, pair | `T1_s2rcB25MSH05.h5ad` (Blood's own momentum at 0.5 on B25MS: the pair of lines 8 and 9) | `7924f1f55624eb9e56df639f6ba3ceab0464acc3ad9f3eb91449380293b7e2d2` | none (row R46: B25H05 and B25MS each scored strictly above the 2.5 file) |
-| damping refinement (row R67) | `T1_s2rcMSBm125.h5ad` (MSB's command with MS's own damping 1.25) | `0e98b6c9e104e6cbdc685a55ba27cddf581e3d6e0cf1c93cf93a7669fb199d25` | none (row R67: sent at once) |
 | damping refinement (row R67) | `T1_s2rcMSBm075.h5ad` (MSB's command with MS's own damping 0.75) | `05f717fa903520ccbee0b9c8c19c7a40bc819ba8dd827edae4f0e5f49ad3bee1` | none (row R67: sent at once) |
 | kept, last | `T1_s2rcA15.h5ad` (the second search's file) | `e2334137b54d98b04e9dece90213987e61fe9aa15a3fb8d85e6c262d8fb5ba75` | none (its condition is met); last on T1; with no limit on uploads, after T1's due search files |
 | kept, last | `T1_s2rcA20.h5ad` | `372713686782be273a52427140eab652517e35b679f54fc2a969484dee730218` | only if A15 scores strictly above A |

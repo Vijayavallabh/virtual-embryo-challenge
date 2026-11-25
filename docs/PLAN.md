@@ -15025,3 +15025,12 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     and E9.5 files as T3 inputs"). Recorded as R72; its counted read is row K31, placed before the read.
   - **Next:** a T3 engineer for the cube's tables, G0, row K31's read and the builder with F1 to F10; an independent
     review; K31 placed before the read; builds on the DGX by about 08:00 UTC.
+- 2026-11-25 (aaaa), the captain reports two T1 headlines and the rules are applied by their letter (state at 19:18
+  UTC, 2026-11-25). Written by the AI assistant, which records the headlines only.
+  - **The paste:** T1:test `T1_s2rcMSBm125.h5ad` 74.67 and `T1_s2rcMSBH10.h5ad` 73.54 (shown as submitted 2026-11-25
+    19:10 and 19:13). Each file's sha256 on disk matches its sheet row. The paste's per-metric lines, ranks and file
+    sizes are not recorded or used.
+  - **Each rule by its letter.** Both are below the board's best (`T1_s2rcMSBm10.h5ad`, 74.75). Row R67 sends its
+    files at once with no condition; row R51 gated MSBH10 on MSBH05 beating MSB (met) and sets no rule on MSBH10's own
+    headline: nothing follows. `T1_s2rcMSBm075.h5ad` stays due.
+  - **Standing unchanged:** 204.865.
