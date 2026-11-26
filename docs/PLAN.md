@@ -15448,3 +15448,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Where it is written:** README.md, "Our best submission" (each file with its method in a line);
     METHOD_SUMMARY.md, "Our best solution" (each file's headline, sha256, building commit, build record, method and
     the command that rebuilds it).
+- 2026-11-26 (dd), the front files are simplified a second time, on the captain's request (state at 05:52 UTC).
+  Written by the AI assistant.
+  - README.md (46 lines), METHOD_SUMMARY.md (55), session-handoff.md (15), AGENTS.md (32, the guiding principle
+    verbatim) and ASSUMPTIONS.md (one phrase per bet, IDs and statuses kept). The records, which code cites by
+    section, are unchanged: this log, TRIES.md, S2_RULES.md, DATA_POLICY.md and the other docs, plus the build records
+    and the live upload sheet. The full working versions remain at commit c10e079.
