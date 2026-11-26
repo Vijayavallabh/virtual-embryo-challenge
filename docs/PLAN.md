@@ -15286,3 +15286,12 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     send every round-4 file at once (decision log 2026-11-26 (h)): no rule on record reads these headlines. Both are
     below their boards' bests (embryo `T2embryo_s2x_ovd.h5ad` 70.85; T3 `T3_c2_s2_g15.h5ad` 64.22).
   - **Standing unchanged:** 205.62.
+- 2026-11-26 (l), the captain reports 1 headline and the rules are applied by their letter (state at 02:48 UTC,
+  2026-11-26). Written by the AI assistant, which records the headlines only.
+  - **The paste:** T2:embryo:test_interp `T2embryo_s2x_ovt56.h5ad` 64.11 (shown as submitted 2026-11-26 02:47). Each
+    file's sha256 on disk matches its sheet row. The paste's per-metric lines, ranks and file sizes are not recorded
+    or used.
+  - **Each rule by its letter.** Row R75 sends its files at once with no gate, and row R78 sends round 4's embryo
+    files at once (decision log 2026-11-26 (h)): no rule on record reads this headline. It is below the board's best
+    (`T2embryo_s2x_ovd.h5ad`, 70.85).
+  - **Standing unchanged:** 205.62.
