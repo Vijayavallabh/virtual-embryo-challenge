@@ -63,6 +63,7 @@ case "$STEP" in
       tests/test_h36_heart_run_profile.py tests/test_heart_xpc_build.py \
       tests/test_run_h37_launcher.py tests/test_heart_wbh_build.py \
       tests/test_heart_oic_build.py tests/test_oic_launchers.py \
+      tests/test_heart_r74_build.py tests/test_heart_r74_line.py \
       tests/test_series_back_build.py tests/test_ovsb_step0.py tests/test_embryo_ovsb_launcher.py \
       tests/test_mix_lean_build.py tests/test_embryo_ot23_launcher.py tests/test_e58_mix_lean_read.py \
       tests/test_bf_build.py tests/test_bf_launchers.py \
