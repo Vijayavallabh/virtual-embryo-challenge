@@ -15370,3 +15370,12 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     row R80's first cell. The challenger struck 7/12 and 11/12 as dominated.
   - **Next:** an engineer in its own worktree, an independent review, the merge with the guard tests, a gate dry-run
     on the DGX, builds twice with one sha256, the record, the hand-over.
+- 2026-11-26 (v), the captain reports 2 headlines and the rules are applied by their letter (state at 03:48 UTC,
+  2026-11-26). Written by the AI assistant, which records the headlines only.
+  - **The paste:** T3:bcatenin `T3_c2_s2_g15_s05.h5ad` 63.32 (shown as submitted 2026-11-26 03:44); T1:test
+    `T1_s2rcMSBm10H05.h5ad` 74.71 (shown as submitted 2026-11-26 03:44). Each file's sha256 on disk matches its sheet
+    row. The paste's per-metric lines, ranks and file sizes are not recorded or used.
+  - **Each rule by its letter.** Rows R79 (T3) and R73 (T1) send their files at once with no condition: no rule on
+    record reads these headlines. Each is below its board's best (T3 `T3_c2_s2_g15.h5ad` 64.22; T1
+    `T1_s2rcMSBm10.h5ad` 74.75).
+  - **Standing unchanged:** 205.62.
