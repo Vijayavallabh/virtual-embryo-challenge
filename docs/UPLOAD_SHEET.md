@@ -1,5 +1,9 @@
 # Upload sheet: every file that is built and waiting (state at 2026-11-26 04:00 UTC)
 
+**2026-11-26, cleanup on the captain's word:** every built file except the four final ones (`T1_s2rcMSBm10.h5ad`,
+`T3_c2_s2_g15.h5ad`, `T2heart_organ_ts125_tk_half.h5ad`, `T2embryo_s2x_ovd.h5ad`) was deleted, here and on the DGX.
+The files listed below as due no longer exist and will not be uploaded.
+
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
 on uploads for 48 hours from about 17:15 UTC that day, within the challenge's last upload time on record (2026-11-26 11:59
