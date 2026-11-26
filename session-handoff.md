@@ -2,6 +2,28 @@
 
 ## Current Objective
 
+- **State at 2026-11-26, 01:25 UTC (newest; it supersedes everything below where they differ).** Decision log through
+  2026-11-26 (d); next (e). Ruling rows through R76; next R77 (heart), R78 (embryo), R79 (T3) for round 4. Tries: T3
+  89. The last upload is 2026-11-26 11:59 UTC.
+- **STANDING 204.865** (unchanged): T1 74.75 `T1_s2rcMSBm10.h5ad`; T3 63.94 `T3_c2_s2.h5ad`; heart 62.45
+  `T2heart_organ_ts125_tk_half.h5ad`; embryo 69.9 `T2embryo_s2x_ov.h5ad`.
+- **DUE NOW (23), all handed over** (`docs/UPLOAD_SHEET.md`): T1 eleven (R73's four, R67's MSBm075, six B2/B25
+  search files); T3 five (R76: s085, s05, g15, g05, g2_s067); embryo five (R75: ovt712, ovt56, ovt512, s2xs_ovt23,
+  ovd); heart OTK10 and OTK15 (R74). WAITING: OTK075 only if OTK10's headline is strictly above OTK125's, OTK175 only
+  if OTK15's is, each read once at the first headline and at the latest 06:00 UTC; A20 (last on T1).
+- **HEADLINES:** record with `lift8/record_headlines.py <repo> <label> "<YYYY-MM-DD HH:MM>" <spec.json>` (headline
+  only; the rules' readings go in the spec in the caller's words; conditional files released through `due_add` and
+  `sheet_edits`; dry-run on a throwaway copy passed). Fix by hand any sheet line it prints for a new best.
+- **IN FLIGHT, round 4** (`lift8/round_1125_gap/TASK_ref4.md`): three blind designers write HEART/EMBRYO/T3_REF4_design.md
+  (due about 02:20 UTC): next steps named before round 3's headlines, each sent at once or on a headline condition read
+  once by 10:30 UTC. Then cold challengers, one short question per board (no recommendation where recused; T3 depth and
+  the heart's scope and size need the captain's named words per file), ruling rows R77 to R79 placed before code,
+  engineers in worktrees, an independent review with the blocker standard stated, merge with the guard tests, DGX gate
+  dry-run, builds twice with one sha256 (target about 07:30 UTC), record, hand-over.
+- **DGX state:** `~/v/scratch/t1line-wt` at ead4f34 (T1); `~/v/vec-campaign-c` at 726aaac (T3, R76);
+  `~/v/vec-campaign` at ee22b75 (embryo, R75); `~/v/scratch/h29b-wt` at 4b3e7a9 (heart, R74; pyarrow installed).
+  Moved aside, never deleted: `~/v/scratch/bf_moved/`, `~/v/scratch/oic_moved/`, `~/v/scratch/t3_moved/k31`. GPUs 3 to
+  6 run another job's vLLM server; leave it. Local disk: / 27 GB free, /mnt/md0 175 GB free.
 - **State at 2026-11-25, 21:55 UTC (newest; it supersedes everything below where they differ).** Decision log through
   2026-11-25 (hhhh); next (iiii), or (a) on 2026-11-26. Ruling rows through R73; next R74. Tries: T3 89 (N65 the
   round-8 designer's breach, 85; K31, 86 to 89). The last upload is 2026-11-26 11:59 UTC.
