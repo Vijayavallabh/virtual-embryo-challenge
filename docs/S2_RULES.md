@@ -3656,3 +3656,13 @@ with the mix lean at 2/3), sha256 baaeff58340a0ab60fa921f11fdead7effd1e9df85bf61
 96a13734d618eea3329c0a843c6e0e5b9ec2369d17a6c37aff2f7994733fbda8 (build records
 `experiments/builds/results/embryor75_ee22b75_<run>.txt`). All five are sent at once with no gate, under the captain's
 named exceptions of row R75. Added before any score of any. Data used: released challenge data only; no outside data.
+
+## Note of 2026-11-26: row R77's heart files are built (decision log 2026-11-26 (n))
+
+At the clean commit efe938d, on the DGX, OTK125's identity rebuild gave its recorded bytes, and each file was built
+twice with one sha256, halved at seed 1000001 and format-checked. **The files:**
+`runs/manual_upload/T2heart_organ_ts05_tk_half.h5ad` (OTK05), sha256
+bbdf759272172653e7dd8108a2c00acae46bc0a5163d4d8bc34f9b6bc3a7cd33; `runs/manual_upload/T2heart_organ_ts20_tk_half.h5ad`
+(OTK20), sha256 57ab84767abded80995840715acd8b5d862694a269e62e78d28377f7b64d3e25 (build records
+`experiments/builds/results/heartr77_efe938d_<run>.txt`). Both are sent at once (row R77). Added before any score of
+either. Data used: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data.

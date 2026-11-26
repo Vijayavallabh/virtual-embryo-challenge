@@ -15305,3 +15305,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the challenger's fix before the captain's pick): no rule on record reads this headline. It is below the board's
     best (`T2embryo_s2x_ovd.h5ad`, 70.85).
   - **Standing unchanged:** 205.62.
+- 2026-11-26 (n), the heart's round-4 files (row R77) are built, before any score (state at 2026-11-26 03:06 UTC).
+  Written by the AI assistant, recused on the heart's scope and size; it designed none of it.
+  - **The builds.** `experiments/builds/heart_r77_line.sh efe938d...` once per file on the DGX, clean; OTK125's
+    identity rebuild gave its recorded bytes; each file built twice with one sha256:
+    **`T2heart_organ_ts05_tk_half.h5ad`** (OTK05) bbdf75927217...; **`T2heart_organ_ts20_tk_half.h5ad`** (OTK20)
+    57ab84767abd.... Both due now (row R77). Data used: released Task 2 heart stages and the unlocked E10.5 validation
+    file only; no outside data.
