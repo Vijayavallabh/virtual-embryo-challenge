@@ -1,0 +1,8 @@
+Row R74's heart file OTK075: T2heart_organ_ts075_tk_half.h5ad
+==========================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-26 at commit 4b3e7a9 (main; clean tree) with `experiments/builds/heart_r74_line.sh 4b3e7a9027d48bb84e598b14e66d3f2048062970 r74k075 OTK075`, after an independent review and a gate dry-run on the real rows.
+Every exit record is 0. The identity step gave OTK125's recorded bytes, full and half (hearth_8a8bc3a_h2). The new file (OTK125's command with the category trend at strength 0.75), built twice into separate folders and halved at seed 1000001, one sha256 for each, the half format-checked, each stamp of this commit and clean:
+  T2heart_organ_ts075_tk_half.h5ad  9dcfb21df2eb942a9f2876033e4e13a7b62b00315e6cbf49f7f82e06cceb3168
+Send rule: only if OTK10's headline is strictly above OTK125's, read once at the first moment OTK10 has a headline and at the latest 2026-11-26 06:00 UTC; else never sent (row R74).
+The local copy under runs/manual_upload/ is the same bytes. No log, size, shape or sidecar of this build was read. No score of it exists at this record. Data used: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data.

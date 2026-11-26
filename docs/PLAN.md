@@ -15154,3 +15154,12 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     T3's depth for each. Recorded as R76.
   - **Next:** two engineers (the embryo on R59's route with R73's table; T3 on the two-knockout builder with four
     identity gates), independent reviews, DGX builds, records and hand-overs before the 11:59 UTC deadline.
+- 2026-11-26 (b), the heart's refinement files (row R74) are built, before any score (state at 2026-11-26 00:20 UTC).
+  Written by the AI assistant, recused on the heart's scope and size; it designed none of it.
+  - **The builds.** `experiments/builds/heart_r74_line.sh 4b3e7a9...` once per file on the DGX, clean; OTK125's
+    identity rebuild gave its recorded bytes; each file built twice with one sha256:
+    **`T2heart_organ_ts10_tk_half.h5ad`** (OTK10) 904d58ab182a...; **`T2heart_organ_ts15_tk_half.h5ad`** (OTK15)
+    27cca412a87f...; **`T2heart_organ_ts075_tk_half.h5ad`** (OTK075) 9dcfb21df2eb...;
+    **`T2heart_organ_ts175_tk_half.h5ad`** (OTK175) efaa72be2bbf.... OTK10 and OTK15 due now; OTK075 and OTK175 wait
+    on OTK10's and OTK15's headlines (row R74). Data used: released Task 2 heart stages and the unlocked E10.5
+    validation file only; no outside data.

@@ -3609,3 +3609,18 @@ d3098c20fd98c3725b5865c0fe7294710f1063ad204b9cfadec6c13b7008570a; `runs/manual_u
 own momentum 1.0 on MSBm10), sha256 7e2b3964e33fbe4bf240f618502bcc65bba4ce8a6d58249a88692ab1a65e82fe (build records
 `experiments/builds/results/t1r73_ead4f34_<run>.txt`). Added before any score of any. Data used: released challenge
 data and the outside heart atlas on recomputed groups (GEO GSE193346, register row X002).
+
+## Note of 2026-11-26: row R74's heart files are built (decision log 2026-11-26 (b))
+
+At the clean commit 4b3e7a9, on the DGX, OTK125's identity rebuild gave its recorded bytes, and each file was built
+twice with one sha256, halved at seed 1000001 and format-checked. **The files:**
+`runs/manual_upload/T2heart_organ_ts10_tk_half.h5ad` (OTK10), sha256
+904d58ab182a69eaa58c2a89270f30753566cd1eb407314c30b17509ebf9d414; `runs/manual_upload/T2heart_organ_ts15_tk_half.h5ad`
+(OTK15), sha256 27cca412a87f0fd27f006851f91d8cf59bd01aebce5d9de6d33e07da0a9f012e;
+`runs/manual_upload/T2heart_organ_ts075_tk_half.h5ad` (OTK075), sha256
+9dcfb21df2eb942a9f2876033e4e13a7b62b00315e6cbf49f7f82e06cceb3168;
+`runs/manual_upload/T2heart_organ_ts175_tk_half.h5ad` (OTK175), sha256
+efaa72be2bbf6cb20d6d6c87b0b9e40f2ff25b5f1daba0831de2071064c49e0b (build records
+`experiments/builds/results/heartr74_4b3e7a9_<run>.txt`). OTK10 and OTK15 are sent at once; OTK075 only if OTK10's
+headline is strictly above OTK125's, OTK175 only if OTK15's is, each read once by 06:00 UTC. Added before any score of
+any. Data used: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data.

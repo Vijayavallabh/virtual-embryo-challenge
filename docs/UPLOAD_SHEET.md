@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-25 22:04 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-26 00:20 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -15,16 +15,16 @@ decision log 2026-11-24 (pp)), every due file can go now and nothing waits for r
 are listed below. Between boards the captain decides; by the challenge's formula a point on T1 or T3 counts twice a
 point on the heart or the embryo board.
 
-**Due now (11), in the order of each board's table below:**
+**Due now (13), in the order of each board's table below:**
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcB25H20.h5ad`,
   `T1_s2rcB25MSH05.h5ad`, `T1_s2rcMSBm075.h5ad`, `T1_s2rcMSBm10d10.h5ad`, `T1_s2rcMSBm10H05.h5ad`,
   `T1_s2rcMSBm10d15.h5ad`, `T1_s2rcMSBm10H10.h5ad`
 - T3: none (every built T3 file is uploaded)
 - Embryo: none (every built embryo file is uploaded)
-- Heart: none (every built heart file is uploaded)
+- Heart: `T2heart_organ_ts10_tk_half.h5ad`, `T2heart_organ_ts15_tk_half.h5ad`
 
-**Waiting on a score (1):** `T1_s2rcA20.h5ad`, in the last-on-T1 list below. Row R60's `T1_s2rcMS20d15.h5ad` is not
+**Waiting on a score (3):** `T2heart_organ_ts075_tk_half.h5ad` (only if OTK10's headline is strictly above OTK125's) and `T2heart_organ_ts175_tk_half.h5ad` (only if OTK15's is), each read once by 06:00 UTC (row R74); `T1_s2rcA20.h5ad`, in the last-on-T1 list below. Row R60's `T1_s2rcMS20d15.h5ad` is not
 sent: its rule's condition did not hold (decision log 2026-11-25 (rr)).
 
 **Last on T1 (2):** `T1_s2rcA15.h5ad`, then `T1_s2rcA20.h5ad` only if A15 scores strictly above A. With no limit A15
@@ -122,6 +122,10 @@ by the captain's word of 2026-11-24 and stands in the skipped section.
 
 | Order | File | sha256 | Condition |
 |---|---|---|---|
+| refinement (row R74) | `T2heart_organ_ts10_tk_half.h5ad` (OTK10: the category trend at strength 1.0) | `904d58ab182a69eaa58c2a89270f30753566cd1eb407314c30b17509ebf9d414` | none (row R74: sent at once) |
+| refinement (row R74) | `T2heart_organ_ts15_tk_half.h5ad` (OTK15: the category trend at strength 1.5) | `27cca412a87f0fd27f006851f91d8cf59bd01aebce5d9de6d33e07da0a9f012e` | none (row R74: sent at once) |
+| refinement (row R74) | `T2heart_organ_ts075_tk_half.h5ad` (OTK075: the category trend at strength 0.75) | `9dcfb21df2eb942a9f2876033e4e13a7b62b00315e6cbf49f7f82e06cceb3168` | only if OTK10's headline is strictly above OTK125's, read once at the first moment OTK10 has a headline and at the latest 2026-11-26 06:00 UTC; else never sent (row R74) |
+| refinement (row R74) | `T2heart_organ_ts175_tk_half.h5ad` (OTK175: the category trend at strength 1.75) | `efaa72be2bbf6cb20d6d6c87b0b9e40f2ff25b5f1daba0831de2071064c49e0b` | only if OTK15's headline is strictly above OTK125's, read once at the first moment OTK15 has a headline and at the latest 2026-11-26 06:00 UTC; else never sent (row R74) |
 
 ## Skipped by the captain's words: not uploaded unless the captain says otherwise
 
