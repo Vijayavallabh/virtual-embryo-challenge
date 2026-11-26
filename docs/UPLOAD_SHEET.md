@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-26 03:06 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-26 03:16 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -15,12 +15,13 @@ decision log 2026-11-24 (pp)), every due file can go now and nothing waits for r
 are listed below. Between boards the captain decides; by the challenge's formula a point on T1 or T3 counts twice a
 point on the heart or the embryo board.
 
-**Due now (15), in the order of each board's table below:**
+**Due now (20), in the order of each board's table below:**
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcB25H20.h5ad`,
   `T1_s2rcB25MSH05.h5ad`, `T1_s2rcMSBm075.h5ad`, `T1_s2rcMSBm10d10.h5ad`, `T1_s2rcMSBm10H05.h5ad`,
   `T1_s2rcMSBm10d15.h5ad`, `T1_s2rcMSBm10H10.h5ad`
-- T3: `T3_c2_s2_g05.h5ad`, `T3_c2_s2_g2_s067.h5ad`
+- T3: `T3_c2_s2_g05.h5ad`, `T3_c2_s2_g2_s067.h5ad`, `T3_c2_s2_s035.h5ad`, `T3_c2_s2_g05_s05.h5ad`,
+  `T3_c2_s2_gonly_s05.h5ad`, `T3_c2_s2_g2_s05.h5ad`, `T3_c2_s2_g15_s05.h5ad`
 - Embryo: none (every built embryo file is uploaded)
 - Heart: `T2heart_organ_ts05_tk_half.h5ad`, `T2heart_organ_ts20_tk_half.h5ad`
 
@@ -104,6 +105,11 @@ Never uploaded: `builds/T1_s2.h5ad`.
 
 | Order | File | sha256 | Condition | Data used |
 |---|---|---|---|---|
+| refinement round 4 (row R79) | `T3_c2_s2_s035.h5ad` (C2's command with the factor's size scaled 0.35) | `0b4812ac9ab01914cd3db0345a32b28a65d6df97c46135418693cfa22170ba6a` | none (row R79: sent at once; the captain's named exceptions) | released challenge data only (C2's inputs: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files); no outside data |
+| refinement round 4 (row R79) | `T3_c2_s2_g05_s05.h5ad` (C2's command with the Gata4 weight 0.5 and the size scaled 0.5) | `96c97d940e825f3bb35dcbb53191a88f6f94246d72c3841debe6ad3b2a59656d` | none (row R79: sent at once; the captain's named exceptions) | released challenge data only (C2's inputs: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files); no outside data |
+| refinement round 4 (row R79) | `T3_c2_s2_gonly_s05.h5ad` (C2's command with Gata4's factor alone and the size scaled 0.5) | `f3526b1da0b37657350bc378d11ace4195e9a66a50bc10f600e91b7609e6520b` | none (row R79: sent at once; the captain's named exceptions) | released challenge data only (C2's inputs: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files); no outside data |
+| refinement round 4 (row R79) | `T3_c2_s2_g2_s05.h5ad` (C2's command with the Gata4 weight 2.0 and the size scaled 0.5) | `86c8a50f247135db93ad29dc33c563e22f17ac160c223c5bd8636660d8d95313` | none (row R79: sent at once; the captain's named exceptions) | released challenge data only (C2's inputs: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files); no outside data |
+| refinement round 4 (row R79) | `T3_c2_s2_g15_s05.h5ad` (C2's command with the Gata4 weight 1.5 and the size scaled 0.5) | `b77167fe983259dc5f90fbbc204e55d5fd0f85ce35fbcd0af77dd61e922c731e` | none (row R79: sent at once; the captain's named exceptions) | released challenge data only (C2's inputs: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files); no outside data |
 | refinement (row R76) | `T3_c2_s2_g05.h5ad` (C2's command with the Gata4 weight 0.5) | `cb8054928cfbe7e6e644d6570100da82590872a4d1cd58031489beb470b8f7f5` | none (row R76: sent at once; the captain's named exception on T3's depth) | released challenge data only (C2's inputs: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files); no outside data |
 | refinement (row R76) | `T3_c2_s2_g2_s067.h5ad` (C2's command with the Gata4 weight 2.0 and the size scaled 0.67) | `a6dabee6f47c0aed33b0a74f38930a948d909c0a2970fe8d58e34b62acad8366` | none (row R76: sent at once; the captain's named exception on T3's depth) | released challenge data only (C2's inputs: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files); no outside data |
 

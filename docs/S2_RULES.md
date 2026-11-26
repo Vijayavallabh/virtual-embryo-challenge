@@ -3666,3 +3666,21 @@ bbdf759272172653e7dd8108a2c00acae46bc0a5163d4d8bc34f9b6bc3a7cd33; `runs/manual_u
 (OTK20), sha256 57ab84767abded80995840715acd8b5d862694a269e62e78d28377f7b64d3e25 (build records
 `experiments/builds/results/heartr77_efe938d_<run>.txt`). Both are sent at once (row R77). Added before any score of
 either. Data used: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data.
+
+## Note of 2026-11-26: row R79's T3 files are built (decision log 2026-11-26 (o))
+
+At the clean commit 7913427, on the DGX, C2's identity rebuild and the IDENTITY run's five rebuilds gave their
+recorded bytes, and each file was built twice with one sha256 and passed the format check. **The files:**
+`runs/manual_upload/T3_c2_s2_s035.h5ad` (C2's command with the factor's size scaled 0.35), sha256
+0b4812ac9ab01914cd3db0345a32b28a65d6df97c46135418693cfa22170ba6a; `runs/manual_upload/T3_c2_s2_g05_s05.h5ad` (C2's
+command with the Gata4 weight 0.5 and the size scaled 0.5), sha256
+96c97d940e825f3bb35dcbb53191a88f6f94246d72c3841debe6ad3b2a59656d; `runs/manual_upload/T3_c2_s2_gonly_s05.h5ad` (C2's
+command with Gata4's factor alone and the size scaled 0.5), sha256
+f3526b1da0b37657350bc378d11ace4195e9a66a50bc10f600e91b7609e6520b; `runs/manual_upload/T3_c2_s2_g2_s05.h5ad` (C2's
+command with the Gata4 weight 2.0 and the size scaled 0.5), sha256
+86c8a50f247135db93ad29dc33c563e22f17ac160c223c5bd8636660d8d95313; `runs/manual_upload/T3_c2_s2_g15_s05.h5ad` (C2's
+command with the Gata4 weight 1.5 and the size scaled 0.5), sha256
+b77167fe983259dc5f90fbbc204e55d5fd0f85ce35fbcd0af77dd61e922c731e (build records
+`experiments/builds/results/t3r79_7913427_<run>.txt`). All five are sent at once, under the captain's named exceptions
+of row R79. Added before any score of any. Data used: released challenge data only (C2's inputs: the wild-type E8.75
+cells, the released Mab21l2 knockout and the released Gata4 validation knockout files); no outside data.

@@ -1,0 +1,4 @@
+Row R79's IDENTITY run ids
+==========================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-26 at commit 7913427 (main; clean tree) in ~/v/vec-campaign-c with `experiments/t3_decomp/t3_r79_line.sh 7913427787dbe4adeeeaa1411b74005a3b758b78 ids IDENTITY`. Every exit record is 0; each file was rebuilt once and gave its recorded bytes: T3_c2_s2_s05.h5ad 58b69aa2b002...; T3_c2_s2_gonly_s067.h5ad f744f5dc7d0e...; T3_c2_s2_g2.h5ad 014d2bf9d8ba...; T3_c2_s2_s067.h5ad 808700e11c25...; T3_c2_s2_gonly.h5ad e3c1a9e6abed.... No log, size, shape or sidecar was read.

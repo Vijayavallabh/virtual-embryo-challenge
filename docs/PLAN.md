@@ -15312,3 +15312,12 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     **`T2heart_organ_ts05_tk_half.h5ad`** (OTK05) bbdf75927217...; **`T2heart_organ_ts20_tk_half.h5ad`** (OTK20)
     57ab84767abd.... Both due now (row R77). Data used: released Task 2 heart stages and the unlocked E10.5 validation
     file only; no outside data.
+- 2026-11-26 (o), T3's round-4 files (row R79) are built, before any score (state at 2026-11-26 03:16 UTC). Written by
+  the AI assistant, which designed none of it and gave no lean on T3's depth.
+  - **The builds.** `experiments/t3_decomp/t3_r79_line.sh 7913427...` once per file and once as IDENTITY on the DGX,
+    clean, after an independent review and a gate dry-run; every identity rebuild gave its recorded bytes; each file
+    built twice with one sha256: **`T3_c2_s2_s035.h5ad`** 0b4812ac9ab0...; **`T3_c2_s2_g05_s05.h5ad`**
+    96c97d940e82...; **`T3_c2_s2_gonly_s05.h5ad`** f3526b1da0b3...; **`T3_c2_s2_g2_s05.h5ad`** 86c8a50f2471...;
+    **`T3_c2_s2_g15_s05.h5ad`** b77167fe9832.... All five due now, sent at once (row R79). Data used: released
+    challenge data only (C2's inputs: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4
+    validation knockout files); no outside data.
