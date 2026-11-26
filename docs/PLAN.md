@@ -15336,3 +15336,11 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     known bytes; each file built twice with one sha256: **`T2embryo_s2x_ovt1112.h5ad`** cd5e8faf19dd...;
     **`T2embryo_s2x_ovt13.h5ad`** c29f42da28b1.... Both due now, sent at once (row R78). Data used: released challenge
     data only; no outside data.
+- 2026-11-26 (r), the captain reports 1 headline and the rules are applied by their letter (state at 03:25 UTC,
+  2026-11-26). Written by the AI assistant, which records the headlines only.
+  - **The paste:** T2:embryo:test_interp `T2embryo_s2x_ovt1112.h5ad` 62.16 (shown as submitted 2026-11-26 03:24). Each
+    file's sha256 on disk matches its sheet row. The paste's per-metric lines, ranks and file sizes are not recorded
+    or used.
+  - **Each rule by its letter.** Row R78 sends Ot1112 and Ot13 at once, with no gate: no rule on record reads this
+    headline. It is below the board's best (`T2embryo_s2x_ovd.h5ad`, 70.85).
+  - **Standing unchanged:** 205.62.

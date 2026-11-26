@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-26 03:21 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-26 03:25 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -15,14 +15,14 @@ decision log 2026-11-24 (pp)), every due file can go now and nothing waits for r
 are listed below. Between boards the captain decides; by the challenge's formula a point on T1 or T3 counts twice a
 point on the heart or the embryo board.
 
-**Due now (20), in the order of each board's table below:**
+**Due now (19), in the order of each board's table below:**
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcB25H20.h5ad`,
   `T1_s2rcB25MSH05.h5ad`, `T1_s2rcMSBm075.h5ad`, `T1_s2rcMSBm10d10.h5ad`, `T1_s2rcMSBm10H05.h5ad`,
   `T1_s2rcMSBm10d15.h5ad`, `T1_s2rcMSBm10H10.h5ad`
 - T3: `T3_c2_s2_g05.h5ad`, `T3_c2_s2_g2_s067.h5ad`, `T3_c2_s2_s035.h5ad`, `T3_c2_s2_g05_s05.h5ad`,
   `T3_c2_s2_gonly_s05.h5ad`, `T3_c2_s2_g2_s05.h5ad`, `T3_c2_s2_g15_s05.h5ad`
-- Embryo: `T2embryo_s2x_ovt1112.h5ad`, `T2embryo_s2x_ovt13.h5ad`
+- Embryo: `T2embryo_s2x_ovt13.h5ad`
 - Heart: none (every built heart file is uploaded)
 
 **Waiting on a score (1):** `T1_s2rcA20.h5ad`, in the last-on-T1 list below. Row R60's `T1_s2rcMS20d15.h5ad` is not
@@ -53,7 +53,7 @@ Eight files were uploaded and their scores reported on 2026-11-23, two per board
 2026-11-23 (cc) and (gg)), and twenty-one on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy), (aaa), (bbb),
 (ddd) and (jjj)). Thirty-two more were uploaded and reported on 2026-11-25 (decision log 2026-11-25 (d), (e), (g),
 (h), (k), (m), (n), (ii), (jj), (kk), (mm), (oo), (rr), (ccc), (eee), (iii), (www), (yyy) and (aaaa)). On 2026-11-26,
-12 more were uploaded and reported (decision log 2026-11-26 (i), (j), (k), (l), (m) and (p)). The boards' best
+13 more were uploaded and reported (decision log 2026-11-26 (i), (j), (k), (l), (m), (p) and (r)). The boards' best
 headlines stand with `T1_s2rcMSBm10.h5ad` (MS's own damping 1.0 on MSB), `T3_c2_s2_g15.h5ad` (C2's command with the
 Gata4 weight 1.5), `T2heart_organ_ts125_tk_half.h5ad` (OTK125) and `T2embryo_s2x_ovd.h5ad` (O's rows and positions
 with the depth expression).
@@ -119,11 +119,10 @@ Data used, for every embryo file: released challenge data only; no outside data.
 
 Every embryo file built before row R75 is uploaded, W, Ot23 and row R68's two hedge files included. Row R75's
 `T2embryo_s2x_ovd.h5ad` holds the board's best (decision log 2026-11-26 (j)); by R75's words it stands beside O, never
-in its place. All five of row R75's files are uploaded.
+in its place. All five of row R75's files are uploaded; of row R78's two, Ot1112 is uploaded and Ot13 is due now.
 
 | Order | File | sha256 | Condition | Data used |
 |---|---|---|---|---|
-| refinement round 4 (row R78) | `T2embryo_s2x_ovt1112.h5ad` (O with the mix lean at 11/12) | `cd5e8faf19dd2baad607f59f9d3d2ce5012e3e43956fefe2a6067bc3d1442017` | none (row R78: sent at once, no gate) | as the paragraph above |
 | refinement round 4 (row R78) | `T2embryo_s2x_ovt13.h5ad` (O with the mix lean at 1/3, toward the earlier stage) | `c29f42da28b145a01ce41c9629310d0cc04b84a97b7335431d99986f49c51716` | none (row R78: sent at once, no gate) | as the paragraph above |
 
 ## Task 2, heart
