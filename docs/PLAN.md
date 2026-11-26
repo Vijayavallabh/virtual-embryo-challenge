@@ -15232,3 +15232,18 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     file; never a reading of any headline. Each needs the captain's named exception on the embryo's overlay form and
     occupancy term (Ot13 also the lean-early line of 2026-11-06 (e) reopened); the main session puts them with no
     recommendation.
+- 2026-11-26 (h), the captain rules on round 4: rows R77 (heart), R78 (embryo) and R79 (T3), every file sent at once
+  (state at 02:07 UTC). Written by the AI assistant, which designed none of it, is recused on the heart's scope and
+  size and on the embryo's occupancy term and shape forms, and gave no lean on T3's depth.
+  - **The picks, in one dialog with no recommended option:** heart "Both, with exceptions" (OTK05 and OTK20, the
+    category trend at 0.5 and 2.0); embryo "Both, with exceptions" (Ot1112 at t_mix 11/12, `--mix-lean later_11_12`,
+    and Ot13 at 1/3, `--mix-lean earlier`); T3 "All five, with exceptions" (T3_c2_s2_s035, T3_c2_s2_g05_s05,
+    T3_c2_s2_gonly_s05, T3_c2_s2_g2_s05, T3_c2_s2_g15_s05), after the pre-set rule's outcome, declined, was given for
+    each. The words each option recorded are in the rows' first cells.
+  - **Changes from the send rules fixed in (e), (f) and (g), each a blind challenger's fix:** T3's three conditional
+    files go at once (a condition on a built file only costs chance when uploads are unlimited and the best is kept);
+    the heart's OTK0875, OTK1125, OTK1375 and OTK1625 are struck as midpoints of named strengths (re-draws in
+    substance) and OTK05 and OTK20 go at once; the embryo's SOt56 is struck as a re-draw in substance, Ot13 goes at
+    once, and Ot1112's option is renamed `later_11_12`. No headline of any round-3 file had been reported at the pick.
+  - **Next:** engineers in their own worktrees, an independent review each, the merge with the guard tests, a gate
+    dry-run on the DGX, builds twice with one sha256, records, hand-over; every file goes up only after its record.
