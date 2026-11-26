@@ -22,15 +22,16 @@ uv sync                                   # Python 3.12, CPU only
 uv run vec boards                         # every board: gene panel, coordinates, cell limits, floor
 # save your API token in ~/.config/vec/token (chmod 600), then:
 uv run vec data manifest                  # the files your account can download
-uv run vec data fetch --host "" --dest data/raw
+uv run vec data fetch --host "" --dest data/raw    # files land in data/raw/T1, T2 and T3
 
 # a first valid prediction: a reference baseline, checked against its board
-uv run vec baseline copy_last --board T1:val --last data/raw/<last released stage>.h5ad --out pred.h5ad
-uv run vec check pred.h5ad --board T1:val
+# (--n-cells keeps a random subset within the board's cell limits)
+uv run vec baseline copy_last --board T1:val --last data/raw/T1/E9.5_RNA.h5ad --n-cells 5000 --out pred.h5ad
+uv run vec check pred.h5ad --board T1:val          # prints OK (5000 cells)
 
-# score it locally against released validation answers
+# score it locally against the released validation answers (T1:val's target is E10.5)
 uv run vec eval --pred pred.h5ad --board T1:val \
-    --target data/raw/<validation answers>.h5ad --ref data/raw/<preceding stage>.h5ad
+    --target data/raw/T1/E10.5_RNA.h5ad --ref data/raw/T1/E9.5_RNA.h5ad --seeds 0
 ```
 
 ## What `vec` does
