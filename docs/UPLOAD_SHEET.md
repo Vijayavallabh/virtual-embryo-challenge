@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-26 00:49 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-26 00:53 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -15,13 +15,14 @@ decision log 2026-11-24 (pp)), every due file can go now and nothing waits for r
 are listed below. Between boards the captain decides; by the challenge's formula a point on T1 or T3 counts twice a
 point on the heart or the embryo board.
 
-**Due now (18), in the order of each board's table below:**
+**Due now (23), in the order of each board's table below:**
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcB25H20.h5ad`,
   `T1_s2rcB25MSH05.h5ad`, `T1_s2rcMSBm075.h5ad`, `T1_s2rcMSBm10d10.h5ad`, `T1_s2rcMSBm10H05.h5ad`,
   `T1_s2rcMSBm10d15.h5ad`, `T1_s2rcMSBm10H10.h5ad`
 - T3: `T3_c2_s2_s085.h5ad`, `T3_c2_s2_s05.h5ad`, `T3_c2_s2_g15.h5ad`, `T3_c2_s2_g05.h5ad`, `T3_c2_s2_g2_s067.h5ad`
-- Embryo: none (every built embryo file is uploaded)
+- Embryo: `T2embryo_s2x_ovt712.h5ad`, `T2embryo_s2x_ovt56.h5ad`, `T2embryo_s2x_ovt512.h5ad`,
+  `T2embryo_s2xs_ovt23.h5ad`, `T2embryo_s2x_ovd.h5ad`
 - Heart: `T2heart_organ_ts10_tk_half.h5ad`, `T2heart_organ_ts15_tk_half.h5ad`
 
 **Waiting on a score (3):** `T2heart_organ_ts075_tk_half.h5ad` (only if OTK10's headline is strictly above OTK125's) and `T2heart_organ_ts175_tk_half.h5ad` (only if OTK15's is), each read once by 06:00 UTC (row R74); `T1_s2rcA20.h5ad`, in the last-on-T1 list below. Row R60's `T1_s2rcMS20d15.h5ad` is not
@@ -115,6 +116,11 @@ Every built embryo file is uploaded, W, Ot23 and row R68's two hedge files inclu
 
 | Order | File | sha256 | Condition | Data used |
 |---|---|---|---|---|
+| refinement (row R75) | `T2embryo_s2x_ovt712.h5ad` (O with the mix lean at 7/12) | `ab14288faad3ad10c990073bb370c25dbb2cb3258d605cea28d5774d2dd35a42` | none (row R75: sent at once, no gate) | as the paragraph above |
+| refinement (row R75) | `T2embryo_s2x_ovt56.h5ad` (O with the mix lean at 5/6) | `c58fe13bbca497fd8b7f11abab89094b6583b4fc6beebe0fa1a2c1db386d213c` | none (row R75: sent at once, no gate) | as the paragraph above |
+| refinement (row R75) | `T2embryo_s2x_ovt512.h5ad` (O with the mix lean at 5/12, toward the earlier stage) | `598db8bb7cd125dabe45af22da7496a0d20b072f967a4ad4c87dc26bbeced7b5` | none (row R75: sent at once, no gate) | as the paragraph above |
+| refinement (row R75) | `T2embryo_s2xs_ovt23.h5ad` (SO with the mix lean at 2/3) | `baaeff58340a0ab60fa921f11fdead7effd1e9df85bf61330caec673cb257d06` | none (row R75: sent at once, no gate) | as the paragraph above |
+| refinement (row R75) | `T2embryo_s2x_ovd.h5ad` (O's rows and positions with the depth expression) | `96a13734d618eea3329c0a843c6e0e5b9ec2369d17a6c37aff2f7994733fbda8` | none (row R75: sent at once, no gate) | as the paragraph above |
 
 ## Task 2, heart
 

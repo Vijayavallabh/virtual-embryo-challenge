@@ -1,0 +1,7 @@
+Row R75's embryo file T2embryo_s2x_ovt512.h5ad
+==========================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-26 at commit ee22b75 (main; clean tree) in ~/v/vec-campaign with `experiments/builds/embryo_r75_line.sh ee22b75ae1f7b5f662435930618ddf6027e5aefc r512 T2embryo_s2x_ovt512.h5ad`, after an independent review and a gate dry-run on the real rows.
+Every exit record is 0. The four identity rebuilds gave their recorded bytes (O, Ot23, SO and W), and the base checks gave their known bytes. The new file (O with the mix lean at 5/12, toward the earlier stage), built twice into separate folders with one sha256, format-checked, each stamp of this commit and clean:
+  T2embryo_s2x_ovt512.h5ad  598db8bb7cd125dabe45af22da7496a0d20b072f967a4ad4c87dc26bbeced7b5
+Under the captain's named exceptions of row R75. The local copy under runs/manual_upload/ is the same bytes. No log, size, shape or sidecar of this build was read. No score of it exists at this record. Data used: released challenge data only; no outside data.

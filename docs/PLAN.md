@@ -15172,3 +15172,11 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     a6dabee6f47c.... All five due now, sent at once (row R76). Data used: released challenge data only (C2's inputs:
     the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files); no
     outside data.
+- 2026-11-26 (d), the embryo's refinement files (row R75) are built, before any score (state at 2026-11-26 00:53 UTC).
+  Written by the AI assistant, recused on the embryo's occupancy term and shape forms; it designed none of it.
+  - **The builds.** `experiments/builds/embryo_r75_line.sh ee22b75...` once per file on the DGX, clean, after an
+    independent review and a gate dry-run; the identity rebuilds and base checks gave their known bytes; each file
+    built twice with one sha256: **`T2embryo_s2x_ovt712.h5ad`** ab14288faad3...; **`T2embryo_s2x_ovt56.h5ad`**
+    c58fe13bbca4...; **`T2embryo_s2x_ovt512.h5ad`** 598db8bb7cd1...; **`T2embryo_s2xs_ovt23.h5ad`** baaeff58340a...;
+    **`T2embryo_s2x_ovd.h5ad`** 96a13734d618.... All five due now, sent at once (row R75). Data used: released
+    challenge data only; no outside data.

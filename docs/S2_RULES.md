@@ -3641,3 +3641,18 @@ a6dabee6f47c0aed33b0a74f38930a948d909c0a2970fe8d58e34b62acad8366 (build records
 on T3's depth for each (row R76). Added before any score of any. Data used: released challenge data only (C2's inputs:
 the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files); no outside
 data.
+
+## Note of 2026-11-26: row R75's embryo files are built (decision log 2026-11-26 (d))
+
+At the clean commit ee22b75, on the DGX, the four identity rebuilds (O, Ot23, SO, W) and the base checks gave their
+known bytes, and each file was built twice with one sha256 and passed the format check. **The files:**
+`runs/manual_upload/T2embryo_s2x_ovt712.h5ad` (O with the mix lean at 7/12), sha256
+ab14288faad3ad10c990073bb370c25dbb2cb3258d605cea28d5774d2dd35a42; `runs/manual_upload/T2embryo_s2x_ovt56.h5ad` (O with
+the mix lean at 5/6), sha256 c58fe13bbca497fd8b7f11abab89094b6583b4fc6beebe0fa1a2c1db386d213c;
+`runs/manual_upload/T2embryo_s2x_ovt512.h5ad` (O with the mix lean at 5/12, toward the earlier stage), sha256
+598db8bb7cd125dabe45af22da7496a0d20b072f967a4ad4c87dc26bbeced7b5; `runs/manual_upload/T2embryo_s2xs_ovt23.h5ad` (SO
+with the mix lean at 2/3), sha256 baaeff58340a0ab60fa921f11fdead7effd1e9df85bf61330caec673cb257d06;
+`runs/manual_upload/T2embryo_s2x_ovd.h5ad` (O's rows and positions with the depth expression), sha256
+96a13734d618eea3329c0a843c6e0e5b9ec2369d17a6c37aff2f7994733fbda8 (build records
+`experiments/builds/results/embryor75_ee22b75_<run>.txt`). All five are sent at once with no gate, under the captain's
+named exceptions of row R75. Added before any score of any. Data used: released challenge data only; no outside data.
