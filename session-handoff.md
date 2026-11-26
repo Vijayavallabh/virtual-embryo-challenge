@@ -2,6 +2,17 @@
 
 ## Current Objective
 
+- **State at 2026-11-26 04:03 UTC: WRAP-UP (newest; it supersedes everything below where they differ).** Decision log through
+  2026-11-26 (y). Ruling rows through R80. The last upload is 2026-11-26 11:59 UTC.
+- **STANDING 205.62, the best submission (each board keeps the team's best headline):** T1 74.75
+  `T1_s2rcMSBm10.h5ad`; T3 64.22 `T3_c2_s2_g15.h5ad`; heart 62.45 `T2heart_organ_ts125_tk_half.h5ad`; embryo 70.85
+  `T2embryo_s2x_ovd.h5ad`. All four are in `runs/manual_upload/` with their sha256 in `results/manual_uploads.csv`.
+- **Rounds 3 and 4 done:** R74-R79 built, recorded and scored as uploaded; wins: T3 g15 (and s085 above C2), embryo ovd.
+  No new round after the captain's wrap-up request; T3's round 5 not briefed.
+- **STILL OPEN:** eleven built files due (`docs/UPLOAD_SHEET.md`; free, low hope); row R80's four embryo files
+  (ovt13d, ovt512d, ovt23d, ovt56d on Od's command), approved by the captain, engineer on `campaign/embryo-r80`; then a
+  review, merge, DGX build in `~/v/vec-campaign` (record script still to write from `embryo_r80_line.sh`), hand-over.
+- **Headlines:** record with `lift8/record_headlines.py` (spec JSON; rules in the caller's words).
 - **State at 2026-11-26, 01:25 UTC (newest; it supersedes everything below where they differ).** Decision log through
   2026-11-26 (d); next (e). Ruling rows through R76; next R77 (heart), R78 (embryo), R79 (T3) for round 4. Tries: T3
   89. The last upload is 2026-11-26 11:59 UTC.

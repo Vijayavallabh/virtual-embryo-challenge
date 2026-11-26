@@ -15398,3 +15398,15 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     record reads these headlines. Each is below its board's best (T3 `T3_c2_s2_g15.h5ad` 64.22; T1
     `T1_s2rcMSBm10.h5ad` 74.75).
   - **Standing unchanged:** 205.62.
+- 2026-11-26 (y), wrap-up: the captain asks to wrap up for the best submission if little more can be gained (state at
+  04:03 UTC). Written by the AI assistant.
+  - **The boards' bests (each board keeps the team's best headline):** T1 `T1_s2rcMSBm10.h5ad` 74.75; T3
+    `T3_c2_s2_g15.h5ad` 64.22; heart `T2heart_organ_ts125_tk_half.h5ad` 62.45; embryo `T2embryo_s2x_ovd.h5ad` 70.85.
+    Standing 205.62.
+  - **The assistant's judgement, labelled as such:** little more is likely. Round 4's files and every step tried
+    around the T1 and heart bests came in below their boards' bests. No new round is started: T3's round 5 is not
+    briefed (its files would move T3's depth, where the pre-set rule's outcome is decline unless the captain names
+    exceptions).
+  - **What stays open, all free to upload:** the eleven built files still due (docs/UPLOAD_SHEET.md); row R80's four
+    embryo files, which the captain approved and an engineer is building, continue as ruled unless the captain stops
+    them (the assistant is recused on the embryo's occupancy term and gives no view on them).
