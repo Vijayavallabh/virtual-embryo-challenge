@@ -1,51 +1,68 @@
 # virtual-embryo-challenge
 
-Our entry to the [Virtual Embryo Challenge](https://virtualembryo.ai/challenge) (NeurIPS 2026), Track 1 (Human Team).
+Team Mithril's entry to the [Virtual Embryo Challenge](https://virtualembryo.ai/challenge) (NeurIPS 2026, Human Team
+track), and `vec`, the toolkit it runs on.
 
 | Task | Predict | Test target |
 |---|---|---|
-| T1 temporal | a population of single cells, 32,285 genes | E12.5 heart-centred dissection |
+| T1 temporal | single cells, 32,285 genes | E12.5 heart-centred dissection |
 | T2 spatial-temporal | cells with 500-gene expression and 3D coordinates | heart E12.5 (extrapolation), embryo E7.75 (interpolation) |
-| T3 perturbation | the mutant embryo's cells, expression and 3D coordinates | beta-catenin KO at E8.75 |
+| T3 perturbation | the mutant embryo's cells, expression and coordinates | beta-catenin knockout at E8.75 |
 
-Final submissions are due **through 2026-12-02 (UTC)**; by then the team captain also marks, on the account page,
-which submission counts on each board (`docs/P3_RUNBOOK.md`, section 5). Start with `AGENTS.md` (it opens with the team
-captain's guiding principle of 2026-11-04), then `docs/CHALLENGE.md` and `docs/PLAN.md`.
+## Quick start for other teams
 
-## Setup
+You need [uv](https://docs.astral.sh/uv/) and a challenge account. The competition data is not in this repository
+(`data/` is gitignored): download it with your own token.
 
 ```bash
-uv sync                    # local: core + dev tools (no GPU stack)
-uv sync --group gpu --group jax   # DGX: CUDA torch (cu130), scvi-tools, moscot
-./init.sh                  # lock check, lint, tests
+git clone https://github.com/Vijayavallabh/virtual-embryo-challenge
+cd virtual-embryo-challenge
+uv sync                                   # Python 3.12, CPU only
+
+uv run vec boards                         # every board: gene panel, coordinates, cell limits, floor
+# save your API token in ~/.config/vec/token (chmod 600), then:
+uv run vec data manifest                  # the files your account can download
+uv run vec data fetch --host "" --dest data/raw
+
+# a first valid prediction: a reference baseline, checked against its board
+uv run vec baseline copy_last --board T1:val --last data/raw/<last released stage>.h5ad --out pred.h5ad
+uv run vec check pred.h5ad --board T1:val
+
+# score it locally against released validation answers
+uv run vec eval --pred pred.h5ad --board T1:val \
+    --target data/raw/<validation answers>.h5ad --ref data/raw/<preceding stage>.h5ad
 ```
+
+## What `vec` does
+
+| Command | What it does |
+|---|---|
+| `vec boards` | lists every board and its constraints |
+| `vec data` | lists and downloads the released files your account can see |
+| `vec baseline` | writes a reference baseline as a valid prediction: copy_last, pseudobulk_shift, wt_identity, shift_transfer or gene_ko |
+| `vec check` | free format check of a prediction against a board |
+| `vec eval` | local board emulator: the organisers' veckit metrics with the published skill map and weights, the T2 structure gate, the server's 10% working copies and several seeds. On released validation data it reproduces all 66 published validation anchors exactly. |
+| `vec submit` | a free format-only check by the server (its official-upload path is tied to our team's own reference list) |
+
+`./init.sh` checks the lock file, lints and runs the test suite.
+
+## Our entry
+
+Every predicted cell is a real released cell: we draw real cells to a target composition, change their expression
+only in count space, and place them in space. `METHOD_SUMMARY.md` gives each task's method and the data it uses.
 
 ## Layout
 
 ```
-src/vec/        package: io, boards, evaluate (local board emulator), baselines, cli, the shared core, the T1 and T2
-                heads, the pseudo-task harness
-experiments/    one folder per study (scripts, committed results); experiments/harness/TRIES.md is the tries ledger;
-                experiments/builds/ holds the upload-file builders and the reference list of the ten upload files
-boards/         public board specs from the challenge site (panels; test-board anchors are stripped at intake)
-configs/        experiment configs
-results/        registry.csv (one row per scored harness run), submissions.csv (the upload ledger), upload_gate.json
-docs/           challenge reference, plan and decision log, data policy, runbook, compute, research notes
-tests/          the test suite ./init.sh runs
-data/           competition and external data (gitignored; on the DGX, and since 2026-11-12 on the local machine)
-runs/           run outputs (gitignored); on the local machine also a checked copy of the ten reference upload files
-                and of the T3 run folder (docs/COMPUTE.md)
+src/vec/       the package: boards, data, evaluate (local emulator), baselines, the shared core, task heads, CLI
+experiments/   one folder per study; experiments/builds/ holds the builders of the submitted files
+tests/         the test suite (./init.sh)
+boards/        board specs from the challenge site (test-board anchors stripped)
+configs/       experiment configs
+docs/          challenge notes, the decision log (PLAN.md), data policy, runbook
+results/       run registry and upload ledgers
 ```
 
-Where things stand: `session-handoff.md` (what waits), `progress.md` (the log), `feature_list.json` (feature state),
-`ASSUMPTIONS.md` (the bets), `METHOD_SUMMARY.md` (what each entry predicts and why).
-
-Status on 2026-11-13: the entry for each board is chosen and its two upload files are built. After the captain's
-rulings of that day (Task 1's second upload; the heart's expression step, which now follows each lineage's trend
-over all released heart stages), all ten files (the first and second uploads and the Task 3 switch files) were
-rebuilt three times on the DGX with identical bytes; their hashes are in
-`experiments/builds/results/builds_dc7b6ae.SHA256SUMS`, and every one has passed the server's format check.
-Nothing is uploaded yet. The first round may go
-in from 2026-11-27 00:00 UTC, each upload on the team captain's go-ahead (`docs/P3_RUNBOOK.md`, section 5).
-
-Competition data is unpublished and must not leave the team; see `docs/DATA_POLICY.md`.
+Records: `docs/PLAN.md` dates every decision, `experiments/harness/TRIES.md` registers every try before it ran,
+`EXTERNAL_DATA.md` lists every external source, and `docs/DATA_POLICY.md` holds the data-use rules. Agents working in
+this repository start with `AGENTS.md`.

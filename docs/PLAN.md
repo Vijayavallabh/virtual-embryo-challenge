@@ -15427,3 +15427,15 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     place" for the final pick only: if the site asks for one final file per board, the embryo's is
     `T2embryo_s2x_ovd.h5ad` (70.85); the other boards' are `T1_s2rcMSBm10.h5ad`, `T3_c2_s2_g15.h5ad` and
     `T2heart_organ_ts125_tk_half.h5ad`. No file, setting or lever changes.
+- 2026-11-26 (bb), the repository is public and its front files are simplified (state at 05:26 UTC). Written by the AI
+  assistant.
+  - **Public.** The captain made the GitHub repository public, to link it for the Community Contribution Award. Asked
+    twice, the captain kept it public: first after the AI assistant flagged the quarantined folders and the per-file
+    scores it holds; then after the assistant quoted `docs/CHALLENGE.md`. That file records, from the organisers'
+    email of 2026-10-20 and the partner rules (s.5), that P3 methods, prediction files and detailed evaluation
+    feedback stay private from other participants until 2026-12-11. The assistant also quoted the team's own rule of
+    2026-11-05 on public release, and the data notes' approval clause.
+  - **Simplified, on the captain's request:** README.md (with a quick start for other teams), AGENTS.md,
+    session-handoff.md, progress.md, feature_list.json, ASSUMPTIONS.md, METHOD_SUMMARY.md and init.sh's pointers.
+    Their full previous versions are at commit c10e079. The records are unchanged: this log,
+    experiments/harness/TRIES.md, docs/S2_RULES.md and the build records.
