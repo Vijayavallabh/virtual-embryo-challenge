@@ -15460,9 +15460,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     runs/manual_upload/, their sha256 checked before and after the move.
   - **Deleted here:** the competition data (data/), every other file under runs/ (the still-due files among them), the
     105 agent worktrees (five held uncommitted edits, among them row R80's stopped engineer's), and the scratch and
-    round folders outside the repository (.cache/vec-tmp, .cache/vec-work: the round designs and challenges the ruling
-    rows cite, and the record scripts). **Deleted on the DGX:** ~/v/scratch, ~/v/vec-ext, ~/v/vec-gapconc, the four
-    campaign checkouts, the reference checkout ~/v/virtual-embryo-challenge (with its data and the T3 run folder) and
-    20 stray launch scripts in ~/v; about 190 GB freed there and 87 GB here. Other projects' folders were not touched.
+    round folders outside the repository (.cache/vec-tmp, .cache/vec-work, .cache/vec-ext, .cache/vec-pytest; among
+    them the round designs and challenges the ruling rows cite, and the record scripts). **Deleted on the DGX:**
+    ~/v/scratch, ~/v/vec-ext, ~/v/vec-gapconc, the four campaign checkouts, the reference checkout
+    ~/v/virtual-embryo-challenge (with its data and the T3 run folder) and 20 stray launch scripts in ~/v; about 190
+    GB freed there and 87 GB here. Other projects' folders were not touched.
   - **A slip, disclosed:** while moving the four final files aside, the AI assistant listed their byte sizes; the
     team's rule says a test file's size is never read. Nothing was quoted or used.
