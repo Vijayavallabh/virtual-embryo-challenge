@@ -15410,3 +15410,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **What stays open, all free to upload:** the eleven built files still due (docs/UPLOAD_SHEET.md); row R80's four
     embryo files, which the captain approved and an engineer is building, continue as ruled unless the captain stops
     them (the assistant is recused on the embryo's occupancy term and gives no view on them).
+- 2026-11-26 (z), the captain stops every agent and background shell (state at 04:08 UTC). Written by the AI
+  assistant.
+  - **Stopped:** row R80's engineer, before any commit or build (its uncommitted work stays in its worktree
+    `.cache/vec-tmp/embryor80-wt`, branch `campaign/embryo-r80` at d9caae2, untouched); the local disk watcher. No
+    build or test of ours runs locally or on the DGX. Row R80 stands ruled and unbuilt: none of its four files exists.
+  - **Unchanged:** the boards' bests and the standing 205.62 ((y)); the eleven built files still due stay free to
+    upload; headlines the captain pastes are still recorded.
