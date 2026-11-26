@@ -65,8 +65,8 @@ groups (GEO GSE193346, register row X002).
 
 The search lines' step-on rules no longer decide which of their built files go up: with no limit on uploads the
 captain dropped the conditions of the six files that waited (row R43, decision log 2026-11-24 (qq)), so every built
-search file is due now. The first search's 2.5 file (`T1_s2rcB25.h5ad`) was uploaded on 2026-11-24 and holds the
-board's best. The three files marked 'kept, last' were skipped and then kept by the captain's words of 2026-11-24:
+search file is due now. The first search's 2.5 file (`T1_s2rcB25.h5ad`) was uploaded on 2026-11-24; the board's
+best now stands with `T1_s2rcMSBm10.h5ad`. The three files marked 'kept, last' were skipped and then kept by the captain's words of 2026-11-24:
 with no limit they go after T1's due search files (the main session's reading); the captain may place them anywhere.
 
 **The fifth search stands by the captain's words of 2026-11-24** ("Yes: T1_s2rcCm20's headline may serve line 5; line
