@@ -15379,3 +15379,13 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     record reads these headlines. Each is below its board's best (T3 `T3_c2_s2_g15.h5ad` 64.22; T1
     `T1_s2rcMSBm10.h5ad` 74.75).
   - **Standing unchanged:** 205.62.
+- 2026-11-26 (w), the captain reports 2 headlines and the rules are applied by their letter (state at 03:57 UTC,
+  2026-11-26). Written by the AI assistant, which records the headlines only.
+  - **The paste:** T3:bcatenin `T3_c2_s2_g05_s05.h5ad` 62.18 (shown as submitted 2026-11-26 03:54); T1:test
+    `T1_s2rcA15.h5ad` 70.92 (shown as submitted 2026-11-26 03:54). Each file's sha256 on disk matches its sheet row.
+    The paste's per-metric lines, ranks and file sizes are not recorded or used.
+  - **Each rule by its letter.** Row R79 sends its T3 files at once: no rule reads `T3_c2_s2_g05_s05.h5ad`'s headline,
+    which is below the board's best (`T3_c2_s2_g15.h5ad`, 64.22). `T1_s2rcA20.h5ad` is sent "only if A15 scores
+    strictly above A": A15's headline, 70.92, is strictly above A's (`T1_s2rcA.h5ad`, 70.8), so the condition holds
+    and A20 is due now. A15 itself is below the board's best (`T1_s2rcMSBm10.h5ad`, 74.75).
+  - **Standing unchanged:** 205.62.
