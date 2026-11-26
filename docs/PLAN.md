@@ -15439,3 +15439,12 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     session-handoff.md, progress.md, feature_list.json, ASSUMPTIONS.md, METHOD_SUMMARY.md and init.sh's pointers.
     Their full previous versions are at commit c10e079. The records are unchanged: this log,
     experiments/harness/TRIES.md, docs/S2_RULES.md and the build records.
+- 2026-11-26 (cc), the best solution and its method are logged (state at 05:48 UTC). Written by the AI assistant on
+  the captain's request.
+  - **The best solution, overall 205.62:** T1:test `T1_s2rcMSBm10.h5ad` 74.75 (built at 0cdcc6f, record
+    t1r51_0cdcc6f_r1); T3:bcatenin `T3_c2_s2_g15.h5ad` 64.22 (726aaac, t3r76_726aaac_g15); T2:heart:test_extrap
+    `T2heart_organ_ts125_tk_half.h5ad` 62.45 (8a8bc3a, hearth_8a8bc3a_h2); T2:embryo:test_interp
+    `T2embryo_s2x_ovd.h5ad` 70.85 (ee22b75, embryor75_ee22b75_rd). These are also the final picks (row R81).
+  - **Where it is written:** README.md, "Our best submission" (each file with its method in a line);
+    METHOD_SUMMARY.md, "Our best solution" (each file's headline, sha256, building commit, build record, method and
+    the command that rebuilds it).

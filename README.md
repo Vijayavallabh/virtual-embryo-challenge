@@ -47,10 +47,20 @@ uv run vec eval --pred pred.h5ad --board T1:val \
 
 `./init.sh` checks the lock file, lints and runs the test suite.
 
-## Our entry
+## Our best submission
+
+Overall 205.62 (T1 + T3 + the mean of the two T2 boards), one file per board:
+
+| Board | File | Headline | Method in a line |
+|---|---|---|---|
+| T1:test | `T1_s2rcMSBm10.h5ad` | 74.75 | real E10.5 heart cells moved by released momentum, the Feng 2022 atlas direction and within-type transport |
+| T3:bcatenin | `T3_c2_s2_g15.h5ad` | 64.22 | real wild-type cells scaled by one per-gene factor from the released Mab21l2 and Gata4 knockouts |
+| T2:heart:test_extrap | `T2heart_organ_ts125_tk_half.h5ad` | 62.45 | real E10.5 heart cells moved along each lineage's trend across the released heart stages |
+| T2:embryo:test_interp | `T2embryo_s2x_ovd.h5ad` | 70.85 | real E7.5 and E8.0 cells, the later stage turned into the earlier frame and thinned to the midway depth |
 
 Every predicted cell is a real released cell: we draw real cells to a target composition, change their expression
-only in count space, and place them in space. `METHOD_SUMMARY.md` gives each task's method and the data it uses.
+only in count space, and place them in space. `METHOD_SUMMARY.md` gives each method in full and the command that
+rebuilds each file.
 
 ## Layout
 
