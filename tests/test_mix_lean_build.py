@@ -301,8 +301,15 @@ def test_no_dry_run_either(bt, env, tmp_path):
 
 
 def test_the_earlier_lean_is_struck_and_refused_by_the_parser(bt, env, tmp_path, capsys):
+    """Amended for row R78 (the captain's order of 2026-11-26): `--mix-lean earlier` is now row R78's file
+    T2embryo_s2x_ovt13.h5ad alone, so the parser takes it and row R78's check refuses it under ruling R59, as under
+    every ruling but R78 (tests/test_embryo_r78_build.py), before anything is read; the other values stay the parser's
+    refusals."""
     out = tmp_path / "r" / "T2embryo.h5ad"
-    for value in ("earlier", "Later", "2/3", ""):
+    argv = [*O_ARGS, "--mix-lean", "earlier", "--captain-ruling", "R59"]
+    msg = _refused(bt, env, tmp_path, argv, "--mix-lean earlier")
+    assert msg == "--mix-lean earlier is refused with --captain-ruling R59: only row R78 orders it"
+    for value in ("Later", "2/3", "", "later2_half"):
         with pytest.raises(SystemExit) as e:
             bt.main(["embryo", *O_ARGS, "--mix-lean", value, "--captain-ruling", "R59", "--out", str(out)])
         assert e.value.code == 2 and "invalid choice" in capsys.readouterr().err

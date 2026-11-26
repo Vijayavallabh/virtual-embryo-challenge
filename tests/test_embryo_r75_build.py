@@ -175,9 +175,12 @@ def test_the_one_table_is_the_rows_five_pairs_in_its_order(bt):
 def test_row_r59s_lean_stays_and_the_parser_takes_row_r75s_three_more(bt, capsys):
     assert bt.MIX_LEANS == ("later",) and bt.EMBRYO_R75_NEW_LEANS == ("later_half", "later2", "earlier_half")
     action = {a.dest: a for a in bt.build_parser()._subparsers._group_actions[0].choices["embryo"]._actions}
-    assert action["mix_lean"].choices == ("later", "later_half", "later2", "earlier_half")
+    # amended for row R78 (the captain's order of 2026-11-26): the parser also takes row R78's two leans, later_11_12
+    # and earlier (each refused under every ruling but R78 by row R78's check: tests/test_embryo_r78_build.py)
+    assert action["mix_lean"].choices == ("later", "later_half", "later2", "earlier_half", "later_11_12", "earlier")
+    assert bt.EMBRYO_R78_NEW_LEANS == ("later_11_12", "earlier")
     assert action["mix_lean"].default is None and action["captain_ruling"].default is None
-    for value in ("earlier", "Later_half", "later_halves", "7/12", "5/6", "later3", ""):  # earlier: the struck file
+    for value in ("Earlier", "Later_half", "later_halves", "7/12", "5/6", "later3", "", "later2_half"):
         with pytest.raises(SystemExit) as e:
             bt.build_parser().parse_args(["embryo", *O_ARGS, "--mix-lean", value, "--captain-ruling", "R75",
                                           "--out", "x.h5ad"])
@@ -287,14 +290,24 @@ def test_the_launchers_list_names_both_test_files():
 
 
 def test_build_embryo_runs_row_r75s_refusals_first(bt):
+    """Amended for row R78 (the captain's order of 2026-11-26): row R78's check now runs first, and when it returns a
+    file, row R75's check, row R59's and series_back's are skipped; row R75's still runs before every other check.
+    The source is read by code and not shown."""
     src = inspect.getsource(bt.build_embryo)
-    at = src.index("r75 = _r75_refusals(a)")
+    at78, at = src.find("r78 = _r78_refusals(a)"), src.find("r75 = (_r75_refusals(a)")
+    assert 0 <= at78 < at, "row R78's check is not first (source not shown)"
     for call in ("_mix_lean_refusals(a)", "_bayes_refusals(a)", "_series_back_refusals(a)", "_run_sorted_refusals(a)",
                  "_copy_rows_refusals(a)", "_board(", "load_stage("):
-        assert at < src.index(call), call
-    assert "mix_lean = _mix_lean_refusals(a) if r75 is None else False" in src
-    assert "series_back = _series_back_refusals(a) if not (mix_lean or bayes or r75) else False" in src
-    assert src.count("_r75_refusals(") == 1
+        later = at < src.find(call)
+        assert later, call
+    # each condition as a whole line or line pair (an inline comment may sit at the break)
+    skips = (re.search(r"r75 = \(_r75_refusals\(a\)[^\n]*\n\s+if r78 is None else None\)\n", src) is not None,
+             re.search(r"mix_lean = _mix_lean_refusals\(a\) if \(r75 is None[^\n]*\n\s+and r78 is None\) else False\n",
+                       src) is not None,
+             "series_back = _series_back_refusals(a) if not (mix_lean or bayes or r75 or r78) else False" in src)
+    assert skips == (True, True, True), "a dispatch line is not as amended (source not shown)"
+    counts = (src.count("_r75_refusals("), src.count("_r78_refusals("))
+    assert counts == (1, 1)
 
 
 # ------------------------------------------------------------------------------------------------ routing and refusals
@@ -682,6 +695,12 @@ def _outcome(mod, tmp: Path, stages, which: str, argv: list[str], name: str):
         return hashlib.sha256(out.read_bytes()).hexdigest(), out.with_suffix(".build.json").read_text()
 
 
+# amended for row R78 (the captain's order of 2026-11-26): `--mix-lean earlier` is row R78's lean, which the parser
+# now takes; refused at BASE by the parser (exit 2) and now by row R78's check, which refuses it under every ruling
+# but R78 (tests/test_embryo_r78_build.py)
+R78_REFUSES = {"earlier": "--mix-lean earlier is refused with --captain-ruling R59: only row R78 orders it"}
+
+
 @pytest.mark.parametrize("key", list(COMMANDS))
 def test_every_other_command_does_what_base_does(bt, base_bt, own_repo, tmp_path, stages, key):
     argv, name, kind = COMMANDS[key]
@@ -689,6 +708,9 @@ def test_every_other_command_does_what_base_does(bt, base_bt, own_repo, tmp_path
     got = _outcome(bt, tmp_path, stages, "new", argv, name)
     base_did = "refused" if want[0] == "refused" else "built"
     assert kind is None or base_did == kind, (base_did, kind)
+    if key in R78_REFUSES:  # row R78's lean under another ruling: refused by both, now by row R78's check
+        assert want == ("refused", "2") and got == ("refused", R78_REFUSES[key])
+        return
     assert got[0] == want[0] and got[1] == want[1]  # the same bytes and record, or the same refusal
 
 
