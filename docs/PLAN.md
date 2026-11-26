@@ -15247,3 +15247,16 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     once, and Ot1112's option is renamed `later_11_12`. No headline of any round-3 file had been reported at the pick.
   - **Next:** engineers in their own worktrees, an independent review each, the merge with the guard tests, a gate
     dry-run on the DGX, builds twice with one sha256, records, hand-over; every file goes up only after its record.
+- 2026-11-26 (i), the captain reports 2 headlines and the rules are applied by their letter (state at 02:23 UTC,
+  2026-11-26). Written by the AI assistant, which records the headlines only.
+  - **The paste:** T2:heart:test_extrap `T2heart_organ_ts10_tk_half.h5ad` 62.14 (shown as submitted 2026-11-26 02:20);
+    T2:heart:test_extrap `T2heart_organ_ts15_tk_half.h5ad` 62.34 (shown as submitted 2026-11-26 02:21). Each file's
+    sha256 on disk matches its sheet row. The paste's per-metric lines, ranks and file sizes are not recorded or used.
+  - **Each rule by its letter.** Both are below the board's best (`T2heart_organ_ts125_tk_half.h5ad`, OTK125, 62.45).
+    Row R74 sends OTK075 "only if OTK10's headline is strictly above OTK125's" and OTK175 "only if OTK15's is", each
+    read once at the first moment its parent has a headline and by 06:00 UTC. Read now: 62.14 is not above 62.45, and
+    62.34 is not above 62.45. Neither condition holds, so neither file is ever sent; both stay built and recorded
+    (heartr74_4b3e7a9).
+  - **Nothing else reads these headlines.** Row R77's OTK05 and OTK20 are sent at once, with no condition (decision
+    log 2026-11-26 (h)); they are unchanged.
+  - **Standing unchanged:** 204.865.

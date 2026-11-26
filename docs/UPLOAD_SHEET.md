@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-26 00:53 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-26 02:23 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -15,7 +15,7 @@ decision log 2026-11-24 (pp)), every due file can go now and nothing waits for r
 are listed below. Between boards the captain decides; by the challenge's formula a point on T1 or T3 counts twice a
 point on the heart or the embryo board.
 
-**Due now (23), in the order of each board's table below:**
+**Due now (21), in the order of each board's table below:**
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcB25H20.h5ad`,
   `T1_s2rcB25MSH05.h5ad`, `T1_s2rcMSBm075.h5ad`, `T1_s2rcMSBm10d10.h5ad`, `T1_s2rcMSBm10H05.h5ad`,
@@ -23,10 +23,11 @@ point on the heart or the embryo board.
 - T3: `T3_c2_s2_s085.h5ad`, `T3_c2_s2_s05.h5ad`, `T3_c2_s2_g15.h5ad`, `T3_c2_s2_g05.h5ad`, `T3_c2_s2_g2_s067.h5ad`
 - Embryo: `T2embryo_s2x_ovt712.h5ad`, `T2embryo_s2x_ovt56.h5ad`, `T2embryo_s2x_ovt512.h5ad`,
   `T2embryo_s2xs_ovt23.h5ad`, `T2embryo_s2x_ovd.h5ad`
-- Heart: `T2heart_organ_ts10_tk_half.h5ad`, `T2heart_organ_ts15_tk_half.h5ad`
+- Heart: none (every built heart file is uploaded)
 
-**Waiting on a score (3):** `T2heart_organ_ts075_tk_half.h5ad` (only if OTK10's headline is strictly above OTK125's) and `T2heart_organ_ts175_tk_half.h5ad` (only if OTK15's is), each read once by 06:00 UTC (row R74); `T1_s2rcA20.h5ad`, in the last-on-T1 list below. Row R60's `T1_s2rcMS20d15.h5ad` is not
-sent: its rule's condition did not hold (decision log 2026-11-25 (rr)).
+**Waiting on a score (1):** `T1_s2rcA20.h5ad`, in the last-on-T1 list below. Row R60's `T1_s2rcMS20d15.h5ad` is not
+sent: its rule's condition did not hold (decision log 2026-11-25 (rr)). Row R74's `T2heart_organ_ts075_tk_half.h5ad` and
+`T2heart_organ_ts175_tk_half.h5ad` are not sent: neither condition held (decision log 2026-11-26 (i)).
 
 **Last on T1 (2):** `T1_s2rcA15.h5ad`, then `T1_s2rcA20.h5ad` only if A15 scores strictly above A. With no limit A15
 is reached and can go with the due files (the main session's reading of the captain's words that kept it; the captain
@@ -51,9 +52,10 @@ are built (decision log 2026-11-25 (uuu)). T1's second refinement round (row R73
 Eight files were uploaded and their scores reported on 2026-11-23, two per board (`docs/PLAN.md` decision log
 2026-11-23 (cc) and (gg)), and twenty-one on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy), (aaa), (bbb),
 (ddd) and (jjj)). Thirty-two more were uploaded and reported on 2026-11-25 (decision log 2026-11-25 (d), (e), (g),
-(h), (k), (m), (n), (ii), (jj), (kk), (mm), (oo), (rr), (ccc), (eee), (iii), (www), (yyy) and (aaaa)). The boards'
-best headlines stand with `T1_s2rcMSBm10.h5ad` (MS's own damping 1.0 on MSB), `T3_c2_s2.h5ad` (C2),
-`T2heart_organ_ts125_tk_half.h5ad` (OTK125) and `T2embryo_s2x_ov.h5ad` (O).
+(h), (k), (m), (n), (ii), (jj), (kk), (mm), (oo), (rr), (ccc), (eee), (iii), (www), (yyy) and (aaaa)). On 2026-11-26,
+2 more were uploaded and reported (decision log 2026-11-26 (i)). The boards' best headlines stand with
+`T1_s2rcMSBm10.h5ad` (MS's own damping 1.0 on MSB), `T3_c2_s2.h5ad` (C2), `T2heart_organ_ts125_tk_half.h5ad` (OTK125)
+and `T2embryo_s2x_ov.h5ad` (O).
 
 Four files are skipped by the captain's words of 2026-11-23 and 2026-11-24: they hold no place in any order below and
 stand in a section of their own at the end.
@@ -128,17 +130,13 @@ board's best. Row R75's five files are built and due now (decision log 2026-11-2
 Data used, for every heart file: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data.
 
 `T2heart_organ_ts125_tk_half.h5ad` (OTK125, row R55) holds the board's best. Every heart file built before row R74
-is uploaded, OTS15, OTK125 and OTP125 included; the fourth line is spent. Row R74's OTK10 and OTK15 are due now;
-OTK075 and OTK175 wait on their headlines (decision log 2026-11-26 (b)). The third round's heart files (rows R61 to R65) are not
+is uploaded, OTS15, OTK125 and OTP125 included; the fourth line is spent. Row R74's OTK10 and OTK15 are uploaded;
+OTK075 and OTK175 are not sent: neither condition held (decision log 2026-11-26 (i)). The third round's heart files (rows R61 to R65) are not
 built: no condition holds (decision log 2026-11-25 (ii)). The full-trim file `T2heart_core_ts10_half.h5ad` is skipped
 by the captain's word of 2026-11-24 and stands in the skipped section.
 
 | Order | File | sha256 | Condition |
 |---|---|---|---|
-| refinement (row R74) | `T2heart_organ_ts10_tk_half.h5ad` (OTK10: the category trend at strength 1.0) | `904d58ab182a69eaa58c2a89270f30753566cd1eb407314c30b17509ebf9d414` | none (row R74: sent at once) |
-| refinement (row R74) | `T2heart_organ_ts15_tk_half.h5ad` (OTK15: the category trend at strength 1.5) | `27cca412a87f0fd27f006851f91d8cf59bd01aebce5d9de6d33e07da0a9f012e` | none (row R74: sent at once) |
-| refinement (row R74) | `T2heart_organ_ts075_tk_half.h5ad` (OTK075: the category trend at strength 0.75) | `9dcfb21df2eb942a9f2876033e4e13a7b62b00315e6cbf49f7f82e06cceb3168` | only if OTK10's headline is strictly above OTK125's, read once at the first moment OTK10 has a headline and at the latest 2026-11-26 06:00 UTC; else never sent (row R74) |
-| refinement (row R74) | `T2heart_organ_ts175_tk_half.h5ad` (OTK175: the category trend at strength 1.75) | `efaa72be2bbf6cb20d6d6c87b0b9e40f2ff25b5f1daba0831de2071064c49e0b` | only if OTK15's headline is strictly above OTK125's, read once at the first moment OTK15 has a headline and at the latest 2026-11-26 06:00 UTC; else never sent (row R74) |
 
 ## Skipped by the captain's words: not uploaded unless the captain says otherwise
 
