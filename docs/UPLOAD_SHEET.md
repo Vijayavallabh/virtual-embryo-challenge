@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-26 03:32 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-26 03:37 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -15,14 +15,13 @@ decision log 2026-11-24 (pp)), every due file can go now and nothing waits for r
 are listed below. Between boards the captain decides; by the challenge's formula a point on T1 or T3 counts twice a
 point on the heart or the embryo board.
 
-**Due now (18), in the order of each board's table below:**
+**Due now (15), in the order of each board's table below:**
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcB25H20.h5ad`,
-  `T1_s2rcB25MSH05.h5ad`, `T1_s2rcMSBm075.h5ad`, `T1_s2rcMSBm10H05.h5ad`, `T1_s2rcMSBm10d15.h5ad`,
-  `T1_s2rcMSBm10H10.h5ad`
+  `T1_s2rcB25MSH05.h5ad`, `T1_s2rcMSBm075.h5ad`, `T1_s2rcMSBm10H05.h5ad`, `T1_s2rcMSBm10d15.h5ad`
 - T3: `T3_c2_s2_g05.h5ad`, `T3_c2_s2_g2_s067.h5ad`, `T3_c2_s2_s035.h5ad`, `T3_c2_s2_g05_s05.h5ad`,
-  `T3_c2_s2_gonly_s05.h5ad`, `T3_c2_s2_g2_s05.h5ad`, `T3_c2_s2_g15_s05.h5ad`
-- Embryo: `T2embryo_s2x_ovt13.h5ad`
+  `T3_c2_s2_gonly_s05.h5ad`, `T3_c2_s2_g15_s05.h5ad`
+- Embryo: none (every built embryo file is uploaded)
 - Heart: none (every built heart file is uploaded)
 
 **Waiting on a score (1):** `T1_s2rcA20.h5ad`, in the last-on-T1 list below. Row R60's `T1_s2rcMS20d15.h5ad` is not
@@ -53,10 +52,10 @@ Eight files were uploaded and their scores reported on 2026-11-23, two per board
 2026-11-23 (cc) and (gg)), and twenty-one on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy), (aaa), (bbb),
 (ddd) and (jjj)). Thirty-two more were uploaded and reported on 2026-11-25 (decision log 2026-11-25 (d), (e), (g),
 (h), (k), (m), (n), (ii), (jj), (kk), (mm), (oo), (rr), (ccc), (eee), (iii), (www), (yyy) and (aaaa)). On 2026-11-26,
-14 more were uploaded and reported (decision log 2026-11-26 (i), (j), (k), (l), (m), (p), (r) and (s)). The boards'
-best headlines stand with `T1_s2rcMSBm10.h5ad` (MS's own damping 1.0 on MSB), `T3_c2_s2_g15.h5ad` (C2's command with
-the Gata4 weight 1.5), `T2heart_organ_ts125_tk_half.h5ad` (OTK125) and `T2embryo_s2x_ovd.h5ad` (O's rows and positions
-with the depth expression).
+17 more were uploaded and reported (decision log 2026-11-26 (i), (j), (k), (l), (m), (p), (r), (s) and (t)). The
+boards' best headlines stand with `T1_s2rcMSBm10.h5ad` (MS's own damping 1.0 on MSB), `T3_c2_s2_g15.h5ad` (C2's
+command with the Gata4 weight 1.5), `T2heart_organ_ts125_tk_half.h5ad` (OTK125) and `T2embryo_s2x_ovd.h5ad` (O's rows
+and positions with the depth expression).
 
 Four files are skipped by the captain's words of 2026-11-23 and 2026-11-24: they hold no place in any order below and
 stand in a section of their own at the end.
@@ -86,7 +85,6 @@ with no limit they go after T1's due search files (the main session's reading); 
 | damping refinement (row R67) | `T1_s2rcMSBm075.h5ad` (MSB's command with MS's own damping 0.75) | `05f717fa903520ccbee0b9c8c19c7a40bc819ba8dd827edae4f0e5f49ad3bee1` | none (row R67: sent at once) |
 | refinement round 2 (row R73) | `T1_s2rcMSBm10H05.h5ad` (MSBm10's command with Blood's own momentum 0.5) | `58c1d94f7050a8ce382094466d009c1eb966d5ba2f2afe36a75c393d3f55e413` | none (row R73: sent at once) |
 | refinement round 2 (row R73) | `T1_s2rcMSBm10d15.h5ad` (MSBm10's command with g_mom's damping 1.5) | `d3098c20fd98c3725b5865c0fe7294710f1063ad204b9cfadec6c13b7008570a` | none (row R73: sent at once) |
-| refinement round 2 (row R73) | `T1_s2rcMSBm10H10.h5ad` (MSBm10's command with Blood's own momentum 1.0) | `7e2b3964e33fbe4bf240f618502bcc65bba4ce8a6d58249a88692ab1a65e82fe` | none (row R73: sent at once) |
 | kept, last | `T1_s2rcA15.h5ad` (the second search's file) | `e2334137b54d98b04e9dece90213987e61fe9aa15a3fb8d85e6c262d8fb5ba75` | none (its condition is met); last on T1; with no limit on uploads, after T1's due search files |
 | kept, last | `T1_s2rcA20.h5ad` | `372713686782be273a52427140eab652517e35b679f54fc2a969484dee730218` | only if A15 scores strictly above A |
 
@@ -107,7 +105,6 @@ Never uploaded: `builds/T1_s2.h5ad`.
 | refinement round 4 (row R79) | `T3_c2_s2_s035.h5ad` (C2's command with the factor's size scaled 0.35) | `0b4812ac9ab01914cd3db0345a32b28a65d6df97c46135418693cfa22170ba6a` | none (row R79: sent at once; the captain's named exceptions) | released challenge data only (C2's inputs: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files); no outside data |
 | refinement round 4 (row R79) | `T3_c2_s2_g05_s05.h5ad` (C2's command with the Gata4 weight 0.5 and the size scaled 0.5) | `96c97d940e825f3bb35dcbb53191a88f6f94246d72c3841debe6ad3b2a59656d` | none (row R79: sent at once; the captain's named exceptions) | released challenge data only (C2's inputs: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files); no outside data |
 | refinement round 4 (row R79) | `T3_c2_s2_gonly_s05.h5ad` (C2's command with Gata4's factor alone and the size scaled 0.5) | `f3526b1da0b37657350bc378d11ace4195e9a66a50bc10f600e91b7609e6520b` | none (row R79: sent at once; the captain's named exceptions) | released challenge data only (C2's inputs: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files); no outside data |
-| refinement round 4 (row R79) | `T3_c2_s2_g2_s05.h5ad` (C2's command with the Gata4 weight 2.0 and the size scaled 0.5) | `86c8a50f247135db93ad29dc33c563e22f17ac160c223c5bd8636660d8d95313` | none (row R79: sent at once; the captain's named exceptions) | released challenge data only (C2's inputs: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files); no outside data |
 | refinement round 4 (row R79) | `T3_c2_s2_g15_s05.h5ad` (C2's command with the Gata4 weight 1.5 and the size scaled 0.5) | `b77167fe983259dc5f90fbbc204e55d5fd0f85ce35fbcd0af77dd61e922c731e` | none (row R79: sent at once; the captain's named exceptions) | released challenge data only (C2's inputs: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files); no outside data |
 | refinement (row R76) | `T3_c2_s2_g05.h5ad` (C2's command with the Gata4 weight 0.5) | `cb8054928cfbe7e6e644d6570100da82590872a4d1cd58031489beb470b8f7f5` | none (row R76: sent at once; the captain's named exception on T3's depth) | released challenge data only (C2's inputs: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files); no outside data |
 | refinement (row R76) | `T3_c2_s2_g2_s067.h5ad` (C2's command with the Gata4 weight 2.0 and the size scaled 0.67) | `a6dabee6f47c0aed33b0a74f38930a948d909c0a2970fe8d58e34b62acad8366` | none (row R76: sent at once; the captain's named exception on T3's depth) | released challenge data only (C2's inputs: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files); no outside data |
@@ -118,11 +115,10 @@ Data used, for every embryo file: released challenge data only; no outside data.
 
 Every embryo file built before row R75 is uploaded, W, Ot23 and row R68's two hedge files included. Row R75's
 `T2embryo_s2x_ovd.h5ad` holds the board's best (decision log 2026-11-26 (j)); by R75's words it stands beside O, never
-in its place. All five of row R75's files are uploaded; of row R78's two, Ot1112 is uploaded and Ot13 is due now.
+in its place. All five of row R75's files are uploaded; both of row R78's files are uploaded.
 
 | Order | File | sha256 | Condition | Data used |
 |---|---|---|---|---|
-| refinement round 4 (row R78) | `T2embryo_s2x_ovt13.h5ad` (O with the mix lean at 1/3, toward the earlier stage) | `c29f42da28b145a01ce41c9629310d0cc04b84a97b7335431d99986f49c51716` | none (row R78: sent at once, no gate) | as the paragraph above |
 
 ## Task 2, heart
 

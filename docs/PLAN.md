@@ -15351,3 +15351,13 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Each rule by its letter.** Row R73 sends its four files at once with no condition: no rule on record reads this
     headline. It is below the board's best (`T1_s2rcMSBm10.h5ad`, 74.75).
   - **Standing unchanged:** 205.62.
+- 2026-11-26 (t), the captain reports 3 headlines and the rules are applied by their letter (state at 03:37 UTC,
+  2026-11-26). Written by the AI assistant, which records the headlines only.
+  - **The paste:** T1:test `T1_s2rcMSBm10H10.h5ad` 74.63 (shown as submitted 2026-11-26 03:33); T2:embryo:test_interp
+    `T2embryo_s2x_ovt13.h5ad` 69.20 (shown as submitted 2026-11-26 03:33); T3:bcatenin `T3_c2_s2_g2_s05.h5ad` 63.19
+    (shown as submitted 2026-11-26 03:34). Each file's sha256 on disk matches its sheet row. The paste's per-metric
+    lines, ranks and file sizes are not recorded or used.
+  - **Each rule by its letter.** Rows R73 (T1), R78 (embryo) and R79 (T3) send their files at once with no condition:
+    no rule on record reads these headlines. Each is below its board's best (T1 `T1_s2rcMSBm10.h5ad` 74.75; embryo
+    `T2embryo_s2x_ovd.h5ad` 70.85; T3 `T3_c2_s2_g15.h5ad` 64.22).
+  - **Standing unchanged:** 205.62.
