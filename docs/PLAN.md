@@ -15417,3 +15417,13 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     build or test of ours runs locally or on the DGX. Row R80 stands ruled and unbuilt: none of its four files exists.
   - **Unchanged:** the boards' bests and the standing 205.62 ((y)); the eleven built files still due stay free to
     upload; headlines the captain pastes are still recorded.
+- 2026-11-26 (aa), the final embryo pick (row R81; state at 04:21 UTC). Written by the AI assistant.
+  - **The flag.** A side agent's note, forwarded by the captain, said the wrap-up list ((y)) named
+    `T2embryo_s2x_ovd.h5ad` as the embryo's final pick against row R75's words for it, "beside O and never in its
+    place". The AI assistant agreed that the list should have flagged the condition, and put the choice to the captain
+    with both prices: marking O costs about 0.95 embryo points (about 0.48 overall) if the final mark decides the
+    result, and nothing if the board counts each team's best headline.
+  - **The captain's words:** "whatever gives us the best score, go with it". Read as lifting R75's "never in its
+    place" for the final pick only: if the site asks for one final file per board, the embryo's is
+    `T2embryo_s2x_ovd.h5ad` (70.85); the other boards' are `T1_s2rcMSBm10.h5ad`, `T3_c2_s2_g15.h5ad` and
+    `T2heart_organ_ts125_tk_half.h5ad`. No file, setting or lever changes.
