@@ -112,7 +112,8 @@ Never uploaded: `builds/T1_s2.h5ad`.
 
 Data used, for every embryo file: released challenge data only; no outside data.
 
-Every built embryo file is uploaded, W, Ot23 and row R68's two hedge files included, and O holds the board's best.
+Every embryo file built before row R75 is uploaded, W, Ot23 and row R68's two hedge files included, and O holds the
+board's best. Row R75's five files are built and due now (decision log 2026-11-26 (d)).
 
 | Order | File | sha256 | Condition | Data used |
 |---|---|---|---|---|
@@ -126,8 +127,9 @@ Every built embryo file is uploaded, W, Ot23 and row R68's two hedge files inclu
 
 Data used, for every heart file: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data.
 
-`T2heart_organ_ts125_tk_half.h5ad` (OTK125, row R55) holds the board's best. Every built heart file is uploaded,
-OTS15, OTK125 and OTP125 included; the fourth line is spent. The third round's heart files (rows R61 to R65) are not
+`T2heart_organ_ts125_tk_half.h5ad` (OTK125, row R55) holds the board's best. Every heart file built before row R74
+is uploaded, OTS15, OTK125 and OTP125 included; the fourth line is spent. Row R74's OTK10 and OTK15 are due now;
+OTK075 and OTK175 wait on their headlines (decision log 2026-11-26 (b)). The third round's heart files (rows R61 to R65) are not
 built: no condition holds (decision log 2026-11-25 (ii)). The full-trim file `T2heart_core_ts10_half.h5ad` is skipped
 by the captain's word of 2026-11-24 and stands in the skipped section.
 
