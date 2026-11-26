@@ -15197,3 +15197,20 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **What may change them:** only a blind challenger's FIX text, recorded verbatim, or the captain's yes or no per
     file; never a reading of any headline. Every file moves T3's depth: the pre-set rule's outcome is decline, and
     each needs the captain's named exception (row R79, placed after the challenge and the captain's words).
+- 2026-11-26 (f), round 4's heart design is written blind before any round-3 headline, and its send rules are fixed
+  here (state at 01:25 UTC). Written by the AI assistant, recused on the heart's scope and size; it designed none of
+  it.
+  - **The design.** `lift8/round_1125_gap/HEART_REF4_design.md` (sha256
+    a9c709802e90ffabf9520acc4e15bf1910df1b819d3c8ac9c53b77d577cc313e), by a score-blind designer answering
+    `TASK_ref4.md` (its sha256 in (e)). No headline of any round-3 file exists at this entry.
+  - **Its files and send rules, fixed as written.** Each is OTK125's command with the category trend at a new strength
+    under a row R77, halved at seed 1000001. Each condition is read once, at the first moment both named files have a
+    headline and at the latest 2026-11-26 10:30 UTC; a named file without a headline makes it false. At once:
+    `T2heart_organ_ts0875_tk_half.h5ad` (OTK0875, strength 0.875), `T2heart_organ_ts1125_tk_half.h5ad` (OTK1125,
+    1.125), `T2heart_organ_ts1375_tk_half.h5ad` (OTK1375, 1.375). `T2heart_organ_ts05_tk_half.h5ad` (OTK05, 0.5): only
+    if OTK075's headline is strictly above OTK10's. `T2heart_organ_ts20_tk_half.h5ad` (OTK20, 2.0): only if OTK175's
+    headline is strictly above OTK15's. `T2heart_organ_ts1625_tk_half.h5ad` (OTK1625, 1.625): only if OTK15's headline
+    is strictly above OTK175's.
+  - **What may change them:** only a blind challenger's FIX text, recorded verbatim, or the captain's yes or no per
+    file; never a reading of any headline. Every file needs the captain's named exception on the heart's scope and
+    size (the design gives the words per file); the main session puts them with no recommendation.
