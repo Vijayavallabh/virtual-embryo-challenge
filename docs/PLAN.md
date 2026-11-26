@@ -15361,3 +15361,12 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     no rule on record reads these headlines. Each is below its board's best (T1 `T1_s2rcMSBm10.h5ad` 74.75; embryo
     `T2embryo_s2x_ovd.h5ad` 70.85; T3 `T3_c2_s2_g15.h5ad` 64.22).
   - **Standing unchanged:** 205.62.
+- 2026-11-26 (u), the captain rules on the embryo's round-5 files: row R80, four files on Od's command, all sent at
+  once (state at 03:44 UTC). Written by the AI assistant, recused on the embryo's occupancy term and shape forms; it
+  designed none of it and gave no view.
+  - **The pick:** "All four, with exceptions", in a dialog with no recommended option: `T2embryo_s2x_ovt13d.h5ad`
+    (lean 1/3), `T2embryo_s2x_ovt512d.h5ad` (5/12, labelled mostly draw), `T2embryo_s2x_ovt23d.h5ad` (2/3),
+    `T2embryo_s2x_ovt56d.h5ad` (5/6), each `--expression depth` with its lean; the words each option recorded are in
+    row R80's first cell. The challenger struck 7/12 and 11/12 as dominated.
+  - **Next:** an engineer in its own worktree, an independent review, the merge with the guard tests, a gate dry-run
+    on the DGX, builds twice with one sha256, the record, the hand-over.
