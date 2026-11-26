@@ -11,15 +11,16 @@ string or name of it is an earlier row's; the design's lean name later2_half and
 nearest double to vec.t2_build.interpolate_clouds and nothing else changes in O's call, the count of E7.5 rows being
 interpolate_clouds' own int(round((1 - t_mix) n)), and every row keeps its bracket's released expression; each file's
 record gains the r78 block and shows no count; each is taken only with --captain-ruling R78 on O's command with exactly
-its string, at the default seed on the test board, while row R78's first cell names the string paired with the file and
-the ruling, every refusal before anything is read; a lean only row R78 has (later_11_12, earlier) is refused under
-every other ruling and with none; row R78's check runs first in build_embryo and, when it returns a file, row R75's,
-row R59's and series_back's checks are skipped; the checker gives O's bytes from each file's own path with its t_mix put
-back at 1/2 and fails when the route is not as named; and every other embryo command gives what the builder of BASE
-(main with row R78 placed, before its route) gives, run in this same process from git's copy of build_test.py: the same
-h5ad bytes and record, or the same refusal, but for the commands row R78 itself changes (its two files, now built; its
-leans under any other ruling or none, and any other command under --captain-ruling R78, refused at BASE and now by row
-R78's check). Built through experiments/builds/build_test.py."""
+its string, at the default seed on the test board and under its own file name, while row R78's first cell names the
+string paired with the file and the ruling, every refusal before anything is read; a lean only row R78 has (later_11_12,
+earlier) is refused under every other ruling and with none; row R78's check runs first in build_embryo and, when it
+returns a file, row R75's, row R59's and series_back's checks are skipped; the checker gives O's bytes from each file's
+own path with its t_mix put back at 1/2, written only as <stem>_half.h5ad, and fails when the route is not as named; and
+every other embryo command gives what the builder of BASE (main with row R78 placed, before its route) gives, run in
+this same process from git's copy of build_test.py: the same h5ad bytes and record, or the same refusal, but for the
+commands row R78 itself changes (its two files, now built; its leans under any other ruling or none, and any other
+command under --captain-ruling R78, refused at BASE and now by row R78's check). Built through
+experiments/builds/build_test.py."""
 
 from __future__ import annotations
 
@@ -325,13 +326,26 @@ def test_the_other_checks_still_run_for_every_other_command(bt, env, tmp_path, m
 @pytest.mark.parametrize("name", NAMES)
 def test_each_file_is_taken_with_row_r78_and_nothing_but_the_ledger_is_read(bt, env, name):
     for argv in (ARGS[name], [*ARGS[name], "--board", "T2:embryo:test_interp"], [*ARGS[name], "--seed", "1000001"]):
-        a = bt.build_parser().parse_args(["embryo", *argv, "--out", "x.h5ad"])
+        a = bt.build_parser().parse_args(["embryo", *argv, "--out", f"x/{name}"])
         assert bt._r78_file(a) == name and bt._r78_refusals(a) == _values(name)
         assert bt._r75_file(a) is None and bt._r75_refusals(a) is None  # row R75's check passes it through
     a = bt.build_parser().parse_args(["embryo", *FLOOR, "--expression", "mixture", *OV, *OPTS[name].split(),
-                                      "--captain-ruling", "R78", "--out", "x.h5ad"])
+                                      "--captain-ruling", "R78", "--out", name])
     assert bt._r78_refusals(a) == _values(name)  # the launcher's spelling with O's default named is the same command
     assert env == []
+
+
+@pytest.mark.parametrize("name", NAMES)
+@pytest.mark.parametrize("out", ["T2embryo.h5ad", "T2embryo_s2x_ov.h5ad", "T2embryo_s2x_ovt56.h5ad",
+                                 "T2embryo_s2x_ovt23.h5ad", "half.h5ad", "{stem}_half.h5ad", "{other}",
+                                 "{stem}.H5AD", "{stem}.h5ad.h5ad", "t{name}"])
+def test_the_out_name_is_the_tables_file_name(bt, env, tmp_path, name, out):
+    """Row R78's route writes each file under its own name only (the R75 review's lesser point, fixed as the design's
+    builder plan says): any other --out name is refused before anything is read."""
+    other = [f for f in NAMES if f != name][0]
+    out = out.format(stem=name.removesuffix(".h5ad"), other=other, name=name)
+    msg = _refused(bt, env, tmp_path, ARGS[name], "--out must name it", out)
+    assert msg == f"this command writes row R78's file {name} only: --out must name it"
 
 
 @pytest.mark.parametrize("name", NAMES)
@@ -414,7 +428,7 @@ def test_a_file_whose_row_does_not_name_it_is_refused(bt, env, tmp_path, monkeyp
     p.parent.mkdir()
     p.write_text("| ID | what |\n|---|---|\n" + "".join(r + "\n" for r in rows))
     monkeypatch.setattr(bt, "TRIES_FILE", p)
-    msg = _refused(bt, env, tmp_path, ARGS[name], f"row R78's file {name} is refused")
+    msg = _refused(bt, env, tmp_path, ARGS[name], f"row R78's file {name} is refused", name)
     assert f"`{option}` ({name}) and `--captain-ruling R78`" in msg
 
 
@@ -545,6 +559,20 @@ def test_the_checker_refuses_a_command_it_does_not_check(bt, chk, env, tmp_path,
     out = tmp_path / "c" / "T2embryo_check.h5ad"
     with pytest.raises(SystemExit, match=match):
         chk.main(["half", "embryo", *argv, "--out", str(out)])
+    assert not out.exists() and env == []
+
+
+@pytest.mark.parametrize("name", NAMES)
+@pytest.mark.parametrize("out", ["{name}", "T2embryo.h5ad", "T2embryo_s2x_ov.h5ad", "{other_stem}_half.h5ad",
+                                 "{stem}_half", "{stem}_half.h5ad.h5ad", "{stem}_Half.h5ad"])
+def test_the_checker_writes_only_under_its_half_name(bt, chk, env, tmp_path, name, out):
+    """The checker's build is O's bytes: it is written as <stem>_half.h5ad only, never under the file's own name (which
+    row R78's route requires of a build) or another, refused before anything is read."""
+    other = [f for f in NAMES if f != name][0]
+    stem, other_stem = name.removesuffix(".h5ad"), other.removesuffix(".h5ad")
+    out = tmp_path / "c" / out.format(name=name, stem=stem, other_stem=other_stem)
+    with pytest.raises(SystemExit, match=f"half writes {name.removesuffix('.h5ad')}_half.h5ad for {name}"):
+        chk.main(["half", "embryo", *ARGS[name], "--out", str(out)])
     assert not out.exists() and env == []
 
 

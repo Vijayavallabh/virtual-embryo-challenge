@@ -4587,9 +4587,10 @@ def _r78_file(a) -> str | None:
 
 def _r78_refusals(a) -> dict | None:
     """Row R78's check, the first of build_embryo's. None for a command that is not row R78's (no --captain-ruling R78
-    and no lean only row R78 has); for exactly one of its two commands, while row R78's first cell names it, the file's
-    values (file, option, expression, lean and exact t_mix); anything else under --captain-ruling R78, and a lean only
-    row R78 has under any other ruling or none, exits here, before anything is read."""
+    and no lean only row R78 has); for exactly one of its two commands, its --out naming that file (the table ties the
+    name, as row R71's route does), while row R78's first cell names it, the file's values (file, option, expression,
+    lean and exact t_mix); anything else under --captain-ruling R78, and a lean only row R78 has under any other ruling
+    or none, exits here, before anything is read."""
     ruling, lean = getattr(a, "captain_ruling", None), getattr(a, "mix_lean", None)
     if ruling != EMBRYO_R78_ROW:
         if lean in EMBRYO_R78_NEW_LEANS:
@@ -4606,6 +4607,8 @@ def _r78_refusals(a) -> dict | None:
                  "seed and nothing else changed: "
                  + "; ".join(f"{f} `{v[0]}`" for f, v in EMBRYO_R78_FILES.items()))
     option, expression, mix_lean, t_mix = EMBRYO_R78_FILES[name]
+    if Path(a.out).name != name:  # the table's file name: no other command's bytes go out under it
+        sys.exit(f"this command writes row {EMBRYO_R78_ROW}'s file {name} only: --out must name it")
     if not _r78_row_names(name):
         sys.exit(f"row {EMBRYO_R78_ROW}'s file {name} is refused: experiments/harness/TRIES.md must hold exactly one "
                  f"row {EMBRYO_R78_ROW} whose first cell is the captain's order (\"ruling, no run\") naming `{option}` "

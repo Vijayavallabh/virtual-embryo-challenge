@@ -7,11 +7,14 @@ through build_test._r78_refusals and build_embryo) with the file's one change, i
 must give O's file byte for byte. It prints nothing and exits 0 when the route ran as named below, else 1; a refusal of
 the builder, or a command that is not one of row R78's, exits as the builder does or with this script's refusal.
 
-  half ARGS...  build_test.py's own main on ARGS (`embryo ... --captain-ruling R78 --out <file>`, one of row R78's two
-                commands) with the file's t_mix put back at O's 1/2, passed to vec.t2_build.interpolate_clouds as 0.5:
-                it must then give O's file. Exits 1 unless the command took row R78's route once, interpolate_clouds
-                ran once and with t_mix 0.5, and no expression function of vec.t2_build ran (both files are O's
-                mixture: every row its bracket's released cell, depth moved only through the shares).
+  half ARGS...  build_test.py's own main on ARGS (`embryo ... --captain-ruling R78 --out <dir>/<stem>_half.h5ad`, one
+                of row R78's two commands) with the file's t_mix put back at O's 1/2, passed to
+                vec.t2_build.interpolate_clouds as 0.5: it must then give O's file. The route ties --out to the
+                table's file name; this script takes only <stem>_half.h5ad, the file's stem and _half, and hands the
+                route's check the file's own name in its place, so that no checker build is ever written under an
+                upload name. Exits 1 unless the command took row R78's route once, interpolate_clouds ran once and with
+                t_mix 0.5, and no expression function of vec.t2_build ran (both files are O's mixture: every row its
+                bracket's released cell, depth moved only through the shares).
 
 Run from the repository root as the launcher does (uv run --frozen --no-sync python -I -B
 experiments/builds/embryo_r78_check.py half embryo ...); nothing here uploads or deletes anything.
@@ -19,6 +22,7 @@ experiments/builds/embryo_r78_check.py half embryo ...); nothing here uploads or
 
 from __future__ import annotations
 
+import argparse
 import sys
 from fractions import Fraction
 from pathlib import Path
@@ -43,10 +47,18 @@ def at_half(argv: list[str]) -> int:
     inner_expr = {fn: getattr(bt.t2_build, fn) for fn in EXPRESSIONS}
 
     def r78(a):
-        values = inner_r78(a)
-        if values is None or values.get("file") not in bt.EMBRYO_R78_FILES:
+        name = bt._r78_file(a)
+        if name is None:  # none of row R78's two commands: the route's own refusal, else this script's
+            inner_r78(a)
             sys.exit("embryo_r78_check.py checks row R78's files only: the command must be one of them, with "
                      "--captain-ruling R78")
+        half = name.removesuffix(".h5ad") + "_half.h5ad"
+        if Path(a.out).name != half:
+            sys.exit(f"embryo_r78_check.py half writes {half} for {name}, never the file's own name: --out must name "
+                     "it")
+        values = inner_r78(argparse.Namespace(**{**vars(a), "out": str(Path(a.out).with_name(name))}))
+        if values is None or values.get("file") != name:
+            sys.exit(f"embryo_r78_check.py: row R78's route did not take {name}")
         seen["files"].append(dict(values))
         return {**values, "t_mix": HALF}
 

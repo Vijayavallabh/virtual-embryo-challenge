@@ -5,22 +5,21 @@ experiments/builds/embryo_r78_line.sh.
 It refuses any name but the two of its literal table, an odd run name or commit, a fourth argument, or a run started
 after 10:00 UTC on 2026-11-26, before it makes a folder; its gate checks the commit, the clean tree, the rules file's
 hash, row R78's first cell (the file's option string and `--captain-ruling R78` as whole backticked strings, the string
-paired there with the file's name), the released embryo stages, the venv and the pins against their committed
-SHA256SUMS lists; then it runs the targeted tests (the embryo launchers' lists and its own), rebuilds O and stops unless
-it gives its recorded bytes, and in the first file's run only rebuilds row R75's Ot56 and Ot512 the same way; then it
-builds the file once on its own path with its t_mix put back at 1/2 (experiments/builds/embryo_r78_check.py half) and
-stops unless that gives O's bytes; then it builds the file twice from one clean commit, compares the two, and stops if
-the file has O's, Ot23's or one of row R75's files' bytes. These tests hold its table to the builder's, its hashes to
-the committed lists, its commands to the ones the builder takes and to the earlier launchers', its clock to the
-deadline, check that it deletes nothing and reads no output of a test build but exit codes, sha256 and the stamps'
-commit and clean fields, and run it for real in throwaway repositories under a temporary home: with a stand-in `uv` that fails
-(every refusal path, traced with bash -x, and a call passing the gate stops at the tests step and builds nothing) and
-with stand-ins that pass (a whole run of each name goes through every step in order; a stand-in file of other bytes
-stops the run where its step says). Runs use a copy whose deadline lies far ahead, so that they do not depend on the
-day they run; the real deadline is checked as written and by a copy whose deadline has passed. Nothing here reads the
-repository's own ledger or rules file but one check, by code, that its row R78 passes the launcher's own gate lines;
-build_test is imported only to check its table and that it takes the commands the launcher runs, against a temporary
-ledger."""
+paired there with the file's name), the released embryo stages, the venv and the pins against their committed SHA256SUMS
+lists; then it runs the targeted tests (the embryo launchers' lists and its own), rebuilds O and stops unless it gives
+its recorded bytes, and in the first file's run only rebuilds row R75's Ot56 and Ot512 the same way; then it builds the
+file once on its own path with its t_mix put back at 1/2 (experiments/builds/embryo_r78_check.py half) and stops unless
+that gives O's bytes; then it builds the file twice from one clean commit, compares the two, and stops if the file has
+O's, Ot23's or one of row R75's files' bytes. These tests hold its table to the builder's, its hashes to the committed
+lists, its commands to the ones the builder takes and to the earlier launchers', its clock to the deadline, check that
+it deletes nothing and reads no output of a test build but exit codes, sha256 and the stamps' commit and clean fields,
+and run it for real in throwaway repositories under a temporary home: with a stand-in `uv` that fails (every refusal
+path, traced with bash -x, and a call passing the gate stops at the tests step and builds nothing) and with stand-ins
+that pass (a whole run of each name goes through every step in order; a stand-in file of other bytes stops the run where
+its step says). Runs use a copy whose deadline lies far ahead, so that they do not depend on the day they run; the real
+deadline is checked as written and by a copy whose deadline has passed. Nothing here reads the repository's own ledger
+or rules file but one check, by code, that its row R78 passes the launcher's own gate lines; build_test is imported only
+to check its table and that it takes the commands the launcher runs, against a temporary ledger."""
 
 from __future__ import annotations
 
@@ -338,13 +337,13 @@ def test_the_builder_takes_the_commands_the_launcher_runs(tmp_path, monkeypatch)
     ledger.write_text(f"# ledger\n{ROWS}")
     monkeypatch.setattr(bt, "TRIES_FILE", ledger)
 
-    def parse(args: str):
-        a = bt.build_parser().parse_args(["embryo", *args.split(), "--out", "x.h5ad"])
+    def parse(args: str, out: str = "x.h5ad"):
+        a = bt.build_parser().parse_args(["embryo", *args.split(), "--out", out])
         assert a.board is None and a.seed == bt.harness.BUILD_SEED_OFFSET + 1
         return a
 
-    for name, (opt, _, _) in _table(_sh()).items():
-        a = parse(f"{FLOOR} {OV_TAIL} {opt} --captain-ruling R78")
+    for name, (opt, stem, _) in _table(_sh()).items():
+        a = parse(f"{FLOOR} {OV_TAIL} {opt} --captain-ruling R78", f"runs/x/{stem}a/{name}")  # as the a build's
         assert bt._r78_refusals(a)["file"] == name
         assert " ".join(ARGS[name]) == f"{FLOOR} {OV_TAIL} {opt} --captain-ruling R78"
     assert chk.MODES == ("half",)
