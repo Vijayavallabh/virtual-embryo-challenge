@@ -15214,3 +15214,21 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **What may change them:** only a blind challenger's FIX text, recorded verbatim, or the captain's yes or no per
     file; never a reading of any headline. Every file needs the captain's named exception on the heart's scope and
     size (the design gives the words per file); the main session puts them with no recommendation.
+- 2026-11-26 (g), round 4's embryo design is written blind before any round-3 headline, and its send rules are fixed
+  here (state at 01:26 UTC). Written by the AI assistant, recused on the embryo's occupancy term and shape forms; it
+  designed none of it.
+  - **The design.** `lift8/round_1125_gap/EMBRYO_REF4_design.md` (sha256
+    30dcc98dd2cb92ebc31cfc0fc8c678d30dbbe9f22d59f91bf71e79e8c1155f68), by a score-blind designer answering
+    `TASK_ref4.md` (its sha256 in (e)). No headline of any round-3 file exists at this entry.
+  - **Its files and send rules, fixed as written.** Each is O's command (`build_test.py embryo --method fgw_shape0
+    --positions floor_exact --shape-interp overlay --shape-interp-test-ok`) with the options below and
+    `--captain-ruling R78`. The condition is read once, at the first moment all three named files have a headline and
+    at the latest 2026-11-26 10:30 UTC; a named file without a headline makes it false. At once:
+    `T2embryo_s2x_ovt1112.h5ad` (Ot1112: `--mix-lean later2_half`, t_mix 11/12) and `T2embryo_s2xs_ovt56.h5ad` (SOt56:
+    `--expression series --mix-lean later2`, t_mix 5/6). `T2embryo_s2x_ovt13.h5ad` (Ot13: `--mix-lean earlier`, t_mix
+    1/3): only if T2embryo_s2x_ovt512.h5ad's headline is strictly above both T2embryo_s2x_ov.h5ad's and
+    T2embryo_s2x_ovt712.h5ad's.
+  - **What may change them:** only a blind challenger's FIX text, recorded verbatim, or the captain's yes or no per
+    file; never a reading of any headline. Each needs the captain's named exception on the embryo's overlay form and
+    occupancy term (Ot13 also the lean-early line of 2026-11-06 (e) reopened); the main session puts them with no
+    recommendation.
