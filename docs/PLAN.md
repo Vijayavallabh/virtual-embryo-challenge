@@ -15321,3 +15321,11 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     **`T3_c2_s2_g15_s05.h5ad`** b77167fe9832.... All five due now, sent at once (row R79). Data used: released
     challenge data only (C2's inputs: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4
     validation knockout files); no outside data.
+- 2026-11-26 (p), the captain reports 2 headlines and the rules are applied by their letter (state at 03:17 UTC,
+  2026-11-26). Written by the AI assistant, which records the headlines only.
+  - **The paste:** T2:heart:test_extrap `T2heart_organ_ts20_tk_half.h5ad` 62.19 (shown as submitted 2026-11-26 03:11);
+    T2:heart:test_extrap `T2heart_organ_ts05_tk_half.h5ad` 61.44 (shown as submitted 2026-11-26 03:12). Each file's
+    sha256 on disk matches its sheet row. The paste's per-metric lines, ranks and file sizes are not recorded or used.
+  - **Each rule by its letter.** Row R77 sends OTK05 and OTK20 at once, with no condition: no rule on record reads
+    these headlines. Both are below the board's best (`T2heart_organ_ts125_tk_half.h5ad`, OTK125, 62.45).
+  - **Standing unchanged:** 205.62.

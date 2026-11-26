@@ -1,4 +1,4 @@
-# Upload sheet: every file that is built and waiting (state at 2026-11-26 03:16 UTC)
+# Upload sheet: every file that is built and waiting (state at 2026-11-26 03:17 UTC)
 
 For the captain. Every file is in `runs/manual_upload/`; each sha256 below was recomputed from the file on disk when
 its row was written. No file here has a score. The allowance, on the captain's words of 2026-11-24 (row R42): no limit
@@ -15,7 +15,7 @@ decision log 2026-11-24 (pp)), every due file can go now and nothing waits for r
 are listed below. Between boards the captain decides; by the challenge's formula a point on T1 or T3 counts twice a
 point on the heart or the embryo board.
 
-**Due now (20), in the order of each board's table below:**
+**Due now (18), in the order of each board's table below:**
 
 - T1: `T1_s2rcB2d15.h5ad`, `T1_s2rcB2d20.h5ad`, `T1_s2rcB25d15.h5ad`, `T1_s2rcB25d20.h5ad`, `T1_s2rcB25H20.h5ad`,
   `T1_s2rcB25MSH05.h5ad`, `T1_s2rcMSBm075.h5ad`, `T1_s2rcMSBm10d10.h5ad`, `T1_s2rcMSBm10H05.h5ad`,
@@ -23,7 +23,7 @@ point on the heart or the embryo board.
 - T3: `T3_c2_s2_g05.h5ad`, `T3_c2_s2_g2_s067.h5ad`, `T3_c2_s2_s035.h5ad`, `T3_c2_s2_g05_s05.h5ad`,
   `T3_c2_s2_gonly_s05.h5ad`, `T3_c2_s2_g2_s05.h5ad`, `T3_c2_s2_g15_s05.h5ad`
 - Embryo: none (every built embryo file is uploaded)
-- Heart: `T2heart_organ_ts05_tk_half.h5ad`, `T2heart_organ_ts20_tk_half.h5ad`
+- Heart: none (every built heart file is uploaded)
 
 **Waiting on a score (1):** `T1_s2rcA20.h5ad`, in the last-on-T1 list below. Row R60's `T1_s2rcMS20d15.h5ad` is not
 sent: its rule's condition did not hold (decision log 2026-11-25 (rr)). Row R74's `T2heart_organ_ts075_tk_half.h5ad` and
@@ -53,10 +53,10 @@ Eight files were uploaded and their scores reported on 2026-11-23, two per board
 2026-11-23 (cc) and (gg)), and twenty-one on 2026-11-24 (decision log 2026-11-24 (nn), (rr), (vv), (yy), (aaa), (bbb),
 (ddd) and (jjj)). Thirty-two more were uploaded and reported on 2026-11-25 (decision log 2026-11-25 (d), (e), (g),
 (h), (k), (m), (n), (ii), (jj), (kk), (mm), (oo), (rr), (ccc), (eee), (iii), (www), (yyy) and (aaaa)). On 2026-11-26,
-10 more were uploaded and reported (decision log 2026-11-26 (i), (j), (k), (l) and (m)). The boards' best headlines
-stand with `T1_s2rcMSBm10.h5ad` (MS's own damping 1.0 on MSB), `T3_c2_s2_g15.h5ad` (C2's command with the Gata4 weight
-1.5), `T2heart_organ_ts125_tk_half.h5ad` (OTK125) and `T2embryo_s2x_ovd.h5ad` (O's rows and positions with the depth
-expression).
+12 more were uploaded and reported (decision log 2026-11-26 (i), (j), (k), (l), (m) and (p)). The boards' best
+headlines stand with `T1_s2rcMSBm10.h5ad` (MS's own damping 1.0 on MSB), `T3_c2_s2_g15.h5ad` (C2's command with the
+Gata4 weight 1.5), `T2heart_organ_ts125_tk_half.h5ad` (OTK125) and `T2embryo_s2x_ovd.h5ad` (O's rows and positions
+with the depth expression).
 
 Four files are skipped by the captain's words of 2026-11-23 and 2026-11-24: they hold no place in any order below and
 stand in a section of their own at the end.
@@ -130,14 +130,12 @@ Data used, for every heart file: released Task 2 heart stages and the unlocked E
 
 `T2heart_organ_ts125_tk_half.h5ad` (OTK125, row R55) holds the board's best. Every heart file built before row R74
 is uploaded, OTS15, OTK125 and OTP125 included; the fourth line is spent. Row R74's OTK10 and OTK15 are uploaded;
-OTK075 and OTK175 are not sent: neither condition held (decision log 2026-11-26 (i)). The third round's heart files (rows R61 to R65) are not
+OTK075 and OTK175 are not sent: neither condition held (decision log 2026-11-26 (i)). Row R77's OTK05 and OTK20 are uploaded (decision log 2026-11-26 (p)). The third round's heart files (rows R61 to R65) are not
 built: no condition holds (decision log 2026-11-25 (ii)). The full-trim file `T2heart_core_ts10_half.h5ad` is skipped
 by the captain's word of 2026-11-24 and stands in the skipped section.
 
 | Order | File | sha256 | Condition |
 |---|---|---|---|
-| refinement round 4 (row R77) | `T2heart_organ_ts05_tk_half.h5ad` (OTK05: the category trend at strength 0.5) | `bbdf759272172653e7dd8108a2c00acae46bc0a5163d4d8bc34f9b6bc3a7cd33` | none (row R77: sent at once) |
-| refinement round 4 (row R77) | `T2heart_organ_ts20_tk_half.h5ad` (OTK20: the category trend at strength 2.0) | `57ab84767abded80995840715acd8b5d862694a269e62e78d28377f7b64d3e25` | none (row R77: sent at once) |
 
 ## Skipped by the captain's words: not uploaded unless the captain says otherwise
 
