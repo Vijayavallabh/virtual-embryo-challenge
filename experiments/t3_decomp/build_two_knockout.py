@@ -190,6 +190,40 @@ the real generator unchanged) and the number is recorded. The sidecar's combined
 (the ruling row, the file, the exponent or form, the spec replaced, the ratios read and applied with their sha256, the
 checks, the number of cells that stay unthinned) and its depth_step names it.
 
+--captain-ruling R76 on --form c2-s2 (row R76, the captain's order of 2026-11-26: T3's refinement round on C2's
+command, the T3 REF3 design as its cold challenge fixes it, the design's s11 struck; off by default: a command without
+--captain-ruling R76 goes on exactly as above, every byte of C2 and of each earlier row's file included, and nothing
+below is read or computed): five files on C2's command, each built from one of row R76's option strings, which one
+literal table holds (R76_TABLE: the file, its option string as the row pairs them, and whether the row says "the 5%
+check gates nothing for it" of it), each a point of the family ln phi(g, s) = s c_g (ln phi_M + g ln phi_G),
+c_g = SD(ln phi_M) / SD(ln phi_M + g ln phi_G), population SD over the genes of the two pinned tables as loaded,
+
+  T3_c2_s2_s085.h5ad      `--form c2-s2 --size-scale 0.85`                        g = 1 (C2's), s = 0.85   lifted
+  T3_c2_s2_s05.h5ad       `--form c2-s2 --size-scale 0.5`                         g = 1 (C2's), s = 0.5    lifted
+  T3_c2_s2_g15.h5ad       `--form c2-s2 --gata4-exponent 1.5`                     g = 1.5, s = 1
+  T3_c2_s2_g05.h5ad       `--form c2-s2 --gata4-exponent 0.5`                     g = 0.5, s = 1
+  T3_c2_s2_g2_s067.h5ad   `--form c2-s2 --gata4-exponent 2.0 --size-scale 0.67`   g = 2 (line 3's), s = 0.67   lifted
+
+The size-held part is line 3's c2_gata4_weighted at g, value for value (g = 1 gives C2's factor, combine('c2', 1.0), and
+g = 2 T3_c2_s2_g2's); then ln phi is multiplied by s (** s; none at s = 1); nothing rescaled or clipped after. Cells,
+streams, composition, seed, count and board stay C2's (the barred s2's). The R76 check runs first, before every other
+line's, and only with --captain-ruling R76. Refused (exit 2, nothing built): a command whose --gata4-exponent and
+--size-scale are not exactly one of the five strings (the options given and not given count: `--gata4-exponent 1.0
+--size-scale 0.85` is not the first string, and line 3's `--form c2-s2 --gata4-exponent 2.0` and F2's `--form c2-s2
+--size-scale 0.67` are not row R76's); any form but c2-s2; --composition-from or a --depth-* option beside it; for the
+three lifted strings, a --den-ruling other than R76, or none; for the two weight-only strings, any --den-ruling (the row
+lifts the 5% check for three strings only); a ledger without exactly one row R76 whose first cell passes
+build_outside_form.captain_order_names for the file's string and holds the table: each of the five strings as one whole
+backtick-delimited string followed by " (<file>)", as the row pairs them, and one part between semicolons that says
+"the 5% check gates nothing for it" and names `--den-ruling R76` and exactly the three lifted strings, each whole. Each
+of the five strings under --captain-ruling R22, or any ruling but R76, is refused as before (only 0.67 is a size scale
+there, and only 2.0 a weight on c2-s2). The two checks of the options on C2's command, before any cell is drawn and
+before anything is written (exit 6, nothing written): the range guard gates every file; the 5% den check gates the two
+weight-only files and is recorded, gating nothing, for the three lifted ones. The factor the build applies must be the
+very array the checks describe (exit 5, nothing written). The sidecar's combined_build then also holds `r76_line` (the
+ruling record, the file, g, s, c and the powers applied, both checks' figures, the lifting if any and the factor's
+sha256).
+
 The two target-free gates of row R36's file (they build and write nothing):
 
   g1 DECISIONS.json --wt WT --composition-from allowed-s1
@@ -1655,6 +1689,352 @@ def depth_step(params: dict, exponent, form, out: dict):
         bs.resolve_spec, bs.depth_ratios, bs.construct = orig_resolve, orig_ratios, orig_construct
 
 
+# ------------------------------------------ row R76: T3's refinement round on C2's command, five files (off by default)
+
+# Row R76 (the captain's order of 2026-11-26, ruling, no run: his named exception on T3's depth for each of the five
+# files; for T3_c2_s2_g15, T3_c2_s2_g05 and T3_c2_s2_g2_s067 his named exception for the Gata4 weight, as R41's for
+# T3_c2_s2_g2; for T3_c2_s2_s085, T3_c2_s2_s05 and T3_c2_s2_g2_s067 "the 5% check gates nothing for it"): T3's
+# refinement round on C2's command (the T3 REF3 design, as its cold challenge fixes it; the design's s11 struck). One
+# literal table: each file, its option string as row R76 pairs them, and whether the row lifts the 5% den check for it.
+# The builder takes exactly these five strings, each only with --captain-ruling R76, with --den-ruling R76 for the
+# three the row lifts and never for the two weight-only strings. The R76 check runs first and only with
+# --captain-ruling R76: every other command goes on exactly as before. Off by default; its own code below, beside the
+# other lines, which it leaves unchanged.
+R76_ROW = "R76"
+R76_FORM = "c2-s2"
+R76_TABLE = (
+    ("T3_c2_s2_s085", "--form c2-s2 --size-scale 0.85", True),
+    ("T3_c2_s2_s05", "--form c2-s2 --size-scale 0.5", True),
+    ("T3_c2_s2_g15", "--form c2-s2 --gata4-exponent 1.5", False),
+    ("T3_c2_s2_g05", "--form c2-s2 --gata4-exponent 0.5", False),
+    ("T3_c2_s2_g2_s067", "--form c2-s2 --gata4-exponent 2.0 --size-scale 0.67", True),
+)
+R76_FLAGS = (("--gata4-exponent", "g"), ("--size-scale", "s"))  # the options a string may give, in this order
+R76_DEN_OPTION = "--den-ruling R76"  # what the row's lifting part names, beside the lifted strings
+
+
+def _r76_tag(value: str) -> str:
+    """A value's part of a file name, as the record names T3's files: its point dropped, and a trailing .0 with it
+    (2.0 -> 2, 1.5 -> 15, 0.85 -> 085)."""
+    return value[:-2] if value.endswith(".0") else value.replace(".", "")
+
+
+def _r76_values(name: str, option: str) -> tuple:
+    """A row R76 option string's --gata4-exponent and --size-scale values, None for an option it does not give, read
+    off the string: `--form c2-s2`, then one or both of R76_FLAGS in that order, each with a decimal value; and the
+    file's name must be T3_c2_s2_ and the string's tags (g and s, each with its value's tag). ValueError otherwise."""
+    words = option.split()
+    flags = [flag for flag, _ in R76_FLAGS]
+    tail = words[2:]
+    given = tail[::2]
+    if (words[:2] != ["--form", R76_FORM] or not tail or len(tail) % 2 or any(f not in flags for f in given)
+            or [flags.index(f) for f in given] != sorted({flags.index(f) for f in given})
+            or not all(re.fullmatch(r"[0-9]+\.[0-9]+", v) for v in tail[1::2])):
+        raise ValueError(f"not a row {R76_ROW} option string: {option}")
+    values = dict(zip(given, tail[1::2], strict=True))
+    tags = [f"{tag}{_r76_tag(values[flag])}" for flag, tag in R76_FLAGS if flag in values]
+    if name != "T3_c2_s2_" + "_".join(tags):
+        raise ValueError(f"row {R76_ROW}'s file {name} does not match its option string {option}")
+    return tuple(float(values[flag]) if flag in values else None for flag, _ in R76_FLAGS)
+
+
+# file (without .h5ad, as row R76 names it) -> (its option string, the --gata4-exponent value or None, the
+# --size-scale value or None, whether the row lifts the 5% den check for it), read off the literal table
+R76_FILES = {name: (option, *_r76_values(name, option), lifted) for name, option, lifted in R76_TABLE}
+R76_LINE = ("T3's refinement round on C2's command (row R76): the family ln phi(g, s) = s c_g (ln phi_M + g ln phi_G), "
+            "c_g = SD(ln phi_M) / SD(ln phi_M + g ln phi_G), on the barred s2, at row R76's five points: "
+            "T3_c2_s2_s085 (g = 1, s = 0.85), T3_c2_s2_s05 (g = 1, s = 0.5), T3_c2_s2_g15 (g = 1.5), T3_c2_s2_g05 "
+            "(g = 0.5) and T3_c2_s2_g2_s067 (g = 2, s = 0.67); the size-held part line 3's c2_gata4_weighted at g")
+R76_LIST_ENTRY = ("experiments/harness/TRIES.md row R76 (the captain's order of 2026-11-26: his named exception on "
+                  "T3's depth for each of the five files; for T3_c2_s2_g15, T3_c2_s2_g05 and T3_c2_s2_g2_s067 his "
+                  "named exception for the Gata4 weight, as R41's; for T3_c2_s2_s085, T3_c2_s2_s05 and "
+                  "T3_c2_s2_g2_s067 the 5% check gates nothing; decision log 2026-11-26 (a)); the T3 REF3 design of "
+                  "2026-11-25 and its cold challenge (section 5, the builder plan)")
+R76_CLOSED_LEVER = ("T3's depth (closed after an exposure): the factor moves each label's expected library and the "
+                    "cells' totals against C2's; built only under the captain's named exception on T3's depth for "
+                    "this file (row R76)")
+R76_DEN_RULE = ("line 3's check: the den-weighted total of the file's factor lies within 5% of C2's factor's (den from "
+                "released WT E8.75 as build_outside_form.wt_den makes it, the two pinned tables only); it gates the "
+                "two weight-only files and is recorded, gating nothing, for the three files row R76 lifts it for "
+                "(--den-ruling R76); the shifts from phi_M's total are recorded and gate nothing")
+
+
+class R76GuardFailed(GonlyGuardFailed):
+    """Row R76's files: the range guard or the 5% den check (not lifted for the file) fails (exit status 6, nothing
+    written)."""
+
+
+def r76_name(gata4_exponent=None, size_scale=None) -> str:
+    """The file of row R76 whose option string a command gives exactly: its --gata4-exponent and --size-scale values,
+    None for an option not given, read as the options read every value (float(); never a bool), equal to one row of
+    R76_FILES, the options given and not given included; Refused otherwise (`--gata4-exponent 1.0 --size-scale 0.85`
+    is not `--size-scale 0.85`, and 0.850001 is not 0.85)."""
+    got, said = [], []
+    for flag, v in (("--gata4-exponent", gata4_exponent), ("--size-scale", size_scale)):
+        if v is None:
+            got.append(None)
+            continue
+        said.append(f"{flag} {v!r}")
+        try:
+            if isinstance(v, bool):
+                raise TypeError
+            got.append(float(v))
+        except (TypeError, ValueError, OverflowError):
+            raise Refused(f"{flag} {v!r} is refused under --captain-ruling {R76_ROW}: not one of row {R76_ROW}'s "
+                          "option strings") from None
+    names = [name for name, (_, g, s, _) in R76_FILES.items() if (g, s) == tuple(got)]
+    if len(names) != 1:
+        raise Refused(f"--form {R76_FORM} {' '.join(said) or '(no option)'} --captain-ruling {R76_ROW} is refused: not "
+                      f"one of row {R76_ROW}'s five option strings exactly ("
+                      + "; ".join(f"`{opt}`" for opt, *_ in R76_FILES.values()) + ")")
+    return names[0]
+
+
+def r76_lift_part(first: str | None) -> list[str] | None:
+    """The whole backtick-delimited strings of the one part of a first cell (its text between semicolons) that says
+    GONLY_LIFT_WORDS ("the 5% check gates nothing for it"); None when no part or more than one says it."""
+    if first is None:
+        return None
+    parts = [part for part in first.split(";") if GONLY_LIFT_WORDS in part]
+    return re.findall(r"`([^`]*)`", parts[0]) if len(parts) == 1 else None
+
+
+def r76_row_holds_the_table(first: str | None) -> bool:
+    """Whether row R76's first cell holds the literal table: each file's option string as one whole backtick-delimited
+    string, followed there by " (<file>)" as the row pairs them, and one lifting part (r76_lift_part) naming
+    `--den-ruling R76` and exactly the strings the table lifts, as whole strings (a part naming another string, or
+    missing one, fails: check_den_lift's reading, the words anywhere in the cell, would lift every string)."""
+    if first is None:
+        return False
+    for name, (opt, *_) in R76_FILES.items():
+        if not (names_whole(first, opt) and f"`{opt}` ({name})" in first):
+            return False
+    part = r76_lift_part(first)
+    lifted = {opt for opt, _, _, lift in R76_FILES.values() if lift}
+    return part is not None and R76_DEN_OPTION in part and set(part) - {R76_DEN_OPTION} == lifted
+
+
+def check_r76(form, gata4_exponent=None, size_scale=None, captain_ruling=None, tries: Path | None = None,
+              composition_from=None, den_ruling=None, depth_from=None, depth_exponent=None, depth_form=None
+              ) -> dict | None:
+    """--captain-ruling R76 (row R76's five files): None unless the ruling is R76 (nothing is read; every other command
+    goes on to the other lines' checks as before); else the file's record, or Refused: --composition-from or a
+    --depth-* option beside it; any form but c2-s2; options that are not exactly one of the five strings (r76_name);
+    for a string the table lifts, a --den-ruling other than R76, or none; for a weight-only string, any --den-ruling; a
+    ledger whose row R76 does not pass build_outside_form.captain_order_names for the file's string or does not hold
+    the table (r76_row_holds_the_table)."""
+    if captain_ruling != R76_ROW:
+        return None
+    for flag, value in (("--composition-from", composition_from), ("--depth-from", depth_from),
+                        ("--depth-exponent", depth_exponent), ("--depth-form", depth_form)):
+        if value is not None:
+            raise Refused(f"--captain-ruling {R76_ROW} takes no {flag} (each of its files is C2's command with its own "
+                          "option string)")
+    if form != R76_FORM:
+        raise Refused(f"--captain-ruling {R76_ROW} is taken on --form {R76_FORM} only, not {form!r}")
+    name = r76_name(gata4_exponent, size_scale)
+    opt, g, s, lifted = R76_FILES[name]
+    if lifted and den_ruling != R76_ROW:
+        raise Refused(f"`{opt}` --captain-ruling {R76_ROW} is taken only with --den-ruling {R76_ROW} (row {R76_ROW}: "
+                      f"the 5% check gates nothing for it), not with {den_ruling!r}")
+    if not lifted and den_ruling is not None:
+        raise Refused(f"--den-ruling {den_ruling!r} is refused for `{opt}`: row {R76_ROW} lifts the 5% check for three "
+                      "strings only, not this one, so the check gates this file")
+    p = TRIES_FILE if tries is None else Path(tries)
+    first = ledger_first_cell(R76_ROW, p)
+    if not (_outside_form().captain_order_names(R76_ROW, f"`{opt}`", p) and r76_row_holds_the_table(first)):
+        raise Refused(f"`{opt}` --captain-ruling {R76_ROW} is refused: experiments/harness/TRIES.md has no single row "
+                      f"{R76_ROW} whose first cell is the captain's order (\"ruling, no run\") naming "
+                      f"`--captain-ruling {R76_ROW}` and each of the table's five option strings as one whole string "
+                      f"followed by its file's name, with one part saying \"{GONLY_LIFT_WORDS}\" that names "
+                      f"`{R76_DEN_OPTION}` and exactly the three strings the table lifts")
+    sha = bs.sha256(p)
+    lift = None if not lifted else {"row": R76_ROW, "option": f"`{opt}`", "words": GONLY_LIFT_WORDS,
+                                    "ledger": "experiments/harness/TRIES.md", "ledger_sha256": sha}
+    return {"row": R76_ROW, "name": name, "file": f"{name}.h5ad", "option": f"`{opt}`",
+            "g": 1.0 if g is None else g, "s": 1.0 if s is None else s, "den_ruling": lift,
+            "ledger": "experiments/harness/TRIES.md", "ledger_sha256": sha}
+
+
+def r76_factor(phi_m, phi_g, g: float, s: float = 1.0) -> tuple[np.ndarray, dict]:
+    """Row R76's factor at (g, s), from the two tables as loaded, gene by gene: line 3's size-held product
+    c2_gata4_weighted(phi_M, phi_G, g), value for value (g = 1 gives combine('c2', 1.0)'s array and g = 2
+    T3_c2_s2_g2's), then, unless s is 1, ln phi multiplied by s (** s); nothing rescaled or clipped after. Returns
+    (phi, record); g must be finite (line 3's function refuses any other) and s finite and positive."""
+    s = float(s)
+    if not (np.isfinite(s) and s > 0):
+        raise Refused(f"the size scale {s!r} is not finite and positive")
+    held, hrec = c2_gata4_weighted(phi_m, phi_g, g)
+    phi = held if s == 1.0 else held ** s
+    if not np.all(np.isfinite(phi) & (phi > 0)):
+        raise Refused("the combined factor is not finite and positive")
+    rec = {"kind": "c2", "x": 1.0, "g": hrec["g"], "size_scale": s, "gata4_weight": s * hrec["gata4_weight"],
+           "mab21l2_exponent": s * hrec["mab21l2_exponent"], "c": hrec["c"],
+           "c_rule": "line 3's c = SD(ln phi_M) / SD(ln phi_M + g ln phi_G), population SD over the genes "
+                     "(c2_gata4_weighted at g, value for value); then ln phi multiplied by the size scale s (** s, "
+                     "none at s = 1); the powers applied are s c (transfer_mab21l2_all) and s g c (gata4_pooled)",
+           "sd_ln_phi_m": hrec["sd_ln_phi_m"], "sd_ln_phi_g": hrec["sd_ln_phi_g"], "sd_ln_size_held": _sd(np.log(held)),
+           "base_factor": hrec["base_factor"], "size_held_factor": hrec["factor"], "factor": _shift(phi),
+           "den_weighted_mean": "recorded in combined_build.r76_line.guards",
+           "min": float(phi.min()), "max": float(phi.max()), "n_up": int((phi > 1).sum()),
+           "n_down": int((phi < 1).sum())}
+    return phi, rec
+
+
+def r76_guards(phi_m, phi_g, g: float, s: float, den, lift: dict | None = None) -> dict:
+    """The two checks of the options on C2's command (gonly_guards' checks and figures) for row R76's factor
+    (r76_factor), a pure function of the two tables and den; no cell is drawn. Range: the file's max at most
+    GONLY_RANGE_FACTOR times C2's max and its min at least C2's min over GONLY_RANGE_FACTOR. Den, line 3's check: the
+    file's den-weighted total (den . phi / sum den) within C2G_MAX_DEN_SHIFT of C2's; it gates unless `lift` (row R76's
+    lifting of the file, check_r76's record) is given, when it is recorded and gates nothing. The shifts from phi_M's
+    total are recorded and gate nothing. Also the sha256 of the factor described."""
+    phi, rec = r76_factor(phi_m, phi_g, g, s)
+    c2, _ = combine("c2", 1.0, phi_m, phi_g)
+    phi_m = np.asarray(phi_m, dtype=np.float64)
+    den = np.asarray(den, dtype=np.float64)
+    if den.shape != phi_m.shape or not np.all(np.isfinite(den) & (den >= 0)) or not den.sum() > 0:
+        raise Refused("den does not cover the tables' genes with finite, non-negative weights and a positive sum")
+    lo, hi = float(c2.min()) / GONLY_RANGE_FACTOR, float(c2.max()) * GONLY_RANGE_FACTOR
+    fmin, fmax = float(phi.min()), float(phi.max())
+    range_ok = bool(fmin >= lo and fmax <= hi)
+    tot = float(den.sum())
+    t_m, t_c2, t_f = (float(den @ f / tot) for f in (phi_m, c2, phi))
+    shift = t_f / t_c2 - 1.0
+    within = bool(abs(shift) <= C2G_MAX_DEN_SHIFT)
+    den_ok = bool(within or lift is not None)
+    status = "gates" if lift is None else f"lifted by row {lift['row']}: {GONLY_LIFT_WORDS}"
+    return {"g": rec["g"], "size_scale": rec["size_scale"], "c": rec["c"],
+            "powers_applied": {TABLE_M: rec["mab21l2_exponent"], TABLE_G: rec["gata4_weight"]},
+            "range": {"factor_min": fmin, "factor_max": fmax, "c2_min": float(c2.min()), "c2_max": float(c2.max()),
+                      "bound_min": lo, "bound_max": hi, "factor": GONLY_RANGE_FACTOR, "passed": range_ok,
+                      "rule": GONLY_RANGE_RULE},
+            "den_check": {"den_total_phi_m": t_m, "den_total_c2": t_c2, "den_total_factor": t_f,
+                          "den_shift_vs_c2": shift, "max_den_shift": C2G_MAX_DEN_SHIFT, "within": within,
+                          "limit": {"max_abs_den_shift": C2G_MAX_DEN_SHIFT, "status": status}, "lifted_by": lift,
+                          "passed": den_ok, "den_shift_c2_vs_phi_m": t_c2 / t_m - 1.0,
+                          "den_shift_factor_vs_phi_m": t_f / t_m - 1.0, "vs_phi_m": "recorded; gates nothing",
+                          "rule": R76_DEN_RULE},
+            "passed": bool(range_ok and den_ok), "factor_sha256": factor_sha256(phi)}
+
+
+def run_r76_guards(dec: dict, wt: Path, run_dir: Path | None, g: float, s: float, lift: dict | None = None) -> dict:
+    """The checks from released WT E8.75's den and the two pinned tables only, before any build: den and genes by
+    build_outside_form.wt_den, both tables through the frozen loader in that gene order (checked against TABLE_SHA256).
+    Returns the record whatever it says; the caller refuses on it."""
+    genes, den = _outside_form().wt_den(Path(wt))
+    phi_m, rec_m = bs.load_factor(run_dir, TABLE_M, genes, dec)
+    phi_g, rec_g = bs.load_factor(run_dir, TABLE_G, genes, dec)
+    for nm, rec in ((TABLE_M, rec_m), (TABLE_G, rec_g)):
+        if rec["sha256"] != TABLE_SHA256[nm]:
+            raise Refused(f"{rec['file']}: sha256 {rec['sha256'][:16]} differs from the pinned table "
+                          f"({TABLE_SHA256[nm][:16]}): not built")
+    den = np.asarray(den, dtype=np.float64)
+    out = r76_guards(phi_m, phi_g, g, s, den, lift)
+    out |= {"wt": str(wt), "wt_sha256": bs.sha256(Path(wt)), "den_rule": G2_DEN_RULE, "den": den.tolist(),
+            "den_sha256": factor_sha256(den), "n_genes": len(genes),
+            "genes_sha256": hashlib.sha256("\n".join(genes).encode()).hexdigest(),
+            "tables_sha256": {TABLE_M: rec_m["sha256"], TABLE_G: rec_g["sha256"]}, "genes": list(genes)}
+    return out
+
+
+@contextmanager
+def r76_loader(g: float, s: float, out: dict, guards: dict):
+    """bs.load_factor, for this process only, on row R76's line: the frozen loader for phi_M and phi_G (checked against
+    TABLE_SHA256 too), then r76_factor at (g, s), the hook C2's factor goes through. FactorMismatch (exit 5) unless the
+    build's genes are the guards' and the factor's sha256 is the one the guards describe."""
+    original = bs.load_factor
+
+    def load(run_dir, name, genes, dec):
+        if name != TABLE_M:
+            raise Refused(f"the barred spec asked for the factor {name!r}, not {TABLE_M!r}: not built")
+        if list(genes) != guards["genes"]:
+            raise FactorMismatch("the build's genes are not those the guards were computed over: not built")
+        phi_m, rec_m = original(run_dir, TABLE_M, genes, dec)
+        phi_g, rec_g = original(run_dir, TABLE_G, genes, dec)
+        for nm, rec in ((TABLE_M, rec_m), (TABLE_G, rec_g)):
+            if rec["sha256"] != TABLE_SHA256[nm]:
+                raise Refused(f"{rec['file']}: sha256 {rec['sha256'][:16]} differs from the pinned table "
+                              f"({TABLE_SHA256[nm][:16]}): not built")
+        phi, crec = r76_factor(phi_m, phi_g, g, s)
+        sha = factor_sha256(phi)
+        if sha != guards["factor_sha256"]:
+            raise FactorMismatch(f"the factor the build would apply ({sha[:16]}) is not the one the guards describe "
+                                 f"({guards['factor_sha256'][:16]}): not built")
+        out.update(tables={TABLE_M: rec_m, TABLE_G: rec_g}, combination=crec, factor_sha256=sha,
+                   n_loads=out.get("n_loads", 0) + 1)
+        return phi, rec_m
+
+    bs.load_factor = load
+    try:
+        yield
+    finally:
+        bs.load_factor = original
+
+
+def build_r76(decision: Path, base: str, wt: Path, board, n_cells: int, out: Path, r76: dict,
+              run_dir: Path | None = None, seed: int = 1_000_001, overwrite: bool = False, threads: int = 16) -> dict:
+    """Row R76's file (check_r76's record) on C2's command through bs.build_submission: the frozen and clean checks
+    and the frozen builder's own, then the two checks before any cell is drawn (R76GuardFailed, exit 6, nothing
+    written), then the build with r76_loader; returns the sidecar (written next to the file, the frozen builder's
+    plus `combined_build` with its `r76_line`)."""
+    kind = "c2"
+    slot, x, base_sha = BASES[base]
+    frozen = check_frozen()
+    tree = check_clean()
+    rules = bs.load_rules()
+    dec = bs.load_decision(Path(decision), rules)
+    bs.check_hashes(dec, allow_mismatch=False)  # the frozen builder's own check
+    spec = bs.barred_table(dec, rules)[slot]
+    if spec["factor"] != FROZEN_FACTOR:
+        raise Refused(f"the frozen barred {slot} factor is {spec['factor']}, not {FROZEN_FACTOR}: not built")
+    out_p = Path(out)
+    if not overwrite and (out_p.exists() or out_p.with_suffix(".json").exists()):
+        raise Refused(f"{out_p} or its sidecar exists; pass --overwrite")
+    g, s = r76["g"], r76["s"]
+    guards = run_r76_guards(dec, Path(wt), run_dir, g, s, r76["den_ruling"])
+    if not guards["passed"]:
+        raise R76GuardFailed(gonly_failure(guards))
+    got: dict = {}
+    with r76_loader(g, s, got, guards):
+        side = bs.build_submission(Path(decision), BRANCH, slot, Path(wt), board, n_cells, Path(out),
+                                   run_dir=run_dir, seed=seed, overwrite=overwrite, threads=threads)
+    if got.get("factor_sha256") != guards["factor_sha256"]:
+        raise RuntimeError("the factor applied is not the one the guards describe")
+    if got.get("n_loads") != 1 or side["construction"]["factor_exponent"] != 1.0 or \
+            side["spec"]["factor"] != FROZEN_FACTOR:
+        raise RuntimeError("the build did not apply the combined factor once at w = 1")
+    if (set(side["spec"]) != {"factor", "composition"} or side["construction"]["depth_ratios"] is not None
+            or side["construction"]["stage_alphas"] is not None):
+        raise RuntimeError("the build took more than C2's command with its factor")
+    side["inputs"]["factor_note"] = FACTOR_NOTE
+    side["combined_build"] = {
+        "script": SCRIPT, "script_sha256": bs.sha256(SCRIPT_PATH), "form": f"{kind}-{base}",
+        "base": {"name": base, "slot": slot, "x": x, "reference_sha256": base_sha,
+                 "rng_streams": side["inputs"]["rng_streams"]},
+        "tables": {k: {"file": v["file"], "sha256": v["sha256"], "recorded_in": v["recorded_in"],
+                       "pinned_sha256": TABLE_SHA256[k]} for k, v in got["tables"].items()},
+        "combination": got["combination"], "where": WHERE, "list_entry": LIST_ENTRY,
+        "frozen_files_sha256": frozen, "tree_at_start": tree, "identity": None, "depth_step": None,
+    }
+    crec = got["combination"]
+    side["combined_build"]["r76_line"] = {
+        "captain_ruling": r76, "line": R76_LINE, "file": r76["file"], "option": r76["option"], "g": crec["g"],
+        "size_scale": crec["size_scale"], "c": crec["c"],
+        "powers_applied": {TABLE_M: crec["mab21l2_exponent"], TABLE_G: crec["gata4_weight"]},
+        "option_value": "on --form c2-s2 the value of --gata4-exponent is the gata4_pooled weight g, not a power "
+                        "(g = 1, C2's, when absent); --size-scale s multiplies ln phi after the size-held combination "
+                        "(s = 1 when absent)",
+        "factor_rule": "ln phi = s c_g (ln phi_M + g ln phi_G), c_g = SD(ln phi_M) / SD(ln phi_M + g ln phi_G), "
+                       "population SD over the genes (line 3's c2_gata4_weighted at g, then ** s); nothing rescaled or "
+                       "clipped after",
+        "closed_lever": R76_CLOSED_LEVER, "guards": {k: v for k, v in guards.items() if k != "genes"},
+        "den_ruling": r76["den_ruling"], "factor_sha256_applied": got["factor_sha256"],
+        "c2_reference_sha256": C2_S2_SHA256, "list_entry": R76_LIST_ENTRY,
+    }
+    bs.dump_json(side, Path(out).with_suffix(".json"))
+    return side
+
+
 def build_form(decision: Path, form, wt: Path, board, n_cells: int, out: Path, run_dir: Path | None = None,
                seed: int = 1_000_001, overwrite: bool = False, threads: int = 16, gata4_exponent=None,
                captain_ruling=None, tries: Path | None = None, composition_from=None, size_scale=None,
@@ -1670,8 +2050,15 @@ def build_form(decision: Path, form, wt: Path, board, n_cells: int, out: Path, r
     check, under the ruling row of TRIES.md; den_ruling (default None) names the row that lifts the 5% check for the
     file. On c2-s2, depth_from 'allowed-s1' (default None) with captain_ruling ROW builds the depth line's dd, with
     depth_exponent 0.5 ddh and with depth_form 'global' dg (each default None), under the ruling row ROW of TRIES.md.
+    captain_ruling 'R76' (checked first, before every other line) builds row R76's file whose option string
+    gata4_exponent and size_scale give exactly, den_ruling 'R76' for the three strings the row lifts the 5% check for.
     A command with none of these goes on exactly as before."""
     kind, base = parse_form(form)
+    r76 = check_r76(f"{kind}-{base}", gata4_exponent, size_scale, captain_ruling, tries, composition_from, den_ruling,
+                    depth_from, depth_exponent, depth_form)
+    if r76 is not None:  # row R76's file, on its own path; without --captain-ruling R76 nothing of it is read
+        return build_r76(decision, base, wt, board, n_cells, out, r76, run_dir=run_dir, seed=seed,
+                         overwrite=overwrite, threads=threads)
     depth = check_depth_line(f"{kind}-{base}", depth_from, depth_exponent, depth_form, captain_ruling, tries,
                              composition_from, gata4_exponent, size_scale, den_ruling)
     gonly = None if depth is not None else check_c2_gonly(f"{kind}-{base}", gata4_exponent, size_scale,
@@ -1871,19 +2258,25 @@ def build(
                                          "weight, not a power); each while row R22 of TRIES.md is the captain's order "
                                          "naming it. On --form c2-s2 also inf (F1; with --size-scale 0.67, F3): "
                                          "phi_G alone at C2's held size, while row R22 names the file's whole option "
-                                         "string"),
+                                         "string. Under --captain-ruling R76 only row R76's: 1.5, 0.5, and 2.0 with "
+                                         "--size-scale 0.67"),
     captain_ruling: str = typer.Option(None, help="R22, with --gata4-exponent 2.0 --form c1-s2 or c2-s2; or R36, "
                                        "with --composition-from allowed-s1 --form c2-s2; or R53, with --depth-from "
-                                       "allowed-s1 --form c2-s2; nothing else"),
+                                       "allowed-s1 --form c2-s2; or R76, with one of row R76's five option strings "
+                                       "(checked first); nothing else"),
     composition_from: str = typer.Option(None, help="allowed-s1 only, with --form c2-s2 --captain-ruling R36: row "
                                          "R36's file cD7 (C2 with the decision file's submissions.allowed.s1."
                                          "composition), while row R36 of TRIES.md is the captain's ruling naming it"),
     size_scale: float = typer.Option(None, help="0.67 only, with --form c2-s2 --captain-ruling R22, alone (F2, C2's "
                                      "ln factor times 0.67) or with --gata4-exponent inf (F3), while row R22 of "
-                                     "TRIES.md is the captain's order naming the file's whole option string"),
+                                     "TRIES.md is the captain's order naming the file's whole option string. Under "
+                                     "--captain-ruling R76 only row R76's: 0.85 and 0.5 alone, 0.67 with "
+                                     "--gata4-exponent 2.0"),
     den_ruling: str = typer.Option(None, help="a ruling row's id (R and digits), with the options of F1, F2 or F3 "
                                    "only: the 5% den check gates nothing for the file while that row of TRIES.md names "
-                                   "the file's whole option string and says \"the 5% check gates nothing for it\""),
+                                   "the file's whole option string and says \"the 5% check gates nothing for it\". "
+                                   "Under --captain-ruling R76, R76 only, with the three strings that row lifts the "
+                                   "check for (and never with the two weight-only strings)"),
     depth_from: str = typer.Option(None, help="allowed-s1 only, with --form c2-s2 --captain-ruling R53: the depth "
                                    "line, C2 with the frozen allowed branch's per-label depth step (T3_c2_s2_dd.h5ad), "
                                    "while row R53 of TRIES.md is the captain's order naming the file's whole option "
@@ -1899,7 +2292,17 @@ def build(
         if seed != LIST_SEED or n_cells != LIST_N_CELLS:
             raise Refused(LIST_INPUTS_REFUSAL)
         parse_form(form)
-        if is_depth_command(depth_from, depth_exponent, depth_form):
+        if captain_ruling == R76_ROW:  # row R76's check first, and only with --captain-ruling R76
+            check_r76(form, gata4_exponent, size_scale, captain_ruling, composition_from=composition_from,
+                      den_ruling=den_ruling, depth_from=depth_from, depth_exponent=depth_exponent,
+                      depth_form=depth_form)
+            b = bs.board_spec(board, boards_dir)
+            s = build_form(decision, form, wt, b, bs.resolve_n_cells(n_cells, b), out, run_dir=run_dir, seed=seed,
+                           overwrite=overwrite, threads=threads, gata4_exponent=gata4_exponent,
+                           captain_ruling=captain_ruling, composition_from=composition_from, size_scale=size_scale,
+                           den_ruling=den_ruling, depth_from=depth_from, depth_exponent=depth_exponent,
+                           depth_form=depth_form)
+        elif is_depth_command(depth_from, depth_exponent, depth_form):
             check_depth_line(form, depth_from, depth_exponent, depth_form, captain_ruling,
                              composition_from=composition_from, gata4_exponent=gata4_exponent, size_scale=size_scale,
                              den_ruling=den_ruling)
@@ -1974,6 +2377,12 @@ def build(
                f"the frozen per-label ratios to the power {dl['exponent']:g}")
         bs.say(f"the depth line (row {dl['captain_ruling']['row']}): {dl['file']}, {how}; the depth step received "
                "C2's counts row by row")
+    if cb.get("r76_line"):
+        rl = cb["r76_line"]
+        lift = rl["den_ruling"]
+        den = "passed" if lift is None else f"gates nothing for it (row {lift['row']})"
+        bs.say(f"row {R76_ROW}'s refinement round on C2's command: {rl['file']} (g = {rl['g']:g}, s = "
+               f"{rl['size_scale']:g}); the range guard passed; the 5% den check {den}")
     for w in s["warnings"]:
         bs.say(f"  warning: {w}", "yellow")
     for e in chk["errors"]:
