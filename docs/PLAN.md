@@ -15180,3 +15180,20 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     c58fe13bbca4...; **`T2embryo_s2x_ovt512.h5ad`** 598db8bb7cd1...; **`T2embryo_s2xs_ovt23.h5ad`** baaeff58340a...;
     **`T2embryo_s2x_ovd.h5ad`** 96a13734d618.... All five due now, sent at once (row R75). Data used: released
     challenge data only; no outside data.
+- 2026-11-26 (e), round 4's T3 design is written blind before any round-3 headline, and its send rules are fixed here
+  (state at 01:20 UTC). Written by the AI assistant, which designed none of it and gives no lean on T3's depth.
+  - **The design.** `lift8/round_1125_gap/T3_REF4_design.md` (sha256
+    5c1a9292af75a12d6cad1b461339622d64eace23d6942d5199f5252bb837ef81), by a score-blind designer answering
+    `TASK_ref4.md` (sha256 17471eeae82763ab9d0be6b90585884af8c4d10b52686fdd4f307ffb3406e75c). No headline of any
+    round-3 file exists at this entry.
+  - **Its files and send rules, fixed as written.** Each condition is read once, at the first moment every file it
+    names has a headline and at the latest 2026-11-26 10:30 UTC; a named file without a headline makes it false.
+    `T3_c2_s2_s035.h5ad` (`--form c2-s2 --size-scale 0.35`): only if H(T3_c2_s2_s05) > H(C2) and H(T3_c2_s2_s05) >
+    H(T3_c2_s2_s085). `T3_c2_s2_g05_s05.h5ad` (`--form c2-s2 --gata4-exponent 0.5 --size-scale 0.5`): at once.
+    `T3_c2_s2_gonly_s05.h5ad` (`--form c2-s2 --gata4-exponent inf --size-scale 0.5`): at once. `T3_c2_s2_g2_s05.h5ad`
+    (`--form c2-s2 --gata4-exponent 2.0 --size-scale 0.5`): only if H(T3_c2_s2_g2_s067) > H(C2) and H(T3_c2_s2_s05) >
+    H(T3_c2_s2_s085). `T3_c2_s2_g15_s05.h5ad` (`--form c2-s2 --gata4-exponent 1.5 --size-scale 0.5`): only if
+    H(T3_c2_s2_g15) > H(C2) and H(T3_c2_s2_s05) > H(C2).
+  - **What may change them:** only a blind challenger's FIX text, recorded verbatim, or the captain's yes or no per
+    file; never a reading of any headline. Every file moves T3's depth: the pre-set rule's outcome is decline, and
+    each needs the captain's named exception (row R79, placed after the challenge and the captain's words).
