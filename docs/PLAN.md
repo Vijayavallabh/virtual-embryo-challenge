@@ -15329,3 +15329,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Each rule by its letter.** Row R77 sends OTK05 and OTK20 at once, with no condition: no rule on record reads
     these headlines. Both are below the board's best (`T2heart_organ_ts125_tk_half.h5ad`, OTK125, 62.45).
   - **Standing unchanged:** 205.62.
+- 2026-11-26 (q), the embryo's round-4 files (row R78) are built, before any score (state at 2026-11-26 03:21 UTC).
+  Written by the AI assistant, recused on the embryo's occupancy term and shape forms; it designed none of it.
+  - **The builds.** `experiments/builds/embryo_r78_line.sh 6adddba...` once per file on the DGX, clean, after an
+    independent review and a gate dry-run; O's identity rebuild, R75's Ot56 and Ot512 and the half checks gave their
+    known bytes; each file built twice with one sha256: **`T2embryo_s2x_ovt1112.h5ad`** cd5e8faf19dd...;
+    **`T2embryo_s2x_ovt13.h5ad`** c29f42da28b1.... Both due now, sent at once (row R78). Data used: released challenge
+    data only; no outside data.

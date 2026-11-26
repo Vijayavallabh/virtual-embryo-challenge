@@ -3684,3 +3684,15 @@ b77167fe983259dc5f90fbbc204e55d5fd0f85ce35fbcd0af77dd61e922c731e (build records
 `experiments/builds/results/t3r79_7913427_<run>.txt`). All five are sent at once, under the captain's named exceptions
 of row R79. Added before any score of any. Data used: released challenge data only (C2's inputs: the wild-type E8.75
 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files); no outside data.
+
+## Note of 2026-11-26: row R78's embryo files are built (decision log 2026-11-26 (q))
+
+At the clean commit 6adddba, on the DGX, O's identity rebuild, row R75's Ot56 and Ot512 rebuilds and each file's half
+check gave their known bytes, and each file was built twice with one sha256 and passed the format check. **The
+files:** `runs/manual_upload/T2embryo_s2x_ovt1112.h5ad` (O with the mix lean at 11/12), sha256
+cd5e8faf19dd2baad607f59f9d3d2ce5012e3e43956fefe2a6067bc3d1442017; `runs/manual_upload/T2embryo_s2x_ovt13.h5ad` (O with
+the mix lean at 1/3, toward the earlier stage), sha256
+c29f42da28b145a01ce41c9629310d0cc04b84a97b7335431d99986f49c51716 (build records
+`experiments/builds/results/embryor78_6adddba_<run>.txt`). Both are sent at once with no gate, under the captain's
+named exceptions of row R78. Added before any score of either. Data used: released challenge data only; no outside
+data.
