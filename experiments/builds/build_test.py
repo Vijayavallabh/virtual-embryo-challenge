@@ -735,6 +735,57 @@ EMBRYO_R75_WHAT = {
     "T2embryo_s2x_ovd.h5ad": "the embryo's depth line reopened for this file alone, beside O and never in its place",
 }
 EMBRYO_R75_RULES = {name: _r75_rule(expression, t_mix) for name, (_, expression, _, t_mix) in EMBRYO_R75_FILES.items()}
+# Row R78 (the captain's order of 2026-11-26, "ruling, no run"; decision log 2026-11-26 (h)): the embryo's fourth
+# refinement round on O (EMBRYO_REF4_design.md with EMBRYO_REF4_challenge.md's fixes), both files sent at once with no
+# gate. Row R75's route with this one literal table, in the row's order: O's command with exactly one option string
+# more, each only with --captain-ruling R78. later_11_12 leans the draw to t_mix 11/12 (both brackets' tissue kept:
+# int(round(n / 12)) rows real E7.5 cells); earlier, the lean-early line declined on 2026-11-06 (e) and reopened for
+# its file alone, to 1/3. Depth moves only through the shares; the E8.0 twin (t_mix 1) stays declined and has no lean;
+# the design's second file (series at 5/6) is struck as a re-draw in substance and is not built.
+EMBRYO_R78_ROW = "R78"
+EMBRYO_R78_TABLE = (
+    ("T2embryo_s2x_ovt1112.h5ad", "--mix-lean later_11_12"),
+    ("T2embryo_s2x_ovt13.h5ad", "--mix-lean earlier"),
+)
+EMBRYO_R78_LEANS = {"later_11_12": Fraction(11, 12), "earlier": Fraction(1, 3)}  # t_mix as exact fractions
+# both leans are new, neither row R59's nor row R75's: the parser takes them, and row R78's check refuses them under
+# every ruling but R78 before anything is read
+EMBRYO_R78_NEW_LEANS = tuple(lean for lean in EMBRYO_R78_LEANS
+                             if lean not in MIX_LEANS and lean not in EMBRYO_R75_LEANS)
+
+
+def _r78_values(name: str, option: str) -> tuple:
+    """Row R78's pair (file name, option string) read by the row's form: the option string exactly `--mix-lean <lean>`
+    with one of EMBRYO_R78_LEANS (single spaces, nothing before, after or between), the name O's with that lean's exact
+    t_mix as its mark, T2embryo_s2x_ovt<numerator><denominator>.h5ad (row R75's naming rule). Returns the expression
+    (O's mixture), the lean and the exact t_mix; raises ValueError for anything else."""
+    words = option.split()
+    if len(words) != 2 or words[0] != "--mix-lean" or words[1] not in EMBRYO_R78_LEANS or option != " ".join(words):
+        raise ValueError(f"not a row {EMBRYO_R78_ROW} option string: {option}")
+    t_mix = EMBRYO_R78_LEANS[words[1]]
+    if name != f"T2embryo_s2x_ovt{t_mix.numerator}{t_mix.denominator}.h5ad":
+        raise ValueError(f"row {EMBRYO_R78_ROW}'s file {name} does not match its option string {option}")
+    return "mixture", words[1], t_mix
+
+
+EMBRYO_R78_FILES = {name: (option, *_r78_values(name, option)) for name, option in EMBRYO_R78_TABLE}
+EMBRYO_R78_COMMAND = EMBRYO_O_COMMAND + " {option} --captain-ruling " + EMBRYO_R78_ROW
+EMBRYO_R78_WORDS = {  # the captain's words for each file, as row R78's first cell records them
+    "T2embryo_s2x_ovt1112.h5ad": ("Yes to T2embryo_s2x_ovt1112.h5ad under R22, sent at once in one ruling row, with "
+                                  "no gate"),
+    "T2embryo_s2x_ovt13.h5ad": "Yes to T2embryo_s2x_ovt13.h5ad under R22 in the same row, sent at once, with no gate",
+}
+EMBRYO_R78_WHAT = {
+    "T2embryo_s2x_ovt1112.h5ad": EMBRYO_R75_OVERLAY,
+    "T2embryo_s2x_ovt13.h5ad": (EMBRYO_R75_OVERLAY + ", and the lean-early mixing line declined on 2026-11-06 (e) "
+                                "reopened for this file alone"),
+}
+EMBRYO_R78_ORDER = ("experiments/harness/TRIES.md row R78, the captain's order of 2026-11-26 (\"{words}\"; \"ruling, "
+                    "no run\"; decision log 2026-11-26 (h), the embryo's fourth refinement round on O) naming "
+                    "`{option}` ({file}) and `--captain-ruling R78`: file {file}, O's command with that one option "
+                    "string, taken only with --captain-ruling R78; {what}; both brackets' tissue kept, depth moved "
+                    "only through the shares, the E8.0 twin (t_mix 1) still declined")
+EMBRYO_R78_RULES = {name: _r75_rule(expression, t_mix) for name, (_, expression, _, t_mix) in EMBRYO_R78_FILES.items()}
 # --neighbourhood run_sorted (row E57 of experiments/harness/TRIES.md, "RS: one run per side": the score-blind ERROR
 # designer's proposal P1 of the embryo design round of 2026-11-24/25 as its cold challenger fixed it; off by default):
 # O's command with one last step on the final coordinates, after the cloud guard (the place --row-order takes), that
@@ -4505,6 +4556,63 @@ def _r75_refusals(a) -> dict | None:
     return {"file": name, "option": option, "expression": expression, "mix_lean": mix_lean, "t_mix": t_mix}
 
 
+def _r78_row_names(name: str, path: Path | None = None) -> bool:
+    """Whether experiments/harness/TRIES.md (or `path`) holds exactly one row R78 whose first cell is the captain's
+    order ("ruling, no run") naming the file's option string and `--captain-ruling R78`, each as a whole backticked
+    string, the option string followed there by " (<file>)", as the row pairs each string with its file (row R75's
+    check, on row R78)."""
+    lines = [ln for ln in (path or TRIES_FILE).read_text(encoding="utf-8").splitlines()
+             if ln.startswith(f"| {EMBRYO_R78_ROW} ")]
+    if len(lines) != 1:
+        return False
+    first = lines[0][2:].split("|", 1)[0]
+    option = EMBRYO_R78_FILES[name][0]
+    named = set(re.findall(r"`([^`]*)`", first))
+    return (first.startswith(f"{EMBRYO_R78_ROW} (the captain's order") and "ruling, no run" in first
+            and option in named and f"--captain-ruling {EMBRYO_R78_ROW}" in named and f"`{option}` ({name})" in first)
+
+
+def _r78_file(a) -> str | None:
+    """The row R78 file whose command the parsed arguments are, exactly: O's command with the file's one option string
+    and --captain-ruling R78, nothing else changed (the test board named or not, the default seed); else None."""
+    got = dict(vars(a))
+    if got.get("board") == TEST_BOARDS["embryo"]:
+        got["board"] = None
+    for name, (option, *_) in EMBRYO_R78_FILES.items():
+        want = vars(build_parser().parse_args([*EMBRYO_R78_COMMAND.format(option=option).split(), "--out", str(a.out)]))
+        if got == want:
+            return name
+    return None
+
+
+def _r78_refusals(a) -> dict | None:
+    """Row R78's check, the first of build_embryo's. None for a command that is not row R78's (no --captain-ruling R78
+    and no lean only row R78 has); for exactly one of its two commands, while row R78's first cell names it, the file's
+    values (file, option, expression, lean and exact t_mix); anything else under --captain-ruling R78, and a lean only
+    row R78 has under any other ruling or none, exits here, before anything is read."""
+    ruling, lean = getattr(a, "captain_ruling", None), getattr(a, "mix_lean", None)
+    if ruling != EMBRYO_R78_ROW:
+        if lean in EMBRYO_R78_NEW_LEANS:
+            if ruling is None:
+                sys.exit(f"--mix-lean {lean} is the captain's order of row {EMBRYO_R78_ROW} alone and needs "
+                         f"--captain-ruling {EMBRYO_R78_ROW}")
+            sys.exit(f"--mix-lean {lean} is refused with --captain-ruling {ruling}: only row {EMBRYO_R78_ROW} "
+                     "orders it")
+        return None
+    name = _r78_file(a)
+    if name is None:
+        sys.exit(f"--captain-ruling {EMBRYO_R78_ROW} orders two files, each only as O's command with exactly its own "
+                 f"option string, {EMBRYO_R78_COMMAND.format(option='<OPTION>')}, on the test board at the default "
+                 "seed and nothing else changed: "
+                 + "; ".join(f"{f} `{v[0]}`" for f, v in EMBRYO_R78_FILES.items()))
+    option, expression, mix_lean, t_mix = EMBRYO_R78_FILES[name]
+    if not _r78_row_names(name):
+        sys.exit(f"row {EMBRYO_R78_ROW}'s file {name} is refused: experiments/harness/TRIES.md must hold exactly one "
+                 f"row {EMBRYO_R78_ROW} whose first cell is the captain's order (\"ruling, no run\") naming `{option}` "
+                 f"({name}) and `--captain-ruling {EMBRYO_R78_ROW}`, each as a whole backticked string")
+    return {"file": name, "option": option, "expression": expression, "mix_lean": mix_lean, "t_mix": t_mix}
+
+
 def _bayes_ordered() -> bool:
     """Row R71's first cell is the captain's order ("ruling, no run") naming BF on O and on SO only and
     `--captain-ruling R71`, in exactly one row."""
@@ -4745,11 +4853,14 @@ def _build_copy_rows(a, board, dry: bool, genes, files: dict, inputs: dict, coun
 
 
 def build_embryo(a) -> dict:
-    r75 = _r75_refusals(a)  # row R75's five files (off by default): first, before the older refusals read the ruling
-    mix_lean = _mix_lean_refusals(a) if r75 is None else False  # row R59's option (off by default): before any read
+    r78 = _r78_refusals(a)  # row R78's check first: when it returns a file, R75's, R59's and series_back's are skipped
+    r75 = (_r75_refusals(a)  # row R75's five files (off by default): first, before the older refusals read the ruling
+           if r78 is None else None)
+    mix_lean = _mix_lean_refusals(a) if (r75 is None  # row R59's option (off by default): before any read
+                                         and r78 is None) else False
     # row R48's option (off by default): before anything is read; with --mix-lean the command is O's, mixture included
     bayes = _bayes_refusals(a)  # row R71's option, before the series_back check refuses its ruling
-    series_back = _series_back_refusals(a) if not (mix_lean or bayes or r75) else False
+    series_back = _series_back_refusals(a) if not (mix_lean or bayes or r75 or r78) else False
     rs_ruling = _run_sorted_refusals(a)  # row E57's file (off by default): before anything is read
     _copy_rows_refusals(a)
     if a.positions != t2_build.POSITIONS[0] and (a.method != "fgw_shape0" or a.herd
@@ -4816,6 +4927,7 @@ def build_embryo(a) -> dict:
                                           **({"t_mix": EMBRYO_OT23_T_MIX} if mix_lean else {}),  # row R59 only
                                           **({} if r75 is None or r75["t_mix"] is None  # row R75's leans only
                                              else {"t_mix": float(r75["t_mix"])}),
+                                          **({} if r78 is None else {"t_mix": float(r78["t_mix"])}),
                                           positions=a.positions)
         if (shape in shape_interp.COMPOSED_FORMS and (not dry or str(board.split).startswith("test"))
                 and res.record.get("shape_interp_blocks") != OSR_TEST_BLOCKS):  # row E55, cell 3: "must be"
@@ -4895,6 +5007,14 @@ def build_embryo(a) -> dict:
                       "t_mix": None if t75 is None else float(t75),
                       "t_mix_exact": None if t75 is None else f"{t75.numerator}/{t75.denominator}",
                       "rule": EMBRYO_R75_RULES[f75]}
+    if r78 is not None:  # row R78's file: the captain's order, the command and its exact t_mix
+        f78, opt78, t78 = r78["file"], r78["option"], r78["t_mix"]
+        out["r78"] = {"option": opt78, "file": f78, "captain_ruling": EMBRYO_R78_ROW,
+                      "order": EMBRYO_R78_ORDER.format(option=opt78, file=f78, words=EMBRYO_R78_WORDS[f78],
+                                                       what=EMBRYO_R78_WHAT[f78]),
+                      "command": EMBRYO_R78_COMMAND.format(option=opt78), "o_command": EMBRYO_O_COMMAND,
+                      "expression": r78["expression"], "mix_lean": r78["mix_lean"], "t_mix": float(t78),
+                      "t_mix_exact": f"{t78.numerator}/{t78.denominator}", "rule": EMBRYO_R78_RULES[f78]}
     if rs_ruling is not None:  # row E57's file only: what it is, who ordered it and the plane; flat, no cell number
         out["neighbourhood"] = {"option": "--neighbourhood run_sorted", "file": EMBRYO_RS_FILE,
                                 "captain_ruling": rs_ruling, "command": EMBRYO_RS_COMMAND.format(row=rs_ruling),
@@ -5329,12 +5449,17 @@ def build_parser() -> argparse.ArgumentParser:
                            help="--row-order copy_parity on the test board: the captain's yes (off by default; "
                                 "without it the option refuses on a test board before anything loads, because a "
                                 "refusal or a success there shows one bit of the test count)")
-            p.add_argument("--mix-lean", choices=(*MIX_LEANS, *EMBRYO_R75_NEW_LEANS), default=None,
+            p.add_argument("--mix-lean", choices=(*MIX_LEANS, *EMBRYO_R75_NEW_LEANS, *EMBRYO_R78_NEW_LEANS),
+                           default=None,
                            help=f"row {EMBRYO_OT23_ROW}'s file {EMBRYO_OT23_FILE} (the captain's order of 2026-11-24; "
                                 "off by default): O's command with the later bracket's share of the drawn cells at "
                                 "t_mix = 2/3 exactly (t = 1/2 still sets the moves), only as "
                                 f"{EMBRYO_OT23_COMMAND}; it moves the overlay's form (the union leans to E8.0's "
-                                f"specimen). Row {EMBRYO_R75_ROW}'s files (the captain's order of 2026-11-26): "
+                                f"specimen). Row {EMBRYO_R78_ROW}'s files (the captain's order of 2026-11-26): "
+                                + "; ".join(f"`{o}` ({f})" for f, (o, *_) in EMBRYO_R78_FILES.items())
+                                + f", each only as {EMBRYO_R78_COMMAND.format(option='<OPTION>')}, t_mix "
+                                + ", ".join(f"{t.numerator}/{t.denominator}" for t in EMBRYO_R78_LEANS.values())
+                                + f". Row {EMBRYO_R75_ROW}'s files (the captain's order of 2026-11-26): "
                                 + "; ".join(f"`{o}` ({f})" for f, (o, *_) in EMBRYO_R75_FILES.items())
                                 + f", each only as {EMBRYO_R75_COMMAND.format(option='<OPTION>')}, t_mix "
                                 + ", ".join(f"{t.numerator}/{t.denominator}" for t in EMBRYO_R75_LEANS.values()))
@@ -5349,7 +5474,9 @@ def build_parser() -> argparse.ArgumentParser:
                            help=f"with --expression series_back: {EMBRYO_OVSB_ROW}, the row that orders it; with "
                                 "--neighbourhood run_sorted: the captain's ruling row that orders it; with --mix-lean "
                                 f"later: {EMBRYO_OT23_ROW}, the row that orders it; with --shape-interp overlay_bayes: "
-                                f"{EMBRYO_BF_ROW}, the row that orders it; with one of row {EMBRYO_R75_ROW}'s five "
+                                f"{EMBRYO_BF_ROW}, the row that orders it; with one of row {EMBRYO_R78_ROW}'s two "
+                                f"option strings on O's command: {EMBRYO_R78_ROW}; with one of row "
+                                f"{EMBRYO_R75_ROW}'s five "
                                 f"option strings on O's command: {EMBRYO_R75_ROW}; given once")
     return ap
 
