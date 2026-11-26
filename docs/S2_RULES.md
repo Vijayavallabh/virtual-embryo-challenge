@@ -3624,3 +3624,20 @@ efaa72be2bbf6cb20d6d6c87b0b9e40f2ff25b5f1daba0831de2071064c49e0b (build records
 `experiments/builds/results/heartr74_4b3e7a9_<run>.txt`). OTK10 and OTK15 are sent at once; OTK075 only if OTK10's
 headline is strictly above OTK125's, OTK175 only if OTK15's is, each read once by 06:00 UTC. Added before any score of
 any. Data used: released Task 2 heart stages and the unlocked E10.5 validation file only; no outside data.
+
+## Note of 2026-11-26: row R76's T3 files are built (decision log 2026-11-26 (c))
+
+At the clean commit 726aaac, on the DGX, the four identity rebuilds gave their recorded bytes, and each file was built
+twice with one sha256 and passed the format check. **The files:** `runs/manual_upload/T3_c2_s2_s085.h5ad` (C2's
+command with the factor's size scaled 0.85), sha256 665833858d19a7bf1d01724bf0667c1443419621572eb41e69b18b3624d28b40;
+`runs/manual_upload/T3_c2_s2_s05.h5ad` (C2's command with the factor's size scaled 0.5), sha256
+58b69aa2b00287f1d5a8e0dca022186068fedc9c4c8a48158b388814db0e985b; `runs/manual_upload/T3_c2_s2_g15.h5ad` (C2's command
+with the Gata4 weight 1.5), sha256 063fc3b1d576219cd86337ac98d9c442e8b103983f0e35116a1021f709cadb64;
+`runs/manual_upload/T3_c2_s2_g05.h5ad` (C2's command with the Gata4 weight 0.5), sha256
+cb8054928cfbe7e6e644d6570100da82590872a4d1cd58031489beb470b8f7f5; `runs/manual_upload/T3_c2_s2_g2_s067.h5ad` (C2's
+command with the Gata4 weight 2.0 and the size scaled 0.67), sha256
+a6dabee6f47c0aed33b0a74f38930a948d909c0a2970fe8d58e34b62acad8366 (build records
+`experiments/builds/results/t3r76_726aaac_<run>.txt`). All five are sent at once, under the captain's named exception
+on T3's depth for each (row R76). Added before any score of any. Data used: released challenge data only (C2's inputs:
+the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files); no outside
+data.

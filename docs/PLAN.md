@@ -15163,3 +15163,12 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     **`T2heart_organ_ts175_tk_half.h5ad`** (OTK175) efaa72be2bbf.... OTK10 and OTK15 due now; OTK075 and OTK175 wait
     on OTK10's and OTK15's headlines (row R74). Data used: released Task 2 heart stages and the unlocked E10.5
     validation file only; no outside data.
+- 2026-11-26 (c), T3's refinement files (row R76) are built, before any score (state at 2026-11-26 00:49 UTC). Written
+  by the AI assistant, which designed none of it and gave no lean on T3's depth.
+  - **The builds.** `experiments/t3_decomp/t3_r76_line.sh 726aaac...` once per file on the DGX, clean, after an
+    independent review and a gate dry-run; the four identity rebuilds gave their recorded bytes; each file built twice
+    with one sha256: **`T3_c2_s2_s085.h5ad`** 665833858d19...; **`T3_c2_s2_s05.h5ad`** 58b69aa2b002...;
+    **`T3_c2_s2_g15.h5ad`** 063fc3b1d576...; **`T3_c2_s2_g05.h5ad`** cb8054928cfb...; **`T3_c2_s2_g2_s067.h5ad`**
+    a6dabee6f47c.... All five due now, sent at once (row R76). Data used: released challenge data only (C2's inputs:
+    the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files); no
+    outside data.

@@ -1,0 +1,7 @@
+Row R76's T3 file T3_c2_s2_g2_s067.h5ad
+==========================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-26 at commit 726aaac (main; clean tree) in ~/v/vec-campaign-c with `experiments/t3_decomp/t3_r76_line.sh 726aaac5ff1c7544a462dd74e1ebb442fb6e5152 g2s067 T3_c2_s2_g2_s067`, after an independent review and a gate dry-run on the real rows.
+Every exit record is 0. The four identity rebuilds gave their recorded bytes (C2, T3_c2_s2_g2, T3_c2_s2_s067 and T3_c2_s2_gonly). The new file (C2's command with the Gata4 weight 2.0 and the size scaled 0.67), built twice into separate folders with one sha256, format-checked, each stamp of this commit and clean:
+  T3_c2_s2_g2_s067.h5ad  a6dabee6f47c0aed33b0a74f38930a948d909c0a2970fe8d58e34b62acad8366
+Under the captain's named exception on T3's depth for this file (row R76). The local copy under runs/manual_upload/ is the same bytes. No log, size, shape or sidecar of this build was read. No score of it exists at this record. Data used: released challenge data only (C2's inputs: the wild-type E8.75 cells, the released Mab21l2 knockout and the released Gata4 validation knockout files); no outside data.
