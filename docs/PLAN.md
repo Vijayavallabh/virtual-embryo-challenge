@@ -15260,3 +15260,20 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Nothing else reads these headlines.** Row R77's OTK05 and OTK20 are sent at once, with no condition (decision
     log 2026-11-26 (h)); they are unchanged.
   - **Standing unchanged:** 204.865.
+- 2026-11-26 (j), the captain reports 4 headlines and the rules are applied by their letter (state at 02:31 UTC,
+  2026-11-26). Written by the AI assistant, which records the headlines only.
+  - **The paste:** T2:embryo:test_interp `T2embryo_s2x_ovt712.h5ad` 68.62 (shown as submitted 2026-11-26 02:26);
+    T3:bcatenin `T3_c2_s2_s085.h5ad` 64.09 (shown as submitted 2026-11-26 02:27); T3:bcatenin `T3_c2_s2_g15.h5ad`
+    64.22 (shown as submitted 2026-11-26 02:29); T2:embryo:test_interp `T2embryo_s2x_ovd.h5ad` 70.85 (shown as
+    submitted 2026-11-26 02:29). Each file's sha256 on disk matches its sheet row. The paste's per-metric lines, ranks
+    and file sizes are not recorded or used.
+  - **Each rule by its letter.** Row R75 sends its five embryo files at once with no gate, and row R76 its five T3
+    files at once: no rule on record reads these headlines. Rows R78 and R79 send every round-4 file at once with no
+    condition (decision log 2026-11-26 (h)): nothing changes for them.
+  - **Against the boards' bests.** T3: `T3_c2_s2_g15.h5ad` 64.22 and `T3_c2_s2_s085.h5ad` 64.09 are above C2's 63.94;
+    the board's best is now g15's. Embryo: `T2embryo_s2x_ovd.h5ad` 70.85 is above O's 69.9 and is the board's best;
+    `T2embryo_s2x_ovt712.h5ad` 68.62 is below.
+  - **Row R75's words on ovd:** "the embryo's depth line reopened for T2embryo_s2x_ovd.h5ad alone, beside O and never
+    in its place." The board keeps each team's best headline, which is now ovd's. My reading after the result: O's
+    command stays the embryo's banked command for the team's rows unless the captain says otherwise.
+  - **Standing:** 205.62 (was 204.865; T2:embryo:test_interp 69.9 to 70.85; T3:bcatenin 63.94 to 64.22).
